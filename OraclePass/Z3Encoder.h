@@ -5,7 +5,7 @@
 #include <z3++.h>
 #include <unordered_map>
 #include <string>
-#include <utility> // Added for std::pair
+#include <utility>
 
 class Z3Encoder {
     z3::context Ctx;
@@ -15,9 +15,10 @@ class Z3Encoder {
 public:
     Z3Encoder();
     z3::expr getOrCreateZ3Expr(llvm::Value *Val);
-    void encodeInstruction(llvm::Instruction *Inst);
-    void assertCondition(llvm::Value *Cond, bool IsTrue);
     
-    // Now returns {Formatted String, Raw Latency Double}
+    // Changed to return bool so the Pass knows if we hit a roadblock
+    bool encodeInstruction(llvm::Instruction *Inst);
+    
+    void assertCondition(llvm::Value *Cond, bool IsTrue);
     std::pair<std::string, double> checkSatisfiability(); 
 };

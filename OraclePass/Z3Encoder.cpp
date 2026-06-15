@@ -14,35 +14,44 @@ z3::expr Z3Encoder::getOrCreateZ3Expr(Value *Val) {
     }
 
     if (auto *CI = dyn_cast<ConstantInt>(Val)) {
-        // If LLVM gives us a hardcoded true/false (i1)
         if (CI->getType()->isIntegerTy(1)) {
             z3::expr z3_bool = Ctx.bool_val(CI->getZExtValue() != 0);
             ValueMap.insert({Val, z3_bool});
             return z3_bool;
         }
-        // Otherwise, standard 32-bit integer
+        
+        // DYNAMIC WIDTH: Read exact bit-width from LLVM type
+        unsigned BitWidth = CI->getType()->getIntegerBitWidth();
         uint64_t val = CI->getZExtValue();
-        z3::expr z3_const = Ctx.bv_val((unsigned)val, 32); 
+        z3::expr z3_const = Ctx.bv_val((unsigned)val, BitWidth); 
         ValueMap.insert({Val, z3_const});
         return z3_const;
     }
 
-    std::string unique_name = "val_" + std::to_string(reinterpret_cast<uintptr_t>(Val));
-
-    // If LLVM gives us a boolean variable
     if (Val->getType()->isIntegerTy(1)) {
         z3::expr new_bool = Ctx.bool_const(Val->getName().str().c_str());
         ValueMap.insert({Val, new_bool});
         return new_bool;
     }
 
-    // Otherwise, standard 32-bit integer variable
-    z3::expr new_var = Ctx.bv_const(Val->getName().str().c_str(), 32);
-    ValueMap.insert({Val, new_var});
-    return new_var;
+    // DYNAMIC WIDTH: Read exact bit-width for variables
+    if (Val->getType()->isIntegerTy()) {
+        unsigned BitWidth = Val->getType()->getIntegerBitWidth();
+        z3::expr new_var = Ctx.bv_const(Val->getName().str().c_str(), BitWidth);
+        ValueMap.insert({Val, new_var});
+        return new_var;
+    }
+
+    // Fallback for pointers/structs - should rarely be hit in our pure math slice
+    z3::expr unk = Ctx.int_const(Val->getName().str().c_str());
+    ValueMap.insert({Val, unk});
+    return unk;
 }
 
-void Z3Encoder::encodeInstruction(Instruction *Inst) {
+bool Z3Encoder::encodeInstruction(Instruction *Inst) {
+    // If we already encoded it during our slice, skip
+    if (ValueMap.find(Inst) != ValueMap.end()) return true;
+
     if (auto *BinOp = dyn_cast<BinaryOperator>(Inst)) {
         z3::expr op1 = getOrCreateZ3Expr(BinOp->getOperand(0));
         z3::expr op2 = getOrCreateZ3Expr(BinOp->getOperand(1));
@@ -56,20 +65,15 @@ void Z3Encoder::encodeInstruction(Instruction *Inst) {
             case Instruction::UDiv: res = z3::udiv(op1, op2); break;
             case Instruction::SRem: res = z3::srem(op1, op2); break;
             case Instruction::URem: res = z3::urem(op1, op2); break;
-            
-            // Context-Aware Bitwise/Logical Operations!
-            case Instruction::And:  
-                res = op1.is_bool() ? (op1 && op2) : (op1 & op2); 
-                break;
-            case Instruction::Or:   
-                res = op1.is_bool() ? (op1 || op2) : (op1 | op2); 
-                break;
-            case Instruction::Xor:  
-                res = op1.is_bool() ? (op1 != op2) : (op1 ^ op2); // Logical XOR is Inequality
-                break;
-            default: return; 
+            case Instruction::And:  res = op1.is_bool() ? (op1 && op2) : (op1 & op2); break;
+            case Instruction::Or:   res = op1.is_bool() ? (op1 || op2) : (op1 | op2); break;
+            case Instruction::Xor:  res = op1.is_bool() ? (op1 != op2) : (op1 ^ op2); break;
+            default: 
+                errs() << "    -> [Z3Encoder] Unsupported BinOp: " << Inst->getOpcodeName() << "\n"; 
+                return false; 
         }
-        ValueMap.insert({Inst, res}); // SAFE
+        ValueMap.insert({Inst, res});
+        return true;
     } 
     else if (auto *Cmp = dyn_cast<ICmpInst>(Inst)) {
         z3::expr op1 = getOrCreateZ3Expr(Cmp->getOperand(0));
@@ -87,13 +91,36 @@ void Z3Encoder::encodeInstruction(Instruction *Inst) {
             case CmpInst::ICMP_UGE: res = z3::uge(op1, op2); break;
             case CmpInst::ICMP_ULT: res = z3::ult(op1, op2); break;
             case CmpInst::ICMP_ULE: res = z3::ule(op1, op2); break;
-            default: return;
+            default: 
+                errs() << "    -> [Z3Encoder] Unsupported Cmp: " << Inst->getOpcodeName() << "\n"; 
+                return false;
         }
-        ValueMap.insert({Inst, res}); // SAFE
+        ValueMap.insert({Inst, res});
+        return true;
     }
-    else if (isa<TruncInst>(Inst) || isa<ZExtInst>(Inst) || isa<SExtInst>(Inst)) {
-        ValueMap.insert({Inst, getOrCreateZ3Expr(Inst->getOperand(0))}); // SAFE
+    else if (auto *Cast = dyn_cast<CastInst>(Inst)) {
+        z3::expr src = getOrCreateZ3Expr(Cast->getOperand(0));
+        unsigned src_width = Cast->getSrcTy()->getIntegerBitWidth();
+        unsigned dst_width = Cast->getDestTy()->getIntegerBitWidth();
+        z3::expr res(Ctx);
+
+        if (isa<TruncInst>(Inst)) {
+            res = src.extract(dst_width - 1, 0); // Z3 extract is inclusive (high_bit, low_bit)
+        } else if (isa<ZExtInst>(Inst)) {
+            res = z3::zext(src, dst_width - src_width); // Z3 requires the delta, not the new size
+        } else if (isa<SExtInst>(Inst)) {
+            res = z3::sext(src, dst_width - src_width);
+        } else {
+            errs() << "    -> [Z3Encoder] Unsupported Cast: " << Inst->getOpcodeName() << "\n";
+            return false;
+        }
+        ValueMap.insert({Inst, res});
+        return true;
     }
+
+    // Catch-all for anything else (Intrinsics, ExtractValue, PHI, etc.)
+    errs() << "    -> [Z3Encoder] Unsupported Instruction: " << Inst->getOpcodeName() << "\n";
+    return false;
 }
 
 void Z3Encoder::assertCondition(Value *Cond, bool IsTrue) {

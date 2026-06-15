@@ -2,7 +2,11 @@
 #include "llvm/Passes/PassBuilder.h"
 #include "llvm/Plugins/PassPlugin.h"
 #include "llvm/Support/raw_ostream.h"
+#include "llvm/IR/Instructions.h"
+#include "llvm/IR/Constants.h"
 #include "Z3Encoder.h"
+#include <queue>
+#include <set>
 
 using namespace llvm;
 
@@ -10,56 +14,110 @@ namespace {
 struct OraclePass : public PassInfoMixin<OraclePass> {
     PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM) {
         errs() << "\n[Z3 Oracle] Analyzing Function: " << F.getName() << "\n";
-        
-        double TotalLatency = 0.0; // Track the total SMT time
+        double TotalLatency = 0.0;
+        int TrapsEliminated = 0;
+        int smt_queries = 0;
 
         for (BasicBlock &BB : F) {
-            auto *Branch = dyn_cast<BranchInst>(BB.getTerminator());
-            if (!Branch || !Branch->isConditional()) continue;
-
-            errs() << "  -> Branch found in block:\n";
-
-            for (unsigned Edge = 0; Edge < 2; ++Edge) {
-                bool IsTrueEdge = (Edge == 0);
-                StringRef PathName = IsTrueEdge ? "TRUE" : "FALSE";
-                
-                try {
-                    Z3Encoder Encoder;
-
-                    for (BasicBlock &FuncBB : F) {
-                        for (Instruction &Inst : FuncBB) {
-                            Encoder.encodeInstruction(&Inst);
+            // 1. The Hunter: Find the ubsantrap call
+            CallInst *TrapCall = nullptr;
+            for (Instruction &Inst : BB) {
+                if (auto *CI = dyn_cast<CallInst>(&Inst)) {
+                    if (Function *Callee = CI->getCalledFunction()) {
+                        if (Callee->getName().contains("ubsantrap") || Callee->getName() == "llvm.trap") {
+                            TrapCall = CI;
+                            break;
                         }
                     }
+                }
+            }
 
-                    BasicBlock *Curr = &BB;
-                    while (BasicBlock *Pred = Curr->getSinglePredecessor()) {
-                        auto *PredBr = dyn_cast<BranchInst>(Pred->getTerminator());
-                        if (PredBr && PredBr->isConditional()) {
-                            bool WasTrueEdge = (PredBr->getSuccessor(0) == Curr);
-                            Encoder.assertCondition(PredBr->getCondition(), WasTrueEdge);
-                        }
-                        Curr = Pred;
-                    }
+            if (!TrapCall) continue;
 
-                    Encoder.assertCondition(Branch->getCondition(), IsTrueEdge);
+            // 2. The Anchor: Find the predecessor branch that triggered this trap
+            BasicBlock *PredBB = BB.getSinglePredecessor();
+            if (!PredBB) continue; // Skip complex merged traps for now
 
-                    // Unpack the pair using C++17 structured binding
-                    auto [ResultString, QueryLatency] = Encoder.checkSatisfiability();
-                    TotalLatency += QueryLatency;
-                    
-                    errs() << "     Testing " << PathName << " path... " << ResultString << "\n";
-                           
-                } catch (z3::exception &ex) {
-                    errs() << "     [Z3 Error] " << ex.msg() << "\n";
+            auto *Br = dyn_cast<BranchInst>(PredBB->getTerminator());
+            if (!Br || !Br->isConditional()) continue;
+
+            // Figure out which branch edge leads to the trap
+            Value *OvfCondition = Br->getCondition();
+            bool TrapOnTrue = (Br->getSuccessor(0) == &BB);
+
+            errs() << "  -> Found UB Trap. Starting Backward Slice...\n";
+
+            // 3. The Slicer & Solver
+            Z3Encoder Encoder;
+            auto [Eliminated, Latency] = tryEliminateTrap(OvfCondition, TrapOnTrue, Encoder);
+            TotalLatency += Latency;
+            smt_queries++;
+
+            if (Eliminated) {
+                // 4. The Kill: We don't delete the block manually. We just hardcode the branch 
+                // to always go the SAFE way. LLVM's built-in SimplifyCFG pass will cleanly 
+                // delete the dead trap block for us later.
+                Br->setCondition(ConstantInt::get(Type::getInt1Ty(F.getContext()), TrapOnTrue ? 0 : 1));
+                errs() << "  => SUCCESS: Trap mathematically neutralized!\n";
+                TrapsEliminated++;
+            }
+        }
+
+        errs() << "  => Total Traps Eliminated: " << TrapsEliminated << "\n";
+        errs() << "  => Total SMT Query Latency: " << TotalLatency << " ms\n";
+        errs() << "  => Total SMT Queries: " << smt_queries << "\n";
+        errs() << "  => Average SMT Query Latency: " << (smt_queries > 0 ? TotalLatency / smt_queries : 0) << " ms\n";
+        
+        // If we eliminated traps, we modified the CFG. Tell LLVM to invalidate old analyses.
+        return TrapsEliminated > 0 ? PreservedAnalyses::none() : PreservedAnalyses::all();
+    }
+
+private:
+    std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Z3Encoder &Encoder) {
+        std::queue<Value*> Worklist; // The "Bag of variables"
+        std::set<Value*> Visited;    // Prevents infinite loops in our traversal
+
+        Worklist.push(TargetCond);
+        Visited.insert(TargetCond);
+
+        while (!Worklist.empty()) {
+            Value *V = Worklist.front();
+            Worklist.pop();
+
+            Instruction *Inst = dyn_cast<Instruction>(V);
+            if (!Inst) continue; // Constants and Arguments are handled by getOrCreateZ3Expr
+
+            // Abort on loops/phis/memory as requested
+            if (isa<PHINode>(Inst) || isa<LoadInst>(Inst)) {
+                errs() << "    -> [Abort] Hit Phi/Memory boundary: " << *Inst << "\n";
+                return {false, 0.0};
+            }
+
+            // Hand to encoder. If encoder returns false, it means it doesn't recognize the instruction yet.
+            if (!Encoder.encodeInstruction(Inst)) {
+                errs() << "    -> [Abort] Unsupported Instruction: " << *Inst << "\n";
+                return {false, 0.0};
+            }
+
+            // Slice backwards: Add all operands (dependencies) to the bag
+            for (Use &U : Inst->operands()) {
+                Value *Operand = U.get();
+                if (Visited.find(Operand) == Visited.end()) {
+                    Visited.insert(Operand);
+                    Worklist.push(Operand);
                 }
             }
         }
-        
-        // Print the grand total at the end of the function!
-        errs() << "  => Total SMT Query Latency for Function: " << TotalLatency << " ms\n";
-        
-        return PreservedAnalyses::all();
+
+        // We successfully built the slice! Assert that the trap ACTUALLY triggers.
+        Encoder.assertCondition(TargetCond, TrapOnTrue);
+
+        // Ask Z3 if this universe is mathematically possible
+        auto [ResultString, QueryLatency] = Encoder.checkSatisfiability();
+        errs() << "    -> " << ResultString << "\n";
+
+        bool IsUnsat = (ResultString.find("UNSAT") != std::string::npos);
+        return {IsUnsat, QueryLatency};
     }
 };
 }
