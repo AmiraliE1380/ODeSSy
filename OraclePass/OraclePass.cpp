@@ -73,29 +73,24 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
     }
 
 private:
-    std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Z3Encoder &Encoder) {
-        std::queue<Value*> Worklist; // The "Bag of variables"
-        std::set<Value*> Visited;    // Prevents infinite loops in our traversal
+std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Z3Encoder &Encoder) {
+        std::queue<Value*> Worklist; 
+        std::set<Value*> Visited;    
 
         Worklist.push(TargetCond);
         Visited.insert(TargetCond);
 
+        // PHASE 1: BACKWARD SLICE (Collect dependencies, do NOT encode yet)
         while (!Worklist.empty()) {
             Value *V = Worklist.front();
             Worklist.pop();
 
             Instruction *Inst = dyn_cast<Instruction>(V);
-            if (!Inst) continue; // Constants and Arguments are handled by getOrCreateZ3Expr
+            if (!Inst) continue; 
 
             // Abort on loops/phis/memory as requested
             if (isa<PHINode>(Inst) || isa<LoadInst>(Inst)) {
                 errs() << "    -> [Abort] Hit Phi/Memory boundary: " << *Inst << "\n";
-                return {false, 0.0};
-            }
-
-            // Hand to encoder. If encoder returns false, it means it doesn't recognize the instruction yet.
-            if (!Encoder.encodeInstruction(Inst)) {
-                errs() << "    -> [Abort] Unsupported Instruction: " << *Inst << "\n";
                 return {false, 0.0};
             }
 
@@ -105,6 +100,19 @@ private:
                 if (Visited.find(Operand) == Visited.end()) {
                     Visited.insert(Operand);
                     Worklist.push(Operand);
+                }
+            }
+        }
+
+        // PHASE 2: FORWARD ENCODE (Topological Order guarantees operands exist first)
+        Function *F = cast<Instruction>(TargetCond)->getFunction();
+        for (BasicBlock &BB : *F) {
+            for (Instruction &Inst : BB) {
+                if (Visited.find(&Inst) != Visited.end()) {
+                    if (!Encoder.encodeInstruction(&Inst)) {
+                        errs() << "    -> [Abort] Unsupported Instruction: " << Inst.getOpcodeName() << "\n";
+                        return {false, 0.0};
+                    }
                 }
             }
         }

@@ -118,6 +118,66 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst) {
         return true;
     }
 
+    else if (auto *ExtVal = dyn_cast<ExtractValueInst>(Inst)) {
+        // 1. Get the Call instruction that generated the struct
+        Value *Agg = ExtVal->getAggregateOperand();
+        auto *Call = dyn_cast<CallInst>(Agg);
+        
+        if (!Call || !Call->getCalledFunction()) {
+            errs() << "    -> [Z3Encoder] Unsupported ExtractValue source\n";
+            return false;
+        }
+
+        StringRef IntrinsicName = Call->getCalledFunction()->getName();
+        
+        // 2. We only care about Signed Addition Overflow right now
+        if (IntrinsicName.starts_with("llvm.sadd.with.overflow")) {
+            z3::expr op1 = getOrCreateZ3Expr(Call->getArgOperand(0));
+            z3::expr op2 = getOrCreateZ3Expr(Call->getArgOperand(1));
+            
+            // ExtractValue takes an array of indices. We only care about the first one.
+            unsigned Index = ExtVal->getIndices()[0];
+            z3::expr res(Ctx);
+
+            if (Index == 0) {
+                // Index 0: The standard math result
+                res = op1 + op2;
+            } else if (Index == 1) {
+                // Index 1: The Overflow Flag
+                // SMT-LIB logic: Extending to N+1 bits to cleanly check for overflow
+                unsigned bw = op1.get_sort().bv_size();
+                z3::expr ext_op1 = z3::sext(op1, 1);
+                z3::expr ext_op2 = z3::sext(op2, 1);
+                z3::expr ext_add = ext_op1 + ext_op2;
+                
+                // If the N+1 bit addition doesn't fit in the original N bits, it overflowed!
+                // FIXED: Explicitly cast to uint64_t to resolve compiler ambiguity
+                z3::expr max_val = Ctx.bv_val(static_cast<uint64_t>((1ull << (bw - 1)) - 1), bw + 1);
+                z3::expr min_val = z3::sext(Ctx.bv_val(static_cast<uint64_t>(1ull << (bw - 1)), bw), 1);
+                
+                res = (ext_add > max_val) || (ext_add < min_val);
+            } else {
+                return false;
+            }
+
+            ValueMap.insert({Inst, res});
+            return true;
+        }
+
+        errs() << "    -> [Z3Encoder] Unsupported Intrinsic: " << IntrinsicName << "\n";
+        return false;
+    }
+
+    else if (auto *Call = dyn_cast<CallInst>(Inst)) {
+        if (Function *F = Call->getCalledFunction()) {
+            StringRef Name = F->getName();
+            // Allow the slicer to pass through known overflow intrinsics
+            if (Name.starts_with("llvm.sadd.with.overflow") || Name.starts_with("llvm.ssub.with.overflow")) {
+                return true; 
+            }
+        }
+    }
+
     // Catch-all for anything else (Intrinsics, ExtractValue, PHI, etc.)
     errs() << "    -> [Z3Encoder] Unsupported Instruction: " << Inst->getOpcodeName() << "\n";
     return false;
