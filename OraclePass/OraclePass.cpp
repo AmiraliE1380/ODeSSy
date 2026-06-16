@@ -20,7 +20,7 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
         // Generate a unique Unix timestamp for the log file
         auto now = std::chrono::system_clock::now();
         std::time_t now_c = std::chrono::system_clock::to_time_t(now);
-        std::string filename = "logs/oracle_pass_" + std::to_string(now_c) + ".txt";
+        std::string filename = "logs/compilations/oracle_pass_" + std::to_string(now_c) + ".txt";
 
         // Setup the internal log file (Append mode)
         std::error_code EC;
