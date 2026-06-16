@@ -17,9 +17,14 @@ using namespace llvm;
 namespace {
 struct OraclePass : public PassInfoMixin<OraclePass> {
     PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM) {
+        // Generate a unique Unix timestamp for the log file
+        auto now = std::chrono::system_clock::now();
+        std::time_t now_c = std::chrono::system_clock::to_time_t(now);
+        std::string filename = "logs/oracle_pass_" + std::to_string(now_c) + ".txt";
+
         // Setup the internal log file (Append mode)
         std::error_code EC;
-        raw_fd_ostream Log("logs/oracle_pass_internal.txt", EC, sys::fs::OF_Append);
+        raw_fd_ostream Log(filename, EC, sys::fs::OF_Append);
         if (EC) {
             errs() << "[Error] Could not open log file: " << EC.message() << "\n";
             return PreservedAnalyses::all();

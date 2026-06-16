@@ -1,0 +1,386 @@
+
+[Z3 Oracle] Analyzing Function: LZ4_versionNumber
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_versionString
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_compressBound
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_sizeofState
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_compress_fast_extState
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] Hit Loop Header Phi:   %88 = phi i32 [ %60, %69 ], [ %85, %78 ]
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] Hit Loop Header Phi:   %443 = phi i32 [ %427, %434 ], [ %472, %465 ]
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] Hit Loop Header Phi:   %841 = phi i32 [ %811, %822 ], [ %838, %831 ]
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] Hit Loop Header Phi:   %1219 = phi i32 [ %1202, %1210 ], [ %1248, %1241 ]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 4
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_initStream
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_compress_fast_extState_fastReset
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] Hit Loop Header Phi:   %81 = phi i32 [ %65, %72 ], [ %111, %105 ]
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] Hit Loop Header Phi:   %461 = phi i32 [ %435, %442 ], [ %458, %451 ]
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] Hit Loop Header Phi:   %826 = phi i32 [ %810, %817 ], [ %855, %848 ]
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] Hit Loop Header Phi:   %1222 = phi i32 [ %1205, %1213 ], [ %1252, %1246 ]
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] Hit Loop Header Phi:   %1629 = phi i32 [ %1601, %1610 ], [ %1626, %1619 ]
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] Hit Loop Header Phi:   %2017 = phi i32 [ %2000, %2008 ], [ %2046, %2039 ]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 6
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_compress_fast
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_compress_default
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_compress_destSize_extState
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_compress_destSize_extState_internal
+  -> Found UB Trap. Starting Backward Slice...
+    -> SAT (Reachable Path) [Query Latency: 9.195604 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] Hit Loop Header Phi:   %97 = phi i32 [ %68, %79 ], [ %94, %87 ]
+  -> Found UB Trap. Starting Backward Slice...
+    -> SAT (Reachable Path) [Query Latency: 9.442898 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] Hit Loop Header Phi:   %517 = phi i32 [ %501, %510 ], [ %545, %541 ]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 4
+  => Total SMT Query Latency: 1.863850e+01 ms
+  => Average SMT Query Latency: 4.659625e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_compress_destSize
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_createStream
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_resetStream
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_resetStream_fast
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_freeStream
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_loadDict
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_loadDictSlow
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_attach_dictionary
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_compress_fast_continue
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] Hit Loop Header Phi:   %145 = phi i32 [ %126, %136 ], [ %176, %169 ]
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] Hit Loop Header Phi:   %550 = phi i32 [ %531, %541 ], [ %579, %572 ]
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] Hit Loop Header Phi:   %955 = phi i32 [ %937, %946 ], [ %986, %979 ]
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] Hit Loop Header Phi:   %1547 = phi i32 [ %1530, %1538 ], [ %1588, %1581 ]
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] Hit Loop Header Phi:   %2153 = phi i32 [ %2136, %2144 ], [ %2186, %2179 ]
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] Hit Loop Header Phi:   %2740 = phi i32 [ %2723, %2731 ], [ %2771, %2764 ]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 6
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_compress_forceExtDict
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] Hit Loop Header Phi:   %92 = phi i32 [ 65, %84 ], [ %124, %120 ]
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] Hit Loop Header Phi:   %650 = phi i32 [ 65, %642 ], [ %680, %676 ]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 2
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_saveDict
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_decompress_safe
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] N-Way Phi (23 edges) not supported yet:   %721 = phi ptr [ %389, %438 ], [ %506, %505 ], [ %506, %548 ], [ %492, %491 ], [ %66, %59 ], [ %373, %371 ], [ %488, %481 ], [ %366, %369 ], [ %124, %117 ], [ %348, %345 ], [ %366, %359 ], [ %464, %470 ], [ %475, %477 ], [ %353, %355 ], [ %102, %107 ], [ %124, %127 ], [ %131, %129 ], [ %45, %49 ], [ %73, %71 ], [ %66, %69 ], [ %53, %55 ], [ %111, %113 ], [ %166, %165 ]
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] N-Way Phi (23 edges) not supported yet:   %721 = phi ptr [ %389, %438 ], [ %506, %505 ], [ %506, %548 ], [ %492, %491 ], [ %66, %59 ], [ %373, %371 ], [ %488, %481 ], [ %366, %369 ], [ %124, %117 ], [ %348, %345 ], [ %366, %359 ], [ %464, %470 ], [ %475, %477 ], [ %353, %355 ], [ %102, %107 ], [ %124, %127 ], [ %131, %129 ], [ %45, %49 ], [ %73, %71 ], [ %66, %69 ], [ %53, %55 ], [ %111, %113 ], [ %166, %165 ]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 2
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_decompress_safe_partial
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] N-Way Phi (21 edges) not supported yet:   %686 = phi ptr [ %515, %514 ], [ %497, %490 ], [ %501, %500 ], [ %62, %55 ], [ %369, %367 ], [ %362, %365 ], [ %120, %113 ], [ %344, %341 ], [ %362, %355 ], [ %473, %479 ], [ %484, %486 ], [ %349, %351 ], [ %98, %103 ], [ %120, %123 ], [ %127, %125 ], [ %41, %45 ], [ %69, %67 ], [ %62, %65 ], [ %49, %51 ], [ %107, %109 ], [ %162, %161 ]
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] N-Way Phi (21 edges) not supported yet:   %686 = phi ptr [ %515, %514 ], [ %497, %490 ], [ %501, %500 ], [ %62, %55 ], [ %369, %367 ], [ %362, %365 ], [ %120, %113 ], [ %344, %341 ], [ %362, %355 ], [ %473, %479 ], [ %484, %486 ], [ %349, %351 ], [ %98, %103 ], [ %120, %123 ], [ %127, %125 ], [ %41, %45 ], [ %69, %67 ], [ %62, %65 ], [ %49, %51 ], [ %107, %109 ], [ %162, %161 ]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 2
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_decompress_fast
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_decompress_safe_withPrefix64k
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] N-Way Phi (23 edges) not supported yet:   %741 = phi ptr [ %399, %449 ], [ %517, %516 ], [ %517, %560 ], [ %503, %502 ], [ %70, %63 ], [ %382, %380 ], [ %499, %492 ], [ %375, %378 ], [ %128, %121 ], [ %356, %353 ], [ %375, %368 ], [ %474, %481 ], [ %486, %488 ], [ %362, %364 ], [ %106, %111 ], [ %128, %131 ], [ %135, %133 ], [ %48, %53 ], [ %77, %75 ], [ %70, %73 ], [ %57, %59 ], [ %115, %117 ], [ %169, %168 ]
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] N-Way Phi (23 edges) not supported yet:   %741 = phi ptr [ %399, %449 ], [ %517, %516 ], [ %517, %560 ], [ %503, %502 ], [ %70, %63 ], [ %382, %380 ], [ %499, %492 ], [ %375, %378 ], [ %128, %121 ], [ %356, %353 ], [ %375, %368 ], [ %474, %481 ], [ %486, %488 ], [ %362, %364 ], [ %106, %111 ], [ %128, %131 ], [ %135, %133 ], [ %48, %53 ], [ %77, %75 ], [ %70, %73 ], [ %57, %59 ], [ %115, %117 ], [ %169, %168 ]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 2
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_decompress_fast_withPrefix64k
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_decompress_safe_forceExtDict
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] N-Way Phi (25 edges) not supported yet:   %884 = phi ptr [ %471, %520 ], [ %588, %587 ], [ %430, %427 ], [ %588, %601 ], [ %574, %573 ], [ %73, %66 ], [ %455, %453 ], [ %588, %711 ], [ %570, %563 ], [ %448, %451 ], [ %546, %552 ], [ %448, %441 ], [ %130, %123 ], [ %557, %559 ], [ %435, %437 ], [ %108, %113 ], [ %130, %133 ], [ %137, %135 ], [ %52, %56 ], [ %80, %78 ], [ %73, %76 ], [ %172, %171 ], [ %60, %62 ], [ %117, %119 ], [ %172, %180 ]
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] N-Way Phi (25 edges) not supported yet:   %884 = phi ptr [ %471, %520 ], [ %588, %587 ], [ %430, %427 ], [ %588, %601 ], [ %574, %573 ], [ %73, %66 ], [ %455, %453 ], [ %588, %711 ], [ %570, %563 ], [ %448, %451 ], [ %546, %552 ], [ %448, %441 ], [ %130, %123 ], [ %557, %559 ], [ %435, %437 ], [ %108, %113 ], [ %130, %133 ], [ %137, %135 ], [ %52, %56 ], [ %80, %78 ], [ %73, %76 ], [ %172, %171 ], [ %60, %62 ], [ %117, %119 ], [ %172, %180 ]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 2
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_decompress_safe_partial_forceExtDict
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] N-Way Phi (21 edges) not supported yet:   %867 = phi ptr [ %606, %605 ], [ %588, %581 ], [ %592, %591 ], [ %70, %63 ], [ %460, %458 ], [ %453, %456 ], [ %127, %120 ], [ %435, %432 ], [ %453, %446 ], [ %564, %570 ], [ %575, %577 ], [ %440, %442 ], [ %105, %110 ], [ %127, %130 ], [ %134, %132 ], [ %49, %53 ], [ %77, %75 ], [ %70, %73 ], [ %57, %59 ], [ %114, %116 ], [ %169, %168 ]
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] N-Way Phi (21 edges) not supported yet:   %867 = phi ptr [ %606, %605 ], [ %588, %581 ], [ %592, %591 ], [ %70, %63 ], [ %460, %458 ], [ %453, %456 ], [ %127, %120 ], [ %435, %432 ], [ %453, %446 ], [ %564, %570 ], [ %575, %577 ], [ %440, %442 ], [ %105, %110 ], [ %127, %130 ], [ %134, %132 ], [ %49, %53 ], [ %77, %75 ], [ %70, %73 ], [ %57, %59 ], [ %114, %116 ], [ %169, %168 ]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 2
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_createStreamDecode
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_freeStreamDecode
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_setStreamDecode
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_decoderRingBufferSize
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_decompress_safe_continue
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] N-Way Phi (25 edges) not supported yet:   %918 = phi ptr [ %502, %551 ], [ %619, %618 ], [ %461, %458 ], [ %619, %632 ], [ %605, %604 ], [ %103, %96 ], [ %486, %484 ], [ %619, %745 ], [ %601, %594 ], [ %479, %482 ], [ %577, %583 ], [ %479, %472 ], [ %160, %153 ], [ %588, %590 ], [ %466, %468 ], [ %138, %143 ], [ %160, %163 ], [ %167, %165 ], [ %82, %86 ], [ %110, %108 ], [ %103, %106 ], [ %202, %201 ], [ %90, %92 ], [ %147, %149 ], [ %202, %210 ]
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] N-Way Phi (25 edges) not supported yet:   %918 = phi ptr [ %502, %551 ], [ %619, %618 ], [ %461, %458 ], [ %619, %632 ], [ %605, %604 ], [ %103, %96 ], [ %486, %484 ], [ %619, %745 ], [ %601, %594 ], [ %479, %482 ], [ %577, %583 ], [ %479, %472 ], [ %160, %153 ], [ %588, %590 ], [ %466, %468 ], [ %138, %143 ], [ %160, %163 ], [ %167, %165 ], [ %82, %86 ], [ %110, %108 ], [ %103, %106 ], [ %202, %201 ], [ %90, %92 ], [ %147, %149 ], [ %202, %210 ]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 2
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_decompress_safe_withSmallPrefix
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] N-Way Phi (23 edges) not supported yet:   %724 = phi ptr [ %392, %441 ], [ %509, %508 ], [ %509, %551 ], [ %495, %494 ], [ %69, %62 ], [ %376, %374 ], [ %491, %484 ], [ %369, %372 ], [ %127, %120 ], [ %351, %348 ], [ %369, %362 ], [ %467, %473 ], [ %478, %480 ], [ %356, %358 ], [ %105, %110 ], [ %127, %130 ], [ %134, %132 ], [ %48, %52 ], [ %76, %74 ], [ %69, %72 ], [ %56, %58 ], [ %114, %116 ], [ %169, %168 ]
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] N-Way Phi (23 edges) not supported yet:   %724 = phi ptr [ %392, %441 ], [ %509, %508 ], [ %509, %551 ], [ %495, %494 ], [ %69, %62 ], [ %376, %374 ], [ %491, %484 ], [ %369, %372 ], [ %127, %120 ], [ %351, %348 ], [ %369, %362 ], [ %467, %473 ], [ %478, %480 ], [ %356, %358 ], [ %105, %110 ], [ %127, %130 ], [ %134, %132 ], [ %48, %52 ], [ %76, %74 ], [ %69, %72 ], [ %56, %58 ], [ %114, %116 ], [ %169, %168 ]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 2
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_decompress_fast_continue
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_decompress_safe_usingDict
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_decompress_safe_partial_usingDict
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] N-Way Phi (21 edges) not supported yet:   %717 = phi ptr [ %538, %537 ], [ %136, %129 ], [ %524, %523 ], [ %383, %376 ], [ %390, %388 ], [ %383, %386 ], [ %520, %513 ], [ %364, %361 ], [ %78, %71 ], [ %495, %502 ], [ %507, %509 ], [ %370, %372 ], [ %78, %81 ], [ %85, %83 ], [ %56, %61 ], [ %143, %141 ], [ %136, %139 ], [ %114, %119 ], [ %65, %67 ], [ %123, %125 ], [ %177, %176 ]
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] N-Way Phi (21 edges) not supported yet:   %717 = phi ptr [ %538, %537 ], [ %136, %129 ], [ %524, %523 ], [ %383, %376 ], [ %390, %388 ], [ %383, %386 ], [ %520, %513 ], [ %364, %361 ], [ %78, %71 ], [ %495, %502 ], [ %507, %509 ], [ %370, %372 ], [ %78, %81 ], [ %85, %83 ], [ %56, %61 ], [ %143, %141 ], [ %136, %139 ], [ %114, %119 ], [ %65, %67 ], [ %123, %125 ], [ %177, %176 ]
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] N-Way Phi (21 edges) not supported yet:   %1414 = phi ptr [ %1243, %1242 ], [ %848, %841 ], [ %1229, %1228 ], [ %1090, %1083 ], [ %1097, %1095 ], [ %1090, %1093 ], [ %1225, %1218 ], [ %1072, %1069 ], [ %790, %783 ], [ %1201, %1207 ], [ %1212, %1214 ], [ %1077, %1079 ], [ %790, %793 ], [ %797, %795 ], [ %769, %773 ], [ %855, %853 ], [ %848, %851 ], [ %826, %831 ], [ %777, %779 ], [ %835, %837 ], [ %890, %889 ]
+  -> Found UB Trap. Starting Backward Slice...
+    -> [Abort] N-Way Phi (21 edges) not supported yet:   %1414 = phi ptr [ %1243, %1242 ], [ %848, %841 ], [ %1229, %1228 ], [ %1090, %1083 ], [ %1097, %1095 ], [ %1090, %1093 ], [ %1225, %1218 ], [ %1072, %1069 ], [ %790, %783 ], [ %1201, %1207 ], [ %1212, %1214 ], [ %1077, %1079 ], [ %790, %793 ], [ %797, %795 ], [ %769, %773 ], [ %855, %853 ], [ %848, %851 ], [ %826, %831 ], [ %777, %779 ], [ %835, %837 ], [ %890, %889 ]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 4
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_decompress_fast_usingDict
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_compress_limitedOutput
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_compress
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_compress_limitedOutput_withState
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_compress_withState
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_compress_limitedOutput_continue
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_compress_continue
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_uncompress
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_uncompress_unknownOutputSize
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_sizeofStreamState
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_resetStreamState
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_create
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+
+[Z3 Oracle] Analyzing Function: LZ4_slideInputBuffer
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
