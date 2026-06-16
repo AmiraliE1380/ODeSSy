@@ -1,14 +1,16 @@
-#include "llvm/IR/PassManager.h"
 #include "llvm/Passes/PassBuilder.h"
 #include "llvm/Plugins/PassPlugin.h"
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/Support/FileSystem.h"
-#include "llvm/IR/Instructions.h"
-#include "llvm/IR/Constants.h"
 #include "llvm/Analysis/LoopInfo.h"
+#include "llvm/IR/Instructions.h"
+#include "llvm/IR/PassManager.h"
+#include "llvm/IR/Constants.h"
 #include "Z3Encoder.h"
+#include <chrono>
 #include <queue>
 #include <set>
+
 
 using namespace llvm;
 
@@ -109,6 +111,7 @@ private:
             if (!Inst) continue; 
 
             // --- THE PHI / MEMORY LOGIC ---
+            // --- THE NEW PHI / MEMORY LOGIC ---
             if (auto *Phi = dyn_cast<PHINode>(Inst)) {
                 BasicBlock *PhiBB = Phi->getParent();
                 Loop *L = LI.getLoopFor(PhiBB);
@@ -119,9 +122,46 @@ private:
                     errs() << "    -> [Abort] Hit Loop Header Phi: " << *Inst << "\n";
                     return {false, 0.0};
                 } else {
-                    Log << "    -> [CFG Detective Next] Hit Non-Loop Phi: " << *Inst << "\n";
-                    errs() << "    -> [CFG Detective Next] Hit Non-Loop Phi: " << *Inst << "\n";
-                    return {false, 0.0}; 
+                    // CFG Detective: Phase 1 (N=2 only)
+                    if (Phi->getNumIncomingValues() != 2) {
+                        Log << "    -> [Abort] N-Way Phi (" << Phi->getNumIncomingValues() << " edges) not supported yet: " << *Inst << "\n";
+                        errs() << "    -> [Abort] N-Way Phi not supported yet.\n";
+                        return {false, 0.0};
+                    }
+
+                    BasicBlock *BB0 = Phi->getIncomingBlock(0);
+                    BasicBlock *BB1 = Phi->getIncomingBlock(1);
+                    BasicBlock *SplitBlock = nullptr;
+
+                    // Find the common predecessor (Handles Diamond and Triangle CFGs)
+                    if (BB0->getSinglePredecessor() && BB0->getSinglePredecessor() == BB1->getSinglePredecessor()) {
+                        SplitBlock = BB0->getSinglePredecessor();
+                    } else if (BB0->getSinglePredecessor() == BB1) {
+                        SplitBlock = BB1;
+                    } else if (BB1->getSinglePredecessor() == BB0) {
+                        SplitBlock = BB0;
+                    }
+
+                    if (!SplitBlock) {
+                        Log << "    -> [Abort] Complex CFG: Could not find common SplitBlock for Phi.\n";
+                        errs() << "    -> [Abort] Complex CFG: Could not find common SplitBlock for Phi.\n";
+                        return {false, 0.0};
+                    }
+
+                    auto *Br = dyn_cast<BranchInst>(SplitBlock->getTerminator());
+                    if (!Br || !Br->isConditional()) {
+                        Log << "    -> [Abort] SplitBlock does not end with a conditional branch.\n";
+                        errs() << "    -> [Abort] SplitBlock does not end with a conditional branch.\n";
+                        return {false, 0.0};
+                    }
+
+                    // Add the condition and both branches to the worklist
+                    Value *Cond = Br->getCondition();
+                    if (Visited.insert(Cond).second) Worklist.push(Cond);
+                    if (Visited.insert(Phi->getIncomingValue(0)).second) Worklist.push(Phi->getIncomingValue(0));
+                    if (Visited.insert(Phi->getIncomingValue(1)).second) Worklist.push(Phi->getIncomingValue(1));
+
+                    continue; // Successfully crawled past the Phi!
                 }
             }
 

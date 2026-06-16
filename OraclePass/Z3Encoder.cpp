@@ -178,6 +178,52 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst) {
         }
     }
 
+    else if (auto *Phi = dyn_cast<PHINode>(Inst)) {
+        if (Phi->getNumIncomingValues() != 2) return false;
+
+        BasicBlock *BB0 = Phi->getIncomingBlock(0);
+        BasicBlock *BB1 = Phi->getIncomingBlock(1);
+        BasicBlock *SplitBlock = nullptr;
+
+        if (BB0->getSinglePredecessor() && BB0->getSinglePredecessor() == BB1->getSinglePredecessor()) {
+            SplitBlock = BB0->getSinglePredecessor();
+        } else if (BB0->getSinglePredecessor() == BB1) {
+            SplitBlock = BB1;
+        } else if (BB1->getSinglePredecessor() == BB0) {
+            SplitBlock = BB0;
+        }
+
+        if (!SplitBlock) return false;
+
+        auto *Br = dyn_cast<BranchInst>(SplitBlock->getTerminator());
+        if (!Br || !Br->isConditional()) return false;
+
+        z3::expr cond = getOrCreateZ3Expr(Br->getCondition());
+        
+        // Determine which incoming block maps to the 'True' edge of the branch
+        Value *TrueVal = nullptr;
+        Value *FalseVal = nullptr;
+        BasicBlock *TrueSucc = Br->getSuccessor(0);
+
+        if (TrueSucc == BB0) {
+            TrueVal = Phi->getIncomingValue(0);
+            FalseVal = Phi->getIncomingValue(1);
+        } else if (TrueSucc == BB1) {
+            TrueVal = Phi->getIncomingValue(1);
+            FalseVal = Phi->getIncomingValue(0);
+        } else {
+            errs() << "    -> [Z3Encoder] Phi CFG routing mismatch.\n";
+            return false;
+        }
+
+        z3::expr true_expr = getOrCreateZ3Expr(TrueVal);
+        z3::expr false_expr = getOrCreateZ3Expr(FalseVal);
+
+        z3::expr res = z3::ite(cond, true_expr, false_expr);
+        ValueMap.insert({Inst, res});
+        return true;
+    }
+
     // Catch-all for anything else (Intrinsics, ExtractValue, PHI, etc.)
     errs() << "    -> [Z3Encoder] Unsupported Instruction: " << Inst->getOpcodeName() << "\n";
     return false;
