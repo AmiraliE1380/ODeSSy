@@ -2,8 +2,10 @@
 #include "llvm/Passes/PassBuilder.h"
 #include "llvm/Plugins/PassPlugin.h"
 #include "llvm/Support/raw_ostream.h"
+#include "llvm/Support/FileSystem.h"
 #include "llvm/IR/Instructions.h"
 #include "llvm/IR/Constants.h"
+#include "llvm/Analysis/LoopInfo.h"
 #include "Z3Encoder.h"
 #include <queue>
 #include <set>
@@ -13,10 +15,23 @@ using namespace llvm;
 namespace {
 struct OraclePass : public PassInfoMixin<OraclePass> {
     PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM) {
+        // Setup the internal log file (Append mode)
+        std::error_code EC;
+        raw_fd_ostream Log("logs/oracle_pass_internal.txt", EC, sys::fs::OF_Append);
+        if (EC) {
+            errs() << "[Error] Could not open log file: " << EC.message() << "\n";
+            return PreservedAnalyses::all();
+        }
+
+        Log << "\n[Z3 Oracle] Analyzing Function: " << F.getName() << "\n";
         errs() << "\n[Z3 Oracle] Analyzing Function: " << F.getName() << "\n";
+
         double TotalLatency = 0.0;
         int TrapsEliminated = 0;
-        int smt_queries = 0;
+        int trap_attempts = 0; // FIXED: Renamed to accurately reflect attempts
+
+        // Fetch the Loop Analysis for the current function
+        LoopInfo &LI = FAM.getResult<LoopAnalysis>(F);
 
         for (BasicBlock &BB : F) {
             // 1. The Hunter: Find the ubsantrap call
@@ -45,42 +60,47 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
             Value *OvfCondition = Br->getCondition();
             bool TrapOnTrue = (Br->getSuccessor(0) == &BB);
 
+            Log << "  -> Found UB Trap. Starting Backward Slice...\n";
             errs() << "  -> Found UB Trap. Starting Backward Slice...\n";
 
             // 3. The Slicer & Solver
             Z3Encoder Encoder;
-            auto [Eliminated, Latency] = tryEliminateTrap(OvfCondition, TrapOnTrue, Encoder);
+            trap_attempts++; // FIXED: Incrementing attempts before we pass it off
+
+            auto [Eliminated, Latency] = tryEliminateTrap(OvfCondition, TrapOnTrue, Encoder, LI, Log);
             TotalLatency += Latency;
-            smt_queries++;
 
             if (Eliminated) {
-                // 4. The Kill: We don't delete the block manually. We just hardcode the branch 
-                // to always go the SAFE way. LLVM's built-in SimplifyCFG pass will cleanly 
-                // delete the dead trap block for us later.
+                // 4. The Kill
                 Br->setCondition(ConstantInt::get(Type::getInt1Ty(F.getContext()), TrapOnTrue ? 0 : 1));
+                Log << "  => SUCCESS: Trap mathematically neutralized!\n";
                 errs() << "  => SUCCESS: Trap mathematically neutralized!\n";
                 TrapsEliminated++;
             }
         }
 
+        Log << "  => Total Traps Eliminated: " << TrapsEliminated << "\n";
+        Log << "  => Total Trap Attempts: " << trap_attempts << "\n";
+        Log << "  => Total SMT Query Latency: " << TotalLatency << " ms\n";
+        Log << "  => Average SMT Query Latency: " << (trap_attempts > 0 ? TotalLatency / trap_attempts : 0) << " ms\n";
+
         errs() << "  => Total Traps Eliminated: " << TrapsEliminated << "\n";
+        errs() << "  => Total Trap Attempts: " << trap_attempts << "\n";
         errs() << "  => Total SMT Query Latency: " << TotalLatency << " ms\n";
-        errs() << "  => Total SMT Queries: " << smt_queries << "\n";
-        errs() << "  => Average SMT Query Latency: " << (smt_queries > 0 ? TotalLatency / smt_queries : 0) << " ms\n";
+        errs() << "  => Average SMT Query Latency: " << (trap_attempts > 0 ? TotalLatency / trap_attempts : 0) << " ms\n";
         
-        // If we eliminated traps, we modified the CFG. Tell LLVM to invalidate old analyses.
         return TrapsEliminated > 0 ? PreservedAnalyses::none() : PreservedAnalyses::all();
     }
 
 private:
-std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Z3Encoder &Encoder) {
+    std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Z3Encoder &Encoder, LoopInfo &LI, raw_fd_ostream &Log) {
         std::queue<Value*> Worklist; 
         std::set<Value*> Visited;    
 
         Worklist.push(TargetCond);
         Visited.insert(TargetCond);
 
-        // PHASE 1: BACKWARD SLICE (Collect dependencies, do NOT encode yet)
+        // PHASE 1: BACKWARD SLICE
         while (!Worklist.empty()) {
             Value *V = Worklist.front();
             Worklist.pop();
@@ -88,11 +108,29 @@ std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Z3E
             Instruction *Inst = dyn_cast<Instruction>(V);
             if (!Inst) continue; 
 
-            // Abort on loops/phis/memory as requested
-            if (isa<PHINode>(Inst) || isa<LoadInst>(Inst)) {
-                errs() << "    -> [Abort] Hit Phi/Memory boundary: " << *Inst << "\n";
+            // --- THE PHI / MEMORY LOGIC ---
+            if (auto *Phi = dyn_cast<PHINode>(Inst)) {
+                BasicBlock *PhiBB = Phi->getParent();
+                Loop *L = LI.getLoopFor(PhiBB);
+                
+                // Is this basic block the header of a loop?
+                if (L && L->getHeader() == PhiBB) {
+                    Log << "    -> [Abort] Hit Loop Header Phi: " << *Inst << "\n";
+                    errs() << "    -> [Abort] Hit Loop Header Phi: " << *Inst << "\n";
+                    return {false, 0.0};
+                } else {
+                    Log << "    -> [CFG Detective Next] Hit Non-Loop Phi: " << *Inst << "\n";
+                    errs() << "    -> [CFG Detective Next] Hit Non-Loop Phi: " << *Inst << "\n";
+                    return {false, 0.0}; 
+                }
+            }
+
+            if (isa<LoadInst>(Inst)) {
+                Log << "    -> [Abort] Hit Memory boundary: " << *Inst << "\n";
+                errs() << "    -> [Abort] Hit Memory boundary: " << *Inst << "\n";
                 return {false, 0.0};
             }
+            // ----------------------------------
 
             // Slice backwards: Add all operands (dependencies) to the bag
             for (Use &U : Inst->operands()) {
@@ -104,12 +142,13 @@ std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Z3E
             }
         }
 
-        // PHASE 2: FORWARD ENCODE (Topological Order guarantees operands exist first)
+        // PHASE 2: FORWARD ENCODE
         Function *F = cast<Instruction>(TargetCond)->getFunction();
         for (BasicBlock &BB : *F) {
             for (Instruction &Inst : BB) {
                 if (Visited.find(&Inst) != Visited.end()) {
                     if (!Encoder.encodeInstruction(&Inst)) {
+                        Log << "    -> [Abort] Unsupported Instruction: " << Inst.getOpcodeName() << "\n";
                         errs() << "    -> [Abort] Unsupported Instruction: " << Inst.getOpcodeName() << "\n";
                         return {false, 0.0};
                     }
@@ -117,11 +156,10 @@ std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Z3E
             }
         }
 
-        // We successfully built the slice! Assert that the trap ACTUALLY triggers.
         Encoder.assertCondition(TargetCond, TrapOnTrue);
-
-        // Ask Z3 if this universe is mathematically possible
         auto [ResultString, QueryLatency] = Encoder.checkSatisfiability();
+        
+        Log << "    -> " << ResultString << "\n";
         errs() << "    -> " << ResultString << "\n";
 
         bool IsUnsat = (ResultString.find("UNSAT") != std::string::npos);
