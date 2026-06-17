@@ -48,7 +48,7 @@ z3::expr Z3Encoder::getOrCreateZ3Expr(Value *Val) {
     return unk;
 }
 
-bool Z3Encoder::encodeInstruction(Instruction *Inst) {
+bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT) {
     // If we already encoded it during our slice, skip
     if (ValueMap.find(Inst) != ValueMap.end()) return true;
 
@@ -177,49 +177,50 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst) {
             }
         }
     }
-
+    
     else if (auto *Phi = dyn_cast<PHINode>(Inst)) {
-        if (Phi->getNumIncomingValues() != 2) return false;
+        if (!DT) return false;
 
-        BasicBlock *BB0 = Phi->getIncomingBlock(0);
-        BasicBlock *BB1 = Phi->getIncomingBlock(1);
-        BasicBlock *SplitBlock = nullptr;
+        BasicBlock *PhiBB = Phi->getParent();
+        DomTreeNode *Node = DT->getNode(PhiBB);
+        if (!Node || !Node->getIDom()) return false;
+        BasicBlock *IDomBB = Node->getIDom()->getBlock();
 
-        if (BB0->getSinglePredecessor() && BB0->getSinglePredecessor() == BB1->getSinglePredecessor()) {
-            SplitBlock = BB0->getSinglePredecessor();
-        } else if (BB0->getSinglePredecessor() == BB1) {
-            SplitBlock = BB1;
-        } else if (BB1->getSinglePredecessor() == BB0) {
-            SplitBlock = BB0;
+        // Base case: Start with the first incoming value as our fallback
+        z3::expr res = getOrCreateZ3Expr(Phi->getIncomingValue(0));
+
+        // Fold the remaining incoming values into a nested ITE chain
+        for (unsigned i = 1; i < Phi->getNumIncomingValues(); ++i) {
+            BasicBlock *WalkBB = Phi->getIncomingBlock(i);
+            Value *IncVal = Phi->getIncomingValue(i);
+            
+            z3::expr path_cond = Ctx.bool_val(true);
+
+            // Trace backward to the IDom to collect the exact path condition
+            while (WalkBB != IDomBB && WalkBB != nullptr) {
+                BasicBlock *PredBB = WalkBB->getSinglePredecessor();
+                if (!PredBB) return false; // Safety check
+
+                auto *Br = dyn_cast<BranchInst>(PredBB->getTerminator());
+                if (Br && Br->isConditional()) {
+                    z3::expr cond = getOrCreateZ3Expr(Br->getCondition());
+                    // Did we take the True or False edge to get here?
+                    if (Br->getSuccessor(0) == WalkBB) {
+                        path_cond = path_cond && cond;
+                    } else {
+                        path_cond = path_cond && !cond;
+                    }
+                }
+                WalkBB = PredBB;
+            }
+
+            if (WalkBB == nullptr) return false;
+
+            // Chain it: If this path was taken, use this value. Otherwise, fall back.
+            z3::expr val_expr = getOrCreateZ3Expr(IncVal);
+            res = z3::ite(path_cond, val_expr, res);
         }
 
-        if (!SplitBlock) return false;
-
-        auto *Br = dyn_cast<BranchInst>(SplitBlock->getTerminator());
-        if (!Br || !Br->isConditional()) return false;
-
-        z3::expr cond = getOrCreateZ3Expr(Br->getCondition());
-        
-        // Determine which incoming block maps to the 'True' edge of the branch
-        Value *TrueVal = nullptr;
-        Value *FalseVal = nullptr;
-        BasicBlock *TrueSucc = Br->getSuccessor(0);
-
-        if (TrueSucc == BB0) {
-            TrueVal = Phi->getIncomingValue(0);
-            FalseVal = Phi->getIncomingValue(1);
-        } else if (TrueSucc == BB1) {
-            TrueVal = Phi->getIncomingValue(1);
-            FalseVal = Phi->getIncomingValue(0);
-        } else {
-            errs() << "    -> [Z3Encoder] Phi CFG routing mismatch.\n";
-            return false;
-        }
-
-        z3::expr true_expr = getOrCreateZ3Expr(TrueVal);
-        z3::expr false_expr = getOrCreateZ3Expr(FalseVal);
-
-        z3::expr res = z3::ite(cond, true_expr, false_expr);
         ValueMap.insert({Inst, res});
         return true;
     }
@@ -248,7 +249,7 @@ std::pair<std::string, double> Z3Encoder::checkSatisfiability() {
     std::string status;
     switch (result) {
         case z3::unsat:   status = "UNSAT (Dead Code / Impossible Path)"; break;
-        case z3::sat:     status = "SAT (Reachable Path)"; break;
+        case z3::sat:     status = "SAT (WARNING: Potential Integer Overflow Bug Detected!)"; break;
         case z3::unknown: status = "UNKNOWN (Solver gave up)"; break;
         default:          status = "ERROR"; break;
     }

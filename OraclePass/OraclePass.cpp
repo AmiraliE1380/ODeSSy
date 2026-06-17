@@ -102,6 +102,64 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
         return TrapsEliminated > 0 ? PreservedAnalyses::none() : PreservedAnalyses::all();
     }
 
+
+private:
+    bool collectPhiConditions(PHINode *Phi, DominatorTree &DT, std::set<Value*> &Visited, std::queue<Value*> &Worklist, raw_fd_ostream &Log) {
+        BasicBlock *PhiBB = Phi->getParent();
+        DomTreeNode *Node = DT.getNode(PhiBB);
+        if (!Node || !Node->getIDom()) return false;
+        
+        BasicBlock *IDomBB = Node->getIDom()->getBlock();
+
+        // Trace from each incoming block up to the Immediate Dominator
+        for (unsigned i = 0; i < Phi->getNumIncomingValues(); ++i) {
+            BasicBlock *CurrBB = Phi->getIncomingBlock(i);
+            Value *IncVal = Phi->getIncomingValue(i);
+
+            // Add the incoming value (the math/variable) to the worklist
+            if (Visited.insert(IncVal).second) Worklist.push(IncVal);
+
+            // Crawl up the CFG to collect the boolean path conditions
+            int depth = 0;
+            while (CurrBB != IDomBB && CurrBB != nullptr) {
+                // Safeguard against infinite loops in weird CFGs
+                if (depth++ > 100) {
+                    Log << "    -> [Abort] CFG Crawler exceeded depth limit.\n";
+                    errs() << "    -> [Abort] CFG Crawler exceeded depth limit.\n";
+                    return false;
+                }
+
+                BasicBlock *PredBB = CurrBB->getSinglePredecessor();
+                if (!PredBB) {
+                    Log << "    -> [Abort] CFG Crawler hit multi-predecessor block before IDom. (Complex Merge)\n";
+                    errs() << "    -> [Abort] CFG Crawler hit multi-predecessor block before IDom. (Complex Merge)\n";
+                    return false;
+                }
+
+                auto *Terminator = PredBB->getTerminator();
+                if (auto *Br = dyn_cast<BranchInst>(Terminator)) {
+                    if (Br->isConditional()) {
+                        Value *Cond = Br->getCondition();
+                        if (Visited.insert(Cond).second) Worklist.push(Cond);
+                    }
+                } else if (isa<SwitchInst>(Terminator)) {
+                    Log << "    -> [Abort] CFG Crawler hit a SwitchInst. Not supported yet.\n";
+                    errs() << "    -> [Abort] CFG Crawler hit a SwitchInst. Not supported yet.\n";
+                    return false;
+                }
+
+                CurrBB = PredBB;
+            }
+
+            if (CurrBB == nullptr) {
+                 Log << "    -> [Abort] CFG Crawler disconnected from IDom.\n";
+                 errs() << "    -> [Abort] CFG Crawler disconnected from IDom.\n";
+                 return false;
+            }
+        }
+        return true;
+    }
+
 private:
 std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Z3Encoder &Encoder, LoopInfo &LI, DominatorTree &DT, raw_fd_ostream &Log) {        std::queue<Value*> Worklist; 
         std::set<Value*> Visited;    
@@ -117,8 +175,7 @@ std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Z3E
             Instruction *Inst = dyn_cast<Instruction>(V);
             if (!Inst) continue; 
 
-            // --- THE PHI / MEMORY LOGIC ---
-            // --- THE NEW PHI / MEMORY LOGIC ---
+// --- THE NEW PHI / MEMORY LOGIC ---
             if (auto *Phi = dyn_cast<PHINode>(Inst)) {
                 BasicBlock *PhiBB = Phi->getParent();
                 Loop *L = LI.getLoopFor(PhiBB);
@@ -129,55 +186,11 @@ std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Z3E
                     errs() << "    -> [Abort] Hit Loop Header Phi: " << *Inst << "\n";
                     return {false, 0.0};
                 } else {
-                    // CFG Detective: Phase 1 (N=2 only)
-                    if (Phi->getNumIncomingValues() != 2) {
-                        BasicBlock *PhiBB = Phi->getParent();
-                        DomTreeNode *Node = DT.getNode(PhiBB);
-                        
-                        if (Node && Node->getIDom()) {
-                            BasicBlock *IDomBB = Node->getIDom()->getBlock();
-                            Log << "    -> [CFG Detective] Hit " << Phi->getNumIncomingValues() << "-Way Phi. Immediate Dominator is: " << IDomBB->getName() << "\n";
-                            errs() << "    -> [CFG Detective] Hit " << Phi->getNumIncomingValues() << "-Way Phi. Immediate Dominator is: " << IDomBB->getName() << "\n";
-                        } else {
-                            Log << "    -> [Abort] Hit " << Phi->getNumIncomingValues() << "-Way Phi. No Immediate Dominator found.\n";
-                            errs() << "    -> [Abort] Hit " << Phi->getNumIncomingValues() << "-Way Phi. No Immediate Dominator found.\n";
-                        }
+                    // Slicer Phase 1: Fire the CFG Crawler
+                    if (!collectPhiConditions(Phi, DT, Visited, Worklist, Log)) {
                         return {false, 0.0};
                     }
-
-                    BasicBlock *BB0 = Phi->getIncomingBlock(0);
-                    BasicBlock *BB1 = Phi->getIncomingBlock(1);
-                    BasicBlock *SplitBlock = nullptr;
-
-                    // Find the common predecessor (Handles Diamond and Triangle CFGs)
-                    if (BB0->getSinglePredecessor() && BB0->getSinglePredecessor() == BB1->getSinglePredecessor()) {
-                        SplitBlock = BB0->getSinglePredecessor();
-                    } else if (BB0->getSinglePredecessor() == BB1) {
-                        SplitBlock = BB1;
-                    } else if (BB1->getSinglePredecessor() == BB0) {
-                        SplitBlock = BB0;
-                    }
-
-                    if (!SplitBlock) {
-                        Log << "    -> [Abort] Complex CFG: Could not find common SplitBlock for Phi.\n";
-                        errs() << "    -> [Abort] Complex CFG: Could not find common SplitBlock for Phi.\n";
-                        return {false, 0.0};
-                    }
-
-                    auto *Br = dyn_cast<BranchInst>(SplitBlock->getTerminator());
-                    if (!Br || !Br->isConditional()) {
-                        Log << "    -> [Abort] SplitBlock does not end with a conditional branch.\n";
-                        errs() << "    -> [Abort] SplitBlock does not end with a conditional branch.\n";
-                        return {false, 0.0};
-                    }
-
-                    // Add the condition and both branches to the worklist
-                    Value *Cond = Br->getCondition();
-                    if (Visited.insert(Cond).second) Worklist.push(Cond);
-                    if (Visited.insert(Phi->getIncomingValue(0)).second) Worklist.push(Phi->getIncomingValue(0));
-                    if (Visited.insert(Phi->getIncomingValue(1)).second) Worklist.push(Phi->getIncomingValue(1));
-
-                    continue; // Successfully crawled past the Phi!
+                    continue; // Successfully crawled the entire N-Way Phi!
                 }
             }
 
@@ -187,7 +200,7 @@ std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Z3E
                 return {false, 0.0};
             }
             // ----------------------------------
-
+            
             // Slice backwards: Add all operands (dependencies) to the bag
             for (Use &U : Inst->operands()) {
                 Value *Operand = U.get();
@@ -203,7 +216,7 @@ std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Z3E
         for (BasicBlock &BB : *F) {
             for (Instruction &Inst : BB) {
                 if (Visited.find(&Inst) != Visited.end()) {
-                    if (!Encoder.encodeInstruction(&Inst)) {
+                    if (!Encoder.encodeInstruction(&Inst, &DT)) {
                         Log << "    -> [Abort] Unsupported Instruction: " << Inst.getOpcodeName() << "\n";
                         errs() << "    -> [Abort] Unsupported Instruction: " << Inst.getOpcodeName() << "\n";
                         return {false, 0.0};
