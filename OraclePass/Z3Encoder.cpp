@@ -48,7 +48,60 @@ z3::expr Z3Encoder::getOrCreateZ3Expr(Value *Val) {
     return unk;
 }
 
+
+bool Z3Encoder::buildPathCondDFS(BasicBlock *Current, BasicBlock *Target, BasicBlock *PhiBB, z3::expr CurrentCond, std::vector<z3::expr> &ValidPaths, std::set<BasicBlock*> &PathVis, int depth) {
+    if (depth > 50) return false;
+
+    if (Current == Target) {
+        ValidPaths.push_back(CurrentCond);
+        return true;
+    }
+
+    // --- THE BOUNDARY WALL FIX ---
+    if (Current == PhiBB) return false;
+    // -----------------------------
+
+    PathVis.insert(Current);
+    bool foundPath = false;
+
+    auto *Term = Current->getTerminator();
+    if (auto *Br = dyn_cast<BranchInst>(Term)) {
+        if (Br->isConditional()) {
+            // We know this exists because Phase 1 pushed it to the Worklist!
+            z3::expr branch_cond = getOrCreateZ3Expr(Br->getCondition());
+            
+            for (unsigned i = 0; i < 2; ++i) {
+                BasicBlock *Succ = Br->getSuccessor(i);
+                if (PathVis.find(Succ) == PathVis.end()) {
+                    // i == 0 is the True edge, i == 1 is the False edge
+                    z3::expr next_cond = (i == 0) ? (CurrentCond && branch_cond) : (CurrentCond && !branch_cond);
+                    
+                    // FIXED: Added PhiBB as the 3rd argument
+                    if (buildPathCondDFS(Succ, Target, PhiBB, next_cond, ValidPaths, PathVis, depth + 1)) {
+                        foundPath = true;
+                    }
+                }
+            }
+        } else {
+            BasicBlock *Succ = Br->getSuccessor(0);
+            if (PathVis.find(Succ) == PathVis.end()) {
+                
+                // FIXED: Added PhiBB as the 3rd argument
+                if (buildPathCondDFS(Succ, Target, PhiBB, CurrentCond, ValidPaths, PathVis, depth + 1)) {
+                    foundPath = true;
+                }
+            }
+        }
+    }
+
+    PathVis.erase(Current);
+    return foundPath;
+}
+
+
 bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT) {
+    errs() << "    [DEBUG] Visiting Instruction: " << Inst->getOpcodeName() << " (" << Inst->getName() << ")\n";
+
     // If we already encoded it during our slice, skip
     if (ValueMap.find(Inst) != ValueMap.end()) return true;
 
@@ -161,6 +214,7 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT) {
             }
 
             ValueMap.insert({Inst, res});
+            errs() << "    [DEBUG] Successfully inserted ExtractValueInst into ValueMap: " << Inst->getName() << "\n";
             return true;
         }
 
@@ -191,32 +245,24 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT) {
 
         // Fold the remaining incoming values into a nested ITE chain
         for (unsigned i = 1; i < Phi->getNumIncomingValues(); ++i) {
-            BasicBlock *WalkBB = Phi->getIncomingBlock(i);
+            BasicBlock *TargetBB = Phi->getIncomingBlock(i);
             Value *IncVal = Phi->getIncomingValue(i);
             
-            z3::expr path_cond = Ctx.bool_val(true);
+            std::vector<z3::expr> ValidPaths;
+            std::set<BasicBlock*> PathVis;
+            z3::expr start_cond = Ctx.bool_val(true);
 
-            // Trace backward to the IDom to collect the exact path condition
-            while (WalkBB != IDomBB && WalkBB != nullptr) {
-                BasicBlock *PredBB = WalkBB->getSinglePredecessor();
-                if (!PredBB) return false; // Safety check
-
-                auto *Br = dyn_cast<BranchInst>(PredBB->getTerminator());
-                if (Br && Br->isConditional()) {
-                    z3::expr cond = getOrCreateZ3Expr(Br->getCondition());
-                    // Did we take the True or False edge to get here?
-                    if (Br->getSuccessor(0) == WalkBB) {
-                        path_cond = path_cond && cond;
-                    } else {
-                        path_cond = path_cond && !cond;
-                    }
-                }
-                WalkBB = PredBB;
+            if (!buildPathCondDFS(IDomBB, TargetBB, PhiBB, start_cond, ValidPaths, PathVis, 0) || ValidPaths.empty()) {
+                return false;
             }
 
-            if (WalkBB == nullptr) return false;
+            // If there are multiple paths to this block, OR them together
+            z3::expr path_cond = ValidPaths[0];
+            for (size_t j = 1; j < ValidPaths.size(); ++j) {
+                path_cond = path_cond || ValidPaths[j];
+            }
 
-            // Chain it: If this path was taken, use this value. Otherwise, fall back.
+            // Chain it: If ANY valid path was taken, use this value. Otherwise, fall back.
             z3::expr val_expr = getOrCreateZ3Expr(IncVal);
             res = z3::ite(path_cond, val_expr, res);
         }
@@ -224,13 +270,21 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT) {
         ValueMap.insert({Inst, res});
         return true;
     }
-
+    
     // Catch-all for anything else (Intrinsics, ExtractValue, PHI, etc.)
     errs() << "    -> [Z3Encoder] Unsupported Instruction: " << Inst->getOpcodeName() << "\n";
     return false;
 }
 
 void Z3Encoder::assertCondition(Value *Cond, bool IsTrue) {
+    errs() << "\n    [DEBUG] assertCondition called for TargetCond: " << Cond->getName() << "\n";
+    
+    if (ValueMap.find(Cond) == ValueMap.end()) {
+        errs() << "    [DEBUG ERROR] Cond was NOT in ValueMap! Falling back to unconstrained variable.\n";
+    } else {
+        errs() << "    [DEBUG SUCCESS] Cond FOUND in ValueMap. SMT Formula:\n" << ValueMap.at(Cond).to_string() << "\n";
+    }
+
     z3::expr z3_cond = getOrCreateZ3Expr(Cond);
     if (!IsTrue) {
         z3_cond = !z3_cond;
@@ -249,7 +303,15 @@ std::pair<std::string, double> Z3Encoder::checkSatisfiability() {
     std::string status;
     switch (result) {
         case z3::unsat:   status = "UNSAT (Dead Code / Impossible Path)"; break;
-        case z3::sat:     status = "SAT (WARNING: Potential Integer Overflow Bug Detected!)"; break;
+        case z3::sat: {
+            status = "SAT (WARNING: Potential Integer Overflow Bug Detected!)"; 
+            errs() << "\n    ================ Z3 SMT-LIB DUMP ================\n";
+            errs() << Solver.to_smt2() << "\n";
+            errs() << "    ================ Z3 MODEL DUMP ==================\n";
+            errs() << Solver.get_model().to_string() << "\n";
+            errs() << "    =================================================\n";
+            break;
+        }
         case z3::unknown: status = "UNKNOWN (Solver gave up)"; break;
         default:          status = "ERROR"; break;
     }

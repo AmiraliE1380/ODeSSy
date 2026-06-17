@@ -1,0 +1,8 @@
+
+[Z3 Oracle] Analyzing Function: test_phi4
+  -> Found UB Trap. Starting Backward Slice...
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 12.830395 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Query Latency: 1.283039e+01 ms
+  => Average SMT Query Latency: 1.283039e+01 ms

@@ -7,6 +7,8 @@
 #include <unordered_map>
 #include <string>
 #include <utility>
+#include <set>      
+#include <vector>   
 
 class Z3Encoder {
     z3::context Ctx;
@@ -22,4 +24,7 @@ public:
 
     void assertCondition(llvm::Value *Cond, bool IsTrue);
     std::pair<std::string, double> checkSatisfiability(); 
+    
+private:
+    bool buildPathCondDFS(llvm::BasicBlock *Current, llvm::BasicBlock *Target, llvm::BasicBlock *PhiBB, z3::expr CurrentCond, std::vector<z3::expr> &ValidPaths, std::set<llvm::BasicBlock*> &PathVis, int depth = 0);
 };

@@ -1,0 +1,8 @@
+
+[Z3 Oracle] Analyzing Function: sanity_check_2
+  -> Found UB Trap. Starting Backward Slice...
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 16.119201 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Query Latency: 1.611920e+01 ms
+  => Average SMT Query Latency: 1.611920e+01 ms

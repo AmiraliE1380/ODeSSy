@@ -104,6 +104,60 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
 
 
 private:
+// Phase 1 DFS: Find all paths from Current to Target and push their conditions to the Worklist
+    bool findPathsDFS(BasicBlock *Current, BasicBlock *Target, BasicBlock *PhiBB, std::vector<Value*> &CurrentConds, std::set<Value*> &VisitedConds, std::queue<Value*> &Worklist, std::set<BasicBlock*> &PathVis, raw_fd_ostream &Log, int depth = 0) {
+        // Safety switch: Prevent path explosion in massive CFGs
+        if (depth > 50) return false; 
+
+        if (Current == Target) {
+            // We reached the target! Push all branch conditions we saw on this path to the worklist
+            for (Value *C : CurrentConds) {
+                if (VisitedConds.insert(C).second) Worklist.push(C);
+            }
+            return true;
+        }
+
+        // --- THE BOUNDARY WALL FIX ---
+        // If we reach the Phi block itself, we've walked past the target. Stop!
+        if (Current == PhiBB) return false;
+        // -----------------------------
+
+        PathVis.insert(Current);
+        bool foundPath = false;
+
+        auto *Term = Current->getTerminator();
+        if (auto *Br = dyn_cast<BranchInst>(Term)) {
+            if (Br->isConditional()) {
+                CurrentConds.push_back(Br->getCondition());
+                // Explore both True (0) and False (1) edges
+                for (unsigned i = 0; i < 2; ++i) {
+                    BasicBlock *Succ = Br->getSuccessor(i);
+                    if (PathVis.find(Succ) == PathVis.end()) {
+                        if (findPathsDFS(Succ, Target, PhiBB, CurrentConds, VisitedConds, Worklist, PathVis, Log, depth + 1)) {
+                            foundPath = true;
+                        }
+                    }
+                }
+                CurrentConds.pop_back(); // Backtrack
+            } else {
+                // Unconditional branch, just keep walking
+                BasicBlock *Succ = Br->getSuccessor(0);
+                if (PathVis.find(Succ) == PathVis.end()) {
+                    if (findPathsDFS(Succ, Target, PhiBB, CurrentConds, VisitedConds, Worklist, PathVis, Log, depth + 1)) {
+                        foundPath = true;
+                    }
+                }
+            }
+        } else if (isa<SwitchInst>(Term)) {
+            Log << "    -> [Abort] CFG Crawler hit a SwitchInst. (Priority 3 feature)\n";
+            errs() << "    -> [Abort] CFG Crawler hit a SwitchInst. (Priority 3 feature)\n";
+            return false;
+        }
+
+        PathVis.erase(Current); // Backtrack
+        return foundPath;
+    }
+
     bool collectPhiConditions(PHINode *Phi, DominatorTree &DT, std::set<Value*> &Visited, std::queue<Value*> &Worklist, raw_fd_ostream &Log) {
         BasicBlock *PhiBB = Phi->getParent();
         DomTreeNode *Node = DT.getNode(PhiBB);
@@ -111,55 +165,26 @@ private:
         
         BasicBlock *IDomBB = Node->getIDom()->getBlock();
 
-        // Trace from each incoming block up to the Immediate Dominator
+        // Trace from IDom down to each incoming block
         for (unsigned i = 0; i < Phi->getNumIncomingValues(); ++i) {
-            BasicBlock *CurrBB = Phi->getIncomingBlock(i);
+            BasicBlock *TargetBB = Phi->getIncomingBlock(i);
             Value *IncVal = Phi->getIncomingValue(i);
 
             // Add the incoming value (the math/variable) to the worklist
             if (Visited.insert(IncVal).second) Worklist.push(IncVal);
 
-            // Crawl up the CFG to collect the boolean path conditions
-            int depth = 0;
-            while (CurrBB != IDomBB && CurrBB != nullptr) {
-                // Safeguard against infinite loops in weird CFGs
-                if (depth++ > 100) {
-                    Log << "    -> [Abort] CFG Crawler exceeded depth limit.\n";
-                    errs() << "    -> [Abort] CFG Crawler exceeded depth limit.\n";
-                    return false;
-                }
-
-                BasicBlock *PredBB = CurrBB->getSinglePredecessor();
-                if (!PredBB) {
-                    Log << "    -> [Abort] CFG Crawler hit multi-predecessor block before IDom. (Complex Merge)\n";
-                    errs() << "    -> [Abort] CFG Crawler hit multi-predecessor block before IDom. (Complex Merge)\n";
-                    return false;
-                }
-
-                auto *Terminator = PredBB->getTerminator();
-                if (auto *Br = dyn_cast<BranchInst>(Terminator)) {
-                    if (Br->isConditional()) {
-                        Value *Cond = Br->getCondition();
-                        if (Visited.insert(Cond).second) Worklist.push(Cond);
-                    }
-                } else if (isa<SwitchInst>(Terminator)) {
-                    Log << "    -> [Abort] CFG Crawler hit a SwitchInst. Not supported yet.\n";
-                    errs() << "    -> [Abort] CFG Crawler hit a SwitchInst. Not supported yet.\n";
-                    return false;
-                }
-
-                CurrBB = PredBB;
-            }
-
-            if (CurrBB == nullptr) {
-                 Log << "    -> [Abort] CFG Crawler disconnected from IDom.\n";
-                 errs() << "    -> [Abort] CFG Crawler disconnected from IDom.\n";
-                 return false;
+            std::vector<Value*> CurrentConds;
+            std::set<BasicBlock*> PathVis;
+            
+            if (!findPathsDFS(IDomBB, TargetBB, PhiBB, CurrentConds, Visited, Worklist, PathVis, Log)) {                Log << "    -> [Abort] CFG Crawler failed to find valid path from IDom to incoming block.\n";
+                errs() << "    -> [Abort] CFG Crawler failed to find valid path from IDom to incoming block.\n";
+                return false;
             }
         }
         return true;
     }
 
+    
 private:
 std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Z3Encoder &Encoder, LoopInfo &LI, DominatorTree &DT, raw_fd_ostream &Log) {        std::queue<Value*> Worklist; 
         std::set<Value*> Visited;    
