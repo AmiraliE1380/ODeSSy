@@ -5,6 +5,7 @@
 #include "llvm/Analysis/LoopInfo.h"
 #include "llvm/IR/Instructions.h"
 #include "llvm/IR/PassManager.h"
+#include "llvm/IR/Dominators.h"
 #include "llvm/IR/Constants.h"
 #include "Z3Encoder.h"
 #include <chrono>
@@ -39,6 +40,8 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
 
         // Fetch the Loop Analysis for the current function
         LoopInfo &LI = FAM.getResult<LoopAnalysis>(F);
+        // Fetch the Dominator Tree for the CFG Detective
+        DominatorTree &DT = FAM.getResult<DominatorTreeAnalysis>(F);
 
         for (BasicBlock &BB : F) {
             // 1. The Hunter: Find the ubsantrap call
@@ -74,7 +77,7 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
             Z3Encoder Encoder;
             trap_attempts++; // FIXED: Incrementing attempts before we pass it off
 
-            auto [Eliminated, Latency] = tryEliminateTrap(OvfCondition, TrapOnTrue, Encoder, LI, Log);
+            auto [Eliminated, Latency] = tryEliminateTrap(OvfCondition, TrapOnTrue, Encoder, LI, DT, Log);
             TotalLatency += Latency;
 
             if (Eliminated) {
@@ -100,8 +103,7 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
     }
 
 private:
-    std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Z3Encoder &Encoder, LoopInfo &LI, raw_fd_ostream &Log) {
-        std::queue<Value*> Worklist; 
+std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Z3Encoder &Encoder, LoopInfo &LI, DominatorTree &DT, raw_fd_ostream &Log) {        std::queue<Value*> Worklist; 
         std::set<Value*> Visited;    
 
         Worklist.push(TargetCond);
@@ -129,8 +131,17 @@ private:
                 } else {
                     // CFG Detective: Phase 1 (N=2 only)
                     if (Phi->getNumIncomingValues() != 2) {
-                        Log << "    -> [Abort] N-Way Phi (" << Phi->getNumIncomingValues() << " edges) not supported yet: " << *Inst << "\n";
-                        errs() << "    -> [Abort] N-Way Phi not supported yet.\n";
+                        BasicBlock *PhiBB = Phi->getParent();
+                        DomTreeNode *Node = DT.getNode(PhiBB);
+                        
+                        if (Node && Node->getIDom()) {
+                            BasicBlock *IDomBB = Node->getIDom()->getBlock();
+                            Log << "    -> [CFG Detective] Hit " << Phi->getNumIncomingValues() << "-Way Phi. Immediate Dominator is: " << IDomBB->getName() << "\n";
+                            errs() << "    -> [CFG Detective] Hit " << Phi->getNumIncomingValues() << "-Way Phi. Immediate Dominator is: " << IDomBB->getName() << "\n";
+                        } else {
+                            Log << "    -> [Abort] Hit " << Phi->getNumIncomingValues() << "-Way Phi. No Immediate Dominator found.\n";
+                            errs() << "    -> [Abort] Hit " << Phi->getNumIncomingValues() << "-Way Phi. No Immediate Dominator found.\n";
+                        }
                         return {false, 0.0};
                     }
 
