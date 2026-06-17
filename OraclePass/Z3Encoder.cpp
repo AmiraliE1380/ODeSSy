@@ -2,6 +2,7 @@
 #include "llvm/Support/raw_ostream.h"
 #include <chrono>
 #include <string>
+#include <sstream>
 
 using namespace llvm;
 
@@ -28,6 +29,10 @@ z3::expr Z3Encoder::getOrCreateZ3Expr(Value *Val) {
         return z3_const;
     }
 
+    // --- THE WIRETAP ---
+    errs() << "    [WIRETAP] Creating FREE SMT VARIABLE for: " << Val->getName() << "\n";
+    // -------------------
+
     if (Val->getType()->isIntegerTy(1)) {
         z3::expr new_bool = Ctx.bool_const(Val->getName().str().c_str());
         ValueMap.insert({Val, new_bool});
@@ -49,17 +54,25 @@ z3::expr Z3Encoder::getOrCreateZ3Expr(Value *Val) {
 }
 
 
-bool Z3Encoder::buildPathCondDFS(BasicBlock *Current, BasicBlock *Target, BasicBlock *PhiBB, z3::expr CurrentCond, std::vector<z3::expr> &ValidPaths, std::set<BasicBlock*> &PathVis, int depth) {
+bool Z3Encoder::buildPathCondDFS(BasicBlock *Current, BasicBlock *Target, BasicBlock *PhiBB, std::vector<std::pair<Value*, bool>> &CurrentPath, std::vector<z3::expr> &ValidPaths, std::set<BasicBlock*> &PathVis, int depth) {
     if (depth > 50) return false;
 
     if (Current == Target) {
-        ValidPaths.push_back(CurrentCond);
+        // SUCCESS: We found a valid path! Now it is safe to evaluate the SMT conditions.
+        z3::expr path_cond = Ctx.bool_val(true);
+        for (auto &Edge : CurrentPath) {
+            z3::expr c = getOrCreateZ3Expr(Edge.first);
+            if (Edge.second) { // True edge
+                path_cond = path_cond && c;
+            } else {           // False edge
+                path_cond = path_cond && !c;
+            }
+        }
+        ValidPaths.push_back(path_cond);
         return true;
     }
 
-    // --- THE BOUNDARY WALL FIX ---
     if (Current == PhiBB) return false;
-    // -----------------------------
 
     PathVis.insert(Current);
     bool foundPath = false;
@@ -67,27 +80,23 @@ bool Z3Encoder::buildPathCondDFS(BasicBlock *Current, BasicBlock *Target, BasicB
     auto *Term = Current->getTerminator();
     if (auto *Br = dyn_cast<BranchInst>(Term)) {
         if (Br->isConditional()) {
-            // We know this exists because Phase 1 pushed it to the Worklist!
-            z3::expr branch_cond = getOrCreateZ3Expr(Br->getCondition());
-            
             for (unsigned i = 0; i < 2; ++i) {
                 BasicBlock *Succ = Br->getSuccessor(i);
                 if (PathVis.find(Succ) == PathVis.end()) {
-                    // i == 0 is the True edge, i == 1 is the False edge
-                    z3::expr next_cond = (i == 0) ? (CurrentCond && branch_cond) : (CurrentCond && !branch_cond);
+                    // Record the condition and whether we took True (0) or False (1)
+                    CurrentPath.push_back({Br->getCondition(), i == 0});
                     
-                    // FIXED: Added PhiBB as the 3rd argument
-                    if (buildPathCondDFS(Succ, Target, PhiBB, next_cond, ValidPaths, PathVis, depth + 1)) {
+                    if (buildPathCondDFS(Succ, Target, PhiBB, CurrentPath, ValidPaths, PathVis, depth + 1)) {
                         foundPath = true;
                     }
+                    
+                    CurrentPath.pop_back(); // Backtrack
                 }
             }
         } else {
             BasicBlock *Succ = Br->getSuccessor(0);
             if (PathVis.find(Succ) == PathVis.end()) {
-                
-                // FIXED: Added PhiBB as the 3rd argument
-                if (buildPathCondDFS(Succ, Target, PhiBB, CurrentCond, ValidPaths, PathVis, depth + 1)) {
+                if (buildPathCondDFS(Succ, Target, PhiBB, CurrentPath, ValidPaths, PathVis, depth + 1)) {
                     foundPath = true;
                 }
             }
@@ -97,7 +106,6 @@ bool Z3Encoder::buildPathCondDFS(BasicBlock *Current, BasicBlock *Target, BasicB
     PathVis.erase(Current);
     return foundPath;
 }
-
 
 bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT) {
     errs() << "    [DEBUG] Visiting Instruction: " << Inst->getOpcodeName() << " (" << Inst->getName() << ")\n";
@@ -250,9 +258,10 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT) {
             
             std::vector<z3::expr> ValidPaths;
             std::set<BasicBlock*> PathVis;
-            z3::expr start_cond = Ctx.bool_val(true);
+            std::vector<std::pair<Value*, bool>> CurrentPath;
 
-            if (!buildPathCondDFS(IDomBB, TargetBB, PhiBB, start_cond, ValidPaths, PathVis, 0) || ValidPaths.empty()) {
+            // Notice we pass CurrentPath instead of start_cond now
+            if (!buildPathCondDFS(IDomBB, TargetBB, PhiBB, CurrentPath, ValidPaths, PathVis, 0) || ValidPaths.empty()) {
                 return false;
             }
 
@@ -308,7 +317,12 @@ std::pair<std::string, double> Z3Encoder::checkSatisfiability() {
             errs() << "\n    ================ Z3 SMT-LIB DUMP ================\n";
             errs() << Solver.to_smt2() << "\n";
             errs() << "    ================ Z3 MODEL DUMP ==================\n";
-            errs() << Solver.get_model().to_string() << "\n";
+            
+            // Bridge the C++ stream to the LLVM stream
+            std::ostringstream model_stream;
+            model_stream << Solver.get_model();
+            errs() << model_stream.str() << "\n";
+            
             errs() << "    =================================================\n";
             break;
         }

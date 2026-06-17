@@ -1,0 +1,9 @@
+
+[Z3 Oracle] Analyzing Function: test_phi6_spaghetti
+  -> Found UB Trap. Starting Backward Slice...
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 15.946041 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  => Total Traps Eliminated: 1
+  => Total Trap Attempts: 1
+  => Total SMT Query Latency: 1.594604e+01 ms
+  => Average SMT Query Latency: 1.594604e+01 ms
