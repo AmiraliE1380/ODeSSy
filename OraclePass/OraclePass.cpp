@@ -248,16 +248,17 @@ std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Z3E
             Instruction *Inst = dyn_cast<Instruction>(V);
             if (!Inst) continue; 
 
-// --- THE NEW PHI / MEMORY LOGIC ---
+            // --- THE NEW PHI / MEMORY LOGIC ---
             if (auto *Phi = dyn_cast<PHINode>(Inst)) {
                 BasicBlock *PhiBB = Phi->getParent();
                 Loop *L = LI.getLoopFor(PhiBB);
                 
                 // Is this basic block the header of a loop?
                 if (L && L->getHeader() == PhiBB) {
-                    Log << "    -> [Abort] Hit Loop Header Phi: " << *Inst << "\n";
-                    errs() << "    -> [Abort] Hit Loop Header Phi: " << *Inst << "\n";
-                    return {false, 0.0};
+                    if (DebugOracle) {
+                        errs() << "    [DEBUG] Over-approximating Loop Header Phi: " << *Inst << "\n";
+                    }
+                    continue; // Stop slicing backwards, treat as a free variable!
                 } else {
                     // Slicer Phase 1: Fire the CFG Crawler
                     if (!collectPhiConditions(Phi, DT, Visited, Worklist, Log)) {
@@ -267,10 +268,9 @@ std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Z3E
                 }
             }
 
-            if (isa<LoadInst>(Inst)) {
-                // Stop slicing backwards here, treat as free variable boundary!
+            if (isa<LoadInst>(Inst) || isa<CallInst>(Inst) || isa<GetElementPtrInst>(Inst)) {                // Stop slicing backwards here, treat as free variable boundary!
                 if (DebugOracle) {
-                    errs() << "    [DEBUG] Over-approximating Memory Load: " << Inst->getName() << "\n";
+                    errs() << "    [DEBUG] Over-approximating Boundary: " << Inst->getOpcodeName() << "\n";
                 }
                 continue; 
             }
@@ -291,7 +291,8 @@ std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Z3E
         for (BasicBlock &BB : *F) {
             for (Instruction &Inst : BB) {
                 if (Visited.find(&Inst) != Visited.end()) {
-                    if (!Encoder.encodeInstruction(&Inst, &DT)) {
+                    // Pass &LI here!
+                    if (!Encoder.encodeInstruction(&Inst, &DT, &LI)) {
                         Log << "    -> [Abort] Unsupported Instruction: " << Inst.getOpcodeName() << "\n";
                         errs() << "    -> [Abort] Unsupported Instruction: " << Inst.getOpcodeName() << "\n";
                         return {false, 0.0};

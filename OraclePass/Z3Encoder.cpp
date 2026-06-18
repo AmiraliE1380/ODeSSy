@@ -139,7 +139,7 @@ bool Z3Encoder::buildPathCondDFS(BasicBlock *Current, BasicBlock *Target, BasicB
     return foundPath;
 }
 
-bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT) {
+bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo *LI) {
     if (DebugOracle) {
         errs() << "    [DEBUG] Visiting Instruction: " << Inst->getOpcodeName() << " (" << getSafeName(Inst) << ")\n";
     }
@@ -164,8 +164,9 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT) {
             case Instruction::Or:   res = op1.is_bool() ? (op1 || op2) : (op1 | op2); break;
             case Instruction::Xor:  res = op1.is_bool() ? (op1 != op2) : (op1 ^ op2); break;
             default: 
-                errs() << "    -> [Z3Encoder] Unsupported BinOp: " << Inst->getOpcodeName() << "\n"; 
-                return false; 
+                // OVER-APPROXIMATE unsupported binary ops
+                getOrCreateZ3Expr(Inst); 
+                return true; 
         }
         ValueMap.insert({Inst, res});
         return true;
@@ -187,109 +188,114 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT) {
             case CmpInst::ICMP_ULT: res = z3::ult(op1, op2); break;
             case CmpInst::ICMP_ULE: res = z3::ule(op1, op2); break;
             default: 
-                errs() << "    -> [Z3Encoder] Unsupported Cmp: " << Inst->getOpcodeName() << "\n"; 
-                return false;
+                // OVER-APPROXIMATE unsupported comparisons
+                getOrCreateZ3Expr(Inst); 
+                return true;
         }
         ValueMap.insert({Inst, res});
         return true;
     }
     else if (auto *Cast = dyn_cast<CastInst>(Inst)) {
+        if (isa<PtrToIntInst>(Inst)) {
+            getOrCreateZ3Expr(Inst);
+            return true;
+        }
+
+        // 2. Type Safety Guard -> Over-approximate instead of aborting
+        if (!Cast->getSrcTy()->isIntegerTy() || !Cast->getDestTy()->isIntegerTy()) {
+            getOrCreateZ3Expr(Inst);
+            return true;
+        }
+
         z3::expr src = getOrCreateZ3Expr(Cast->getOperand(0));
         unsigned src_width = Cast->getSrcTy()->getIntegerBitWidth();
         unsigned dst_width = Cast->getDestTy()->getIntegerBitWidth();
         z3::expr res(Ctx);
 
         if (isa<TruncInst>(Inst)) {
-            res = src.extract(dst_width - 1, 0); // Z3 extract is inclusive (high_bit, low_bit)
+            res = src.extract(dst_width - 1, 0); 
         } else if (isa<ZExtInst>(Inst)) {
-            res = z3::zext(src, dst_width - src_width); // Z3 requires the delta, not the new size
+            res = z3::zext(src, dst_width - src_width); 
         } else if (isa<SExtInst>(Inst)) {
             res = z3::sext(src, dst_width - src_width);
         } else {
-            errs() << "    -> [Z3Encoder] Unsupported Cast: " << Inst->getOpcodeName() << "\n";
-            return false;
+            // OVER-APPROXIMATE
+            getOrCreateZ3Expr(Inst);
+            return true;
         }
+        
         ValueMap.insert({Inst, res});
         return true;
     }
-
     else if (auto *ExtVal = dyn_cast<ExtractValueInst>(Inst)) {
-        // 1. Get the Call instruction that generated the struct
         Value *Agg = ExtVal->getAggregateOperand();
         auto *Call = dyn_cast<CallInst>(Agg);
         
         if (!Call || !Call->getCalledFunction()) {
-            errs() << "    -> [Z3Encoder] Unsupported ExtractValue source\n";
-            return false;
+            getOrCreateZ3Expr(Inst); return true;
         }
 
         StringRef IntrinsicName = Call->getCalledFunction()->getName();
         
-        // 2. We only care about Signed Addition Overflow right now
         if (IntrinsicName.starts_with("llvm.sadd.with.overflow")) {
             z3::expr op1 = getOrCreateZ3Expr(Call->getArgOperand(0));
             z3::expr op2 = getOrCreateZ3Expr(Call->getArgOperand(1));
-            
-            // ExtractValue takes an array of indices. We only care about the first one.
             unsigned Index = ExtVal->getIndices()[0];
             z3::expr res(Ctx);
 
             if (Index == 0) {
-                // Index 0: The standard math result
                 res = op1 + op2;
             } else if (Index == 1) {
-                // Index 1: The Overflow Flag
-                // SMT-LIB logic: Extending to N+1 bits to cleanly check for overflow
                 unsigned bw = op1.get_sort().bv_size();
                 z3::expr ext_op1 = z3::sext(op1, 1);
                 z3::expr ext_op2 = z3::sext(op2, 1);
                 z3::expr ext_add = ext_op1 + ext_op2;
                 
-                // If the N+1 bit addition doesn't fit in the original N bits, it overflowed!
-                // FIXED: Explicitly cast to uint64_t to resolve compiler ambiguity
                 z3::expr max_val = Ctx.bv_val(static_cast<uint64_t>((1ull << (bw - 1)) - 1), bw + 1);
                 z3::expr min_val = z3::sext(Ctx.bv_val(static_cast<uint64_t>(1ull << (bw - 1)), bw), 1);
-                
                 res = (ext_add > max_val) || (ext_add < min_val);
             } else {
-                return false;
+                getOrCreateZ3Expr(Inst); return true;
             }
 
             ValueMap.insert({Inst, res});
-            
-            if (DebugOracle) {
-                errs() << "    [DEBUG] Successfully inserted ExtractValueInst into ValueMap: " << getSafeName(Inst) << "\n";
-            }
-
             return true;
         }
-
-        errs() << "    -> [Z3Encoder] Unsupported Intrinsic: " << IntrinsicName << "\n";
-        return false;
+        
+        // OVER-APPROXIMATE alien intrinsics
+        getOrCreateZ3Expr(Inst);
+        return true;
     }
-
     else if (auto *Call = dyn_cast<CallInst>(Inst)) {
         if (Function *F = Call->getCalledFunction()) {
             StringRef Name = F->getName();
-            // Allow the slicer to pass through known overflow intrinsics
             if (Name.starts_with("llvm.sadd.with.overflow") || Name.starts_with("llvm.ssub.with.overflow")) {
                 return true; 
             }
         }
+        // OVER-APPROXIMATE alien calls
+        getOrCreateZ3Expr(Inst);
+        return true;
     }
-    
     else if (auto *Phi = dyn_cast<PHINode>(Inst)) {
-        if (!DT) return false;
+        if (!DT) { getOrCreateZ3Expr(Inst); return true; }
 
         BasicBlock *PhiBB = Phi->getParent();
+
+        if (LI) {
+            Loop *L = LI->getLoopFor(PhiBB);
+            if (L && L->getHeader() == PhiBB) {
+                getOrCreateZ3Expr(Phi);
+                return true;
+            }
+        }
+
         DomTreeNode *Node = DT->getNode(PhiBB);
-        if (!Node || !Node->getIDom()) return false;
+        if (!Node || !Node->getIDom()) { getOrCreateZ3Expr(Inst); return true; }
         BasicBlock *IDomBB = Node->getIDom()->getBlock();
 
-        // Base case: Start with the first incoming value as our fallback
         z3::expr res = getOrCreateZ3Expr(Phi->getIncomingValue(0));
 
-        // Fold the remaining incoming values into a nested ITE chain
         for (unsigned i = 1; i < Phi->getNumIncomingValues(); ++i) {
             BasicBlock *TargetBB = Phi->getIncomingBlock(i);
             Value *IncVal = Phi->getIncomingValue(i);
@@ -298,18 +304,17 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT) {
             std::set<BasicBlock*> PathVis;
             std::vector<EdgeConstraint> CurrentPath;
 
-            // Notice we pass CurrentPath instead of start_cond now
             if (!buildPathCondDFS(IDomBB, TargetBB, PhiBB, CurrentPath, ValidPaths, PathVis, 0) || ValidPaths.empty()) {
-                return false;
+                // If DFS fails to find paths, OVER-APPROXIMATE the whole Phi!
+                getOrCreateZ3Expr(Inst);
+                return true;
             }
 
-            // If there are multiple paths to this block, OR them together
             z3::expr path_cond = ValidPaths[0];
             for (size_t j = 1; j < ValidPaths.size(); ++j) {
                 path_cond = path_cond || ValidPaths[j];
             }
 
-            // Chain it: If ANY valid path was taken, use this value. Otherwise, fall back.
             z3::expr val_expr = getOrCreateZ3Expr(IncVal);
             res = z3::ite(path_cond, val_expr, res);
         }
@@ -319,15 +324,18 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT) {
     }
     
     else if (auto *Load = dyn_cast<LoadInst>(Inst)) {
-        // Memory Over-Approximation: Generate the free symbolic variable
         getOrCreateZ3Expr(Load);
         return true;
     }
 
-    // Catch-all for anything else (Intrinsics, ExtractValue, PHI, etc.)
-    errs() << "    -> [Z3Encoder] Unsupported Instruction: " << Inst->getOpcodeName() << "\n";
-    return false;
+    // FINAL CATCH-ALL: Treat ANY remaining instruction (like GEP) as an unconstrained variable
+    if (DebugOracle) {
+        errs() << "    [DEBUG] Over-approximating Alien Instruction: " << Inst->getOpcodeName() << "\n";
+    }
+    getOrCreateZ3Expr(Inst);
+    return true;
 }
+
 
 void Z3Encoder::assertCondition(Value *Cond, bool IsTrue) {
     if (DebugOracle) {

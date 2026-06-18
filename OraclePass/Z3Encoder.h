@@ -3,6 +3,7 @@
 #include "llvm/IR/Value.h"
 #include "llvm/IR/Constants.h"
 #include "llvm/IR/Dominators.h"
+#include "llvm/Analysis/LoopInfo.h"
 #include <z3++.h>
 #include <unordered_map>
 #include <string>
@@ -30,8 +31,7 @@ class Z3Encoder {
 public:
     Z3Encoder();
     z3::expr getOrCreateZ3Expr(llvm::Value *Val);
-    bool encodeInstruction(llvm::Instruction *Inst, llvm::DominatorTree *DT = nullptr);
-    void assertCondition(llvm::Value *Cond, bool IsTrue);
+    bool encodeInstruction(llvm::Instruction *Inst, llvm::DominatorTree *DT = nullptr, llvm::LoopInfo *LI = nullptr);    void assertCondition(llvm::Value *Cond, bool IsTrue);
     std::pair<std::string, double> checkSatisfiability(); 
 
 private:
