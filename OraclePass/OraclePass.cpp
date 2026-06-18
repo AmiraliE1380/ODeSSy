@@ -15,11 +15,20 @@
 
 using namespace llvm;
 
+// --- THE DEBUG FLAG ---
+// cl::opt<bool> DebugOracle("oracle-debug", cl::desc("Enable Z3 Oracle Debugging"), cl::init(false));
+bool DebugOracle = false; // Changed from cl::opt
+
+
 namespace {
 struct OraclePass : public PassInfoMixin<OraclePass> {
     PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM) {
+        // Check if the user ran the command with ORACLE_DEBUG=1
+        DebugOracle = (std::getenv("ORACLE_DEBUG") != nullptr);
+
         // Generate a unique Unix timestamp for the log file
         auto now = std::chrono::system_clock::now();
+
         std::time_t now_c = std::chrono::system_clock::to_time_t(now);
         std::string filename = "logs/compilations/oracle_pass_" + std::to_string(now_c) + ".txt";
 
@@ -253,8 +262,11 @@ std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Z3E
         Encoder.assertCondition(TargetCond, TrapOnTrue);
         auto [ResultString, QueryLatency] = Encoder.checkSatisfiability();
         
-        Log << "    -> " << ResultString << "\n";
-        errs() << "    -> " << ResultString << "\n";
+        // Hide standard output unless debug is on (or we explicitly want to print it)
+        if (DebugOracle) {
+            Log << "    -> " << ResultString << "\n";
+            errs() << "    -> " << ResultString << "\n";
+        }
 
         bool IsUnsat = (ResultString.find("UNSAT") != std::string::npos);
         return {IsUnsat, QueryLatency};

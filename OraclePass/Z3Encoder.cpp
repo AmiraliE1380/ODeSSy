@@ -8,6 +8,12 @@ using namespace llvm;
 
 Z3Encoder::Z3Encoder() : Solver(Ctx) {}
 
+// --- Handle unnamed LLVM IR values ---
+std::string getSafeName(Value *Val) {
+    if (Val->hasName()) return Val->getName().str();
+    return "unnamed_" + std::to_string(reinterpret_cast<uintptr_t>(Val));
+}
+
 z3::expr Z3Encoder::getOrCreateZ3Expr(Value *Val) {
     auto it = ValueMap.find(Val);
     if (it != ValueMap.end()) {
@@ -29,26 +35,24 @@ z3::expr Z3Encoder::getOrCreateZ3Expr(Value *Val) {
         return z3_const;
     }
 
-    // --- THE WIRETAP ---
-    errs() << "    [WIRETAP] Creating FREE SMT VARIABLE for: " << Val->getName() << "\n";
-    // -------------------
+    if (DebugOracle) {
+        errs() << "    [WIRETAP] Creating FREE SMT VARIABLE for: " << getSafeName(Val) << "\n";
+    }
 
     if (Val->getType()->isIntegerTy(1)) {
-        z3::expr new_bool = Ctx.bool_const(Val->getName().str().c_str());
+        z3::expr new_bool = Ctx.bool_const(getSafeName(Val).c_str());
         ValueMap.insert({Val, new_bool});
         return new_bool;
     }
 
-    // DYNAMIC WIDTH: Read exact bit-width for variables
     if (Val->getType()->isIntegerTy()) {
         unsigned BitWidth = Val->getType()->getIntegerBitWidth();
-        z3::expr new_var = Ctx.bv_const(Val->getName().str().c_str(), BitWidth);
+        z3::expr new_var = Ctx.bv_const(getSafeName(Val).c_str(), BitWidth);
         ValueMap.insert({Val, new_var});
         return new_var;
     }
 
-    // Fallback for pointers/structs - should rarely be hit in our pure math slice
-    z3::expr unk = Ctx.int_const(Val->getName().str().c_str());
+    z3::expr unk = Ctx.int_const(getSafeName(Val).c_str());
     ValueMap.insert({Val, unk});
     return unk;
 }
@@ -108,7 +112,9 @@ bool Z3Encoder::buildPathCondDFS(BasicBlock *Current, BasicBlock *Target, BasicB
 }
 
 bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT) {
-    errs() << "    [DEBUG] Visiting Instruction: " << Inst->getOpcodeName() << " (" << Inst->getName() << ")\n";
+    if (DebugOracle) {
+        errs() << "    [DEBUG] Visiting Instruction: " << Inst->getOpcodeName() << " (" << getSafeName(Inst) << ")\n";
+    }
 
     // If we already encoded it during our slice, skip
     if (ValueMap.find(Inst) != ValueMap.end()) return true;
@@ -222,7 +228,11 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT) {
             }
 
             ValueMap.insert({Inst, res});
-            errs() << "    [DEBUG] Successfully inserted ExtractValueInst into ValueMap: " << Inst->getName() << "\n";
+            
+            if (DebugOracle) {
+                errs() << "    [DEBUG] Successfully inserted ExtractValueInst into ValueMap: " << getSafeName(Inst) << "\n";
+            }
+
             return true;
         }
 
@@ -286,14 +296,16 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT) {
 }
 
 void Z3Encoder::assertCondition(Value *Cond, bool IsTrue) {
-    errs() << "\n    [DEBUG] assertCondition called for TargetCond: " << Cond->getName() << "\n";
+    if (DebugOracle) {
+        errs() << "\n    [DEBUG] assertCondition called for TargetCond: " << Cond->getName() << "\n";
     
-    if (ValueMap.find(Cond) == ValueMap.end()) {
-        errs() << "    [DEBUG ERROR] Cond was NOT in ValueMap! Falling back to unconstrained variable.\n";
-    } else {
-        errs() << "    [DEBUG SUCCESS] Cond FOUND in ValueMap. SMT Formula:\n" << ValueMap.at(Cond).to_string() << "\n";
+        if (ValueMap.find(Cond) == ValueMap.end()) {
+            errs() << "    [DEBUG ERROR] Cond was NOT in ValueMap! Falling back to unconstrained variable.\n";
+        } else {
+            errs() << "    [DEBUG SUCCESS] Cond FOUND in ValueMap. SMT Formula:\n" << ValueMap.at(Cond).to_string() << "\n";
+        }
     }
-
+    
     z3::expr z3_cond = getOrCreateZ3Expr(Cond);
     if (!IsTrue) {
         z3_cond = !z3_cond;
@@ -314,16 +326,15 @@ std::pair<std::string, double> Z3Encoder::checkSatisfiability() {
         case z3::unsat:   status = "UNSAT (Dead Code / Impossible Path)"; break;
         case z3::sat: {
             status = "SAT (WARNING: Potential Integer Overflow Bug Detected!)"; 
-            errs() << "\n    ================ Z3 SMT-LIB DUMP ================\n";
-            errs() << Solver.to_smt2() << "\n";
-            errs() << "    ================ Z3 MODEL DUMP ==================\n";
-            
-            // Bridge the C++ stream to the LLVM stream
-            std::ostringstream model_stream;
-            model_stream << Solver.get_model();
-            errs() << model_stream.str() << "\n";
-            
-            errs() << "    =================================================\n";
+            if (DebugOracle) {
+                errs() << "\n    ================ Z3 SMT-LIB DUMP ================\n";
+                errs() << Solver.to_smt2() << "\n";
+                errs() << "    ================ Z3 MODEL DUMP ==================\n";
+                std::ostringstream model_stream;
+                model_stream << Solver.get_model();
+                errs() << model_stream.str() << "\n";
+                errs() << "    =================================================\n";
+            }
             break;
         }
         case z3::unknown: status = "UNKNOWN (Solver gave up)"; break;

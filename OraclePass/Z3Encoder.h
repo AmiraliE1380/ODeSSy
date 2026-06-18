@@ -9,6 +9,10 @@
 #include <utility>
 #include <set>      
 #include <vector>   
+// #include "llvm/Support/CommandLine.h"
+
+// extern llvm::cl::opt<bool> DebugOracle;
+extern bool DebugOracle; // Changed from cl::opt<bool>
 
 class Z3Encoder {
     z3::context Ctx;
@@ -27,5 +31,5 @@ public:
 
 private:
     bool buildPathCondDFS(llvm::BasicBlock *Current, llvm::BasicBlock *Target, llvm::BasicBlock *PhiBB, std::vector<std::pair<llvm::Value*, bool>> &CurrentPath, std::vector<z3::expr> &ValidPaths, std::set<llvm::BasicBlock*> &PathVis, int depth = 0);
-    
+
 };
