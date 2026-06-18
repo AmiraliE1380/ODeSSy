@@ -22,19 +22,21 @@ bool DebugOracle = false; // Changed from cl::opt
 
 namespace {
 struct OraclePass : public PassInfoMixin<OraclePass> {
-    PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM) {
-        // Check if the user ran the command with ORACLE_DEBUG=1
-        DebugOracle = (std::getenv("ORACLE_DEBUG") != nullptr);
+    
+    // Store the filename globally for this pass instance
+    std::string LogFilename;
 
-        // Generate a unique Unix timestamp for the log file
+    // CONSTRUCTOR: Runs exactly ONCE when the plugin is loaded
+    OraclePass() {
         auto now = std::chrono::system_clock::now();
-
         std::time_t now_c = std::chrono::system_clock::to_time_t(now);
-        std::string filename = "logs/compilations/oracle_pass_" + std::to_string(now_c) + ".txt";
+        LogFilename = "logs/compilations/oracle_pass_" + std::to_string(now_c) + ".txt";
+    }
 
-        // Setup the internal log file (Append mode)
+    PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM) {
+        // Setup the internal log file (Append mode) using the persistent filename
         std::error_code EC;
-        raw_fd_ostream Log(filename, EC, sys::fs::OF_Append);
+        raw_fd_ostream Log(LogFilename, EC, sys::fs::OF_Append);
         if (EC) {
             errs() << "[Error] Could not open log file: " << EC.message() << "\n";
             return PreservedAnalyses::all();
@@ -45,7 +47,8 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
 
         double TotalLatency = 0.0;
         int TrapsEliminated = 0;
-        int trap_attempts = 0; // FIXED: Renamed to accurately reflect attempts
+        int trap_attempts = 0;
+        int smt_queries = 0; 
 
         // Fetch the Loop Analysis for the current function
         LoopInfo &LI = FAM.getResult<LoopAnalysis>(F);
@@ -84,10 +87,15 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
 
             // 3. The Slicer & Solver
             Z3Encoder Encoder;
-            trap_attempts++; // FIXED: Incrementing attempts before we pass it off
-
+            trap_attempts++;
+            
             auto [Eliminated, Latency] = tryEliminateTrap(OvfCondition, TrapOnTrue, Encoder, LI, DT, Log);
             TotalLatency += Latency;
+            
+            // Only count actual SMT executions
+            if (Latency > 0.0) {
+                smt_queries++;
+            }
 
             if (Eliminated) {
                 // 4. The Kill
@@ -100,13 +108,15 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
 
         Log << "  => Total Traps Eliminated: " << TrapsEliminated << "\n";
         Log << "  => Total Trap Attempts: " << trap_attempts << "\n";
+        Log << "  => Total SMT Queries Executed: " << smt_queries << "\n";
         Log << "  => Total SMT Query Latency: " << TotalLatency << " ms\n";
-        Log << "  => Average SMT Query Latency: " << (trap_attempts > 0 ? TotalLatency / trap_attempts : 0) << " ms\n";
+        Log << "  => Average SMT Query Latency: " << (smt_queries > 0 ? TotalLatency / smt_queries : 0) << " ms\n";
 
         errs() << "  => Total Traps Eliminated: " << TrapsEliminated << "\n";
         errs() << "  => Total Trap Attempts: " << trap_attempts << "\n";
+        errs() << "  => Total SMT Queries Executed: " << smt_queries << "\n";
         errs() << "  => Total SMT Query Latency: " << TotalLatency << " ms\n";
-        errs() << "  => Average SMT Query Latency: " << (trap_attempts > 0 ? TotalLatency / trap_attempts : 0) << " ms\n";
+        errs() << "  => Average SMT Query Latency: " << (smt_queries > 0 ? TotalLatency / smt_queries : 0) << " ms\n";
         
         return TrapsEliminated > 0 ? PreservedAnalyses::none() : PreservedAnalyses::all();
     }
@@ -262,13 +272,16 @@ std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Z3E
         Encoder.assertCondition(TargetCond, TrapOnTrue);
         auto [ResultString, QueryLatency] = Encoder.checkSatisfiability();
         
-        // Hide standard output unless debug is on (or we explicitly want to print it)
-        if (DebugOracle) {
-            Log << "    -> " << ResultString << "\n";
+        // ALWAYS write the result to the internal log file
+        Log << "    -> " << ResultString << "\n";
+        
+        bool IsUnsat = (ResultString.find("UNSAT") != std::string::npos);
+
+        // Only print to the terminal if Debug is ON, OR if we successfully proved it UNSAT
+        if (DebugOracle || IsUnsat) {
             errs() << "    -> " << ResultString << "\n";
         }
 
-        bool IsUnsat = (ResultString.find("UNSAT") != std::string::npos);
         return {IsUnsat, QueryLatency};
     }
 };
