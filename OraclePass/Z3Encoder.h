@@ -9,10 +9,18 @@
 #include <utility>
 #include <set>      
 #include <vector>   
-// #include "llvm/Support/CommandLine.h"
 
-// extern llvm::cl::opt<bool> DebugOracle;
-extern bool DebugOracle; // Changed from cl::opt<bool>
+extern bool DebugOracle;
+
+// --- NEW EDGE TRACKER ---
+// --- NEW EDGE TRACKER ---
+struct EdgeConstraint {
+    llvm::Value *Cond;
+    enum EdgeType { BranchTrue, BranchFalse, SwitchCase, SwitchDefault };
+    EdgeType Type;              // <-- Now it has a proper type!
+    llvm::ConstantInt *CaseVal; // Used if Type == SwitchCase
+    llvm::SwitchInst *SwInst;   // Used if Type == SwitchDefault
+};
 
 class Z3Encoder {
     z3::context Ctx;
@@ -22,14 +30,11 @@ class Z3Encoder {
 public:
     Z3Encoder();
     z3::expr getOrCreateZ3Expr(llvm::Value *Val);
-    
-    // Changed to return bool so the Pass knows if we hit a roadblock
     bool encodeInstruction(llvm::Instruction *Inst, llvm::DominatorTree *DT = nullptr);
-
     void assertCondition(llvm::Value *Cond, bool IsTrue);
     std::pair<std::string, double> checkSatisfiability(); 
 
 private:
-    bool buildPathCondDFS(llvm::BasicBlock *Current, llvm::BasicBlock *Target, llvm::BasicBlock *PhiBB, std::vector<std::pair<llvm::Value*, bool>> &CurrentPath, std::vector<z3::expr> &ValidPaths, std::set<llvm::BasicBlock*> &PathVis, int depth = 0);
-
+    // --- UPDATED SIGNATURE ---
+    bool buildPathCondDFS(llvm::BasicBlock *Current, llvm::BasicBlock *Target, llvm::BasicBlock *PhiBB, std::vector<EdgeConstraint> &CurrentPath, std::vector<z3::expr> &ValidPaths, std::set<llvm::BasicBlock*> &PathVis, int depth = 0);
 };

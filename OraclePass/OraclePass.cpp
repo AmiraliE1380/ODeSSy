@@ -33,10 +33,14 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
         LogFilename = "logs/compilations/oracle_pass_" + std::to_string(now_c) + ".txt";
     }
 
-    PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM) {
+PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM) {
+        // --- START PASS TIMER ---
+        auto function_start_time = std::chrono::high_resolution_clock::now();
+
         // Setup the internal log file (Append mode) using the persistent filename
         std::error_code EC;
         raw_fd_ostream Log(LogFilename, EC, sys::fs::OF_Append);
+
         if (EC) {
             errs() << "[Error] Could not open log file: " << EC.message() << "\n";
             return PreservedAnalyses::all();
@@ -112,12 +116,20 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
         Log << "  => Total SMT Query Latency: " << TotalLatency << " ms\n";
         Log << "  => Average SMT Query Latency: " << (smt_queries > 0 ? TotalLatency / smt_queries : 0) << " ms\n";
 
+        // --- END PASS TIMER ---
+        auto function_end_time = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double, std::milli> function_duration = function_end_time - function_start_time;
+        
+        Log << "  => Total DFS & SMT Execution Time: " << function_duration.count() << " ms\n";
+        Log << "--------------------------------------------------\n";
+
         errs() << "  => Total Traps Eliminated: " << TrapsEliminated << "\n";
         errs() << "  => Total Trap Attempts: " << trap_attempts << "\n";
         errs() << "  => Total SMT Queries Executed: " << smt_queries << "\n";
         errs() << "  => Total SMT Query Latency: " << TotalLatency << " ms\n";
         errs() << "  => Average SMT Query Latency: " << (smt_queries > 0 ? TotalLatency / smt_queries : 0) << " ms\n";
-        
+        errs() << "  => Total DFS & SMT Execution Time: " << function_duration.count() << " ms\n";
+
         return TrapsEliminated > 0 ? PreservedAnalyses::none() : PreservedAnalyses::all();
     }
 
@@ -167,10 +179,27 @@ private:
                     }
                 }
             }
-        } else if (isa<SwitchInst>(Term)) {
-            Log << "    -> [Abort] CFG Crawler hit a SwitchInst. (Priority 3 feature)\n";
-            errs() << "    -> [Abort] CFG Crawler hit a SwitchInst. (Priority 3 feature)\n";
-            return false;
+        } else if (auto *Sw = dyn_cast<SwitchInst>(Term)) {
+            // Push the variable being switched on so Phase 2 encodes it
+            CurrentConds.push_back(Sw->getCondition());
+            
+            // 1. Explore Default Dest
+            if (PathVis.find(Sw->getDefaultDest()) == PathVis.end()) {
+                if (findPathsDFS(Sw->getDefaultDest(), Target, PhiBB, CurrentConds, VisitedConds, Worklist, PathVis, Log, depth + 1)) {
+                    foundPath = true;
+                }
+            }
+            
+            // 2. Explore all Case Dests
+            for (auto Case : Sw->cases()) {
+                if (PathVis.find(Case.getCaseSuccessor()) == PathVis.end()) {
+                    if (findPathsDFS(Case.getCaseSuccessor(), Target, PhiBB, CurrentConds, VisitedConds, Worklist, PathVis, Log, depth + 1)) {
+                        foundPath = true;
+                    }
+                }
+            }
+            
+            CurrentConds.pop_back(); // Backtrack
         }
 
         PathVis.erase(Current); // Backtrack
@@ -239,9 +268,11 @@ std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Z3E
             }
 
             if (isa<LoadInst>(Inst)) {
-                Log << "    -> [Abort] Hit Memory boundary: " << *Inst << "\n";
-                errs() << "    -> [Abort] Hit Memory boundary: " << *Inst << "\n";
-                return {false, 0.0};
+                // Stop slicing backwards here, treat as free variable boundary!
+                if (DebugOracle) {
+                    errs() << "    [DEBUG] Over-approximating Memory Load: " << Inst->getName() << "\n";
+                }
+                continue; 
             }
             // ----------------------------------
             

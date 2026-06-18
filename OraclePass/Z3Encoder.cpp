@@ -58,18 +58,28 @@ z3::expr Z3Encoder::getOrCreateZ3Expr(Value *Val) {
 }
 
 
-bool Z3Encoder::buildPathCondDFS(BasicBlock *Current, BasicBlock *Target, BasicBlock *PhiBB, std::vector<std::pair<Value*, bool>> &CurrentPath, std::vector<z3::expr> &ValidPaths, std::set<BasicBlock*> &PathVis, int depth) {
+bool Z3Encoder::buildPathCondDFS(BasicBlock *Current, BasicBlock *Target, BasicBlock *PhiBB, std::vector<EdgeConstraint> &CurrentPath, std::vector<z3::expr> &ValidPaths, std::set<BasicBlock*> &PathVis, int depth) {
     if (depth > 50) return false;
 
     if (Current == Target) {
-        // SUCCESS: We found a valid path! Now it is safe to evaluate the SMT conditions.
         z3::expr path_cond = Ctx.bool_val(true);
         for (auto &Edge : CurrentPath) {
-            z3::expr c = getOrCreateZ3Expr(Edge.first);
-            if (Edge.second) { // True edge
+            z3::expr c = getOrCreateZ3Expr(Edge.Cond);
+            
+            if (Edge.Type == EdgeConstraint::BranchTrue) {
                 path_cond = path_cond && c;
-            } else {           // False edge
+            } else if (Edge.Type == EdgeConstraint::BranchFalse) {
                 path_cond = path_cond && !c;
+            } else if (Edge.Type == EdgeConstraint::SwitchCase) {
+                // switch_cond == case_value
+                z3::expr val = getOrCreateZ3Expr(Edge.CaseVal);
+                path_cond = path_cond && (c == val);
+            } else if (Edge.Type == EdgeConstraint::SwitchDefault) {
+                // switch_cond != case_1 && switch_cond != case_2 ...
+                for (auto Case : Edge.SwInst->cases()) {
+                    z3::expr val = getOrCreateZ3Expr(Case.getCaseValue());
+                    path_cond = path_cond && (c != val);
+                }
             }
         }
         ValidPaths.push_back(path_cond);
@@ -87,22 +97,40 @@ bool Z3Encoder::buildPathCondDFS(BasicBlock *Current, BasicBlock *Target, BasicB
             for (unsigned i = 0; i < 2; ++i) {
                 BasicBlock *Succ = Br->getSuccessor(i);
                 if (PathVis.find(Succ) == PathVis.end()) {
-                    // Record the condition and whether we took True (0) or False (1)
-                    CurrentPath.push_back({Br->getCondition(), i == 0});
+                    // FIXED: Using EdgeType instead of Type
+                    EdgeConstraint::EdgeType T = (i == 0) ? EdgeConstraint::BranchTrue : EdgeConstraint::BranchFalse;
+                    CurrentPath.push_back({Br->getCondition(), T, nullptr, nullptr});
                     
-                    if (buildPathCondDFS(Succ, Target, PhiBB, CurrentPath, ValidPaths, PathVis, depth + 1)) {
-                        foundPath = true;
-                    }
+                    if (buildPathCondDFS(Succ, Target, PhiBB, CurrentPath, ValidPaths, PathVis, depth + 1)) foundPath = true;
                     
-                    CurrentPath.pop_back(); // Backtrack
+                    CurrentPath.pop_back(); 
                 }
             }
         } else {
             BasicBlock *Succ = Br->getSuccessor(0);
             if (PathVis.find(Succ) == PathVis.end()) {
-                if (buildPathCondDFS(Succ, Target, PhiBB, CurrentPath, ValidPaths, PathVis, depth + 1)) {
-                    foundPath = true;
-                }
+                if (buildPathCondDFS(Succ, Target, PhiBB, CurrentPath, ValidPaths, PathVis, depth + 1)) foundPath = true;
+            }
+        }
+    } 
+    else if (auto *Sw = dyn_cast<SwitchInst>(Term)) {
+        Value *Cond = Sw->getCondition();
+        
+        // 1. Traverse the Default Block
+        BasicBlock *DefaultDest = Sw->getDefaultDest();
+        if (PathVis.find(DefaultDest) == PathVis.end()) {
+            CurrentPath.push_back({Cond, EdgeConstraint::SwitchDefault, nullptr, Sw});
+            if (buildPathCondDFS(DefaultDest, Target, PhiBB, CurrentPath, ValidPaths, PathVis, depth + 1)) foundPath = true;
+            CurrentPath.pop_back();
+        }
+
+        // 2. Traverse all explicit Case Blocks
+        for (auto Case : Sw->cases()) {
+            BasicBlock *CaseDest = Case.getCaseSuccessor();
+            if (PathVis.find(CaseDest) == PathVis.end()) {
+                CurrentPath.push_back({Cond, EdgeConstraint::SwitchCase, Case.getCaseValue(), nullptr});
+                if (buildPathCondDFS(CaseDest, Target, PhiBB, CurrentPath, ValidPaths, PathVis, depth + 1)) foundPath = true;
+                CurrentPath.pop_back();
             }
         }
     }
@@ -268,7 +296,7 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT) {
             
             std::vector<z3::expr> ValidPaths;
             std::set<BasicBlock*> PathVis;
-            std::vector<std::pair<Value*, bool>> CurrentPath;
+            std::vector<EdgeConstraint> CurrentPath;
 
             // Notice we pass CurrentPath instead of start_cond now
             if (!buildPathCondDFS(IDomBB, TargetBB, PhiBB, CurrentPath, ValidPaths, PathVis, 0) || ValidPaths.empty()) {
@@ -290,6 +318,12 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT) {
         return true;
     }
     
+    else if (auto *Load = dyn_cast<LoadInst>(Inst)) {
+        // Memory Over-Approximation: Generate the free symbolic variable
+        getOrCreateZ3Expr(Load);
+        return true;
+    }
+
     // Catch-all for anything else (Intrinsics, ExtractValue, PHI, etc.)
     errs() << "    -> [Z3Encoder] Unsupported Instruction: " << Inst->getOpcodeName() << "\n";
     return false;
