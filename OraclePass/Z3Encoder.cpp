@@ -52,7 +52,11 @@ z3::expr Z3Encoder::getOrCreateZ3Expr(Value *Val) {
         return new_var;
     }
 
-    z3::expr unk = Ctx.int_const(getSafeName(Val).c_str());
+    // --- THE Z3 TYPE FIX ---
+    // Pointers and other alien types must be mapped to BitVectors, not Ints.
+    // Z3 will throw exceptions if we mix Ints with BV operations like `ult`.
+    // We over-approximate all alien types as 64-bit BitVectors.
+    z3::expr unk = Ctx.bv_const(getSafeName(Val).c_str(), 64);
     ValueMap.insert({Val, unk});
     return unk;
 }

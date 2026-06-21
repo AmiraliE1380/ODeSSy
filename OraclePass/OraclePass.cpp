@@ -268,11 +268,29 @@ std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Z3E
                 }
             }
 
-            if (isa<LoadInst>(Inst) || isa<CallInst>(Inst) || isa<GetElementPtrInst>(Inst)) {                // Stop slicing backwards here, treat as free variable boundary!
+            // --- THE BOUNDARY LOGIC ---
+            if (isa<LoadInst>(Inst) || isa<GetElementPtrInst>(Inst)) {
+                // Stop slicing backwards here, treat as free variable boundary!
                 if (DebugOracle) {
                     errs() << "    [DEBUG] Over-approximating Boundary: " << Inst->getOpcodeName() << "\n";
                 }
                 continue; 
+            }
+            if (auto *Call = dyn_cast<CallInst>(Inst)) {
+                bool IsMathIntrinsic = false;
+                if (Function *F = Call->getCalledFunction()) {
+                    StringRef Name = F->getName();
+                    if (Name.starts_with("llvm.sadd.with.overflow") || Name.starts_with("llvm.ssub.with.overflow")) {
+                        IsMathIntrinsic = true; // Let it slice through our known math!
+                    }
+                }
+                
+                if (!IsMathIntrinsic) {
+                    if (DebugOracle) {
+                        errs() << "    [DEBUG] Over-approximating Alien Call\n";
+                    }
+                    continue; // Stop slicing backwards for alien calls
+                }
             }
             // ----------------------------------
             
