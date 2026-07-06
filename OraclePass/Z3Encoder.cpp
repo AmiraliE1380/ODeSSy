@@ -1,5 +1,6 @@
 #include "Z3Encoder.h"
 #include "llvm/Support/raw_ostream.h"
+#include "llvm/IR/CFG.h"
 #include <chrono>
 #include <string>
 #include <sstream>
@@ -62,86 +63,100 @@ z3::expr Z3Encoder::getOrCreateZ3Expr(Value *Val) {
 }
 
 
-bool Z3Encoder::buildPathCondDFS(BasicBlock *Current, BasicBlock *Target, BasicBlock *PhiBB, std::vector<EdgeConstraint> &CurrentPath, std::vector<z3::expr> &ValidPaths, std::set<BasicBlock*> &PathVis, int depth) {
-    if (depth > 50) return false;
+// =====================================================================
+// MEMOIZED CFG ENCODING
+//
+// Instead of enumerating every simple path (DNF, O(2^N) work + O(2^N)
+// formula terms), we compute ONE guard formula per basic block:
+//
+//     Reach(Root) = true
+//     Reach(B)    = OR over preds P in region: Reach(P) AND EdgeCond(P->B)
+//
+// Each Reach(B) is computed exactly once and cached. Z3 terms form a
+// hash-consed DAG, so Reach(P) is *shared by reference* between all of
+// P's successors: shared path prefixes are stored once. The exponential
+// set of paths is now represented implicitly by an O(E)-node circuit and
+// explored by the SAT engine (with clause learning), not by our C++ DFS.
+// =====================================================================
 
-    if (Current == Target) {
-        z3::expr path_cond = Ctx.bool_val(true);
-        for (auto &Edge : CurrentPath) {
-            z3::expr c = getOrCreateZ3Expr(Edge.Cond);
-            
-            if (Edge.Type == EdgeConstraint::BranchTrue) {
-                path_cond = path_cond && c;
-            } else if (Edge.Type == EdgeConstraint::BranchFalse) {
-                path_cond = path_cond && !c;
-            } else if (Edge.Type == EdgeConstraint::SwitchCase) {
-                // switch_cond == case_value
-                z3::expr val = getOrCreateZ3Expr(Edge.CaseVal);
-                path_cond = path_cond && (c == val);
-            } else if (Edge.Type == EdgeConstraint::SwitchDefault) {
-                // switch_cond != case_1 && switch_cond != case_2 ...
-                for (auto Case : Edge.SwInst->cases()) {
-                    z3::expr val = getOrCreateZ3Expr(Case.getCaseValue());
-                    path_cond = path_cond && (c != val);
-                }
-            }
-        }
-        ValidPaths.push_back(path_cond);
-        return true;
-    }
+z3::expr Z3Encoder::getEdgeCond(BasicBlock *Pred, BasicBlock *Succ) {
+    auto *Term = Pred->getTerminator();
 
-    if (Current == PhiBB) return false;
-
-    PathVis.insert(Current);
-    bool foundPath = false;
-
-    auto *Term = Current->getTerminator();
     if (auto *Br = dyn_cast<BranchInst>(Term)) {
-        if (Br->isConditional()) {
-            for (unsigned i = 0; i < 2; ++i) {
-                BasicBlock *Succ = Br->getSuccessor(i);
-                if (PathVis.find(Succ) == PathVis.end()) {
-                    // FIXED: Using EdgeType instead of Type
-                    EdgeConstraint::EdgeType T = (i == 0) ? EdgeConstraint::BranchTrue : EdgeConstraint::BranchFalse;
-                    CurrentPath.push_back({Br->getCondition(), T, nullptr, nullptr});
-                    
-                    if (buildPathCondDFS(Succ, Target, PhiBB, CurrentPath, ValidPaths, PathVis, depth + 1)) foundPath = true;
-                    
-                    CurrentPath.pop_back(); 
-                }
-            }
-        } else {
-            BasicBlock *Succ = Br->getSuccessor(0);
-            if (PathVis.find(Succ) == PathVis.end()) {
-                if (buildPathCondDFS(Succ, Target, PhiBB, CurrentPath, ValidPaths, PathVis, depth + 1)) foundPath = true;
-            }
-        }
-    } 
-    else if (auto *Sw = dyn_cast<SwitchInst>(Term)) {
-        Value *Cond = Sw->getCondition();
-        
-        // 1. Traverse the Default Block
-        BasicBlock *DefaultDest = Sw->getDefaultDest();
-        if (PathVis.find(DefaultDest) == PathVis.end()) {
-            CurrentPath.push_back({Cond, EdgeConstraint::SwitchDefault, nullptr, Sw});
-            if (buildPathCondDFS(DefaultDest, Target, PhiBB, CurrentPath, ValidPaths, PathVis, depth + 1)) foundPath = true;
-            CurrentPath.pop_back();
-        }
-
-        // 2. Traverse all explicit Case Blocks
-        for (auto Case : Sw->cases()) {
-            BasicBlock *CaseDest = Case.getCaseSuccessor();
-            if (PathVis.find(CaseDest) == PathVis.end()) {
-                CurrentPath.push_back({Cond, EdgeConstraint::SwitchCase, Case.getCaseValue(), nullptr});
-                if (buildPathCondDFS(CaseDest, Target, PhiBB, CurrentPath, ValidPaths, PathVis, depth + 1)) foundPath = true;
-                CurrentPath.pop_back();
-            }
-        }
+        if (!Br->isConditional()) return Ctx.bool_val(true);
+        z3::expr c = getOrCreateZ3Expr(Br->getCondition());
+        z3::expr e = Ctx.bool_val(false);
+        // Both arms may target the same block (br %c, %bb, %bb), so OR
+        // every matching successor instead of assuming exactly one.
+        if (Br->getSuccessor(0) == Succ) e = e || c;
+        if (Br->getSuccessor(1) == Succ) e = e || !c;
+        return e;
     }
 
-    PathVis.erase(Current);
-    return foundPath;
+    if (auto *Sw = dyn_cast<SwitchInst>(Term)) {
+        z3::expr c = getOrCreateZ3Expr(Sw->getCondition());
+        z3::expr e = Ctx.bool_val(false);
+
+        // Default edge: cond != case_1 && cond != case_2 && ...
+        if (Sw->getDefaultDest() == Succ) {
+            z3::expr def = Ctx.bool_val(true);
+            for (auto Case : Sw->cases()) {
+                def = def && (c != getOrCreateZ3Expr(Case.getCaseValue()));
+            }
+            e = e || def;
+        }
+
+        // Case edges: several case values may share one successor block.
+        for (auto Case : Sw->cases()) {
+            if (Case.getCaseSuccessor() == Succ) {
+                e = e || (c == getOrCreateZ3Expr(Case.getCaseValue()));
+            }
+        }
+        return e;
+    }
+
+    // Alien terminators (invoke, indirectbr, callbr, ...): over-approximate
+    // the edge with a fresh unconstrained boolean, consistent with the
+    // pass's boundary philosophy.
+    std::string name = "edge_" + std::to_string(reinterpret_cast<uintptr_t>(Pred)) +
+                       "_" + std::to_string(reinterpret_cast<uintptr_t>(Succ));
+    return Ctx.bool_const(name.c_str());
 }
+
+z3::expr Z3Encoder::getBlockReachCond(BasicBlock *BB, BasicBlock *Root,
+                                      BasicBlock *PhiBB, DominatorTree *DT) {
+    if (BB == Root) return Ctx.bool_val(true);
+
+    auto Key = std::make_pair(Root, BB);
+    auto it = ReachCache.find(Key);
+    if (it != ReachCache.end()) return it->second; // <-- the memoization
+
+    InProgress.insert(BB);
+
+    z3::expr Reach = Ctx.bool_val(false);
+    for (BasicBlock *Pred : predecessors(BB)) {
+        // --- THE BOUNDARY WALL ---
+        // Never walk back through the Phi's own block.
+        if (Pred == PhiBB) continue;
+
+        // Region filter: every block on any Root->PhiBB path is dominated
+        // by Root (otherwise a path to PhiBB would bypass its IDom), so
+        // predecessors outside Root's dominance region cannot contribute.
+        if (!DT->dominates(Root, Pred)) continue;
+
+        // Back edge (Pred is on the current recursion stack): skip it.
+        // This reproduces the old simple-path / acyclic semantics.
+        if (InProgress.count(Pred)) continue;
+
+        Reach = Reach || (getBlockReachCond(Pred, Root, PhiBB, DT)
+                          && getEdgeCond(Pred, BB));
+    }
+
+    InProgress.erase(BB);
+    ReachCache.insert({Key, Reach});
+    return Reach;
+}
+
 
 bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo *LI) {
     if (DebugOracle) {
@@ -298,29 +313,21 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo
         if (!Node || !Node->getIDom()) { getOrCreateZ3Expr(Inst); return true; }
         BasicBlock *IDomBB = Node->getIDom()->getBlock();
 
+        // Base case: incoming value 0 is the "default" leaf of the ite chain.
         z3::expr res = getOrCreateZ3Expr(Phi->getIncomingValue(0));
 
         for (unsigned i = 1; i < Phi->getNumIncomingValues(); ++i) {
-            BasicBlock *TargetBB = Phi->getIncomingBlock(i);
+            BasicBlock *IncBB = Phi->getIncomingBlock(i);
             Value *IncVal = Phi->getIncomingValue(i);
-            
-            std::vector<z3::expr> ValidPaths;
-            std::set<BasicBlock*> PathVis;
-            std::vector<EdgeConstraint> CurrentPath;
 
-            if (!buildPathCondDFS(IDomBB, TargetBB, PhiBB, CurrentPath, ValidPaths, PathVis, 0) || ValidPaths.empty()) {
-                // If DFS fails to find paths, OVER-APPROXIMATE the whole Phi!
-                getOrCreateZ3Expr(Inst);
-                return true;
-            }
+            // O(V+E) memoized reachability instead of exponential path
+            // enumeration. We also conjoin the final edge condition
+            // IncBB -> PhiBB (the old code stopped upon reaching IncBB),
+            // which makes the gate strictly more precise for free.
+            z3::expr gate = getBlockReachCond(IncBB, IDomBB, PhiBB, DT)
+                            && getEdgeCond(IncBB, PhiBB);
 
-            z3::expr path_cond = ValidPaths[0];
-            for (size_t j = 1; j < ValidPaths.size(); ++j) {
-                path_cond = path_cond || ValidPaths[j];
-            }
-
-            z3::expr val_expr = getOrCreateZ3Expr(IncVal);
-            res = z3::ite(path_cond, val_expr, res);
+            res = z3::ite(gate, getOrCreateZ3Expr(IncVal), res);
         }
 
         ValueMap.insert({Inst, res});

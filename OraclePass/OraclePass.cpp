@@ -7,6 +7,8 @@
 #include "llvm/IR/PassManager.h"
 #include "llvm/IR/Dominators.h"
 #include "llvm/IR/Constants.h"
+#include "llvm/IR/CFG.h"
+#include "llvm/ADT/PostOrderIterator.h"
 #include "Z3Encoder.h"
 #include <chrono>
 #include <queue>
@@ -135,100 +137,70 @@ PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM) {
 
 
 private:
-// Phase 1 DFS: Find all paths from Current to Target and push their conditions to the Worklist
-    bool findPathsDFS(BasicBlock *Current, BasicBlock *Target, BasicBlock *PhiBB, std::vector<Value*> &CurrentConds, std::set<Value*> &VisitedConds, std::queue<Value*> &Worklist, std::set<BasicBlock*> &PathVis, raw_fd_ostream &Log, int depth = 0) {
-        // Safety switch: Prevent path explosion in massive CFGs
-        if (depth > 50) return false; 
-
-        if (Current == Target) {
-            // We reached the target! Push all branch conditions we saw on this path to the worklist
-            for (Value *C : CurrentConds) {
-                if (VisitedConds.insert(C).second) Worklist.push(C);
-            }
-            return true;
-        }
-
-        // --- THE BOUNDARY WALL FIX ---
-        // If we reach the Phi block itself, we've walked past the target. Stop!
-        if (Current == PhiBB) return false;
-        // -----------------------------
-
-        PathVis.insert(Current);
-        bool foundPath = false;
-
-        auto *Term = Current->getTerminator();
-        if (auto *Br = dyn_cast<BranchInst>(Term)) {
-            if (Br->isConditional()) {
-                CurrentConds.push_back(Br->getCondition());
-                // Explore both True (0) and False (1) edges
-                for (unsigned i = 0; i < 2; ++i) {
-                    BasicBlock *Succ = Br->getSuccessor(i);
-                    if (PathVis.find(Succ) == PathVis.end()) {
-                        if (findPathsDFS(Succ, Target, PhiBB, CurrentConds, VisitedConds, Worklist, PathVis, Log, depth + 1)) {
-                            foundPath = true;
-                        }
-                    }
-                }
-                CurrentConds.pop_back(); // Backtrack
-            } else {
-                // Unconditional branch, just keep walking
-                BasicBlock *Succ = Br->getSuccessor(0);
-                if (PathVis.find(Succ) == PathVis.end()) {
-                    if (findPathsDFS(Succ, Target, PhiBB, CurrentConds, VisitedConds, Worklist, PathVis, Log, depth + 1)) {
-                        foundPath = true;
-                    }
-                }
-            }
-        } else if (auto *Sw = dyn_cast<SwitchInst>(Term)) {
-            // Push the variable being switched on so Phase 2 encodes it
-            CurrentConds.push_back(Sw->getCondition());
-            
-            // 1. Explore Default Dest
-            if (PathVis.find(Sw->getDefaultDest()) == PathVis.end()) {
-                if (findPathsDFS(Sw->getDefaultDest(), Target, PhiBB, CurrentConds, VisitedConds, Worklist, PathVis, Log, depth + 1)) {
-                    foundPath = true;
-                }
-            }
-            
-            // 2. Explore all Case Dests
-            for (auto Case : Sw->cases()) {
-                if (PathVis.find(Case.getCaseSuccessor()) == PathVis.end()) {
-                    if (findPathsDFS(Case.getCaseSuccessor(), Target, PhiBB, CurrentConds, VisitedConds, Worklist, PathVis, Log, depth + 1)) {
-                        foundPath = true;
-                    }
-                }
-            }
-            
-            CurrentConds.pop_back(); // Backtrack
-        }
-
-        PathVis.erase(Current); // Backtrack
-        return foundPath;
-    }
-
+    // ==================================================================
+    // PHASE 1 (NEW): LINEAR BACKWARD REGION WALK
+    //
+    // The old findPathsDFS enumerated every simple path from the IDom to
+    // each incoming block just to collect the SET of branch conditions
+    // along those paths -- O(2^N) traversal for information that is fully
+    // determined by the region itself. The set of relevant conditions is
+    // exactly "the terminator conditions of every block on some
+    // IDom -> incoming-block route", and any such block is necessarily
+    // dominated by the IDom (otherwise a path to the Phi block would
+    // bypass its own immediate dominator). So a plain visited-set walk
+    // backwards over predecessors, filtered by DT.dominates(IDom, Pred),
+    // collects the same set in O(V + E) with zero backtracking.
+    //
+    // Side effects of the redesign:
+    //   - No depth cap needed (each block is visited at most once).
+    //   - No failure mode: an incoming edge with no feasible route simply
+    //     gets Reach = false in Phase 2 instead of aborting the query.
+    // ==================================================================
     bool collectPhiConditions(PHINode *Phi, DominatorTree &DT, std::set<Value*> &Visited, std::queue<Value*> &Worklist, raw_fd_ostream &Log) {
         BasicBlock *PhiBB = Phi->getParent();
         DomTreeNode *Node = DT.getNode(PhiBB);
         if (!Node || !Node->getIDom()) return false;
-        
+
         BasicBlock *IDomBB = Node->getIDom()->getBlock();
 
-        // Trace from IDom down to each incoming block
-        for (unsigned i = 0; i < Phi->getNumIncomingValues(); ++i) {
-            BasicBlock *TargetBB = Phi->getIncomingBlock(i);
-            Value *IncVal = Phi->getIncomingValue(i);
+        std::set<BasicBlock*> RegionVisited;
+        std::queue<BasicBlock*> BlockWorklist;
 
-            // Add the incoming value (the math/variable) to the worklist
+        // Seed: every incoming value (the math) + every incoming block.
+        for (unsigned i = 0; i < Phi->getNumIncomingValues(); ++i) {
+            Value *IncVal = Phi->getIncomingValue(i);
             if (Visited.insert(IncVal).second) Worklist.push(IncVal);
 
-            std::vector<Value*> CurrentConds;
-            std::set<BasicBlock*> PathVis;
-            
-            if (!findPathsDFS(IDomBB, TargetBB, PhiBB, CurrentConds, Visited, Worklist, PathVis, Log)) {                Log << "    -> [Abort] CFG Crawler failed to find valid path from IDom to incoming block.\n";
-                errs() << "    -> [Abort] CFG Crawler failed to find valid path from IDom to incoming block.\n";
-                return false;
+            BasicBlock *IncBB = Phi->getIncomingBlock(i);
+            if (RegionVisited.insert(IncBB).second) BlockWorklist.push(IncBB);
+        }
+
+        // Linear backward walk from the incoming blocks up to the IDom.
+        while (!BlockWorklist.empty()) {
+            BasicBlock *BB = BlockWorklist.front();
+            BlockWorklist.pop();
+
+            // Slice this block's terminator condition: it gates
+            // reachability, so Phase 2's Reach() formulas will refer to it.
+            auto *Term = BB->getTerminator();
+            Value *Cond = nullptr;
+            if (auto *Br = dyn_cast<BranchInst>(Term)) {
+                if (Br->isConditional()) Cond = Br->getCondition();
+            } else if (auto *Sw = dyn_cast<SwitchInst>(Term)) {
+                Cond = Sw->getCondition();
+            }
+            if (Cond && Visited.insert(Cond).second) Worklist.push(Cond);
+
+            // Region root reached: don't walk past the IDom.
+            if (BB == IDomBB) continue;
+
+            for (BasicBlock *Pred : predecessors(BB)) {
+                if (Pred == PhiBB) continue;                 // boundary wall
+                if (!DT.dominates(IDomBB, Pred)) continue;   // outside region
+                if (RegionVisited.insert(Pred).second) BlockWorklist.push(Pred);
             }
         }
+
         return true;
     }
 
@@ -260,7 +232,7 @@ std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Z3E
                     }
                     continue; // Stop slicing backwards, treat as a free variable!
                 } else {
-                    // Slicer Phase 1: Fire the CFG Crawler
+                    // Slicer Phase 1: Linear region walk (no path enumeration)
                     if (!collectPhiConditions(Phi, DT, Visited, Worklist, Log)) {
                         return {false, 0.0};
                     }
@@ -304,10 +276,19 @@ std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Z3E
             }
         }
 
-        // PHASE 2: FORWARD ENCODE
+        // PHASE 2: FORWARD ENCODE (Reverse Post-Order)
+        //
+        // RPO guarantees that in the acyclic portion of the CFG, defs are
+        // encoded before uses. This matters for the memoized Phi encoding:
+        // when Reach() calls getOrCreateZ3Expr on a branch condition, the
+        // icmp behind it must already be a real formula in the ValueMap --
+        // otherwise it would silently become a free variable and the
+        // constraint would be permanently lost. (Raw function block order
+        // gave no such guarantee.)
         Function *F = cast<Instruction>(TargetCond)->getFunction();
-        for (BasicBlock &BB : *F) {
-            for (Instruction &Inst : BB) {
+        ReversePostOrderTraversal<Function*> RPOT(F);
+        for (BasicBlock *BB : RPOT) {
+            for (Instruction &Inst : *BB) {
                 if (Visited.find(&Inst) != Visited.end()) {
                     // Pass &LI here!
                     if (!Encoder.encodeInstruction(&Inst, &DT, &LI)) {

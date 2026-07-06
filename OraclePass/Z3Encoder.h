@@ -6,35 +6,48 @@
 #include "llvm/Analysis/LoopInfo.h"
 #include <z3++.h>
 #include <unordered_map>
+#include <map>
 #include <string>
 #include <utility>
-#include <set>      
-#include <vector>   
+#include <set>
+#include <vector>
 
 extern bool DebugOracle;
-
-// --- NEW EDGE TRACKER ---
-// --- NEW EDGE TRACKER ---
-struct EdgeConstraint {
-    llvm::Value *Cond;
-    enum EdgeType { BranchTrue, BranchFalse, SwitchCase, SwitchDefault };
-    EdgeType Type;              // <-- Now it has a proper type!
-    llvm::ConstantInt *CaseVal; // Used if Type == SwitchCase
-    llvm::SwitchInst *SwInst;   // Used if Type == SwitchDefault
-};
 
 class Z3Encoder {
     z3::context Ctx;
     z3::solver Solver;
     std::unordered_map<llvm::Value*, z3::expr> ValueMap;
 
+    // --- MEMOIZED CFG ENCODING (replaces exponential path enumeration) ---
+    // ReachCache[(Root, BB)] = ONE Z3 formula meaning "control reaches BB
+    // starting from Root". Because z3::expr terms are hash-consed DAGs,
+    // shared path prefixes are physically stored exactly once, so the
+    // formula stays O(E) in size even when the number of syntactic paths
+    // is exponential. Keyed on (Root, BB) so Phis sharing an IDom region
+    // reuse each other's work within the same trap query.
+    std::map<std::pair<llvm::BasicBlock*, llvm::BasicBlock*>, z3::expr> ReachCache;
+
+    // Recursion-stack marker used to detect and skip back edges (this
+    // reproduces the old simple-path / acyclic semantics without ever
+    // re-visiting a block).
+    std::set<llvm::BasicBlock*> InProgress;
+
 public:
     Z3Encoder();
     z3::expr getOrCreateZ3Expr(llvm::Value *Val);
-    bool encodeInstruction(llvm::Instruction *Inst, llvm::DominatorTree *DT = nullptr, llvm::LoopInfo *LI = nullptr);    void assertCondition(llvm::Value *Cond, bool IsTrue);
-    std::pair<std::string, double> checkSatisfiability(); 
+    bool encodeInstruction(llvm::Instruction *Inst, llvm::DominatorTree *DT = nullptr, llvm::LoopInfo *LI = nullptr);
+    void assertCondition(llvm::Value *Cond, bool IsTrue);
+    std::pair<std::string, double> checkSatisfiability();
 
 private:
-    // --- UPDATED SIGNATURE ---
-    bool buildPathCondDFS(llvm::BasicBlock *Current, llvm::BasicBlock *Target, llvm::BasicBlock *PhiBB, std::vector<EdgeConstraint> &CurrentPath, std::vector<z3::expr> &ValidPaths, std::set<llvm::BasicBlock*> &PathVis, int depth = 0);
+    // Encodes the branch/switch constraint attached to a single CFG edge
+    // Pred -> Succ (br cond / !cond, switch == case, switch default, or a
+    // fresh free boolean for alien terminators like invoke/indirectbr).
+    z3::expr getEdgeCond(llvm::BasicBlock *Pred, llvm::BasicBlock *Succ);
+
+    // Memoized reachability condition from Root down to BB, never walking
+    // through PhiBB (the "boundary wall"). O(V+E) total across a region.
+    z3::expr getBlockReachCond(llvm::BasicBlock *BB, llvm::BasicBlock *Root,
+                               llvm::BasicBlock *PhiBB, llvm::DominatorTree *DT);
 };
