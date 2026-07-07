@@ -1,4 +1,4 @@
-; ModuleID = '/home/amiralie1380/michigan/pl/zstd/lib/compress/zstd_compress.c'
+; ModuleID = 'evaluation/zstd/zstd_integer_O3.ll'
 source_filename = "/home/amiralie1380/michigan/pl/zstd/lib/compress/zstd_compress.c"
 target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
@@ -69,7 +69,7 @@ define dso_local range(i64 1, 0) i64 @ZSTD_compressBound(i64 noundef %0) local_u
   br i1 %12, label %13, label %14, !prof !9, !nosanitize !8
 
 13:                                               ; preds = %3
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 14:                                               ; preds = %3
@@ -77,27 +77,27 @@ define dso_local range(i64 1, 0) i64 @ZSTD_compressBound(i64 noundef %0) local_u
   %16 = icmp eq i64 %15, 0
   br i1 %16, label %17, label %18
 
-17:                                               ; preds = %1, %14
+17:                                               ; preds = %14, %1
   br label %18
 
-18:                                               ; preds = %14, %17
+18:                                               ; preds = %17, %14
   %19 = phi i64 [ -72, %17 ], [ %15, %14 ]
   ret i64 %19
 }
 
-; Function Attrs: mustprogress nocallback nofree nosync nounwind willreturn memory(argmem: readwrite)
+; Function Attrs: nocallback nofree nosync nounwind willreturn memory(argmem: readwrite)
 declare void @llvm.lifetime.start.p0(ptr captures(none)) #1
 
-; Function Attrs: mustprogress nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
 declare { i64, i1 } @llvm.uadd.with.overflow.i64(i64, i64) #2
 
 ; Function Attrs: cold noreturn nounwind memory(inaccessiblemem: write)
 declare void @llvm.ubsantrap(i8 immarg) #3
 
-; Function Attrs: mustprogress nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
 declare { i64, i1 } @llvm.usub.with.overflow.i64(i64, i64) #2
 
-; Function Attrs: mustprogress nocallback nofree nosync nounwind willreturn memory(argmem: readwrite)
+; Function Attrs: nocallback nofree nosync nounwind willreturn memory(argmem: readwrite)
 declare void @llvm.lifetime.end.p0(ptr captures(none)) #1
 
 ; Function Attrs: nounwind uwtable
@@ -107,17 +107,17 @@ define dso_local noalias noundef ptr @ZSTD_createCCtx() local_unnamed_addr #4 {
   br i1 %2, label %23, label %3
 
 3:                                                ; preds = %0
-  %4 = tail call i32 asm "cpuid", "={ax},{ax},~{ebx},~{ecx},~{edx},~{dirflag},~{fpsr},~{flags}"(i32 0) #35, !srcloc !10
+  %4 = tail call i32 asm "cpuid", "={ax},{ax},~{ebx},~{ecx},~{edx},~{dirflag},~{fpsr},~{flags}"(i32 0) #34, !srcloc !10
   %5 = icmp eq i32 %4, 0
   br i1 %5, label %17, label %6
 
 6:                                                ; preds = %3
-  %7 = tail call { i32, i32, i32 } asm "cpuid", "={ax},={cx},={dx},{ax},~{ebx},~{dirflag},~{fpsr},~{flags}"(i32 1) #35, !srcloc !11
+  %7 = tail call { i32, i32, i32 } asm "cpuid", "={ax},={cx},={dx},{ax},~{ebx},~{dirflag},~{fpsr},~{flags}"(i32 1) #34, !srcloc !11
   %8 = icmp ugt i32 %4, 6
   br i1 %8, label %9, label %17
 
 9:                                                ; preds = %6
-  %10 = tail call { i32, i32, i32 } asm "cpuid", "={ax},={bx},={cx},{ax},{cx},~{edx},~{dirflag},~{fpsr},~{flags}"(i32 7, i32 0) #35, !srcloc !12
+  %10 = tail call { i32, i32, i32 } asm "cpuid", "={ax},={bx},={cx},{ax},{cx},~{edx},~{dirflag},~{fpsr},~{flags}"(i32 7, i32 0) #34, !srcloc !12
   %11 = extractvalue { i32, i32, i32 } %10, 1
   %12 = and i32 %11, 8
   %13 = icmp eq i32 %12, 0
@@ -141,7 +141,7 @@ define dso_local noalias noundef ptr @ZSTD_createCCtx() local_unnamed_addr #4 {
   store i32 1, ptr %22, align 8, !tbaa !47
   br label %23
 
-23:                                               ; preds = %0, %17
+23:                                               ; preds = %17, %0
   ret ptr %1
 }
 
@@ -161,14 +161,14 @@ define dso_local ptr @ZSTD_createCCtx_advanced(ptr noundef readonly byval(%struc
 9:                                                ; preds = %8
   %10 = getelementptr inbounds nuw i8, ptr %0, i64 16
   %11 = load ptr, ptr %10, align 8
-  %12 = tail call ptr %2(ptr noundef %11, i64 noundef 5280) #36, !inline_history !50
+  %12 = tail call ptr %2(ptr noundef %11, i64 noundef 5280) #35, !inline_history !50
   br label %15
 
 13:                                               ; preds = %8
-  %14 = tail call noalias dereferenceable_or_null(5280) ptr @malloc(i64 noundef 5280) #37
+  %14 = tail call noalias dereferenceable_or_null(5280) ptr @malloc(i64 noundef 5280) #36
   br label %15
 
-15:                                               ; preds = %9, %13
+15:                                               ; preds = %13, %9
   %16 = phi ptr [ %12, %9 ], [ %14, %13 ]
   %17 = icmp eq ptr %16, null
   br i1 %17, label %39, label %18
@@ -177,17 +177,17 @@ define dso_local ptr @ZSTD_createCCtx_advanced(ptr noundef readonly byval(%struc
   tail call void @llvm.memset.p0.i64(ptr noundef nonnull align 8 dereferenceable(5280) %16, i8 0, i64 5280, i1 false)
   %19 = getelementptr inbounds nuw i8, ptr %16, i64 896
   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 8 dereferenceable(24) %19, ptr noundef nonnull align 8 dereferenceable(24) %0, i64 24, i1 false)
-  %20 = tail call i32 asm "cpuid", "={ax},{ax},~{ebx},~{ecx},~{edx},~{dirflag},~{fpsr},~{flags}"(i32 0) #35, !srcloc !10
+  %20 = tail call i32 asm "cpuid", "={ax},{ax},~{ebx},~{ecx},~{edx},~{dirflag},~{fpsr},~{flags}"(i32 0) #34, !srcloc !10
   %21 = icmp eq i32 %20, 0
   br i1 %21, label %33, label %22
 
 22:                                               ; preds = %18
-  %23 = tail call { i32, i32, i32 } asm "cpuid", "={ax},={cx},={dx},{ax},~{ebx},~{dirflag},~{fpsr},~{flags}"(i32 1) #35, !srcloc !11
+  %23 = tail call { i32, i32, i32 } asm "cpuid", "={ax},={cx},={dx},{ax},~{ebx},~{dirflag},~{fpsr},~{flags}"(i32 1) #34, !srcloc !11
   %24 = icmp ugt i32 %20, 6
   br i1 %24, label %25, label %33
 
 25:                                               ; preds = %22
-  %26 = tail call { i32, i32, i32 } asm "cpuid", "={ax},={bx},={cx},{ax},{cx},~{edx},~{dirflag},~{fpsr},~{flags}"(i32 7, i32 0) #35, !srcloc !12
+  %26 = tail call { i32, i32, i32 } asm "cpuid", "={ax},={bx},={cx},{ax},{cx},~{edx},~{dirflag},~{fpsr},~{flags}"(i32 7, i32 0) #34, !srcloc !12
   %27 = extractvalue { i32, i32, i32 } %26, 1
   %28 = and i32 %27, 8
   %29 = icmp eq i32 %28, 0
@@ -198,7 +198,7 @@ define dso_local ptr @ZSTD_createCCtx_advanced(ptr noundef readonly byval(%struc
   %32 = and i32 %31, 1
   br label %33
 
-33:                                               ; preds = %18, %22, %25, %30
+33:                                               ; preds = %30, %25, %22, %18
   %34 = phi i32 [ 0, %25 ], [ %32, %30 ], [ 0, %22 ], [ 0, %18 ]
   %35 = getelementptr inbounds nuw i8, ptr %16, i64 8
   store i32 %34, ptr %35, align 8, !tbaa !13
@@ -297,7 +297,7 @@ define dso_local noundef ptr @ZSTD_initStaticCCtx(ptr noundef %0, i64 noundef %1
   store ptr %40, ptr %21, align 8, !tbaa !56
   br label %44
 
-44:                                               ; preds = %42, %43
+44:                                               ; preds = %43, %42
   %45 = phi i64 [ 8920, %42 ], [ 14552, %43 ]
   %46 = phi ptr [ null, %42 ], [ %37, %43 ]
   %47 = phi ptr [ %37, %42 ], [ %40, %43 ]
@@ -317,40 +317,40 @@ define dso_local noundef ptr @ZSTD_initStaticCCtx(ptr noundef %0, i64 noundef %1
   store ptr %48, ptr %21, align 8, !tbaa !56
   br label %53
 
-53:                                               ; preds = %51, %52
+53:                                               ; preds = %52, %51
   %54 = phi ptr [ null, %51 ], [ %47, %52 ]
   %55 = getelementptr inbounds nuw i8, ptr %0, i64 3544
   store ptr %54, ptr %55, align 8, !tbaa !59
   %56 = getelementptr inbounds nuw i8, ptr %0, i64 3552
   store i64 8920, ptr %56, align 8, !tbaa !60
-  %57 = tail call i32 asm "cpuid", "={ax},{ax},~{ebx},~{ecx},~{edx},~{dirflag},~{fpsr},~{flags}"(i32 0) #35, !srcloc !10
+  %57 = tail call i32 asm "cpuid", "={ax},{ax},~{ebx},~{ecx},~{edx},~{dirflag},~{fpsr},~{flags}"(i32 0) #34, !srcloc !10
   %58 = icmp eq i32 %57, 0
   br i1 %58, label %67, label %59
 
 59:                                               ; preds = %53
-  %60 = tail call { i32, i32, i32 } asm "cpuid", "={ax},={cx},={dx},{ax},~{ebx},~{dirflag},~{fpsr},~{flags}"(i32 1) #35, !srcloc !11
+  %60 = tail call { i32, i32, i32 } asm "cpuid", "={ax},={cx},={dx},{ax},~{ebx},~{dirflag},~{fpsr},~{flags}"(i32 1) #34, !srcloc !11
   %61 = icmp ugt i32 %57, 6
   br i1 %61, label %62, label %67
 
 62:                                               ; preds = %59
-  %63 = tail call { i32, i32, i32 } asm "cpuid", "={ax},={bx},={cx},{ax},{cx},~{edx},~{dirflag},~{fpsr},~{flags}"(i32 7, i32 0) #35, !srcloc !12
+  %63 = tail call { i32, i32, i32 } asm "cpuid", "={ax},={bx},={cx},{ax},{cx},~{edx},~{dirflag},~{fpsr},~{flags}"(i32 7, i32 0) #34, !srcloc !12
   %64 = extractvalue { i32, i32, i32 } %63, 1
   %65 = lshr i32 %64, 8
   %66 = and i32 %65, 1
   br label %67
 
-67:                                               ; preds = %53, %59, %62
+67:                                               ; preds = %62, %59, %53
   %68 = phi i32 [ %66, %62 ], [ 0, %59 ], [ 0, %53 ]
   %69 = getelementptr inbounds nuw i8, ptr %0, i64 8
   store i32 %68, ptr %69, align 8, !tbaa !13
   br label %70
 
-70:                                               ; preds = %8, %11, %2, %67
+70:                                               ; preds = %67, %11, %8, %2
   %71 = phi ptr [ null, %8 ], [ null, %2 ], [ null, %11 ], [ %0, %67 ]
   ret ptr %71
 }
 
-; Function Attrs: mustprogress nocallback nofree nounwind willreturn memory(argmem: write)
+; Function Attrs: nocallback nofree nounwind willreturn memory(argmem: write)
 declare void @llvm.memset.p0.i64(ptr writeonly captures(none), i8, i64, i1 immarg) #6
 
 ; Function Attrs: nounwind uwtable
@@ -376,7 +376,7 @@ define dso_local range(i64 -64, 1) i64 @ZSTD_freeCCtx(ptr noundef %0) local_unna
   %14 = icmp uge ptr %0, %13
   br label %15
 
-15:                                               ; preds = %7, %11
+15:                                               ; preds = %11, %7
   %16 = phi i1 [ true, %7 ], [ %14, %11 ]
   tail call fastcc void @ZSTD_clearAllDicts(ptr noundef nonnull %0)
   %17 = getelementptr i8, ptr %0, i64 904
@@ -393,14 +393,14 @@ define dso_local range(i64 -64, 1) i64 @ZSTD_freeCCtx(ptr noundef %0) local_unna
   br i1 %24, label %26, label %25
 
 25:                                               ; preds = %23
-  tail call void %18(ptr noundef %20, ptr noundef nonnull %21) #36, !inline_history !63
+  tail call void %18(ptr noundef %20, ptr noundef nonnull %21) #35, !inline_history !63
   br label %27
 
 26:                                               ; preds = %23
-  tail call void @free(ptr noundef nonnull %21) #36
+  tail call void @free(ptr noundef nonnull %21) #35
   br label %27
 
-27:                                               ; preds = %15, %25, %26
+27:                                               ; preds = %26, %25, %15
   br i1 %16, label %28, label %34
 
 28:                                               ; preds = %27
@@ -410,11 +410,11 @@ define dso_local range(i64 -64, 1) i64 @ZSTD_freeCCtx(ptr noundef %0) local_unna
 
 31:                                               ; preds = %28
   %32 = load ptr, ptr %19, align 8
-  tail call void %29(ptr noundef %32, ptr noundef nonnull %0) #36, !inline_history !64
+  tail call void %29(ptr noundef %32, ptr noundef nonnull %0) #35, !inline_history !64
   br label %34
 
 33:                                               ; preds = %28
-  tail call void @free(ptr noundef nonnull %0) #36
+  tail call void @free(ptr noundef nonnull %0) #35
   br label %34
 
 34:                                               ; preds = %33, %31, %27, %3, %1
@@ -442,7 +442,7 @@ define dso_local i64 @ZSTD_sizeof_CCtx(ptr noundef readonly captures(address) %0
   br i1 %14, label %15, label %16, !prof !9, !nosanitize !8
 
 15:                                               ; preds = %3
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 16:                                               ; preds = %3
@@ -473,7 +473,7 @@ define dso_local i64 @ZSTD_sizeof_CCtx(ptr noundef readonly captures(address) %0
   br i1 %38, label %39, label %40, !prof !9, !nosanitize !8
 
 39:                                               ; preds = %27
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 40:                                               ; preds = %27
@@ -487,7 +487,7 @@ define dso_local i64 @ZSTD_sizeof_CCtx(ptr noundef readonly captures(address) %0
   br i1 %45, label %46, label %47, !prof !9, !nosanitize !8
 
 46:                                               ; preds = %42
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 47:                                               ; preds = %42
@@ -497,14 +497,14 @@ define dso_local i64 @ZSTD_sizeof_CCtx(ptr noundef readonly captures(address) %0
   br i1 %50, label %51, label %52, !prof !9, !nosanitize !8
 
 51:                                               ; preds = %47
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 52:                                               ; preds = %47
   %53 = extractvalue { i64, i1 } %49, 0, !nosanitize !8
   br label %54
 
-54:                                               ; preds = %1, %52
+54:                                               ; preds = %52, %1
   %55 = phi i64 [ %53, %52 ], [ 0, %1 ]
   ret i64 %55
 }
@@ -529,7 +529,7 @@ define dso_local i64 @ZSTD_sizeof_CStream(ptr noundef readonly captures(address)
   br i1 %14, label %15, label %16, !prof !9, !nosanitize !8
 
 15:                                               ; preds = %3
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 16:                                               ; preds = %3
@@ -560,7 +560,7 @@ define dso_local i64 @ZSTD_sizeof_CStream(ptr noundef readonly captures(address)
   br i1 %38, label %39, label %40, !prof !9, !nosanitize !8
 
 39:                                               ; preds = %27
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 40:                                               ; preds = %27
@@ -574,7 +574,7 @@ define dso_local i64 @ZSTD_sizeof_CStream(ptr noundef readonly captures(address)
   br i1 %45, label %46, label %47, !prof !9, !nosanitize !8
 
 46:                                               ; preds = %42
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 47:                                               ; preds = %42
@@ -584,14 +584,14 @@ define dso_local i64 @ZSTD_sizeof_CStream(ptr noundef readonly captures(address)
   br i1 %50, label %51, label %52, !prof !9, !nosanitize !8
 
 51:                                               ; preds = %47
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 52:                                               ; preds = %47
   %53 = extractvalue { i64, i1 } %49, 0, !nosanitize !8
   br label %54
 
-54:                                               ; preds = %1, %52
+54:                                               ; preds = %52, %1
   %55 = phi i64 [ %53, %52 ], [ 0, %1 ]
   ret i64 %55
 }
@@ -604,7 +604,7 @@ define dso_local nonnull ptr @ZSTD_getSeqStore(ptr noundef readnone captures(ret
 
 ; Function Attrs: mustprogress nofree nounwind willreturn memory(write, argmem: none, inaccessiblemem: readwrite, target_mem: none) uwtable
 define dso_local noalias noundef ptr @ZSTD_createCCtxParams() local_unnamed_addr #9 {
-  %1 = tail call noalias dereferenceable_or_null(224) ptr @calloc(i64 noundef 1, i64 noundef 224) #38
+  %1 = tail call noalias dereferenceable_or_null(224) ptr @calloc(i64 noundef 1, i64 noundef 224) #37
   %2 = icmp eq ptr %1, null
   br i1 %2, label %6, label %3
 
@@ -615,7 +615,7 @@ define dso_local noalias noundef ptr @ZSTD_createCCtxParams() local_unnamed_addr
   store i32 1, ptr %5, align 8, !tbaa !47
   br label %6
 
-6:                                                ; preds = %0, %3
+6:                                                ; preds = %3, %0
   ret ptr %1
 }
 
@@ -633,11 +633,11 @@ define dso_local noundef i64 @ZSTD_freeCCtxParams(ptr noundef %0) local_unnamed_
 7:                                                ; preds = %3
   %8 = getelementptr i8, ptr %0, i64 184
   %9 = load ptr, ptr %8, align 8
-  tail call void %5(ptr noundef %9, ptr noundef nonnull %0) #36, !inline_history !64
+  tail call void %5(ptr noundef %9, ptr noundef nonnull %0) #35, !inline_history !64
   br label %11
 
 10:                                               ; preds = %3
-  tail call void @free(ptr noundef nonnull %0) #36
+  tail call void @free(ptr noundef nonnull %0) #35
   br label %11
 
 11:                                               ; preds = %10, %7, %1
@@ -657,7 +657,7 @@ define dso_local range(i64 -1, 1) i64 @ZSTD_CCtxParams_reset(ptr noundef writeon
   store i32 1, ptr %5, align 8, !tbaa !47
   br label %6
 
-6:                                                ; preds = %1, %3
+6:                                                ; preds = %3, %1
   %7 = phi i64 [ 0, %3 ], [ -1, %1 ]
   ret i64 %7
 }
@@ -675,7 +675,7 @@ define dso_local range(i64 -1, 1) i64 @ZSTD_CCtxParams_init(ptr noundef writeonl
   store i32 1, ptr %6, align 8, !tbaa !47
   br label %7
 
-7:                                                ; preds = %2, %4
+7:                                                ; preds = %4, %2
   %8 = phi i64 [ 0, %4 ], [ -1, %2 ]
   ret i64 %8
 }
@@ -768,7 +768,7 @@ define dso_local range(i64 -42, 1) i64 @ZSTD_CCtxParams_init_advanced(ptr nounde
   %56 = select i1 %55, i32 1, i32 2
   br label %57
 
-57:                                               ; preds = %48, %47, %52
+57:                                               ; preds = %52, %48, %47
   %58 = phi i32 [ %56, %52 ], [ 2, %48 ], [ 2, %47 ]
   %59 = getelementptr inbounds nuw i8, ptr %0, i64 96
   store i32 %58, ptr %59, align 8, !tbaa !82
@@ -778,7 +778,7 @@ define dso_local range(i64 -42, 1) i64 @ZSTD_CCtxParams_init_advanced(ptr nounde
   store i32 2, ptr %61, align 8, !tbaa !84
   br label %62
 
-62:                                               ; preds = %8, %13, %18, %23, %4, %32, %2, %57
+62:                                               ; preds = %57, %32, %23, %18, %13, %8, %4, %2
   %63 = phi i64 [ 0, %57 ], [ -42, %32 ], [ -1, %2 ], [ -42, %4 ], [ -42, %23 ], [ -42, %18 ], [ -42, %13 ], [ -42, %8 ]
   ret i64 %63
 }
@@ -933,7 +933,7 @@ define dso_local { i64, i64 } @ZSTD_cParam_getBounds(i32 noundef %0) local_unnam
 19:                                               ; preds = %1
   br label %20
 
-20:                                               ; preds = %1, %19, %18, %17, %16, %15, %14, %13, %12, %11, %10, %9, %8, %7, %6, %5, %4, %3, %2
+20:                                               ; preds = %19, %18, %17, %16, %15, %14, %13, %12, %11, %10, %9, %8, %7, %6, %5, %4, %3, %2, %1
   %21 = phi i64 [ 0, %19 ], [ 98784116736, %2 ], [ 34359738369, %12 ], [ 128849018886, %3 ], [ 133143986186, %1 ], [ 128849018881, %4 ], [ 30064771075, %5 ], [ 562949953421312, %6 ], [ 38654705665, %7 ], [ 4294967296, %8 ], [ 562949953422336, %18 ], [ 107374182400, %13 ], [ 0, %9 ], [ 12884901888, %14 ], [ 9223372032559808512, %16 ], [ 562949953422652, %15 ], [ 8589934592, %10 ], [ 25769803776, %17 ], [ 17592186044420, %11 ]
   %22 = phi i64 [ -40, %19 ], [ 0, %2 ], [ 0, %12 ], [ 0, %3 ], [ 0, %1 ], [ 0, %4 ], [ 0, %5 ], [ 0, %6 ], [ 0, %7 ], [ 0, %8 ], [ 0, %18 ], [ 0, %13 ], [ 0, %9 ], [ 0, %14 ], [ 0, %16 ], [ 0, %15 ], [ 0, %10 ], [ 0, %17 ], [ 0, %11 ]
   %23 = insertvalue { i64, i64 } poison, i64 %22, 0
@@ -1028,12 +1028,12 @@ define dso_local range(i64 -60, 2147483648) i64 @ZSTD_CCtx_setParameter(ptr noun
   %16 = icmp eq i64 %15, 0
   br i1 %16, label %17, label %20
 
-17:                                               ; preds = %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %13, %11
+17:                                               ; preds = %13, %11, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10, %10
   %18 = getelementptr inbounds nuw i8, ptr %0, i64 16
   %19 = tail call i64 @ZSTD_CCtxParams_setParameter(ptr noundef nonnull %18, i32 noundef %1, i32 noundef %2)
   br label %20
 
-20:                                               ; preds = %7, %10, %13, %17
+20:                                               ; preds = %17, %13, %10, %7
   %21 = phi i64 [ -40, %13 ], [ -40, %10 ], [ %19, %17 ], [ -60, %7 ]
   ret i64 %21
 }
@@ -1108,7 +1108,7 @@ define dso_local range(i64 -42, 2147483648) i64 @ZSTD_CCtxParams_setParameter(pt
   store i32 3, ptr %15, align 4, !tbaa !46
   br label %220
 
-16:                                               ; preds = %10, %8, %12
+16:                                               ; preds = %12, %10, %8
   %17 = phi i32 [ %2, %12 ], [ -131072, %8 ], [ 22, %10 ]
   %18 = getelementptr inbounds nuw i8, ptr %0, i64 44
   store i32 %17, ptr %18, align 4, !tbaa !46
@@ -1487,7 +1487,7 @@ define dso_local range(i64 -42, 2147483648) i64 @ZSTD_CCtxParams_setParameter(pt
   %219 = zext nneg i32 %2 to i64
   br label %220
 
-220:                                              ; preds = %14, %16, %133, %50, %207, %152, %138, %125, %117, %59, %45, %37, %29, %21, %3, %215, %202, %197, %192, %187, %182, %177, %172, %167, %162, %157, %145, %112, %104, %101, %98, %95, %92, %90, %87, %85, %54, %4, %6, %26, %34, %42, %47, %51, %56, %61, %64, %69, %74, %80, %107, %114, %122, %130, %135, %140, %148, %154, %159, %164, %169, %174, %179, %184, %189, %194, %199, %204, %212, %217
+220:                                              ; preds = %217, %215, %212, %207, %204, %202, %199, %197, %194, %192, %189, %187, %184, %182, %179, %177, %174, %172, %169, %167, %164, %162, %159, %157, %154, %152, %148, %145, %140, %138, %135, %133, %130, %125, %122, %117, %114, %112, %107, %104, %101, %98, %95, %92, %90, %87, %85, %80, %74, %69, %64, %61, %59, %56, %54, %51, %50, %47, %45, %42, %37, %34, %29, %26, %21, %16, %14, %6, %4, %3
   %221 = phi i64 [ -42, %215 ], [ %7, %6 ], [ -42, %207 ], [ -40, %3 ], [ -42, %4 ], [ %213, %212 ], [ %28, %26 ], [ -42, %197 ], [ %36, %34 ], [ -42, %21 ], [ %44, %42 ], [ -42, %29 ], [ %49, %47 ], [ -42, %37 ], [ %53, %51 ], [ -42, %45 ], [ %58, %56 ], [ -42, %50 ], [ %63, %61 ], [ -42, %54 ], [ %68, %64 ], [ %73, %69 ], [ %79, %74 ], [ %84, %80 ], [ -42, %59 ], [ -42, %85 ], [ %97, %95 ], [ -42, %90 ], [ %100, %98 ], [ %94, %92 ], [ %103, %101 ], [ %89, %87 ], [ %106, %104 ], [ %219, %217 ], [ %111, %107 ], [ %116, %114 ], [ -42, %202 ], [ %124, %122 ], [ -42, %112 ], [ %132, %130 ], [ -42, %117 ], [ %137, %135 ], [ -42, %125 ], [ %142, %140 ], [ -42, %133 ], [ %150, %148 ], [ -42, %138 ], [ %156, %154 ], [ -42, %145 ], [ %161, %159 ], [ -42, %152 ], [ %166, %164 ], [ -42, %157 ], [ %171, %169 ], [ -42, %162 ], [ %176, %174 ], [ -42, %167 ], [ %181, %179 ], [ -42, %172 ], [ %186, %184 ], [ -42, %177 ], [ %191, %189 ], [ -42, %182 ], [ %196, %194 ], [ -42, %187 ], [ %201, %199 ], [ -42, %192 ], [ %206, %204 ], [ %20, %16 ], [ 3, %14 ]
   ret i64 %221
 }
@@ -1751,12 +1751,12 @@ define dso_local range(i64 -60, 1) i64 @ZSTD_CCtx_setParametersUsingCCtxParams(p
   tail call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 8 dereferenceable(224) %11, ptr noundef nonnull align 8 dereferenceable(224) %1, i64 224, i1 false), !tbaa.struct !117
   br label %12
 
-12:                                               ; preds = %6, %2, %10
+12:                                               ; preds = %10, %6, %2
   %13 = phi i64 [ 0, %10 ], [ -60, %2 ], [ -60, %6 ]
   ret i64 %13
 }
 
-; Function Attrs: mustprogress nocallback nofree nounwind willreturn memory(argmem: readwrite)
+; Function Attrs: nocallback nofree nounwind willreturn memory(argmem: readwrite)
 declare void @llvm.memcpy.p0.p0.i64(ptr noalias writeonly captures(none), ptr noalias readonly captures(none), i64, i1 immarg) #13
 
 ; Function Attrs: mustprogress nofree norecurse nosync nounwind willreturn memory(argmem: readwrite) uwtable
@@ -1828,7 +1828,7 @@ define dso_local range(i64 -60, 10) i64 @ZSTD_CCtx_setCParams(ptr noundef captur
   store i32 %32, ptr %46, align 4, !tbaa !94
   br label %47
 
-47:                                               ; preds = %35, %6, %11, %16, %21, %2, %39, %30
+47:                                               ; preds = %39, %35, %30, %21, %16, %11, %6, %2
   %48 = phi i64 [ -42, %30 ], [ 0, %39 ], [ -42, %2 ], [ -42, %21 ], [ -42, %11 ], [ -42, %16 ], [ -60, %35 ], [ -42, %6 ]
   ret i64 %48
 }
@@ -1856,7 +1856,7 @@ define dso_local range(i64 -60, 1) i64 @ZSTD_CCtx_setFParams(ptr noundef capture
   store i32 %16, ptr %17, align 8, !tbaa !96
   br label %18
 
-18:                                               ; preds = %3, %7
+18:                                               ; preds = %7, %3
   %19 = phi i64 [ 0, %7 ], [ -60, %3 ]
   ret i64 %19
 }
@@ -1947,7 +1947,7 @@ define dso_local range(i64 -60, 1) i64 @ZSTD_CCtx_setParams(ptr noundef captures
   store i32 %32, ptr %60, align 4, !tbaa !94
   br label %61
 
-61:                                               ; preds = %39, %35, %6, %11, %16, %21, %2, %30
+61:                                               ; preds = %39, %35, %30, %21, %16, %11, %6, %2
   %62 = phi i64 [ -42, %30 ], [ -60, %35 ], [ -42, %6 ], [ -42, %2 ], [ -42, %21 ], [ -42, %16 ], [ -42, %11 ], [ 0, %39 ]
   ret i64 %62
 }
@@ -1965,7 +1965,7 @@ define dso_local range(i64 -60, 1) i64 @ZSTD_CCtx_setPledgedSrcSize(ptr noundef 
   br i1 %8, label %9, label %10, !prof !9, !nosanitize !8
 
 9:                                                ; preds = %6
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 10:                                               ; preds = %6
@@ -1974,7 +1974,7 @@ define dso_local range(i64 -60, 1) i64 @ZSTD_CCtx_setPledgedSrcSize(ptr noundef 
   store i64 %11, ptr %12, align 8, !tbaa !119
   br label %13
 
-13:                                               ; preds = %2, %10
+13:                                               ; preds = %10, %2
   %14 = phi i64 [ 0, %10 ], [ -60, %2 ]
   ret i64 %14
 }
@@ -2012,14 +2012,14 @@ define dso_local range(i64 -64, 1) i64 @ZSTD_CCtx_loadDictionary_advanced(ptr no
 23:                                               ; preds = %19
   %24 = getelementptr i8, ptr %0, i64 912
   %25 = load ptr, ptr %24, align 8
-  %26 = tail call ptr %21(ptr noundef %25, i64 noundef %2) #36, !inline_history !50
+  %26 = tail call ptr %21(ptr noundef %25, i64 noundef %2) #35, !inline_history !50
   br label %29
 
 27:                                               ; preds = %19
-  %28 = tail call noalias ptr @malloc(i64 noundef %2) #37
+  %28 = tail call noalias ptr @malloc(i64 noundef %2) #36
   br label %29
 
-29:                                               ; preds = %23, %27
+29:                                               ; preds = %27, %23
   %30 = phi ptr [ %26, %23 ], [ %28, %27 ]
   %31 = icmp eq ptr %30, null
   br i1 %31, label %39, label %32
@@ -2030,7 +2030,7 @@ define dso_local range(i64 -64, 1) i64 @ZSTD_CCtx_loadDictionary_advanced(ptr no
   store ptr %30, ptr %33, align 8, !tbaa !120
   br label %34
 
-34:                                               ; preds = %13, %32
+34:                                               ; preds = %32, %13
   %35 = phi ptr [ %30, %32 ], [ %1, %13 ]
   %36 = getelementptr inbounds nuw i8, ptr %0, i64 3696
   store ptr %35, ptr %36, align 8, !tbaa !121
@@ -2040,7 +2040,7 @@ define dso_local range(i64 -64, 1) i64 @ZSTD_CCtx_loadDictionary_advanced(ptr no
   store i32 %4, ptr %38, align 8, !tbaa !123
   br label %39
 
-39:                                               ; preds = %29, %15, %9, %5, %34
+39:                                               ; preds = %34, %29, %15, %9, %5
   %40 = phi i64 [ 0, %9 ], [ -60, %5 ], [ 0, %34 ], [ -64, %15 ], [ -64, %29 ]
   ret i64 %40
 }
@@ -2061,14 +2061,14 @@ define internal fastcc void @ZSTD_clearAllDicts(ptr noundef captures(none) initi
   br i1 %10, label %12, label %11
 
 11:                                               ; preds = %9
-  tail call void %5(ptr noundef %7, ptr noundef nonnull %3) #36, !inline_history !64
+  tail call void %5(ptr noundef %7, ptr noundef nonnull %3) #35, !inline_history !64
   br label %13
 
 12:                                               ; preds = %9
-  tail call void @free(ptr noundef nonnull %3) #36
+  tail call void @free(ptr noundef nonnull %3) #35
   br label %13
 
-13:                                               ; preds = %1, %11, %12
+13:                                               ; preds = %12, %11, %1
   %14 = getelementptr inbounds nuw i8, ptr %0, i64 3720
   %15 = load ptr, ptr %14, align 8, !tbaa !124
   %16 = icmp eq ptr %15, null
@@ -2101,14 +2101,14 @@ define internal fastcc void @ZSTD_clearAllDicts(ptr noundef captures(none) initi
   br i1 %33, label %36, label %34
 
 34:                                               ; preds = %32
-  tail call void %19(ptr noundef %21, ptr noundef nonnull %23) #36, !inline_history !125
+  tail call void %19(ptr noundef %21, ptr noundef nonnull %23) #35, !inline_history !125
   br label %35
 
 35:                                               ; preds = %34, %29
   br i1 %30, label %37, label %41
 
 36:                                               ; preds = %32
-  tail call void @free(ptr noundef nonnull %23) #36
+  tail call void @free(ptr noundef nonnull %23) #35
   br i1 %30, label %40, label %41
 
 37:                                               ; preds = %35
@@ -2116,14 +2116,14 @@ define internal fastcc void @ZSTD_clearAllDicts(ptr noundef captures(none) initi
   br i1 %38, label %40, label %39
 
 39:                                               ; preds = %37
-  tail call void %19(ptr noundef %21, ptr noundef nonnull %15) #36, !inline_history !126
+  tail call void %19(ptr noundef %21, ptr noundef nonnull %15) #35, !inline_history !126
   br label %41
 
 40:                                               ; preds = %37, %36
-  tail call void @free(ptr noundef nonnull %15) #36
+  tail call void @free(ptr noundef nonnull %15) #35
   br label %41
 
-41:                                               ; preds = %13, %35, %36, %39, %40
+41:                                               ; preds = %40, %39, %36, %35, %13
   tail call void @llvm.memset.p0.i64(ptr noundef nonnull align 8 dereferenceable(72) %2, i8 0, i64 72, i1 false)
   ret void
 }
@@ -2151,7 +2151,7 @@ define dso_local range(i64 -60, 1) i64 @ZSTD_CCtx_loadDictionary_byReference(ptr
   store i32 0, ptr %14, align 8, !tbaa !123
   br label %15
 
-15:                                               ; preds = %3, %7, %11
+15:                                               ; preds = %11, %7, %3
   %16 = phi i64 [ 0, %7 ], [ -60, %3 ], [ 0, %11 ]
   ret i64 %16
 }
@@ -2185,11 +2185,11 @@ define dso_local range(i64 -64, 1) i64 @ZSTD_CCtx_loadDictionary(ptr noundef cap
 19:                                               ; preds = %15
   %20 = getelementptr i8, ptr %0, i64 912
   %21 = load ptr, ptr %20, align 8
-  %22 = tail call ptr %17(ptr noundef %21, i64 noundef %2) #36, !inline_history !127
+  %22 = tail call ptr %17(ptr noundef %21, i64 noundef %2) #35, !inline_history !127
   br label %25
 
 23:                                               ; preds = %15
-  %24 = tail call noalias ptr @malloc(i64 noundef %2) #37
+  %24 = tail call noalias ptr @malloc(i64 noundef %2) #36
   br label %25
 
 25:                                               ; preds = %23, %19
@@ -2209,7 +2209,7 @@ define dso_local range(i64 -64, 1) i64 @ZSTD_CCtx_loadDictionary(ptr noundef cap
   store i32 0, ptr %32, align 8, !tbaa !123
   br label %33
 
-33:                                               ; preds = %3, %7, %11, %25, %28
+33:                                               ; preds = %28, %25, %11, %7, %3
   %34 = phi i64 [ 0, %7 ], [ -60, %3 ], [ 0, %28 ], [ -64, %11 ], [ -64, %25 ]
   ret i64 %34
 }
@@ -2227,7 +2227,7 @@ define dso_local range(i64 -60, 1) i64 @ZSTD_CCtx_refCDict(ptr noundef captures(
   store ptr %1, ptr %7, align 8, !tbaa !116
   br label %8
 
-8:                                                ; preds = %2, %6
+8:                                                ; preds = %6, %2
   %9 = phi i64 [ 0, %6 ], [ -60, %2 ]
   ret i64 %9
 }
@@ -2244,7 +2244,7 @@ define dso_local range(i64 -60, 1) i64 @ZSTD_CCtx_refThreadPool(ptr noundef capt
   store ptr %1, ptr %7, align 8, !tbaa !128
   br label %8
 
-8:                                                ; preds = %2, %6
+8:                                                ; preds = %6, %2
   %9 = phi i64 [ 0, %6 ], [ -60, %2 ]
   ret i64 %9
 }
@@ -2272,7 +2272,7 @@ define dso_local range(i64 -60, 1) i64 @ZSTD_CCtx_refPrefix(ptr noundef captures
   store i32 1, ptr %14, align 8, !tbaa !131
   br label %15
 
-15:                                               ; preds = %3, %7, %11
+15:                                               ; preds = %11, %7, %3
   %16 = phi i64 [ -60, %3 ], [ 0, %11 ], [ 0, %7 ]
   ret i64 %16
 }
@@ -2300,7 +2300,7 @@ define dso_local range(i64 -60, 1) i64 @ZSTD_CCtx_refPrefix_advanced(ptr noundef
   store i32 %3, ptr %15, align 8, !tbaa !131
   br label %16
 
-16:                                               ; preds = %8, %12, %4
+16:                                               ; preds = %12, %8, %4
   %17 = phi i64 [ -60, %4 ], [ 0, %12 ], [ 0, %8 ]
   ret i64 %17
 }
@@ -2318,7 +2318,7 @@ define dso_local range(i64 -60, 1) i64 @ZSTD_CCtx_reset(ptr noundef captures(non
   store i64 0, ptr %7, align 8, !tbaa !119
   br label %8
 
-8:                                                ; preds = %2, %5
+8:                                                ; preds = %5, %2
   %9 = and i32 %1, -2
   %10 = icmp eq i32 %9, 2
   br i1 %10, label %11, label %19
@@ -2339,7 +2339,7 @@ define dso_local range(i64 -60, 1) i64 @ZSTD_CCtx_reset(ptr noundef captures(non
   store i32 1, ptr %18, align 8, !tbaa !47
   br label %19
 
-19:                                               ; preds = %8, %11, %15
+19:                                               ; preds = %15, %11, %8
   %20 = phi i64 [ -60, %11 ], [ 0, %15 ], [ 0, %8 ]
   ret i64 %20
 }
@@ -2353,7 +2353,7 @@ define dso_local noundef i32 @ZSTD_cycleLog(i32 noundef %0, i32 noundef %1) loca
   br i1 %6, label %7, label %8, !prof !9, !nosanitize !8
 
 7:                                                ; preds = %2
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 8:                                                ; preds = %2
@@ -2361,7 +2361,7 @@ define dso_local noundef i32 @ZSTD_cycleLog(i32 noundef %0, i32 noundef %1) loca
   ret i32 %9
 }
 
-; Function Attrs: mustprogress nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
 declare { i32, i1 } @llvm.usub.with.overflow.i32(i32, i32) #2
 
 ; Function Attrs: cold noreturn nounwind memory(inaccessiblemem: write) uwtable
@@ -2370,23 +2370,23 @@ define dso_local void @ZSTD_adjustCParams(ptr dead_on_unwind noalias readnone sr
   br i1 %5, label %6, label %7
 
 6:                                                ; preds = %4
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 7:                                                ; preds = %4
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 }
 
 ; Function Attrs: cold noreturn nounwind memory(inaccessiblemem: write) uwtable
 define dso_local void @ZSTD_getCParamsFromCCtxParams(ptr dead_on_unwind noalias readnone sret(%struct.ZSTD_compressionParameters) align 4 captures(none) %0, ptr noundef readnone captures(none) %1, i64 noundef %2, i64 noundef %3, i32 noundef %4) local_unnamed_addr #15 {
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 }
 
 ; Function Attrs: cold noreturn nounwind memory(inaccessiblemem: write) uwtable
 define dso_local noundef i64 @ZSTD_estimateCCtxSize_usingCCtxParams(ptr noundef readnone captures(none) %0) local_unnamed_addr #15 {
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 }
 
@@ -2396,7 +2396,7 @@ declare void @ZSTD_ldm_adjustParameters(ptr noundef, ptr noundef) local_unnamed_
 define dso_local noundef i64 @ZSTD_estimateCCtxSize_usingCParams(ptr noundef readonly byval(%struct.ZSTD_compressionParameters) align 8 captures(none) %0) local_unnamed_addr #17 {
   %2 = alloca %struct.ZSTD_compressionParameters, align 8
   %3 = alloca %struct.ZSTD_CCtx_params_s, align 8
-  call void @llvm.lifetime.start.p0(ptr nonnull %3) #36
+  call void @llvm.lifetime.start.p0(ptr nonnull %3) #35
   tail call void @llvm.experimental.noalias.scope.decl(metadata !132)
   call void @llvm.lifetime.start.p0(ptr nonnull %2)
   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 8 dereferenceable(28) %2, ptr noundef nonnull align 8 dereferenceable(28) %0, i64 28, i1 false)
@@ -2422,7 +2422,7 @@ define dso_local noundef i64 @ZSTD_estimateCCtxSize_usingCParams(ptr noundef rea
 15:                                               ; preds = %1
   %16 = getelementptr inbounds nuw i8, ptr %3, i64 96
   store i32 1, ptr %16, align 8, !tbaa !82, !alias.scope !132
-  call void @ZSTD_ldm_adjustParameters(ptr noundef nonnull %16, ptr noundef nonnull align 8 %2) #36
+  call void @ZSTD_ldm_adjustParameters(ptr noundef nonnull %16, ptr noundef nonnull align 8 %2) #35
   %17 = getelementptr inbounds nuw i8, ptr %3, i64 140
   %18 = load i32, ptr %17, align 4, !tbaa !81, !alias.scope !132
   %19 = icmp eq i32 %18, 0
@@ -2456,21 +2456,21 @@ define dso_local noundef i64 @ZSTD_estimateCCtxSize_usingCParams(ptr noundef rea
   br i1 %36, label %38, label %37
 
 37:                                               ; preds = %30
-  call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 38:                                               ; preds = %30
-  call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 }
 
 ; Function Attrs: cold noreturn nounwind memory(inaccessiblemem: write) uwtable
 define dso_local noundef i64 @ZSTD_estimateCCtxSize(i32 noundef %0) local_unnamed_addr #15 {
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 }
 
-; Function Attrs: mustprogress nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
 declare { i32, i1 } @llvm.sadd.with.overflow.i32(i32, i32) #2
 
 ; Function Attrs: nounwind memory(argmem: read, inaccessiblemem: write) uwtable
@@ -2481,7 +2481,7 @@ define dso_local noundef i64 @ZSTD_estimateCStreamSize_usingCCtxParams(ptr nound
   br i1 %4, label %6, label %5
 
 5:                                                ; preds = %1
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 6:                                                ; preds = %1
@@ -2492,7 +2492,7 @@ define dso_local noundef i64 @ZSTD_estimateCStreamSize_usingCCtxParams(ptr nound
 define dso_local noundef i64 @ZSTD_estimateCStreamSize_usingCParams(ptr noundef readonly byval(%struct.ZSTD_compressionParameters) align 8 captures(none) %0) local_unnamed_addr #4 {
   %2 = alloca %struct.ZSTD_compressionParameters, align 8
   %3 = alloca %struct.ZSTD_CCtx_params_s, align 8
-  call void @llvm.lifetime.start.p0(ptr nonnull %3) #36
+  call void @llvm.lifetime.start.p0(ptr nonnull %3) #35
   tail call void @llvm.experimental.noalias.scope.decl(metadata !135)
   call void @llvm.lifetime.start.p0(ptr nonnull %2)
   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 8 dereferenceable(28) %2, ptr noundef nonnull align 8 dereferenceable(28) %0, i64 28, i1 false)
@@ -2518,7 +2518,7 @@ define dso_local noundef i64 @ZSTD_estimateCStreamSize_usingCParams(ptr noundef 
 15:                                               ; preds = %1
   %16 = getelementptr inbounds nuw i8, ptr %3, i64 96
   store i32 1, ptr %16, align 8, !tbaa !82, !alias.scope !135
-  call void @ZSTD_ldm_adjustParameters(ptr noundef nonnull %16, ptr noundef nonnull align 8 %2) #36
+  call void @ZSTD_ldm_adjustParameters(ptr noundef nonnull %16, ptr noundef nonnull align 8 %2) #35
   %17 = getelementptr inbounds nuw i8, ptr %3, i64 140
   %18 = load i32, ptr %17, align 4, !tbaa !81, !alias.scope !135
   %19 = icmp eq i32 %18, 0
@@ -2558,24 +2558,24 @@ define dso_local noundef i64 @ZSTD_estimateCStreamSize_usingCParams(ptr noundef 
   br i1 %39, label %44, label %41
 
 41:                                               ; preds = %40
-  call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 42:                                               ; preds = %30
   br i1 %39, label %44, label %43
 
 43:                                               ; preds = %42
-  call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
-44:                                               ; preds = %40, %42
-  call void @llvm.lifetime.end.p0(ptr nonnull %3) #36
+44:                                               ; preds = %42, %40
+  call void @llvm.lifetime.end.p0(ptr nonnull %3) #35
   ret i64 -1
 }
 
 ; Function Attrs: cold noreturn nounwind memory(inaccessiblemem: write) uwtable
 define dso_local noundef i64 @ZSTD_estimateCStreamSize(i32 noundef %0) local_unnamed_addr #15 {
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 }
 
@@ -2597,7 +2597,7 @@ define dso_local void @ZSTD_getFrameProgression(ptr dead_on_unwind noalias writa
   br i1 %13, label %14, label %15, !prof !9, !nosanitize !8
 
 14:                                               ; preds = %6
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 15:                                               ; preds = %6, %2
@@ -2609,7 +2609,7 @@ define dso_local void @ZSTD_getFrameProgression(ptr dead_on_unwind noalias writa
   br i1 %20, label %21, label %22, !prof !9, !nosanitize !8
 
 21:                                               ; preds = %15
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 22:                                               ; preds = %15
@@ -2665,11 +2665,11 @@ define dso_local noundef i64 @ZSTD_copyCCtx(ptr noundef readnone captures(none) 
   br i1 %4, label %5, label %6
 
 5:                                                ; preds = %3
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 6:                                                ; preds = %3
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 }
 
@@ -2696,7 +2696,7 @@ define dso_local noundef i32 @ZSTD_seqToCodes(ptr noundef readonly captures(none
   %18 = and i64 %17, 4294967295
   br label %19
 
-19:                                               ; preds = %16, %54
+19:                                               ; preds = %54, %16
   %20 = phi i64 [ 0, %16 ], [ %57, %54 ]
   %21 = getelementptr inbounds nuw [8 x i8], ptr %2, i64 %20
   %22 = getelementptr inbounds nuw i8, ptr %21, i64 4
@@ -2722,7 +2722,7 @@ define dso_local noundef i32 @ZSTD_seqToCodes(ptr noundef readonly captures(none
   %38 = load i8, ptr %37, align 1, !tbaa !164
   br label %39
 
-39:                                               ; preds = %30, %35
+39:                                               ; preds = %35, %30
   %40 = phi i8 [ %38, %35 ], [ %34, %30 ]
   %41 = getelementptr inbounds nuw i8, ptr %4, i64 %20
   store i8 %40, ptr %41, align 1, !tbaa !164
@@ -2745,7 +2745,7 @@ define dso_local noundef i32 @ZSTD_seqToCodes(ptr noundef readonly captures(none
   %53 = load i8, ptr %52, align 1, !tbaa !164
   br label %54
 
-54:                                               ; preds = %46, %50
+54:                                               ; preds = %50, %46
   %55 = phi i8 [ %53, %50 ], [ %49, %46 ]
   %56 = getelementptr inbounds nuw i8, ptr %8, i64 %20
   store i8 %55, ptr %56, align 1, !tbaa !164
@@ -2785,7 +2785,7 @@ define dso_local noundef i32 @ZSTD_seqToCodes(ptr noundef readonly captures(none
   ret i32 0
 }
 
-; Function Attrs: mustprogress nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
 declare { i32, i1 } @llvm.uadd.with.overflow.i32(i32, i32) #2
 
 ; Function Attrs: mustprogress nofree norecurse nosync nounwind willreturn memory(none) uwtable
@@ -2930,7 +2930,7 @@ define dso_local i64 @ZSTD_generateSequences(ptr noundef %0, ptr noundef %1, i64
   br i1 %18, label %19, label %20, !prof !9, !nosanitize !8
 
 19:                                               ; preds = %9
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 20:                                               ; preds = %9
@@ -2941,7 +2941,7 @@ define dso_local i64 @ZSTD_generateSequences(ptr noundef %0, ptr noundef %1, i64
 23:                                               ; preds = %20, %5
   br label %24
 
-24:                                               ; preds = %20, %23
+24:                                               ; preds = %23, %20
   %25 = phi i64 [ -72, %23 ], [ %21, %20 ]
   %26 = getelementptr inbounds nuw i8, ptr %0, i64 72
   %27 = load i64, ptr %26, align 8, !tbaa !105
@@ -2956,7 +2956,7 @@ define dso_local i64 @ZSTD_generateSequences(ptr noundef %0, ptr noundef %1, i64
   br i1 %33, label %34, label %60
 
 34:                                               ; preds = %30
-  %35 = tail call noalias ptr @malloc(i64 noundef %25) #37
+  %35 = tail call noalias ptr @malloc(i64 noundef %25) #36
   %36 = icmp eq ptr %35, null
   br i1 %36, label %60, label %37
 
@@ -2975,8 +2975,8 @@ define dso_local i64 @ZSTD_generateSequences(ptr noundef %0, ptr noundef %1, i64
   store i32 0, ptr %44, align 8, !tbaa !85
   %45 = getelementptr inbounds nuw i8, ptr %0, i64 784
   store i64 0, ptr %45, align 8, !tbaa !119
-  call void @llvm.lifetime.start.p0(ptr nonnull %6) #36
-  call void @llvm.lifetime.start.p0(ptr nonnull %7) #36
+  call void @llvm.lifetime.start.p0(ptr nonnull %6) #35
+  call void @llvm.lifetime.start.p0(ptr nonnull %7) #35
   store ptr %35, ptr %6, align 8, !tbaa !171
   %46 = getelementptr inbounds nuw i8, ptr %6, i64 8
   store i64 %25, ptr %46, align 8, !tbaa !173
@@ -2992,14 +2992,14 @@ define dso_local i64 @ZSTD_generateSequences(ptr noundef %0, ptr noundef %1, i64
   store i32 1, ptr %43, align 8, !tbaa !179
   %51 = call i64 @ZSTD_compressStream2(ptr noundef nonnull %0, ptr noundef nonnull %6, ptr noundef nonnull %7, i32 noundef 2)
   %52 = load i64, ptr %47, align 8, !tbaa !174
-  call void @llvm.lifetime.end.p0(ptr nonnull %7) #36
-  call void @llvm.lifetime.end.p0(ptr nonnull %6) #36
+  call void @llvm.lifetime.end.p0(ptr nonnull %7) #35
+  call void @llvm.lifetime.end.p0(ptr nonnull %6) #35
   store <2 x i32> %50, ptr %42, align 4, !tbaa !4
   %53 = icmp ult i64 %51, -119
   %54 = icmp eq i64 %51, 0
   %55 = select i1 %54, i64 %52, i64 -70
   %56 = select i1 %53, i64 %55, i64 %51
-  tail call void @free(ptr noundef nonnull %35) #36
+  tail call void @free(ptr noundef nonnull %35) #35
   %57 = icmp ult i64 %56, -119
   br i1 %57, label %58, label %60
 
@@ -3007,7 +3007,7 @@ define dso_local i64 @ZSTD_generateSequences(ptr noundef %0, ptr noundef %1, i64
   %59 = load i64, ptr %40, align 8, !tbaa !180
   br label %60
 
-60:                                               ; preds = %34, %37, %30, %24, %58
+60:                                               ; preds = %58, %37, %34, %30, %24
   %61 = phi i64 [ -40, %24 ], [ %59, %58 ], [ %56, %37 ], [ -40, %30 ], [ -64, %34 ]
   ret i64 %61
 }
@@ -3022,8 +3022,8 @@ define dso_local i64 @ZSTD_compress2(ptr noundef initializes((784, 792), (3640, 
   store i32 0, ptr %10, align 8, !tbaa !85
   %11 = getelementptr inbounds nuw i8, ptr %0, i64 784
   store i64 0, ptr %11, align 8, !tbaa !119
-  call void @llvm.lifetime.start.p0(ptr nonnull %6) #36
-  call void @llvm.lifetime.start.p0(ptr nonnull %7) #36
+  call void @llvm.lifetime.start.p0(ptr nonnull %6) #35
+  call void @llvm.lifetime.start.p0(ptr nonnull %7) #35
   store ptr %1, ptr %6, align 8, !tbaa !171
   %12 = getelementptr inbounds nuw i8, ptr %6, i64 8
   store i64 %2, ptr %12, align 8, !tbaa !173
@@ -3039,8 +3039,8 @@ define dso_local i64 @ZSTD_compress2(ptr noundef initializes((784, 792), (3640, 
   store i32 1, ptr %9, align 8, !tbaa !179
   %17 = call i64 @ZSTD_compressStream2(ptr noundef %0, ptr noundef nonnull %6, ptr noundef nonnull %7, i32 noundef 2)
   %18 = load i64, ptr %13, align 8, !tbaa !174
-  call void @llvm.lifetime.end.p0(ptr nonnull %7) #36
-  call void @llvm.lifetime.end.p0(ptr nonnull %6) #36
+  call void @llvm.lifetime.end.p0(ptr nonnull %7) #35
+  call void @llvm.lifetime.end.p0(ptr nonnull %6) #35
   store <2 x i32> %16, ptr %8, align 4, !tbaa !4
   %19 = icmp ult i64 %17, -119
   %20 = icmp eq i64 %17, 0
@@ -3058,7 +3058,7 @@ define dso_local i64 @ZSTD_mergeBlockDelimiters(ptr noundef captures(none) %0, i
   %5 = add i64 %1, -1
   br label %6
 
-6:                                                ; preds = %4, %35
+6:                                                ; preds = %35, %4
   %7 = phi i64 [ 0, %4 ], [ %36, %35 ]
   %8 = phi i64 [ 0, %4 ], [ %37, %35 ]
   %9 = getelementptr inbounds nuw [16 x i8], ptr %0, i64 %8
@@ -3086,7 +3086,7 @@ define dso_local i64 @ZSTD_mergeBlockDelimiters(ptr noundef captures(none) %0, i
   br i1 %24, label %25, label %26, !prof !9, !nosanitize !8
 
 25:                                               ; preds = %18
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 26:                                               ; preds = %18
@@ -3102,14 +3102,14 @@ define dso_local i64 @ZSTD_mergeBlockDelimiters(ptr noundef captures(none) %0, i
   br i1 %31, label %32, label %33, !prof !9, !nosanitize !8
 
 32:                                               ; preds = %28
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 33:                                               ; preds = %28
   %34 = extractvalue { i64, i1 } %30, 0, !nosanitize !8
   br label %35
 
-35:                                               ; preds = %16, %26, %33
+35:                                               ; preds = %33, %26, %16
   %36 = phi i64 [ %7, %26 ], [ %7, %16 ], [ %34, %33 ]
   %37 = add nuw i64 %8, 1
   %38 = icmp eq i64 %37, %1
@@ -3143,7 +3143,7 @@ define dso_local i64 @ZSTD_buildBlockEntropyStats(ptr noundef readonly captures(
   ]
 
 23:                                               ; preds = %7
-  call void @llvm.lifetime.start.p0(ptr nonnull %9) #36
+  call void @llvm.lifetime.start.p0(ptr nonnull %9) #35
   store i32 255, ptr %9, align 4, !tbaa !4
   tail call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 8 dereferenceable(2064) %2, ptr noundef nonnull align 8 dereferenceable(2064) %1, i64 2064, i1 false)
   br label %102
@@ -3152,8 +3152,8 @@ define dso_local i64 @ZSTD_buildBlockEntropyStats(ptr noundef readonly captures(
   %25 = icmp eq i32 %18, 1
   br i1 %25, label %29, label %26
 
-26:                                               ; preds = %7, %24
-  call void @llvm.lifetime.start.p0(ptr nonnull %9) #36
+26:                                               ; preds = %24, %7
+  call void @llvm.lifetime.start.p0(ptr nonnull %9) #35
   store i32 255, ptr %9, align 4, !tbaa !4
   %27 = getelementptr inbounds nuw i8, ptr %1, i64 2056
   %28 = load i32, ptr %27, align 8, !tbaa !187
@@ -3164,14 +3164,14 @@ define dso_local i64 @ZSTD_buildBlockEntropyStats(ptr noundef readonly captures(
   %30 = getelementptr inbounds nuw i8, ptr %3, i64 24
   %31 = load i32, ptr %30, align 4, !tbaa !93
   %32 = icmp eq i32 %31, 0
-  call void @llvm.lifetime.start.p0(ptr nonnull %9) #36
+  call void @llvm.lifetime.start.p0(ptr nonnull %9) #35
   store i32 255, ptr %9, align 4, !tbaa !4
   %33 = getelementptr inbounds nuw i8, ptr %1, i64 2056
   %34 = load i32, ptr %33, align 8, !tbaa !187
   tail call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 8 dereferenceable(2064) %2, ptr noundef nonnull align 8 dereferenceable(2064) %1, i64 2064, i1 false)
   br i1 %32, label %35, label %102
 
-35:                                               ; preds = %26, %29
+35:                                               ; preds = %29, %26
   %36 = phi i32 [ %28, %26 ], [ %34, %29 ]
   %37 = phi ptr [ %27, %26 ], [ %33, %29 ]
   %38 = getelementptr inbounds nuw i8, ptr %5, i64 1024
@@ -3183,7 +3183,7 @@ define dso_local i64 @ZSTD_buildBlockEntropyStats(ptr noundef readonly captures(
   br i1 %43, label %44, label %102
 
 44:                                               ; preds = %35
-  %45 = call i64 @HIST_count_wksp(ptr noundef %5, ptr noundef nonnull %9, ptr noundef %13, i64 noundef %16, ptr noundef %5, i64 noundef %6) #36
+  %45 = call i64 @HIST_count_wksp(ptr noundef %5, ptr noundef nonnull %9, ptr noundef %13, i64 noundef %16, ptr noundef %5, i64 noundef %6) #35
   %46 = icmp ult i64 %45, -119
   br i1 %46, label %47, label %105
 
@@ -3203,7 +3203,7 @@ define dso_local i64 @ZSTD_buildBlockEntropyStats(ptr noundef readonly captures(
 
 55:                                               ; preds = %53
   %56 = load i32, ptr %9, align 4, !tbaa !4
-  %57 = call i32 @HUF_validateCTable(ptr noundef nonnull %1, ptr noundef %5, i32 noundef %56) #36
+  %57 = call i32 @HUF_validateCTable(ptr noundef nonnull %1, ptr noundef %5, i32 noundef %56) #35
   %58 = icmp ne i32 %57, 0
   %59 = zext i1 %58 to i32
   br label %60
@@ -3212,25 +3212,25 @@ define dso_local i64 @ZSTD_buildBlockEntropyStats(ptr noundef readonly captures(
   %61 = phi i32 [ %59, %55 ], [ %36, %53 ]
   call void @llvm.memset.p0.i64(ptr noundef nonnull align 8 dereferenceable(2056) %2, i8 0, i64 2056, i1 false)
   %62 = load i32, ptr %9, align 4, !tbaa !4
-  %63 = call i32 @HUF_optimalTableLog(i32 noundef 11, i64 noundef %16, i32 noundef %62, ptr noundef nonnull %38, i64 noundef %39, ptr noundef nonnull %2, ptr noundef %5, i32 noundef range(i32 0, 3) %20) #36
+  %63 = call i32 @HUF_optimalTableLog(i32 noundef 11, i64 noundef %16, i32 noundef %62, ptr noundef nonnull %38, i64 noundef %39, ptr noundef nonnull %2, ptr noundef %5, i32 noundef range(i32 0, 3) %20) #35
   %64 = load i32, ptr %9, align 4, !tbaa !4
-  %65 = call i64 @HUF_buildCTable_wksp(ptr noundef nonnull %2, ptr noundef %5, i32 noundef %64, i32 noundef %63, ptr noundef nonnull %38, i64 noundef %39) #36
+  %65 = call i64 @HUF_buildCTable_wksp(ptr noundef nonnull %2, ptr noundef %5, i32 noundef %64, i32 noundef %63, ptr noundef nonnull %38, i64 noundef %39) #35
   %66 = icmp ult i64 %65, -119
   br i1 %66, label %67, label %105
 
 67:                                               ; preds = %60
   %68 = trunc i64 %65 to i32
   %69 = load i32, ptr %9, align 4, !tbaa !4
-  %70 = call i64 @HUF_estimateCompressedSize(ptr noundef nonnull %2, ptr noundef nonnull %5, i32 noundef %69) #36
+  %70 = call i64 @HUF_estimateCompressedSize(ptr noundef nonnull %2, ptr noundef nonnull %5, i32 noundef %69) #35
   %71 = getelementptr inbounds nuw i8, ptr %4, i64 4
   %72 = load i32, ptr %9, align 4, !tbaa !4
-  %73 = call i64 @HUF_writeCTable_wksp(ptr noundef nonnull %71, i64 noundef 128, ptr noundef nonnull %2, i32 noundef %72, i32 noundef %68, ptr noundef nonnull %38, i64 noundef %39) #36
+  %73 = call i64 @HUF_writeCTable_wksp(ptr noundef nonnull %71, i64 noundef 128, ptr noundef nonnull %2, i32 noundef %72, i32 noundef %68, ptr noundef nonnull %38, i64 noundef %39) #35
   %74 = icmp eq i32 %61, 0
   br i1 %74, label %94, label %75
 
 75:                                               ; preds = %67
   %76 = load i32, ptr %9, align 4, !tbaa !4
-  %77 = call i64 @HUF_estimateCompressedSize(ptr noundef nonnull %1, ptr noundef nonnull %5, i32 noundef %76) #36
+  %77 = call i64 @HUF_estimateCompressedSize(ptr noundef nonnull %1, ptr noundef nonnull %5, i32 noundef %76) #35
   %78 = icmp ult i64 %77, %16
   br i1 %78, label %79, label %94
 
@@ -3240,7 +3240,7 @@ define dso_local i64 @ZSTD_buildBlockEntropyStats(ptr noundef readonly captures(
   br i1 %81, label %82, label %83, !prof !9, !nosanitize !8
 
 82:                                               ; preds = %79
-  call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 83:                                               ; preds = %79
@@ -3254,7 +3254,7 @@ define dso_local i64 @ZSTD_buildBlockEntropyStats(ptr noundef readonly captures(
   br i1 %88, label %89, label %90, !prof !9, !nosanitize !8
 
 89:                                               ; preds = %86
-  call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 90:                                               ; preds = %86
@@ -3272,7 +3272,7 @@ define dso_local i64 @ZSTD_buildBlockEntropyStats(ptr noundef readonly captures(
   br i1 %96, label %97, label %98, !prof !9, !nosanitize !8
 
 97:                                               ; preds = %94
-  call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 98:                                               ; preds = %94
@@ -3284,17 +3284,17 @@ define dso_local i64 @ZSTD_buildBlockEntropyStats(ptr noundef readonly captures(
   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 8 dereferenceable(2064) %2, ptr noundef nonnull align 8 dereferenceable(2064) %1, i64 2064, i1 false)
   br label %102
 
-102:                                              ; preds = %49, %47, %35, %29, %23, %93, %101
+102:                                              ; preds = %101, %93, %49, %47, %35, %29, %23
   %103 = phi i32 [ 0, %35 ], [ 0, %29 ], [ 3, %93 ], [ 0, %101 ], [ 1, %47 ], [ 0, %23 ], [ 0, %49 ]
   store i32 %103, ptr %4, align 8, !tbaa !188
-  call void @llvm.lifetime.end.p0(ptr nonnull %9) #36
+  call void @llvm.lifetime.end.p0(ptr nonnull %9) #35
   %104 = getelementptr inbounds nuw i8, ptr %4, i64 136
   store i64 0, ptr %104, align 8, !tbaa !189
   br label %112
 
-105:                                              ; preds = %44, %60
+105:                                              ; preds = %60, %44
   %106 = phi i64 [ %65, %60 ], [ %45, %44 ]
-  call void @llvm.lifetime.end.p0(ptr nonnull %9) #36
+  call void @llvm.lifetime.end.p0(ptr nonnull %9) #35
   %107 = getelementptr inbounds nuw i8, ptr %4, i64 136
   store i64 %106, ptr %107, align 8, !tbaa !189
   br label %158
@@ -3303,13 +3303,13 @@ define dso_local i64 @ZSTD_buildBlockEntropyStats(ptr noundef readonly captures(
   store i32 2, ptr %4, align 8, !tbaa !188
   %109 = getelementptr inbounds nuw i8, ptr %2, i64 2056
   store i32 1, ptr %109, align 8, !tbaa !187
-  call void @llvm.lifetime.end.p0(ptr nonnull %9) #36
+  call void @llvm.lifetime.end.p0(ptr nonnull %9) #35
   %110 = getelementptr inbounds nuw i8, ptr %4, i64 136
   store i64 %73, ptr %110, align 8, !tbaa !189
   %111 = icmp ult i64 %73, -119
   br i1 %111, label %112, label %158
 
-112:                                              ; preds = %102, %108
+112:                                              ; preds = %108, %102
   %113 = getelementptr inbounds nuw i8, ptr %1, i64 2064
   %114 = getelementptr inbounds nuw i8, ptr %2, i64 2064
   %115 = getelementptr inbounds nuw i8, ptr %4, i64 144
@@ -3330,7 +3330,7 @@ define dso_local i64 @ZSTD_buildBlockEntropyStats(ptr noundef readonly captures(
   br i1 %129, label %130, label %131, !prof !9, !nosanitize !8
 
 130:                                              ; preds = %112
-  call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 131:                                              ; preds = %112
@@ -3347,7 +3347,7 @@ define dso_local i64 @ZSTD_buildBlockEntropyStats(ptr noundef readonly captures(
   br label %146
 
 137:                                              ; preds = %131
-  call void @llvm.lifetime.start.p0(ptr nonnull %8) #36
+  call void @llvm.lifetime.start.p0(ptr nonnull %8) #35
   call fastcc void @ZSTD_buildSequencesStatistics(ptr dead_on_unwind noalias writable align 8 %8, ptr noundef nonnull readonly %0, i64 noundef %123, ptr noundef nonnull %113, ptr noundef nonnull %114, ptr noundef nonnull %124, ptr noundef nonnull %125, i32 noundef %116, ptr noundef %5, ptr noundef nonnull %126, i64 noundef %128)
   %138 = load <2 x i32>, ptr %8, align 8, !tbaa !4
   %139 = getelementptr inbounds nuw i8, ptr %8, i64 8
@@ -3356,7 +3356,7 @@ define dso_local i64 @ZSTD_buildBlockEntropyStats(ptr noundef readonly captures(
   %142 = load i64, ptr %141, align 8, !tbaa !118
   %143 = getelementptr inbounds nuw i8, ptr %8, i64 24
   %144 = load i64, ptr %143, align 8, !tbaa !118
-  call void @llvm.lifetime.end.p0(ptr nonnull %8) #36
+  call void @llvm.lifetime.end.p0(ptr nonnull %8) #35
   %145 = icmp ult i64 %142, -119
   br i1 %145, label %146, label %153
 
@@ -3372,7 +3372,7 @@ define dso_local i64 @ZSTD_buildBlockEntropyStats(ptr noundef readonly captures(
   store i64 %149, ptr %152, align 8, !tbaa !197
   br label %153
 
-153:                                              ; preds = %137, %146
+153:                                              ; preds = %146, %137
   %154 = phi i64 [ %142, %137 ], [ %148, %146 ]
   %155 = getelementptr inbounds nuw i8, ptr %4, i64 296
   store i64 %154, ptr %155, align 8, !tbaa !198
@@ -3380,7 +3380,7 @@ define dso_local i64 @ZSTD_buildBlockEntropyStats(ptr noundef readonly captures(
   %157 = select i1 %156, i64 0, i64 %154
   br label %158
 
-158:                                              ; preds = %105, %153, %108
+158:                                              ; preds = %153, %108, %105
   %159 = phi i64 [ %73, %108 ], [ %157, %153 ], [ %106, %105 ]
   ret i64 %159
 }
@@ -3393,7 +3393,7 @@ define dso_local noundef i64 @ZSTD_writeSkippableFrame(ptr noundef writeonly cap
   br i1 %8, label %9, label %10, !prof !9, !nosanitize !8
 
 9:                                                ; preds = %5
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 10:                                               ; preds = %5
@@ -3418,7 +3418,7 @@ define dso_local noundef i64 @ZSTD_writeSkippableFrame(ptr noundef writeonly cap
   tail call void @llvm.memcpy.p0.p0.i64(ptr nonnull align 1 %20, ptr align 1 %2, i64 %3, i1 false)
   br label %21
 
-21:                                               ; preds = %14, %12, %10, %16
+21:                                               ; preds = %16, %14, %12, %10
   %22 = phi i64 [ %7, %16 ], [ -70, %10 ], [ -72, %12 ], [ -42, %14 ]
   ret i64 %22
 }
@@ -3434,7 +3434,7 @@ define dso_local range(i64 -70, 4) i64 @ZSTD_writeLastEmptyBlock(ptr noundef wri
   store i8 0, ptr %5, align 1, !tbaa !164
   br label %6
 
-6:                                                ; preds = %2, %4
+6:                                                ; preds = %4, %2
   %7 = phi i64 [ 3, %4 ], [ -70, %2 ]
   ret i64 %7
 }
@@ -3482,7 +3482,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   br i1 %22, label %23, label %24, !prof !9, !nosanitize !8
 
 23:                                               ; preds = %18
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 24:                                               ; preds = %18
@@ -3500,7 +3500,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   br i1 %33, label %34, label %35, !prof !9, !nosanitize !8
 
 34:                                               ; preds = %31
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 35:                                               ; preds = %31
@@ -3556,7 +3556,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   br i1 %71, label %72, label %73, !prof !9, !nosanitize !8
 
 72:                                               ; preds = %57
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 73:                                               ; preds = %57
@@ -3593,7 +3593,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   store i32 %95, ptr %90, align 4, !tbaa !208
   br label %96
 
-96:                                               ; preds = %77, %89
+96:                                               ; preds = %89, %77
   br i1 %49, label %97, label %99
 
 97:                                               ; preds = %96
@@ -3646,7 +3646,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   br i1 %129, label %130, label %131, !prof !9, !nosanitize !8
 
 130:                                              ; preds = %115
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 131:                                              ; preds = %115
@@ -3706,7 +3706,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   br i1 %168, label %169, label %170, !prof !9, !nosanitize !8
 
 169:                                              ; preds = %157
-  tail call void @llvm.ubsantrap(i8 21) #39, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #38, !nosanitize !8
   unreachable, !nosanitize !8
 
 170:                                              ; preds = %157
@@ -3717,7 +3717,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
 
 174:                                              ; preds = %170
   %175 = getelementptr inbounds nuw i8, ptr %0, i64 808
-  %176 = tail call i32 @ZSTD_XXH64_update(ptr noundef nonnull captures(none) %175, ptr noundef captures(none) %3, i64 noundef range(i64 1, 0) %4) #36
+  %176 = tail call i32 @ZSTD_XXH64_update(ptr noundef nonnull captures(none) %175, ptr noundef captures(none) %3, i64 noundef range(i64 1, 0) %4) #35
   br label %177
 
 177:                                              ; preds = %174, %170
@@ -3794,7 +3794,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   br i1 %232, label %233, label %234, !prof !9, !nosanitize !8
 
 233:                                              ; preds = %230
-  tail call void @llvm.ubsantrap(i8 21) #39, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #38, !nosanitize !8
   unreachable, !nosanitize !8
 
 234:                                              ; preds = %230
@@ -3805,7 +3805,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   %237 = phi i32 [ %229, %226 ], [ %235, %234 ]
   %238 = load ptr, ptr %181, align 8, !tbaa !59
   %239 = load i64, ptr %182, align 8, !tbaa !60
-  %240 = tail call i64 @ZSTD_splitBlock(ptr noundef %214, i64 noundef %159, i32 noundef %237, ptr noundef %238, i64 noundef %239) #36
+  %240 = tail call i64 @ZSTD_splitBlock(ptr noundef %214, i64 noundef %159, i32 noundef %237, ptr noundef %238, i64 noundef %239) #35
   br label %241
 
 241:                                              ; preds = %236, %225, %223, %221
@@ -3824,7 +3824,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   br i1 %250, label %251, label %252, !prof !9, !nosanitize !8
 
 251:                                              ; preds = %246
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 252:                                              ; preds = %246
@@ -3857,7 +3857,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   br i1 %270, label %271, label %272, !prof !9, !nosanitize !8
 
 271:                                              ; preds = %264
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 272:                                              ; preds = %264
@@ -3876,7 +3876,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   br i1 %280, label %281, label %282, !prof !9, !nosanitize !8
 
 281:                                              ; preds = %277
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 282:                                              ; preds = %277
@@ -3970,7 +3970,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   br label %381
 
 336:                                              ; preds = %322, %308, %305
-  %337 = tail call i64 @ZSTD_compressSuperBlock(ptr noundef nonnull %0, ptr noundef %215, i64 noundef range(i64 6, 0) %212, ptr noundef %214, i64 noundef %242, i32 noundef range(i32 0, 2) %244) #36
+  %337 = tail call i64 @ZSTD_compressSuperBlock(ptr noundef nonnull %0, ptr noundef %215, i64 noundef range(i64 6, 0) %212, ptr noundef %214, i64 noundef %242, i32 noundef range(i32 0, 2) %244) #35
   %338 = icmp eq i64 %337, -70
   br i1 %338, label %364, label %339
 
@@ -3987,7 +3987,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   br i1 %348, label %349, label %350, !prof !9, !nosanitize !8
 
 349:                                              ; preds = %339
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 350:                                              ; preds = %339
@@ -4004,7 +4004,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   br i1 %356, label %357, label %358, !prof !9, !nosanitize !8
 
 357:                                              ; preds = %354
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 358:                                              ; preds = %354
@@ -4028,7 +4028,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   br i1 %370, label %371, label %372, !prof !9, !nosanitize !8
 
 371:                                              ; preds = %364
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 372:                                              ; preds = %364
@@ -4099,7 +4099,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   br i1 %411, label %412, label %413, !prof !9, !nosanitize !8
 
 412:                                              ; preds = %405
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 413:                                              ; preds = %405
@@ -4125,7 +4125,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   %426 = sub i64 %424, %425
   %427 = lshr exact i64 %426, 3
   %428 = trunc i64 %427 to i32
-  call void @llvm.lifetime.start.p0(ptr nonnull %8) #36
+  call void @llvm.lifetime.start.p0(ptr nonnull %8) #35
   store ptr %198, ptr %8, align 8, !tbaa !224
   store i64 0, ptr %201, align 8, !tbaa !226
   %429 = icmp ult i32 %428, 5
@@ -4142,9 +4142,9 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
 
 435:                                              ; preds = %430, %421
   %436 = phi i64 [ %433, %430 ], [ 0, %421 ]
-  call void @llvm.lifetime.end.p0(ptr nonnull %8) #36
-  call void @llvm.lifetime.start.p0(ptr nonnull %9) #36
-  call void @llvm.lifetime.start.p0(ptr nonnull %10) #36
+  call void @llvm.lifetime.end.p0(ptr nonnull %8) #35
+  call void @llvm.lifetime.start.p0(ptr nonnull %9) #35
+  call void @llvm.lifetime.start.p0(ptr nonnull %10) #35
   %437 = load ptr, ptr %196, align 8, !tbaa !57
   %438 = getelementptr inbounds nuw i8, ptr %437, i64 5616
   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(12) %9, ptr noundef nonnull align 8 dereferenceable(12) %438, i64 12, i1 false)
@@ -4192,7 +4192,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   %462 = icmp eq i32 %443, 0
   br i1 %462, label %491, label %463
 
-463:                                              ; preds = %461, %487
+463:                                              ; preds = %487, %461
   %464 = phi i64 [ %488, %487 ], [ 0, %461 ]
   %465 = phi i64 [ %489, %487 ], [ 0, %461 ]
   %466 = getelementptr inbounds nuw [8 x i8], ptr %452, i64 %465
@@ -4205,7 +4205,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   br i1 %472, label %473, label %474, !prof !9, !nosanitize !8
 
 473:                                              ; preds = %463
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 474:                                              ; preds = %463
@@ -4225,7 +4225,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   br i1 %483, label %484, label %485, !prof !9, !nosanitize !8
 
 484:                                              ; preds = %481
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 485:                                              ; preds = %481
@@ -4248,7 +4248,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
 495:                                              ; preds = %491, %451
   br label %496
 
-496:                                              ; preds = %495, %623
+496:                                              ; preds = %623, %495
   %497 = phi i64 [ %612, %623 ], [ %212, %495 ]
   %498 = phi i64 [ %624, %623 ], [ 0, %495 ]
   %499 = phi ptr [ %609, %623 ], [ %214, %495 ]
@@ -4281,7 +4281,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   br i1 %521, label %522, label %523, !prof !9, !nosanitize !8
 
 522:                                              ; preds = %512
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 523:                                              ; preds = %512
@@ -4301,7 +4301,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   br i1 %532, label %533, label %534, !prof !9, !nosanitize !8
 
 533:                                              ; preds = %530
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 534:                                              ; preds = %530
@@ -4314,7 +4314,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   %539 = icmp eq i64 %538, %511
   br i1 %539, label %540, label %512, !llvm.loop !230
 
-540:                                              ; preds = %536, %563
+540:                                              ; preds = %563, %536
   %541 = phi i64 [ %564, %563 ], [ 0, %536 ]
   %542 = phi i64 [ %565, %563 ], [ 0, %536 ]
   %543 = getelementptr inbounds nuw [8 x i8], ptr %505, i64 %542
@@ -4328,7 +4328,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   br i1 %550, label %551, label %552, !prof !9, !nosanitize !8
 
 551:                                              ; preds = %540
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 552:                                              ; preds = %540
@@ -4346,7 +4346,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   br i1 %559, label %560, label %561, !prof !9, !nosanitize !8
 
 560:                                              ; preds = %557
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 561:                                              ; preds = %557
@@ -4370,7 +4370,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   br i1 %572, label %573, label %574, !prof !9, !nosanitize !8
 
 573:                                              ; preds = %569
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 574:                                              ; preds = %569
@@ -4380,7 +4380,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   br i1 %577, label %578, label %579, !prof !9, !nosanitize !8
 
 578:                                              ; preds = %574
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 579:                                              ; preds = %574
@@ -4392,7 +4392,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   br i1 %582, label %583, label %584, !prof !9, !nosanitize !8
 
 583:                                              ; preds = %580
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 584:                                              ; preds = %580
@@ -4402,7 +4402,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   br i1 %587, label %588, label %589, !prof !9, !nosanitize !8
 
 588:                                              ; preds = %584
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 589:                                              ; preds = %584
@@ -4415,7 +4415,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   br i1 %593, label %594, label %595, !prof !9, !nosanitize !8
 
 594:                                              ; preds = %591
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 595:                                              ; preds = %591
@@ -4445,7 +4445,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   br i1 %613, label %614, label %615, !prof !9, !nosanitize !8
 
 614:                                              ; preds = %608
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 615:                                              ; preds = %608
@@ -4454,7 +4454,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   br i1 %617, label %618, label %619, !prof !9, !nosanitize !8
 
 618:                                              ; preds = %615
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 619:                                              ; preds = %615
@@ -4464,7 +4464,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   br i1 %621, label %622, label %623, !prof !9, !nosanitize !8
 
 622:                                              ; preds = %619
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 623:                                              ; preds = %619
@@ -4479,10 +4479,10 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 8 dereferenceable(12) %629, ptr noundef nonnull align 4 dereferenceable(12) %9, i64 12, i1 false)
   br label %630
 
-630:                                              ; preds = %603, %627, %440
+630:                                              ; preds = %627, %603, %440
   %631 = phi i64 [ %441, %440 ], [ %624, %627 ], [ %606, %603 ]
-  call void @llvm.lifetime.end.p0(ptr nonnull %10) #36
-  call void @llvm.lifetime.end.p0(ptr nonnull %9) #36
+  call void @llvm.lifetime.end.p0(ptr nonnull %10) #35
+  call void @llvm.lifetime.end.p0(ptr nonnull %9) #35
   br label %632
 
 632:                                              ; preds = %630, %415
@@ -4491,7 +4491,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   br i1 %634, label %676, label %736
 
 635:                                              ; preds = %676
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 636:                                              ; preds = %388
@@ -4517,7 +4517,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   br i1 %648, label %649, label %650, !prof !9, !nosanitize !8
 
 649:                                              ; preds = %642
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 650:                                              ; preds = %642
@@ -4550,7 +4550,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   br label %669
 
 668:                                              ; preds = %680
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 669:                                              ; preds = %663, %658
@@ -4583,7 +4583,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   br i1 %687, label %688, label %689, !prof !9, !nosanitize !8
 
 688:                                              ; preds = %684
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 689:                                              ; preds = %684
@@ -4592,7 +4592,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   br i1 %691, label %692, label %693, !prof !9, !nosanitize !8
 
 692:                                              ; preds = %689
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 693:                                              ; preds = %689
@@ -4631,7 +4631,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   br i1 %713, label %714, label %715, !prof !9, !nosanitize !8
 
 714:                                              ; preds = %709
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 715:                                              ; preds = %709
@@ -4645,7 +4645,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   br i1 %721, label %722, label %723, !prof !9, !nosanitize !8
 
 722:                                              ; preds = %715
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 723:                                              ; preds = %715
@@ -4662,7 +4662,7 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   br i1 %730, label %731, label %732, !prof !9, !nosanitize !8
 
 731:                                              ; preds = %728
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 732:                                              ; preds = %728
@@ -4670,10 +4670,10 @@ define internal fastcc i64 @ZSTD_compressContinue_internal(ptr noundef %0, ptr n
   %734 = icmp ugt i64 %733, %726
   br i1 %734, label %736, label %735
 
-735:                                              ; preds = %723, %732
+735:                                              ; preds = %732, %723
   br label %736
 
-736:                                              ; preds = %241, %300, %636, %652, %632, %650, %350, %372, %374, %413, %402, %391, %735, %706, %732, %38, %7, %24
+736:                                              ; preds = %735, %732, %706, %652, %650, %636, %632, %413, %402, %391, %374, %372, %350, %300, %241, %38, %24, %7
   %737 = phi i64 [ %29, %24 ], [ %39, %38 ], [ -60, %7 ], [ %707, %706 ], [ %717, %735 ], [ -72, %732 ], [ %392, %391 ], [ -106, %402 ], [ -70, %413 ], [ %369, %374 ], [ -70, %372 ], [ %337, %350 ], [ -70, %650 ], [ %633, %632 ], [ %647, %652 ], [ %639, %636 ], [ %301, %300 ], [ -70, %241 ]
   ret i64 %737
 }
@@ -4712,7 +4712,7 @@ define dso_local i64 @ZSTD_compressBlock_deprecated(ptr noundef %0, ptr noundef 
   %15 = tail call fastcc i64 @ZSTD_compressContinue_internal(ptr noundef nonnull %0, ptr noundef %1, i64 noundef %2, ptr noundef %3, i64 noundef %4, i32 noundef 0, i32 noundef 0)
   br label %16
 
-16:                                               ; preds = %5, %14
+16:                                               ; preds = %14, %5
   %17 = phi i64 [ %15, %14 ], [ -72, %5 ]
   ret i64 %17
 }
@@ -4733,7 +4733,7 @@ define dso_local i64 @ZSTD_compressBlock(ptr noundef %0, ptr noundef %1, i64 nou
   %15 = tail call fastcc i64 @ZSTD_compressContinue_internal(ptr noundef nonnull %0, ptr noundef %1, i64 noundef %2, ptr noundef %3, i64 noundef %4, i32 noundef 0, i32 noundef 0)
   br label %16
 
-16:                                               ; preds = %5, %14
+16:                                               ; preds = %14, %5
   %17 = phi i64 [ %15, %14 ], [ -72, %5 ]
   ret i64 %17
 }
@@ -4751,20 +4751,20 @@ define dso_local i64 @ZSTD_loadCEntropy(ptr noundef initializes((2056, 2060)) %0
   %13 = alloca [36 x i16], align 16
   %14 = alloca i32, align 4
   %15 = alloca i32, align 4
-  call void @llvm.lifetime.start.p0(ptr nonnull %5) #36
-  call void @llvm.lifetime.start.p0(ptr nonnull %6) #36
+  call void @llvm.lifetime.start.p0(ptr nonnull %5) #35
+  call void @llvm.lifetime.start.p0(ptr nonnull %6) #35
   store i32 31, ptr %6, align 4, !tbaa !4
   %16 = getelementptr inbounds nuw i8, ptr %2, i64 %3
   %17 = getelementptr inbounds nuw i8, ptr %2, i64 8
   %18 = getelementptr inbounds nuw i8, ptr %0, i64 2056
   store i32 1, ptr %18, align 8, !tbaa !150
-  call void @llvm.lifetime.start.p0(ptr nonnull %7) #36
+  call void @llvm.lifetime.start.p0(ptr nonnull %7) #35
   store i32 255, ptr %7, align 4, !tbaa !4
-  call void @llvm.lifetime.start.p0(ptr nonnull %8) #36
+  call void @llvm.lifetime.start.p0(ptr nonnull %8) #35
   store i32 1, ptr %8, align 4, !tbaa !4
   %19 = ptrtoint ptr %16 to i64
   %20 = add i64 %3, -8
-  %21 = call i64 @HUF_readCTable(ptr noundef %0, ptr noundef nonnull %7, ptr noundef nonnull %17, i64 noundef %20, ptr noundef nonnull %8) #36
+  %21 = call i64 @HUF_readCTable(ptr noundef %0, ptr noundef nonnull %7, ptr noundef nonnull %17, i64 noundef %20, ptr noundef nonnull %8) #35
   %22 = load i32, ptr %8, align 4, !tbaa !4
   %23 = icmp eq i32 %22, 0
   %24 = load i32, ptr %7, align 4
@@ -4776,17 +4776,17 @@ define dso_local i64 @ZSTD_loadCEntropy(ptr noundef initializes((2056, 2060)) %0
   store i32 2, ptr %18, align 8, !tbaa !150
   br label %28
 
-28:                                               ; preds = %4, %27
+28:                                               ; preds = %27, %4
   %29 = icmp ult i64 %21, -119
   %30 = getelementptr inbounds nuw i8, ptr %17, i64 %21
-  call void @llvm.lifetime.end.p0(ptr nonnull %8) #36
-  call void @llvm.lifetime.end.p0(ptr nonnull %7) #36
+  call void @llvm.lifetime.end.p0(ptr nonnull %8) #35
+  call void @llvm.lifetime.end.p0(ptr nonnull %7) #35
   br i1 %29, label %31, label %206
 
 31:                                               ; preds = %28
-  call void @llvm.lifetime.start.p0(ptr nonnull %9) #36
+  call void @llvm.lifetime.start.p0(ptr nonnull %9) #35
   %32 = sub i64 %20, %21
-  %33 = call i64 @FSE_readNCount(ptr noundef nonnull %5, ptr noundef nonnull %6, ptr noundef nonnull %9, ptr noundef nonnull %30, i64 noundef %32) #36
+  %33 = call i64 @FSE_readNCount(ptr noundef nonnull %5, ptr noundef nonnull %6, ptr noundef nonnull %9, ptr noundef nonnull %30, i64 noundef %32) #35
   %34 = icmp ult i64 %33, -119
   br i1 %34, label %35, label %38
 
@@ -4795,26 +4795,26 @@ define dso_local i64 @ZSTD_loadCEntropy(ptr noundef initializes((2056, 2060)) %0
   %37 = icmp ugt i32 %36, 8
   br i1 %37, label %38, label %39
 
-38:                                               ; preds = %31, %35
-  call void @llvm.lifetime.end.p0(ptr nonnull %9) #36
+38:                                               ; preds = %35, %31
+  call void @llvm.lifetime.end.p0(ptr nonnull %9) #35
   br label %206
 
 39:                                               ; preds = %35
   %40 = getelementptr inbounds nuw i8, ptr %0, i64 2064
-  %41 = call i64 @FSE_buildCTable_wksp(ptr noundef nonnull %40, ptr noundef nonnull %5, i32 noundef 31, i32 noundef %36, ptr noundef %1, i64 noundef 8704) #36
+  %41 = call i64 @FSE_buildCTable_wksp(ptr noundef nonnull %40, ptr noundef nonnull %5, i32 noundef 31, i32 noundef %36, ptr noundef %1, i64 noundef 8704) #35
   %42 = icmp ult i64 %41, -119
   %43 = getelementptr inbounds nuw i8, ptr %30, i64 %33
-  call void @llvm.lifetime.end.p0(ptr nonnull %9) #36
+  call void @llvm.lifetime.end.p0(ptr nonnull %9) #35
   br i1 %42, label %44, label %206
 
 44:                                               ; preds = %39
-  call void @llvm.lifetime.start.p0(ptr nonnull %10) #36
-  call void @llvm.lifetime.start.p0(ptr nonnull %11) #36
+  call void @llvm.lifetime.start.p0(ptr nonnull %10) #35
+  call void @llvm.lifetime.start.p0(ptr nonnull %11) #35
   store i32 52, ptr %11, align 4, !tbaa !4
-  call void @llvm.lifetime.start.p0(ptr nonnull %12) #36
+  call void @llvm.lifetime.start.p0(ptr nonnull %12) #35
   %45 = add i64 %21, %33
   %46 = sub i64 %20, %45
-  %47 = call i64 @FSE_readNCount(ptr noundef nonnull %10, ptr noundef nonnull %11, ptr noundef nonnull %12, ptr noundef nonnull %43, i64 noundef %46) #36
+  %47 = call i64 @FSE_readNCount(ptr noundef nonnull %10, ptr noundef nonnull %11, ptr noundef nonnull %12, ptr noundef nonnull %43, i64 noundef %46) #35
   %48 = icmp ult i64 %47, -119
   br i1 %48, label %49, label %85
 
@@ -4826,7 +4826,7 @@ define dso_local i64 @ZSTD_loadCEntropy(ptr noundef initializes((2056, 2060)) %0
 52:                                               ; preds = %49
   %53 = getelementptr inbounds nuw i8, ptr %0, i64 2836
   %54 = load i32, ptr %11, align 4, !tbaa !4
-  %55 = call i64 @FSE_buildCTable_wksp(ptr noundef nonnull %53, ptr noundef nonnull %10, i32 noundef %54, i32 noundef %50, ptr noundef %1, i64 noundef 8704) #36
+  %55 = call i64 @FSE_buildCTable_wksp(ptr noundef nonnull %53, ptr noundef nonnull %10, i32 noundef %54, i32 noundef %50, ptr noundef %1, i64 noundef 8704) #35
   %56 = icmp ult i64 %55, -119
   br i1 %56, label %57, label %85
 
@@ -4855,23 +4855,23 @@ define dso_local i64 @ZSTD_loadCEntropy(ptr noundef initializes((2056, 2060)) %0
   %79 = getelementptr inbounds nuw i8, ptr %0, i64 5608
   store i32 %78, ptr %79, align 8, !tbaa !152
   %80 = getelementptr inbounds nuw i8, ptr %43, i64 %47
-  call void @llvm.lifetime.end.p0(ptr nonnull %12) #36
-  call void @llvm.lifetime.end.p0(ptr nonnull %11) #36
-  call void @llvm.lifetime.end.p0(ptr nonnull %10) #36
-  call void @llvm.lifetime.start.p0(ptr nonnull %13) #36
-  call void @llvm.lifetime.start.p0(ptr nonnull %14) #36
+  call void @llvm.lifetime.end.p0(ptr nonnull %12) #35
+  call void @llvm.lifetime.end.p0(ptr nonnull %11) #35
+  call void @llvm.lifetime.end.p0(ptr nonnull %10) #35
+  call void @llvm.lifetime.start.p0(ptr nonnull %13) #35
+  call void @llvm.lifetime.start.p0(ptr nonnull %14) #35
   store i32 35, ptr %14, align 4, !tbaa !4
-  call void @llvm.lifetime.start.p0(ptr nonnull %15) #36
+  call void @llvm.lifetime.start.p0(ptr nonnull %15) #35
   %81 = ptrtoint ptr %80 to i64
   %82 = sub i64 %19, %81
-  %83 = call i64 @FSE_readNCount(ptr noundef nonnull %13, ptr noundef nonnull %14, ptr noundef nonnull %15, ptr noundef nonnull %80, i64 noundef %82) #36
+  %83 = call i64 @FSE_readNCount(ptr noundef nonnull %13, ptr noundef nonnull %14, ptr noundef nonnull %15, ptr noundef nonnull %80, i64 noundef %82) #35
   %84 = icmp ult i64 %83, -119
   br i1 %84, label %86, label %116
 
-85:                                               ; preds = %44, %49, %52
-  call void @llvm.lifetime.end.p0(ptr nonnull %12) #36
-  call void @llvm.lifetime.end.p0(ptr nonnull %11) #36
-  call void @llvm.lifetime.end.p0(ptr nonnull %10) #36
+85:                                               ; preds = %52, %49, %44
+  call void @llvm.lifetime.end.p0(ptr nonnull %12) #35
+  call void @llvm.lifetime.end.p0(ptr nonnull %11) #35
+  call void @llvm.lifetime.end.p0(ptr nonnull %10) #35
   br label %206
 
 86:                                               ; preds = %57
@@ -4882,7 +4882,7 @@ define dso_local i64 @ZSTD_loadCEntropy(ptr noundef initializes((2056, 2060)) %0
 89:                                               ; preds = %86
   %90 = getelementptr inbounds nuw i8, ptr %0, i64 4288
   %91 = load i32, ptr %14, align 4, !tbaa !4
-  %92 = call i64 @FSE_buildCTable_wksp(ptr noundef nonnull %90, ptr noundef nonnull %13, i32 noundef %91, i32 noundef %87, ptr noundef %1, i64 noundef 8704) #36
+  %92 = call i64 @FSE_buildCTable_wksp(ptr noundef nonnull %90, ptr noundef nonnull %13, i32 noundef %91, i32 noundef %87, ptr noundef %1, i64 noundef 8704) #35
   %93 = icmp ult i64 %92, -119
   br i1 %93, label %94, label %116
 
@@ -4907,17 +4907,17 @@ define dso_local i64 @ZSTD_loadCEntropy(ptr noundef initializes((2056, 2060)) %0
   %112 = getelementptr inbounds nuw i8, ptr %0, i64 5612
   store i32 %111, ptr %112, align 4, !tbaa !153
   %113 = getelementptr inbounds nuw i8, ptr %80, i64 %83
-  call void @llvm.lifetime.end.p0(ptr nonnull %15) #36
-  call void @llvm.lifetime.end.p0(ptr nonnull %14) #36
-  call void @llvm.lifetime.end.p0(ptr nonnull %13) #36
+  call void @llvm.lifetime.end.p0(ptr nonnull %15) #35
+  call void @llvm.lifetime.end.p0(ptr nonnull %14) #35
+  call void @llvm.lifetime.end.p0(ptr nonnull %13) #35
   %114 = getelementptr inbounds nuw i8, ptr %113, i64 12
   %115 = icmp ugt ptr %114, %16
   br i1 %115, label %206, label %117
 
-116:                                              ; preds = %57, %86, %89
-  call void @llvm.lifetime.end.p0(ptr nonnull %15) #36
-  call void @llvm.lifetime.end.p0(ptr nonnull %14) #36
-  call void @llvm.lifetime.end.p0(ptr nonnull %13) #36
+116:                                              ; preds = %89, %86, %57
+  call void @llvm.lifetime.end.p0(ptr nonnull %15) #35
+  call void @llvm.lifetime.end.p0(ptr nonnull %14) #35
+  call void @llvm.lifetime.end.p0(ptr nonnull %13) #35
   br label %206
 
 117:                                              ; preds = %94
@@ -5002,7 +5002,7 @@ define dso_local i64 @ZSTD_loadCEntropy(ptr noundef initializes((2056, 2060)) %0
   %175 = icmp eq i64 %138, %141
   br i1 %175, label %186, label %176
 
-176:                                              ; preds = %136, %174
+176:                                              ; preds = %174, %136
   %177 = phi i64 [ 0, %136 ], [ %141, %174 ]
   br label %181
 
@@ -5011,14 +5011,14 @@ define dso_local i64 @ZSTD_loadCEntropy(ptr noundef initializes((2056, 2060)) %0
   %180 = icmp eq i64 %182, %137
   br i1 %180, label %186, label %181, !llvm.loop !235
 
-181:                                              ; preds = %176, %178
+181:                                              ; preds = %178, %176
   %182 = phi i64 [ %179, %178 ], [ %177, %176 ]
   %183 = getelementptr inbounds nuw [2 x i8], ptr %5, i64 %182
   %184 = load i16, ptr %183, align 2, !tbaa !199
   %185 = icmp eq i16 %184, 0
   br i1 %185, label %186, label %178
 
-186:                                              ; preds = %140, %149, %158, %167, %178, %181, %174, %117
+186:                                              ; preds = %181, %178, %174, %167, %158, %149, %140, %117
   %187 = phi i32 [ 1, %117 ], [ 2, %174 ], [ 1, %181 ], [ 2, %178 ], [ 1, %167 ], [ 1, %158 ], [ 1, %149 ], [ 1, %140 ]
   %188 = getelementptr inbounds nuw i8, ptr %0, i64 5604
   store i32 %187, ptr %188, align 4, !tbaa !151
@@ -5047,10 +5047,10 @@ define dso_local i64 @ZSTD_loadCEntropy(ptr noundef initializes((2056, 2060)) %0
   %205 = sub i64 %126, %204
   br label %206
 
-206:                                              ; preds = %186, %193, %198, %116, %85, %38, %94, %39, %28, %203
+206:                                              ; preds = %203, %198, %193, %186, %116, %94, %85, %39, %38, %28
   %207 = phi i64 [ -30, %28 ], [ %205, %203 ], [ -30, %38 ], [ -30, %116 ], [ -30, %85 ], [ -30, %39 ], [ -30, %94 ], [ -30, %198 ], [ -30, %193 ], [ -30, %186 ]
-  call void @llvm.lifetime.end.p0(ptr nonnull %6) #36
-  call void @llvm.lifetime.end.p0(ptr nonnull %5) #36
+  call void @llvm.lifetime.end.p0(ptr nonnull %6) #35
+  call void @llvm.lifetime.end.p0(ptr nonnull %5) #35
   ret i64 %207
 }
 
@@ -5091,7 +5091,7 @@ define dso_local range(i64 -119, 0) i64 @ZSTD_compressBegin_advanced_internal(pt
   %31 = tail call fastcc i64 @ZSTD_compressBegin_internal(ptr noundef %0, i64 noundef %2, ptr noundef %5, ptr noundef nonnull %6, i64 noundef %7, i32 noundef 0)
   br label %32
 
-32:                                               ; preds = %16, %8, %30
+32:                                               ; preds = %30, %16, %8
   %33 = phi i64 [ %31, %30 ], [ -42, %16 ], [ -42, %8 ]
   ret i64 %33
 }
@@ -5104,10 +5104,10 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_compressBegin_internal(ptr n
   br i1 %9, label %12, label %10
 
 10:                                               ; preds = %6
-  %11 = tail call i64 @ZSTD_trace_compress_begin(ptr noundef %0) #36
+  %11 = tail call i64 @ZSTD_trace_compress_begin(ptr noundef %0) #35
   br label %12
 
-12:                                               ; preds = %6, %10
+12:                                               ; preds = %10, %6
   %13 = phi i64 [ %11, %10 ], [ 0, %6 ]
   %14 = getelementptr inbounds nuw i8, ptr %0, i64 3760
   store i64 %13, ptr %14, align 8, !tbaa !238
@@ -5129,7 +5129,7 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_compressBegin_internal(ptr n
   br i1 %23, label %24, label %25, !prof !9, !nosanitize !8
 
 24:                                               ; preds = %21
-  tail call void @llvm.ubsantrap(i8 12) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 12) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 25:                                               ; preds = %21
@@ -5138,7 +5138,7 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_compressBegin_internal(ptr n
   br i1 %27, label %29, label %28
 
 28:                                               ; preds = %25
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 29:                                               ; preds = %25, %19
@@ -5163,7 +5163,7 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_compressBegin_internal(ptr n
   br i1 %43, label %44, label %45
 
 44:                                               ; preds = %39
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 45:                                               ; preds = %39
@@ -5188,14 +5188,14 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_compressBegin_internal(ptr n
   br i1 %57, label %58, label %59, !prof !9, !nosanitize !8
 
 58:                                               ; preds = %54
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 59:                                               ; preds = %54, %51, %47
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
-60:                                               ; preds = %45, %47
+60:                                               ; preds = %47, %45
   call void @llvm.lifetime.start.p0(ptr nonnull %7)
   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 8 dereferenceable(224) %7, ptr noundef nonnull readonly align 8 dereferenceable(224) %3, i64 224, i1 false)
   %61 = getelementptr inbounds nuw i8, ptr %2, i64 360
@@ -5211,7 +5211,7 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_compressBegin_internal(ptr n
   call void @llvm.lifetime.end.p0(ptr nonnull %7)
   br label %70
 
-68:                                               ; preds = %12, %15, %29
+68:                                               ; preds = %29, %15, %12
   %69 = tail call fastcc i64 @ZSTD_resetCCtx_internal(ptr noundef nonnull %0, ptr noundef %3, i64 noundef %4, i32 noundef %5)
   br label %70
 
@@ -5223,7 +5223,7 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_compressBegin_internal(ptr n
 ; Function Attrs: nounwind uwtable
 define dso_local range(i64 -119, 0) i64 @ZSTD_compressBegin_advanced(ptr noundef %0, ptr noundef readnone captures(none) %1, i64 noundef %2, ptr noundef readonly byval(%struct.ZSTD_parameters) align 8 captures(none) %3, i64 noundef %4) local_unnamed_addr #4 {
   %6 = alloca %struct.ZSTD_CCtx_params_s, align 8
-  call void @llvm.lifetime.start.p0(ptr nonnull %6) #36
+  call void @llvm.lifetime.start.p0(ptr nonnull %6) #35
   call void @llvm.memset.p0.i64(ptr noundef nonnull align 8 dereferenceable(224) %6, i8 0, i64 224, i1 false)
   %7 = getelementptr inbounds nuw i8, ptr %6, i64 4
   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %7, ptr noundef nonnull readonly align 8 dereferenceable(28) %3, i64 28, i1 false), !tbaa.struct !78
@@ -5265,7 +5265,7 @@ define dso_local range(i64 -119, 0) i64 @ZSTD_compressBegin_advanced(ptr noundef
   %29 = select i1 %28, i32 1, i32 2
   br label %30
 
-30:                                               ; preds = %19, %18, %24
+30:                                               ; preds = %24, %19, %18
   %31 = phi i32 [ %29, %24 ], [ 2, %19 ], [ 2, %18 ]
   %32 = getelementptr inbounds nuw i8, ptr %6, i64 96
   store i32 %31, ptr %32, align 8, !tbaa !82
@@ -5302,31 +5302,31 @@ define dso_local range(i64 -119, 0) i64 @ZSTD_compressBegin_advanced(ptr noundef
   br i1 %56, label %59, label %57
 
 57:                                               ; preds = %55
-  %58 = tail call i64 @ZSTD_trace_compress_begin(ptr noundef %0) #36
+  %58 = tail call i64 @ZSTD_trace_compress_begin(ptr noundef %0) #35
   br label %59
 
-59:                                               ; preds = %55, %57
+59:                                               ; preds = %57, %55
   %60 = phi i64 [ %58, %57 ], [ 0, %55 ]
   %61 = getelementptr inbounds nuw i8, ptr %0, i64 3760
   store i64 %60, ptr %61, align 8, !tbaa !238
   %62 = call fastcc i64 @ZSTD_resetCCtx_internal(ptr noundef nonnull %0, ptr noundef nonnull readonly %6, i64 noundef %4, i32 noundef 0)
   br label %63
 
-63:                                               ; preds = %30, %41, %59
+63:                                               ; preds = %59, %41, %30
   %64 = phi i64 [ %62, %59 ], [ -42, %41 ], [ -42, %30 ]
-  call void @llvm.lifetime.end.p0(ptr nonnull %6) #36
+  call void @llvm.lifetime.end.p0(ptr nonnull %6) #35
   ret i64 %64
 }
 
 ; Function Attrs: cold noreturn nounwind memory(inaccessiblemem: write) uwtable
 define dso_local noundef i64 @ZSTD_compressBegin_usingDict(ptr noundef readnone captures(none) %0, ptr noundef readnone captures(none) %1, i64 noundef %2, i32 noundef %3) local_unnamed_addr #15 {
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 }
 
 ; Function Attrs: cold noreturn nounwind memory(inaccessiblemem: write) uwtable
 define dso_local noundef i64 @ZSTD_compressBegin(ptr noundef readnone captures(none) %0, i32 noundef %1) local_unnamed_addr #15 {
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 }
 
@@ -5361,7 +5361,7 @@ define dso_local void @ZSTD_CCtx_trace(ptr noundef %0, i64 noundef %1) local_unn
 
 22:                                               ; preds = %17, %13, %9
   %23 = phi i32 [ 1, %13 ], [ 1, %9 ], [ %21, %17 ]
-  call void @llvm.lifetime.start.p0(ptr nonnull %3) #36
+  call void @llvm.lifetime.start.p0(ptr nonnull %3) #35
   %24 = getelementptr inbounds nuw i8, ptr %3, i64 8
   call void @llvm.memset.p0.i64(ptr noundef nonnull align 8 dereferenceable(56) %24, i8 0, i64 56, i1 false)
   store i32 10600, ptr %3, align 8, !tbaa !245
@@ -5386,7 +5386,7 @@ define dso_local void @ZSTD_CCtx_trace(ptr noundef %0, i64 noundef %1) local_unn
   br i1 %38, label %39, label %40, !prof !9, !nosanitize !8
 
 39:                                               ; preds = %22
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 40:                                               ; preds = %22
@@ -5398,8 +5398,8 @@ define dso_local void @ZSTD_CCtx_trace(ptr noundef %0, i64 noundef %1) local_unn
   store ptr %43, ptr %44, align 8, !tbaa !256
   %45 = getelementptr inbounds nuw i8, ptr %3, i64 48
   store ptr %0, ptr %45, align 8, !tbaa !257
-  call void @ZSTD_trace_compress_end(i64 noundef %5, ptr noundef nonnull %3) #36
-  call void @llvm.lifetime.end.p0(ptr nonnull %3) #36
+  call void @ZSTD_trace_compress_end(i64 noundef %5, ptr noundef nonnull %3) #35
+  call void @llvm.lifetime.end.p0(ptr nonnull %3) #35
   br label %46
 
 46:                                               ; preds = %40, %2
@@ -5422,7 +5422,7 @@ define dso_local i64 @ZSTD_compressEnd_public(ptr noundef %0, ptr noundef %1, i6
   br i1 %11, label %12, label %13, !prof !9, !nosanitize !8
 
 12:                                               ; preds = %9
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 13:                                               ; preds = %9
@@ -5447,7 +5447,7 @@ define dso_local i64 @ZSTD_compressEnd_public(ptr noundef %0, ptr noundef %1, i6
   br i1 %25, label %26, label %27, !prof !9, !nosanitize !8
 
 26:                                               ; preds = %17
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 27:                                               ; preds = %17
@@ -5515,13 +5515,13 @@ define dso_local i64 @ZSTD_compressEnd_public(ptr noundef %0, ptr noundef %1, i6
 
 66:                                               ; preds = %64
   %67 = getelementptr inbounds nuw i8, ptr %0, i64 808
-  %68 = tail call i64 @ZSTD_XXH64_digest(ptr noundef nonnull captures(none) %67) #40
+  %68 = tail call i64 @ZSTD_XXH64_digest(ptr noundef nonnull captures(none) %67) #39
   %69 = trunc i64 %68 to i32
   store i32 %69, ptr %59, align 1, !tbaa !4
   %70 = getelementptr inbounds nuw i8, ptr %59, i64 4
   br label %71
 
-71:                                               ; preds = %58, %66
+71:                                               ; preds = %66, %58
   %72 = phi ptr [ %70, %66 ], [ %59, %58 ]
   store i32 0, ptr %0, align 8, !tbaa !203
   %73 = ptrtoint ptr %72 to i64
@@ -5544,7 +5544,7 @@ define dso_local i64 @ZSTD_compressEnd_public(ptr noundef %0, ptr noundef %1, i6
   br i1 %85, label %86, label %87, !prof !9, !nosanitize !8
 
 86:                                               ; preds = %81
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 87:                                               ; preds = %81
@@ -5581,7 +5581,7 @@ define dso_local i64 @ZSTD_compressEnd_public(ptr noundef %0, ptr noundef %1, i6
 
 109:                                              ; preds = %104, %100, %96
   %110 = phi i32 [ 1, %100 ], [ 1, %96 ], [ %108, %104 ]
-  call void @llvm.lifetime.start.p0(ptr nonnull %6) #36
+  call void @llvm.lifetime.start.p0(ptr nonnull %6) #35
   %111 = getelementptr inbounds nuw i8, ptr %6, i64 8
   call void @llvm.memset.p0.i64(ptr noundef nonnull align 8 dereferenceable(56) %111, i8 0, i64 56, i1 false)
   store i32 10600, ptr %6, align 8, !tbaa !245
@@ -5605,7 +5605,7 @@ define dso_local i64 @ZSTD_compressEnd_public(ptr noundef %0, ptr noundef %1, i6
   br i1 %124, label %125, label %126, !prof !9, !nosanitize !8
 
 125:                                              ; preds = %109
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 126:                                              ; preds = %109
@@ -5617,25 +5617,25 @@ define dso_local i64 @ZSTD_compressEnd_public(ptr noundef %0, ptr noundef %1, i6
   store ptr %129, ptr %130, align 8, !tbaa !256
   %131 = getelementptr inbounds nuw i8, ptr %6, i64 48
   store ptr %0, ptr %131, align 8, !tbaa !257
-  call void @ZSTD_trace_compress_end(i64 noundef %92, ptr noundef nonnull %6) #36
-  call void @llvm.lifetime.end.p0(ptr nonnull %6) #36
+  call void @ZSTD_trace_compress_end(i64 noundef %92, ptr noundef nonnull %6) #35
+  call void @llvm.lifetime.end.p0(ptr nonnull %6) #35
   br label %132
 
-132:                                              ; preds = %90, %126
+132:                                              ; preds = %126, %90
   store i64 0, ptr %91, align 8, !tbaa !238
   %133 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %7, i64 %75), !nosanitize !8
   %134 = extractvalue { i64, i1 } %133, 1, !nosanitize !8
   br i1 %134, label %135, label %136, !prof !9, !nosanitize !8
 
 135:                                              ; preds = %132
-  call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 136:                                              ; preds = %132
   %137 = extractvalue { i64, i1 } %133, 0, !nosanitize !8
   br label %138
 
-138:                                              ; preds = %27, %64, %13, %52, %87, %71, %5, %136
+138:                                              ; preds = %136, %87, %71, %64, %52, %27, %13, %5
   %139 = phi i64 [ %7, %5 ], [ %137, %136 ], [ %75, %71 ], [ -72, %87 ], [ -70, %27 ], [ -70, %64 ], [ -60, %13 ], [ -70, %52 ]
   ret i64 %139
 }
@@ -5731,7 +5731,7 @@ define dso_local range(i64 -119, 0) i64 @ZSTD_compress_advanced(ptr noundef %0, 
   %61 = select i1 %60, i32 1, i32 2
   br label %62
 
-62:                                               ; preds = %53, %52, %57
+62:                                               ; preds = %57, %53, %52
   %63 = phi i32 [ %61, %57 ], [ 2, %53 ], [ 2, %52 ]
   %64 = getelementptr inbounds nuw i8, ptr %0, i64 560
   store i32 %63, ptr %64, align 8, !tbaa !82
@@ -5743,17 +5743,17 @@ define dso_local range(i64 -119, 0) i64 @ZSTD_compress_advanced(ptr noundef %0, 
   br i1 %67, label %70, label %68
 
 68:                                               ; preds = %62
-  %69 = tail call i64 @ZSTD_trace_compress_begin(ptr noundef nonnull %0) #36
+  %69 = tail call i64 @ZSTD_trace_compress_begin(ptr noundef nonnull %0) #35
   br label %70
 
-70:                                               ; preds = %62, %68
+70:                                               ; preds = %68, %62
   %71 = phi i64 [ %69, %68 ], [ 0, %62 ]
   %72 = getelementptr inbounds nuw i8, ptr %0, i64 3760
   store i64 %71, ptr %72, align 8, !tbaa !238
   %73 = tail call fastcc range(i64 -119, 0) i64 @ZSTD_resetCCtx_internal(ptr noundef nonnull %0, ptr noundef nonnull readonly %42, i64 noundef %4, i32 noundef 0)
   br label %74
 
-74:                                               ; preds = %12, %17, %22, %27, %8, %36, %70
+74:                                               ; preds = %70, %36, %27, %22, %17, %12, %8
   %75 = phi i64 [ %73, %70 ], [ -42, %36 ], [ -42, %8 ], [ -42, %27 ], [ -42, %22 ], [ -42, %17 ], [ -42, %12 ]
   ret i64 %75
 }
@@ -5764,7 +5764,7 @@ define dso_local range(i64 -119, 0) i64 @ZSTD_compress_advanced_internal(ptr nou
   br i1 %9, label %12, label %10
 
 10:                                               ; preds = %8
-  %11 = tail call i64 @ZSTD_trace_compress_begin(ptr noundef %0) #36
+  %11 = tail call i64 @ZSTD_trace_compress_begin(ptr noundef %0) #35
   br label %12
 
 12:                                               ; preds = %10, %8
@@ -5777,32 +5777,32 @@ define dso_local range(i64 -119, 0) i64 @ZSTD_compress_advanced_internal(ptr nou
 
 ; Function Attrs: cold noreturn nounwind memory(inaccessiblemem: write) uwtable
 define dso_local noundef i64 @ZSTD_compress_usingDict(ptr noundef readnone captures(none) %0, ptr noundef readnone captures(none) %1, i64 noundef %2, ptr noundef readnone captures(none) %3, i64 noundef %4, ptr noundef readnone captures(none) %5, i64 noundef %6, i32 noundef %7) local_unnamed_addr #15 {
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 }
 
 ; Function Attrs: cold noreturn nounwind memory(inaccessiblemem: write) uwtable
 define dso_local noundef i64 @ZSTD_compressCCtx(ptr noundef readnone captures(none) %0, ptr noundef readnone captures(none) %1, i64 noundef %2, ptr noundef readnone captures(none) %3, i64 noundef %4, i32 noundef %5) local_unnamed_addr #15 {
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 }
 
 ; Function Attrs: noreturn nounwind uwtable
 define dso_local noundef i64 @ZSTD_compress(ptr noundef readnone captures(none) %0, i64 noundef %1, ptr noundef readnone captures(none) %2, i64 noundef %3, i32 noundef %4) local_unnamed_addr #17 {
   %6 = alloca %struct.ZSTD_CCtx_s, align 8
-  call void @llvm.lifetime.start.p0(ptr nonnull %6) #36
-  %7 = tail call i32 asm "cpuid", "={ax},{ax},~{ebx},~{ecx},~{edx},~{dirflag},~{fpsr},~{flags}"(i32 0) #35, !srcloc !10
+  call void @llvm.lifetime.start.p0(ptr nonnull %6) #35
+  %7 = tail call i32 asm "cpuid", "={ax},{ax},~{ebx},~{ecx},~{edx},~{dirflag},~{fpsr},~{flags}"(i32 0) #34, !srcloc !10
   %8 = icmp eq i32 %7, 0
   call void @llvm.memset.p0.i64(ptr noundef nonnull align 8 dereferenceable(5280) %6, i8 0, i64 5280, i1 false)
   br i1 %8, label %20, label %9
 
 9:                                                ; preds = %5
-  %10 = tail call { i32, i32, i32 } asm "cpuid", "={ax},={cx},={dx},{ax},~{ebx},~{dirflag},~{fpsr},~{flags}"(i32 1) #35, !srcloc !11
+  %10 = tail call { i32, i32, i32 } asm "cpuid", "={ax},={cx},={dx},{ax},~{ebx},~{dirflag},~{fpsr},~{flags}"(i32 1) #34, !srcloc !11
   %11 = icmp ugt i32 %7, 6
   br i1 %11, label %12, label %20
 
 12:                                               ; preds = %9
-  %13 = tail call { i32, i32, i32 } asm "cpuid", "={ax},={bx},={cx},{ax},{cx},~{edx},~{dirflag},~{fpsr},~{flags}"(i32 7, i32 0) #35, !srcloc !12
+  %13 = tail call { i32, i32, i32 } asm "cpuid", "={ax},={bx},={cx},{ax},{cx},~{edx},~{dirflag},~{fpsr},~{flags}"(i32 7, i32 0) #34, !srcloc !12
   %14 = extractvalue { i32, i32, i32 } %13, 1
   %15 = and i32 %14, 8
   %16 = icmp eq i32 %15, 0
@@ -5813,12 +5813,12 @@ define dso_local noundef i64 @ZSTD_compress(ptr noundef readnone captures(none) 
   %19 = and i32 %18, 1
   br label %20
 
-20:                                               ; preds = %5, %9, %12, %17
+20:                                               ; preds = %17, %12, %9, %5
   %21 = phi i32 [ 0, %12 ], [ %19, %17 ], [ 0, %9 ], [ 0, %5 ]
   %22 = getelementptr inbounds nuw i8, ptr %6, i64 8
   store i32 %21, ptr %22, align 8, !tbaa !13
   call fastcc void @ZSTD_clearAllDicts(ptr noundef nonnull %6)
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 }
 
@@ -5843,7 +5843,7 @@ define dso_local i64 @ZSTD_estimateCDictSize_advanced(i64 noundef %0, ptr nounde
   br i1 %19, label %20, label %21, !prof !9, !nosanitize !8
 
 20:                                               ; preds = %3
-  tail call void @llvm.ubsantrap(i8 12) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 12) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 21:                                               ; preds = %3
@@ -5851,7 +5851,7 @@ define dso_local i64 @ZSTD_estimateCDictSize_advanced(i64 noundef %0, ptr nounde
   br i1 %22, label %24, label %23, !prof !258, !nosanitize !8
 
 23:                                               ; preds = %21
-  tail call void @llvm.ubsantrap(i8 12) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 12) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 24:                                               ; preds = %21
@@ -5861,7 +5861,7 @@ define dso_local i64 @ZSTD_estimateCDictSize_advanced(i64 noundef %0, ptr nounde
   br i1 %27, label %28, label %29, !prof !9, !nosanitize !8
 
 28:                                               ; preds = %24
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 29:                                               ; preds = %24
@@ -5871,7 +5871,7 @@ define dso_local i64 @ZSTD_estimateCDictSize_advanced(i64 noundef %0, ptr nounde
   br i1 %32, label %33, label %34, !prof !9, !nosanitize !8
 
 33:                                               ; preds = %29
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 34:                                               ; preds = %29
@@ -5884,7 +5884,7 @@ define dso_local i64 @ZSTD_estimateCDictSize_advanced(i64 noundef %0, ptr nounde
   br i1 %40, label %41, label %42, !prof !9, !nosanitize !8
 
 41:                                               ; preds = %34
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 42:                                               ; preds = %34
@@ -5895,7 +5895,7 @@ define dso_local i64 @ZSTD_estimateCDictSize_advanced(i64 noundef %0, ptr nounde
   br i1 %46, label %47, label %48, !prof !9, !nosanitize !8
 
 47:                                               ; preds = %42
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 48:                                               ; preds = %42
@@ -5908,7 +5908,7 @@ define dso_local i64 @ZSTD_estimateCDictSize_advanced(i64 noundef %0, ptr nounde
   br i1 %52, label %53, label %54, !prof !9, !nosanitize !8
 
 53:                                               ; preds = %50
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 54:                                               ; preds = %50
@@ -5916,14 +5916,14 @@ define dso_local i64 @ZSTD_estimateCDictSize_advanced(i64 noundef %0, ptr nounde
   %56 = and i64 %55, -8
   br label %57
 
-57:                                               ; preds = %48, %54
+57:                                               ; preds = %54, %48
   %58 = phi i64 [ %56, %54 ], [ 0, %48 ]
   %59 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %45, i64 %58), !nosanitize !8
   %60 = extractvalue { i64, i1 } %59, 1, !nosanitize !8
   br i1 %60, label %61, label %62, !prof !9, !nosanitize !8
 
 61:                                               ; preds = %57
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 62:                                               ; preds = %57
@@ -5933,7 +5933,7 @@ define dso_local i64 @ZSTD_estimateCDictSize_advanced(i64 noundef %0, ptr nounde
 
 ; Function Attrs: cold noreturn nounwind memory(inaccessiblemem: write) uwtable
 define dso_local noundef i64 @ZSTD_estimateCDictSize(i64 noundef %0, i32 noundef %1) local_unnamed_addr #15 {
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 }
 
@@ -5957,14 +5957,14 @@ define dso_local i64 @ZSTD_sizeof_CDict(ptr noundef readonly captures(address) %
   br i1 %14, label %15, label %16, !prof !9, !nosanitize !8
 
 15:                                               ; preds = %3
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 16:                                               ; preds = %3
   %17 = extractvalue { i64, i1 } %13, 0, !nosanitize !8
   br label %18
 
-18:                                               ; preds = %1, %16
+18:                                               ; preds = %16, %1
   %19 = phi i64 [ %17, %16 ], [ 0, %1 ]
   ret i64 %19
 }
@@ -5980,7 +5980,7 @@ define dso_local noalias noundef ptr @ZSTD_createCDict_advanced(ptr noundef read
   br i1 %12, label %14, label %13
 
 13:                                               ; preds = %6
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 14:                                               ; preds = %6
@@ -6004,11 +6004,11 @@ define dso_local noalias noundef ptr @ZSTD_createCDict_advanced2(ptr noundef rea
   br i1 %16, label %18, label %17
 
 17:                                               ; preds = %13
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 18:                                               ; preds = %13
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 19:                                               ; preds = %6
@@ -6036,7 +6036,7 @@ define dso_local noundef i64 @ZSTD_freeCDict(ptr noundef %0) local_unnamed_addr 
   %14 = icmp uge ptr %0, %13
   br label %15
 
-15:                                               ; preds = %3, %11
+15:                                               ; preds = %11, %3
   %16 = phi i1 [ true, %3 ], [ %14, %11 ]
   tail call void @llvm.memset.p0.i64(ptr noundef nonnull align 8 dereferenceable(72) %8, i8 0, i64 72, i1 false)
   %17 = icmp eq ptr %9, null
@@ -6047,14 +6047,14 @@ define dso_local noundef i64 @ZSTD_freeCDict(ptr noundef %0) local_unnamed_addr 
   br i1 %19, label %22, label %20
 
 20:                                               ; preds = %18
-  tail call void %5(ptr noundef %7, ptr noundef nonnull %9) #36, !inline_history !259
+  tail call void %5(ptr noundef %7, ptr noundef nonnull %9) #35, !inline_history !259
   br label %21
 
-21:                                               ; preds = %15, %20
+21:                                               ; preds = %20, %15
   br i1 %16, label %23, label %27
 
 22:                                               ; preds = %18
-  tail call void @free(ptr noundef nonnull %9) #36
+  tail call void @free(ptr noundef nonnull %9) #35
   br i1 %16, label %26, label %27
 
 23:                                               ; preds = %21
@@ -6062,26 +6062,26 @@ define dso_local noundef i64 @ZSTD_freeCDict(ptr noundef %0) local_unnamed_addr 
   br i1 %24, label %26, label %25
 
 25:                                               ; preds = %23
-  tail call void %5(ptr noundef %7, ptr noundef nonnull %0) #36, !inline_history !64
+  tail call void %5(ptr noundef %7, ptr noundef nonnull %0) #35, !inline_history !64
   br label %27
 
-26:                                               ; preds = %22, %23
-  tail call void @free(ptr noundef nonnull %0) #36
+26:                                               ; preds = %23, %22
+  tail call void @free(ptr noundef nonnull %0) #35
   br label %27
 
-27:                                               ; preds = %21, %22, %25, %26, %1
+27:                                               ; preds = %26, %25, %22, %21, %1
   ret i64 0
 }
 
 ; Function Attrs: cold noreturn nounwind memory(inaccessiblemem: write) uwtable
 define dso_local noalias noundef nonnull ptr @ZSTD_createCDict(ptr noundef readnone captures(none) %0, i64 noundef %1, i32 noundef %2) local_unnamed_addr #15 {
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 }
 
 ; Function Attrs: cold noreturn nounwind memory(inaccessiblemem: write) uwtable
 define dso_local noalias noundef nonnull ptr @ZSTD_createCDict_byReference(ptr noundef readnone captures(none) %0, i64 noundef %1, i32 noundef %2) local_unnamed_addr #15 {
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 }
 
@@ -6109,7 +6109,7 @@ define dso_local noundef ptr @ZSTD_initStaticCDict(ptr noundef %0, i64 noundef %
   br i1 %26, label %27, label %28, !prof !9, !nosanitize !8
 
 27:                                               ; preds = %7
-  tail call void @llvm.ubsantrap(i8 12) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 12) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 28:                                               ; preds = %7
@@ -6117,7 +6117,7 @@ define dso_local noundef ptr @ZSTD_initStaticCDict(ptr noundef %0, i64 noundef %
   br i1 %29, label %31, label %30, !prof !258, !nosanitize !8
 
 30:                                               ; preds = %28
-  tail call void @llvm.ubsantrap(i8 12) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 12) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 31:                                               ; preds = %28
@@ -6127,7 +6127,7 @@ define dso_local noundef ptr @ZSTD_initStaticCDict(ptr noundef %0, i64 noundef %
   br i1 %34, label %35, label %36, !prof !9, !nosanitize !8
 
 35:                                               ; preds = %31
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 36:                                               ; preds = %31
@@ -6137,7 +6137,7 @@ define dso_local noundef ptr @ZSTD_initStaticCDict(ptr noundef %0, i64 noundef %
   br i1 %39, label %40, label %41, !prof !9, !nosanitize !8
 
 40:                                               ; preds = %36
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 41:                                               ; preds = %36
@@ -6150,7 +6150,7 @@ define dso_local noundef ptr @ZSTD_initStaticCDict(ptr noundef %0, i64 noundef %
   br i1 %47, label %48, label %49, !prof !9, !nosanitize !8
 
 48:                                               ; preds = %41
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 49:                                               ; preds = %41
@@ -6164,7 +6164,7 @@ define dso_local noundef ptr @ZSTD_initStaticCDict(ptr noundef %0, i64 noundef %
   br i1 %54, label %55, label %56, !prof !9, !nosanitize !8
 
 55:                                               ; preds = %52
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 56:                                               ; preds = %52
@@ -6173,13 +6173,13 @@ define dso_local noundef ptr @ZSTD_initStaticCDict(ptr noundef %0, i64 noundef %
   %59 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %58, i64 6080)
   br label %60
 
-60:                                               ; preds = %49, %56
+60:                                               ; preds = %56, %49
   %61 = phi { i64, i1 } [ %59, %56 ], [ { i64 6080, i1 false }, %49 ]
   %62 = extractvalue { i64, i1 } %61, 1, !nosanitize !8
   br i1 %62, label %63, label %64, !prof !9, !nosanitize !8
 
 63:                                               ; preds = %60
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 64:                                               ; preds = %60
@@ -6189,7 +6189,7 @@ define dso_local noundef ptr @ZSTD_initStaticCDict(ptr noundef %0, i64 noundef %
   br i1 %67, label %68, label %69, !prof !9, !nosanitize !8
 
 68:                                               ; preds = %64
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 69:                                               ; preds = %64
@@ -6200,7 +6200,7 @@ define dso_local noundef ptr @ZSTD_initStaticCDict(ptr noundef %0, i64 noundef %
   br i1 %73, label %74, label %75, !prof !9, !nosanitize !8
 
 74:                                               ; preds = %69
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 75:                                               ; preds = %69
@@ -6299,7 +6299,7 @@ define dso_local noundef ptr @ZSTD_initStaticCDict(ptr noundef %0, i64 noundef %
   br i1 %130, label %131, label %132, !prof !9, !nosanitize !8
 
 131:                                              ; preds = %128
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 132:                                              ; preds = %128
@@ -6322,7 +6322,7 @@ define dso_local noundef ptr @ZSTD_initStaticCDict(ptr noundef %0, i64 noundef %
   tail call void @llvm.memcpy.p0.p0.i64(ptr nonnull align 1 %85, ptr nonnull align 1 %2, i64 %3, i1 false)
   br label %140
 
-140:                                              ; preds = %127, %138
+140:                                              ; preds = %138, %127
   %141 = phi ptr [ %139, %138 ], [ %85, %127 ]
   %142 = getelementptr inbounds nuw i8, ptr %0, i64 8
   store i64 %3, ptr %142, align 8, !tbaa !239
@@ -6415,7 +6415,7 @@ define dso_local noundef ptr @ZSTD_initStaticCDict(ptr noundef %0, i64 noundef %
   br i1 %191, label %193, label %192, !prof !258, !nosanitize !8
 
 192:                                              ; preds = %174
-  tail call void @llvm.ubsantrap(i8 12) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 12) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 193:                                              ; preds = %174
@@ -6438,7 +6438,7 @@ define dso_local noundef ptr @ZSTD_initStaticCDict(ptr noundef %0, i64 noundef %
   store ptr %198, ptr %94, align 8, !tbaa !56
   br label %203
 
-203:                                              ; preds = %200, %202
+203:                                              ; preds = %202, %200
   %204 = phi ptr [ %198, %202 ], [ %150, %200 ]
   store i32 1, ptr %99, align 8, !tbaa !271
   %205 = getelementptr inbounds nuw i8, ptr %198, i64 %194
@@ -6469,7 +6469,7 @@ define dso_local noundef ptr @ZSTD_initStaticCDict(ptr noundef %0, i64 noundef %
   br i1 %217, label %218, label %225, !prof !9, !nosanitize !8
 
 218:                                              ; preds = %215, %209
-  tail call void @llvm.ubsantrap(i8 12) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 12) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 219:                                              ; preds = %209
@@ -6618,7 +6618,7 @@ define dso_local noundef ptr @ZSTD_initStaticCDict(ptr noundef %0, i64 noundef %
   br i1 %300, label %301, label %302, !prof !9, !nosanitize !8
 
 301:                                              ; preds = %292
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 302:                                              ; preds = %292
@@ -6649,12 +6649,12 @@ define dso_local noundef ptr @ZSTD_initStaticCDict(ptr noundef %0, i64 noundef %
   store i32 %315, ptr %316, align 8, !tbaa !279
   br label %317
 
-317:                                              ; preds = %233, %137, %236, %305, %308, %314
+317:                                              ; preds = %314, %308, %305, %236, %233, %137
   %318 = phi ptr [ %0, %314 ], [ null, %236 ], [ null, %305 ], [ null, %137 ], [ null, %308 ], [ null, %233 ]
   call void @llvm.lifetime.end.p0(ptr nonnull %8)
   br label %319
 
-319:                                              ; preds = %79, %317, %83, %75
+319:                                              ; preds = %317, %83, %79, %75
   %320 = phi ptr [ null, %75 ], [ null, %83 ], [ %318, %317 ], [ null, %79 ]
   call void @llvm.lifetime.end.p0(ptr nonnull %9)
   ret ptr %320
@@ -6677,7 +6677,7 @@ define dso_local i32 @ZSTD_getDictID_fromCDict(ptr noundef readonly captures(add
   %5 = load i32, ptr %4, align 8, !tbaa !279
   br label %6
 
-6:                                                ; preds = %1, %3
+6:                                                ; preds = %3, %1
   %7 = phi i32 [ %5, %3 ], [ 0, %1 ]
   ret i32 %7
 }
@@ -6699,7 +6699,7 @@ define dso_local noundef i64 @ZSTD_compressBegin_usingCDict_advanced(ptr noundef
   br i1 %13, label %14, label %15, !prof !9, !nosanitize !8
 
 14:                                               ; preds = %9
-  tail call void @llvm.ubsantrap(i8 12) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 12) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 15:                                               ; preds = %9
@@ -6708,11 +6708,11 @@ define dso_local noundef i64 @ZSTD_compressBegin_usingCDict_advanced(ptr noundef
   br i1 %17, label %19, label %18
 
 18:                                               ; preds = %15
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 19:                                               ; preds = %15, %7
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 20:                                               ; preds = %5
@@ -6721,13 +6721,13 @@ define dso_local noundef i64 @ZSTD_compressBegin_usingCDict_advanced(ptr noundef
 
 ; Function Attrs: cold noreturn nounwind memory(inaccessiblemem: write) uwtable
 define dso_local noundef i64 @ZSTD_compressBegin_usingCDict_deprecated(ptr noundef readnone captures(none) %0, ptr noundef readnone captures(none) %1) local_unnamed_addr #15 {
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 }
 
 ; Function Attrs: cold noreturn nounwind memory(inaccessiblemem: write) uwtable
 define dso_local noundef i64 @ZSTD_compressBegin_usingCDict(ptr noundef readnone captures(none) %0, ptr noundef readnone captures(none) %1) local_unnamed_addr #15 {
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 }
 
@@ -6748,7 +6748,7 @@ define dso_local noundef i64 @ZSTD_compress_usingCDict_advanced(ptr noundef read
   br i1 %15, label %16, label %17, !prof !9, !nosanitize !8
 
 16:                                               ; preds = %11
-  tail call void @llvm.ubsantrap(i8 12) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 12) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 17:                                               ; preds = %11
@@ -6757,11 +6757,11 @@ define dso_local noundef i64 @ZSTD_compress_usingCDict_advanced(ptr noundef read
   br i1 %19, label %21, label %20
 
 20:                                               ; preds = %17
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 21:                                               ; preds = %17, %9
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 22:                                               ; preds = %7
@@ -6785,7 +6785,7 @@ define dso_local noundef i64 @ZSTD_compress_usingCDict(ptr noundef readnone capt
   br i1 %14, label %15, label %16, !prof !9, !nosanitize !8
 
 15:                                               ; preds = %10
-  tail call void @llvm.ubsantrap(i8 12) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 12) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 16:                                               ; preds = %10
@@ -6794,11 +6794,11 @@ define dso_local noundef i64 @ZSTD_compress_usingCDict(ptr noundef readnone capt
   br i1 %18, label %20, label %19
 
 19:                                               ; preds = %16
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 20:                                               ; preds = %16, %8
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 21:                                               ; preds = %6
@@ -6812,17 +6812,17 @@ define dso_local noalias noundef ptr @ZSTD_createCStream() local_unnamed_addr #4
   br i1 %2, label %23, label %3
 
 3:                                                ; preds = %0
-  %4 = tail call i32 asm "cpuid", "={ax},{ax},~{ebx},~{ecx},~{edx},~{dirflag},~{fpsr},~{flags}"(i32 0) #35, !srcloc !10
+  %4 = tail call i32 asm "cpuid", "={ax},{ax},~{ebx},~{ecx},~{edx},~{dirflag},~{fpsr},~{flags}"(i32 0) #34, !srcloc !10
   %5 = icmp eq i32 %4, 0
   br i1 %5, label %17, label %6
 
 6:                                                ; preds = %3
-  %7 = tail call { i32, i32, i32 } asm "cpuid", "={ax},={cx},={dx},{ax},~{ebx},~{dirflag},~{fpsr},~{flags}"(i32 1) #35, !srcloc !11
+  %7 = tail call { i32, i32, i32 } asm "cpuid", "={ax},={cx},={dx},{ax},~{ebx},~{dirflag},~{fpsr},~{flags}"(i32 1) #34, !srcloc !11
   %8 = icmp ugt i32 %4, 6
   br i1 %8, label %9, label %17
 
 9:                                                ; preds = %6
-  %10 = tail call { i32, i32, i32 } asm "cpuid", "={ax},={bx},={cx},{ax},{cx},~{edx},~{dirflag},~{fpsr},~{flags}"(i32 7, i32 0) #35, !srcloc !12
+  %10 = tail call { i32, i32, i32 } asm "cpuid", "={ax},={bx},={cx},{ax},{cx},~{edx},~{dirflag},~{fpsr},~{flags}"(i32 7, i32 0) #34, !srcloc !12
   %11 = extractvalue { i32, i32, i32 } %10, 1
   %12 = and i32 %11, 8
   %13 = icmp eq i32 %12, 0
@@ -6846,7 +6846,7 @@ define dso_local noalias noundef ptr @ZSTD_createCStream() local_unnamed_addr #4
   store i32 1, ptr %22, align 8, !tbaa !47
   br label %23
 
-23:                                               ; preds = %0, %17
+23:                                               ; preds = %17, %0
   ret ptr %1
 }
 
@@ -6866,11 +6866,11 @@ define dso_local ptr @ZSTD_createCStream_advanced(ptr noundef readonly byval(%st
   br i1 %7, label %13, label %11
 
 11:                                               ; preds = %10
-  %12 = tail call ptr %2(ptr noundef %6, i64 noundef 5280) #36, !inline_history !280
+  %12 = tail call ptr %2(ptr noundef %6, i64 noundef 5280) #35, !inline_history !280
   br label %15
 
 13:                                               ; preds = %10
-  %14 = tail call noalias dereferenceable_or_null(5280) ptr @malloc(i64 noundef 5280) #37
+  %14 = tail call noalias dereferenceable_or_null(5280) ptr @malloc(i64 noundef 5280) #36
   br label %15
 
 15:                                               ; preds = %13, %11
@@ -6886,17 +6886,17 @@ define dso_local ptr @ZSTD_createCStream_advanced(ptr noundef readonly byval(%st
   store ptr %4, ptr %20, align 8
   %21 = getelementptr inbounds nuw i8, ptr %16, i64 912
   store ptr %6, ptr %21, align 8
-  %22 = tail call i32 asm "cpuid", "={ax},{ax},~{ebx},~{ecx},~{edx},~{dirflag},~{fpsr},~{flags}"(i32 0) #35, !srcloc !10
+  %22 = tail call i32 asm "cpuid", "={ax},{ax},~{ebx},~{ecx},~{edx},~{dirflag},~{fpsr},~{flags}"(i32 0) #34, !srcloc !10
   %23 = icmp eq i32 %22, 0
   br i1 %23, label %35, label %24
 
 24:                                               ; preds = %18
-  %25 = tail call { i32, i32, i32 } asm "cpuid", "={ax},={cx},={dx},{ax},~{ebx},~{dirflag},~{fpsr},~{flags}"(i32 1) #35, !srcloc !11
+  %25 = tail call { i32, i32, i32 } asm "cpuid", "={ax},={cx},={dx},{ax},~{ebx},~{dirflag},~{fpsr},~{flags}"(i32 1) #34, !srcloc !11
   %26 = icmp ugt i32 %22, 6
   br i1 %26, label %27, label %35
 
 27:                                               ; preds = %24
-  %28 = tail call { i32, i32, i32 } asm "cpuid", "={ax},={bx},={cx},{ax},{cx},~{edx},~{dirflag},~{fpsr},~{flags}"(i32 7, i32 0) #35, !srcloc !12
+  %28 = tail call { i32, i32, i32 } asm "cpuid", "={ax},={bx},={cx},{ax},{cx},~{edx},~{dirflag},~{fpsr},~{flags}"(i32 7, i32 0) #34, !srcloc !12
   %29 = extractvalue { i32, i32, i32 } %28, 1
   %30 = and i32 %29, 8
   %31 = icmp eq i32 %30, 0
@@ -6920,7 +6920,7 @@ define dso_local ptr @ZSTD_createCStream_advanced(ptr noundef readonly byval(%st
   store i32 1, ptr %40, align 8, !tbaa !47
   br label %41
 
-41:                                               ; preds = %1, %15, %35
+41:                                               ; preds = %35, %15, %1
   %42 = phi ptr [ null, %1 ], [ %16, %35 ], [ null, %15 ]
   ret ptr %42
 }
@@ -6971,11 +6971,11 @@ define dso_local range(i64 -64, 1) i64 @ZSTD_freeCStream(ptr noundef %0) local_u
   br i1 %24, label %26, label %25
 
 25:                                               ; preds = %23
-  tail call void %18(ptr noundef %20, ptr noundef nonnull %21) #36, !inline_history !281
+  tail call void %18(ptr noundef %20, ptr noundef nonnull %21) #35, !inline_history !281
   br label %27
 
 26:                                               ; preds = %23
-  tail call void @free(ptr noundef nonnull %21) #36
+  tail call void @free(ptr noundef nonnull %21) #35
   br label %27
 
 27:                                               ; preds = %26, %25, %15
@@ -6988,14 +6988,14 @@ define dso_local range(i64 -64, 1) i64 @ZSTD_freeCStream(ptr noundef %0) local_u
 
 31:                                               ; preds = %28
   %32 = load ptr, ptr %19, align 8
-  tail call void %29(ptr noundef %32, ptr noundef nonnull %0) #36, !inline_history !282
+  tail call void %29(ptr noundef %32, ptr noundef nonnull %0) #35, !inline_history !282
   br label %34
 
 33:                                               ; preds = %28
-  tail call void @free(ptr noundef nonnull %0) #36
+  tail call void @free(ptr noundef nonnull %0) #35
   br label %34
 
-34:                                               ; preds = %1, %3, %27, %31, %33
+34:                                               ; preds = %33, %31, %27, %3, %1
   %35 = phi i64 [ -64, %3 ], [ 0, %1 ], [ 0, %27 ], [ 0, %31 ], [ 0, %33 ]
   ret i64 %35
 }
@@ -7012,7 +7012,7 @@ define dso_local range(i64 8, 0) i64 @ZSTD_CStreamOutSize() local_unnamed_addr #
   br i1 %2, label %3, label %4, !prof !9, !nosanitize !8
 
 3:                                                ; preds = %0
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 4:                                                ; preds = %0
@@ -7022,7 +7022,7 @@ define dso_local range(i64 8, 0) i64 @ZSTD_CStreamOutSize() local_unnamed_addr #
   br i1 %7, label %8, label %9, !prof !9, !nosanitize !8
 
 8:                                                ; preds = %4
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 9:                                                ; preds = %4
@@ -7034,7 +7034,7 @@ define dso_local range(i64 8, 0) i64 @ZSTD_CStreamOutSize() local_unnamed_addr #
   br i1 %14, label %15, label %16, !prof !9, !nosanitize !8
 
 15:                                               ; preds = %9
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 16:                                               ; preds = %9
@@ -7049,7 +7049,7 @@ define dso_local noundef range(i64 -60, 1) i64 @ZSTD_resetCStream(ptr noundef wr
   br i1 %3, label %4, label %5
 
 4:                                                ; preds = %2
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 5:                                                ; preds = %2
@@ -7060,7 +7060,7 @@ define dso_local noundef range(i64 -60, 1) i64 @ZSTD_resetCStream(ptr noundef wr
   br i1 %8, label %9, label %10, !prof !9, !nosanitize !8
 
 9:                                                ; preds = %5
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 10:                                               ; preds = %5
@@ -7079,7 +7079,7 @@ define dso_local range(i64 -64, 1) i64 @ZSTD_initCStream_internal(ptr noundef ca
   br i1 %9, label %10, label %11, !prof !9, !nosanitize !8
 
 10:                                               ; preds = %6
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 11:                                               ; preds = %6
@@ -7111,11 +7111,11 @@ define dso_local range(i64 -64, 1) i64 @ZSTD_initCStream_internal(ptr noundef ca
 26:                                               ; preds = %22
   %27 = getelementptr i8, ptr %0, i64 912
   %28 = load ptr, ptr %27, align 8
-  %29 = tail call ptr %24(ptr noundef %28, i64 noundef %2) #36, !inline_history !283
+  %29 = tail call ptr %24(ptr noundef %28, i64 noundef %2) #35, !inline_history !283
   br label %32
 
 30:                                               ; preds = %22
-  %31 = tail call noalias ptr @malloc(i64 noundef %2) #37
+  %31 = tail call noalias ptr @malloc(i64 noundef %2) #36
   br label %32
 
 32:                                               ; preds = %30, %26
@@ -7140,7 +7140,7 @@ define dso_local range(i64 -64, 1) i64 @ZSTD_initCStream_internal(ptr noundef ca
   store ptr %3, ptr %41, align 8, !tbaa !116
   br label %42
 
-42:                                               ; preds = %32, %18, %35, %16, %40
+42:                                               ; preds = %40, %35, %32, %18, %16
   %43 = phi i64 [ 0, %35 ], [ 0, %40 ], [ 0, %16 ], [ -64, %18 ], [ -64, %32 ]
   ret i64 %43
 }
@@ -7154,7 +7154,7 @@ define dso_local noundef range(i64 -60, 1) i64 @ZSTD_initCStream_usingCDict_adva
   br i1 %8, label %9, label %10, !prof !9, !nosanitize !8
 
 9:                                                ; preds = %5
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 10:                                               ; preds = %5
@@ -7193,7 +7193,7 @@ define dso_local range(i64 -64, 1) i64 @ZSTD_initCStream_advanced(ptr noundef ca
   br i1 %10, label %11, label %12
 
 11:                                               ; preds = %5
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 12:                                               ; preds = %5
@@ -7204,7 +7204,7 @@ define dso_local range(i64 -64, 1) i64 @ZSTD_initCStream_advanced(ptr noundef ca
   br i1 %15, label %16, label %17, !prof !9, !nosanitize !8
 
 16:                                               ; preds = %12
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 17:                                               ; preds = %12
@@ -7283,11 +7283,11 @@ define dso_local range(i64 -64, 1) i64 @ZSTD_initCStream_advanced(ptr noundef ca
 67:                                               ; preds = %63
   %68 = getelementptr i8, ptr %0, i64 912
   %69 = load ptr, ptr %68, align 8
-  %70 = tail call ptr %65(ptr noundef %69, i64 noundef %2) #36, !inline_history !283
+  %70 = tail call ptr %65(ptr noundef %69, i64 noundef %2) #35, !inline_history !283
   br label %73
 
 71:                                               ; preds = %63
-  %72 = tail call noalias ptr @malloc(i64 noundef %2) #37
+  %72 = tail call noalias ptr @malloc(i64 noundef %2) #36
   br label %73
 
 73:                                               ; preds = %71, %67
@@ -7307,7 +7307,7 @@ define dso_local range(i64 -64, 1) i64 @ZSTD_initCStream_advanced(ptr noundef ca
   store i32 0, ptr %80, align 8, !tbaa !123
   br label %81
 
-81:                                               ; preds = %76, %73, %59, %52, %23, %28, %33, %38, %17, %47
+81:                                               ; preds = %76, %73, %59, %52, %47, %38, %33, %28, %23, %17
   %82 = phi i64 [ -42, %47 ], [ -42, %23 ], [ -42, %17 ], [ -42, %38 ], [ -42, %33 ], [ -42, %28 ], [ 0, %52 ], [ -64, %73 ], [ 0, %76 ], [ -64, %59 ]
   ret i64 %82
 }
@@ -7330,7 +7330,7 @@ define dso_local range(i64 -64, 1) i64 @ZSTD_initCStream_usingDict(ptr noundef c
   %12 = select i1 %11, i32 3, i32 %3
   br label %13
 
-13:                                               ; preds = %10, %4, %8
+13:                                               ; preds = %10, %8, %4
   %14 = phi i32 [ %12, %10 ], [ -131072, %4 ], [ 22, %8 ]
   %15 = getelementptr inbounds nuw i8, ptr %0, i64 60
   store i32 %14, ptr %15, align 4, !tbaa !46
@@ -7355,11 +7355,11 @@ define dso_local range(i64 -64, 1) i64 @ZSTD_initCStream_usingDict(ptr noundef c
 27:                                               ; preds = %23
   %28 = getelementptr i8, ptr %0, i64 912
   %29 = load ptr, ptr %28, align 8
-  %30 = tail call ptr %25(ptr noundef %29, i64 noundef %2) #36, !inline_history !283
+  %30 = tail call ptr %25(ptr noundef %29, i64 noundef %2) #35, !inline_history !283
   br label %33
 
 31:                                               ; preds = %23
-  %32 = tail call noalias ptr @malloc(i64 noundef %2) #37
+  %32 = tail call noalias ptr @malloc(i64 noundef %2) #36
   br label %33
 
 33:                                               ; preds = %31, %27
@@ -7390,7 +7390,7 @@ define dso_local range(i64 -60, 1) i64 @ZSTD_initCStream_srcSize(ptr noundef cap
   br i1 %4, label %5, label %6
 
 5:                                                ; preds = %3
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 6:                                                ; preds = %3
@@ -7410,7 +7410,7 @@ define dso_local range(i64 -60, 1) i64 @ZSTD_initCStream_srcSize(ptr noundef cap
   store i32 1, ptr %13, align 4, !tbaa !86
   br label %14
 
-14:                                               ; preds = %6, %12
+14:                                               ; preds = %12, %6
   %15 = icmp slt i32 %1, -131072
   br i1 %15, label %21, label %16
 
@@ -7423,7 +7423,7 @@ define dso_local range(i64 -60, 1) i64 @ZSTD_initCStream_srcSize(ptr noundef cap
   %20 = select i1 %19, i32 3, i32 %1
   br label %21
 
-21:                                               ; preds = %18, %14, %16
+21:                                               ; preds = %18, %16, %14
   %22 = phi i32 [ %20, %18 ], [ -131072, %14 ], [ 22, %16 ]
   %23 = getelementptr inbounds nuw i8, ptr %0, i64 60
   store i32 %22, ptr %23, align 4, !tbaa !46
@@ -7435,7 +7435,7 @@ define dso_local range(i64 -60, 1) i64 @ZSTD_initCStream_srcSize(ptr noundef cap
   br i1 %26, label %27, label %28, !prof !9, !nosanitize !8
 
 27:                                               ; preds = %24
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 28:                                               ; preds = %24
@@ -7466,7 +7466,7 @@ define dso_local noundef i64 @ZSTD_initCStream(ptr noundef captures(none) initia
   store i32 1, ptr %9, align 4, !tbaa !86
   br label %10
 
-10:                                               ; preds = %2, %8
+10:                                               ; preds = %8, %2
   %11 = icmp slt i32 %1, -131072
   br i1 %11, label %17, label %12
 
@@ -7479,7 +7479,7 @@ define dso_local noundef i64 @ZSTD_initCStream(ptr noundef captures(none) initia
   %16 = select i1 %15, i32 3, i32 %1
   br label %17
 
-17:                                               ; preds = %14, %10, %12
+17:                                               ; preds = %14, %12, %10
   %18 = phi i32 [ %16, %14 ], [ -131072, %10 ], [ 22, %12 ]
   %19 = getelementptr inbounds nuw i8, ptr %0, i64 60
   store i32 %18, ptr %19, align 4, !tbaa !46
@@ -7508,7 +7508,7 @@ define dso_local i64 @ZSTD_compressStream(ptr noundef %0, ptr noundef captures(n
   br i1 %16, label %17, label %18, !prof !9, !nosanitize !8
 
 17:                                               ; preds = %10
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 18:                                               ; preds = %10
@@ -7525,7 +7525,7 @@ define dso_local i64 @ZSTD_compressStream(ptr noundef %0, ptr noundef captures(n
   br i1 %26, label %27, label %28, !prof !9, !nosanitize !8
 
 27:                                               ; preds = %20
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 28:                                               ; preds = %20
@@ -7576,7 +7576,7 @@ define dso_local i64 @ZSTD_compressStream2(ptr noundef %0, ptr noundef captures(
   br i1 %24, label %25, label %26, !prof !9, !nosanitize !8
 
 25:                                               ; preds = %22
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 26:                                               ; preds = %22
@@ -7589,7 +7589,7 @@ define dso_local i64 @ZSTD_compressStream2(ptr noundef %0, ptr noundef captures(
   br i1 %32, label %33, label %34, !prof !9, !nosanitize !8
 
 33:                                               ; preds = %26
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 34:                                               ; preds = %26
@@ -7620,7 +7620,7 @@ define dso_local i64 @ZSTD_compressStream2(ptr noundef %0, ptr noundef captures(
   %53 = icmp eq i64 %12, %52
   br i1 %53, label %54, label %489
 
-54:                                               ; preds = %43, %50
+54:                                               ; preds = %50, %43
   store i64 %14, ptr %11, align 8, !tbaa !177
   %55 = getelementptr inbounds nuw i8, ptr %0, i64 3648
   tail call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 8 dereferenceable(24) %55, ptr noundef nonnull align 8 dereferenceable(24) %2, i64 24, i1 false), !tbaa.struct !289
@@ -7661,11 +7661,11 @@ define dso_local i64 @ZSTD_compressStream2(ptr noundef %0, ptr noundef captures(
   br i1 %80, label %82, label %81
 
 81:                                               ; preds = %77
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 82:                                               ; preds = %77
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 83:                                               ; preds = %65, %59
@@ -7687,7 +7687,7 @@ define dso_local i64 @ZSTD_compressStream2(ptr noundef %0, ptr noundef captures(
   br i1 %93, label %94, label %95, !prof !9, !nosanitize !8
 
 94:                                               ; preds = %91
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 95:                                               ; preds = %91
@@ -7696,7 +7696,7 @@ define dso_local i64 @ZSTD_compressStream2(ptr noundef %0, ptr noundef captures(
   store i64 %96, ptr %97, align 8, !tbaa !119
   br label %98
 
-98:                                               ; preds = %88, %95
+98:                                               ; preds = %95, %88
   %99 = phi i64 [ %90, %88 ], [ %96, %95 ]
   %100 = icmp eq ptr %61, null
   br i1 %100, label %101, label %102
@@ -7719,7 +7719,7 @@ define dso_local i64 @ZSTD_compressStream2(ptr noundef %0, ptr noundef captures(
   br i1 %109, label %110, label %112, !prof !9, !nosanitize !8
 
 110:                                              ; preds = %107, %105, %102
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 111:                                              ; preds = %102
@@ -7743,11 +7743,11 @@ define dso_local i64 @ZSTD_compressStream2(ptr noundef %0, ptr noundef captures(
   br i1 %124, label %125, label %126
 
 125:                                              ; preds = %117
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 126:                                              ; preds = %117, %112, %111, %105
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 127:                                              ; preds = %18
@@ -7781,7 +7781,7 @@ define dso_local i64 @ZSTD_compressStream2(ptr noundef %0, ptr noundef captures(
   br i1 %146, label %147, label %148, !prof !9, !nosanitize !8
 
 147:                                              ; preds = %144
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 148:                                              ; preds = %144
@@ -7815,7 +7815,7 @@ define dso_local i64 @ZSTD_compressStream2(ptr noundef %0, ptr noundef captures(
   br i1 %171, label %172, label %173, !prof !9, !nosanitize !8
 
 172:                                              ; preds = %167
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 173:                                              ; preds = %167
@@ -7853,7 +7853,7 @@ define dso_local i64 @ZSTD_compressStream2(ptr noundef %0, ptr noundef captures(
   %199 = phi ptr [ %166, %179 ], [ %428, %425 ]
   br label %200
 
-200:                                              ; preds = %196, %200
+200:                                              ; preds = %200, %196
   switch i32 %197, label %200 [
     i32 0, label %489
     i32 1, label %204
@@ -7889,7 +7889,7 @@ define dso_local i64 @ZSTD_compressStream2(ptr noundef %0, ptr noundef captures(
   br i1 %220, label %221, label %222, !prof !9, !nosanitize !8
 
 221:                                              ; preds = %211
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 222:                                              ; preds = %211
@@ -7940,7 +7940,7 @@ define dso_local i64 @ZSTD_compressStream2(ptr noundef %0, ptr noundef captures(
   br i1 %247, label %248, label %249, !prof !9, !nosanitize !8
 
 248:                                              ; preds = %243
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 249:                                              ; preds = %243
@@ -7965,7 +7965,7 @@ define dso_local i64 @ZSTD_compressStream2(ptr noundef %0, ptr noundef captures(
   br i1 %262, label %263, label %264, !prof !9, !nosanitize !8
 
 263:                                              ; preds = %259
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 264:                                              ; preds = %259
@@ -8032,7 +8032,7 @@ define dso_local i64 @ZSTD_compressStream2(ptr noundef %0, ptr noundef captures(
   br i1 %298, label %299, label %307, !prof !9, !nosanitize !8
 
 299:                                              ; preds = %293
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 300:                                              ; preds = %287, %284
@@ -8065,7 +8065,7 @@ define dso_local i64 @ZSTD_compressStream2(ptr noundef %0, ptr noundef captures(
   br i1 %322, label %323, label %324, !prof !9, !nosanitize !8
 
 323:                                              ; preds = %313
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 324:                                              ; preds = %313
@@ -8127,7 +8127,7 @@ define dso_local i64 @ZSTD_compressStream2(ptr noundef %0, ptr noundef captures(
   br i1 %358, label %359, label %360, !prof !9, !nosanitize !8
 
 359:                                              ; preds = %354
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 360:                                              ; preds = %354
@@ -8210,7 +8210,7 @@ define dso_local i64 @ZSTD_compressStream2(ptr noundef %0, ptr noundef captures(
   br i1 %400, label %401, label %402, !prof !9, !nosanitize !8
 
 401:                                              ; preds = %394
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 402:                                              ; preds = %394
@@ -8235,7 +8235,7 @@ define dso_local i64 @ZSTD_compressStream2(ptr noundef %0, ptr noundef captures(
   br i1 %415, label %416, label %417, !prof !9, !nosanitize !8
 
 416:                                              ; preds = %411
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 417:                                              ; preds = %411
@@ -8265,7 +8265,7 @@ define dso_local i64 @ZSTD_compressStream2(ptr noundef %0, ptr noundef captures(
   %428 = phi ptr [ %388, %390 ], [ %413, %424 ]
   br label %196, !llvm.loop !296
 
-429:                                              ; preds = %417, %282, %272, %269, %423, %392, %281, %238
+429:                                              ; preds = %423, %417, %392, %282, %281, %272, %269, %238
   %430 = phi ptr [ %388, %392 ], [ %413, %423 ], [ %239, %238 ], [ %199, %281 ], [ %199, %269 ], [ %413, %417 ], [ %199, %272 ], [ %199, %282 ]
   %431 = phi ptr [ %385, %392 ], [ %397, %423 ], [ %158, %238 ], [ %158, %281 ], [ %268, %269 ], [ %397, %417 ], [ %268, %272 ], [ %158, %282 ]
   %432 = ptrtoint ptr %431 to i64
@@ -8293,7 +8293,7 @@ define dso_local i64 @ZSTD_compressStream2(ptr noundef %0, ptr noundef captures(
   br i1 %447, label %448, label %449, !prof !9, !nosanitize !8
 
 448:                                              ; preds = %443
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 449:                                              ; preds = %443
@@ -8308,7 +8308,7 @@ define dso_local i64 @ZSTD_compressStream2(ptr noundef %0, ptr noundef captures(
   br i1 %455, label %456, label %457, !prof !9, !nosanitize !8
 
 456:                                              ; preds = %451
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 457:                                              ; preds = %451
@@ -8320,12 +8320,12 @@ define dso_local i64 @ZSTD_compressStream2(ptr noundef %0, ptr noundef captures(
   %461 = load i64, ptr %184, align 8, !tbaa !213
   br label %462
 
-462:                                              ; preds = %449, %457, %460
+462:                                              ; preds = %460, %457, %449
   %463 = phi i64 [ %450, %449 ], [ %461, %460 ], [ %458, %457 ]
   %464 = icmp ult i64 %463, -119
   br i1 %464, label %465, label %489
 
-465:                                              ; preds = %429, %462
+465:                                              ; preds = %462, %429
   %466 = icmp eq i32 %440, 1
   br i1 %466, label %467, label %469
 
@@ -8347,7 +8347,7 @@ define dso_local i64 @ZSTD_compressStream2(ptr noundef %0, ptr noundef captures(
   br i1 %476, label %477, label %478, !prof !9, !nosanitize !8
 
 477:                                              ; preds = %472
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 478:                                              ; preds = %472
@@ -8356,7 +8356,7 @@ define dso_local i64 @ZSTD_compressStream2(ptr noundef %0, ptr noundef captures(
   store i64 %479, ptr %480, align 8, !tbaa !295
   br label %481
 
-481:                                              ; preds = %469, %478
+481:                                              ; preds = %478, %469
   %482 = load i64, ptr %193, align 8, !tbaa !297
   %483 = load i64, ptr %194, align 8, !tbaa !298
   %484 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %482, i64 %483), !nosanitize !8
@@ -8364,14 +8364,14 @@ define dso_local i64 @ZSTD_compressStream2(ptr noundef %0, ptr noundef captures(
   br i1 %485, label %486, label %487, !prof !9, !nosanitize !8
 
 486:                                              ; preds = %481
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 487:                                              ; preds = %481
   %488 = extractvalue { i64, i1 } %484, 0, !nosanitize !8
   br label %489
 
-489:                                              ; preds = %200, %376, %351, %235, %131, %136, %148, %54, %45, %50, %69, %462, %16, %10, %4, %487
+489:                                              ; preds = %487, %462, %376, %351, %235, %200, %148, %136, %131, %69, %54, %50, %45, %16, %10, %4
   %490 = phi i64 [ -42, %16 ], [ -70, %4 ], [ -72, %10 ], [ %488, %487 ], [ %463, %462 ], [ -50, %131 ], [ -50, %50 ], [ -50, %45 ], [ %58, %54 ], [ -64, %69 ], [ -50, %148 ], [ -50, %136 ], [ %236, %235 ], [ -62, %200 ], [ %377, %376 ], [ %352, %351 ]
   ret i64 %490
 }
@@ -8380,8 +8380,8 @@ define dso_local i64 @ZSTD_compressStream2(ptr noundef %0, ptr noundef captures(
 define dso_local i64 @ZSTD_compressStream2_simpleArgs(ptr noundef %0, ptr noundef %1, i64 noundef %2, ptr noundef captures(none) %3, ptr noundef %4, i64 noundef %5, ptr noundef captures(none) %6, i32 noundef %7) local_unnamed_addr #4 {
   %9 = alloca %struct.ZSTD_outBuffer_s, align 8
   %10 = alloca %struct.ZSTD_inBuffer_s, align 8
-  call void @llvm.lifetime.start.p0(ptr nonnull %9) #36
-  call void @llvm.lifetime.start.p0(ptr nonnull %10) #36
+  call void @llvm.lifetime.start.p0(ptr nonnull %9) #35
+  call void @llvm.lifetime.start.p0(ptr nonnull %10) #35
   store ptr %1, ptr %9, align 8, !tbaa !171
   %11 = getelementptr inbounds nuw i8, ptr %9, i64 8
   store i64 %2, ptr %11, align 8, !tbaa !173
@@ -8399,8 +8399,8 @@ define dso_local i64 @ZSTD_compressStream2_simpleArgs(ptr noundef %0, ptr nounde
   store i64 %18, ptr %3, align 8, !tbaa !118
   %19 = load i64, ptr %16, align 8, !tbaa !177
   store i64 %19, ptr %6, align 8, !tbaa !118
-  call void @llvm.lifetime.end.p0(ptr nonnull %10) #36
-  call void @llvm.lifetime.end.p0(ptr nonnull %9) #36
+  call void @llvm.lifetime.end.p0(ptr nonnull %10) #35
+  call void @llvm.lifetime.end.p0(ptr nonnull %9) #35
   ret i64 %17
 }
 
@@ -8435,11 +8435,11 @@ define dso_local noundef i64 @ZSTD_compressSequences(ptr noundef captures(none) 
   br i1 %27, label %29, label %28
 
 28:                                               ; preds = %24
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 29:                                               ; preds = %24
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 30:                                               ; preds = %12, %7
@@ -8451,7 +8451,7 @@ define dso_local noundef i64 @ZSTD_compressSequences(ptr noundef captures(none) 
   br i1 %34, label %35, label %36, !prof !9, !nosanitize !8
 
 35:                                               ; preds = %30
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 36:                                               ; preds = %30
@@ -8478,11 +8478,11 @@ define dso_local noundef i64 @ZSTD_compressSequences(ptr noundef captures(none) 
   br i1 %51, label %52, label %53
 
 52:                                               ; preds = %44
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
-53:                                               ; preds = %36, %44, %40
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+53:                                               ; preds = %44, %40, %36
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 54:                                               ; preds = %16
@@ -8520,7 +8520,7 @@ define internal fastcc range(i64 -70, 20) i64 @ZSTD_writeFrameHeader(ptr noundef
   br i1 %31, label %32, label %33, !prof !9, !nosanitize !8
 
 32:                                               ; preds = %5
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 33:                                               ; preds = %5
@@ -8540,7 +8540,7 @@ define internal fastcc range(i64 -70, 20) i64 @ZSTD_writeFrameHeader(ptr noundef
   %45 = add nuw nsw i32 %42, %44
   br label %46
 
-46:                                               ; preds = %33, %37
+46:                                               ; preds = %37, %33
   %47 = phi i32 [ %45, %37 ], [ 0, %33 ]
   %48 = select i1 %21, i32 4, i32 0
   %49 = add nuw nsw i32 %48, %18
@@ -8602,7 +8602,7 @@ define internal fastcc range(i64 -70, 20) i64 @ZSTD_writeFrameHeader(ptr noundef
   %79 = add nuw nsw i64 %68, 4
   br label %80
 
-80:                                               ; preds = %67, %77, %73, %69
+80:                                               ; preds = %77, %73, %69, %67
   %81 = phi i64 [ %68, %67 ], [ %79, %77 ], [ %72, %69 ], [ %76, %73 ]
   switch i32 %47, label %82 [
     i32 3, label %100
@@ -8626,7 +8626,7 @@ define internal fastcc range(i64 -70, 20) i64 @ZSTD_writeFrameHeader(ptr noundef
   br i1 %89, label %90, label %91, !prof !9, !nosanitize !8
 
 90:                                               ; preds = %87
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 91:                                               ; preds = %87
@@ -8650,7 +8650,7 @@ define internal fastcc range(i64 -70, 20) i64 @ZSTD_writeFrameHeader(ptr noundef
   %102 = add nuw nsw i64 %81, 8
   br label %103
 
-103:                                              ; preds = %91, %96, %100, %83, %82, %46
+103:                                              ; preds = %100, %96, %91, %83, %82, %46
   %104 = phi i64 [ -70, %46 ], [ %84, %83 ], [ %81, %82 ], [ %102, %100 ], [ %95, %91 ], [ %99, %96 ]
   ret i64 %104
 }
@@ -8665,7 +8665,7 @@ define dso_local i64 @convertSequences_noRepcodes(ptr noundef writeonly captures
   %4 = icmp eq i64 %2, 0
   br i1 %4, label %50, label %5
 
-5:                                                ; preds = %3, %46
+5:                                                ; preds = %46, %3
   %6 = phi i64 [ %48, %46 ], [ 0, %3 ]
   %7 = phi i64 [ %47, %46 ], [ 0, %3 ]
   %8 = getelementptr inbounds nuw [16 x i8], ptr %1, i64 %6
@@ -8675,7 +8675,7 @@ define dso_local i64 @convertSequences_noRepcodes(ptr noundef writeonly captures
   br i1 %11, label %12, label %13, !prof !9, !nosanitize !8
 
 12:                                               ; preds = %5
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 13:                                               ; preds = %5
@@ -8694,7 +8694,7 @@ define dso_local i64 @convertSequences_noRepcodes(ptr noundef writeonly captures
   br i1 %23, label %24, label %25, !prof !9, !nosanitize !8
 
 24:                                               ; preds = %13
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 25:                                               ; preds = %13
@@ -8720,7 +8720,7 @@ define dso_local i64 @convertSequences_noRepcodes(ptr noundef writeonly captures
   br i1 %37, label %38, label %39, !prof !9, !nosanitize !8
 
 38:                                               ; preds = %35
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 39:                                               ; preds = %35
@@ -8730,7 +8730,7 @@ define dso_local i64 @convertSequences_noRepcodes(ptr noundef writeonly captures
   br i1 %42, label %43, label %44, !prof !9, !nosanitize !8
 
 43:                                               ; preds = %39
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 44:                                               ; preds = %39
@@ -8751,7 +8751,7 @@ define dso_local i64 @convertSequences_noRepcodes(ptr noundef writeonly captures
 ; Function Attrs: nounwind memory(readwrite, inaccessiblemem: write, target_mem: none) uwtable
 define dso_local range(i64 -107, 1) i64 @ZSTD_convertBlockSequences(ptr noundef captures(none) %0, ptr noundef readonly captures(none) %1, i64 noundef %2, i32 noundef %3) local_unnamed_addr #24 {
   %5 = alloca %struct.repcodes_s, align 8
-  call void @llvm.lifetime.start.p0(ptr nonnull %5) #36
+  call void @llvm.lifetime.start.p0(ptr nonnull %5) #35
   %6 = getelementptr inbounds nuw i8, ptr %0, i64 976
   %7 = getelementptr inbounds nuw i8, ptr %0, i64 1032
   %8 = load i64, ptr %7, align 8, !tbaa !303
@@ -8793,7 +8793,7 @@ define dso_local range(i64 -107, 1) i64 @ZSTD_convertBlockSequences(ptr noundef 
   br i1 %32, label %33, label %34, !prof !9, !nosanitize !8
 
 33:                                               ; preds = %30
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 34:                                               ; preds = %30
@@ -8808,7 +8808,7 @@ define dso_local range(i64 -107, 1) i64 @ZSTD_convertBlockSequences(ptr noundef 
   store ptr %39, ptr %40, align 8, !tbaa !222
   br label %212
 
-41:                                               ; preds = %34, %82
+41:                                               ; preds = %82, %34
   %42 = phi i64 [ %84, %82 ], [ 0, %34 ]
   %43 = phi i64 [ %83, %82 ], [ 0, %34 ]
   %44 = getelementptr inbounds nuw [16 x i8], ptr %1, i64 %42
@@ -8818,7 +8818,7 @@ define dso_local range(i64 -107, 1) i64 @ZSTD_convertBlockSequences(ptr noundef 
   br i1 %47, label %48, label %49, !prof !9, !nosanitize !8
 
 48:                                               ; preds = %41
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 49:                                               ; preds = %41
@@ -8837,7 +8837,7 @@ define dso_local range(i64 -107, 1) i64 @ZSTD_convertBlockSequences(ptr noundef 
   br i1 %59, label %60, label %61, !prof !9, !nosanitize !8
 
 60:                                               ; preds = %49
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 61:                                               ; preds = %49
@@ -8863,7 +8863,7 @@ define dso_local range(i64 -107, 1) i64 @ZSTD_convertBlockSequences(ptr noundef 
   br i1 %73, label %74, label %75, !prof !9, !nosanitize !8
 
 74:                                               ; preds = %71
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 75:                                               ; preds = %71
@@ -8873,7 +8873,7 @@ define dso_local range(i64 -107, 1) i64 @ZSTD_convertBlockSequences(ptr noundef 
   br i1 %78, label %79, label %80, !prof !9, !nosanitize !8
 
 79:                                               ; preds = %75
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 80:                                               ; preds = %75
@@ -8915,7 +8915,7 @@ define dso_local range(i64 -107, 1) i64 @ZSTD_convertBlockSequences(ptr noundef 
   br i1 %101, label %102, label %103, !prof !9, !nosanitize !8
 
 102:                                              ; preds = %98
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 103:                                              ; preds = %98
@@ -8926,10 +8926,10 @@ define dso_local range(i64 -107, 1) i64 @ZSTD_convertBlockSequences(ptr noundef 
   br label %212
 
 107:                                              ; preds = %16
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
-108:                                              ; preds = %26, %206
+108:                                              ; preds = %206, %26
   %109 = phi i32 [ %29, %26 ], [ %209, %206 ]
   %110 = phi i64 [ 0, %26 ], [ %210, %206 ]
   %111 = phi i32 [ %28, %26 ], [ %208, %206 ]
@@ -8948,7 +8948,7 @@ define dso_local range(i64 -107, 1) i64 @ZSTD_convertBlockSequences(ptr noundef 
   br i1 %123, label %124, label %125, !prof !9, !nosanitize !8
 
 124:                                              ; preds = %108
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 125:                                              ; preds = %108
@@ -8981,7 +8981,7 @@ define dso_local range(i64 -107, 1) i64 @ZSTD_convertBlockSequences(ptr noundef 
   br i1 %139, label %140, label %141, !prof !9, !nosanitize !8
 
 140:                                              ; preds = %137
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 141:                                              ; preds = %137
@@ -8991,7 +8991,7 @@ define dso_local range(i64 -107, 1) i64 @ZSTD_convertBlockSequences(ptr noundef 
   %145 = load ptr, ptr %23, align 8, !tbaa !158
   br label %157
 
-146:                                              ; preds = %125, %130, %134, %136
+146:                                              ; preds = %136, %134, %130, %125
   %147 = phi i32 [ %131, %130 ], [ %135, %134 ], [ 1, %125 ], [ %122, %136 ]
   %148 = icmp ugt i32 %115, 65535
   %149 = load ptr, ptr %23, align 8, !tbaa !158
@@ -9008,7 +9008,7 @@ define dso_local range(i64 -107, 1) i64 @ZSTD_convertBlockSequences(ptr noundef 
   store i32 %156, ptr %24, align 4, !tbaa !168
   br label %157
 
-157:                                              ; preds = %141, %150, %146
+157:                                              ; preds = %150, %146, %141
   %158 = phi ptr [ %145, %141 ], [ %149, %150 ], [ %149, %146 ]
   %159 = phi i32 [ %144, %141 ], [ %147, %150 ], [ %147, %146 ]
   %160 = zext i32 %117 to i64
@@ -9022,7 +9022,7 @@ define dso_local range(i64 -107, 1) i64 @ZSTD_convertBlockSequences(ptr noundef 
   br i1 %165, label %166, label %167, !prof !9, !nosanitize !8
 
 166:                                              ; preds = %157
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 167:                                              ; preds = %157
@@ -9040,7 +9040,7 @@ define dso_local range(i64 -107, 1) i64 @ZSTD_convertBlockSequences(ptr noundef 
   store i32 %175, ptr %24, align 4, !tbaa !168
   br label %176
 
-176:                                              ; preds = %167, %169
+176:                                              ; preds = %169, %167
   %177 = trunc i64 %164 to i16
   %178 = getelementptr inbounds nuw i8, ptr %158, i64 6
   store i16 %177, ptr %178, align 2, !tbaa !163
@@ -9061,7 +9061,7 @@ define dso_local range(i64 -107, 1) i64 @ZSTD_convertBlockSequences(ptr noundef 
   br i1 %185, label %186, label %187, !prof !9, !nosanitize !8
 
 186:                                              ; preds = %183
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 187:                                              ; preds = %183
@@ -9079,7 +9079,7 @@ define dso_local range(i64 -107, 1) i64 @ZSTD_convertBlockSequences(ptr noundef 
   br i1 %193, label %194, label %199, !prof !9, !nosanitize !8
 
 194:                                              ; preds = %190
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 195:                                              ; preds = %187
@@ -9110,7 +9110,7 @@ define dso_local range(i64 -107, 1) i64 @ZSTD_convertBlockSequences(ptr noundef 
   %211 = icmp eq i64 %210, %19
   br i1 %211, label %212, label %108
 
-212:                                              ; preds = %206, %18, %37, %86, %103, %94
+212:                                              ; preds = %206, %103, %94, %86, %37, %18
   %213 = icmp ugt i64 %2, 1
   %214 = and i1 %213, %14
   br i1 %214, label %215, label %254
@@ -9127,7 +9127,7 @@ define dso_local range(i64 -107, 1) i64 @ZSTD_convertBlockSequences(ptr noundef 
   br i1 %221, label %222, label %223, !prof !9, !nosanitize !8
 
 222:                                              ; preds = %217
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 223:                                              ; preds = %217
@@ -9136,7 +9136,7 @@ define dso_local range(i64 -107, 1) i64 @ZSTD_convertBlockSequences(ptr noundef 
   br i1 %225, label %226, label %227, !prof !9, !nosanitize !8
 
 226:                                              ; preds = %223
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 227:                                              ; preds = %223
@@ -9176,7 +9176,7 @@ define dso_local range(i64 -107, 1) i64 @ZSTD_convertBlockSequences(ptr noundef 
   store <2 x i32> %250, ptr %249, align 4, !tbaa !4
   br label %251
 
-251:                                              ; preds = %242, %248, %227
+251:                                              ; preds = %248, %242, %227
   %252 = phi ptr [ %239, %227 ], [ %1, %248 ], [ %247, %242 ]
   %253 = load i32, ptr %252, align 4, !tbaa !181
   store i32 %253, ptr %5, align 8, !tbaa !4
@@ -9189,9 +9189,9 @@ define dso_local range(i64 -107, 1) i64 @ZSTD_convertBlockSequences(ptr noundef 
   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 8 dereferenceable(12) %257, ptr noundef nonnull align 8 dereferenceable(12) %5, i64 12, i1 false)
   br label %258
 
-258:                                              ; preds = %4, %254
+258:                                              ; preds = %254, %4
   %259 = phi i64 [ 0, %254 ], [ -107, %4 ]
-  call void @llvm.lifetime.end.p0(ptr nonnull %5) #36
+  call void @llvm.lifetime.end.p0(ptr nonnull %5) #35
   ret i64 %259
 }
 
@@ -9204,7 +9204,7 @@ define dso_local void @ZSTD_get1BlockSummary(ptr dead_on_unwind noalias writable
   %6 = add i64 %2, -3
   br label %7
 
-7:                                                ; preds = %5, %55
+7:                                                ; preds = %55, %5
   %8 = phi i64 [ %28, %55 ], [ 0, %5 ]
   %9 = phi i64 [ %39, %55 ], [ 0, %5 ]
   %10 = phi i64 [ %50, %55 ], [ 0, %5 ]
@@ -9219,7 +9219,7 @@ define dso_local void @ZSTD_get1BlockSummary(ptr dead_on_unwind noalias writable
   br i1 %18, label %19, label %20, !prof !9, !nosanitize !8
 
 19:                                               ; preds = %7
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 20:                                               ; preds = %7
@@ -9237,7 +9237,7 @@ define dso_local void @ZSTD_get1BlockSummary(ptr dead_on_unwind noalias writable
   br i1 %29, label %30, label %31, !prof !9, !nosanitize !8
 
 30:                                               ; preds = %22
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 31:                                               ; preds = %22
@@ -9255,7 +9255,7 @@ define dso_local void @ZSTD_get1BlockSummary(ptr dead_on_unwind noalias writable
   br i1 %40, label %41, label %42, !prof !9, !nosanitize !8
 
 41:                                               ; preds = %33
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 42:                                               ; preds = %33
@@ -9273,7 +9273,7 @@ define dso_local void @ZSTD_get1BlockSummary(ptr dead_on_unwind noalias writable
   br i1 %51, label %52, label %53, !prof !9, !nosanitize !8
 
 52:                                               ; preds = %44
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 53:                                               ; preds = %44
@@ -9294,7 +9294,7 @@ define dso_local void @ZSTD_get1BlockSummary(ptr dead_on_unwind noalias writable
   %64 = icmp ult i64 %62, %2
   br i1 %64, label %65, label %80
 
-65:                                               ; preds = %58, %77
+65:                                               ; preds = %77, %58
   %66 = phi i64 [ %72, %77 ], [ %63, %58 ]
   %67 = phi i64 [ %78, %77 ], [ %62, %58 ]
   %68 = getelementptr inbounds nuw [16 x i8], ptr %1, i64 %67
@@ -9306,7 +9306,7 @@ define dso_local void @ZSTD_get1BlockSummary(ptr dead_on_unwind noalias writable
   br i1 %73, label %74, label %75, !prof !9, !nosanitize !8
 
 74:                                               ; preds = %65
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 75:                                               ; preds = %65
@@ -9322,7 +9322,7 @@ define dso_local void @ZSTD_get1BlockSummary(ptr dead_on_unwind noalias writable
   store i64 -107, ptr %0, align 8, !tbaa !310
   br label %108
 
-81:                                               ; preds = %20, %31, %42, %53, %75
+81:                                               ; preds = %75, %53, %42, %31, %20
   %82 = phi i64 [ %59, %75 ], [ %28, %31 ], [ %28, %42 ], [ %28, %53 ], [ %8, %20 ]
   %83 = phi i64 [ %60, %75 ], [ %9, %31 ], [ %39, %42 ], [ %39, %53 ], [ %9, %20 ]
   %84 = phi i64 [ %61, %75 ], [ %10, %31 ], [ %10, %42 ], [ %50, %53 ], [ %10, %20 ]
@@ -9333,7 +9333,7 @@ define dso_local void @ZSTD_get1BlockSummary(ptr dead_on_unwind noalias writable
   br i1 %88, label %89, label %90, !prof !9, !nosanitize !8
 
 89:                                               ; preds = %81
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 90:                                               ; preds = %81
@@ -9343,7 +9343,7 @@ define dso_local void @ZSTD_get1BlockSummary(ptr dead_on_unwind noalias writable
   br i1 %93, label %94, label %95, !prof !9, !nosanitize !8
 
 94:                                               ; preds = %90
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 95:                                               ; preds = %90
@@ -9353,7 +9353,7 @@ define dso_local void @ZSTD_get1BlockSummary(ptr dead_on_unwind noalias writable
   br i1 %98, label %99, label %100, !prof !9, !nosanitize !8
 
 99:                                               ; preds = %95
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 100:                                              ; preds = %95
@@ -9408,11 +9408,11 @@ define dso_local range(i64 -66, -63) i64 @ZSTD_compressSequencesAndLiterals(ptr 
   br i1 %31, label %33, label %32
 
 32:                                               ; preds = %28
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 33:                                               ; preds = %28
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 34:                                               ; preds = %16, %11
@@ -9424,7 +9424,7 @@ define dso_local range(i64 -66, -63) i64 @ZSTD_compressSequencesAndLiterals(ptr 
   br i1 %38, label %39, label %40, !prof !9, !nosanitize !8
 
 39:                                               ; preds = %34
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 40:                                               ; preds = %34
@@ -9451,11 +9451,11 @@ define dso_local range(i64 -66, -63) i64 @ZSTD_compressSequencesAndLiterals(ptr 
   br i1 %55, label %56, label %57
 
 56:                                               ; preds = %48
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
-57:                                               ; preds = %40, %48, %44
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+57:                                               ; preds = %48, %44, %40
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 58:                                               ; preds = %20, %9
@@ -9466,7 +9466,7 @@ define dso_local range(i64 -66, -63) i64 @ZSTD_compressSequencesAndLiterals(ptr 
 ; Function Attrs: nounwind uwtable
 define dso_local i64 @ZSTD_flushStream(ptr noundef %0, ptr noundef captures(none) %1) local_unnamed_addr #4 {
   %3 = alloca %struct.ZSTD_inBuffer_s, align 8
-  call void @llvm.lifetime.start.p0(ptr nonnull %3) #36
+  call void @llvm.lifetime.start.p0(ptr nonnull %3) #35
   tail call void @llvm.experimental.noalias.scope.decl(metadata !314)
   %4 = getelementptr inbounds nuw i8, ptr %0, i64 364
   %5 = load i32, ptr %4, align 4, !tbaa !284, !noalias !314
@@ -9484,19 +9484,19 @@ define dso_local i64 @ZSTD_flushStream(ptr noundef %0, ptr noundef captures(none
   call void @llvm.memset.p0.i64(ptr noundef nonnull align 8 dereferenceable(24) %3, i8 0, i64 24, i1 false), !alias.scope !314
   br label %12
 
-12:                                               ; preds = %7, %11
+12:                                               ; preds = %11, %7
   %13 = phi i64 [ %10, %7 ], [ 0, %11 ]
   %14 = getelementptr inbounds nuw i8, ptr %3, i64 8
   store i64 %13, ptr %14, align 8, !tbaa !176
   %15 = call i64 @ZSTD_compressStream2(ptr noundef nonnull %0, ptr noundef %1, ptr noundef nonnull %3, i32 noundef 1)
-  call void @llvm.lifetime.end.p0(ptr nonnull %3) #36
+  call void @llvm.lifetime.end.p0(ptr nonnull %3) #35
   ret i64 %15
 }
 
 ; Function Attrs: nounwind uwtable
 define dso_local i64 @ZSTD_endStream(ptr noundef %0, ptr noundef captures(none) %1) local_unnamed_addr #4 {
   %3 = alloca %struct.ZSTD_inBuffer_s, align 8
-  call void @llvm.lifetime.start.p0(ptr nonnull %3) #36
+  call void @llvm.lifetime.start.p0(ptr nonnull %3) #35
   tail call void @llvm.experimental.noalias.scope.decl(metadata !317)
   %4 = getelementptr inbounds nuw i8, ptr %0, i64 364
   %5 = load i32, ptr %4, align 4, !tbaa !284, !noalias !317
@@ -9512,7 +9512,7 @@ define dso_local i64 @ZSTD_endStream(ptr noundef %0, ptr noundef captures(none) 
   call void @llvm.memset.p0.i64(ptr noundef nonnull align 8 dereferenceable(24) %3, i8 0, i64 24, i1 false), !alias.scope !317
   br label %10
 
-10:                                               ; preds = %7, %9
+10:                                               ; preds = %9, %7
   %11 = call i64 @ZSTD_compressStream2(ptr noundef nonnull %0, ptr noundef %1, ptr noundef nonnull %3, i32 noundef 2)
   %12 = icmp ult i64 %11, -119
   br i1 %12, label %13, label %38
@@ -9539,10 +9539,10 @@ define dso_local i64 @ZSTD_endStream(ptr noundef %0, ptr noundef captures(none) 
   br i1 %27, label %29, label %28, !prof !258, !nosanitize !8
 
 28:                                               ; preds = %22
-  tail call void @llvm.ubsantrap(i8 12) #39, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 12) #38, !nosanitize !8
   unreachable, !nosanitize !8
 
-29:                                               ; preds = %17, %22
+29:                                               ; preds = %22, %17
   %30 = phi i32 [ 0, %17 ], [ %25, %22 ]
   %31 = add nuw i64 %11, %21
   %32 = sext i32 %30 to i64
@@ -9551,16 +9551,16 @@ define dso_local i64 @ZSTD_endStream(ptr noundef %0, ptr noundef captures(none) 
   br i1 %34, label %35, label %36, !prof !9, !nosanitize !8
 
 35:                                               ; preds = %29
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 36:                                               ; preds = %29
   %37 = extractvalue { i64, i1 } %33, 0, !nosanitize !8
   br label %38
 
-38:                                               ; preds = %13, %10, %36
+38:                                               ; preds = %36, %13, %10
   %39 = phi i64 [ %11, %10 ], [ %37, %36 ], [ %11, %13 ]
-  call void @llvm.lifetime.end.p0(ptr nonnull %3) #36
+  call void @llvm.lifetime.end.p0(ptr nonnull %3) #35
   ret i64 %39
 }
 
@@ -9575,11 +9575,11 @@ define dso_local void @ZSTD_getCParams(ptr dead_on_unwind noalias readnone sret(
   br i1 %5, label %6, label %7
 
 6:                                                ; preds = %4
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 7:                                                ; preds = %4
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 }
 
@@ -9589,11 +9589,11 @@ define dso_local void @ZSTD_getParams(ptr dead_on_unwind noalias readnone sret(%
   br i1 %5, label %6, label %7
 
 6:                                                ; preds = %4
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 7:                                                ; preds = %4
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 }
 
@@ -9628,7 +9628,7 @@ declare void @free(ptr allocptr noundef captures(none)) local_unnamed_addr #26
 ; Function Attrs: mustprogress nofree nounwind willreturn allockind("alloc,zeroed") allocsize(0,1) memory(inaccessiblemem: readwrite, errnomem: write)
 declare noalias noundef ptr @calloc(i64 noundef, i64 noundef) local_unnamed_addr #27
 
-; Function Attrs: mustprogress nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
 declare { i64, i1 } @llvm.umul.with.overflow.i64(i64, i64) #2
 
 declare i64 @ZSTD_ldm_getTableSize(ptr noundef byval(%struct.ldmParams_t) align 8) local_unnamed_addr #16
@@ -9651,7 +9651,7 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_resetCCtx_internal(ptr nound
 
 13:                                               ; preds = %4
   %14 = getelementptr inbounds nuw i8, ptr %0, i64 244
-  tail call void @ZSTD_ldm_adjustParameters(ptr noundef nonnull %10, ptr noundef nonnull %14) #36
+  tail call void @ZSTD_ldm_adjustParameters(ptr noundef nonnull %10, ptr noundef nonnull %14) #35
   br label %15
 
 15:                                               ; preds = %13, %4
@@ -9689,7 +9689,7 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_resetCCtx_internal(ptr nound
   br i1 %42, label %43, label %44, !prof !9, !nosanitize !8
 
 43:                                               ; preds = %32
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 44:                                               ; preds = %32
@@ -9702,10 +9702,10 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_resetCCtx_internal(ptr nound
   br i1 %50, label %51, label %52, !prof !9, !nosanitize !8
 
 51:                                               ; preds = %44
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
-52:                                               ; preds = %28, %44
+52:                                               ; preds = %44, %28
   %53 = phi i64 [ 0, %28 ], [ %49, %44 ]
   %54 = getelementptr inbounds nuw i8, ptr %0, i64 364
   %55 = load i32, ptr %54, align 4, !tbaa !107
@@ -9719,13 +9719,13 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_resetCCtx_internal(ptr nound
   br i1 %60, label %61, label %62, !prof !9, !nosanitize !8
 
 61:                                               ; preds = %57
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
-62:                                               ; preds = %15, %52, %57
+62:                                               ; preds = %57, %52, %15
   %63 = phi i64 [ %53, %57 ], [ %53, %52 ], [ 0, %15 ]
   %64 = phi i64 [ %59, %57 ], [ 0, %52 ], [ 0, %15 ]
-  %65 = tail call i64 @ZSTD_ldm_getMaxNbSeq(ptr noundef nonnull byval(%struct.ldmParams_t) align 8 %10, i64 noundef %25) #36
+  %65 = tail call i64 @ZSTD_ldm_getMaxNbSeq(ptr noundef nonnull byval(%struct.ldmParams_t) align 8 %10, i64 noundef %25) #35
   %66 = getelementptr inbounds nuw i8, ptr %0, i64 3224
   %67 = getelementptr inbounds nuw i8, ptr %0, i64 928
   %68 = load i64, ptr %67, align 8, !tbaa !52
@@ -9760,7 +9760,7 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_resetCCtx_internal(ptr nound
   br i1 %92, label %94, label %93, !prof !258, !nosanitize !8
 
 93:                                               ; preds = %83
-  tail call void @llvm.ubsantrap(i8 12) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 12) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 94:                                               ; preds = %83
@@ -9770,7 +9770,7 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_resetCCtx_internal(ptr nound
   br i1 %97, label %98, label %99, !prof !9, !nosanitize !8
 
 98:                                               ; preds = %94
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 99:                                               ; preds = %94
@@ -9781,7 +9781,7 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_resetCCtx_internal(ptr nound
   br i1 %103, label %104, label %105, !prof !9, !nosanitize !8
 
 104:                                              ; preds = %99
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 105:                                              ; preds = %99
@@ -9793,7 +9793,7 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_resetCCtx_internal(ptr nound
   br i1 %110, label %111, label %112, !prof !9, !nosanitize !8
 
 111:                                              ; preds = %105
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 112:                                              ; preds = %105
@@ -9832,7 +9832,7 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_resetCCtx_internal(ptr nound
   br i1 %138, label %139, label %140, !prof !9, !nosanitize !8
 
 139:                                              ; preds = %127
-  tail call void @llvm.ubsantrap(i8 12) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 12) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 140:                                              ; preds = %127
@@ -9840,7 +9840,7 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_resetCCtx_internal(ptr nound
   br i1 %141, label %143, label %142, !prof !258, !nosanitize !8
 
 142:                                              ; preds = %140
-  tail call void @llvm.ubsantrap(i8 12) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 12) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 143:                                              ; preds = %140
@@ -9850,7 +9850,7 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_resetCCtx_internal(ptr nound
   br i1 %146, label %147, label %148, !prof !9, !nosanitize !8
 
 147:                                              ; preds = %143
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 148:                                              ; preds = %143
@@ -9862,7 +9862,7 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_resetCCtx_internal(ptr nound
   br i1 %153, label %154, label %155, !prof !9, !nosanitize !8
 
 154:                                              ; preds = %148
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 155:                                              ; preds = %148
@@ -9881,7 +9881,7 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_resetCCtx_internal(ptr nound
   br i1 %167, label %168, label %169, !prof !9, !nosanitize !8
 
 168:                                              ; preds = %155
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 169:                                              ; preds = %155
@@ -9891,7 +9891,7 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_resetCCtx_internal(ptr nound
   br i1 %172, label %173, label %174, !prof !9, !nosanitize !8
 
 173:                                              ; preds = %169
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 174:                                              ; preds = %169
@@ -9901,19 +9901,19 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_resetCCtx_internal(ptr nound
   br i1 %177, label %178, label %179, !prof !9, !nosanitize !8
 
 178:                                              ; preds = %174
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 179:                                              ; preds = %174
   %180 = extractvalue { i64, i1 } %176, 0, !nosanitize !8
-  call void @llvm.lifetime.start.p0(ptr nonnull %5) #36
+  call void @llvm.lifetime.start.p0(ptr nonnull %5) #35
   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 8 dereferenceable(24) %5, ptr noundef nonnull readonly align 4 dereferenceable(24) %10, i64 24, i1 false), !tbaa.struct !260
-  %181 = tail call i64 @ZSTD_ldm_getTableSize(ptr noundef nonnull byval(%struct.ldmParams_t) align 8 %5) #36
-  call void @llvm.lifetime.end.p0(ptr nonnull %5) #36
-  call void @llvm.lifetime.start.p0(ptr nonnull %6) #36
+  %181 = tail call i64 @ZSTD_ldm_getTableSize(ptr noundef nonnull byval(%struct.ldmParams_t) align 8 %5) #35
+  call void @llvm.lifetime.end.p0(ptr nonnull %5) #35
+  call void @llvm.lifetime.start.p0(ptr nonnull %6) #35
   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 8 dereferenceable(24) %6, ptr noundef nonnull readonly align 4 dereferenceable(24) %10, i64 24, i1 false), !tbaa.struct !260
-  %182 = tail call i64 @ZSTD_ldm_getMaxNbSeq(ptr noundef nonnull byval(%struct.ldmParams_t) align 8 %6, i64 noundef %84) #36
-  call void @llvm.lifetime.end.p0(ptr nonnull %6) #36
+  %182 = tail call i64 @ZSTD_ldm_getMaxNbSeq(ptr noundef nonnull byval(%struct.ldmParams_t) align 8 %6, i64 noundef %84) #35
+  call void @llvm.lifetime.end.p0(ptr nonnull %6) #35
   %183 = load i32, ptr %10, align 4, !tbaa !322
   %184 = icmp eq i32 %183, 1
   br i1 %184, label %185, label %197
@@ -9924,7 +9924,7 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_resetCCtx_internal(ptr nound
   br i1 %187, label %188, label %189, !prof !9, !nosanitize !8
 
 188:                                              ; preds = %185
-  tail call void @llvm.ubsantrap(i8 12) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 12) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 189:                                              ; preds = %185
@@ -9934,7 +9934,7 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_resetCCtx_internal(ptr nound
   br i1 %192, label %193, label %194, !prof !9, !nosanitize !8
 
 193:                                              ; preds = %189
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 194:                                              ; preds = %189
@@ -9950,7 +9950,7 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_resetCCtx_internal(ptr nound
   br i1 %201, label %202, label %203, !prof !9, !nosanitize !8
 
 202:                                              ; preds = %197
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 203:                                              ; preds = %197
@@ -9965,7 +9965,7 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_resetCCtx_internal(ptr nound
   br i1 %209, label %211, label %210, !prof !258, !nosanitize !8
 
 210:                                              ; preds = %208
-  tail call void @llvm.ubsantrap(i8 12) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 12) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 211:                                              ; preds = %208
@@ -9975,7 +9975,7 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_resetCCtx_internal(ptr nound
   br i1 %214, label %215, label %216, !prof !9, !nosanitize !8
 
 215:                                              ; preds = %211
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 216:                                              ; preds = %211
@@ -9991,7 +9991,7 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_resetCCtx_internal(ptr nound
   br i1 %223, label %224, label %225, !prof !9, !nosanitize !8
 
 224:                                              ; preds = %219
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 225:                                              ; preds = %219
@@ -10001,7 +10001,7 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_resetCCtx_internal(ptr nound
   br i1 %228, label %229, label %230, !prof !9, !nosanitize !8
 
 229:                                              ; preds = %225
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 230:                                              ; preds = %225
@@ -10011,7 +10011,7 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_resetCCtx_internal(ptr nound
   br i1 %233, label %234, label %235, !prof !9, !nosanitize !8
 
 234:                                              ; preds = %230
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 235:                                              ; preds = %230
@@ -10021,7 +10021,7 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_resetCCtx_internal(ptr nound
   br i1 %238, label %239, label %240, !prof !9, !nosanitize !8
 
 239:                                              ; preds = %235
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 240:                                              ; preds = %235
@@ -10031,7 +10031,7 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_resetCCtx_internal(ptr nound
   br i1 %243, label %244, label %245, !prof !9, !nosanitize !8
 
 244:                                              ; preds = %240
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 245:                                              ; preds = %240
@@ -10041,7 +10041,7 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_resetCCtx_internal(ptr nound
   br i1 %248, label %249, label %250, !prof !9, !nosanitize !8
 
 249:                                              ; preds = %245
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 250:                                              ; preds = %245
@@ -10062,7 +10062,7 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_resetCCtx_internal(ptr nound
   br i1 %260, label %261, label %262, !prof !9, !nosanitize !8
 
 261:                                              ; preds = %256
-  tail call void @llvm.ubsantrap(i8 0) #39, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #38, !nosanitize !8
   unreachable, !nosanitize !8
 
 262:                                              ; preds = %256
@@ -10083,7 +10083,7 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_resetCCtx_internal(ptr nound
   br i1 %273, label %274, label %275, !prof !9, !nosanitize !8
 
 274:                                              ; preds = %264
-  tail call void @llvm.ubsantrap(i8 12) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 12) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 275:                                              ; preds = %264
@@ -10104,7 +10104,7 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_resetCCtx_internal(ptr nound
   %288 = icmp sgt i32 %287, 128
   br label %289
 
-289:                                              ; preds = %275, %285
+289:                                              ; preds = %285, %275
   %290 = phi i1 [ false, %275 ], [ %288, %285 ]
   %291 = select i1 %271, i1 true, i1 %290
   br i1 %291, label %292, label %347
@@ -10127,25 +10127,25 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_resetCCtx_internal(ptr nound
   br i1 %301, label %303, label %302
 
 302:                                              ; preds = %300
-  tail call void %296(ptr noundef %298, ptr noundef nonnull %265) #36, !inline_history !259
+  tail call void %296(ptr noundef %298, ptr noundef nonnull %265) #35, !inline_history !259
   br label %304
 
 303:                                              ; preds = %300
-  tail call void @free(ptr noundef nonnull %265) #36
+  tail call void @free(ptr noundef nonnull %265) #35
   br label %304
 
-304:                                              ; preds = %293, %302, %303
+304:                                              ; preds = %303, %302, %293
   %305 = load ptr, ptr %294, align 8, !tbaa !48
   %306 = icmp eq ptr %305, null
   br i1 %306, label %310, label %307
 
 307:                                              ; preds = %304
   %308 = load ptr, ptr %297, align 8
-  %309 = tail call ptr %305(ptr noundef %308, i64 noundef %251) #36, !inline_history !324
+  %309 = tail call ptr %305(ptr noundef %308, i64 noundef %251) #35, !inline_history !324
   br label %312
 
 310:                                              ; preds = %304
-  %311 = tail call noalias ptr @malloc(i64 noundef %251) #37
+  %311 = tail call noalias ptr @malloc(i64 noundef %251) #36
   br label %312
 
 312:                                              ; preds = %310, %307
@@ -10251,7 +10251,7 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_resetCCtx_internal(ptr nound
   store i32 1, ptr %358, align 8, !tbaa !271
   br label %359
 
-359:                                              ; preds = %341, %347, %357
+359:                                              ; preds = %357, %347, %341
   %360 = getelementptr inbounds nuw i8, ptr %0, i64 3496
   tail call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 8 dereferenceable(28) %360, ptr noundef nonnull align 4 dereferenceable(28) %16, i64 28, i1 false), !tbaa.struct !78
   %361 = getelementptr inbounds nuw i8, ptr %0, i64 432
@@ -10265,22 +10265,22 @@ define internal fastcc range(i64 -119, 0) i64 @ZSTD_resetCCtx_internal(ptr nound
   br i1 %367, label %368, label %369, !prof !9, !nosanitize !8
 
 368:                                              ; preds = %359
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 369:                                              ; preds = %359
   %370 = extractvalue { i64, i1 } %366, 0, !nosanitize !8
   %371 = getelementptr inbounds nuw i8, ptr %0, i64 784
   store i64 %370, ptr %371, align 8, !tbaa !119
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable
 
-372:                                              ; preds = %312, %339, %334, %330, %292, %250
+372:                                              ; preds = %339, %334, %330, %312, %292, %250
   %373 = phi i64 [ %251, %250 ], [ -64, %339 ], [ -64, %334 ], [ -64, %330 ], [ -64, %312 ], [ -64, %292 ]
   ret i64 %373
 }
 
-; Function Attrs: mustprogress nocallback nofree nosync nounwind speculatable willreturn memory(none)
+; Function Attrs: nocallback nofree nosync nounwind speculatable willreturn memory(none)
 declare i32 @llvm.ctlz.i32(i32, i1 immarg) #28
 
 declare i64 @HIST_count_wksp(ptr noundef, ptr noundef, ptr noundef, i64 noundef, ptr noundef, i64 noundef) local_unnamed_addr #16
@@ -10410,25 +10410,25 @@ define internal fastcc void @ZSTD_buildSequencesStatistics(ptr dead_on_unwind no
   store i8 52, ptr %92, align 1, !tbaa !164
   br label %93
 
-93:                                               ; preds = %85, %88
+93:                                               ; preds = %88, %85
   %94 = getelementptr inbounds nuw i8, ptr %0, i64 32
   store i32 0, ptr %94, align 8, !tbaa !329
-  call void @llvm.lifetime.start.p0(ptr nonnull %12) #36
+  call void @llvm.lifetime.start.p0(ptr nonnull %12) #35
   store i32 35, ptr %12, align 4, !tbaa !4
-  %95 = call i64 @HIST_countFast_wksp(ptr noundef %8, ptr noundef nonnull %12, ptr noundef %20, i64 noundef %2, ptr noundef %9, i64 noundef %10) #36
+  %95 = call i64 @HIST_countFast_wksp(ptr noundef %8, ptr noundef nonnull %12, ptr noundef %20, i64 noundef %2, ptr noundef %9, i64 noundef %10) #35
   %96 = getelementptr inbounds nuw i8, ptr %3, i64 3548
   %97 = load i32, ptr %96, align 4, !tbaa !190
   %98 = getelementptr inbounds nuw i8, ptr %4, i64 3548
   store i32 %97, ptr %98, align 4, !tbaa !190
   %99 = load i32, ptr %12, align 4, !tbaa !4
   %100 = getelementptr inbounds nuw i8, ptr %3, i64 2224
-  %101 = call i32 @ZSTD_selectEncodingType(ptr noundef nonnull %98, ptr noundef %8, i32 noundef %99, i64 noundef %95, i64 noundef %2, i32 noundef 9, ptr noundef nonnull %100, ptr noundef nonnull @LL_defaultNorm, i32 noundef 6, i32 noundef 1, i32 noundef %7) #36
+  %101 = call i32 @ZSTD_selectEncodingType(ptr noundef nonnull %98, ptr noundef %8, i32 noundef %99, i64 noundef %95, i64 noundef %2, i32 noundef 9, ptr noundef nonnull %100, ptr noundef nonnull @LL_defaultNorm, i32 noundef 6, i32 noundef 1, i32 noundef %7) #35
   store i32 %101, ptr %0, align 8, !tbaa !330
   %102 = ptrtoint ptr %6 to i64
   %103 = ptrtoint ptr %5 to i64
   %104 = sub i64 %102, %103
   %105 = load i32, ptr %12, align 4, !tbaa !4
-  %106 = call i64 @ZSTD_buildCTable(ptr noundef %5, i64 noundef %104, ptr noundef nonnull %15, i32 noundef 9, i32 noundef %101, ptr noundef %8, i32 noundef %105, ptr noundef %20, i64 noundef %2, ptr noundef nonnull @LL_defaultNorm, i32 noundef 6, i32 noundef 35, ptr noundef nonnull %100, i64 noundef 1316, ptr noundef %9, i64 noundef %10) #36
+  %106 = call i64 @ZSTD_buildCTable(ptr noundef %5, i64 noundef %104, ptr noundef nonnull %15, i32 noundef 9, i32 noundef %101, ptr noundef %8, i32 noundef %105, ptr noundef %20, i64 noundef %2, ptr noundef nonnull @LL_defaultNorm, i32 noundef 6, i32 noundef 35, ptr noundef nonnull %100, i64 noundef 1316, ptr noundef %9, i64 noundef %10) #35
   %107 = icmp ult i64 %106, -119
   br i1 %107, label %108, label %111
 
@@ -10443,15 +10443,15 @@ define internal fastcc void @ZSTD_buildSequencesStatistics(ptr dead_on_unwind no
 111:                                              ; preds = %93
   %112 = getelementptr inbounds nuw i8, ptr %0, i64 16
   store i64 %106, ptr %112, align 8, !tbaa !331
-  call void @llvm.lifetime.end.p0(ptr nonnull %12) #36
+  call void @llvm.lifetime.end.p0(ptr nonnull %12) #35
   br label %158
 
-113:                                              ; preds = %108, %110
+113:                                              ; preds = %110, %108
   %114 = getelementptr inbounds nuw i8, ptr %5, i64 %106
-  call void @llvm.lifetime.end.p0(ptr nonnull %12) #36
-  call void @llvm.lifetime.start.p0(ptr nonnull %13) #36
+  call void @llvm.lifetime.end.p0(ptr nonnull %12) #35
+  call void @llvm.lifetime.start.p0(ptr nonnull %13) #35
   store i32 31, ptr %13, align 4, !tbaa !4
-  %115 = call i64 @HIST_countFast_wksp(ptr noundef %8, ptr noundef nonnull %13, ptr noundef %18, i64 noundef %2, ptr noundef %9, i64 noundef %10) #36
+  %115 = call i64 @HIST_countFast_wksp(ptr noundef %8, ptr noundef nonnull %13, ptr noundef %18, i64 noundef %2, ptr noundef %9, i64 noundef %10) #35
   %116 = load i32, ptr %13, align 4, !tbaa !4
   %117 = icmp ult i32 %116, 29
   %118 = zext i1 %117 to i32
@@ -10459,13 +10459,13 @@ define internal fastcc void @ZSTD_buildSequencesStatistics(ptr dead_on_unwind no
   %120 = load i32, ptr %119, align 4, !tbaa !194
   %121 = getelementptr inbounds nuw i8, ptr %4, i64 3540
   store i32 %120, ptr %121, align 4, !tbaa !194
-  %122 = call i32 @ZSTD_selectEncodingType(ptr noundef nonnull %121, ptr noundef %8, i32 noundef %116, i64 noundef %115, i64 noundef %2, i32 noundef 8, ptr noundef nonnull %3, ptr noundef nonnull @OF_defaultNorm, i32 noundef 5, i32 noundef %118, i32 noundef %7) #36
+  %122 = call i32 @ZSTD_selectEncodingType(ptr noundef nonnull %121, ptr noundef %8, i32 noundef %116, i64 noundef %115, i64 noundef %2, i32 noundef 8, ptr noundef nonnull %3, ptr noundef nonnull @OF_defaultNorm, i32 noundef 5, i32 noundef %118, i32 noundef %7) #35
   %123 = getelementptr inbounds nuw i8, ptr %0, i64 4
   store i32 %122, ptr %123, align 4, !tbaa !332
   %124 = ptrtoint ptr %114 to i64
   %125 = sub i64 %102, %124
   %126 = load i32, ptr %13, align 4, !tbaa !4
-  %127 = call i64 @ZSTD_buildCTable(ptr noundef %114, i64 noundef %125, ptr noundef nonnull %4, i32 noundef 8, i32 noundef %122, ptr noundef %8, i32 noundef %126, ptr noundef %18, i64 noundef %2, ptr noundef nonnull @OF_defaultNorm, i32 noundef 5, i32 noundef 28, ptr noundef nonnull %3, i64 noundef 772, ptr noundef %9, i64 noundef %10) #36
+  %127 = call i64 @ZSTD_buildCTable(ptr noundef %114, i64 noundef %125, ptr noundef nonnull %4, i32 noundef 8, i32 noundef %122, ptr noundef %8, i32 noundef %126, ptr noundef %18, i64 noundef %2, ptr noundef nonnull @OF_defaultNorm, i32 noundef 5, i32 noundef 28, ptr noundef nonnull %3, i64 noundef 772, ptr noundef %9, i64 noundef %10) #35
   %128 = icmp ult i64 %127, -119
   br i1 %128, label %129, label %132
 
@@ -10480,28 +10480,28 @@ define internal fastcc void @ZSTD_buildSequencesStatistics(ptr dead_on_unwind no
 132:                                              ; preds = %113
   %133 = getelementptr inbounds nuw i8, ptr %0, i64 16
   store i64 %127, ptr %133, align 8, !tbaa !331
-  call void @llvm.lifetime.end.p0(ptr nonnull %13) #36
+  call void @llvm.lifetime.end.p0(ptr nonnull %13) #35
   br label %158
 
-134:                                              ; preds = %129, %131
+134:                                              ; preds = %131, %129
   %135 = getelementptr inbounds nuw i8, ptr %114, i64 %127
-  call void @llvm.lifetime.end.p0(ptr nonnull %13) #36
-  call void @llvm.lifetime.start.p0(ptr nonnull %14) #36
+  call void @llvm.lifetime.end.p0(ptr nonnull %13) #35
+  call void @llvm.lifetime.start.p0(ptr nonnull %14) #35
   store i32 52, ptr %14, align 4, !tbaa !4
-  %136 = call i64 @HIST_countFast_wksp(ptr noundef %8, ptr noundef nonnull %14, ptr noundef %22, i64 noundef %2, ptr noundef %9, i64 noundef %10) #36
+  %136 = call i64 @HIST_countFast_wksp(ptr noundef %8, ptr noundef nonnull %14, ptr noundef %22, i64 noundef %2, ptr noundef %9, i64 noundef %10) #35
   %137 = getelementptr inbounds nuw i8, ptr %3, i64 3544
   %138 = load i32, ptr %137, align 4, !tbaa !195
   %139 = getelementptr inbounds nuw i8, ptr %4, i64 3544
   store i32 %138, ptr %139, align 4, !tbaa !195
   %140 = load i32, ptr %14, align 4, !tbaa !4
   %141 = getelementptr inbounds nuw i8, ptr %3, i64 772
-  %142 = call i32 @ZSTD_selectEncodingType(ptr noundef nonnull %139, ptr noundef %8, i32 noundef %140, i64 noundef %136, i64 noundef %2, i32 noundef 9, ptr noundef nonnull %141, ptr noundef nonnull @ML_defaultNorm, i32 noundef 6, i32 noundef 1, i32 noundef %7) #36
+  %142 = call i32 @ZSTD_selectEncodingType(ptr noundef nonnull %139, ptr noundef %8, i32 noundef %140, i64 noundef %136, i64 noundef %2, i32 noundef 9, ptr noundef nonnull %141, ptr noundef nonnull @ML_defaultNorm, i32 noundef 6, i32 noundef 1, i32 noundef %7) #35
   %143 = getelementptr inbounds nuw i8, ptr %0, i64 8
   store i32 %142, ptr %143, align 8, !tbaa !333
   %144 = ptrtoint ptr %135 to i64
   %145 = sub i64 %102, %144
   %146 = load i32, ptr %14, align 4, !tbaa !4
-  %147 = call i64 @ZSTD_buildCTable(ptr noundef %135, i64 noundef %145, ptr noundef nonnull %16, i32 noundef 9, i32 noundef %142, ptr noundef %8, i32 noundef %146, ptr noundef %22, i64 noundef %2, ptr noundef nonnull @ML_defaultNorm, i32 noundef 6, i32 noundef 52, ptr noundef nonnull %141, i64 noundef 1452, ptr noundef %9, i64 noundef %10) #36
+  %147 = call i64 @ZSTD_buildCTable(ptr noundef %135, i64 noundef %145, ptr noundef nonnull %16, i32 noundef 9, i32 noundef %142, ptr noundef %8, i32 noundef %146, ptr noundef %22, i64 noundef %2, ptr noundef nonnull @ML_defaultNorm, i32 noundef 6, i32 noundef 52, ptr noundef nonnull %141, i64 noundef 1452, ptr noundef %9, i64 noundef %10) #35
   %148 = icmp ult i64 %147, -119
   br i1 %148, label %149, label %152
 
@@ -10516,18 +10516,18 @@ define internal fastcc void @ZSTD_buildSequencesStatistics(ptr dead_on_unwind no
 152:                                              ; preds = %134
   %153 = getelementptr inbounds nuw i8, ptr %0, i64 16
   store i64 %147, ptr %153, align 8, !tbaa !331
-  call void @llvm.lifetime.end.p0(ptr nonnull %14) #36
+  call void @llvm.lifetime.end.p0(ptr nonnull %14) #35
   br label %158
 
-154:                                              ; preds = %149, %151
-  call void @llvm.lifetime.end.p0(ptr nonnull %14) #36
+154:                                              ; preds = %151, %149
+  call void @llvm.lifetime.end.p0(ptr nonnull %14) #35
   %155 = add nuw nsw i64 %127, %106
   %156 = add nuw nsw i64 %155, %147
   %157 = getelementptr inbounds nuw i8, ptr %0, i64 16
   store i64 %156, ptr %157, align 8, !tbaa !331
   br label %158
 
-158:                                              ; preds = %152, %132, %111, %154
+158:                                              ; preds = %154, %152, %132, %111
   ret void
 }
 
@@ -10550,7 +10550,7 @@ define internal fastcc void @ZSTD_overflowCorrectIfNeeded(ptr noundef captures(n
   br i1 %13, label %14, label %15, !prof !9, !nosanitize !8
 
 14:                                               ; preds = %5
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 15:                                               ; preds = %5
@@ -10585,7 +10585,7 @@ define internal fastcc void @ZSTD_overflowCorrectIfNeeded(ptr noundef captures(n
   br i1 %41, label %42, label %43, !prof !9, !nosanitize !8
 
 42:                                               ; preds = %24
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 43:                                               ; preds = %24
@@ -10596,7 +10596,7 @@ define internal fastcc void @ZSTD_overflowCorrectIfNeeded(ptr noundef captures(n
   br i1 %47, label %48, label %49, !prof !9, !nosanitize !8
 
 48:                                               ; preds = %43
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 49:                                               ; preds = %43
@@ -10615,7 +10615,7 @@ define internal fastcc void @ZSTD_overflowCorrectIfNeeded(ptr noundef captures(n
   br i1 %59, label %60, label %61, !prof !9, !nosanitize !8
 
 60:                                               ; preds = %49
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 61:                                               ; preds = %49
@@ -10628,7 +10628,7 @@ define internal fastcc void @ZSTD_overflowCorrectIfNeeded(ptr noundef captures(n
   br i1 %65, label %66, label %67, !prof !9, !nosanitize !8
 
 66:                                               ; preds = %63
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 67:                                               ; preds = %63
@@ -10649,7 +10649,7 @@ define internal fastcc void @ZSTD_overflowCorrectIfNeeded(ptr noundef captures(n
   br i1 %76, label %77, label %78, !prof !9, !nosanitize !8
 
 77:                                               ; preds = %74
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 78:                                               ; preds = %74
@@ -10666,7 +10666,7 @@ define internal fastcc void @ZSTD_overflowCorrectIfNeeded(ptr noundef captures(n
   br i1 %85, label %86, label %87, !prof !9, !nosanitize !8
 
 86:                                               ; preds = %80
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 87:                                               ; preds = %80
@@ -10714,7 +10714,7 @@ define internal fastcc void @ZSTD_overflowCorrectIfNeeded(ptr noundef captures(n
   %118 = icmp sgt i32 %112, 15
   br i1 %118, label %119, label %319
 
-119:                                              ; preds = %116, %314
+119:                                              ; preds = %314, %116
   %120 = phi i64 [ %122, %314 ], [ 0, %116 ]
   %121 = phi i32 [ %316, %314 ], [ 0, %116 ]
   %122 = add nuw nsw i64 %120, 16
@@ -10733,7 +10733,7 @@ define internal fastcc void @ZSTD_overflowCorrectIfNeeded(ptr noundef captures(n
   br i1 %130, label %131, label %132, !prof !9, !nosanitize !8
 
 131:                                              ; preds = %309, %297, %285, %273, %261, %249, %237, %225, %213, %201, %189, %177, %165, %153, %141, %128
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 132:                                              ; preds = %128
@@ -11066,7 +11066,7 @@ define internal fastcc void @ZSTD_overflowCorrectIfNeeded(ptr noundef captures(n
   tail call fastcc void @ZSTD_reduceTable(ptr noundef %115, i32 noundef %112, i32 noundef %46)
   br label %319
 
-319:                                              ; preds = %314, %318, %116, %105, %103
+319:                                              ; preds = %318, %314, %116, %105, %103
   %320 = getelementptr inbounds nuw i8, ptr %0, i64 48
   %321 = load i32, ptr %320, align 8, !tbaa !265
   %322 = icmp eq i32 %321, 0
@@ -11079,7 +11079,7 @@ define internal fastcc void @ZSTD_overflowCorrectIfNeeded(ptr noundef captures(n
   tail call fastcc void @ZSTD_reduceTable(ptr noundef %326, i32 noundef %324, i32 noundef %46)
   br label %327
 
-327:                                              ; preds = %319, %323
+327:                                              ; preds = %323, %319
   %328 = load ptr, ptr %91, align 8, !tbaa !56
   %329 = getelementptr inbounds nuw i8, ptr %1, i64 24
   %330 = load ptr, ptr %329, align 8, !tbaa !55
@@ -11090,7 +11090,7 @@ define internal fastcc void @ZSTD_overflowCorrectIfNeeded(ptr noundef captures(n
   store ptr %330, ptr %91, align 8, !tbaa !56
   br label %333
 
-333:                                              ; preds = %327, %332
+333:                                              ; preds = %332, %327
   %334 = getelementptr inbounds nuw i8, ptr %0, i64 44
   %335 = load i32, ptr %334, align 4, !tbaa !211
   %336 = tail call i32 @llvm.usub.sat.i32(i32 %335, i32 %46)
@@ -11182,7 +11182,7 @@ define internal fastcc i64 @ZSTD_compressBlock_internal(ptr noundef %0, ptr noun
   br i1 %60, label %61, label %62, !prof !9, !nosanitize !8
 
 61:                                               ; preds = %51
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 62:                                               ; preds = %51
@@ -11191,7 +11191,7 @@ define internal fastcc i64 @ZSTD_compressBlock_internal(ptr noundef %0, ptr noun
   %65 = select i1 %64, i64 %43, i64 0
   br label %66
 
-66:                                               ; preds = %26, %45, %49, %62
+66:                                               ; preds = %62, %49, %45, %26
   %67 = phi i64 [ %43, %49 ], [ 0, %26 ], [ 0, %45 ], [ %65, %62 ]
   %68 = icmp eq i32 %5, 0
   br i1 %68, label %80, label %69
@@ -11214,7 +11214,7 @@ define internal fastcc i64 @ZSTD_compressBlock_internal(ptr noundef %0, ptr noun
   store i8 %79, ptr %1, align 1, !tbaa !164
   br label %86
 
-80:                                               ; preds = %66, %69, %75
+80:                                               ; preds = %75, %69, %66
   %81 = add i64 %67, -2
   %82 = icmp ult i64 %81, -121
   br i1 %82, label %83, label %86
@@ -11225,7 +11225,7 @@ define internal fastcc i64 @ZSTD_compressBlock_internal(ptr noundef %0, ptr noun
   store <2 x ptr> %85, ptr %17, align 8, !tbaa !51
   br label %86
 
-86:                                               ; preds = %14, %78, %83, %80
+86:                                               ; preds = %83, %80, %78, %14
   %87 = phi i64 [ %67, %80 ], [ %67, %83 ], [ 0, %14 ], [ 1, %78 ]
   %88 = getelementptr inbounds nuw i8, ptr %0, i64 3224
   %89 = load ptr, ptr %88, align 8, !tbaa !57
@@ -11238,7 +11238,7 @@ define internal fastcc i64 @ZSTD_compressBlock_internal(ptr noundef %0, ptr noun
   store i32 1, ptr %90, align 4, !tbaa !151
   br label %94
 
-94:                                               ; preds = %6, %14, %86, %93, %19, %23
+94:                                               ; preds = %93, %86, %23, %19, %14, %6
   %95 = phi i64 [ %87, %86 ], [ 0, %23 ], [ %21, %19 ], [ %87, %93 ], [ %7, %6 ], [ -106, %14 ]
   ret i64 %95
 }
@@ -11256,10 +11256,10 @@ define internal fastcc void @ZSTD_reduceTable(ptr noundef captures(none) %0, i32
   br i1 %9, label %11, label %194
 
 10:                                               ; preds = %3
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
-11:                                               ; preds = %8, %190
+11:                                               ; preds = %190, %8
   %12 = phi i32 [ %15, %190 ], [ 0, %8 ]
   %13 = phi i32 [ %192, %190 ], [ 0, %8 ]
   %14 = zext nneg i32 %12 to i64
@@ -11275,14 +11275,14 @@ define internal fastcc void @ZSTD_reduceTable(ptr noundef captures(none) %0, i32
   br i1 %21, label %22, label %23, !prof !9, !nosanitize !8
 
 22:                                               ; preds = %185, %174, %163, %152, %141, %130, %119, %108, %97, %86, %75, %64, %53, %42, %31, %19
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 23:                                               ; preds = %19
   %24 = extractvalue { i32, i1 } %20, 0, !nosanitize !8
   br label %25
 
-25:                                               ; preds = %11, %23
+25:                                               ; preds = %23, %11
   %26 = phi i32 [ %24, %23 ], [ 0, %11 ]
   store i32 %26, ptr %16, align 4, !tbaa !4
   %27 = getelementptr inbounds nuw [4 x i8], ptr %0, i64 %14
@@ -11300,7 +11300,7 @@ define internal fastcc void @ZSTD_reduceTable(ptr noundef captures(none) %0, i32
   %35 = extractvalue { i32, i1 } %32, 0, !nosanitize !8
   br label %36
 
-36:                                               ; preds = %25, %34
+36:                                               ; preds = %34, %25
   %37 = phi i32 [ %35, %34 ], [ 0, %25 ]
   store i32 %37, ptr %28, align 4, !tbaa !4
   %38 = getelementptr inbounds nuw [4 x i8], ptr %0, i64 %14
@@ -11318,7 +11318,7 @@ define internal fastcc void @ZSTD_reduceTable(ptr noundef captures(none) %0, i32
   %46 = extractvalue { i32, i1 } %43, 0, !nosanitize !8
   br label %47
 
-47:                                               ; preds = %36, %45
+47:                                               ; preds = %45, %36
   %48 = phi i32 [ %46, %45 ], [ 0, %36 ]
   store i32 %48, ptr %39, align 4, !tbaa !4
   %49 = getelementptr inbounds nuw [4 x i8], ptr %0, i64 %14
@@ -11336,7 +11336,7 @@ define internal fastcc void @ZSTD_reduceTable(ptr noundef captures(none) %0, i32
   %57 = extractvalue { i32, i1 } %54, 0, !nosanitize !8
   br label %58
 
-58:                                               ; preds = %47, %56
+58:                                               ; preds = %56, %47
   %59 = phi i32 [ %57, %56 ], [ 0, %47 ]
   store i32 %59, ptr %50, align 4, !tbaa !4
   %60 = getelementptr inbounds nuw [4 x i8], ptr %0, i64 %14
@@ -11354,7 +11354,7 @@ define internal fastcc void @ZSTD_reduceTable(ptr noundef captures(none) %0, i32
   %68 = extractvalue { i32, i1 } %65, 0, !nosanitize !8
   br label %69
 
-69:                                               ; preds = %58, %67
+69:                                               ; preds = %67, %58
   %70 = phi i32 [ %68, %67 ], [ 0, %58 ]
   store i32 %70, ptr %61, align 4, !tbaa !4
   %71 = getelementptr inbounds nuw [4 x i8], ptr %0, i64 %14
@@ -11372,7 +11372,7 @@ define internal fastcc void @ZSTD_reduceTable(ptr noundef captures(none) %0, i32
   %79 = extractvalue { i32, i1 } %76, 0, !nosanitize !8
   br label %80
 
-80:                                               ; preds = %69, %78
+80:                                               ; preds = %78, %69
   %81 = phi i32 [ %79, %78 ], [ 0, %69 ]
   store i32 %81, ptr %72, align 4, !tbaa !4
   %82 = getelementptr inbounds nuw [4 x i8], ptr %0, i64 %14
@@ -11390,7 +11390,7 @@ define internal fastcc void @ZSTD_reduceTable(ptr noundef captures(none) %0, i32
   %90 = extractvalue { i32, i1 } %87, 0, !nosanitize !8
   br label %91
 
-91:                                               ; preds = %80, %89
+91:                                               ; preds = %89, %80
   %92 = phi i32 [ %90, %89 ], [ 0, %80 ]
   store i32 %92, ptr %83, align 4, !tbaa !4
   %93 = getelementptr inbounds nuw [4 x i8], ptr %0, i64 %14
@@ -11408,7 +11408,7 @@ define internal fastcc void @ZSTD_reduceTable(ptr noundef captures(none) %0, i32
   %101 = extractvalue { i32, i1 } %98, 0, !nosanitize !8
   br label %102
 
-102:                                              ; preds = %91, %100
+102:                                              ; preds = %100, %91
   %103 = phi i32 [ %101, %100 ], [ 0, %91 ]
   store i32 %103, ptr %94, align 4, !tbaa !4
   %104 = getelementptr inbounds nuw [4 x i8], ptr %0, i64 %14
@@ -11426,7 +11426,7 @@ define internal fastcc void @ZSTD_reduceTable(ptr noundef captures(none) %0, i32
   %112 = extractvalue { i32, i1 } %109, 0, !nosanitize !8
   br label %113
 
-113:                                              ; preds = %102, %111
+113:                                              ; preds = %111, %102
   %114 = phi i32 [ %112, %111 ], [ 0, %102 ]
   store i32 %114, ptr %105, align 4, !tbaa !4
   %115 = getelementptr inbounds nuw [4 x i8], ptr %0, i64 %14
@@ -11444,7 +11444,7 @@ define internal fastcc void @ZSTD_reduceTable(ptr noundef captures(none) %0, i32
   %123 = extractvalue { i32, i1 } %120, 0, !nosanitize !8
   br label %124
 
-124:                                              ; preds = %113, %122
+124:                                              ; preds = %122, %113
   %125 = phi i32 [ %123, %122 ], [ 0, %113 ]
   store i32 %125, ptr %116, align 4, !tbaa !4
   %126 = getelementptr inbounds nuw [4 x i8], ptr %0, i64 %14
@@ -11462,7 +11462,7 @@ define internal fastcc void @ZSTD_reduceTable(ptr noundef captures(none) %0, i32
   %134 = extractvalue { i32, i1 } %131, 0, !nosanitize !8
   br label %135
 
-135:                                              ; preds = %124, %133
+135:                                              ; preds = %133, %124
   %136 = phi i32 [ %134, %133 ], [ 0, %124 ]
   store i32 %136, ptr %127, align 4, !tbaa !4
   %137 = getelementptr inbounds nuw [4 x i8], ptr %0, i64 %14
@@ -11480,7 +11480,7 @@ define internal fastcc void @ZSTD_reduceTable(ptr noundef captures(none) %0, i32
   %145 = extractvalue { i32, i1 } %142, 0, !nosanitize !8
   br label %146
 
-146:                                              ; preds = %135, %144
+146:                                              ; preds = %144, %135
   %147 = phi i32 [ %145, %144 ], [ 0, %135 ]
   store i32 %147, ptr %138, align 4, !tbaa !4
   %148 = getelementptr inbounds nuw [4 x i8], ptr %0, i64 %14
@@ -11498,7 +11498,7 @@ define internal fastcc void @ZSTD_reduceTable(ptr noundef captures(none) %0, i32
   %156 = extractvalue { i32, i1 } %153, 0, !nosanitize !8
   br label %157
 
-157:                                              ; preds = %146, %155
+157:                                              ; preds = %155, %146
   %158 = phi i32 [ %156, %155 ], [ 0, %146 ]
   store i32 %158, ptr %149, align 4, !tbaa !4
   %159 = getelementptr inbounds nuw [4 x i8], ptr %0, i64 %14
@@ -11516,7 +11516,7 @@ define internal fastcc void @ZSTD_reduceTable(ptr noundef captures(none) %0, i32
   %167 = extractvalue { i32, i1 } %164, 0, !nosanitize !8
   br label %168
 
-168:                                              ; preds = %157, %166
+168:                                              ; preds = %166, %157
   %169 = phi i32 [ %167, %166 ], [ 0, %157 ]
   store i32 %169, ptr %160, align 4, !tbaa !4
   %170 = getelementptr inbounds nuw [4 x i8], ptr %0, i64 %14
@@ -11534,7 +11534,7 @@ define internal fastcc void @ZSTD_reduceTable(ptr noundef captures(none) %0, i32
   %178 = extractvalue { i32, i1 } %175, 0, !nosanitize !8
   br label %179
 
-179:                                              ; preds = %168, %177
+179:                                              ; preds = %177, %168
   %180 = phi i32 [ %178, %177 ], [ 0, %168 ]
   store i32 %180, ptr %171, align 4, !tbaa !4
   %181 = getelementptr inbounds nuw [4 x i8], ptr %0, i64 %14
@@ -11552,7 +11552,7 @@ define internal fastcc void @ZSTD_reduceTable(ptr noundef captures(none) %0, i32
   %189 = extractvalue { i32, i1 } %186, 0, !nosanitize !8
   br label %190
 
-190:                                              ; preds = %179, %188
+190:                                              ; preds = %188, %179
   %191 = phi i32 [ %189, %188 ], [ 0, %179 ]
   store i32 %191, ptr %182, align 4, !tbaa !4
   %192 = add nuw nsw i32 %13, 1
@@ -11563,10 +11563,10 @@ define internal fastcc void @ZSTD_reduceTable(ptr noundef captures(none) %0, i32
   ret void
 }
 
-; Function Attrs: mustprogress nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
 declare { i64, i1 } @llvm.ssub.with.overflow.i64(i64, i64) #2
 
-; Function Attrs: mustprogress nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
 declare { i64, i1 } @llvm.sadd.with.overflow.i64(i64, i64) #2
 
 declare i64 @ZSTD_splitBlock(ptr noundef, i64 noundef, i32 noundef, ptr noundef, i64 noundef) local_unnamed_addr #16
@@ -11588,13 +11588,13 @@ define internal fastcc range(i64 -119, 2) i64 @ZSTD_buildSeqStore(ptr noundef %0
   br i1 %12, label %14, label %15
 
 14:                                               ; preds = %9
-  tail call void @ZSTD_ldm_skipRawSeqStoreBytes(ptr noundef nonnull %13, i64 noundef %2) #36
+  tail call void @ZSTD_ldm_skipRawSeqStoreBytes(ptr noundef nonnull %13, i64 noundef %2) #35
   br label %264
 
 15:                                               ; preds = %9
   %16 = getelementptr inbounds nuw i8, ptr %0, i64 260
   %17 = load i32, ptr %16, align 4, !tbaa !337
-  tail call void @ZSTD_ldm_skipSequences(ptr noundef nonnull %13, i64 noundef %2, i32 noundef %17) #36
+  tail call void @ZSTD_ldm_skipSequences(ptr noundef nonnull %13, i64 noundef %2, i32 noundef %17) #35
   br label %264
 
 18:                                               ; preds = %3
@@ -11629,7 +11629,7 @@ define internal fastcc range(i64 -119, 2) i64 @ZSTD_buildSeqStore(ptr noundef %0
   br i1 %41, label %42, label %43, !prof !9, !nosanitize !8
 
 42:                                               ; preds = %18
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 43:                                               ; preds = %18
@@ -11643,7 +11643,7 @@ define internal fastcc range(i64 -119, 2) i64 @ZSTD_buildSeqStore(ptr noundef %0
   br i1 %48, label %49, label %50, !prof !9, !nosanitize !8
 
 49:                                               ; preds = %46
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 50:                                               ; preds = %46
@@ -11653,7 +11653,7 @@ define internal fastcc range(i64 -119, 2) i64 @ZSTD_buildSeqStore(ptr noundef %0
   br i1 %53, label %54, label %55, !prof !9, !nosanitize !8
 
 54:                                               ; preds = %50
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 55:                                               ; preds = %50
@@ -11684,7 +11684,7 @@ define internal fastcc range(i64 -119, 2) i64 @ZSTD_buildSeqStore(ptr noundef %0
   %73 = select i1 %72, i64 2, i64 3
   br label %74
 
-74:                                               ; preds = %59, %65, %69
+74:                                               ; preds = %69, %65, %59
   %75 = phi i64 [ 1, %59 ], [ %73, %69 ], [ 0, %65 ]
   %76 = getelementptr inbounds nuw i8, ptr %27, i64 5616
   %77 = getelementptr inbounds nuw i8, ptr %0, i64 3232
@@ -11717,7 +11717,7 @@ define internal fastcc range(i64 -119, 2) i64 @ZSTD_buildSeqStore(ptr noundef %0
 97:                                               ; preds = %93
   %98 = getelementptr inbounds nuw i8, ptr %0, i64 400
   %99 = load i32, ptr %98, align 8, !tbaa !343
-  %100 = tail call i64 @ZSTD_ldm_blockCompress(ptr noundef nonnull %87, ptr noundef nonnull %6, ptr noundef nonnull %20, ptr noundef nonnull %79, i32 noundef %99, ptr noundef %1, i64 noundef %2) #36
+  %100 = tail call i64 @ZSTD_ldm_blockCompress(ptr noundef nonnull %87, ptr noundef nonnull %6, ptr noundef nonnull %20, ptr noundef nonnull %79, i32 noundef %99, ptr noundef %1, i64 noundef %2) #35
   br label %256
 
 101:                                              ; preds = %74
@@ -11727,7 +11727,7 @@ define internal fastcc range(i64 -119, 2) i64 @ZSTD_buildSeqStore(ptr noundef %0
   br i1 %104, label %105, label %127
 
 105:                                              ; preds = %101
-  call void @llvm.lifetime.start.p0(ptr nonnull %4) #36
+  call void @llvm.lifetime.start.p0(ptr nonnull %4) #35
   %106 = getelementptr inbounds nuw i8, ptr %4, i64 8
   call void @llvm.memset.p0.i64(ptr noundef nonnull align 8 dereferenceable(24) %106, i8 0, i64 24, i1 false)
   %107 = getelementptr i8, ptr %0, i64 448
@@ -11744,13 +11744,13 @@ define internal fastcc range(i64 -119, 2) i64 @ZSTD_buildSeqStore(ptr noundef %0
   %115 = getelementptr inbounds nuw i8, ptr %4, i64 32
   store i64 %114, ptr %115, align 8, !tbaa !347
   %116 = getelementptr inbounds nuw i8, ptr %0, i64 1056
-  %117 = call i64 @ZSTD_ldm_generateSequences(ptr noundef nonnull %116, ptr noundef nonnull %4, ptr noundef nonnull %102, ptr noundef %1, i64 noundef %2) #36
+  %117 = call i64 @ZSTD_ldm_generateSequences(ptr noundef nonnull %116, ptr noundef nonnull %4, ptr noundef nonnull %102, ptr noundef %1, i64 noundef %2) #35
   %118 = icmp ult i64 %117, -119
   br i1 %118, label %121, label %119
 
 119:                                              ; preds = %110, %105
   %120 = phi i64 [ -41, %105 ], [ %117, %110 ]
-  call void @llvm.lifetime.end.p0(ptr nonnull %4) #36
+  call void @llvm.lifetime.end.p0(ptr nonnull %4) #35
   br label %264
 
 121:                                              ; preds = %110
@@ -11758,8 +11758,8 @@ define internal fastcc range(i64 -119, 2) i64 @ZSTD_buildSeqStore(ptr noundef %0
   %123 = getelementptr inbounds nuw i8, ptr %122, i64 5616
   %124 = getelementptr inbounds nuw i8, ptr %0, i64 400
   %125 = load i32, ptr %124, align 8, !tbaa !343
-  %126 = call i64 @ZSTD_ldm_blockCompress(ptr noundef nonnull %4, ptr noundef nonnull %6, ptr noundef nonnull %20, ptr noundef nonnull %123, i32 noundef %125, ptr noundef %1, i64 noundef %2) #36
-  call void @llvm.lifetime.end.p0(ptr nonnull %4) #36
+  %126 = call i64 @ZSTD_ldm_blockCompress(ptr noundef nonnull %4, ptr noundef nonnull %6, ptr noundef nonnull %20, ptr noundef nonnull %123, i32 noundef %125, ptr noundef %1, i64 noundef %2) #35
+  call void @llvm.lifetime.end.p0(ptr nonnull %4) #35
   br label %256
 
 127:                                              ; preds = %101
@@ -11780,7 +11780,7 @@ define internal fastcc range(i64 -119, 2) i64 @ZSTD_buildSeqStore(ptr noundef %0
   %140 = getelementptr inbounds nuw i8, ptr %0, i64 284
   %141 = load i32, ptr %140, align 4, !tbaa !351
   %142 = zext i32 %133 to i64
-  %143 = tail call i64 %129(ptr noundef %135, ptr noundef %137, i64 noundef %139, ptr noundef %1, i64 noundef %2, ptr noundef null, i64 noundef 0, i32 noundef %141, i64 noundef %142) #36
+  %143 = tail call i64 %129(ptr noundef %135, ptr noundef %137, i64 noundef %139, ptr noundef %1, i64 noundef %2, ptr noundef null, i64 noundef 0, i32 noundef %141, i64 noundef %142) #35
   %144 = load i64, ptr %138, align 8, !tbaa !350
   %145 = add i64 %143, -1
   %146 = icmp ult i64 %145, %144
@@ -11809,20 +11809,20 @@ define internal fastcc range(i64 -119, 2) i64 @ZSTD_buildSeqStore(ptr noundef %0
   br i1 %161, label %162, label %163, !prof !9, !nosanitize !8
 
 162:                                              ; preds = %159
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 163:                                              ; preds = %159
   %164 = extractvalue { i64, i1 } %160, 0, !nosanitize !8
   br label %165
 
-165:                                              ; preds = %147, %163
+165:                                              ; preds = %163, %147
   %166 = phi i64 [ %164, %163 ], [ %143, %147 ]
   %167 = icmp ult i64 %166, -119
   br i1 %167, label %168, label %209
 
 168:                                              ; preds = %165
-  call void @llvm.lifetime.start.p0(ptr nonnull %5) #36
+  call void @llvm.lifetime.start.p0(ptr nonnull %5) #35
   call void @llvm.memset.p0.i64(ptr noundef nonnull align 8 dereferenceable(16) %5, i8 0, i64 16, i1 false)
   %169 = load ptr, ptr %136, align 8, !tbaa !349
   br label %175
@@ -11834,7 +11834,7 @@ define internal fastcc range(i64 -119, 2) i64 @ZSTD_buildSeqStore(ptr noundef %0
   %174 = icmp eq i64 %171, %166
   br i1 %174, label %193, label %175, !llvm.loop !352
 
-175:                                              ; preds = %168, %170
+175:                                              ; preds = %170, %168
   %176 = phi i64 [ %171, %170 ], [ 0, %168 ]
   %177 = phi i64 [ %172, %170 ], [ 0, %168 ]
   %178 = phi i64 [ %173, %170 ], [ 0, %168 ]
@@ -11847,7 +11847,7 @@ define internal fastcc range(i64 -119, 2) i64 @ZSTD_buildSeqStore(ptr noundef %0
   br i1 %184, label %185, label %186, !prof !9, !nosanitize !8
 
 185:                                              ; preds = %175
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 186:                                              ; preds = %175
@@ -11859,7 +11859,7 @@ define internal fastcc range(i64 -119, 2) i64 @ZSTD_buildSeqStore(ptr noundef %0
   br i1 %191, label %192, label %170, !prof !9, !nosanitize !8
 
 192:                                              ; preds = %186
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 193:                                              ; preds = %170
@@ -11868,7 +11868,7 @@ define internal fastcc range(i64 -119, 2) i64 @ZSTD_buildSeqStore(ptr noundef %0
   br i1 %195, label %196, label %197, !prof !9, !nosanitize !8
 
 196:                                              ; preds = %193
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 197:                                              ; preds = %193
@@ -11888,12 +11888,12 @@ define internal fastcc range(i64 -119, 2) i64 @ZSTD_buildSeqStore(ptr noundef %0
   store ptr null, ptr %206, align 8, !tbaa !354
   br label %207
 
-207:                                              ; preds = %197, %200, %205
+207:                                              ; preds = %205, %200, %197
   %208 = phi i64 [ %203, %200 ], [ 0, %205 ], [ -107, %197 ]
-  call void @llvm.lifetime.end.p0(ptr nonnull %5) #36
+  call void @llvm.lifetime.end.p0(ptr nonnull %5) #35
   br label %264
 
-209:                                              ; preds = %131, %157, %165
+209:                                              ; preds = %165, %157, %131
   %210 = phi i64 [ %166, %165 ], [ -106, %157 ], [ -106, %131 ]
   %211 = getelementptr inbounds nuw i8, ptr %0, i64 436
   %212 = load i32, ptr %211, align 4, !tbaa !355
@@ -11922,7 +11922,7 @@ define internal fastcc range(i64 -119, 2) i64 @ZSTD_buildSeqStore(ptr noundef %0
   store ptr null, ptr %232, align 8, !tbaa !354
   %233 = load ptr, ptr %77, align 8, !tbaa !58
   %234 = getelementptr inbounds nuw i8, ptr %233, i64 5616
-  %235 = tail call i64 %231(ptr noundef nonnull %6, ptr noundef nonnull %20, ptr noundef nonnull %234, ptr noundef %1, i64 noundef %2) #36
+  %235 = tail call i64 %231(ptr noundef nonnull %6, ptr noundef nonnull %20, ptr noundef nonnull %234, ptr noundef %1, i64 noundef %2) #35
   br label %256
 
 236:                                              ; preds = %127
@@ -11945,10 +11945,10 @@ define internal fastcc range(i64 -119, 2) i64 @ZSTD_buildSeqStore(ptr noundef %0
   %253 = load ptr, ptr %252, align 8, !tbaa !51
   %254 = getelementptr inbounds nuw i8, ptr %0, i64 3528
   store ptr null, ptr %254, align 8, !tbaa !354
-  %255 = tail call i64 %253(ptr noundef nonnull %6, ptr noundef nonnull %20, ptr noundef nonnull %79, ptr noundef %1, i64 noundef %2) #36
+  %255 = tail call i64 %253(ptr noundef nonnull %6, ptr noundef nonnull %20, ptr noundef nonnull %79, ptr noundef %1, i64 noundef %2) #35
   br label %256
 
-256:                                              ; preds = %214, %121, %236, %97
+256:                                              ; preds = %236, %214, %121, %97
   %257 = phi i64 [ %100, %97 ], [ %126, %121 ], [ %235, %214 ], [ %255, %236 ]
   %258 = getelementptr inbounds nuw i8, ptr %1, i64 %2
   %259 = sub i64 0, %257
@@ -11960,7 +11960,7 @@ define internal fastcc range(i64 -119, 2) i64 @ZSTD_buildSeqStore(ptr noundef %0
   store ptr %263, ptr %23, align 8, !tbaa !170
   br label %264
 
-264:                                              ; preds = %209, %207, %93, %119, %14, %15, %256
+264:                                              ; preds = %256, %209, %207, %119, %93, %15, %14
   %265 = phi i64 [ 1, %14 ], [ 0, %256 ], [ 1, %15 ], [ -41, %93 ], [ %120, %119 ], [ %210, %209 ], [ %208, %207 ]
   ret i64 %265
 }
@@ -11978,7 +11978,7 @@ define internal fastcc noundef i64 @ZSTD_transferSequences_wBlockDelim(ptr nound
   %8 = alloca %struct.repcodes_s, align 8
   %9 = load i32, ptr %1, align 8, !tbaa !356
   %10 = getelementptr inbounds nuw i8, ptr %4, i64 %5
-  call void @llvm.lifetime.start.p0(ptr nonnull %8) #36
+  call void @llvm.lifetime.start.p0(ptr nonnull %8) #35
   %11 = getelementptr inbounds nuw i8, ptr %0, i64 3728
   %12 = load ptr, ptr %11, align 8, !tbaa !116
   %13 = icmp eq ptr %12, null
@@ -12000,7 +12000,7 @@ define internal fastcc noundef i64 @ZSTD_transferSequences_wBlockDelim(ptr nound
   %23 = load i64, ptr %22, align 8, !tbaa !130
   br label %24
 
-24:                                               ; preds = %17, %21, %14
+24:                                               ; preds = %21, %17, %14
   %25 = phi i64 [ %16, %14 ], [ %23, %21 ], [ 0, %17 ]
   %26 = getelementptr inbounds nuw i8, ptr %0, i64 3224
   %27 = load ptr, ptr %26, align 8, !tbaa !57
@@ -12033,7 +12033,7 @@ define internal fastcc noundef i64 @ZSTD_transferSequences_wBlockDelim(ptr nound
   %51 = load i32, ptr %35, align 8
   br label %52
 
-52:                                               ; preds = %31, %374
+52:                                               ; preds = %374, %31
   %53 = phi i32 [ %51, %31 ], [ %134, %374 ]
   %54 = phi i32 [ %50, %31 ], [ %135, %374 ]
   %55 = phi i64 [ %29, %31 ], [ %379, %374 ]
@@ -12052,7 +12052,7 @@ define internal fastcc noundef i64 @ZSTD_transferSequences_wBlockDelim(ptr nound
   %66 = icmp eq i32 %65, 0
   br i1 %66, label %381, label %67
 
-67:                                               ; preds = %52, %64
+67:                                               ; preds = %64, %52
   %68 = getelementptr inbounds nuw i8, ptr %60, i64 4
   %69 = load i32, ptr %68, align 4, !tbaa !184
   br i1 %33, label %70, label %77
@@ -12064,7 +12064,7 @@ define internal fastcc noundef i64 @ZSTD_transferSequences_wBlockDelim(ptr nound
   br i1 %73, label %74, label %75, !prof !9, !nosanitize !8
 
 74:                                               ; preds = %70
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 75:                                               ; preds = %70
@@ -12081,7 +12081,7 @@ define internal fastcc noundef i64 @ZSTD_transferSequences_wBlockDelim(ptr nound
   br i1 %83, label %84, label %85, !prof !9, !nosanitize !8
 
 84:                                               ; preds = %77
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 85:                                               ; preds = %77
@@ -12114,7 +12114,7 @@ define internal fastcc noundef i64 @ZSTD_transferSequences_wBlockDelim(ptr nound
   br i1 %99, label %100, label %101, !prof !9, !nosanitize !8
 
 100:                                              ; preds = %97
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 101:                                              ; preds = %97
@@ -12132,14 +12132,14 @@ define internal fastcc noundef i64 @ZSTD_transferSequences_wBlockDelim(ptr nound
   %107 = add i32 %82, -3
   br label %129
 
-108:                                              ; preds = %85, %101, %94, %90, %104
+108:                                              ; preds = %104, %101, %94, %90, %85
   %109 = phi i32 [ %82, %104 ], [ %91, %90 ], [ 1, %85 ], [ %95, %94 ], [ 3, %101 ]
   %110 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %109, i32 1), !nosanitize !8
   %111 = extractvalue { i32, i1 } %110, 1, !nosanitize !8
   br i1 %111, label %112, label %113, !prof !9, !nosanitize !8
 
 112:                                              ; preds = %108
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 113:                                              ; preds = %108
@@ -12157,7 +12157,7 @@ define internal fastcc noundef i64 @ZSTD_transferSequences_wBlockDelim(ptr nound
   br i1 %119, label %120, label %125, !prof !9, !nosanitize !8
 
 120:                                              ; preds = %116
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 121:                                              ; preds = %113
@@ -12196,7 +12196,7 @@ define internal fastcc noundef i64 @ZSTD_transferSequences_wBlockDelim(ptr nound
   br i1 %142, label %143, label %144, !prof !9, !nosanitize !8
 
 143:                                              ; preds = %140
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 144:                                              ; preds = %140
@@ -12208,7 +12208,7 @@ define internal fastcc noundef i64 @ZSTD_transferSequences_wBlockDelim(ptr nound
   br i1 %149, label %150, label %151, !prof !9, !nosanitize !8
 
 150:                                              ; preds = %144
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 151:                                              ; preds = %144
@@ -12234,14 +12234,14 @@ define internal fastcc noundef i64 @ZSTD_transferSequences_wBlockDelim(ptr nound
   %170 = select i1 %167, i1 %169, i1 false
   br i1 %170, label %171, label %464
 
-171:                                              ; preds = %133, %151
+171:                                              ; preds = %151, %133
   %172 = load i32, ptr %1, align 8, !tbaa !356
   %173 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %59, i32 %172), !nosanitize !8
   %174 = extractvalue { i32, i1 } %173, 1, !nosanitize !8
   br i1 %174, label %175, label %176, !prof !9, !nosanitize !8
 
 175:                                              ; preds = %171
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 176:                                              ; preds = %171
@@ -12375,7 +12375,7 @@ define internal fastcc noundef i64 @ZSTD_transferSequences_wBlockDelim(ptr nound
   %263 = icmp eq i64 %246, 0
   br i1 %263, label %278, label %264, !prof !362
 
-264:                                              ; preds = %243, %262
+264:                                              ; preds = %262, %243
   %265 = phi i64 [ %247, %262 ], [ 0, %243 ]
   %266 = and i64 %238, -4
   %267 = getelementptr i8, ptr %231, i64 %266
@@ -12396,7 +12396,7 @@ define internal fastcc noundef i64 @ZSTD_transferSequences_wBlockDelim(ptr nound
   %277 = icmp eq i64 %238, %266
   br i1 %277, label %334, label %278
 
-278:                                              ; preds = %233, %262, %276
+278:                                              ; preds = %276, %262, %233
   %279 = phi ptr [ %231, %233 ], [ %248, %262 ], [ %267, %276 ]
   %280 = phi ptr [ %230, %233 ], [ %249, %262 ], [ %268, %276 ]
   %281 = add i64 %58, %182
@@ -12409,7 +12409,7 @@ define internal fastcc noundef i64 @ZSTD_transferSequences_wBlockDelim(ptr nound
   %288 = icmp eq i64 %287, 0
   br i1 %288, label %298, label %289
 
-289:                                              ; preds = %278, %289
+289:                                              ; preds = %289, %278
   %290 = phi ptr [ %295, %289 ], [ %279, %278 ]
   %291 = phi ptr [ %293, %289 ], [ %280, %278 ]
   %292 = phi i64 [ %296, %289 ], [ 0, %278 ]
@@ -12427,7 +12427,7 @@ define internal fastcc noundef i64 @ZSTD_transferSequences_wBlockDelim(ptr nound
   %301 = icmp ult i64 %286, 7
   br i1 %301, label %334, label %302
 
-302:                                              ; preds = %298, %302
+302:                                              ; preds = %302, %298
   %303 = phi ptr [ %328, %302 ], [ %299, %298 ]
   %304 = phi ptr [ %326, %302 ], [ %300, %298 ]
   %305 = getelementptr inbounds nuw i8, ptr %304, i64 1
@@ -12472,7 +12472,7 @@ define internal fastcc noundef i64 @ZSTD_transferSequences_wBlockDelim(ptr nound
   %333 = load ptr, ptr %48, align 8, !tbaa !158
   br label %346
 
-334:                                              ; preds = %199, %298, %302, %260, %276, %229
+334:                                              ; preds = %302, %298, %276, %260, %229, %199
   %335 = load ptr, ptr %45, align 8, !tbaa !170
   %336 = getelementptr inbounds nuw i8, ptr %335, i64 %182
   store ptr %336, ptr %45, align 8, !tbaa !170
@@ -12491,7 +12491,7 @@ define internal fastcc noundef i64 @ZSTD_transferSequences_wBlockDelim(ptr nound
   store i32 %345, ptr %49, align 4, !tbaa !168
   br label %346
 
-346:                                              ; preds = %330, %339, %334
+346:                                              ; preds = %339, %334, %330
   %347 = phi ptr [ %333, %330 ], [ %338, %339 ], [ %338, %334 ]
   %348 = trunc i32 %69 to i16
   %349 = getelementptr inbounds nuw i8, ptr %347, i64 4
@@ -12503,7 +12503,7 @@ define internal fastcc noundef i64 @ZSTD_transferSequences_wBlockDelim(ptr nound
   br i1 %352, label %353, label %354, !prof !9, !nosanitize !8
 
 353:                                              ; preds = %346
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 354:                                              ; preds = %346
@@ -12521,7 +12521,7 @@ define internal fastcc noundef i64 @ZSTD_transferSequences_wBlockDelim(ptr nound
   store i32 %362, ptr %49, align 4, !tbaa !168
   br label %363
 
-363:                                              ; preds = %354, %356
+363:                                              ; preds = %356, %354
   %364 = trunc i64 %351 to i16
   %365 = getelementptr inbounds nuw i8, ptr %347, i64 6
   store i16 %364, ptr %365, align 2, !tbaa !163
@@ -12532,7 +12532,7 @@ define internal fastcc noundef i64 @ZSTD_transferSequences_wBlockDelim(ptr nound
   br i1 %368, label %369, label %370, !prof !9, !nosanitize !8
 
 369:                                              ; preds = %363
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 370:                                              ; preds = %363
@@ -12541,7 +12541,7 @@ define internal fastcc noundef i64 @ZSTD_transferSequences_wBlockDelim(ptr nound
   br i1 %372, label %373, label %374, !prof !9, !nosanitize !8
 
 373:                                              ; preds = %370
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 374:                                              ; preds = %370
@@ -12573,7 +12573,7 @@ define internal fastcc noundef i64 @ZSTD_transferSequences_wBlockDelim(ptr nound
   br i1 %393, label %394, label %395, !prof !9, !nosanitize !8
 
 394:                                              ; preds = %390
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 395:                                              ; preds = %390
@@ -12582,7 +12582,7 @@ define internal fastcc noundef i64 @ZSTD_transferSequences_wBlockDelim(ptr nound
   br i1 %397, label %398, label %399, !prof !9, !nosanitize !8
 
 398:                                              ; preds = %395
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 399:                                              ; preds = %395
@@ -12628,7 +12628,7 @@ define internal fastcc noundef i64 @ZSTD_transferSequences_wBlockDelim(ptr nound
   store <2 x i32> %426, ptr %425, align 4, !tbaa !4
   br label %427
 
-427:                                              ; preds = %416, %424, %402
+427:                                              ; preds = %424, %416, %402
   %428 = zext i32 %392 to i64
   %429 = getelementptr inbounds nuw [16 x i8], ptr %2, i64 %428
   %430 = load i32, ptr %429, align 4, !tbaa !181
@@ -12663,7 +12663,7 @@ define internal fastcc noundef i64 @ZSTD_transferSequences_wBlockDelim(ptr nound
   br i1 %450, label %451, label %452, !prof !9, !nosanitize !8
 
 451:                                              ; preds = %439
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 452:                                              ; preds = %439
@@ -12672,7 +12672,7 @@ define internal fastcc noundef i64 @ZSTD_transferSequences_wBlockDelim(ptr nound
   store i64 %453, ptr %447, align 8, !tbaa !359
   br label %455
 
-455:                                              ; preds = %431, %452
+455:                                              ; preds = %452, %431
   %456 = phi ptr [ %454, %452 ], [ %382, %431 ]
   %457 = icmp eq ptr %456, %10
   br i1 %457, label %458, label %464
@@ -12683,7 +12683,7 @@ define internal fastcc noundef i64 @ZSTD_transferSequences_wBlockDelim(ptr nound
   br i1 %460, label %461, label %462, !prof !9, !nosanitize !8
 
 461:                                              ; preds = %458
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 462:                                              ; preds = %458
@@ -12691,9 +12691,9 @@ define internal fastcc noundef i64 @ZSTD_transferSequences_wBlockDelim(ptr nound
   store i32 %463, ptr %1, align 8, !tbaa !356
   br label %464
 
-464:                                              ; preds = %176, %151, %455, %381, %462
+464:                                              ; preds = %462, %455, %381, %176, %151
   %465 = phi i64 [ -107, %455 ], [ %5, %462 ], [ -107, %381 ], [ -107, %151 ], [ -107, %176 ]
-  call void @llvm.lifetime.end.p0(ptr nonnull %8) #36
+  call void @llvm.lifetime.end.p0(ptr nonnull %8) #35
   ret i64 %465
 }
 
@@ -12729,7 +12729,7 @@ define internal fastcc range(i32 0, 2) i32 @ZSTD_isRLE(ptr noundef %0, i64 nound
   %22 = lshr i64 %21, 3
   br label %80
 
-23:                                               ; preds = %15, %29
+23:                                               ; preds = %29, %15
   %24 = phi ptr [ %27, %29 ], [ %0, %15 ]
   %25 = phi ptr [ %26, %29 ], [ %11, %15 ]
   %26 = getelementptr inbounds nuw i8, ptr %25, i64 8
@@ -12810,7 +12810,7 @@ define internal fastcc range(i32 0, 2) i32 @ZSTD_isRLE(ptr noundef %0, i64 nound
   %79 = sub i64 %77, %78
   br label %80
 
-80:                                               ; preds = %19, %33, %75
+80:                                               ; preds = %75, %33, %19
   %81 = phi i64 [ %40, %33 ], [ %79, %75 ], [ %22, %19 ]
   %82 = add nsw i64 %6, -1
   %83 = icmp eq i64 %81, %82
@@ -12820,7 +12820,7 @@ define internal fastcc range(i32 0, 2) i32 @ZSTD_isRLE(ptr noundef %0, i64 nound
   %85 = icmp ult i64 %1, 32
   br i1 %85, label %110, label %86
 
-86:                                               ; preds = %84, %107
+86:                                               ; preds = %107, %84
   %87 = phi i64 [ %108, %107 ], [ %6, %84 ]
   %88 = getelementptr inbounds nuw i8, ptr %0, i64 %87
   %89 = load i64, ptr %88, align 1, !tbaa !118
@@ -12851,7 +12851,7 @@ define internal fastcc range(i32 0, 2) i32 @ZSTD_isRLE(ptr noundef %0, i64 nound
   br i1 %105, label %106, label %107, !prof !9, !nosanitize !8
 
 106:                                              ; preds = %103
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 107:                                              ; preds = %103
@@ -12859,20 +12859,20 @@ define internal fastcc range(i32 0, 2) i32 @ZSTD_isRLE(ptr noundef %0, i64 nound
   %109 = icmp eq i64 %108, %1
   br i1 %109, label %110, label %86, !llvm.loop !369
 
-110:                                              ; preds = %107, %86, %91, %95, %99, %84, %80, %2
+110:                                              ; preds = %107, %99, %95, %91, %86, %84, %80, %2
   %111 = phi i32 [ 0, %80 ], [ 1, %2 ], [ 1, %84 ], [ 1, %107 ], [ 0, %91 ], [ 0, %95 ], [ 0, %99 ], [ 0, %86 ]
   ret i32 %111
 }
 
 declare i64 @ZSTD_compressSuperBlock(ptr noundef, ptr noundef, i64 noundef, ptr noundef, i64 noundef, i32 noundef) local_unnamed_addr #16
 
-; Function Attrs: mustprogress nocallback nofree nosync nounwind speculatable willreturn memory(none)
+; Function Attrs: nocallback nofree nosync nounwind speculatable willreturn memory(none)
 declare i64 @llvm.cttz.i64(i64, i1 immarg) #28
 
 ; Function Attrs: nounwind uwtable
 define internal fastcc i64 @ZSTD_compressSeqStore_singleBlock(ptr noundef captures(none) %0, ptr noundef readonly captures(none) %1, ptr noundef nonnull captures(none) %2, ptr noundef nonnull captures(none) %3, ptr noundef %4, i64 noundef %5, ptr noundef %6, i64 noundef %7, i32 noundef range(i32 0, 2) %8, i32 noundef range(i32 0, 2) %9) unnamed_addr #4 {
   %11 = alloca %struct.repcodes_s, align 4
-  call void @llvm.lifetime.start.p0(ptr nonnull %11) #36
+  call void @llvm.lifetime.start.p0(ptr nonnull %11) #35
   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(12) %11, ptr noundef nonnull align 4 dereferenceable(12) %2, i64 12, i1 false), !tbaa.struct !370
   %12 = icmp eq i32 %9, 0
   br i1 %12, label %149, label %13
@@ -12936,7 +12936,7 @@ define internal fastcc i64 @ZSTD_compressSeqStore_singleBlock(ptr noundef captur
   br i1 %56, label %57, label %58, !prof !9, !nosanitize !8
 
 57:                                               ; preds = %53
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 58:                                               ; preds = %53
@@ -12946,7 +12946,7 @@ define internal fastcc i64 @ZSTD_compressSeqStore_singleBlock(ptr noundef captur
   br i1 %61, label %62, label %63, !prof !9, !nosanitize !8
 
 62:                                               ; preds = %58
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 63:                                               ; preds = %58
@@ -12974,7 +12974,7 @@ define internal fastcc i64 @ZSTD_compressSeqStore_singleBlock(ptr noundef captur
   br i1 %78, label %79, label %80, !prof !9, !nosanitize !8
 
 79:                                               ; preds = %76
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 80:                                               ; preds = %76
@@ -13000,7 +13000,7 @@ define internal fastcc i64 @ZSTD_compressSeqStore_singleBlock(ptr noundef captur
   br i1 %91, label %92, label %93, !prof !9, !nosanitize !8
 
 92:                                               ; preds = %88
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 93:                                               ; preds = %88
@@ -13019,7 +13019,7 @@ define internal fastcc i64 @ZSTD_compressSeqStore_singleBlock(ptr noundef captur
   br i1 %100, label %101, label %107, !prof !9, !nosanitize !8
 
 101:                                              ; preds = %96
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 102:                                              ; preds = %93
@@ -13060,7 +13060,7 @@ define internal fastcc i64 @ZSTD_compressSeqStore_singleBlock(ptr noundef captur
   br i1 %122, label %123, label %124, !prof !9, !nosanitize !8
 
 123:                                              ; preds = %120
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 124:                                              ; preds = %120
@@ -13079,7 +13079,7 @@ define internal fastcc i64 @ZSTD_compressSeqStore_singleBlock(ptr noundef captur
   br i1 %131, label %132, label %138, !prof !9, !nosanitize !8
 
 132:                                              ; preds = %127
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 133:                                              ; preds = %124
@@ -13161,7 +13161,7 @@ define internal fastcc i64 @ZSTD_compressSeqStore_singleBlock(ptr noundef captur
   br i1 %189, label %190, label %191, !prof !9, !nosanitize !8
 
 190:                                              ; preds = %180
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 191:                                              ; preds = %180
@@ -13170,7 +13170,7 @@ define internal fastcc i64 @ZSTD_compressSeqStore_singleBlock(ptr noundef captur
   %194 = select i1 %193, i64 %172, i64 0
   br label %195
 
-195:                                              ; preds = %151, %174, %191
+195:                                              ; preds = %191, %174, %151
   %196 = phi i64 [ %194, %191 ], [ 0, %174 ], [ 0, %151 ]
   %197 = getelementptr inbounds nuw i8, ptr %0, i64 968
   %198 = load i32, ptr %197, align 8, !tbaa !220
@@ -13219,7 +13219,7 @@ define internal fastcc i64 @ZSTD_compressSeqStore_singleBlock(ptr noundef captur
   br i1 %224, label %225, label %226, !prof !9, !nosanitize !8
 
 225:                                              ; preds = %218
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 226:                                              ; preds = %218
@@ -13278,7 +13278,7 @@ define internal fastcc i64 @ZSTD_compressSeqStore_singleBlock(ptr noundef captur
   %258 = add nuw i64 %207, 3
   br label %259
 
-259:                                              ; preds = %237, %247, %234
+259:                                              ; preds = %247, %237, %234
   %260 = phi i64 [ %223, %234 ], [ 4, %237 ], [ %258, %247 ]
   %261 = load ptr, ptr %152, align 8, !tbaa !57
   %262 = getelementptr inbounds nuw i8, ptr %261, i64 5604
@@ -13290,9 +13290,9 @@ define internal fastcc i64 @ZSTD_compressSeqStore_singleBlock(ptr noundef captur
   store i32 1, ptr %262, align 4, !tbaa !151
   br label %266
 
-266:                                              ; preds = %235, %178, %226, %259, %265, %149, %211, %228, %214
+266:                                              ; preds = %265, %259, %235, %228, %226, %214, %211, %178, %149
   %267 = phi i64 [ -70, %226 ], [ 0, %214 ], [ %212, %211 ], [ -70, %149 ], [ %223, %228 ], [ %172, %178 ], [ %260, %265 ], [ %260, %259 ], [ -70, %235 ]
-  call void @llvm.lifetime.end.p0(ptr nonnull %11) #36
+  call void @llvm.lifetime.end.p0(ptr nonnull %11) #35
   ret i64 %267
 }
 
@@ -13331,7 +13331,7 @@ define internal fastcc void @ZSTD_deriveSeqStoreChunk(ptr noundef captures(none)
   br i1 %27, label %28, label %29, !prof !9, !nosanitize !8
 
 28:                                               ; preds = %18
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 29:                                               ; preds = %18
@@ -13351,7 +13351,7 @@ define internal fastcc void @ZSTD_deriveSeqStoreChunk(ptr noundef captures(none)
   br i1 %38, label %39, label %40, !prof !9, !nosanitize !8
 
 39:                                               ; preds = %36
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 40:                                               ; preds = %36
@@ -13401,7 +13401,7 @@ define internal fastcc void @ZSTD_deriveSeqStoreChunk(ptr noundef captures(none)
   br i1 %69, label %70, label %71, !prof !9, !nosanitize !8
 
 70:                                               ; preds = %64
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 71:                                               ; preds = %64
@@ -13409,7 +13409,7 @@ define internal fastcc void @ZSTD_deriveSeqStoreChunk(ptr noundef captures(none)
   store i32 %72, ptr %66, align 4, !tbaa !168
   br label %73
 
-73:                                               ; preds = %62, %71, %51
+73:                                               ; preds = %71, %62, %51
   %74 = load ptr, ptr %1, align 8, !tbaa !154
   %75 = getelementptr inbounds nuw [8 x i8], ptr %74, i64 %2
   store ptr %75, ptr %0, align 8, !tbaa !154
@@ -13452,7 +13452,7 @@ define internal fastcc void @ZSTD_deriveSeqStoreChunk(ptr noundef captures(none)
   br i1 %104, label %105, label %106, !prof !9, !nosanitize !8
 
 105:                                              ; preds = %95
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 106:                                              ; preds = %95
@@ -13472,7 +13472,7 @@ define internal fastcc void @ZSTD_deriveSeqStoreChunk(ptr noundef captures(none)
   br i1 %115, label %116, label %117, !prof !9, !nosanitize !8
 
 116:                                              ; preds = %113
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 117:                                              ; preds = %113
@@ -13494,7 +13494,7 @@ define internal fastcc void @ZSTD_deriveSeqStoreChunk(ptr noundef captures(none)
   store ptr %127, ptr %128, align 8, !tbaa !170
   br label %129
 
-129:                                              ; preds = %73, %123
+129:                                              ; preds = %123, %73
   %130 = getelementptr inbounds nuw i8, ptr %0, i64 32
   %131 = load ptr, ptr %130, align 8, !tbaa !155
   %132 = getelementptr inbounds nuw i8, ptr %131, i64 %2
@@ -13530,14 +13530,14 @@ define internal fastcc void @ZSTD_deriveBlockSplitsHelper(ptr noundef nonnull ca
   br label %19
 
 17:                                               ; preds = %5
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 18:                                               ; preds = %53, %11
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
-19:                                               ; preds = %15, %53
+19:                                               ; preds = %53, %15
   %20 = phi { i64, i1 } [ %13, %15 ], [ %56, %53 ]
   %21 = phi i64 [ %16, %15 ], [ %55, %53 ]
   %22 = phi i64 [ %1, %15 ], [ %23, %53 ]
@@ -13571,7 +13571,7 @@ define internal fastcc void @ZSTD_deriveBlockSplitsHelper(ptr noundef nonnull ca
   br i1 %40, label %41, label %42, !prof !9, !nosanitize !8
 
 41:                                               ; preds = %38
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 42:                                               ; preds = %38
@@ -13591,7 +13591,7 @@ define internal fastcc void @ZSTD_deriveBlockSplitsHelper(ptr noundef nonnull ca
   br i1 %51, label %52, label %53, !prof !9, !nosanitize !8
 
 52:                                               ; preds = %45
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 53:                                               ; preds = %45
@@ -13652,7 +13652,7 @@ define internal fastcc range(i64 3, 0) i64 @ZSTD_buildEntropyStatisticsAndEstima
   %42 = load i64, ptr %15, align 8, !tbaa !60
   %43 = load i32, ptr %7, align 8, !tbaa !373
   %44 = icmp eq i32 %43, 2
-  call void @llvm.lifetime.start.p0(ptr nonnull %6) #36
+  call void @llvm.lifetime.start.p0(ptr nonnull %6) #35
   store i32 255, ptr %6, align 4, !tbaa !4
   %45 = icmp ugt i64 %26, 1023
   %46 = select i1 %45, i64 4, i64 3
@@ -13671,13 +13671,13 @@ define internal fastcc range(i64 3, 0) i64 @ZSTD_buildEntropyStatisticsAndEstima
   br label %82
 
 52:                                               ; preds = %19, %19
-  %53 = call i64 @HIST_count_wksp(ptr noundef %41, ptr noundef nonnull %6, ptr noundef %21, i64 noundef %26, ptr noundef %41, i64 noundef %42) #36
+  %53 = call i64 @HIST_count_wksp(ptr noundef %41, ptr noundef nonnull %6, ptr noundef %21, i64 noundef %26, ptr noundef %41, i64 noundef %42) #35
   %54 = icmp ult i64 %53, -119
   br i1 %54, label %55, label %82
 
 55:                                               ; preds = %52
   %56 = load i32, ptr %6, align 4, !tbaa !4
-  %57 = call i64 @HUF_estimateCompressedSize(ptr noundef %40, ptr noundef %41, i32 noundef %56) #36
+  %57 = call i64 @HUF_estimateCompressedSize(ptr noundef %40, ptr noundef %41, i32 noundef %56) #35
   br i1 %44, label %58, label %66
 
 58:                                               ; preds = %55
@@ -13688,7 +13688,7 @@ define internal fastcc range(i64 3, 0) i64 @ZSTD_buildEntropyStatisticsAndEstima
   br i1 %62, label %63, label %64, !prof !9, !nosanitize !8
 
 63:                                               ; preds = %58
-  call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 64:                                               ; preds = %58
@@ -13705,7 +13705,7 @@ define internal fastcc range(i64 3, 0) i64 @ZSTD_buildEntropyStatisticsAndEstima
   br i1 %70, label %71, label %72, !prof !9, !nosanitize !8
 
 71:                                               ; preds = %68
-  call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 72:                                               ; preds = %68
@@ -13719,7 +13719,7 @@ define internal fastcc range(i64 3, 0) i64 @ZSTD_buildEntropyStatisticsAndEstima
   br i1 %77, label %78, label %79, !prof !9, !nosanitize !8
 
 78:                                               ; preds = %74
-  call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 79:                                               ; preds = %74
@@ -13731,7 +13731,7 @@ define internal fastcc range(i64 3, 0) i64 @ZSTD_buildEntropyStatisticsAndEstima
 
 82:                                               ; preds = %81, %79, %52, %51, %19
   %83 = phi i64 [ 0, %81 ], [ 1, %51 ], [ %26, %19 ], [ %80, %79 ], [ %26, %52 ]
-  call void @llvm.lifetime.end.p0(ptr nonnull %6) #36
+  call void @llvm.lifetime.end.p0(ptr nonnull %6) #35
   %84 = getelementptr inbounds nuw i8, ptr %40, i64 2064
   %85 = getelementptr inbounds nuw i8, ptr %1, i64 5096
   %86 = icmp ugt i64 %39, 127
@@ -13742,9 +13742,9 @@ define internal fastcc range(i64 3, 0) i64 @ZSTD_buildEntropyStatisticsAndEstima
   %91 = getelementptr inbounds nuw i8, ptr %1, i64 5100
   %92 = load i32, ptr %91, align 4, !tbaa !375
   %93 = getelementptr inbounds nuw i8, ptr %28, i64 %39
-  call void @llvm.lifetime.start.p0(ptr nonnull %5) #36
+  call void @llvm.lifetime.start.p0(ptr nonnull %5) #35
   store i32 31, ptr %5, align 4, !tbaa !4
-  %94 = call i64 @HIST_countFast_wksp(ptr noundef %41, ptr noundef nonnull %5, ptr noundef %28, i64 noundef range(i64 -1152921504606846976, 1152921504606846976) %39, ptr noundef %41, i64 noundef %42) #36
+  %94 = call i64 @HIST_countFast_wksp(ptr noundef %41, ptr noundef nonnull %5, ptr noundef %28, i64 noundef range(i64 -1152921504606846976, 1152921504606846976) %39, ptr noundef %41, i64 noundef %42) #35
   switch i32 %92, label %98 [
     i32 0, label %95
     i32 1, label %107
@@ -13752,7 +13752,7 @@ define internal fastcc range(i64 3, 0) i64 @ZSTD_buildEntropyStatisticsAndEstima
 
 95:                                               ; preds = %82
   %96 = load i32, ptr %5, align 4, !tbaa !4
-  %97 = call i64 @ZSTD_crossEntropyCost(ptr noundef nonnull @OF_defaultNorm, i32 noundef 5, ptr noundef %41, i32 noundef %96) #36
+  %97 = call i64 @ZSTD_crossEntropyCost(ptr noundef nonnull @OF_defaultNorm, i32 noundef 5, ptr noundef %41, i32 noundef %96) #35
   br label %104
 
 98:                                               ; preds = %82
@@ -13762,7 +13762,7 @@ define internal fastcc range(i64 3, 0) i64 @ZSTD_buildEntropyStatisticsAndEstima
 
 101:                                              ; preds = %98
   %102 = load i32, ptr %5, align 4, !tbaa !4
-  %103 = call i64 @ZSTD_fseBitCost(ptr noundef nonnull %84, ptr noundef %41, i32 noundef %102) #36
+  %103 = call i64 @ZSTD_fseBitCost(ptr noundef nonnull %84, ptr noundef %41, i32 noundef %102) #35
   br label %104
 
 104:                                              ; preds = %101, %95
@@ -13775,7 +13775,7 @@ define internal fastcc range(i64 3, 0) i64 @ZSTD_buildEntropyStatisticsAndEstima
   %109 = icmp eq ptr %34, %35
   br i1 %109, label %128, label %110
 
-110:                                              ; preds = %107, %117
+110:                                              ; preds = %117, %107
   %111 = phi i64 [ %118, %117 ], [ %108, %107 ]
   %112 = phi ptr [ %119, %117 ], [ %28, %107 ]
   %113 = load i8, ptr %112, align 1, !tbaa !164
@@ -13796,7 +13796,7 @@ define internal fastcc range(i64 3, 0) i64 @ZSTD_buildEntropyStatisticsAndEstima
   br i1 %123, label %124, label %125, !prof !9, !nosanitize !8
 
 124:                                              ; preds = %121
-  call void @llvm.ubsantrap(i8 12) #34, !nosanitize !8
+  call void @llvm.ubsantrap(i8 12) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 125:                                              ; preds = %121
@@ -13804,7 +13804,7 @@ define internal fastcc range(i64 3, 0) i64 @ZSTD_buildEntropyStatisticsAndEstima
   br label %131
 
 127:                                              ; preds = %110
-  call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 128:                                              ; preds = %117, %107
@@ -13814,13 +13814,13 @@ define internal fastcc range(i64 3, 0) i64 @ZSTD_buildEntropyStatisticsAndEstima
 
 131:                                              ; preds = %128, %125
   %132 = phi i64 [ %126, %125 ], [ %130, %128 ]
-  call void @llvm.lifetime.end.p0(ptr nonnull %5) #36
+  call void @llvm.lifetime.end.p0(ptr nonnull %5) #35
   %133 = load i32, ptr %85, align 8, !tbaa !377
   %134 = getelementptr inbounds nuw i8, ptr %40, i64 4288
   %135 = getelementptr inbounds nuw i8, ptr %30, i64 %39
-  call void @llvm.lifetime.start.p0(ptr nonnull %4) #36
+  call void @llvm.lifetime.start.p0(ptr nonnull %4) #35
   store i32 35, ptr %4, align 4, !tbaa !4
-  %136 = call i64 @HIST_countFast_wksp(ptr noundef %41, ptr noundef nonnull %4, ptr noundef %30, i64 noundef range(i64 -1152921504606846976, 1152921504606846976) %39, ptr noundef %41, i64 noundef %42) #36
+  %136 = call i64 @HIST_countFast_wksp(ptr noundef %41, ptr noundef nonnull %4, ptr noundef %30, i64 noundef range(i64 -1152921504606846976, 1152921504606846976) %39, ptr noundef %41, i64 noundef %42) #35
   switch i32 %133, label %140 [
     i32 0, label %137
     i32 1, label %149
@@ -13828,7 +13828,7 @@ define internal fastcc range(i64 3, 0) i64 @ZSTD_buildEntropyStatisticsAndEstima
 
 137:                                              ; preds = %131
   %138 = load i32, ptr %4, align 4, !tbaa !4
-  %139 = call i64 @ZSTD_crossEntropyCost(ptr noundef nonnull @LL_defaultNorm, i32 noundef 6, ptr noundef %41, i32 noundef %138) #36
+  %139 = call i64 @ZSTD_crossEntropyCost(ptr noundef nonnull @LL_defaultNorm, i32 noundef 6, ptr noundef %41, i32 noundef %138) #35
   br label %146
 
 140:                                              ; preds = %131
@@ -13838,7 +13838,7 @@ define internal fastcc range(i64 3, 0) i64 @ZSTD_buildEntropyStatisticsAndEstima
 
 143:                                              ; preds = %140
   %144 = load i32, ptr %4, align 4, !tbaa !4
-  %145 = call i64 @ZSTD_fseBitCost(ptr noundef nonnull %134, ptr noundef %41, i32 noundef %144) #36
+  %145 = call i64 @ZSTD_fseBitCost(ptr noundef nonnull %134, ptr noundef %41, i32 noundef %144) #35
   br label %146
 
 146:                                              ; preds = %143, %137
@@ -13857,14 +13857,14 @@ define internal fastcc range(i64 3, 0) i64 @ZSTD_buildEntropyStatisticsAndEstima
   br i1 %154, label %155, label %156, !prof !9, !nosanitize !8
 
 155:                                              ; preds = %152
-  call void @llvm.ubsantrap(i8 12) #34, !nosanitize !8
+  call void @llvm.ubsantrap(i8 12) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 156:                                              ; preds = %152
   %157 = extractvalue { i64, i1 } %153, 0, !nosanitize !8
   br label %176
 
-158:                                              ; preds = %149, %169
+158:                                              ; preds = %169, %149
   %159 = phi i64 [ %170, %169 ], [ %150, %149 ]
   %160 = phi ptr [ %171, %169 ], [ %30, %149 ]
   %161 = load i8, ptr %160, align 1, !tbaa !164
@@ -13877,7 +13877,7 @@ define internal fastcc range(i64 3, 0) i64 @ZSTD_buildEntropyStatisticsAndEstima
   br i1 %167, label %168, label %169, !prof !9, !nosanitize !8
 
 168:                                              ; preds = %158
-  call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 169:                                              ; preds = %158
@@ -13893,13 +13893,13 @@ define internal fastcc range(i64 3, 0) i64 @ZSTD_buildEntropyStatisticsAndEstima
 
 176:                                              ; preds = %173, %156
   %177 = phi i64 [ %157, %156 ], [ %175, %173 ]
-  call void @llvm.lifetime.end.p0(ptr nonnull %4) #36
+  call void @llvm.lifetime.end.p0(ptr nonnull %4) #35
   %178 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %132, i64 %177), !nosanitize !8
   %179 = extractvalue { i64, i1 } %178, 1, !nosanitize !8
   br i1 %179, label %180, label %181, !prof !9, !nosanitize !8
 
 180:                                              ; preds = %176
-  call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 181:                                              ; preds = %176
@@ -13908,9 +13908,9 @@ define internal fastcc range(i64 3, 0) i64 @ZSTD_buildEntropyStatisticsAndEstima
   %184 = load i32, ptr %183, align 8, !tbaa !196
   %185 = getelementptr inbounds nuw i8, ptr %40, i64 2836
   %186 = getelementptr inbounds nuw i8, ptr %32, i64 %39
-  call void @llvm.lifetime.start.p0(ptr nonnull %3) #36
+  call void @llvm.lifetime.start.p0(ptr nonnull %3) #35
   store i32 52, ptr %3, align 4, !tbaa !4
-  %187 = call i64 @HIST_countFast_wksp(ptr noundef %41, ptr noundef nonnull %3, ptr noundef %32, i64 noundef range(i64 -1152921504606846976, 1152921504606846976) %39, ptr noundef %41, i64 noundef %42) #36
+  %187 = call i64 @HIST_countFast_wksp(ptr noundef %41, ptr noundef nonnull %3, ptr noundef %32, i64 noundef range(i64 -1152921504606846976, 1152921504606846976) %39, ptr noundef %41, i64 noundef %42) #35
   switch i32 %184, label %191 [
     i32 0, label %188
     i32 1, label %200
@@ -13918,7 +13918,7 @@ define internal fastcc range(i64 3, 0) i64 @ZSTD_buildEntropyStatisticsAndEstima
 
 188:                                              ; preds = %181
   %189 = load i32, ptr %3, align 4, !tbaa !4
-  %190 = call i64 @ZSTD_crossEntropyCost(ptr noundef nonnull @ML_defaultNorm, i32 noundef 6, ptr noundef %41, i32 noundef %189) #36
+  %190 = call i64 @ZSTD_crossEntropyCost(ptr noundef nonnull @ML_defaultNorm, i32 noundef 6, ptr noundef %41, i32 noundef %189) #35
   br label %197
 
 191:                                              ; preds = %181
@@ -13928,7 +13928,7 @@ define internal fastcc range(i64 3, 0) i64 @ZSTD_buildEntropyStatisticsAndEstima
 
 194:                                              ; preds = %191
   %195 = load i32, ptr %3, align 4, !tbaa !4
-  %196 = call i64 @ZSTD_fseBitCost(ptr noundef nonnull %185, ptr noundef %41, i32 noundef %195) #36
+  %196 = call i64 @ZSTD_fseBitCost(ptr noundef nonnull %185, ptr noundef %41, i32 noundef %195) #35
   br label %197
 
 197:                                              ; preds = %194, %188
@@ -13947,14 +13947,14 @@ define internal fastcc range(i64 3, 0) i64 @ZSTD_buildEntropyStatisticsAndEstima
   br i1 %205, label %206, label %207, !prof !9, !nosanitize !8
 
 206:                                              ; preds = %203
-  call void @llvm.ubsantrap(i8 12) #34, !nosanitize !8
+  call void @llvm.ubsantrap(i8 12) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 207:                                              ; preds = %203
   %208 = extractvalue { i64, i1 } %204, 0, !nosanitize !8
   br label %227
 
-209:                                              ; preds = %200, %220
+209:                                              ; preds = %220, %200
   %210 = phi i64 [ %221, %220 ], [ %201, %200 ]
   %211 = phi ptr [ %222, %220 ], [ %32, %200 ]
   %212 = load i8, ptr %211, align 1, !tbaa !164
@@ -13967,7 +13967,7 @@ define internal fastcc range(i64 3, 0) i64 @ZSTD_buildEntropyStatisticsAndEstima
   br i1 %218, label %219, label %220, !prof !9, !nosanitize !8
 
 219:                                              ; preds = %209
-  call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 220:                                              ; preds = %209
@@ -13983,13 +13983,13 @@ define internal fastcc range(i64 3, 0) i64 @ZSTD_buildEntropyStatisticsAndEstima
 
 227:                                              ; preds = %224, %207
   %228 = phi i64 [ %208, %207 ], [ %226, %224 ]
-  call void @llvm.lifetime.end.p0(ptr nonnull %3) #36
+  call void @llvm.lifetime.end.p0(ptr nonnull %3) #35
   %229 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %182, i64 %228), !nosanitize !8
   %230 = extractvalue { i64, i1 } %229, 1, !nosanitize !8
   br i1 %230, label %231, label %232, !prof !9, !nosanitize !8
 
 231:                                              ; preds = %227
-  call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 232:                                              ; preds = %227
@@ -14001,7 +14001,7 @@ define internal fastcc range(i64 3, 0) i64 @ZSTD_buildEntropyStatisticsAndEstima
   br i1 %237, label %238, label %239, !prof !9, !nosanitize !8
 
 238:                                              ; preds = %232
-  call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 239:                                              ; preds = %232
@@ -14011,7 +14011,7 @@ define internal fastcc range(i64 3, 0) i64 @ZSTD_buildEntropyStatisticsAndEstima
   br i1 %242, label %243, label %244, !prof !9, !nosanitize !8
 
 243:                                              ; preds = %239
-  call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 244:                                              ; preds = %239
@@ -14021,7 +14021,7 @@ define internal fastcc range(i64 3, 0) i64 @ZSTD_buildEntropyStatisticsAndEstima
   br i1 %247, label %248, label %249, !prof !9, !nosanitize !8
 
 248:                                              ; preds = %244
-  call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 249:                                              ; preds = %244
@@ -14031,14 +14031,14 @@ define internal fastcc range(i64 3, 0) i64 @ZSTD_buildEntropyStatisticsAndEstima
   br i1 %252, label %253, label %254, !prof !9, !nosanitize !8
 
 253:                                              ; preds = %249
-  call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 254:                                              ; preds = %249
   %255 = extractvalue { i64, i1 } %251, 0, !nosanitize !8
   br label %256
 
-256:                                              ; preds = %2, %254
+256:                                              ; preds = %254, %2
   %257 = phi i64 [ %255, %254 ], [ %17, %2 ]
   ret i64 %257
 }
@@ -14075,11 +14075,11 @@ define internal fastcc range(i64 -70, 1) i64 @ZSTD_copyBlockSequences(ptr nounde
   br i1 %26, label %27, label %28, !prof !9, !nosanitize !8
 
 27:                                               ; preds = %3
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 28:                                               ; preds = %3
-  call void @llvm.lifetime.start.p0(ptr nonnull %4) #36
+  call void @llvm.lifetime.start.p0(ptr nonnull %4) #35
   %29 = getelementptr inbounds nuw i8, ptr %0, i64 24
   %30 = load i64, ptr %29, align 8, !tbaa !381
   %31 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %30, i64 %20), !nosanitize !8
@@ -14087,7 +14087,7 @@ define internal fastcc range(i64 -70, 1) i64 @ZSTD_copyBlockSequences(ptr nounde
   br i1 %32, label %33, label %34, !prof !9, !nosanitize !8
 
 33:                                               ; preds = %28
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 34:                                               ; preds = %28
@@ -14112,7 +14112,7 @@ define internal fastcc range(i64 -70, 1) i64 @ZSTD_copyBlockSequences(ptr nounde
   %48 = load i32, ptr %46, align 4
   br label %49
 
-49:                                               ; preds = %39, %134
+49:                                               ; preds = %134, %39
   %50 = phi i32 [ %48, %39 ], [ %127, %134 ]
   %51 = phi i32 [ %47, %39 ], [ %128, %134 ]
   %52 = phi i64 [ 0, %39 ], [ %135, %134 ]
@@ -14153,7 +14153,7 @@ define internal fastcc range(i64 -70, 1) i64 @ZSTD_copyBlockSequences(ptr nounde
   store i32 %73, ptr %65, align 4, !tbaa !183
   br label %74
 
-74:                                               ; preds = %68, %70, %72, %49
+74:                                               ; preds = %72, %70, %68, %49
   %75 = phi i32 [ %58, %68 ], [ %71, %70 ], [ %58, %72 ], [ %58, %49 ]
   %76 = load i32, ptr %55, align 4, !tbaa !162
   %77 = add i32 %76, -1
@@ -14182,7 +14182,7 @@ define internal fastcc range(i64 -70, 1) i64 @ZSTD_copyBlockSequences(ptr nounde
   br i1 %90, label %91, label %92, !prof !9, !nosanitize !8
 
 91:                                               ; preds = %88
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 92:                                               ; preds = %88
@@ -14201,7 +14201,7 @@ define internal fastcc range(i64 -70, 1) i64 @ZSTD_copyBlockSequences(ptr nounde
   br i1 %100, label %101, label %102, !prof !9, !nosanitize !8
 
 101:                                              ; preds = %98
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 102:                                              ; preds = %98
@@ -14212,7 +14212,7 @@ define internal fastcc range(i64 -70, 1) i64 @ZSTD_copyBlockSequences(ptr nounde
   %104 = add i32 %76, -3
   br label %123
 
-105:                                              ; preds = %81, %94, %92
+105:                                              ; preds = %94, %92, %81
   %106 = phi i32 [ %97, %94 ], [ %93, %92 ], [ %85, %81 ]
   store i32 %106, ptr %59, align 4, !tbaa !181
   %107 = icmp ne i16 %57, 0
@@ -14230,7 +14230,7 @@ define internal fastcc range(i64 -70, 1) i64 @ZSTD_copyBlockSequences(ptr nounde
   br i1 %113, label %114, label %119, !prof !9, !nosanitize !8
 
 114:                                              ; preds = %110
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 115:                                              ; preds = %105
@@ -14253,7 +14253,7 @@ define internal fastcc range(i64 -70, 1) i64 @ZSTD_copyBlockSequences(ptr nounde
   store i32 %125, ptr %4, align 4, !tbaa !4
   br label %126
 
-126:                                              ; preds = %105, %123
+126:                                              ; preds = %123, %105
   %127 = phi i32 [ %50, %105 ], [ %124, %123 ]
   %128 = phi i32 [ %51, %105 ], [ %54, %123 ]
   %129 = phi i32 [ %54, %105 ], [ %125, %123 ]
@@ -14263,7 +14263,7 @@ define internal fastcc range(i64 -70, 1) i64 @ZSTD_copyBlockSequences(ptr nounde
   br i1 %132, label %133, label %134, !prof !9, !nosanitize !8
 
 133:                                              ; preds = %126
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 134:                                              ; preds = %126
@@ -14279,7 +14279,7 @@ define internal fastcc range(i64 -70, 1) i64 @ZSTD_copyBlockSequences(ptr nounde
   br i1 %141, label %142, label %143, !prof !9, !nosanitize !8
 
 142:                                              ; preds = %138
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 143:                                              ; preds = %138
@@ -14296,7 +14296,7 @@ define internal fastcc range(i64 -70, 1) i64 @ZSTD_copyBlockSequences(ptr nounde
   br i1 %150, label %151, label %152, !prof !9, !nosanitize !8
 
 151:                                              ; preds = %143
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 152:                                              ; preds = %143
@@ -14304,9 +14304,9 @@ define internal fastcc range(i64 -70, 1) i64 @ZSTD_copyBlockSequences(ptr nounde
   store i64 %153, ptr %19, align 8, !tbaa !379
   br label %154
 
-154:                                              ; preds = %34, %152
+154:                                              ; preds = %152, %34
   %155 = phi i64 [ 0, %152 ], [ -70, %34 ]
-  call void @llvm.lifetime.end.p0(ptr nonnull %4) #36
+  call void @llvm.lifetime.end.p0(ptr nonnull %4) #35
   ret i64 %155
 }
 
@@ -14339,7 +14339,7 @@ define internal fastcc i64 @ZSTD_entropyCompressSeqStore_internal(ptr noundef %0
   br i1 %35, label %36, label %37, !prof !9, !nosanitize !8
 
 36:                                               ; preds = %11
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 37:                                               ; preds = %11
@@ -14375,9 +14375,9 @@ define internal fastcc i64 @ZSTD_entropyCompressSeqStore_internal(ptr noundef %0
   %54 = zext i1 %53 to i32
   br label %55
 
-55:                                               ; preds = %43, %47, %48, %50
+55:                                               ; preds = %50, %48, %47, %43
   %56 = phi i32 [ 0, %43 ], [ 1, %47 ], [ 0, %48 ], [ %54, %50 ]
-  %57 = tail call i64 @ZSTD_compressLiterals(ptr noundef %0, i64 noundef %1, ptr noundef %2, i64 noundef %3, ptr noundef nonnull %32, i64 noundef %34, ptr noundef %5, ptr noundef %6, i32 noundef %14, i32 noundef %56, i32 noundef %44, i32 noundef %10) #36
+  %57 = tail call i64 @ZSTD_compressLiterals(ptr noundef %0, i64 noundef %1, ptr noundef %2, i64 noundef %3, ptr noundef nonnull %32, i64 noundef %34, ptr noundef %5, ptr noundef %6, i32 noundef %14, i32 noundef %56, i32 noundef %44, i32 noundef %10) #35
   %58 = icmp ult i64 %57, -119
   %59 = getelementptr inbounds nuw i8, ptr %0, i64 %57
   br i1 %58, label %60, label %140
@@ -14422,7 +14422,7 @@ define internal fastcc i64 @ZSTD_entropyCompressSeqStore_internal(ptr noundef %0
   %82 = getelementptr inbounds nuw i8, ptr %59, i64 3
   br label %83
 
-83:                                               ; preds = %71, %78, %66
+83:                                               ; preds = %78, %71, %66
   %84 = phi ptr [ %68, %66 ], [ %77, %71 ], [ %82, %78 ]
   br i1 %38, label %85, label %90
 
@@ -14436,7 +14436,7 @@ define internal fastcc i64 @ZSTD_entropyCompressSeqStore_internal(ptr noundef %0
 
 90:                                               ; preds = %83
   %91 = getelementptr inbounds nuw i8, ptr %84, i64 1
-  call void @llvm.lifetime.start.p0(ptr nonnull %12) #36
+  call void @llvm.lifetime.start.p0(ptr nonnull %12) #35
   %92 = getelementptr inbounds nuw i8, ptr %5, i64 2064
   call fastcc void @ZSTD_buildSequencesStatistics(ptr dead_on_unwind noalias writable align 8 %12, ptr noundef nonnull %4, i64 noundef %24, ptr noundef nonnull %92, ptr noundef nonnull %15, ptr noundef nonnull %91, ptr noundef nonnull %31, i32 noundef %14, ptr noundef nonnull %8, ptr noundef nonnull %32, i64 noundef %34)
   %93 = getelementptr inbounds nuw i8, ptr %12, i64 16
@@ -14455,7 +14455,7 @@ define internal fastcc i64 @ZSTD_entropyCompressSeqStore_internal(ptr noundef %0
   br i1 %103, label %104, label %105, !prof !9, !nosanitize !8
 
 104:                                              ; preds = %96
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 105:                                              ; preds = %96
@@ -14468,11 +14468,11 @@ define internal fastcc i64 @ZSTD_entropyCompressSeqStore_internal(ptr noundef %0
   br i1 %111, label %112, label %114, !prof !9, !nosanitize !8
 
 112:                                              ; preds = %105
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 113:                                              ; preds = %90
-  call void @llvm.lifetime.end.p0(ptr nonnull %12) #36
+  call void @llvm.lifetime.end.p0(ptr nonnull %12) #35
   br label %140
 
 114:                                              ; preds = %105
@@ -14484,10 +14484,10 @@ define internal fastcc i64 @ZSTD_entropyCompressSeqStore_internal(ptr noundef %0
   %119 = getelementptr inbounds nuw i8, ptr %91, i64 %94
   %120 = getelementptr inbounds nuw i8, ptr %12, i64 32
   %121 = load i32, ptr %120, align 8, !tbaa !329
-  call void @llvm.lifetime.end.p0(ptr nonnull %12) #36
+  call void @llvm.lifetime.end.p0(ptr nonnull %12) #35
   %122 = ptrtoint ptr %119 to i64
   %123 = sub i64 %61, %122
-  %124 = tail call i64 @ZSTD_encodeSequences(ptr noundef nonnull %119, i64 noundef %123, ptr noundef nonnull %17, ptr noundef %30, ptr noundef nonnull %15, ptr noundef %26, ptr noundef nonnull %16, ptr noundef %28, ptr noundef %18, i64 noundef %24, i32 noundef %121, i32 noundef %10) #36
+  %124 = tail call i64 @ZSTD_encodeSequences(ptr noundef nonnull %119, i64 noundef %123, ptr noundef nonnull %17, ptr noundef %30, ptr noundef nonnull %15, ptr noundef %26, ptr noundef nonnull %16, ptr noundef %28, ptr noundef %18, i64 noundef %24, i32 noundef %121, i32 noundef %10) #35
   %125 = icmp ult i64 %124, -119
   br i1 %125, label %126, label %140
 
@@ -14502,7 +14502,7 @@ define internal fastcc i64 @ZSTD_entropyCompressSeqStore_internal(ptr noundef %0
   br i1 %131, label %132, label %133, !prof !9, !nosanitize !8
 
 132:                                              ; preds = %129
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 133:                                              ; preds = %129
@@ -14516,7 +14516,7 @@ define internal fastcc i64 @ZSTD_entropyCompressSeqStore_internal(ptr noundef %0
   %139 = sub i64 %137, %138
   br label %140
 
-140:                                              ; preds = %133, %114, %113, %60, %55, %136, %85
+140:                                              ; preds = %136, %133, %114, %113, %85, %60, %55
   %141 = phi i64 [ %57, %55 ], [ %89, %85 ], [ %139, %136 ], [ -70, %60 ], [ %94, %113 ], [ 0, %133 ], [ %124, %114 ]
   ret i64 %141
 }
@@ -14596,7 +14596,7 @@ define internal fastcc range(i64 -119, 4294967296) i64 @ZSTD_compress_insertDict
   tail call fastcc void @ZSTD_loadDictionaryContent(ptr noundef %1, ptr noundef null, ptr noundef %3, ptr noundef nonnull %4, ptr noundef %44, i64 noundef %45, i32 noundef %8, i32 noundef range(i32 0, 2) %9)
   br label %46
 
-46:                                               ; preds = %43, %39, %29, %15, %30, %25
+46:                                               ; preds = %43, %39, %30, %29, %25, %15
   %47 = phi i64 [ %17, %15 ], [ -32, %29 ], [ 0, %25 ], [ 0, %30 ], [ %41, %39 ], [ %40, %43 ]
   ret i64 %47
 }
@@ -14660,7 +14660,7 @@ define internal fastcc void @ZSTD_loadDictionaryContent(ptr noundef %0, ptr noun
   br i1 %52, label %53, label %54, !prof !9, !nosanitize !8
 
 53:                                               ; preds = %38
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 54:                                               ; preds = %38
@@ -14697,7 +14697,7 @@ define internal fastcc void @ZSTD_loadDictionaryContent(ptr noundef %0, ptr noun
   store i32 %76, ptr %71, align 4, !tbaa !208
   br label %77
 
-77:                                               ; preds = %58, %70
+77:                                               ; preds = %70, %58
   br i1 %14, label %79, label %141
 
 78:                                               ; preds = %8
@@ -14739,7 +14739,7 @@ define internal fastcc void @ZSTD_loadDictionaryContent(ptr noundef %0, ptr noun
   br i1 %103, label %104, label %105, !prof !9, !nosanitize !8
 
 104:                                              ; preds = %89
-  tail call void @llvm.ubsantrap(i8 21) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 21) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 105:                                              ; preds = %89
@@ -14775,7 +14775,7 @@ define internal fastcc void @ZSTD_loadDictionaryContent(ptr noundef %0, ptr noun
   store i32 %126, ptr %121, align 4, !tbaa !208
   br label %127
 
-127:                                              ; preds = %78, %109, %120
+127:                                              ; preds = %120, %109, %78
   %128 = getelementptr inbounds nuw i8, ptr %3, i64 48
   %129 = load i32, ptr %128, align 8, !tbaa !97
   %130 = icmp eq i32 %129, 0
@@ -14790,14 +14790,14 @@ define internal fastcc void @ZSTD_loadDictionaryContent(ptr noundef %0, ptr noun
   %137 = trunc i64 %136 to i32
   br label %138
 
-138:                                              ; preds = %127, %131
+138:                                              ; preds = %131, %127
   %139 = phi i32 [ %137, %131 ], [ 0, %127 ]
   %140 = getelementptr inbounds nuw i8, ptr %1, i64 48
   store i32 %139, ptr %140, align 8, !tbaa !385
-  tail call void @ZSTD_ldm_fillHashTable(ptr noundef nonnull %1, ptr noundef nonnull %26, ptr noundef nonnull %9, ptr noundef nonnull %10) #36
+  tail call void @ZSTD_ldm_fillHashTable(ptr noundef nonnull %1, ptr noundef nonnull %26, ptr noundef nonnull %9, ptr noundef nonnull %10) #35
   br label %141
 
-141:                                              ; preds = %78, %138, %77
+141:                                              ; preds = %138, %78, %77
   %142 = getelementptr inbounds nuw i8, ptr %3, i64 12
   %143 = load i32, ptr %142, align 4, !tbaa !89
   %144 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %143, i32 3), !nosanitize !8
@@ -14806,7 +14806,7 @@ define internal fastcc void @ZSTD_loadDictionaryContent(ptr noundef %0, ptr noun
   br i1 %146, label %147, label %148, !prof !9, !nosanitize !8
 
 147:                                              ; preds = %141
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 148:                                              ; preds = %141
@@ -14817,7 +14817,7 @@ define internal fastcc void @ZSTD_loadDictionaryContent(ptr noundef %0, ptr noun
   br i1 %152, label %153, label %154, !prof !9, !nosanitize !8
 
 153:                                              ; preds = %148
-  tail call void @llvm.ubsantrap(i8 0) #34, !nosanitize !8
+  tail call void @llvm.ubsantrap(i8 0) #33, !nosanitize !8
   unreachable, !nosanitize !8
 
 154:                                              ; preds = %148
@@ -14871,11 +14871,11 @@ define internal fastcc void @ZSTD_loadDictionaryContent(ptr noundef %0, ptr noun
   ]
 
 186:                                              ; preds = %184
-  tail call void @ZSTD_fillHashTable(ptr noundef nonnull %0, ptr noundef nonnull %9, i32 noundef %6, i32 noundef %7) #36
+  tail call void @ZSTD_fillHashTable(ptr noundef nonnull %0, ptr noundef nonnull %9, i32 noundef %6, i32 noundef %7) #35
   br label %210
 
 187:                                              ; preds = %184
-  tail call void @ZSTD_fillDoubleHashTable(ptr noundef nonnull %0, ptr noundef nonnull %9, i32 noundef %6, i32 noundef %7) #36
+  tail call void @ZSTD_fillDoubleHashTable(ptr noundef nonnull %0, ptr noundef nonnull %9, i32 noundef %6, i32 noundef %7) #35
   br label %210
 
 188:                                              ; preds = %184, %184, %184
@@ -14886,7 +14886,7 @@ define internal fastcc void @ZSTD_loadDictionaryContent(ptr noundef %0, ptr noun
 
 192:                                              ; preds = %188
   %193 = getelementptr inbounds i8, ptr %9, i64 -8
-  tail call void @ZSTD_dedicatedDictSearch_lazy_loadDictionary(ptr noundef nonnull %0, ptr noundef nonnull %193) #36
+  tail call void @ZSTD_dedicatedDictSearch_lazy_loadDictionary(ptr noundef nonnull %0, ptr noundef nonnull %193) #35
   br label %210
 
 194:                                              ; preds = %188
@@ -14903,20 +14903,20 @@ define internal fastcc void @ZSTD_loadDictionaryContent(ptr noundef %0, ptr noun
   %203 = load ptr, ptr %202, align 8, !tbaa !276
   tail call void @llvm.memset.p0.i64(ptr noundef nonnull align 1 dereferenceable(1) %203, i8 0, i64 %201, i1 false)
   %204 = getelementptr inbounds i8, ptr %9, i64 -8
-  tail call void @ZSTD_row_update(ptr noundef nonnull %0, ptr noundef nonnull %204) #36
+  tail call void @ZSTD_row_update(ptr noundef nonnull %0, ptr noundef nonnull %204) #35
   br label %210
 
 205:                                              ; preds = %194
   %206 = getelementptr inbounds i8, ptr %9, i64 -8
-  %207 = tail call i32 @ZSTD_insertAndFindFirstIndex(ptr noundef nonnull %0, ptr noundef nonnull %206) #36
+  %207 = tail call i32 @ZSTD_insertAndFindFirstIndex(ptr noundef nonnull %0, ptr noundef nonnull %206) #35
   br label %210
 
 208:                                              ; preds = %184, %184, %184, %184
   %209 = getelementptr inbounds i8, ptr %9, i64 -8
-  tail call void @ZSTD_updateTree(ptr noundef nonnull %0, ptr noundef nonnull %209, ptr noundef nonnull %9) #36
+  tail call void @ZSTD_updateTree(ptr noundef nonnull %0, ptr noundef nonnull %209, ptr noundef nonnull %9) #35
   br label %210
 
-210:                                              ; preds = %184, %192, %205, %198, %208, %187, %186
+210:                                              ; preds = %208, %205, %198, %192, %187, %186, %184
   %211 = load ptr, ptr %165, align 8, !tbaa !341
   %212 = ptrtoint ptr %211 to i64
   %213 = sub i64 %175, %212
@@ -14924,7 +14924,7 @@ define internal fastcc void @ZSTD_loadDictionaryContent(ptr noundef %0, ptr noun
   store i32 %214, ptr %171, align 4, !tbaa !211
   br label %215
 
-215:                                              ; preds = %154, %210
+215:                                              ; preds = %210, %154
   ret void
 }
 
@@ -14943,40 +14943,40 @@ declare i32 @ZSTD_insertAndFindFirstIndex(ptr noundef, ptr noundef) local_unname
 declare void @ZSTD_updateTree(ptr noundef, ptr noundef, ptr noundef) local_unnamed_addr #16
 
 ; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
-declare i32 @llvm.smax.i32(i32, i32) #31
+declare i32 @llvm.smax.i32(i32, i32) #2
 
 ; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
-declare i32 @llvm.umax.i32(i32, i32) #31
+declare i32 @llvm.umax.i32(i32, i32) #2
 
 ; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
-declare i64 @llvm.umin.i64(i64, i64) #31
+declare i64 @llvm.umin.i64(i64, i64) #2
 
 ; Function Attrs: nocallback nofree nosync nounwind willreturn memory(inaccessiblemem: readwrite)
-declare void @llvm.experimental.noalias.scope.decl(metadata) #32
+declare void @llvm.experimental.noalias.scope.decl(metadata) #31
 
 ; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
-declare i32 @llvm.umin.i32(i32, i32) #31
+declare i32 @llvm.umin.i32(i32, i32) #2
 
 ; Function Attrs: nocallback nofree nosync nounwind willreturn memory(inaccessiblemem: write)
-declare void @llvm.assume(i1 noundef) #33
+declare void @llvm.assume(i1 noundef) #32
 
 ; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
-declare i32 @llvm.usub.sat.i32(i32, i32) #31
+declare i32 @llvm.usub.sat.i32(i32, i32) #2
 
 attributes #0 = { nounwind memory(inaccessiblemem: write) uwtable "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
-attributes #1 = { mustprogress nocallback nofree nosync nounwind willreturn memory(argmem: readwrite) }
-attributes #2 = { mustprogress nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none) }
+attributes #1 = { nocallback nofree nosync nounwind willreturn memory(argmem: readwrite) }
+attributes #2 = { nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none) }
 attributes #3 = { cold noreturn nounwind memory(inaccessiblemem: write) }
 attributes #4 = { nounwind uwtable "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #5 = { nounwind memory(argmem: write) uwtable "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
-attributes #6 = { mustprogress nocallback nofree nounwind willreturn memory(argmem: write) }
+attributes #6 = { nocallback nofree nounwind willreturn memory(argmem: write) }
 attributes #7 = { nounwind memory(read, inaccessiblemem: write, target_mem: none) uwtable "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #8 = { mustprogress nofree norecurse nosync nounwind willreturn memory(none) uwtable "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #9 = { mustprogress nofree nounwind willreturn memory(write, argmem: none, inaccessiblemem: readwrite, target_mem: none) uwtable "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #10 = { mustprogress nofree norecurse nosync nounwind willreturn memory(argmem: write) uwtable "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #11 = { mustprogress nofree norecurse nosync nounwind willreturn memory(argmem: readwrite) uwtable "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #12 = { mustprogress nofree norecurse nosync nounwind willreturn memory(argmem: read) uwtable "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
-attributes #13 = { mustprogress nocallback nofree nounwind willreturn memory(argmem: readwrite) }
+attributes #13 = { nocallback nofree nounwind willreturn memory(argmem: readwrite) }
 attributes #14 = { nounwind memory(argmem: readwrite, inaccessiblemem: write) uwtable "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #15 = { cold noreturn nounwind memory(inaccessiblemem: write) uwtable "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #16 = { "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
@@ -14991,19 +14991,18 @@ attributes #24 = { nounwind memory(readwrite, inaccessiblemem: write, target_mem
 attributes #25 = { mustprogress nofree nounwind willreturn allockind("alloc,uninitialized") allocsize(0) memory(inaccessiblemem: readwrite, errnomem: write) "alloc-family"="malloc" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #26 = { mustprogress nounwind willreturn allockind("free") memory(argmem: readwrite, inaccessiblemem: readwrite) "alloc-family"="malloc" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #27 = { mustprogress nofree nounwind willreturn allockind("alloc,zeroed") allocsize(0,1) memory(inaccessiblemem: readwrite, errnomem: write) "alloc-family"="malloc" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
-attributes #28 = { mustprogress nocallback nofree nosync nounwind speculatable willreturn memory(none) }
+attributes #28 = { nocallback nofree nosync nounwind speculatable willreturn memory(none) }
 attributes #29 = { nounwind memory(readwrite, inaccessiblemem: write, target_mem: none) uwtable "min-legal-vector-width"="128" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #30 = { inlinehint nounwind uwtable "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
-attributes #31 = { nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none) }
-attributes #32 = { nocallback nofree nosync nounwind willreturn memory(inaccessiblemem: readwrite) }
-attributes #33 = { nocallback nofree nosync nounwind willreturn memory(inaccessiblemem: write) }
-attributes #34 = { nomerge noreturn nounwind }
-attributes #35 = { nounwind memory(none) }
-attributes #36 = { nounwind }
-attributes #37 = { nounwind allocsize(0) }
-attributes #38 = { nounwind allocsize(0,1) }
-attributes #39 = { noreturn nounwind }
-attributes #40 = { nounwind willreturn memory(read) }
+attributes #31 = { nocallback nofree nosync nounwind willreturn memory(inaccessiblemem: readwrite) }
+attributes #32 = { nocallback nofree nosync nounwind willreturn memory(inaccessiblemem: write) }
+attributes #33 = { nomerge noreturn nounwind }
+attributes #34 = { nounwind memory(none) }
+attributes #35 = { nounwind }
+attributes #36 = { nounwind allocsize(0) }
+attributes #37 = { nounwind allocsize(0,1) }
+attributes #38 = { noreturn nounwind }
+attributes #39 = { nounwind willreturn memory(read) }
 
 !llvm.module.flags = !{!0, !1, !2}
 !llvm.ident = !{!3}

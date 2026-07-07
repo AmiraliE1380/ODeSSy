@@ -1,4 +1,4 @@
-; ModuleID = '/home/amiralie1380/michigan/pl/openssl/crypto/sha/sha256.c'
+; ModuleID = 'evaluation/openssl/sha256_integer_O3.ll'
 source_filename = "/home/amiralie1380/michigan/pl/openssl/crypto/sha/sha256.c"
 target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
@@ -17,7 +17,7 @@ define dso_local noundef i32 @SHA224_Init(ptr noundef writeonly captures(none) i
   ret i32 1
 }
 
-; Function Attrs: mustprogress nocallback nofree nounwind willreturn memory(argmem: write)
+; Function Attrs: nocallback nofree nounwind willreturn memory(argmem: write)
 declare void @llvm.memset.p0.i64(ptr writeonly captures(none), i8, i64, i1 immarg) #1
 
 ; Function Attrs: mustprogress nofree norecurse nosync nounwind willreturn memory(argmem: write) uwtable
@@ -59,7 +59,7 @@ define dso_local noundef i32 @SHA224_Update(ptr noundef %0, ptr noundef %1, i64 
   br i1 %11, label %12, label %13, !prof !13, !nosanitize !12
 
 12:                                               ; preds = %5
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 13:                                               ; preds = %5
@@ -72,7 +72,7 @@ define dso_local noundef i32 @SHA224_Update(ptr noundef %0, ptr noundef %1, i64 
   br i1 %19, label %20, label %21, !prof !13, !nosanitize !12
 
 20:                                               ; preds = %13
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 21:                                               ; preds = %13
@@ -100,7 +100,7 @@ define dso_local noundef i32 @SHA224_Update(ptr noundef %0, ptr noundef %1, i64 
   br i1 %36, label %37, label %38, !prof !13, !nosanitize !12
 
 37:                                               ; preds = %34
-  tail call void @llvm.ubsantrap(i8 21) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 21) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 38:                                               ; preds = %34
@@ -119,7 +119,7 @@ define dso_local noundef i32 @SHA224_Update(ptr noundef %0, ptr noundef %1, i64 
   br i1 %45, label %46, label %47, !prof !13, !nosanitize !12
 
 46:                                               ; preds = %41
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 47:                                               ; preds = %41
@@ -142,7 +142,7 @@ define dso_local noundef i32 @SHA224_Update(ptr noundef %0, ptr noundef %1, i64 
   tail call void @llvm.memcpy.p0.p0.i64(ptr nonnull align 1 %54, ptr align 1 %1, i64 %2, i1 false)
   br label %55
 
-55:                                               ; preds = %3, %47, %53
+55:                                               ; preds = %53, %47, %3
   ret i32 1
 }
 
@@ -161,7 +161,7 @@ define dso_local noundef i32 @SHA256_Update(ptr noundef %0, ptr noundef %1, i64 
   br i1 %11, label %12, label %13, !prof !13, !nosanitize !12
 
 12:                                               ; preds = %5
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 13:                                               ; preds = %5
@@ -174,7 +174,7 @@ define dso_local noundef i32 @SHA256_Update(ptr noundef %0, ptr noundef %1, i64 
   br i1 %19, label %20, label %21, !prof !13, !nosanitize !12
 
 20:                                               ; preds = %13
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 21:                                               ; preds = %13
@@ -202,7 +202,7 @@ define dso_local noundef i32 @SHA256_Update(ptr noundef %0, ptr noundef %1, i64 
   br i1 %36, label %37, label %38, !prof !13, !nosanitize !12
 
 37:                                               ; preds = %34
-  tail call void @llvm.ubsantrap(i8 21) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 21) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 38:                                               ; preds = %34
@@ -221,7 +221,7 @@ define dso_local noundef i32 @SHA256_Update(ptr noundef %0, ptr noundef %1, i64 
   br i1 %45, label %46, label %47, !prof !13, !nosanitize !12
 
 46:                                               ; preds = %41
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 47:                                               ; preds = %41
@@ -244,7 +244,7 @@ define dso_local noundef i32 @SHA256_Update(ptr noundef %0, ptr noundef %1, i64 
   tail call void @llvm.memcpy.p0.p0.i64(ptr nonnull align 1 %54, ptr align 1 %1, i64 %2, i1 false)
   br label %55
 
-55:                                               ; preds = %3, %47, %53
+55:                                               ; preds = %53, %47, %3
   ret i32 1
 }
 
@@ -266,7 +266,7 @@ define dso_local noundef range(i32 0, 2) i32 @SHA224_Final(ptr noundef readnone 
   br i1 %12, label %13, label %14, !prof !13, !nosanitize !12
 
 13:                                               ; preds = %10
-  tail call void @llvm.ubsantrap(i8 21) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 21) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 14:                                               ; preds = %10
@@ -336,7 +336,7 @@ define dso_local noundef range(i32 0, 2) i32 @SHA256_Final(ptr noundef readnone 
   br i1 %12, label %13, label %14, !prof !13, !nosanitize !12
 
 13:                                               ; preds = %10
-  tail call void @llvm.ubsantrap(i8 21) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 21) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 14:                                               ; preds = %10
@@ -403,7 +403,7 @@ define dso_local noundef i32 @SHA256_Update_thunk(ptr noundef %0, ptr noundef %1
   br i1 %11, label %12, label %13, !prof !13, !nosanitize !12
 
 12:                                               ; preds = %5
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 13:                                               ; preds = %5
@@ -416,7 +416,7 @@ define dso_local noundef i32 @SHA256_Update_thunk(ptr noundef %0, ptr noundef %1
   br i1 %19, label %20, label %21, !prof !13, !nosanitize !12
 
 20:                                               ; preds = %13
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 21:                                               ; preds = %13
@@ -444,7 +444,7 @@ define dso_local noundef i32 @SHA256_Update_thunk(ptr noundef %0, ptr noundef %1
   br i1 %36, label %37, label %38, !prof !13, !nosanitize !12
 
 37:                                               ; preds = %34
-  tail call void @llvm.ubsantrap(i8 21) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 21) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 38:                                               ; preds = %34
@@ -463,7 +463,7 @@ define dso_local noundef i32 @SHA256_Update_thunk(ptr noundef %0, ptr noundef %1
   br i1 %45, label %46, label %47, !prof !13, !nosanitize !12
 
 46:                                               ; preds = %41
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 47:                                               ; preds = %41
@@ -486,29 +486,29 @@ define dso_local noundef i32 @SHA256_Update_thunk(ptr noundef %0, ptr noundef %1
   tail call void @llvm.memcpy.p0.p0.i64(ptr nonnull align 1 %54, ptr align 1 %1, i64 %2, i1 false)
   br label %55
 
-55:                                               ; preds = %53, %3, %47
+55:                                               ; preds = %53, %47, %3
   ret i32 1
 }
 
-; Function Attrs: mustprogress nocallback nofree nosync nounwind willreturn memory(argmem: readwrite)
+; Function Attrs: nocallback nofree nosync nounwind willreturn memory(argmem: readwrite)
 declare void @llvm.lifetime.start.p0(ptr captures(none)) #4
 
-; Function Attrs: mustprogress nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
 declare { i32, i1 } @llvm.uadd.with.overflow.i32(i32, i32) #5
 
 ; Function Attrs: cold noreturn nounwind memory(inaccessiblemem: write)
 declare void @llvm.ubsantrap(i8 immarg) #6
 
-; Function Attrs: mustprogress nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
 declare { i64, i1 } @llvm.usub.with.overflow.i64(i64, i64) #5
 
-; Function Attrs: mustprogress nocallback nofree nounwind willreturn memory(argmem: readwrite)
+; Function Attrs: nocallback nofree nounwind willreturn memory(argmem: readwrite)
 declare void @llvm.memcpy.p0.p0.i64(ptr noalias writeonly captures(none), ptr noalias readonly captures(none), i64, i1 immarg) #7
 
 ; Function Attrs: noreturn nounwind memory(argmem: readwrite, inaccessiblemem: write) uwtable
 define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) %0, ptr noundef readonly %1, i64 noundef range(i64 1, 288230376151711744) %2) unnamed_addr #3 {
   %4 = alloca [16 x i32], align 16
-  call void @llvm.lifetime.start.p0(ptr nonnull %4) #10
+  call void @llvm.lifetime.start.p0(ptr nonnull %4) #9
   %5 = add nsw i64 %2, -1
   %6 = getelementptr inbounds nuw i8, ptr %0, i64 4
   %7 = getelementptr inbounds nuw i8, ptr %0, i64 8
@@ -543,10 +543,10 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br label %37
 
 36:                                               ; preds = %1938
-  tail call void @llvm.ubsantrap(i8 21) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 21) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
-37:                                               ; preds = %3, %1938
+37:                                               ; preds = %1938, %3
   %38 = phi i32 [ %35, %3 ], [ %1939, %1938 ]
   %39 = phi i32 [ %34, %3 ], [ %1934, %1938 ]
   %40 = phi i32 [ %33, %3 ], [ %1929, %1938 ]
@@ -586,7 +586,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %72, label %73, label %74, !prof !13, !nosanitize !12
 
 73:                                               ; preds = %37
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 74:                                               ; preds = %37
@@ -600,7 +600,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %81, label %82, label %83, !prof !13, !nosanitize !12
 
 82:                                               ; preds = %74
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 83:                                               ; preds = %74
@@ -610,7 +610,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %86, label %87, label %88, !prof !13, !nosanitize !12
 
 87:                                               ; preds = %83
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 88:                                               ; preds = %83
@@ -621,7 +621,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %92, label %93, label %94, !prof !13, !nosanitize !12
 
 93:                                               ; preds = %88
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 94:                                               ; preds = %88
@@ -641,7 +641,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %107, label %108, label %109, !prof !13, !nosanitize !12
 
 108:                                              ; preds = %94
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 109:                                              ; preds = %94
@@ -651,7 +651,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %112, label %113, label %114, !prof !13, !nosanitize !12
 
 113:                                              ; preds = %109
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 114:                                              ; preds = %109
@@ -661,7 +661,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %117, label %118, label %119, !prof !13, !nosanitize !12
 
 118:                                              ; preds = %114
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 119:                                              ; preds = %114
@@ -694,7 +694,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %144, label %145, label %146, !prof !13, !nosanitize !12
 
 145:                                              ; preds = %119
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 146:                                              ; preds = %119
@@ -708,7 +708,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %153, label %154, label %155, !prof !13, !nosanitize !12
 
 154:                                              ; preds = %146
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 155:                                              ; preds = %146
@@ -718,7 +718,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %158, label %159, label %160, !prof !13, !nosanitize !12
 
 159:                                              ; preds = %155
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 160:                                              ; preds = %155
@@ -729,7 +729,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %164, label %165, label %166, !prof !13, !nosanitize !12
 
 165:                                              ; preds = %160
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 166:                                              ; preds = %160
@@ -748,7 +748,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %178, label %179, label %180, !prof !13, !nosanitize !12
 
 179:                                              ; preds = %166
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 180:                                              ; preds = %166
@@ -758,7 +758,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %183, label %184, label %185, !prof !13, !nosanitize !12
 
 184:                                              ; preds = %180
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 185:                                              ; preds = %180
@@ -768,7 +768,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %188, label %189, label %190, !prof !13, !nosanitize !12
 
 189:                                              ; preds = %185
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 190:                                              ; preds = %185
@@ -801,7 +801,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %215, label %216, label %217, !prof !13, !nosanitize !12
 
 216:                                              ; preds = %190
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 217:                                              ; preds = %190
@@ -815,7 +815,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %224, label %225, label %226, !prof !13, !nosanitize !12
 
 225:                                              ; preds = %217
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 226:                                              ; preds = %217
@@ -825,7 +825,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %229, label %230, label %231, !prof !13, !nosanitize !12
 
 230:                                              ; preds = %226
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 231:                                              ; preds = %226
@@ -836,7 +836,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %235, label %236, label %237, !prof !13, !nosanitize !12
 
 236:                                              ; preds = %231
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 237:                                              ; preds = %231
@@ -855,7 +855,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %249, label %250, label %251, !prof !13, !nosanitize !12
 
 250:                                              ; preds = %237
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 251:                                              ; preds = %237
@@ -865,7 +865,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %254, label %255, label %256, !prof !13, !nosanitize !12
 
 255:                                              ; preds = %251
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 256:                                              ; preds = %251
@@ -875,7 +875,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %259, label %260, label %261, !prof !13, !nosanitize !12
 
 260:                                              ; preds = %256
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 261:                                              ; preds = %256
@@ -908,7 +908,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %286, label %287, label %288, !prof !13, !nosanitize !12
 
 287:                                              ; preds = %261
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 288:                                              ; preds = %261
@@ -922,7 +922,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %295, label %296, label %297, !prof !13, !nosanitize !12
 
 296:                                              ; preds = %288
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 297:                                              ; preds = %288
@@ -932,7 +932,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %300, label %301, label %302, !prof !13, !nosanitize !12
 
 301:                                              ; preds = %297
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 302:                                              ; preds = %297
@@ -943,7 +943,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %306, label %307, label %308, !prof !13, !nosanitize !12
 
 307:                                              ; preds = %302
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 308:                                              ; preds = %302
@@ -962,7 +962,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %320, label %321, label %322, !prof !13, !nosanitize !12
 
 321:                                              ; preds = %308
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 322:                                              ; preds = %308
@@ -972,7 +972,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %325, label %326, label %327, !prof !13, !nosanitize !12
 
 326:                                              ; preds = %322
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 327:                                              ; preds = %322
@@ -982,7 +982,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %330, label %331, label %332, !prof !13, !nosanitize !12
 
 331:                                              ; preds = %327
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 332:                                              ; preds = %327
@@ -1015,7 +1015,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %357, label %358, label %359, !prof !13, !nosanitize !12
 
 358:                                              ; preds = %332
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 359:                                              ; preds = %332
@@ -1029,7 +1029,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %366, label %367, label %368, !prof !13, !nosanitize !12
 
 367:                                              ; preds = %359
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 368:                                              ; preds = %359
@@ -1039,7 +1039,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %371, label %372, label %373, !prof !13, !nosanitize !12
 
 372:                                              ; preds = %368
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 373:                                              ; preds = %368
@@ -1050,7 +1050,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %377, label %378, label %379, !prof !13, !nosanitize !12
 
 378:                                              ; preds = %373
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 379:                                              ; preds = %373
@@ -1069,7 +1069,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %391, label %392, label %393, !prof !13, !nosanitize !12
 
 392:                                              ; preds = %379
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 393:                                              ; preds = %379
@@ -1079,7 +1079,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %396, label %397, label %398, !prof !13, !nosanitize !12
 
 397:                                              ; preds = %393
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 398:                                              ; preds = %393
@@ -1089,7 +1089,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %401, label %402, label %403, !prof !13, !nosanitize !12
 
 402:                                              ; preds = %398
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 403:                                              ; preds = %398
@@ -1122,7 +1122,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %428, label %429, label %430, !prof !13, !nosanitize !12
 
 429:                                              ; preds = %403
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 430:                                              ; preds = %403
@@ -1136,7 +1136,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %437, label %438, label %439, !prof !13, !nosanitize !12
 
 438:                                              ; preds = %430
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 439:                                              ; preds = %430
@@ -1146,7 +1146,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %442, label %443, label %444, !prof !13, !nosanitize !12
 
 443:                                              ; preds = %439
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 444:                                              ; preds = %439
@@ -1157,7 +1157,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %448, label %449, label %450, !prof !13, !nosanitize !12
 
 449:                                              ; preds = %444
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 450:                                              ; preds = %444
@@ -1176,7 +1176,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %462, label %463, label %464, !prof !13, !nosanitize !12
 
 463:                                              ; preds = %450
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 464:                                              ; preds = %450
@@ -1186,7 +1186,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %467, label %468, label %469, !prof !13, !nosanitize !12
 
 468:                                              ; preds = %464
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 469:                                              ; preds = %464
@@ -1196,7 +1196,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %472, label %473, label %474, !prof !13, !nosanitize !12
 
 473:                                              ; preds = %469
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 474:                                              ; preds = %469
@@ -1229,7 +1229,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %499, label %500, label %501, !prof !13, !nosanitize !12
 
 500:                                              ; preds = %474
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 501:                                              ; preds = %474
@@ -1243,7 +1243,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %508, label %509, label %510, !prof !13, !nosanitize !12
 
 509:                                              ; preds = %501
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 510:                                              ; preds = %501
@@ -1253,7 +1253,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %513, label %514, label %515, !prof !13, !nosanitize !12
 
 514:                                              ; preds = %510
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 515:                                              ; preds = %510
@@ -1264,7 +1264,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %519, label %520, label %521, !prof !13, !nosanitize !12
 
 520:                                              ; preds = %515
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 521:                                              ; preds = %515
@@ -1283,7 +1283,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %533, label %534, label %535, !prof !13, !nosanitize !12
 
 534:                                              ; preds = %521
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 535:                                              ; preds = %521
@@ -1293,7 +1293,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %538, label %539, label %540, !prof !13, !nosanitize !12
 
 539:                                              ; preds = %535
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 540:                                              ; preds = %535
@@ -1303,7 +1303,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %543, label %544, label %545, !prof !13, !nosanitize !12
 
 544:                                              ; preds = %540
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 545:                                              ; preds = %540
@@ -1336,7 +1336,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %570, label %571, label %572, !prof !13, !nosanitize !12
 
 571:                                              ; preds = %545
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 572:                                              ; preds = %545
@@ -1350,7 +1350,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %579, label %580, label %581, !prof !13, !nosanitize !12
 
 580:                                              ; preds = %572
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 581:                                              ; preds = %572
@@ -1360,7 +1360,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %584, label %585, label %586, !prof !13, !nosanitize !12
 
 585:                                              ; preds = %581
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 586:                                              ; preds = %581
@@ -1371,7 +1371,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %590, label %591, label %592, !prof !13, !nosanitize !12
 
 591:                                              ; preds = %586
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 592:                                              ; preds = %586
@@ -1390,7 +1390,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %604, label %605, label %606, !prof !13, !nosanitize !12
 
 605:                                              ; preds = %592
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 606:                                              ; preds = %592
@@ -1400,7 +1400,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %609, label %610, label %611, !prof !13, !nosanitize !12
 
 610:                                              ; preds = %606
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 611:                                              ; preds = %606
@@ -1410,7 +1410,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %614, label %615, label %616, !prof !13, !nosanitize !12
 
 615:                                              ; preds = %611
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 616:                                              ; preds = %611
@@ -1443,7 +1443,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %641, label %642, label %643, !prof !13, !nosanitize !12
 
 642:                                              ; preds = %616
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 643:                                              ; preds = %616
@@ -1457,7 +1457,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %650, label %651, label %652, !prof !13, !nosanitize !12
 
 651:                                              ; preds = %643
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 652:                                              ; preds = %643
@@ -1467,7 +1467,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %655, label %656, label %657, !prof !13, !nosanitize !12
 
 656:                                              ; preds = %652
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 657:                                              ; preds = %652
@@ -1478,7 +1478,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %661, label %662, label %663, !prof !13, !nosanitize !12
 
 662:                                              ; preds = %657
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 663:                                              ; preds = %657
@@ -1497,7 +1497,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %675, label %676, label %677, !prof !13, !nosanitize !12
 
 676:                                              ; preds = %663
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 677:                                              ; preds = %663
@@ -1507,7 +1507,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %680, label %681, label %682, !prof !13, !nosanitize !12
 
 681:                                              ; preds = %677
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 682:                                              ; preds = %677
@@ -1517,7 +1517,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %685, label %686, label %687, !prof !13, !nosanitize !12
 
 686:                                              ; preds = %682
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 687:                                              ; preds = %682
@@ -1550,7 +1550,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %712, label %713, label %714, !prof !13, !nosanitize !12
 
 713:                                              ; preds = %687
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 714:                                              ; preds = %687
@@ -1564,7 +1564,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %721, label %722, label %723, !prof !13, !nosanitize !12
 
 722:                                              ; preds = %714
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 723:                                              ; preds = %714
@@ -1574,7 +1574,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %726, label %727, label %728, !prof !13, !nosanitize !12
 
 727:                                              ; preds = %723
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 728:                                              ; preds = %723
@@ -1585,7 +1585,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %732, label %733, label %734, !prof !13, !nosanitize !12
 
 733:                                              ; preds = %728
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 734:                                              ; preds = %728
@@ -1604,7 +1604,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %746, label %747, label %748, !prof !13, !nosanitize !12
 
 747:                                              ; preds = %734
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 748:                                              ; preds = %734
@@ -1614,7 +1614,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %751, label %752, label %753, !prof !13, !nosanitize !12
 
 752:                                              ; preds = %748
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 753:                                              ; preds = %748
@@ -1624,7 +1624,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %756, label %757, label %758, !prof !13, !nosanitize !12
 
 757:                                              ; preds = %753
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 758:                                              ; preds = %753
@@ -1657,7 +1657,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %783, label %784, label %785, !prof !13, !nosanitize !12
 
 784:                                              ; preds = %758
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 785:                                              ; preds = %758
@@ -1671,7 +1671,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %792, label %793, label %794, !prof !13, !nosanitize !12
 
 793:                                              ; preds = %785
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 794:                                              ; preds = %785
@@ -1681,7 +1681,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %797, label %798, label %799, !prof !13, !nosanitize !12
 
 798:                                              ; preds = %794
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 799:                                              ; preds = %794
@@ -1692,7 +1692,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %803, label %804, label %805, !prof !13, !nosanitize !12
 
 804:                                              ; preds = %799
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 805:                                              ; preds = %799
@@ -1711,7 +1711,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %817, label %818, label %819, !prof !13, !nosanitize !12
 
 818:                                              ; preds = %805
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 819:                                              ; preds = %805
@@ -1721,7 +1721,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %822, label %823, label %824, !prof !13, !nosanitize !12
 
 823:                                              ; preds = %819
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 824:                                              ; preds = %819
@@ -1731,7 +1731,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %827, label %828, label %829, !prof !13, !nosanitize !12
 
 828:                                              ; preds = %824
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 829:                                              ; preds = %824
@@ -1764,7 +1764,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %854, label %855, label %856, !prof !13, !nosanitize !12
 
 855:                                              ; preds = %829
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 856:                                              ; preds = %829
@@ -1778,7 +1778,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %863, label %864, label %865, !prof !13, !nosanitize !12
 
 864:                                              ; preds = %856
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 865:                                              ; preds = %856
@@ -1788,7 +1788,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %868, label %869, label %870, !prof !13, !nosanitize !12
 
 869:                                              ; preds = %865
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 870:                                              ; preds = %865
@@ -1799,7 +1799,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %874, label %875, label %876, !prof !13, !nosanitize !12
 
 875:                                              ; preds = %870
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 876:                                              ; preds = %870
@@ -1818,7 +1818,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %888, label %889, label %890, !prof !13, !nosanitize !12
 
 889:                                              ; preds = %876
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 890:                                              ; preds = %876
@@ -1828,7 +1828,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %893, label %894, label %895, !prof !13, !nosanitize !12
 
 894:                                              ; preds = %890
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 895:                                              ; preds = %890
@@ -1838,7 +1838,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %898, label %899, label %900, !prof !13, !nosanitize !12
 
 899:                                              ; preds = %895
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 900:                                              ; preds = %895
@@ -1871,7 +1871,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %925, label %926, label %927, !prof !13, !nosanitize !12
 
 926:                                              ; preds = %900
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 927:                                              ; preds = %900
@@ -1885,7 +1885,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %934, label %935, label %936, !prof !13, !nosanitize !12
 
 935:                                              ; preds = %927
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 936:                                              ; preds = %927
@@ -1895,7 +1895,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %939, label %940, label %941, !prof !13, !nosanitize !12
 
 940:                                              ; preds = %936
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 941:                                              ; preds = %936
@@ -1906,7 +1906,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %945, label %946, label %947, !prof !13, !nosanitize !12
 
 946:                                              ; preds = %941
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 947:                                              ; preds = %941
@@ -1925,7 +1925,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %959, label %960, label %961, !prof !13, !nosanitize !12
 
 960:                                              ; preds = %947
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 961:                                              ; preds = %947
@@ -1935,7 +1935,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %964, label %965, label %966, !prof !13, !nosanitize !12
 
 965:                                              ; preds = %961
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 966:                                              ; preds = %961
@@ -1945,7 +1945,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %969, label %970, label %971, !prof !13, !nosanitize !12
 
 970:                                              ; preds = %966
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 971:                                              ; preds = %966
@@ -1978,7 +1978,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %996, label %997, label %998, !prof !13, !nosanitize !12
 
 997:                                              ; preds = %971
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 998:                                              ; preds = %971
@@ -1992,7 +1992,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1005, label %1006, label %1007, !prof !13, !nosanitize !12
 
 1006:                                             ; preds = %998
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1007:                                             ; preds = %998
@@ -2002,7 +2002,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1010, label %1011, label %1012, !prof !13, !nosanitize !12
 
 1011:                                             ; preds = %1007
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1012:                                             ; preds = %1007
@@ -2013,7 +2013,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1016, label %1017, label %1018, !prof !13, !nosanitize !12
 
 1017:                                             ; preds = %1012
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1018:                                             ; preds = %1012
@@ -2032,7 +2032,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1030, label %1031, label %1032, !prof !13, !nosanitize !12
 
 1031:                                             ; preds = %1018
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1032:                                             ; preds = %1018
@@ -2042,7 +2042,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1035, label %1036, label %1037, !prof !13, !nosanitize !12
 
 1036:                                             ; preds = %1032
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1037:                                             ; preds = %1032
@@ -2052,7 +2052,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1040, label %1041, label %1042, !prof !13, !nosanitize !12
 
 1041:                                             ; preds = %1037
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1042:                                             ; preds = %1037
@@ -2085,7 +2085,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1067, label %1068, label %1069, !prof !13, !nosanitize !12
 
 1068:                                             ; preds = %1042
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1069:                                             ; preds = %1042
@@ -2099,7 +2099,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1076, label %1077, label %1078, !prof !13, !nosanitize !12
 
 1077:                                             ; preds = %1069
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1078:                                             ; preds = %1069
@@ -2109,7 +2109,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1081, label %1082, label %1083, !prof !13, !nosanitize !12
 
 1082:                                             ; preds = %1078
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1083:                                             ; preds = %1078
@@ -2120,7 +2120,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1087, label %1088, label %1089, !prof !13, !nosanitize !12
 
 1088:                                             ; preds = %1083
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1089:                                             ; preds = %1083
@@ -2139,7 +2139,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1101, label %1102, label %1103, !prof !13, !nosanitize !12
 
 1102:                                             ; preds = %1089
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1103:                                             ; preds = %1089
@@ -2149,7 +2149,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1106, label %1107, label %1108, !prof !13, !nosanitize !12
 
 1107:                                             ; preds = %1103
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1108:                                             ; preds = %1103
@@ -2159,7 +2159,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1111, label %1112, label %1113, !prof !13, !nosanitize !12
 
 1112:                                             ; preds = %1108
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1113:                                             ; preds = %1108
@@ -2192,7 +2192,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1138, label %1139, label %1140, !prof !13, !nosanitize !12
 
 1139:                                             ; preds = %1113
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1140:                                             ; preds = %1113
@@ -2206,7 +2206,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1147, label %1148, label %1149, !prof !13, !nosanitize !12
 
 1148:                                             ; preds = %1140
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1149:                                             ; preds = %1140
@@ -2216,7 +2216,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1152, label %1153, label %1154, !prof !13, !nosanitize !12
 
 1153:                                             ; preds = %1149
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1154:                                             ; preds = %1149
@@ -2227,7 +2227,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1158, label %1159, label %1160, !prof !13, !nosanitize !12
 
 1159:                                             ; preds = %1154
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1160:                                             ; preds = %1154
@@ -2245,7 +2245,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1171, label %1172, label %1173, !prof !13, !nosanitize !12
 
 1172:                                             ; preds = %1160
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1173:                                             ; preds = %1160
@@ -2254,7 +2254,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1175, label %1176, label %1177, !prof !13, !nosanitize !12
 
 1176:                                             ; preds = %1173
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1177:                                             ; preds = %1173
@@ -2268,7 +2268,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br label %1189
 
 1183:                                             ; preds = %1177
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1184:                                             ; preds = %1895
@@ -2278,7 +2278,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   %1188 = icmp samesign ult i64 %1190, 56
   br i1 %1188, label %1189, label %1899, !llvm.loop !17
 
-1189:                                             ; preds = %1180, %1184
+1189:                                             ; preds = %1184, %1180
   %1190 = phi i64 [ 16, %1180 ], [ %1185, %1184 ]
   %1191 = phi i32 [ %1182, %1180 ], [ %1187, %1184 ]
   %1192 = phi i32 [ %1181, %1180 ], [ %1186, %1184 ]
@@ -2311,7 +2311,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1218, label %1219, label %1220, !prof !13, !nosanitize !12
 
 1219:                                             ; preds = %1189
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1220:                                             ; preds = %1189
@@ -2325,7 +2325,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1227, label %1228, label %1229, !prof !13, !nosanitize !12
 
 1228:                                             ; preds = %1220
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1229:                                             ; preds = %1220
@@ -2340,7 +2340,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1237, label %1238, label %1239, !prof !13, !nosanitize !12
 
 1238:                                             ; preds = %1229
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1239:                                             ; preds = %1229
@@ -2355,7 +2355,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1246, label %1247, label %1248, !prof !13, !nosanitize !12
 
 1247:                                             ; preds = %1239
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1248:                                             ; preds = %1239
@@ -2369,7 +2369,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1255, label %1256, label %1257, !prof !13, !nosanitize !12
 
 1256:                                             ; preds = %1248
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1257:                                             ; preds = %1248
@@ -2381,7 +2381,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1262, label %1263, label %1264, !prof !13, !nosanitize !12
 
 1263:                                             ; preds = %1257
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1264:                                             ; preds = %1257
@@ -2392,7 +2392,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1268, label %1269, label %1270, !prof !13, !nosanitize !12
 
 1269:                                             ; preds = %1264
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1270:                                             ; preds = %1264
@@ -2412,7 +2412,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1283, label %1284, label %1285, !prof !13, !nosanitize !12
 
 1284:                                             ; preds = %1270
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1285:                                             ; preds = %1270
@@ -2422,7 +2422,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1288, label %1289, label %1290, !prof !13, !nosanitize !12
 
 1289:                                             ; preds = %1285
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1290:                                             ; preds = %1285
@@ -2432,7 +2432,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1293, label %1294, label %1295, !prof !13, !nosanitize !12
 
 1294:                                             ; preds = %1290
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1295:                                             ; preds = %1290
@@ -2459,7 +2459,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1315, label %1316, label %1317, !prof !13, !nosanitize !12
 
 1316:                                             ; preds = %1295
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1317:                                             ; preds = %1295
@@ -2473,7 +2473,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1324, label %1325, label %1326, !prof !13, !nosanitize !12
 
 1325:                                             ; preds = %1317
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1326:                                             ; preds = %1317
@@ -2484,7 +2484,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1330, label %1331, label %1332, !prof !13, !nosanitize !12
 
 1331:                                             ; preds = %1326
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1332:                                             ; preds = %1326
@@ -2499,7 +2499,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1339, label %1340, label %1341, !prof !13, !nosanitize !12
 
 1340:                                             ; preds = %1332
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1341:                                             ; preds = %1332
@@ -2513,7 +2513,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1348, label %1349, label %1350, !prof !13, !nosanitize !12
 
 1349:                                             ; preds = %1341
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1350:                                             ; preds = %1341
@@ -2525,7 +2525,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1355, label %1356, label %1357, !prof !13, !nosanitize !12
 
 1356:                                             ; preds = %1350
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1357:                                             ; preds = %1350
@@ -2536,7 +2536,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1361, label %1362, label %1363, !prof !13, !nosanitize !12
 
 1362:                                             ; preds = %1357
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1363:                                             ; preds = %1357
@@ -2555,7 +2555,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1375, label %1376, label %1377, !prof !13, !nosanitize !12
 
 1376:                                             ; preds = %1363
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1377:                                             ; preds = %1363
@@ -2565,7 +2565,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1380, label %1381, label %1382, !prof !13, !nosanitize !12
 
 1381:                                             ; preds = %1377
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1382:                                             ; preds = %1377
@@ -2575,7 +2575,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1385, label %1386, label %1387, !prof !13, !nosanitize !12
 
 1386:                                             ; preds = %1382
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1387:                                             ; preds = %1382
@@ -2598,7 +2598,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1403, label %1404, label %1405, !prof !13, !nosanitize !12
 
 1404:                                             ; preds = %1387
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1405:                                             ; preds = %1387
@@ -2612,7 +2612,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1412, label %1413, label %1414, !prof !13, !nosanitize !12
 
 1413:                                             ; preds = %1405
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1414:                                             ; preds = %1405
@@ -2623,7 +2623,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1418, label %1419, label %1420, !prof !13, !nosanitize !12
 
 1419:                                             ; preds = %1414
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1420:                                             ; preds = %1414
@@ -2638,7 +2638,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1427, label %1428, label %1429, !prof !13, !nosanitize !12
 
 1428:                                             ; preds = %1420
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1429:                                             ; preds = %1420
@@ -2652,7 +2652,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1436, label %1437, label %1438, !prof !13, !nosanitize !12
 
 1437:                                             ; preds = %1429
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1438:                                             ; preds = %1429
@@ -2664,7 +2664,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1443, label %1444, label %1445, !prof !13, !nosanitize !12
 
 1444:                                             ; preds = %1438
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1445:                                             ; preds = %1438
@@ -2675,7 +2675,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1449, label %1450, label %1451, !prof !13, !nosanitize !12
 
 1450:                                             ; preds = %1445
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1451:                                             ; preds = %1445
@@ -2694,7 +2694,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1463, label %1464, label %1465, !prof !13, !nosanitize !12
 
 1464:                                             ; preds = %1451
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1465:                                             ; preds = %1451
@@ -2704,7 +2704,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1468, label %1469, label %1470, !prof !13, !nosanitize !12
 
 1469:                                             ; preds = %1465
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1470:                                             ; preds = %1465
@@ -2714,7 +2714,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1473, label %1474, label %1475, !prof !13, !nosanitize !12
 
 1474:                                             ; preds = %1470
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1475:                                             ; preds = %1470
@@ -2737,7 +2737,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1491, label %1492, label %1493, !prof !13, !nosanitize !12
 
 1492:                                             ; preds = %1475
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1493:                                             ; preds = %1475
@@ -2751,7 +2751,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1500, label %1501, label %1502, !prof !13, !nosanitize !12
 
 1501:                                             ; preds = %1493
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1502:                                             ; preds = %1493
@@ -2762,7 +2762,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1506, label %1507, label %1508, !prof !13, !nosanitize !12
 
 1507:                                             ; preds = %1502
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1508:                                             ; preds = %1502
@@ -2777,7 +2777,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1515, label %1516, label %1517, !prof !13, !nosanitize !12
 
 1516:                                             ; preds = %1508
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1517:                                             ; preds = %1508
@@ -2791,7 +2791,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1524, label %1525, label %1526, !prof !13, !nosanitize !12
 
 1525:                                             ; preds = %1517
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1526:                                             ; preds = %1517
@@ -2803,7 +2803,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1531, label %1532, label %1533, !prof !13, !nosanitize !12
 
 1532:                                             ; preds = %1526
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1533:                                             ; preds = %1526
@@ -2814,7 +2814,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1537, label %1538, label %1539, !prof !13, !nosanitize !12
 
 1538:                                             ; preds = %1533
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1539:                                             ; preds = %1533
@@ -2833,7 +2833,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1551, label %1552, label %1553, !prof !13, !nosanitize !12
 
 1552:                                             ; preds = %1539
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1553:                                             ; preds = %1539
@@ -2843,7 +2843,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1556, label %1557, label %1558, !prof !13, !nosanitize !12
 
 1557:                                             ; preds = %1553
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1558:                                             ; preds = %1553
@@ -2853,7 +2853,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1561, label %1562, label %1563, !prof !13, !nosanitize !12
 
 1562:                                             ; preds = %1558
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1563:                                             ; preds = %1558
@@ -2876,7 +2876,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1579, label %1580, label %1581, !prof !13, !nosanitize !12
 
 1580:                                             ; preds = %1563
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1581:                                             ; preds = %1563
@@ -2890,7 +2890,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1588, label %1589, label %1590, !prof !13, !nosanitize !12
 
 1589:                                             ; preds = %1581
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1590:                                             ; preds = %1581
@@ -2901,7 +2901,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1594, label %1595, label %1596, !prof !13, !nosanitize !12
 
 1595:                                             ; preds = %1590
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1596:                                             ; preds = %1590
@@ -2916,7 +2916,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1603, label %1604, label %1605, !prof !13, !nosanitize !12
 
 1604:                                             ; preds = %1596
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1605:                                             ; preds = %1596
@@ -2930,7 +2930,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1612, label %1613, label %1614, !prof !13, !nosanitize !12
 
 1613:                                             ; preds = %1605
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1614:                                             ; preds = %1605
@@ -2942,7 +2942,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1619, label %1620, label %1621, !prof !13, !nosanitize !12
 
 1620:                                             ; preds = %1614
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1621:                                             ; preds = %1614
@@ -2953,7 +2953,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1625, label %1626, label %1627, !prof !13, !nosanitize !12
 
 1626:                                             ; preds = %1621
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1627:                                             ; preds = %1621
@@ -2972,7 +2972,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1639, label %1640, label %1641, !prof !13, !nosanitize !12
 
 1640:                                             ; preds = %1627
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1641:                                             ; preds = %1627
@@ -2982,7 +2982,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1644, label %1645, label %1646, !prof !13, !nosanitize !12
 
 1645:                                             ; preds = %1641
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1646:                                             ; preds = %1641
@@ -2992,7 +2992,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1649, label %1650, label %1651, !prof !13, !nosanitize !12
 
 1650:                                             ; preds = %1646
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1651:                                             ; preds = %1646
@@ -3015,7 +3015,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1667, label %1668, label %1669, !prof !13, !nosanitize !12
 
 1668:                                             ; preds = %1651
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1669:                                             ; preds = %1651
@@ -3025,7 +3025,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1672, label %1673, label %1674, !prof !13, !nosanitize !12
 
 1673:                                             ; preds = %1669
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1674:                                             ; preds = %1669
@@ -3036,7 +3036,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1678, label %1679, label %1680, !prof !13, !nosanitize !12
 
 1679:                                             ; preds = %1674
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1680:                                             ; preds = %1674
@@ -3051,7 +3051,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1687, label %1688, label %1689, !prof !13, !nosanitize !12
 
 1688:                                             ; preds = %1680
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1689:                                             ; preds = %1680
@@ -3065,7 +3065,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1696, label %1697, label %1698, !prof !13, !nosanitize !12
 
 1697:                                             ; preds = %1689
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1698:                                             ; preds = %1689
@@ -3077,7 +3077,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1703, label %1704, label %1705, !prof !13, !nosanitize !12
 
 1704:                                             ; preds = %1698
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1705:                                             ; preds = %1698
@@ -3088,7 +3088,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1709, label %1710, label %1711, !prof !13, !nosanitize !12
 
 1710:                                             ; preds = %1705
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1711:                                             ; preds = %1705
@@ -3107,7 +3107,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1723, label %1724, label %1725, !prof !13, !nosanitize !12
 
 1724:                                             ; preds = %1711
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1725:                                             ; preds = %1711
@@ -3117,7 +3117,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1728, label %1729, label %1730, !prof !13, !nosanitize !12
 
 1729:                                             ; preds = %1725
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1730:                                             ; preds = %1725
@@ -3127,7 +3127,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1733, label %1734, label %1735, !prof !13, !nosanitize !12
 
 1734:                                             ; preds = %1730
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1735:                                             ; preds = %1730
@@ -3150,7 +3150,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1751, label %1752, label %1753, !prof !13, !nosanitize !12
 
 1752:                                             ; preds = %1735
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1753:                                             ; preds = %1735
@@ -3160,7 +3160,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1756, label %1757, label %1758, !prof !13, !nosanitize !12
 
 1757:                                             ; preds = %1753
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1758:                                             ; preds = %1753
@@ -3171,7 +3171,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1762, label %1763, label %1764, !prof !13, !nosanitize !12
 
 1763:                                             ; preds = %1758
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1764:                                             ; preds = %1758
@@ -3186,7 +3186,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1771, label %1772, label %1773, !prof !13, !nosanitize !12
 
 1772:                                             ; preds = %1764
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1773:                                             ; preds = %1764
@@ -3200,7 +3200,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1780, label %1781, label %1782, !prof !13, !nosanitize !12
 
 1781:                                             ; preds = %1773
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1782:                                             ; preds = %1773
@@ -3212,7 +3212,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1787, label %1788, label %1789, !prof !13, !nosanitize !12
 
 1788:                                             ; preds = %1782
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1789:                                             ; preds = %1782
@@ -3223,7 +3223,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1793, label %1794, label %1795, !prof !13, !nosanitize !12
 
 1794:                                             ; preds = %1789
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1795:                                             ; preds = %1789
@@ -3242,7 +3242,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1807, label %1808, label %1809, !prof !13, !nosanitize !12
 
 1808:                                             ; preds = %1795
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1809:                                             ; preds = %1795
@@ -3252,7 +3252,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1812, label %1813, label %1814, !prof !13, !nosanitize !12
 
 1813:                                             ; preds = %1809
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1814:                                             ; preds = %1809
@@ -3262,7 +3262,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1817, label %1818, label %1819, !prof !13, !nosanitize !12
 
 1818:                                             ; preds = %1814
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1819:                                             ; preds = %1814
@@ -3284,7 +3284,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1834, label %1835, label %1836, !prof !13, !nosanitize !12
 
 1835:                                             ; preds = %1819
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1836:                                             ; preds = %1819
@@ -3294,7 +3294,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1839, label %1840, label %1841, !prof !13, !nosanitize !12
 
 1840:                                             ; preds = %1836
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1841:                                             ; preds = %1836
@@ -3305,7 +3305,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1845, label %1846, label %1847, !prof !13, !nosanitize !12
 
 1846:                                             ; preds = %1841
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1847:                                             ; preds = %1841
@@ -3320,7 +3320,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1854, label %1855, label %1856, !prof !13, !nosanitize !12
 
 1855:                                             ; preds = %1847
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1856:                                             ; preds = %1847
@@ -3334,7 +3334,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1863, label %1864, label %1865, !prof !13, !nosanitize !12
 
 1864:                                             ; preds = %1856
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1865:                                             ; preds = %1856
@@ -3346,7 +3346,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1870, label %1871, label %1872, !prof !13, !nosanitize !12
 
 1871:                                             ; preds = %1865
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1872:                                             ; preds = %1865
@@ -3357,7 +3357,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1876, label %1877, label %1878, !prof !13, !nosanitize !12
 
 1877:                                             ; preds = %1872
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1878:                                             ; preds = %1872
@@ -3375,7 +3375,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1889, label %1890, label %1891, !prof !13, !nosanitize !12
 
 1890:                                             ; preds = %1878
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1891:                                             ; preds = %1878
@@ -3384,7 +3384,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1893, label %1894, label %1895, !prof !13, !nosanitize !12
 
 1894:                                             ; preds = %1891
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1895:                                             ; preds = %1891
@@ -3393,7 +3393,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1897, label %1898, label %1184, !prof !13, !nosanitize !12
 
 1898:                                             ; preds = %1895
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1899:                                             ; preds = %1184
@@ -3402,7 +3402,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1901, label %1902, label %1903, !prof !13, !nosanitize !12
 
 1902:                                             ; preds = %1899
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1903:                                             ; preds = %1899
@@ -3413,7 +3413,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1906, label %1907, label %1908, !prof !13, !nosanitize !12
 
 1907:                                             ; preds = %1903
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1908:                                             ; preds = %1903
@@ -3424,7 +3424,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1911, label %1912, label %1913, !prof !13, !nosanitize !12
 
 1912:                                             ; preds = %1908
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1913:                                             ; preds = %1908
@@ -3435,7 +3435,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1916, label %1917, label %1918, !prof !13, !nosanitize !12
 
 1917:                                             ; preds = %1913
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1918:                                             ; preds = %1913
@@ -3446,7 +3446,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1921, label %1922, label %1923, !prof !13, !nosanitize !12
 
 1922:                                             ; preds = %1918
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1923:                                             ; preds = %1918
@@ -3457,7 +3457,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1926, label %1927, label %1928, !prof !13, !nosanitize !12
 
 1927:                                             ; preds = %1923
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1928:                                             ; preds = %1923
@@ -3468,7 +3468,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1931, label %1932, label %1933, !prof !13, !nosanitize !12
 
 1932:                                             ; preds = %1928
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1933:                                             ; preds = %1928
@@ -3479,7 +3479,7 @@ define internal fastcc void @sha256_block_data_order(ptr noundef captures(none) 
   br i1 %1936, label %1937, label %1938, !prof !13, !nosanitize !12
 
 1937:                                             ; preds = %1933
-  tail call void @llvm.ubsantrap(i8 0) #9, !nosanitize !12
+  tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !12
   unreachable, !nosanitize !12
 
 1938:                                             ; preds = %1933
@@ -3498,19 +3498,18 @@ define dso_local void @SHA256_Transform(ptr noundef captures(none) %0, ptr nound
 }
 
 ; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
-declare i32 @llvm.fshl.i32(i32, i32, i32) #8
+declare i32 @llvm.fshl.i32(i32, i32, i32) #5
 
 attributes #0 = { mustprogress nofree norecurse nosync nounwind willreturn memory(argmem: write) uwtable "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
-attributes #1 = { mustprogress nocallback nofree nounwind willreturn memory(argmem: write) }
+attributes #1 = { nocallback nofree nounwind willreturn memory(argmem: write) }
 attributes #2 = { nounwind memory(argmem: readwrite, inaccessiblemem: write) uwtable "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #3 = { noreturn nounwind memory(argmem: readwrite, inaccessiblemem: write) uwtable "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
-attributes #4 = { mustprogress nocallback nofree nosync nounwind willreturn memory(argmem: readwrite) }
-attributes #5 = { mustprogress nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none) }
+attributes #4 = { nocallback nofree nosync nounwind willreturn memory(argmem: readwrite) }
+attributes #5 = { nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none) }
 attributes #6 = { cold noreturn nounwind memory(inaccessiblemem: write) }
-attributes #7 = { mustprogress nocallback nofree nounwind willreturn memory(argmem: readwrite) }
-attributes #8 = { nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none) }
-attributes #9 = { nomerge noreturn nounwind }
-attributes #10 = { nounwind }
+attributes #7 = { nocallback nofree nounwind willreturn memory(argmem: readwrite) }
+attributes #8 = { nomerge noreturn nounwind }
+attributes #9 = { nounwind }
 
 !llvm.module.flags = !{!0, !1, !2}
 !llvm.ident = !{!3}

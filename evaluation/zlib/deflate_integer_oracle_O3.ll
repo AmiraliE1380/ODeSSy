@@ -1,4 +1,4 @@
-; ModuleID = '/home/amiralie1380/michigan/pl/zlib/deflate.c'
+; ModuleID = 'evaluation/zlib/deflate_integer_O3.ll'
 source_filename = "/home/amiralie1380/michigan/pl/zlib/deflate.c"
 target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
@@ -80,7 +80,7 @@ define dso_local range(i32 -6, 1) i32 @deflateInit2_(ptr noundef %0, i32 noundef
   %41 = add nsw i32 %3, -16
   br label %42
 
-42:                                               ; preds = %38, %40, %36
+42:                                               ; preds = %40, %38, %36
   %43 = phi i32 [ %37, %36 ], [ %41, %40 ], [ %3, %38 ]
   %44 = phi i1 [ true, %36 ], [ true, %40 ], [ false, %38 ]
   %45 = phi i32 [ 0, %36 ], [ 2, %40 ], [ 1, %38 ]
@@ -105,7 +105,7 @@ define dso_local range(i32 -6, 1) i32 @deflateInit2_(ptr noundef %0, i32 noundef
 60:                                               ; preds = %57
   %61 = getelementptr inbounds nuw i8, ptr %0, i64 80
   %62 = load ptr, ptr %61, align 8, !tbaa !16
-  %63 = tail call ptr %25(ptr noundef %62, i32 noundef 1, i32 noundef 5968) #12
+  %63 = tail call ptr %25(ptr noundef %62, i32 noundef 1, i32 noundef 5968) #11
   %64 = icmp eq ptr %63, null
   br i1 %64, label %143, label %65
 
@@ -145,19 +145,19 @@ define dso_local range(i32 -6, 1) i32 @deflateInit2_(ptr noundef %0, i32 noundef
   store i32 %85, ptr %86, align 8, !tbaa !36
   %87 = load ptr, ptr %19, align 8, !tbaa !15
   %88 = load ptr, ptr %61, align 8, !tbaa !16
-  %89 = tail call ptr %87(ptr noundef %88, i32 noundef %72, i32 noundef 2) #12
+  %89 = tail call ptr %87(ptr noundef %88, i32 noundef %72, i32 noundef 2) #11
   %90 = getelementptr inbounds nuw i8, ptr %63, i64 96
   store ptr %89, ptr %90, align 8, !tbaa !37
   %91 = load ptr, ptr %19, align 8, !tbaa !15
   %92 = load ptr, ptr %61, align 8, !tbaa !16
   %93 = load i32, ptr %73, align 8, !tbaa !31
-  %94 = tail call ptr %91(ptr noundef %92, i32 noundef %93, i32 noundef 2) #12
+  %94 = tail call ptr %91(ptr noundef %92, i32 noundef %93, i32 noundef 2) #11
   %95 = getelementptr inbounds nuw i8, ptr %63, i64 112
   store ptr %94, ptr %95, align 8, !tbaa !38
   %96 = load ptr, ptr %19, align 8, !tbaa !15
   %97 = load ptr, ptr %61, align 8, !tbaa !16
   %98 = load i32, ptr %79, align 4, !tbaa !34
-  %99 = tail call ptr %96(ptr noundef %97, i32 noundef %98, i32 noundef 2) #12
+  %99 = tail call ptr %96(ptr noundef %97, i32 noundef %98, i32 noundef 2) #11
   %100 = getelementptr inbounds nuw i8, ptr %63, i64 120
   store ptr %99, ptr %100, align 8, !tbaa !39
   %101 = getelementptr inbounds nuw i8, ptr %63, i64 5952
@@ -167,7 +167,7 @@ define dso_local range(i32 -6, 1) i32 @deflateInit2_(ptr noundef %0, i32 noundef
   store i32 %102, ptr %103, align 8, !tbaa !41
   %104 = load ptr, ptr %19, align 8, !tbaa !15
   %105 = load ptr, ptr %61, align 8, !tbaa !16
-  %106 = tail call ptr %104(ptr noundef %105, i32 noundef %102, i32 noundef 4) #12
+  %106 = tail call ptr %104(ptr noundef %105, i32 noundef %102, i32 noundef 4) #11
   %107 = getelementptr inbounds nuw i8, ptr %63, i64 16
   store ptr %106, ptr %107, align 8, !tbaa !42
   %108 = load i32, ptr %103, align 8, !tbaa !41
@@ -207,7 +207,7 @@ define dso_local range(i32 -6, 1) i32 @deflateInit2_(ptr noundef %0, i32 noundef
   br i1 %129, label %130, label %131, !prof !47, !nosanitize !46
 
 130:                                              ; preds = %125
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 131:                                              ; preds = %125
@@ -217,7 +217,7 @@ define dso_local range(i32 -6, 1) i32 @deflateInit2_(ptr noundef %0, i32 noundef
   br i1 %134, label %135, label %136, !prof !47, !nosanitize !46
 
 135:                                              ; preds = %131
-  tail call void @llvm.ubsantrap(i8 12) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 12) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 136:                                              ; preds = %131
@@ -233,7 +233,7 @@ define dso_local range(i32 -6, 1) i32 @deflateInit2_(ptr noundef %0, i32 noundef
   %142 = tail call i32 @deflateReset(ptr noundef nonnull %0)
   br label %143
 
-143:                                              ; preds = %60, %42, %57, %34, %15, %8, %10, %136, %122
+143:                                              ; preds = %136, %122, %60, %57, %42, %34, %15, %10, %8
   %144 = phi i32 [ %142, %136 ], [ -6, %8 ], [ -2, %15 ], [ -2, %34 ], [ -2, %42 ], [ -4, %122 ], [ -6, %10 ], [ -2, %57 ], [ -4, %60 ]
   ret i32 %144
 }
@@ -242,22 +242,22 @@ declare ptr @zcalloc(ptr noundef, i32 noundef, i32 noundef) #1
 
 declare void @zcfree(ptr noundef, ptr noundef) #1
 
-; Function Attrs: mustprogress nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
 declare { i32, i1 } @llvm.ssub.with.overflow.i32(i32, i32) #2
 
 ; Function Attrs: cold noreturn nounwind memory(inaccessiblemem: write)
 declare void @llvm.ubsantrap(i8 immarg) #3
 
-; Function Attrs: mustprogress nocallback nofree nounwind willreturn memory(argmem: write)
+; Function Attrs: nocallback nofree nounwind willreturn memory(argmem: write)
 declare void @llvm.memset.p0.i64(ptr writeonly captures(none), i8, i64, i1 immarg) #4
 
-; Function Attrs: mustprogress nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
 declare { i32, i1 } @llvm.usub.with.overflow.i32(i32, i32) #2
 
-; Function Attrs: mustprogress nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
 declare { i32, i1 } @llvm.uadd.with.overflow.i32(i32, i32) #2
 
-; Function Attrs: mustprogress nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
 declare { i32, i1 } @llvm.sadd.with.overflow.i32(i32, i32) #2
 
 ; Function Attrs: nounwind uwtable
@@ -311,7 +311,7 @@ define dso_local range(i32 -3, 1) i32 @deflateEnd(ptr noundef captures(address) 
 25:                                               ; preds = %21
   %26 = getelementptr inbounds nuw i8, ptr %0, i64 80
   %27 = load ptr, ptr %26, align 8, !tbaa !16
-  tail call void %9(ptr noundef %27, ptr noundef nonnull %23) #12
+  tail call void %9(ptr noundef %27, ptr noundef nonnull %23) #11
   %28 = load ptr, ptr %12, align 8, !tbaa !18
   %29 = load ptr, ptr %8, align 8, !tbaa !17
   br label %30
@@ -327,7 +327,7 @@ define dso_local range(i32 -3, 1) i32 @deflateEnd(ptr noundef captures(address) 
 36:                                               ; preds = %30
   %37 = getelementptr inbounds nuw i8, ptr %0, i64 80
   %38 = load ptr, ptr %37, align 8, !tbaa !16
-  tail call void %31(ptr noundef %38, ptr noundef nonnull %34) #12
+  tail call void %31(ptr noundef %38, ptr noundef nonnull %34) #11
   %39 = load ptr, ptr %12, align 8, !tbaa !18
   %40 = load ptr, ptr %8, align 8, !tbaa !17
   br label %41
@@ -343,7 +343,7 @@ define dso_local range(i32 -3, 1) i32 @deflateEnd(ptr noundef captures(address) 
 47:                                               ; preds = %41
   %48 = getelementptr inbounds nuw i8, ptr %0, i64 80
   %49 = load ptr, ptr %48, align 8, !tbaa !16
-  tail call void %42(ptr noundef %49, ptr noundef nonnull %45) #12
+  tail call void %42(ptr noundef %49, ptr noundef nonnull %45) #11
   %50 = load ptr, ptr %12, align 8, !tbaa !18
   %51 = load ptr, ptr %8, align 8, !tbaa !17
   br label %52
@@ -359,7 +359,7 @@ define dso_local range(i32 -3, 1) i32 @deflateEnd(ptr noundef captures(address) 
 58:                                               ; preds = %52
   %59 = getelementptr inbounds nuw i8, ptr %0, i64 80
   %60 = load ptr, ptr %59, align 8, !tbaa !16
-  tail call void %53(ptr noundef %60, ptr noundef nonnull %56) #12
+  tail call void %53(ptr noundef %60, ptr noundef nonnull %56) #11
   %61 = load ptr, ptr %8, align 8, !tbaa !17
   %62 = load ptr, ptr %12, align 8, !tbaa !18
   br label %63
@@ -369,18 +369,18 @@ define dso_local range(i32 -3, 1) i32 @deflateEnd(ptr noundef captures(address) 
   %65 = phi ptr [ %61, %58 ], [ %53, %52 ]
   %66 = getelementptr inbounds nuw i8, ptr %0, i64 80
   %67 = load ptr, ptr %66, align 8, !tbaa !16
-  tail call void %65(ptr noundef %67, ptr noundef %64) #12
+  tail call void %65(ptr noundef %67, ptr noundef %64) #11
   store ptr null, ptr %12, align 8, !tbaa !18
   %68 = icmp eq i32 %20, 113
   %69 = select i1 %68, i32 -3, i32 0
   br label %70
 
-70:                                               ; preds = %11, %15, %18, %3, %7, %1, %63
+70:                                               ; preds = %63, %18, %15, %11, %7, %3, %1
   %71 = phi i32 [ %69, %63 ], [ -2, %1 ], [ -2, %7 ], [ -2, %3 ], [ -2, %18 ], [ -2, %15 ], [ -2, %11 ]
   ret i32 %71
 }
 
-; Function Attrs: mustprogress nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
 declare { i32, i1 } @llvm.umul.with.overflow.i32(i32, i32) #2
 
 ; Function Attrs: nounwind uwtable
@@ -405,7 +405,7 @@ define dso_local range(i32 -2, 1) i32 @deflateReset(ptr noundef captures(address
   br i1 %15, label %16, label %17, !prof !47, !nosanitize !46
 
 16:                                               ; preds = %4
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 17:                                               ; preds = %4
@@ -544,7 +544,7 @@ define dso_local range(i32 -2, 1) i32 @deflateSetDictionary(ptr noundef captures
 42:                                               ; preds = %30
   %43 = getelementptr inbounds nuw i8, ptr %0, i64 96
   %44 = load i64, ptr %43, align 8, !tbaa !72
-  %45 = tail call i64 @adler32(i64 noundef %44, ptr noundef nonnull %1, i32 noundef %2) #12
+  %45 = tail call i64 @adler32(i64 noundef %44, ptr noundef nonnull %1, i32 noundef %2) #11
   store i64 %45, ptr %43, align 8, !tbaa !72
   store i32 0, ptr %26, align 8, !tbaa !29
   %46 = getelementptr inbounds nuw i8, ptr %15, i64 80
@@ -564,7 +564,7 @@ define dso_local range(i32 -2, 1) i32 @deflateSetDictionary(ptr noundef captures
   br i1 %55, label %56, label %57, !prof !47, !nosanitize !46
 
 56:                                               ; preds = %51
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 57:                                               ; preds = %51
@@ -587,7 +587,7 @@ define dso_local range(i32 -2, 1) i32 @deflateSetDictionary(ptr noundef captures
   %68 = load i32, ptr %39, align 8, !tbaa !31
   br label %69
 
-69:                                               ; preds = %42, %57, %49
+69:                                               ; preds = %57, %49, %42
   %70 = phi ptr [ %35, %57 ], [ %35, %49 ], [ %31, %42 ]
   %71 = phi i32 [ %68, %57 ], [ %40, %49 ], [ %47, %42 ]
   %72 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %2, i32 %71), !nosanitize !46
@@ -595,7 +595,7 @@ define dso_local range(i32 -2, 1) i32 @deflateSetDictionary(ptr noundef captures
   br i1 %73, label %74, label %75, !prof !47, !nosanitize !46
 
 74:                                               ; preds = %69
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 75:                                               ; preds = %69
@@ -604,7 +604,7 @@ define dso_local range(i32 -2, 1) i32 @deflateSetDictionary(ptr noundef captures
   %78 = getelementptr inbounds nuw i8, ptr %1, i64 %77
   br label %79
 
-79:                                               ; preds = %42, %75, %38
+79:                                               ; preds = %75, %42, %38
   %80 = phi ptr [ %70, %75 ], [ %35, %38 ], [ %31, %42 ]
   %81 = phi i32 [ %71, %75 ], [ %2, %38 ], [ %2, %42 ]
   %82 = phi ptr [ %78, %75 ], [ %1, %38 ], [ %1, %42 ]
@@ -629,7 +629,7 @@ define dso_local range(i32 -2, 1) i32 @deflateSetDictionary(ptr noundef captures
   %96 = getelementptr inbounds nuw i8, ptr %15, i64 88
   br label %97
 
-97:                                               ; preds = %88, %135
+97:                                               ; preds = %135, %88
   %98 = phi i32 [ %86, %88 ], [ %136, %135 ]
   %99 = load i32, ptr %89, align 4, !tbaa !64
   %100 = load i32, ptr %91, align 8, !tbaa !36
@@ -676,7 +676,7 @@ define dso_local range(i32 -2, 1) i32 @deflateSetDictionary(ptr noundef captures
   br i1 %133, label %135, label %112, !llvm.loop !76
 
 134:                                              ; preds = %97
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 135:                                              ; preds = %112
@@ -696,7 +696,7 @@ define dso_local range(i32 -2, 1) i32 @deflateSetDictionary(ptr noundef captures
   br i1 %143, label %144, label %145, !prof !47, !nosanitize !46
 
 144:                                              ; preds = %138
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 145:                                              ; preds = %138
@@ -719,7 +719,7 @@ define dso_local range(i32 -2, 1) i32 @deflateSetDictionary(ptr noundef captures
   store i32 %27, ptr %26, align 8, !tbaa !29
   br label %153
 
-153:                                              ; preds = %25, %13, %17, %20, %5, %9, %3, %34, %28, %30, %23, %145
+153:                                              ; preds = %145, %34, %30, %28, %25, %23, %20, %17, %13, %9, %5, %3
   %154 = phi i32 [ 0, %145 ], [ -2, %23 ], [ -2, %30 ], [ -2, %28 ], [ -2, %25 ], [ -2, %34 ], [ -2, %3 ], [ -2, %9 ], [ -2, %5 ], [ -2, %20 ], [ -2, %17 ], [ -2, %13 ]
   ret i32 %154
 }
@@ -758,7 +758,7 @@ define internal fastcc void @fill_window(ptr noundef captures(none) %0) unnamed_
   br i1 %26, label %27, label %28, !prof !47, !nosanitize !46
 
 27:                                               ; preds = %21
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 28:                                               ; preds = %21
@@ -770,7 +770,7 @@ define internal fastcc void @fill_window(ptr noundef captures(none) %0) unnamed_
   br i1 %33, label %34, label %35, !prof !47, !nosanitize !46
 
 34:                                               ; preds = %28
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 35:                                               ; preds = %28
@@ -782,7 +782,7 @@ define internal fastcc void @fill_window(ptr noundef captures(none) %0) unnamed_
   br i1 %40, label %41, label %42, !prof !47, !nosanitize !46
 
 41:                                               ; preds = %35
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 42:                                               ; preds = %35
@@ -792,7 +792,7 @@ define internal fastcc void @fill_window(ptr noundef captures(none) %0) unnamed_
   br i1 %45, label %46, label %47, !prof !47, !nosanitize !46
 
 46:                                               ; preds = %42
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 47:                                               ; preds = %42
@@ -806,7 +806,7 @@ define internal fastcc void @fill_window(ptr noundef captures(none) %0) unnamed_
   br i1 %52, label %53, label %54, !prof !47, !nosanitize !46
 
 53:                                               ; preds = %50
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 54:                                               ; preds = %50
@@ -821,7 +821,7 @@ define internal fastcc void @fill_window(ptr noundef captures(none) %0) unnamed_
   br i1 %61, label %62, label %63, !prof !47, !nosanitize !46
 
 62:                                               ; preds = %54
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 63:                                               ; preds = %54
@@ -833,7 +833,7 @@ define internal fastcc void @fill_window(ptr noundef captures(none) %0) unnamed_
   br i1 %67, label %68, label %69, !prof !47, !nosanitize !46
 
 68:                                               ; preds = %69, %63
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 69:                                               ; preds = %63
@@ -896,7 +896,7 @@ define internal fastcc void @fill_window(ptr noundef captures(none) %0) unnamed_
   %108 = icmp eq i64 %89, %83
   br i1 %108, label %128, label %109
 
-109:                                              ; preds = %86, %107
+109:                                              ; preds = %107, %86
   %110 = phi ptr [ %84, %86 ], [ %91, %107 ]
   %111 = phi i32 [ %81, %86 ], [ %93, %107 ]
   br label %118
@@ -908,10 +908,10 @@ define internal fastcc void @fill_window(ptr noundef captures(none) %0) unnamed_
   %116 = tail call i32 @llvm.usub.sat.i32(i32 %115, i32 %80)
   %117 = trunc nuw i32 %116 to i16
   store i16 %117, ptr %113, align 2, !tbaa !53
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
-118:                                              ; preds = %109, %118
+118:                                              ; preds = %118, %109
   %119 = phi ptr [ %121, %118 ], [ %110, %109 ]
   %120 = phi i32 [ %126, %118 ], [ %111, %109 ]
   %121 = getelementptr inbounds i8, ptr %119, i64 -2
@@ -929,7 +929,7 @@ define internal fastcc void @fill_window(ptr noundef captures(none) %0) unnamed_
   br i1 %129, label %130, label %131, !prof !47, !nosanitize !46
 
 130:                                              ; preds = %128
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 131:                                              ; preds = %128
@@ -967,12 +967,12 @@ define internal fastcc void @fill_window(ptr noundef captures(none) %0) unnamed_
   %156 = icmp eq i64 %137, %133
   br i1 %156, label %170, label %157
 
-157:                                              ; preds = %131, %155
+157:                                              ; preds = %155, %131
   %158 = phi ptr [ %134, %131 ], [ %139, %155 ]
   %159 = phi i32 [ %80, %131 ], [ %141, %155 ]
   br label %160
 
-160:                                              ; preds = %157, %160
+160:                                              ; preds = %160, %157
   %161 = phi ptr [ %163, %160 ], [ %158, %157 ]
   %162 = phi i32 [ %168, %160 ], [ %159, %157 ]
   %163 = getelementptr inbounds i8, ptr %161, i64 -2
@@ -992,7 +992,7 @@ define internal fastcc void @fill_window(ptr noundef captures(none) %0) unnamed_
   br i1 %172, label %173, label %174, !prof !47, !nosanitize !46
 
 173:                                              ; preds = %170
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 174:                                              ; preds = %170
@@ -1025,7 +1025,7 @@ define internal fastcc void @fill_window(ptr noundef captures(none) %0) unnamed_
   br i1 %194, label %195, label %196, !prof !47, !nosanitize !46
 
 195:                                              ; preds = %192
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 196:                                              ; preds = %192
@@ -1046,14 +1046,14 @@ define internal fastcc void @fill_window(ptr noundef captures(none) %0) unnamed_
 204:                                              ; preds = %196
   %205 = getelementptr inbounds nuw i8, ptr %179, i64 96
   %206 = load i64, ptr %205, align 8, !tbaa !72
-  %207 = tail call i64 @adler32(i64 noundef %206, ptr noundef %189, i32 noundef %190) #12
+  %207 = tail call i64 @adler32(i64 noundef %206, ptr noundef %189, i32 noundef %190) #11
   store i64 %207, ptr %205, align 8, !tbaa !72
   br label %212
 
 208:                                              ; preds = %196
   %209 = getelementptr inbounds nuw i8, ptr %179, i64 96
   %210 = load i64, ptr %209, align 8, !tbaa !72
-  %211 = tail call i64 @crc32(i64 noundef %210, ptr noundef %189, i32 noundef %190) #12
+  %211 = tail call i64 @crc32(i64 noundef %210, ptr noundef %189, i32 noundef %190) #11
   store i64 %211, ptr %209, align 8, !tbaa !72
   br label %212
 
@@ -1068,7 +1068,7 @@ define internal fastcc void @fill_window(ptr noundef captures(none) %0) unnamed_
   br i1 %218, label %219, label %220, !prof !47, !nosanitize !46
 
 219:                                              ; preds = %212
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 220:                                              ; preds = %212
@@ -1077,14 +1077,14 @@ define internal fastcc void @fill_window(ptr noundef captures(none) %0) unnamed_
   %222 = load i32, ptr %5, align 4, !tbaa !66
   br label %223
 
-223:                                              ; preds = %183, %220
+223:                                              ; preds = %220, %183
   %224 = phi i32 [ %187, %183 ], [ %222, %220 ]
   %225 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %224, i32 %190), !nosanitize !46
   %226 = extractvalue { i32, i1 } %225, 1, !nosanitize !46
   br i1 %226, label %227, label %228, !prof !47, !nosanitize !46
 
 227:                                              ; preds = %223
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 228:                                              ; preds = %223
@@ -1096,7 +1096,7 @@ define internal fastcc void @fill_window(ptr noundef captures(none) %0) unnamed_
   br i1 %232, label %233, label %234, !prof !47, !nosanitize !46
 
 233:                                              ; preds = %228
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 234:                                              ; preds = %228
@@ -1112,7 +1112,7 @@ define internal fastcc void @fill_window(ptr noundef captures(none) %0) unnamed_
   br i1 %241, label %242, label %243, !prof !47, !nosanitize !46
 
 242:                                              ; preds = %237
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 243:                                              ; preds = %237
@@ -1127,7 +1127,7 @@ define internal fastcc void @fill_window(ptr noundef captures(none) %0) unnamed_
   br i1 %250, label %251, label %252, !prof !47, !nosanitize !46
 
 251:                                              ; preds = %243
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 252:                                              ; preds = %243
@@ -1157,7 +1157,7 @@ define internal fastcc void @fill_window(ptr noundef captures(none) %0) unnamed_
   br i1 %270, label %271, label %272, !prof !47, !nosanitize !46
 
 271:                                              ; preds = %268
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 272:                                              ; preds = %268
@@ -1190,7 +1190,7 @@ define internal fastcc void @fill_window(ptr noundef captures(none) %0) unnamed_
   br i1 %294, label %295, label %296, !prof !47, !nosanitize !46
 
 295:                                              ; preds = %272
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 296:                                              ; preds = %272
@@ -1199,7 +1199,7 @@ define internal fastcc void @fill_window(ptr noundef captures(none) %0) unnamed_
   %299 = icmp ult i32 %298, 3
   br i1 %299, label %300, label %263, !llvm.loop !87
 
-300:                                              ; preds = %263, %296, %234
+300:                                              ; preds = %296, %263, %234
   %301 = icmp ult i32 %229, 262
   br i1 %301, label %302, label %307
 
@@ -1210,7 +1210,7 @@ define internal fastcc void @fill_window(ptr noundef captures(none) %0) unnamed_
   %306 = icmp eq i32 %305, 0
   br i1 %306, label %307, label %21, !llvm.loop !88
 
-307:                                              ; preds = %300, %176, %302
+307:                                              ; preds = %302, %300, %176
   %308 = getelementptr inbounds nuw i8, ptr %0, i64 5952
   %309 = load i64, ptr %308, align 8, !tbaa !40
   %310 = load i64, ptr %4, align 8, !tbaa !52
@@ -1232,7 +1232,7 @@ define internal fastcc void @fill_window(ptr noundef captures(none) %0) unnamed_
   br i1 %321, label %322, label %323, !prof !47, !nosanitize !46
 
 322:                                              ; preds = %319
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 323:                                              ; preds = %319
@@ -1255,7 +1255,7 @@ define internal fastcc void @fill_window(ptr noundef captures(none) %0) unnamed_
   br i1 %334, label %335, label %336, !prof !47, !nosanitize !46
 
 335:                                              ; preds = %332
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 336:                                              ; preds = %332
@@ -1272,7 +1272,7 @@ define internal fastcc void @fill_window(ptr noundef captures(none) %0) unnamed_
   br i1 %345, label %346, label %347, !prof !47, !nosanitize !46
 
 346:                                              ; preds = %336
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 347:                                              ; preds = %336
@@ -1340,7 +1340,7 @@ define dso_local range(i32 -2, 1) i32 @deflateGetDictionary(ptr noundef readonly
   br i1 %29, label %30, label %31, !prof !47, !nosanitize !46
 
 30:                                               ; preds = %23
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 31:                                               ; preds = %23
@@ -1374,12 +1374,12 @@ define dso_local range(i32 -2, 1) i32 @deflateGetDictionary(ptr noundef readonly
   store i32 %35, ptr %2, align 4, !tbaa !4
   br label %52
 
-52:                                               ; preds = %13, %17, %20, %5, %9, %3, %49, %51
+52:                                               ; preds = %51, %49, %20, %17, %13, %9, %5, %3
   %53 = phi i32 [ 0, %49 ], [ 0, %51 ], [ -2, %3 ], [ -2, %9 ], [ -2, %5 ], [ -2, %20 ], [ -2, %17 ], [ -2, %13 ]
   ret i32 %53
 }
 
-; Function Attrs: mustprogress nocallback nofree nounwind willreturn memory(argmem: readwrite)
+; Function Attrs: nocallback nofree nounwind willreturn memory(argmem: readwrite)
 declare void @llvm.memcpy.p0.p0.i64(ptr noalias writeonly captures(none), ptr noalias readonly captures(none), i64, i1 immarg) #6
 
 ; Function Attrs: nounwind uwtable
@@ -1448,7 +1448,7 @@ define dso_local range(i32 -2, 1) i32 @deflateResetKeep(ptr noundef captures(add
   br i1 %34, label %35, label %36, !prof !47, !nosanitize !46
 
 35:                                               ; preds = %32
-  tail call void @llvm.ubsantrap(i8 13) #14, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 13) #13, !nosanitize !46
   unreachable, !nosanitize !46
 
 36:                                               ; preds = %32
@@ -1464,11 +1464,11 @@ define dso_local range(i32 -2, 1) i32 @deflateResetKeep(ptr noundef captures(add
   br i1 %40, label %42, label %44
 
 42:                                               ; preds = %38
-  %43 = tail call i64 @crc32(i64 noundef 0, ptr noundef null, i32 noundef 0) #12
+  %43 = tail call i64 @crc32(i64 noundef 0, ptr noundef null, i32 noundef 0) #11
   br label %46
 
 44:                                               ; preds = %38
-  %45 = tail call i64 @adler32(i64 noundef 0, ptr noundef null, i32 noundef 0) #12
+  %45 = tail call i64 @adler32(i64 noundef 0, ptr noundef null, i32 noundef 0) #11
   br label %46
 
 46:                                               ; preds = %44, %42
@@ -1477,10 +1477,10 @@ define dso_local range(i32 -2, 1) i32 @deflateResetKeep(ptr noundef captures(add
   store i64 %47, ptr %48, align 8, !tbaa !72
   %49 = getelementptr inbounds nuw i8, ptr %13, i64 76
   store i32 -2, ptr %49, align 4, !tbaa !92
-  tail call void @_tr_init(ptr noundef nonnull %13) #12
+  tail call void @_tr_init(ptr noundef nonnull %13) #11
   br label %50
 
-50:                                               ; preds = %11, %15, %18, %3, %7, %1, %46
+50:                                               ; preds = %46, %18, %15, %11, %7, %3, %1
   %51 = phi i32 [ 0, %46 ], [ -2, %1 ], [ -2, %7 ], [ -2, %3 ], [ -2, %18 ], [ -2, %15 ], [ -2, %11 ]
   ret i32 %51
 }
@@ -1542,7 +1542,7 @@ define dso_local range(i32 -2, 1) i32 @deflateSetHeader(ptr noundef readonly cap
   store ptr %1, ptr %27, align 8, !tbaa !93
   br label %28
 
-28:                                               ; preds = %12, %16, %19, %4, %8, %2, %22, %26
+28:                                               ; preds = %26, %22, %19, %16, %12, %8, %4, %2
   %29 = phi i32 [ 0, %26 ], [ -2, %22 ], [ -2, %2 ], [ -2, %8 ], [ -2, %4 ], [ -2, %19 ], [ -2, %16 ], [ -2, %12 ]
   ret i32 %29
 }
@@ -1613,7 +1613,7 @@ define dso_local range(i32 -5, 1) i32 @deflatePending(ptr noundef readonly captu
   %36 = select i1 %34, i32 0, i32 -5
   br label %37
 
-37:                                               ; preds = %13, %17, %20, %5, %9, %3, %30, %28
+37:                                               ; preds = %30, %28, %20, %17, %13, %9, %5, %3
   %38 = phi i32 [ %36, %30 ], [ 0, %28 ], [ -2, %3 ], [ -2, %9 ], [ -2, %5 ], [ -2, %20 ], [ -2, %17 ], [ -2, %13 ]
   ret i32 %38
 }
@@ -1670,7 +1670,7 @@ define dso_local range(i32 -2, 1) i32 @deflateUsed(ptr noundef readonly captures
   store i32 %26, ptr %1, align 4, !tbaa !4
   br label %27
 
-27:                                               ; preds = %12, %16, %19, %4, %8, %2, %22, %24
+27:                                               ; preds = %24, %22, %19, %16, %12, %8, %4, %2
   %28 = phi i32 [ 0, %22 ], [ 0, %24 ], [ -2, %2 ], [ -2, %8 ], [ -2, %4 ], [ -2, %19 ], [ -2, %16 ], [ -2, %12 ]
   ret i32 %28
 }
@@ -1735,7 +1735,7 @@ define dso_local range(i32 -5, 1) i32 @deflatePrime(ptr noundef readonly capture
   %34 = getelementptr inbounds nuw i8, ptr %15, i64 5936
   br label %35
 
-35:                                               ; preds = %32, %62
+35:                                               ; preds = %62, %32
   %36 = phi i32 [ %63, %62 ], [ %1, %32 ]
   %37 = phi i32 [ %64, %62 ], [ %2, %32 ]
   %38 = load i32, ptr %33, align 4, !tbaa !94
@@ -1744,7 +1744,7 @@ define dso_local range(i32 -5, 1) i32 @deflatePrime(ptr noundef readonly capture
   br i1 %40, label %41, label %42, !prof !47, !nosanitize !46
 
 41:                                               ; preds = %58, %42, %35
-  tail call void @llvm.ubsantrap(i8 21) #14, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
   unreachable, !nosanitize !46
 
 42:                                               ; preds = %35
@@ -1768,13 +1768,13 @@ define dso_local range(i32 -5, 1) i32 @deflatePrime(ptr noundef readonly capture
   br i1 %56, label %57, label %58, !prof !47, !nosanitize !46
 
 57:                                               ; preds = %48
-  tail call void @llvm.ubsantrap(i8 0) #14, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
   unreachable, !nosanitize !46
 
 58:                                               ; preds = %48
   %59 = extractvalue { i32, i1 } %55, 0, !nosanitize !46
   store i32 %59, ptr %33, align 4, !tbaa !94
-  tail call void @_tr_flush_bits(ptr noundef nonnull %15) #12
+  tail call void @_tr_flush_bits(ptr noundef nonnull %15) #11
   %60 = tail call { i32, i1 } @llvm.ssub.with.overflow.i32(i32 %36, i32 %44), !nosanitize !46
   %61 = extractvalue { i32, i1 } %60, 1, !nosanitize !46
   br i1 %61, label %41, label %62, !prof !47, !nosanitize !46
@@ -1785,7 +1785,7 @@ define dso_local range(i32 -5, 1) i32 @deflatePrime(ptr noundef readonly capture
   %65 = icmp eq i32 %63, 0
   br i1 %65, label %66, label %35, !llvm.loop !97
 
-66:                                               ; preds = %62, %13, %17, %20, %5, %9, %3, %23, %25
+66:                                               ; preds = %62, %25, %23, %20, %17, %13, %9, %5, %3
   %67 = phi i32 [ -5, %23 ], [ -2, %13 ], [ -5, %25 ], [ -2, %3 ], [ -2, %9 ], [ -2, %5 ], [ -2, %20 ], [ -2, %17 ], [ 0, %62 ]
   ret i32 %67
 }
@@ -1890,7 +1890,7 @@ define dso_local range(i32 -5, 1) i32 @deflateParams(ptr noundef %0, i32 noundef
   br i1 %63, label %64, label %65, !prof !47, !nosanitize !46
 
 64:                                               ; preds = %56
-  tail call void @llvm.ubsantrap(i8 21) #14, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
   unreachable, !nosanitize !46
 
 65:                                               ; preds = %56
@@ -1903,7 +1903,7 @@ define dso_local range(i32 -5, 1) i32 @deflateParams(ptr noundef %0, i32 noundef
   br i1 %71, label %72, label %73, !prof !47, !nosanitize !46
 
 72:                                               ; preds = %65
-  tail call void @llvm.ubsantrap(i8 0) #14, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
   unreachable, !nosanitize !46
 
 73:                                               ; preds = %65
@@ -1940,7 +1940,7 @@ define dso_local range(i32 -5, 1) i32 @deflateParams(ptr noundef %0, i32 noundef
   br i1 %89, label %90, label %91, !prof !47, !nosanitize !46
 
 90:                                               ; preds = %85
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 91:                                               ; preds = %85
@@ -1960,7 +1960,7 @@ define dso_local range(i32 -5, 1) i32 @deflateParams(ptr noundef %0, i32 noundef
   store i32 0, ptr %82, align 8, !tbaa !99
   br label %100
 
-100:                                              ; preds = %81, %99, %79
+100:                                              ; preds = %99, %81, %79
   store i32 %25, ptr %30, align 4, !tbaa !49
   %101 = zext nneg i32 %25 to i64
   %102 = getelementptr inbounds nuw [16 x i8], ptr @configuration_table, i64 %101
@@ -1989,7 +1989,7 @@ define dso_local range(i32 -5, 1) i32 @deflateParams(ptr noundef %0, i32 noundef
   store i32 %2, ptr %31, align 8, !tbaa !50
   br label %119
 
-119:                                              ; preds = %49, %52, %13, %17, %20, %5, %9, %3, %23, %73, %118
+119:                                              ; preds = %118, %73, %52, %49, %23, %20, %17, %13, %9, %5, %3
   %120 = phi i32 [ -5, %73 ], [ -2, %13 ], [ 0, %118 ], [ -2, %23 ], [ -2, %3 ], [ -2, %9 ], [ -2, %5 ], [ -2, %20 ], [ -2, %17 ], [ -2, %49 ], [ -5, %52 ]
   ret i32 %120
 }
@@ -2091,7 +2091,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %54, label %100, label %55
 
 55:                                               ; preds = %49
-  tail call void @_tr_flush_bits(ptr noundef nonnull %14) #12
+  tail call void @_tr_flush_bits(ptr noundef nonnull %14) #11
   %56 = load i64, ptr %52, align 8, !tbaa !90
   %57 = load i32, ptr %43, align 8, !tbaa !101
   %58 = zext i32 %57 to i64
@@ -2118,7 +2118,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %73, label %74, label %75, !prof !47, !nosanitize !46
 
 74:                                               ; preds = %62
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 75:                                               ; preds = %62
@@ -2130,7 +2130,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %79, label %80, label %81, !prof !47, !nosanitize !46
 
 80:                                               ; preds = %75
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 81:                                               ; preds = %75
@@ -2142,7 +2142,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %85, label %86, label %87, !prof !47, !nosanitize !46
 
 86:                                               ; preds = %81
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 87:                                               ; preds = %81
@@ -2157,7 +2157,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   store ptr %92, ptr %64, align 8, !tbaa !91
   br label %93
 
-93:                                               ; preds = %87, %90, %55
+93:                                               ; preds = %90, %87, %55
   %94 = phi i64 [ %56, %55 ], [ 0, %90 ], [ %88, %87 ]
   %95 = phi i32 [ %57, %55 ], [ %82, %90 ], [ %82, %87 ]
   %96 = icmp eq i32 %95, 0
@@ -2175,7 +2175,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %31, label %102, label %123
 
 101:                                              ; preds = %102
-  tail call void @llvm.ubsantrap(i8 12) #14, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 12) #13, !nosanitize !46
   unreachable, !nosanitize !46
 
 102:                                              ; preds = %100
@@ -2188,7 +2188,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %108, label %110, label %101, !prof !75, !nosanitize !46
 
 109:                                              ; preds = %110
-  tail call void @llvm.ubsantrap(i8 21) #14, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
   unreachable, !nosanitize !46
 
 110:                                              ; preds = %102
@@ -2211,7 +2211,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   store ptr %121, ptr %122, align 8, !tbaa !9
   br label %1204
 
-123:                                              ; preds = %97, %100, %116
+123:                                              ; preds = %116, %100, %97
   %124 = phi i64 [ %94, %97 ], [ 0, %100 ], [ 0, %116 ]
   %125 = phi i32 [ %98, %97 ], [ %21, %100 ], [ %21, %116 ]
   switch i32 %125, label %241 [
@@ -2248,7 +2248,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %141, label %142, label %143, !prof !47, !nosanitize !46
 
 142:                                              ; preds = %137
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 143:                                              ; preds = %137
@@ -2274,7 +2274,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   %157 = select i1 %156, i32 128, i32 192
   br label %158
 
-158:                                              ; preds = %155, %153, %143, %149
+158:                                              ; preds = %155, %153, %149, %143
   %159 = phi i32 [ 64, %153 ], [ 0, %143 ], [ %157, %155 ], [ 0, %149 ]
   %160 = getelementptr inbounds nuw i8, ptr %14, i64 172
   %161 = or disjoint i32 %159, %145
@@ -2289,7 +2289,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %169, label %170, label %171, !prof !47, !nosanitize !46
 
 170:                                              ; preds = %158
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 171:                                              ; preds = %158
@@ -2307,7 +2307,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %180, label %181, label %182, !prof !47, !nosanitize !46
 
 181:                                              ; preds = %171
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 182:                                              ; preds = %171
@@ -2332,7 +2332,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %196, label %197, label %198, !prof !47, !nosanitize !46
 
 197:                                              ; preds = %190
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 198:                                              ; preds = %190
@@ -2349,7 +2349,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %206, label %207, label %208, !prof !47, !nosanitize !46
 
 207:                                              ; preds = %198
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 208:                                              ; preds = %198
@@ -2367,7 +2367,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %217, label %218, label %219, !prof !47, !nosanitize !46
 
 218:                                              ; preds = %208
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 219:                                              ; preds = %208
@@ -2384,7 +2384,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %227, label %228, label %229, !prof !47, !nosanitize !46
 
 228:                                              ; preds = %219
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 229:                                              ; preds = %219
@@ -2396,7 +2396,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br label %233
 
 233:                                              ; preds = %229, %182
-  %234 = tail call i64 @adler32(i64 noundef 0, ptr noundef null, i32 noundef 0) #12
+  %234 = tail call i64 @adler32(i64 noundef 0, ptr noundef null, i32 noundef 0) #11
   %235 = getelementptr inbounds nuw i8, ptr %0, i64 96
   store i64 %234, ptr %235, align 8, !tbaa !72
   store i32 113, ptr %20, align 8, !tbaa !28
@@ -2413,13 +2413,13 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   store i32 -1, ptr %50, align 4, !tbaa !92
   br label %1204
 
-241:                                              ; preds = %123, %238
+241:                                              ; preds = %238, %123
   %242 = phi i32 [ %239, %238 ], [ %125, %123 ]
   %243 = icmp eq i32 %242, 57
   br i1 %243, label %244, label %503
 
 244:                                              ; preds = %241
-  %245 = tail call i64 @crc32(i64 noundef 0, ptr noundef null, i32 noundef 0) #12
+  %245 = tail call i64 @crc32(i64 noundef 0, ptr noundef null, i32 noundef 0) #11
   %246 = getelementptr inbounds nuw i8, ptr %0, i64 96
   store i64 %245, ptr %246, align 8, !tbaa !72
   %247 = getelementptr inbounds nuw i8, ptr %14, i64 16
@@ -2429,7 +2429,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %250, label %251, label %252, !prof !47, !nosanitize !46
 
 251:                                              ; preds = %244
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 252:                                              ; preds = %244
@@ -2444,7 +2444,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %258, label %259, label %260, !prof !47, !nosanitize !46
 
 259:                                              ; preds = %252
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 260:                                              ; preds = %252
@@ -2459,7 +2459,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %266, label %267, label %268, !prof !47, !nosanitize !46
 
 267:                                              ; preds = %260
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 268:                                              ; preds = %260
@@ -2480,7 +2480,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %277, label %279, label %280, !prof !47, !nosanitize !46
 
 279:                                              ; preds = %278
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 280:                                              ; preds = %278
@@ -2495,7 +2495,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %286, label %287, label %288, !prof !47, !nosanitize !46
 
 287:                                              ; preds = %280
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 288:                                              ; preds = %280
@@ -2510,7 +2510,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %294, label %295, label %296, !prof !47, !nosanitize !46
 
 295:                                              ; preds = %288
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 296:                                              ; preds = %288
@@ -2525,7 +2525,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %302, label %303, label %304, !prof !47, !nosanitize !46
 
 303:                                              ; preds = %296
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 304:                                              ; preds = %296
@@ -2540,7 +2540,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %310, label %311, label %312, !prof !47, !nosanitize !46
 
 311:                                              ; preds = %304
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 312:                                              ; preds = %304
@@ -2563,7 +2563,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   %325 = select i1 %324, i8 4, i8 0
   br label %326
 
-326:                                              ; preds = %312, %319
+326:                                              ; preds = %319, %312
   %327 = phi i8 [ %325, %319 ], [ 2, %312 ]
   %328 = load i64, ptr %52, align 8, !tbaa !90
   %329 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %328, i64 1), !nosanitize !46
@@ -2571,7 +2571,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %330, label %331, label %332, !prof !47, !nosanitize !46
 
 331:                                              ; preds = %326
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 332:                                              ; preds = %326
@@ -2586,7 +2586,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %338, label %339, label %340, !prof !47, !nosanitize !46
 
 339:                                              ; preds = %332
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 340:                                              ; preds = %332
@@ -2609,7 +2609,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %277, label %348, label %349, !prof !47, !nosanitize !46
 
 348:                                              ; preds = %347
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 349:                                              ; preds = %347
@@ -2647,7 +2647,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %378, label %379, label %380, !prof !47, !nosanitize !46
 
 379:                                              ; preds = %349
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 380:                                              ; preds = %349
@@ -2666,7 +2666,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %390, label %391, label %392, !prof !47, !nosanitize !46
 
 391:                                              ; preds = %380
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 392:                                              ; preds = %380
@@ -2686,7 +2686,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %403, label %404, label %405, !prof !47, !nosanitize !46
 
 404:                                              ; preds = %392
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 405:                                              ; preds = %392
@@ -2706,7 +2706,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %416, label %417, label %418, !prof !47, !nosanitize !46
 
 417:                                              ; preds = %405
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 418:                                              ; preds = %405
@@ -2734,7 +2734,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   %436 = select i1 %435, i8 4, i8 0
   br label %437
 
-437:                                              ; preds = %418, %430
+437:                                              ; preds = %430, %418
   %438 = phi i8 [ %436, %430 ], [ 2, %418 ]
   %439 = load i64, ptr %52, align 8, !tbaa !90
   %440 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %439, i64 1), !nosanitize !46
@@ -2742,7 +2742,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %441, label %442, label %443, !prof !47, !nosanitize !46
 
 442:                                              ; preds = %437
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 443:                                              ; preds = %437
@@ -2757,7 +2757,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %449, label %450, label %451, !prof !47, !nosanitize !46
 
 450:                                              ; preds = %443
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 451:                                              ; preds = %443
@@ -2783,7 +2783,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %466, label %467, label %468, !prof !47, !nosanitize !46
 
 467:                                              ; preds = %463
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 468:                                              ; preds = %463
@@ -2801,7 +2801,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %477, label %478, label %479, !prof !47, !nosanitize !46
 
 478:                                              ; preds = %468
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 479:                                              ; preds = %468
@@ -2829,11 +2829,11 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   %495 = load i64, ptr %246, align 8, !tbaa !72
   %496 = load ptr, ptr %247, align 8, !tbaa !42
   %497 = load i64, ptr %52, align 8, !tbaa !90
-  %498 = tail call i64 @crc32_z(i64 noundef %495, ptr noundef %496, i64 noundef %497) #12
+  %498 = tail call i64 @crc32_z(i64 noundef %495, ptr noundef %496, i64 noundef %497) #11
   store i64 %498, ptr %246, align 8, !tbaa !72
   br label %499
 
-499:                                              ; preds = %489, %494
+499:                                              ; preds = %494, %489
   %500 = getelementptr inbounds nuw i8, ptr %14, i64 64
   store i64 0, ptr %500, align 8, !tbaa !112
   store i32 69, ptr %20, align 8, !tbaa !28
@@ -2872,7 +2872,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %519, label %520, label %521, !prof !47, !nosanitize !46
 
 520:                                              ; preds = %511
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 521:                                              ; preds = %511
@@ -2918,7 +2918,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   %551 = load ptr, ptr %524, align 8, !tbaa !42
   %552 = getelementptr inbounds nuw i8, ptr %551, i64 %522
   %553 = load i64, ptr %525, align 8, !tbaa !72
-  %554 = tail call i64 @crc32_z(i64 noundef %553, ptr noundef %552, i64 noundef %550) #12
+  %554 = tail call i64 @crc32_z(i64 noundef %553, ptr noundef %552, i64 noundef %550) #11
   store i64 %554, ptr %525, align 8, !tbaa !72
   br label %555
 
@@ -2932,7 +2932,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   %560 = extractvalue { i64, i1 } %557, 0, !nosanitize !46
   store i64 %560, ptr %516, align 8, !tbaa !112
   %561 = load ptr, ptr %13, align 8, !tbaa !18
-  tail call void @_tr_flush_bits(ptr noundef %561) #12
+  tail call void @_tr_flush_bits(ptr noundef %561) #11
   %562 = getelementptr inbounds nuw i8, ptr %561, i64 40
   %563 = load i64, ptr %562, align 8, !tbaa !90
   %564 = load i32, ptr %43, align 8, !tbaa !101
@@ -2997,10 +2997,10 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %601, label %679, label %603, !prof !47, !nosanitize !46
 
 602:                                              ; preds = %521
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
-603:                                              ; preds = %599, %676
+603:                                              ; preds = %676, %599
   %604 = phi { i64, i1 } [ %677, %676 ], [ %600, %599 ]
   %605 = extractvalue { i64, i1 } %604, 0
   %606 = load i64, ptr %523, align 8, !tbaa !43
@@ -3008,7 +3008,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %607, label %609, label %680
 
 608:                                              ; preds = %534
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 609:                                              ; preds = %603
@@ -3032,7 +3032,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
 623:                                              ; preds = %609
   %624 = load ptr, ptr %524, align 8, !tbaa !42
   %625 = load i64, ptr %525, align 8, !tbaa !72
-  %626 = tail call i64 @crc32_z(i64 noundef %625, ptr noundef %624, i64 noundef %616) #12
+  %626 = tail call i64 @crc32_z(i64 noundef %625, ptr noundef %624, i64 noundef %616) #11
   store i64 %626, ptr %525, align 8, !tbaa !72
   br label %627
 
@@ -3043,14 +3043,14 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %630, label %631, label %632, !prof !47, !nosanitize !46
 
 631:                                              ; preds = %627, %555
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 632:                                              ; preds = %627
   %633 = extractvalue { i64, i1 } %629, 0, !nosanitize !46
   store i64 %633, ptr %516, align 8, !tbaa !112
   %634 = load ptr, ptr %13, align 8, !tbaa !18
-  tail call void @_tr_flush_bits(ptr noundef %634) #12
+  tail call void @_tr_flush_bits(ptr noundef %634) #11
   %635 = getelementptr inbounds nuw i8, ptr %634, i64 40
   %636 = load i64, ptr %635, align 8, !tbaa !90
   %637 = load i32, ptr %43, align 8, !tbaa !101
@@ -3077,7 +3077,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %652, label %653, label %654, !prof !47, !nosanitize !46
 
 653:                                              ; preds = %642, %569
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 654:                                              ; preds = %642
@@ -3089,7 +3089,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %658, label %659, label %660, !prof !47, !nosanitize !46
 
 659:                                              ; preds = %654, %580
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 660:                                              ; preds = %654
@@ -3101,7 +3101,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %664, label %665, label %666, !prof !47, !nosanitize !46
 
 665:                                              ; preds = %660, %585
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 666:                                              ; preds = %660
@@ -3116,7 +3116,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   store ptr %671, ptr %644, align 8, !tbaa !91
   br label %672
 
-672:                                              ; preds = %632, %666, %669
+672:                                              ; preds = %669, %666, %632
   %673 = load i64, ptr %52, align 8, !tbaa !90
   %674 = icmp eq i64 %673, 0
   br i1 %674, label %676, label %675
@@ -3131,7 +3131,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %678, label %679, label %603, !prof !47, !llvm.loop !113, !nosanitize !46
 
 679:                                              ; preds = %676, %599
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 680:                                              ; preds = %603
@@ -3157,7 +3157,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %696, label %697, label %698, !prof !47, !nosanitize !46
 
 697:                                              ; preds = %685
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 698:                                              ; preds = %685
@@ -3175,19 +3175,19 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   %707 = load ptr, ptr %524, align 8, !tbaa !42
   %708 = getelementptr inbounds nuw i8, ptr %707, i64 %688
   %709 = load i64, ptr %525, align 8, !tbaa !72
-  %710 = tail call i64 @crc32_z(i64 noundef %709, ptr noundef %708, i64 noundef %706) #12
+  %710 = tail call i64 @crc32_z(i64 noundef %709, ptr noundef %708, i64 noundef %706) #11
   store i64 %710, ptr %525, align 8, !tbaa !72
   br label %711
 
-711:                                              ; preds = %698, %705
+711:                                              ; preds = %705, %698
   store i64 0, ptr %516, align 8, !tbaa !112
   br label %712
 
-712:                                              ; preds = %505, %711
+712:                                              ; preds = %711, %505
   store i32 73, ptr %20, align 8, !tbaa !28
   br label %713
 
-713:                                              ; preds = %503, %712
+713:                                              ; preds = %712, %503
   %714 = getelementptr inbounds nuw i8, ptr %14, i64 56
   %715 = load ptr, ptr %714, align 8, !tbaa !93
   %716 = getelementptr inbounds nuw i8, ptr %715, i64 40
@@ -3225,13 +3225,13 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   %740 = load ptr, ptr %722, align 8, !tbaa !42
   %741 = getelementptr inbounds nuw i8, ptr %740, i64 %727
   %742 = load i64, ptr %723, align 8, !tbaa !72
-  %743 = tail call i64 @crc32_z(i64 noundef %742, ptr noundef %741, i64 noundef %739) #12
+  %743 = tail call i64 @crc32_z(i64 noundef %742, ptr noundef %741, i64 noundef %739) #11
   store i64 %743, ptr %723, align 8, !tbaa !72
   br label %744
 
 744:                                              ; preds = %738, %731
   %745 = load ptr, ptr %13, align 8, !tbaa !18
-  tail call void @_tr_flush_bits(ptr noundef %745) #12
+  tail call void @_tr_flush_bits(ptr noundef %745) #11
   %746 = getelementptr inbounds nuw i8, ptr %745, i64 40
   %747 = load i64, ptr %746, align 8, !tbaa !90
   %748 = load i32, ptr %43, align 8, !tbaa !101
@@ -3258,7 +3258,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %763, label %764, label %765, !prof !47, !nosanitize !46
 
 764:                                              ; preds = %753
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 765:                                              ; preds = %753
@@ -3270,7 +3270,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %769, label %770, label %771, !prof !47, !nosanitize !46
 
 770:                                              ; preds = %765
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 771:                                              ; preds = %765
@@ -3282,7 +3282,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %775, label %776, label %777, !prof !47, !nosanitize !46
 
 776:                                              ; preds = %771
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 777:                                              ; preds = %771
@@ -3297,7 +3297,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   store ptr %782, ptr %755, align 8, !tbaa !91
   br label %783
 
-783:                                              ; preds = %744, %777, %780
+783:                                              ; preds = %780, %777, %744
   %784 = load i64, ptr %52, align 8, !tbaa !90
   %785 = icmp eq i64 %784, 0
   br i1 %785, label %787, label %786
@@ -3315,7 +3315,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %792, label %793, label %794, !prof !47, !nosanitize !46
 
 793:                                              ; preds = %787
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 794:                                              ; preds = %787
@@ -3329,7 +3329,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %800, label %801, label %802, !prof !47, !nosanitize !46
 
 801:                                              ; preds = %794
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 802:                                              ; preds = %794
@@ -3360,7 +3360,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   %819 = load ptr, ptr %722, align 8, !tbaa !42
   %820 = getelementptr inbounds nuw i8, ptr %819, i64 %789
   %821 = load i64, ptr %723, align 8, !tbaa !72
-  %822 = tail call i64 @crc32_z(i64 noundef %821, ptr noundef %820, i64 noundef %818) #12
+  %822 = tail call i64 @crc32_z(i64 noundef %821, ptr noundef %820, i64 noundef %818) #11
   store i64 %822, ptr %723, align 8, !tbaa !72
   br label %823
 
@@ -3368,11 +3368,11 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   store i64 0, ptr %725, align 8, !tbaa !112
   br label %824
 
-824:                                              ; preds = %713, %823
+824:                                              ; preds = %823, %713
   store i32 91, ptr %20, align 8, !tbaa !28
   br label %825
 
-825:                                              ; preds = %503, %824
+825:                                              ; preds = %824, %503
   %826 = getelementptr inbounds nuw i8, ptr %14, i64 56
   %827 = load ptr, ptr %826, align 8, !tbaa !93
   %828 = getelementptr inbounds nuw i8, ptr %827, i64 56
@@ -3410,13 +3410,13 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   %852 = load ptr, ptr %834, align 8, !tbaa !42
   %853 = getelementptr inbounds nuw i8, ptr %852, i64 %839
   %854 = load i64, ptr %835, align 8, !tbaa !72
-  %855 = tail call i64 @crc32_z(i64 noundef %854, ptr noundef %853, i64 noundef %851) #12
+  %855 = tail call i64 @crc32_z(i64 noundef %854, ptr noundef %853, i64 noundef %851) #11
   store i64 %855, ptr %835, align 8, !tbaa !72
   br label %856
 
 856:                                              ; preds = %850, %843
   %857 = load ptr, ptr %13, align 8, !tbaa !18
-  tail call void @_tr_flush_bits(ptr noundef %857) #12
+  tail call void @_tr_flush_bits(ptr noundef %857) #11
   %858 = getelementptr inbounds nuw i8, ptr %857, i64 40
   %859 = load i64, ptr %858, align 8, !tbaa !90
   %860 = load i32, ptr %43, align 8, !tbaa !101
@@ -3443,7 +3443,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %875, label %876, label %877, !prof !47, !nosanitize !46
 
 876:                                              ; preds = %865
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 877:                                              ; preds = %865
@@ -3455,7 +3455,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %881, label %882, label %883, !prof !47, !nosanitize !46
 
 882:                                              ; preds = %877
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 883:                                              ; preds = %877
@@ -3467,7 +3467,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %887, label %888, label %889, !prof !47, !nosanitize !46
 
 888:                                              ; preds = %883
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 889:                                              ; preds = %883
@@ -3482,7 +3482,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   store ptr %894, ptr %867, align 8, !tbaa !91
   br label %895
 
-895:                                              ; preds = %856, %889, %892
+895:                                              ; preds = %892, %889, %856
   %896 = load i64, ptr %52, align 8, !tbaa !90
   %897 = icmp eq i64 %896, 0
   br i1 %897, label %899, label %898
@@ -3500,7 +3500,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %904, label %905, label %906, !prof !47, !nosanitize !46
 
 905:                                              ; preds = %899
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 906:                                              ; preds = %899
@@ -3514,7 +3514,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %912, label %913, label %914, !prof !47, !nosanitize !46
 
 913:                                              ; preds = %906
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 914:                                              ; preds = %906
@@ -3545,15 +3545,15 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   %931 = load ptr, ptr %834, align 8, !tbaa !42
   %932 = getelementptr inbounds nuw i8, ptr %931, i64 %901
   %933 = load i64, ptr %835, align 8, !tbaa !72
-  %934 = tail call i64 @crc32_z(i64 noundef %933, ptr noundef %932, i64 noundef %930) #12
+  %934 = tail call i64 @crc32_z(i64 noundef %933, ptr noundef %932, i64 noundef %930) #11
   store i64 %934, ptr %835, align 8, !tbaa !72
   br label %935
 
-935:                                              ; preds = %825, %921, %926, %929
+935:                                              ; preds = %929, %926, %921, %825
   store i32 103, ptr %20, align 8, !tbaa !28
   br label %936
 
-936:                                              ; preds = %503, %935
+936:                                              ; preds = %935, %503
   %937 = getelementptr inbounds nuw i8, ptr %14, i64 56
   %938 = load ptr, ptr %937, align 8, !tbaa !93
   %939 = getelementptr inbounds nuw i8, ptr %938, i64 68
@@ -3568,7 +3568,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %945, label %946, label %947, !prof !47, !nosanitize !46
 
 946:                                              ; preds = %942
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 947:                                              ; preds = %942
@@ -3605,7 +3605,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %967, label %968, label %969, !prof !47, !nosanitize !46
 
 968:                                              ; preds = %956
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 969:                                              ; preds = %956
@@ -3617,7 +3617,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   store i64 %970, ptr %52, align 8, !tbaa !90
   %975 = getelementptr inbounds nuw i8, ptr %971, i64 %965
   store i8 %974, ptr %975, align 1, !tbaa !8
-  %976 = tail call i64 @crc32(i64 noundef 0, ptr noundef null, i32 noundef 0) #12
+  %976 = tail call i64 @crc32(i64 noundef 0, ptr noundef null, i32 noundef 0) #11
   store i64 %976, ptr %958, align 8, !tbaa !72
   br label %977
 
@@ -3632,12 +3632,12 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   store i32 -1, ptr %50, align 4, !tbaa !92
   br label %1204
 
-981:                                              ; preds = %503, %136, %977
+981:                                              ; preds = %977, %503, %136
   %982 = load i32, ptr %29, align 8, !tbaa !73
   %983 = icmp eq i32 %982, 0
   br i1 %983, label %984, label %993
 
-984:                                              ; preds = %126, %981
+984:                                              ; preds = %981, %126
   %985 = getelementptr inbounds nuw i8, ptr %14, i64 180
   %986 = load i32, ptr %985, align 4, !tbaa !66
   %987 = icmp eq i32 %986, 0
@@ -3683,10 +3683,10 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   %1008 = getelementptr inbounds [16 x i8], ptr @configuration_table, i64 %1007
   %1009 = getelementptr inbounds nuw i8, ptr %1008, i64 8
   %1010 = load ptr, ptr %1009, align 8, !tbaa !98
-  %1011 = tail call i32 %1010(ptr noundef nonnull %14, i32 noundef %1) #12
+  %1011 = tail call i32 %1010(ptr noundef nonnull %14, i32 noundef %1) #11
   br label %1012
 
-1012:                                             ; preds = %1002, %1006, %1004, %997
+1012:                                             ; preds = %1006, %1004, %1002, %997
   %1013 = phi i32 [ %998, %997 ], [ %1003, %1002 ], [ %1005, %1004 ], [ %1011, %1006 ]
   %1014 = and i32 %1013, -2
   %1015 = icmp eq i32 %1014, 2
@@ -3696,7 +3696,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   store i32 666, ptr %20, align 8, !tbaa !28
   br label %1017
 
-1017:                                             ; preds = %1012, %1016
+1017:                                             ; preds = %1016, %1012
   %1018 = and i32 %1013, -3
   %1019 = icmp eq i32 %1018, 0
   br i1 %1019, label %1020, label %1024
@@ -3721,11 +3721,11 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   ]
 
 1027:                                             ; preds = %1026
-  tail call void @_tr_align(ptr noundef nonnull %14) #12
+  tail call void @_tr_align(ptr noundef nonnull %14) #11
   br label %1051
 
 1028:                                             ; preds = %1026
-  tail call void @_tr_stored_block(ptr noundef nonnull %14, ptr noundef null, i64 noundef 0, i32 noundef 0) #12
+  tail call void @_tr_stored_block(ptr noundef nonnull %14, ptr noundef null, i64 noundef 0, i32 noundef 0) #11
   %1029 = icmp eq i32 %1, 3
   br i1 %1029, label %1030, label %1051
 
@@ -3737,7 +3737,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %1034, label %1035, label %1036, !prof !47, !nosanitize !46
 
 1035:                                             ; preds = %1030
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 1036:                                             ; preds = %1030
@@ -3765,7 +3765,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   store i32 0, ptr %1050, align 4, !tbaa !67
   br label %1051
 
-1051:                                             ; preds = %1026, %1036, %1047, %1028, %1027
+1051:                                             ; preds = %1047, %1036, %1028, %1027, %1026
   tail call fastcc void @flush_pending(ptr noundef nonnull %0)
   %1052 = load i32, ptr %43, align 8, !tbaa !101
   %1053 = icmp eq i32 %1052, 0
@@ -3797,7 +3797,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %1067, label %1068, label %1069, !prof !47, !nosanitize !46
 
 1068:                                             ; preds = %1063
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 1069:                                             ; preds = %1063
@@ -3814,7 +3814,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %1077, label %1078, label %1079, !prof !47, !nosanitize !46
 
 1078:                                             ; preds = %1069
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 1079:                                             ; preds = %1069
@@ -3832,7 +3832,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %1088, label %1089, label %1090, !prof !47, !nosanitize !46
 
 1089:                                             ; preds = %1079
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 1090:                                             ; preds = %1079
@@ -3850,7 +3850,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %1099, label %1100, label %1101, !prof !47, !nosanitize !46
 
 1100:                                             ; preds = %1090
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 1101:                                             ; preds = %1090
@@ -3869,7 +3869,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %1111, label %1112, label %1113, !prof !47, !nosanitize !46
 
 1112:                                             ; preds = %1101
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 1113:                                             ; preds = %1101
@@ -3886,7 +3886,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %1121, label %1122, label %1123, !prof !47, !nosanitize !46
 
 1122:                                             ; preds = %1113
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 1123:                                             ; preds = %1113
@@ -3904,7 +3904,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %1132, label %1133, label %1134, !prof !47, !nosanitize !46
 
 1133:                                             ; preds = %1123
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 1134:                                             ; preds = %1123
@@ -3922,7 +3922,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %1143, label %1144, label %1145, !prof !47, !nosanitize !46
 
 1144:                                             ; preds = %1134
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 1145:                                             ; preds = %1134
@@ -3945,7 +3945,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %1157, label %1158, label %1159, !prof !47, !nosanitize !46
 
 1158:                                             ; preds = %1152
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 1159:                                             ; preds = %1152
@@ -3963,7 +3963,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %1168, label %1169, label %1170, !prof !47, !nosanitize !46
 
 1169:                                             ; preds = %1159
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 1170:                                             ; preds = %1159
@@ -3981,7 +3981,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %1179, label %1180, label %1181, !prof !47, !nosanitize !46
 
 1180:                                             ; preds = %1170
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 1181:                                             ; preds = %1170
@@ -3998,7 +3998,7 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   br i1 %1189, label %1190, label %1191, !prof !47, !nosanitize !46
 
 1190:                                             ; preds = %1181
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 1191:                                             ; preds = %1181
@@ -4026,15 +4026,15 @@ define dso_local range(i32 -5, 2) i32 @deflate(ptr noundef %0, i32 noundef %1) l
   %1203 = zext i1 %1202 to i32
   br label %1204
 
-1204:                                             ; preds = %988, %12, %16, %19, %4, %8, %2, %675, %240, %1020, %1054, %1023, %1056, %1055, %898, %786, %22, %1200, %980, %955, %346, %129, %120, %99, %46, %39
+1204:                                             ; preds = %1200, %1056, %1055, %1054, %1023, %1020, %988, %980, %955, %898, %786, %675, %346, %240, %129, %120, %99, %46, %39, %22, %19, %16, %12, %8, %4, %2
   %1205 = phi i32 [ -5, %120 ], [ -2, %39 ], [ -5, %46 ], [ 0, %99 ], [ -5, %129 ], [ 0, %346 ], [ 0, %955 ], [ 0, %980 ], [ -2, %22 ], [ 0, %1055 ], [ %1203, %1200 ], [ 1, %1056 ], [ 0, %898 ], [ 0, %786 ], [ 0, %675 ], [ 0, %240 ], [ 0, %1023 ], [ 0, %1054 ], [ 0, %1020 ], [ -2, %12 ], [ -2, %2 ], [ -2, %8 ], [ -2, %4 ], [ -2, %19 ], [ -2, %16 ], [ 0, %988 ]
   ret i32 %1205
 }
 
-; Function Attrs: mustprogress nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
 declare { i64, i1 } @llvm.ssub.with.overflow.i64(i64, i64) #2
 
-; Function Attrs: mustprogress nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
 declare { i64, i1 } @llvm.sadd.with.overflow.i64(i64, i64) #2
 
 ; Function Attrs: nounwind memory(readwrite, inaccessiblemem: write, target_mem: none) uwtable
@@ -4082,7 +4082,7 @@ define internal fastcc void @slide_hash(ptr noundef captures(none) %0) unnamed_a
   %33 = icmp eq i64 %14, %8
   br i1 %33, label %53, label %34
 
-34:                                               ; preds = %11, %32
+34:                                               ; preds = %32, %11
   %35 = phi ptr [ %9, %11 ], [ %16, %32 ]
   %36 = phi i32 [ %5, %11 ], [ %18, %32 ]
   br label %43
@@ -4094,10 +4094,10 @@ define internal fastcc void @slide_hash(ptr noundef captures(none) %0) unnamed_a
   %41 = tail call i32 @llvm.usub.sat.i32(i32 %40, i32 %3)
   %42 = trunc nuw i32 %41 to i16
   store i16 %42, ptr %38, align 2, !tbaa !53
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
-43:                                               ; preds = %34, %43
+43:                                               ; preds = %43, %34
   %44 = phi ptr [ %46, %43 ], [ %35, %34 ]
   %45 = phi i32 [ %51, %43 ], [ %36, %34 ]
   %46 = getelementptr inbounds i8, ptr %44, i64 -2
@@ -4115,7 +4115,7 @@ define internal fastcc void @slide_hash(ptr noundef captures(none) %0) unnamed_a
   br i1 %54, label %55, label %56, !prof !47, !nosanitize !46
 
 55:                                               ; preds = %53
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 56:                                               ; preds = %53
@@ -4154,12 +4154,12 @@ define internal fastcc void @slide_hash(ptr noundef captures(none) %0) unnamed_a
   %82 = icmp eq i64 %63, %59
   br i1 %82, label %96, label %83
 
-83:                                               ; preds = %56, %81
+83:                                               ; preds = %81, %56
   %84 = phi ptr [ %60, %56 ], [ %65, %81 ]
   %85 = phi i32 [ %3, %56 ], [ %67, %81 ]
   br label %86
 
-86:                                               ; preds = %83, %86
+86:                                               ; preds = %86, %83
   %87 = phi ptr [ %89, %86 ], [ %84, %83 ]
   %88 = phi i32 [ %94, %86 ], [ %85, %83 ]
   %89 = getelementptr inbounds i8, ptr %87, i64 -2
@@ -4231,7 +4231,7 @@ define dso_local range(i32 -2, 1) i32 @deflateTune(ptr noundef readonly captures
   store i32 %4, ptr %29, align 4, !tbaa !63
   br label %30
 
-30:                                               ; preds = %15, %19, %22, %7, %11, %5, %25
+30:                                               ; preds = %25, %22, %19, %15, %11, %7, %5
   %31 = phi i32 [ 0, %25 ], [ -2, %5 ], [ -2, %11 ], [ -2, %7 ], [ -2, %22 ], [ -2, %19 ], [ -2, %15 ]
   ret i32 %31
 }
@@ -4244,7 +4244,7 @@ define dso_local i64 @deflateBound_z(ptr noundef readonly captures(address) %0, 
   br i1 %5, label %6, label %7, !prof !47, !nosanitize !46
 
 6:                                                ; preds = %2
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 7:                                                ; preds = %2
@@ -4255,7 +4255,7 @@ define dso_local i64 @deflateBound_z(ptr noundef readonly captures(address) %0, 
   br i1 %11, label %12, label %13, !prof !47, !nosanitize !46
 
 12:                                               ; preds = %7
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 13:                                               ; preds = %7
@@ -4266,7 +4266,7 @@ define dso_local i64 @deflateBound_z(ptr noundef readonly captures(address) %0, 
   br i1 %17, label %18, label %19, !prof !47, !nosanitize !46
 
 18:                                               ; preds = %13
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 19:                                               ; preds = %13
@@ -4276,7 +4276,7 @@ define dso_local i64 @deflateBound_z(ptr noundef readonly captures(address) %0, 
   br i1 %22, label %23, label %24, !prof !47, !nosanitize !46
 
 23:                                               ; preds = %19
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 24:                                               ; preds = %19
@@ -4289,7 +4289,7 @@ define dso_local i64 @deflateBound_z(ptr noundef readonly captures(address) %0, 
   br i1 %30, label %31, label %32, !prof !47, !nosanitize !46
 
 31:                                               ; preds = %24
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 32:                                               ; preds = %24
@@ -4300,7 +4300,7 @@ define dso_local i64 @deflateBound_z(ptr noundef readonly captures(address) %0, 
   br i1 %36, label %37, label %38, !prof !47, !nosanitize !46
 
 37:                                               ; preds = %32
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 38:                                               ; preds = %32
@@ -4311,7 +4311,7 @@ define dso_local i64 @deflateBound_z(ptr noundef readonly captures(address) %0, 
   br i1 %42, label %43, label %44, !prof !47, !nosanitize !46
 
 43:                                               ; preds = %38
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 44:                                               ; preds = %38
@@ -4321,7 +4321,7 @@ define dso_local i64 @deflateBound_z(ptr noundef readonly captures(address) %0, 
   br i1 %47, label %48, label %49, !prof !47, !nosanitize !46
 
 48:                                               ; preds = %44
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 49:                                               ; preds = %44
@@ -4368,7 +4368,7 @@ define dso_local i64 @deflateBound_z(ptr noundef readonly captures(address) %0, 
     i32 666, label %78
   ]
 
-72:                                               ; preds = %49, %58, %54, %69, %66, %62
+72:                                               ; preds = %69, %66, %62, %58, %54, %49
   %73 = tail call i64 @llvm.umax.i64(i64 %27, i64 %52)
   %74 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %73, i64 18), !nosanitize !46
   %75 = extractvalue { i64, i1 } %74, 0, !nosanitize !46
@@ -4376,7 +4376,7 @@ define dso_local i64 @deflateBound_z(ptr noundef readonly captures(address) %0, 
   br i1 %76, label %77, label %216, !prof !47, !nosanitize !46
 
 77:                                               ; preds = %72
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 78:                                               ; preds = %69, %69, %69, %69, %69, %69, %69, %69
@@ -4392,10 +4392,10 @@ define dso_local i64 @deflateBound_z(ptr noundef readonly captures(address) %0, 
   br i1 %85, label %86, label %87, !prof !47, !nosanitize !46
 
 86:                                               ; preds = %82
-  tail call void @llvm.ubsantrap(i8 13) #14, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 13) #13, !nosanitize !46
   unreachable, !nosanitize !46
 
-87:                                               ; preds = %78, %82
+87:                                               ; preds = %82, %78
   %88 = phi i32 [ %84, %82 ], [ %80, %78 ]
   switch i32 %88, label %161 [
     i32 0, label %162
@@ -4430,7 +4430,7 @@ define dso_local i64 @deflateBound_z(ptr noundef readonly captures(address) %0, 
   br i1 %106, label %107, label %108, !prof !47, !nosanitize !46
 
 107:                                              ; preds = %102
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 108:                                              ; preds = %102
@@ -4458,10 +4458,10 @@ define dso_local i64 @deflateBound_z(ptr noundef readonly captures(address) %0, 
   br i1 %123, label %124, label %125, !prof !123, !llvm.loop !124, !nosanitize !46
 
 124:                                              ; preds = %120, %117
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
-125:                                              ; preds = %117, %120
+125:                                              ; preds = %120, %117
   %126 = phi { i64, i1 } [ %122, %120 ], [ %118, %117 ]
   %127 = phi ptr [ %121, %120 ], [ %115, %117 ]
   %128 = extractvalue { i64, i1 } %126, 0, !nosanitize !46
@@ -4488,10 +4488,10 @@ define dso_local i64 @deflateBound_z(ptr noundef readonly captures(address) %0, 
   br i1 %142, label %143, label %144, !prof !123, !llvm.loop !125, !nosanitize !46
 
 143:                                              ; preds = %139, %136
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
-144:                                              ; preds = %136, %139
+144:                                              ; preds = %139, %136
   %145 = phi { i64, i1 } [ %141, %139 ], [ %137, %136 ]
   %146 = phi ptr [ %140, %139 ], [ %134, %136 ]
   %147 = extractvalue { i64, i1 } %145, 0, !nosanitize !46
@@ -4512,7 +4512,7 @@ define dso_local i64 @deflateBound_z(ptr noundef readonly captures(address) %0, 
   br i1 %157, label %158, label %159, !prof !47, !nosanitize !46
 
 158:                                              ; preds = %155
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 159:                                              ; preds = %155
@@ -4522,7 +4522,7 @@ define dso_local i64 @deflateBound_z(ptr noundef readonly captures(address) %0, 
 161:                                              ; preds = %87
   br label %162
 
-162:                                              ; preds = %150, %159, %87, %94, %161, %89
+162:                                              ; preds = %161, %159, %150, %94, %89, %87
   %163 = phi i64 [ 18, %161 ], [ 18, %94 ], [ %93, %89 ], [ 0, %87 ], [ %160, %159 ], [ %151, %150 ]
   %164 = getelementptr inbounds nuw i8, ptr %64, i64 84
   %165 = load i32, ptr %164, align 4, !tbaa !30
@@ -4546,7 +4546,7 @@ define dso_local i64 @deflateBound_z(ptr noundef readonly captures(address) %0, 
 177:                                              ; preds = %173, %171
   br label %178
 
-178:                                              ; preds = %173, %177
+178:                                              ; preds = %177, %173
   %179 = phi i64 [ %52, %177 ], [ %27, %173 ]
   %180 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %179, i64 %163), !nosanitize !46
   %181 = extractvalue { i64, i1 } %180, 0, !nosanitize !46
@@ -4554,7 +4554,7 @@ define dso_local i64 @deflateBound_z(ptr noundef readonly captures(address) %0, 
   br i1 %182, label %183, label %216, !prof !47, !nosanitize !46
 
 183:                                              ; preds = %178
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 184:                                              ; preds = %162
@@ -4564,7 +4564,7 @@ define dso_local i64 @deflateBound_z(ptr noundef readonly captures(address) %0, 
   br i1 %187, label %188, label %189, !prof !47, !nosanitize !46
 
 188:                                              ; preds = %184
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 189:                                              ; preds = %184
@@ -4575,7 +4575,7 @@ define dso_local i64 @deflateBound_z(ptr noundef readonly captures(address) %0, 
   br i1 %193, label %194, label %195, !prof !47, !nosanitize !46
 
 194:                                              ; preds = %189
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 195:                                              ; preds = %189
@@ -4586,7 +4586,7 @@ define dso_local i64 @deflateBound_z(ptr noundef readonly captures(address) %0, 
   br i1 %199, label %200, label %201, !prof !47, !nosanitize !46
 
 200:                                              ; preds = %195
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 201:                                              ; preds = %195
@@ -4596,7 +4596,7 @@ define dso_local i64 @deflateBound_z(ptr noundef readonly captures(address) %0, 
   br i1 %204, label %205, label %206, !prof !47, !nosanitize !46
 
 205:                                              ; preds = %201
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 206:                                              ; preds = %201
@@ -4607,7 +4607,7 @@ define dso_local i64 @deflateBound_z(ptr noundef readonly captures(address) %0, 
   br i1 %210, label %211, label %212, !prof !47, !nosanitize !46
 
 211:                                              ; preds = %206
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 212:                                              ; preds = %206
@@ -4616,15 +4616,15 @@ define dso_local i64 @deflateBound_z(ptr noundef readonly captures(address) %0, 
   %215 = select i1 %214, i64 -1, i64 %213
   br label %216
 
-216:                                              ; preds = %178, %72, %212
+216:                                              ; preds = %212, %178, %72
   %217 = phi i64 [ %215, %212 ], [ %75, %72 ], [ %181, %178 ]
   ret i64 %217
 }
 
-; Function Attrs: mustprogress nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
 declare { i64, i1 } @llvm.uadd.with.overflow.i64(i64, i64) #2
 
-; Function Attrs: mustprogress nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
 declare { i64, i1 } @llvm.usub.with.overflow.i64(i64, i64) #2
 
 ; Function Attrs: nounwind memory(read, inaccessiblemem: write, target_mem: none) uwtable
@@ -4637,7 +4637,7 @@ define dso_local i64 @deflateBound(ptr noundef readonly captures(address) %0, i6
 define internal fastcc void @flush_pending(ptr noundef captures(none) %0) unnamed_addr #0 {
   %2 = getelementptr inbounds nuw i8, ptr %0, i64 56
   %3 = load ptr, ptr %2, align 8, !tbaa !18
-  tail call void @_tr_flush_bits(ptr noundef %3) #12
+  tail call void @_tr_flush_bits(ptr noundef %3) #11
   %4 = getelementptr inbounds nuw i8, ptr %3, i64 40
   %5 = load i64, ptr %4, align 8, !tbaa !90
   %6 = getelementptr inbounds nuw i8, ptr %0, i64 32
@@ -4667,7 +4667,7 @@ define internal fastcc void @flush_pending(ptr noundef captures(none) %0) unname
   br i1 %24, label %25, label %26, !prof !47, !nosanitize !46
 
 25:                                               ; preds = %12
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 26:                                               ; preds = %12
@@ -4679,7 +4679,7 @@ define internal fastcc void @flush_pending(ptr noundef captures(none) %0) unname
   br i1 %30, label %31, label %32, !prof !47, !nosanitize !46
 
 31:                                               ; preds = %26
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 32:                                               ; preds = %26
@@ -4691,7 +4691,7 @@ define internal fastcc void @flush_pending(ptr noundef captures(none) %0) unname
   br i1 %36, label %37, label %38, !prof !47, !nosanitize !46
 
 37:                                               ; preds = %32
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 38:                                               ; preds = %32
@@ -4706,7 +4706,7 @@ define internal fastcc void @flush_pending(ptr noundef captures(none) %0) unname
   store ptr %43, ptr %15, align 8, !tbaa !91
   br label %44
 
-44:                                               ; preds = %38, %41, %1
+44:                                               ; preds = %41, %38, %1
   ret void
 }
 
@@ -4721,7 +4721,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %6, label %7, label %8, !prof !47, !nosanitize !46
 
 7:                                                ; preds = %2
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 8:                                                ; preds = %2
@@ -4752,7 +4752,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %30, label %31, label %32, !prof !47, !nosanitize !46
 
 31:                                               ; preds = %27
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 32:                                               ; preds = %27
@@ -4774,7 +4774,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %45, label %46, label %47, !prof !47, !nosanitize !46
 
 46:                                               ; preds = %39
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 47:                                               ; preds = %39
@@ -4794,7 +4794,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %58, label %59, label %60, !prof !47, !nosanitize !46
 
 59:                                               ; preds = %56
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 60:                                               ; preds = %56
@@ -4819,7 +4819,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %72, label %73, label %74, !prof !47, !nosanitize !46
 
 73:                                               ; preds = %70
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 74:                                               ; preds = %70
@@ -4836,7 +4836,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %80, label %81, label %82, !prof !47, !nosanitize !46
 
 81:                                               ; preds = %78
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 82:                                               ; preds = %78
@@ -4847,14 +4847,14 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
 
 86:                                               ; preds = %82, %77
   %87 = phi i32 [ 0, %77 ], [ %85, %82 ]
-  tail call void @_tr_stored_block(ptr noundef nonnull %0, ptr noundef null, i64 noundef 0, i32 noundef %87) #12
+  tail call void @_tr_stored_block(ptr noundef nonnull %0, ptr noundef null, i64 noundef 0, i32 noundef %87) #11
   %88 = load i64, ptr %25, align 8, !tbaa !90
   %89 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %88, i64 4), !nosanitize !46
   %90 = extractvalue { i64, i1 } %89, 1, !nosanitize !46
   br i1 %90, label %91, label %92, !prof !47, !nosanitize !46
 
 91:                                               ; preds = %86
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 92:                                               ; preds = %86
@@ -4869,7 +4869,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %99, label %100, label %101, !prof !47, !nosanitize !46
 
 100:                                              ; preds = %92
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 101:                                              ; preds = %92
@@ -4885,7 +4885,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %109, label %110, label %111, !prof !47, !nosanitize !46
 
 110:                                              ; preds = %101
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 111:                                              ; preds = %101
@@ -4901,7 +4901,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %119, label %120, label %121, !prof !47, !nosanitize !46
 
 120:                                              ; preds = %111
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 121:                                              ; preds = %111
@@ -4914,7 +4914,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   %127 = load ptr, ptr %0, align 8, !tbaa !19
   %128 = getelementptr inbounds nuw i8, ptr %127, i64 56
   %129 = load ptr, ptr %128, align 8, !tbaa !18
-  tail call void @_tr_flush_bits(ptr noundef %129) #12
+  tail call void @_tr_flush_bits(ptr noundef %129) #11
   %130 = getelementptr inbounds nuw i8, ptr %129, i64 40
   %131 = load i64, ptr %130, align 8, !tbaa !90
   %132 = getelementptr inbounds nuw i8, ptr %127, i64 32
@@ -4944,7 +4944,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %150, label %151, label %152, !prof !47, !nosanitize !46
 
 151:                                              ; preds = %138
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 152:                                              ; preds = %138
@@ -4956,7 +4956,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %156, label %157, label %158, !prof !47, !nosanitize !46
 
 157:                                              ; preds = %152
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 158:                                              ; preds = %152
@@ -4968,7 +4968,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %162, label %163, label %164, !prof !47, !nosanitize !46
 
 163:                                              ; preds = %158
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 164:                                              ; preds = %158
@@ -4983,7 +4983,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   store ptr %169, ptr %141, align 8, !tbaa !91
   br label %170
 
-170:                                              ; preds = %121, %164, %167
+170:                                              ; preds = %167, %164, %121
   %171 = icmp eq i32 %49, 0
   br i1 %171, label %209, label %172
 
@@ -5009,7 +5009,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %188, label %189, label %190, !prof !47, !nosanitize !46
 
 189:                                              ; preds = %172
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 190:                                              ; preds = %172
@@ -5022,7 +5022,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %195, label %196, label %197, !prof !47, !nosanitize !46
 
 196:                                              ; preds = %197, %190
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 197:                                              ; preds = %190
@@ -5041,7 +5041,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %205, label %206, label %207, !prof !47, !nosanitize !46
 
 206:                                              ; preds = %202
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 207:                                              ; preds = %202
@@ -5069,7 +5069,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %222, label %223, label %224, !prof !47, !nosanitize !46
 
 223:                                              ; preds = %220
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 224:                                              ; preds = %220
@@ -5090,14 +5090,14 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
 232:                                              ; preds = %224
   %233 = getelementptr inbounds nuw i8, ptr %213, i64 96
   %234 = load i64, ptr %233, align 8, !tbaa !72
-  %235 = tail call i64 @adler32(i64 noundef %234, ptr noundef %215, i32 noundef %218) #12
+  %235 = tail call i64 @adler32(i64 noundef %234, ptr noundef %215, i32 noundef %218) #11
   store i64 %235, ptr %233, align 8, !tbaa !72
   br label %240
 
 236:                                              ; preds = %224
   %237 = getelementptr inbounds nuw i8, ptr %213, i64 96
   %238 = load i64, ptr %237, align 8, !tbaa !72
-  %239 = tail call i64 @crc32(i64 noundef %238, ptr noundef %215, i32 noundef %218) #12
+  %239 = tail call i64 @crc32(i64 noundef %238, ptr noundef %215, i32 noundef %218) #11
   store i64 %239, ptr %237, align 8, !tbaa !72
   br label %240
 
@@ -5112,7 +5112,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %246, label %247, label %248, !prof !47, !nosanitize !46
 
 247:                                              ; preds = %240
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 248:                                              ; preds = %240
@@ -5123,7 +5123,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   %252 = load ptr, ptr %251, align 8, !tbaa !100
   br label %253
 
-253:                                              ; preds = %212, %248
+253:                                              ; preds = %248, %212
   %254 = phi ptr [ %215, %212 ], [ %252, %248 ]
   %255 = phi ptr [ %213, %212 ], [ %250, %248 ]
   %256 = getelementptr inbounds nuw i8, ptr %255, i64 24
@@ -5137,7 +5137,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %262, label %263, label %264, !prof !47, !nosanitize !46
 
 263:                                              ; preds = %253
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 264:                                              ; preds = %253
@@ -5150,7 +5150,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %269, label %270, label %271, !prof !47, !nosanitize !46
 
 270:                                              ; preds = %264
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 271:                                              ; preds = %264
@@ -5158,7 +5158,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   store i64 %272, ptr %266, align 8, !tbaa !102
   br label %273
 
-273:                                              ; preds = %209, %271
+273:                                              ; preds = %271, %209
   %274 = icmp eq i32 %87, 0
   br i1 %274, label %27, label %275, !llvm.loop !126
 
@@ -5166,7 +5166,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   %276 = load ptr, ptr %0, align 8, !tbaa !19
   br label %277, !llvm.loop !126
 
-277:                                              ; preds = %74, %66, %32, %275
+277:                                              ; preds = %275, %74, %66, %32
   %278 = phi ptr [ %276, %275 ], [ %35, %32 ], [ %35, %66 ], [ %35, %74 ]
   %279 = phi i1 [ false, %275 ], [ true, %32 ], [ true, %66 ], [ true, %74 ]
   %280 = getelementptr inbounds nuw i8, ptr %278, i64 8
@@ -5177,7 +5177,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %284, label %285, label %286, !prof !47, !nosanitize !46
 
 285:                                              ; preds = %277
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 286:                                              ; preds = %277
@@ -5219,7 +5219,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %309, label %310, label %311, !prof !47, !nosanitize !46
 
 310:                                              ; preds = %303
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 311:                                              ; preds = %303
@@ -5234,7 +5234,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %317, label %318, label %319, !prof !47, !nosanitize !46
 
 318:                                              ; preds = %315
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 319:                                              ; preds = %315
@@ -5266,7 +5266,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   store i32 %333, ptr %331, align 4, !tbaa !67
   br label %336
 
-336:                                              ; preds = %330, %335, %311
+336:                                              ; preds = %335, %330, %311
   %337 = phi i32 [ %333, %330 ], [ %333, %335 ], [ %306, %311 ]
   %338 = load ptr, ptr %26, align 8, !tbaa !37
   %339 = zext i32 %337 to i64
@@ -5282,7 +5282,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %347, label %348, label %349, !prof !47, !nosanitize !46
 
 348:                                              ; preds = %336
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 349:                                              ; preds = %336
@@ -5296,7 +5296,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %355, label %356, label %357, !prof !47, !nosanitize !46
 
 356:                                              ; preds = %349
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 357:                                              ; preds = %349
@@ -5307,7 +5307,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %361, label %362, label %363, !prof !47, !nosanitize !46
 
 362:                                              ; preds = %357
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 363:                                              ; preds = %357
@@ -5321,7 +5321,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   store i64 %367, ptr %20, align 8, !tbaa !65
   br label %368
 
-368:                                              ; preds = %288, %365
+368:                                              ; preds = %365, %288
   %369 = phi i64 [ %290, %288 ], [ %367, %365 ]
   %370 = phi i32 [ %289, %288 ], [ %366, %365 ]
   %371 = getelementptr inbounds nuw i8, ptr %0, i64 5952
@@ -5355,7 +5355,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   %385 = icmp eq i64 %384, %369
   br i1 %385, label %602, label %386
 
-386:                                              ; preds = %376, %376, %383, %378
+386:                                              ; preds = %383, %378, %376, %376
   %387 = getelementptr inbounds nuw i8, ptr %0, i64 104
   %388 = load i64, ptr %387, align 8, !tbaa !52
   %389 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %388, i64 %369), !nosanitize !46
@@ -5363,7 +5363,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %390, label %391, label %392, !prof !47, !nosanitize !46
 
 391:                                              ; preds = %386
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 392:                                              ; preds = %386
@@ -5390,7 +5390,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %407, label %408, label %409, !prof !47, !nosanitize !46
 
 408:                                              ; preds = %404
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 409:                                              ; preds = %404
@@ -5418,7 +5418,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %423, label %424, label %425, !prof !47, !nosanitize !46
 
 424:                                              ; preds = %419
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 425:                                              ; preds = %419
@@ -5432,7 +5432,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   store i32 %428, ptr %426, align 4, !tbaa !67
   br label %431
 
-431:                                              ; preds = %425, %430, %399, %392
+431:                                              ; preds = %430, %425, %399, %392
   %432 = phi i32 [ %428, %430 ], [ %428, %425 ], [ %370, %399 ], [ %370, %392 ]
   %433 = phi i32 [ %422, %430 ], [ %422, %425 ], [ %394, %399 ], [ %394, %392 ]
   %434 = load ptr, ptr %0, align 8, !tbaa !19
@@ -5451,7 +5451,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %444, label %445, label %446, !prof !47, !nosanitize !46
 
 445:                                              ; preds = %439
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 446:                                              ; preds = %439
@@ -5472,14 +5472,14 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
 454:                                              ; preds = %446
   %455 = getelementptr inbounds nuw i8, ptr %434, i64 96
   %456 = load i64, ptr %455, align 8, !tbaa !72
-  %457 = tail call i64 @adler32(i64 noundef %456, ptr noundef %442, i32 noundef %437) #12
+  %457 = tail call i64 @adler32(i64 noundef %456, ptr noundef %442, i32 noundef %437) #11
   store i64 %457, ptr %455, align 8, !tbaa !72
   br label %462
 
 458:                                              ; preds = %446
   %459 = getelementptr inbounds nuw i8, ptr %434, i64 96
   %460 = load i64, ptr %459, align 8, !tbaa !72
-  %461 = tail call i64 @crc32(i64 noundef %460, ptr noundef %442, i32 noundef %437) #12
+  %461 = tail call i64 @crc32(i64 noundef %460, ptr noundef %442, i32 noundef %437) #11
   store i64 %461, ptr %459, align 8, !tbaa !72
   br label %462
 
@@ -5494,7 +5494,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %468, label %469, label %470, !prof !47, !nosanitize !46
 
 469:                                              ; preds = %462
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 470:                                              ; preds = %462
@@ -5506,7 +5506,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %474, label %475, label %476, !prof !47, !nosanitize !46
 
 475:                                              ; preds = %470
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 476:                                              ; preds = %470
@@ -5520,7 +5520,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %482, label %483, label %484, !prof !47, !nosanitize !46
 
 483:                                              ; preds = %476
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 484:                                              ; preds = %476
@@ -5531,7 +5531,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %488, label %489, label %490, !prof !47, !nosanitize !46
 
 489:                                              ; preds = %484
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 490:                                              ; preds = %484
@@ -5557,7 +5557,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %501, label %502, label %503, !prof !47, !nosanitize !46
 
 502:                                              ; preds = %544, %498
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 503:                                              ; preds = %498
@@ -5570,7 +5570,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %509, label %510, label %511, !prof !47, !nosanitize !46
 
 510:                                              ; preds = %503
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 511:                                              ; preds = %503
@@ -5583,7 +5583,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %517, label %518, label %519, !prof !47, !nosanitize !46
 
 518:                                              ; preds = %511
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 519:                                              ; preds = %511
@@ -5628,7 +5628,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   %546 = load ptr, ptr %26, align 8, !tbaa !37
   %547 = getelementptr inbounds i8, ptr %546, i64 %515
   %548 = zext nneg i32 %535 to i64
-  tail call void @_tr_stored_block(ptr noundef nonnull %0, ptr noundef %547, i64 noundef %548, i32 noundef %545) #12
+  tail call void @_tr_stored_block(ptr noundef nonnull %0, ptr noundef %547, i64 noundef %548, i32 noundef %545) #11
   %549 = load i64, ptr %20, align 8, !tbaa !65
   %550 = tail call { i64, i1 } @llvm.sadd.with.overflow.i64(i64 %549, i64 %548), !nosanitize !46
   %551 = extractvalue { i64, i1 } %550, 1, !nosanitize !46
@@ -5640,7 +5640,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   %554 = load ptr, ptr %0, align 8, !tbaa !19
   %555 = getelementptr inbounds nuw i8, ptr %554, i64 56
   %556 = load ptr, ptr %555, align 8, !tbaa !18
-  tail call void @_tr_flush_bits(ptr noundef %556) #12
+  tail call void @_tr_flush_bits(ptr noundef %556) #11
   %557 = getelementptr inbounds nuw i8, ptr %556, i64 40
   %558 = load i64, ptr %557, align 8, !tbaa !90
   %559 = getelementptr inbounds nuw i8, ptr %554, i64 32
@@ -5670,7 +5670,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %577, label %578, label %579, !prof !47, !nosanitize !46
 
 578:                                              ; preds = %565
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 579:                                              ; preds = %565
@@ -5682,7 +5682,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %583, label %584, label %585, !prof !47, !nosanitize !46
 
 584:                                              ; preds = %579
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 585:                                              ; preds = %579
@@ -5694,7 +5694,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   br i1 %589, label %590, label %591, !prof !47, !nosanitize !46
 
 590:                                              ; preds = %585
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 591:                                              ; preds = %585
@@ -5709,7 +5709,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   store ptr %596, ptr %568, align 8, !tbaa !91
   br label %597
 
-597:                                              ; preds = %552, %591, %594
+597:                                              ; preds = %594, %591, %552
   %598 = icmp eq i32 %545, 0
   br i1 %598, label %602, label %599
 
@@ -5765,7 +5765,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_huff(ptr noundef %0, i32 nou
   br i1 %28, label %29, label %30, !prof !47, !nosanitize !46
 
 29:                                               ; preds = %20
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 30:                                               ; preds = %20
@@ -5781,7 +5781,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_huff(ptr noundef %0, i32 nou
   br i1 %37, label %38, label %39, !prof !47, !nosanitize !46
 
 38:                                               ; preds = %30
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 39:                                               ; preds = %30
@@ -5797,7 +5797,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_huff(ptr noundef %0, i32 nou
   br i1 %46, label %47, label %48, !prof !47, !nosanitize !46
 
 47:                                               ; preds = %39
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 48:                                               ; preds = %39
@@ -5820,8 +5820,8 @@ define internal fastcc range(i32 0, 4) i32 @deflate_huff(ptr noundef %0, i32 nou
   %62 = extractvalue { i32, i1 } %61, 1, !nosanitize !46
   br i1 %62, label %63, label %64, !prof !47, !nosanitize !46
 
-63:                                               ; preds = %79, %48, %216, %147
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+63:                                               ; preds = %216, %147, %79, %48
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 64:                                               ; preds = %48
@@ -5833,7 +5833,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_huff(ptr noundef %0, i32 nou
   br i1 %68, label %69, label %70, !prof !47, !nosanitize !46
 
 69:                                               ; preds = %64
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 70:                                               ; preds = %64
@@ -5852,7 +5852,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_huff(ptr noundef %0, i32 nou
   %78 = getelementptr inbounds nuw i8, ptr %76, i64 %77
   br label %79
 
-79:                                               ; preds = %72, %75
+79:                                               ; preds = %75, %72
   %80 = phi ptr [ %78, %75 ], [ null, %72 ]
   %81 = zext i32 %71 to i64
   %82 = tail call { i64, i1 } @llvm.ssub.with.overflow.i64(i64 %81, i64 %73), !nosanitize !46
@@ -5861,14 +5861,14 @@ define internal fastcc range(i32 0, 4) i32 @deflate_huff(ptr noundef %0, i32 nou
 
 84:                                               ; preds = %79
   %85 = extractvalue { i64, i1 } %82, 0, !nosanitize !46
-  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %80, i64 noundef %85, i32 noundef 0) #12
+  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %80, i64 noundef %85, i32 noundef 0) #11
   %86 = load i32, ptr %6, align 4, !tbaa !64
   %87 = zext i32 %86 to i64
   store i64 %87, ptr %11, align 8, !tbaa !65
   %88 = load ptr, ptr %0, align 8, !tbaa !19
   %89 = getelementptr inbounds nuw i8, ptr %88, i64 56
   %90 = load ptr, ptr %89, align 8, !tbaa !18
-  tail call void @_tr_flush_bits(ptr noundef %90) #12
+  tail call void @_tr_flush_bits(ptr noundef %90) #11
   %91 = getelementptr inbounds nuw i8, ptr %90, i64 40
   %92 = load i64, ptr %91, align 8, !tbaa !90
   %93 = getelementptr inbounds nuw i8, ptr %88, i64 32
@@ -5898,7 +5898,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_huff(ptr noundef %0, i32 nou
   br i1 %111, label %112, label %113, !prof !47, !nosanitize !46
 
 112:                                              ; preds = %99
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 113:                                              ; preds = %99
@@ -5910,7 +5910,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_huff(ptr noundef %0, i32 nou
   br i1 %117, label %118, label %119, !prof !47, !nosanitize !46
 
 118:                                              ; preds = %113
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 119:                                              ; preds = %113
@@ -5922,7 +5922,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_huff(ptr noundef %0, i32 nou
   br i1 %123, label %124, label %125, !prof !47, !nosanitize !46
 
 124:                                              ; preds = %119
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 125:                                              ; preds = %119
@@ -5937,7 +5937,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_huff(ptr noundef %0, i32 nou
   store ptr %130, ptr %102, align 8, !tbaa !91
   br label %131
 
-131:                                              ; preds = %84, %125, %128
+131:                                              ; preds = %128, %125, %84
   %132 = load ptr, ptr %0, align 8, !tbaa !19
   %133 = getelementptr inbounds nuw i8, ptr %132, i64 32
   %134 = load i32, ptr %133, align 8, !tbaa !101
@@ -5964,7 +5964,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_huff(ptr noundef %0, i32 nou
   %146 = getelementptr inbounds nuw i8, ptr %144, i64 %145
   br label %147
 
-147:                                              ; preds = %140, %143
+147:                                              ; preds = %143, %140
   %148 = phi ptr [ %146, %143 ], [ null, %140 ]
   %149 = load i32, ptr %6, align 4, !tbaa !64
   %150 = zext i32 %149 to i64
@@ -5974,14 +5974,14 @@ define internal fastcc range(i32 0, 4) i32 @deflate_huff(ptr noundef %0, i32 nou
 
 153:                                              ; preds = %147
   %154 = extractvalue { i64, i1 } %151, 0, !nosanitize !46
-  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %148, i64 noundef %154, i32 noundef 1) #12
+  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %148, i64 noundef %154, i32 noundef 1) #11
   %155 = load i32, ptr %6, align 4, !tbaa !64
   %156 = zext i32 %155 to i64
   store i64 %156, ptr %11, align 8, !tbaa !65
   %157 = load ptr, ptr %0, align 8, !tbaa !19
   %158 = getelementptr inbounds nuw i8, ptr %157, i64 56
   %159 = load ptr, ptr %158, align 8, !tbaa !18
-  tail call void @_tr_flush_bits(ptr noundef %159) #12
+  tail call void @_tr_flush_bits(ptr noundef %159) #11
   %160 = getelementptr inbounds nuw i8, ptr %159, i64 40
   %161 = load i64, ptr %160, align 8, !tbaa !90
   %162 = getelementptr inbounds nuw i8, ptr %157, i64 32
@@ -6011,7 +6011,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_huff(ptr noundef %0, i32 nou
   br i1 %180, label %181, label %182, !prof !47, !nosanitize !46
 
 181:                                              ; preds = %168
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 182:                                              ; preds = %168
@@ -6023,7 +6023,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_huff(ptr noundef %0, i32 nou
   br i1 %186, label %187, label %188, !prof !47, !nosanitize !46
 
 187:                                              ; preds = %182
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 188:                                              ; preds = %182
@@ -6035,7 +6035,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_huff(ptr noundef %0, i32 nou
   br i1 %192, label %193, label %194, !prof !47, !nosanitize !46
 
 193:                                              ; preds = %188
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 194:                                              ; preds = %188
@@ -6050,7 +6050,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_huff(ptr noundef %0, i32 nou
   store ptr %199, ptr %171, align 8, !tbaa !91
   br label %200
 
-200:                                              ; preds = %153, %194, %197
+200:                                              ; preds = %197, %194, %153
   %201 = load ptr, ptr %0, align 8, !tbaa !19
   %202 = getelementptr inbounds nuw i8, ptr %201, i64 32
   %203 = load i32, ptr %202, align 8, !tbaa !101
@@ -6074,7 +6074,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_huff(ptr noundef %0, i32 nou
   %215 = getelementptr inbounds nuw i8, ptr %213, i64 %214
   br label %216
 
-216:                                              ; preds = %209, %212
+216:                                              ; preds = %212, %209
   %217 = phi ptr [ %215, %212 ], [ null, %209 ]
   %218 = load i32, ptr %6, align 4, !tbaa !64
   %219 = zext i32 %218 to i64
@@ -6084,14 +6084,14 @@ define internal fastcc range(i32 0, 4) i32 @deflate_huff(ptr noundef %0, i32 nou
 
 222:                                              ; preds = %216
   %223 = extractvalue { i64, i1 } %220, 0, !nosanitize !46
-  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %217, i64 noundef %223, i32 noundef 0) #12
+  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %217, i64 noundef %223, i32 noundef 0) #11
   %224 = load i32, ptr %6, align 4, !tbaa !64
   %225 = zext i32 %224 to i64
   store i64 %225, ptr %11, align 8, !tbaa !65
   %226 = load ptr, ptr %0, align 8, !tbaa !19
   %227 = getelementptr inbounds nuw i8, ptr %226, i64 56
   %228 = load ptr, ptr %227, align 8, !tbaa !18
-  tail call void @_tr_flush_bits(ptr noundef %228) #12
+  tail call void @_tr_flush_bits(ptr noundef %228) #11
   %229 = getelementptr inbounds nuw i8, ptr %228, i64 40
   %230 = load i64, ptr %229, align 8, !tbaa !90
   %231 = getelementptr inbounds nuw i8, ptr %226, i64 32
@@ -6121,7 +6121,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_huff(ptr noundef %0, i32 nou
   br i1 %249, label %250, label %251, !prof !47, !nosanitize !46
 
 250:                                              ; preds = %237
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 251:                                              ; preds = %237
@@ -6133,7 +6133,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_huff(ptr noundef %0, i32 nou
   br i1 %255, label %256, label %257, !prof !47, !nosanitize !46
 
 256:                                              ; preds = %251
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 257:                                              ; preds = %251
@@ -6145,7 +6145,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_huff(ptr noundef %0, i32 nou
   br i1 %261, label %262, label %263, !prof !47, !nosanitize !46
 
 262:                                              ; preds = %257
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 263:                                              ; preds = %257
@@ -6160,7 +6160,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_huff(ptr noundef %0, i32 nou
   store ptr %268, ptr %240, align 8, !tbaa !91
   br label %269
 
-269:                                              ; preds = %222, %263, %266
+269:                                              ; preds = %266, %263, %222
   %270 = load ptr, ptr %0, align 8, !tbaa !19
   %271 = getelementptr inbounds nuw i8, ptr %270, i64 32
   %272 = load i32, ptr %271, align 8, !tbaa !101
@@ -6170,7 +6170,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_huff(ptr noundef %0, i32 nou
 274:                                              ; preds = %269, %206
   br label %275
 
-275:                                              ; preds = %131, %269, %200, %18, %274
+275:                                              ; preds = %274, %269, %200, %131, %18
   %276 = phi i32 [ 0, %18 ], [ %205, %200 ], [ 0, %269 ], [ 1, %274 ], [ 0, %131 ]
   ret i32 %276
 }
@@ -6218,7 +6218,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
   %28 = load i32, ptr %6, align 4, !tbaa !64
   br i1 %27, label %29, label %176
 
-29:                                               ; preds = %18, %26
+29:                                               ; preds = %26, %18
   %30 = phi i32 [ %19, %18 ], [ %28, %26 ]
   %31 = phi i32 [ %16, %18 ], [ %21, %26 ]
   %32 = icmp eq i32 %30, 0
@@ -6346,7 +6346,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
   br i1 %111, label %112, label %113, !prof !47, !nosanitize !46
 
 112:                                              ; preds = %104
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 113:                                              ; preds = %104
@@ -6365,7 +6365,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
   br i1 %122, label %123, label %124, !prof !47, !nosanitize !46
 
 123:                                              ; preds = %118
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 124:                                              ; preds = %118
@@ -6381,7 +6381,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
   br i1 %131, label %132, label %133, !prof !47, !nosanitize !46
 
 132:                                              ; preds = %124
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 133:                                              ; preds = %124
@@ -6397,7 +6397,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
   br i1 %140, label %141, label %142, !prof !47, !nosanitize !46
 
 141:                                              ; preds = %133
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 142:                                              ; preds = %133
@@ -6431,7 +6431,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
   br i1 %165, label %166, label %167, !prof !47, !nosanitize !46
 
 166:                                              ; preds = %142
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 167:                                              ; preds = %142
@@ -6443,7 +6443,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
   br i1 %171, label %172, label %173, !prof !47, !nosanitize !46
 
 172:                                              ; preds = %167
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 173:                                              ; preds = %167
@@ -6452,10 +6452,10 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
   store i32 0, ptr %4, align 8, !tbaa !69
   br i1 %161, label %231, label %175
 
-175:                                              ; preds = %173, %291, %229
+175:                                              ; preds = %291, %229, %173
   br label %15
 
-176:                                              ; preds = %33, %41, %45, %29, %26
+176:                                              ; preds = %45, %41, %33, %29, %26
   %177 = phi i32 [ %28, %26 ], [ %30, %29 ], [ %30, %45 ], [ %30, %41 ], [ %30, %33 ]
   %178 = load i32, ptr %9, align 4, !tbaa !127
   br label %179
@@ -6472,7 +6472,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
   br i1 %187, label %188, label %189, !prof !47, !nosanitize !46
 
 188:                                              ; preds = %179
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 189:                                              ; preds = %179
@@ -6488,7 +6488,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
   br i1 %196, label %197, label %198, !prof !47, !nosanitize !46
 
 197:                                              ; preds = %189
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 198:                                              ; preds = %189
@@ -6504,7 +6504,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
   br i1 %205, label %206, label %207, !prof !47, !nosanitize !46
 
 206:                                              ; preds = %198
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 207:                                              ; preds = %198
@@ -6527,8 +6527,8 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
   %221 = extractvalue { i32, i1 } %220, 1, !nosanitize !46
   br i1 %221, label %222, label %223, !prof !47, !nosanitize !46
 
-222:                                              ; preds = %239, %207, %375, %306
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+222:                                              ; preds = %375, %306, %239, %207
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 223:                                              ; preds = %207
@@ -6540,7 +6540,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
   br i1 %227, label %228, label %229, !prof !47, !nosanitize !46
 
 228:                                              ; preds = %223
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 229:                                              ; preds = %223
@@ -6548,7 +6548,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
   store i32 %230, ptr %6, align 4, !tbaa !64
   br i1 %218, label %231, label %175
 
-231:                                              ; preds = %173, %229
+231:                                              ; preds = %229, %173
   %232 = phi i32 [ %174, %173 ], [ %230, %229 ]
   %233 = load i64, ptr %14, align 8, !tbaa !65
   %234 = icmp sgt i64 %233, -1
@@ -6560,7 +6560,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
   %238 = getelementptr inbounds nuw i8, ptr %236, i64 %237
   br label %239
 
-239:                                              ; preds = %231, %235
+239:                                              ; preds = %235, %231
   %240 = phi ptr [ %238, %235 ], [ null, %231 ]
   %241 = zext i32 %232 to i64
   %242 = tail call { i64, i1 } @llvm.ssub.with.overflow.i64(i64 %241, i64 %233), !nosanitize !46
@@ -6569,14 +6569,14 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
 
 244:                                              ; preds = %239
   %245 = extractvalue { i64, i1 } %242, 0, !nosanitize !46
-  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %240, i64 noundef %245, i32 noundef 0) #12
+  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %240, i64 noundef %245, i32 noundef 0) #11
   %246 = load i32, ptr %6, align 4, !tbaa !64
   %247 = zext i32 %246 to i64
   store i64 %247, ptr %14, align 8, !tbaa !65
   %248 = load ptr, ptr %0, align 8, !tbaa !19
   %249 = getelementptr inbounds nuw i8, ptr %248, i64 56
   %250 = load ptr, ptr %249, align 8, !tbaa !18
-  tail call void @_tr_flush_bits(ptr noundef %250) #12
+  tail call void @_tr_flush_bits(ptr noundef %250) #11
   %251 = getelementptr inbounds nuw i8, ptr %250, i64 40
   %252 = load i64, ptr %251, align 8, !tbaa !90
   %253 = getelementptr inbounds nuw i8, ptr %248, i64 32
@@ -6606,7 +6606,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
   br i1 %271, label %272, label %273, !prof !47, !nosanitize !46
 
 272:                                              ; preds = %259
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 273:                                              ; preds = %259
@@ -6618,7 +6618,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
   br i1 %277, label %278, label %279, !prof !47, !nosanitize !46
 
 278:                                              ; preds = %273
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 279:                                              ; preds = %273
@@ -6630,7 +6630,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
   br i1 %283, label %284, label %285, !prof !47, !nosanitize !46
 
 284:                                              ; preds = %279
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 285:                                              ; preds = %279
@@ -6645,7 +6645,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
   store ptr %290, ptr %262, align 8, !tbaa !91
   br label %291
 
-291:                                              ; preds = %244, %285, %288
+291:                                              ; preds = %288, %285, %244
   %292 = load ptr, ptr %0, align 8, !tbaa !19
   %293 = getelementptr inbounds nuw i8, ptr %292, i64 32
   %294 = load i32, ptr %293, align 8, !tbaa !101
@@ -6669,7 +6669,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
   %305 = getelementptr inbounds nuw i8, ptr %303, i64 %304
   br label %306
 
-306:                                              ; preds = %299, %302
+306:                                              ; preds = %302, %299
   %307 = phi ptr [ %305, %302 ], [ null, %299 ]
   %308 = load i32, ptr %6, align 4, !tbaa !64
   %309 = zext i32 %308 to i64
@@ -6679,14 +6679,14 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
 
 312:                                              ; preds = %306
   %313 = extractvalue { i64, i1 } %310, 0, !nosanitize !46
-  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %307, i64 noundef %313, i32 noundef 1) #12
+  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %307, i64 noundef %313, i32 noundef 1) #11
   %314 = load i32, ptr %6, align 4, !tbaa !64
   %315 = zext i32 %314 to i64
   store i64 %315, ptr %14, align 8, !tbaa !65
   %316 = load ptr, ptr %0, align 8, !tbaa !19
   %317 = getelementptr inbounds nuw i8, ptr %316, i64 56
   %318 = load ptr, ptr %317, align 8, !tbaa !18
-  tail call void @_tr_flush_bits(ptr noundef %318) #12
+  tail call void @_tr_flush_bits(ptr noundef %318) #11
   %319 = getelementptr inbounds nuw i8, ptr %318, i64 40
   %320 = load i64, ptr %319, align 8, !tbaa !90
   %321 = getelementptr inbounds nuw i8, ptr %316, i64 32
@@ -6716,7 +6716,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
   br i1 %339, label %340, label %341, !prof !47, !nosanitize !46
 
 340:                                              ; preds = %327
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 341:                                              ; preds = %327
@@ -6728,7 +6728,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
   br i1 %345, label %346, label %347, !prof !47, !nosanitize !46
 
 346:                                              ; preds = %341
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 347:                                              ; preds = %341
@@ -6740,7 +6740,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
   br i1 %351, label %352, label %353, !prof !47, !nosanitize !46
 
 352:                                              ; preds = %347
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 353:                                              ; preds = %347
@@ -6755,7 +6755,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
   store ptr %358, ptr %330, align 8, !tbaa !91
   br label %359
 
-359:                                              ; preds = %312, %353, %356
+359:                                              ; preds = %356, %353, %312
   %360 = load ptr, ptr %0, align 8, !tbaa !19
   %361 = getelementptr inbounds nuw i8, ptr %360, i64 32
   %362 = load i32, ptr %361, align 8, !tbaa !101
@@ -6779,7 +6779,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
   %374 = getelementptr inbounds nuw i8, ptr %372, i64 %373
   br label %375
 
-375:                                              ; preds = %368, %371
+375:                                              ; preds = %371, %368
   %376 = phi ptr [ %374, %371 ], [ null, %368 ]
   %377 = load i32, ptr %6, align 4, !tbaa !64
   %378 = zext i32 %377 to i64
@@ -6789,14 +6789,14 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
 
 381:                                              ; preds = %375
   %382 = extractvalue { i64, i1 } %379, 0, !nosanitize !46
-  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %376, i64 noundef %382, i32 noundef 0) #12
+  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %376, i64 noundef %382, i32 noundef 0) #11
   %383 = load i32, ptr %6, align 4, !tbaa !64
   %384 = zext i32 %383 to i64
   store i64 %384, ptr %14, align 8, !tbaa !65
   %385 = load ptr, ptr %0, align 8, !tbaa !19
   %386 = getelementptr inbounds nuw i8, ptr %385, i64 56
   %387 = load ptr, ptr %386, align 8, !tbaa !18
-  tail call void @_tr_flush_bits(ptr noundef %387) #12
+  tail call void @_tr_flush_bits(ptr noundef %387) #11
   %388 = getelementptr inbounds nuw i8, ptr %387, i64 40
   %389 = load i64, ptr %388, align 8, !tbaa !90
   %390 = getelementptr inbounds nuw i8, ptr %385, i64 32
@@ -6826,7 +6826,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
   br i1 %408, label %409, label %410, !prof !47, !nosanitize !46
 
 409:                                              ; preds = %396
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 410:                                              ; preds = %396
@@ -6838,7 +6838,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
   br i1 %414, label %415, label %416, !prof !47, !nosanitize !46
 
 415:                                              ; preds = %410
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 416:                                              ; preds = %410
@@ -6850,7 +6850,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
   br i1 %420, label %421, label %422, !prof !47, !nosanitize !46
 
 421:                                              ; preds = %416
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 422:                                              ; preds = %416
@@ -6865,7 +6865,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
   store ptr %427, ptr %399, align 8, !tbaa !91
   br label %428
 
-428:                                              ; preds = %381, %422, %425
+428:                                              ; preds = %425, %422, %381
   %429 = load ptr, ptr %0, align 8, !tbaa !19
   %430 = getelementptr inbounds nuw i8, ptr %429, i64 32
   %431 = load i32, ptr %430, align 8, !tbaa !101
@@ -6875,7 +6875,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
 433:                                              ; preds = %428, %365
   br label %434
 
-434:                                              ; preds = %291, %20, %428, %359, %433
+434:                                              ; preds = %433, %428, %359, %291, %20
   %435 = phi i32 [ 1, %433 ], [ %364, %359 ], [ 0, %428 ], [ 0, %20 ], [ 0, %291 ]
   ret i32 %435
 }
@@ -6936,7 +6936,7 @@ define dso_local range(i32 -4, 1) i32 @deflateCopy(ptr noundef %0, ptr noundef r
   %26 = load ptr, ptr %25, align 8, !tbaa !15
   %27 = getelementptr inbounds nuw i8, ptr %0, i64 80
   %28 = load ptr, ptr %27, align 8, !tbaa !16
-  %29 = tail call ptr %26(ptr noundef %28, i32 noundef 1, i32 noundef 5968) #12
+  %29 = tail call ptr %26(ptr noundef %28, i32 noundef 1, i32 noundef 5968) #11
   %30 = icmp eq ptr %29, null
   br i1 %30, label %132, label %31
 
@@ -6950,27 +6950,27 @@ define dso_local range(i32 -4, 1) i32 @deflateCopy(ptr noundef %0, ptr noundef r
   %34 = load ptr, ptr %27, align 8, !tbaa !16
   %35 = getelementptr inbounds nuw i8, ptr %29, i64 80
   %36 = load i32, ptr %35, align 8, !tbaa !31
-  %37 = tail call ptr %33(ptr noundef %34, i32 noundef %36, i32 noundef 2) #12
+  %37 = tail call ptr %33(ptr noundef %34, i32 noundef %36, i32 noundef 2) #11
   %38 = getelementptr inbounds nuw i8, ptr %29, i64 96
   store ptr %37, ptr %38, align 8, !tbaa !37
   %39 = load ptr, ptr %25, align 8, !tbaa !15
   %40 = load ptr, ptr %27, align 8, !tbaa !16
   %41 = load i32, ptr %35, align 8, !tbaa !31
-  %42 = tail call ptr %39(ptr noundef %40, i32 noundef %41, i32 noundef 2) #12
+  %42 = tail call ptr %39(ptr noundef %40, i32 noundef %41, i32 noundef 2) #11
   %43 = getelementptr inbounds nuw i8, ptr %29, i64 112
   store ptr %42, ptr %43, align 8, !tbaa !38
   %44 = load ptr, ptr %25, align 8, !tbaa !15
   %45 = load ptr, ptr %27, align 8, !tbaa !16
   %46 = getelementptr inbounds nuw i8, ptr %29, i64 132
   %47 = load i32, ptr %46, align 4, !tbaa !34
-  %48 = tail call ptr %44(ptr noundef %45, i32 noundef %47, i32 noundef 2) #12
+  %48 = tail call ptr %44(ptr noundef %45, i32 noundef %47, i32 noundef 2) #11
   %49 = getelementptr inbounds nuw i8, ptr %29, i64 120
   store ptr %48, ptr %49, align 8, !tbaa !39
   %50 = load ptr, ptr %25, align 8, !tbaa !15
   %51 = load ptr, ptr %27, align 8, !tbaa !16
   %52 = getelementptr inbounds nuw i8, ptr %29, i64 5896
   %53 = load i32, ptr %52, align 8, !tbaa !41
-  %54 = tail call ptr %50(ptr noundef %51, i32 noundef %53, i32 noundef 4) #12
+  %54 = tail call ptr %50(ptr noundef %51, i32 noundef %53, i32 noundef 4) #11
   %55 = getelementptr inbounds nuw i8, ptr %29, i64 16
   store ptr %54, ptr %55, align 8, !tbaa !42
   %56 = load ptr, ptr %38, align 8, !tbaa !37
@@ -7021,7 +7021,7 @@ define dso_local range(i32 -4, 1) i32 @deflateCopy(ptr noundef %0, ptr noundef r
   br i1 %87, label %88, label %89, !prof !47, !nosanitize !46
 
 88:                                               ; preds = %81
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 89:                                               ; preds = %81
@@ -7080,7 +7080,7 @@ define dso_local range(i32 -4, 1) i32 @deflateCopy(ptr noundef %0, ptr noundef r
   store ptr %130, ptr %131, align 8, !tbaa !131
   br label %132
 
-132:                                              ; preds = %12, %16, %19, %4, %8, %2, %24, %22, %93, %66
+132:                                              ; preds = %93, %66, %24, %22, %19, %16, %12, %8, %4, %2
   %133 = phi i32 [ 0, %93 ], [ -2, %22 ], [ -4, %66 ], [ -4, %24 ], [ -2, %2 ], [ -2, %8 ], [ -2, %4 ], [ -2, %19 ], [ -2, %16 ], [ -2, %12 ]
   ret i32 %133
 }
@@ -7130,14 +7130,14 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   %34 = icmp ugt i32 %28, 2
   br i1 %34, label %35, label %80
 
-35:                                               ; preds = %24, %33
+35:                                               ; preds = %33, %24
   %36 = load i32, ptr %5, align 4, !tbaa !64
   %37 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %36, i32 2), !nosanitize !46
   %38 = extractvalue { i32, i1 } %37, 1, !nosanitize !46
   br i1 %38, label %39, label %40, !prof !47, !nosanitize !46
 
 39:                                               ; preds = %35
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 40:                                               ; preds = %35
@@ -7177,7 +7177,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   br i1 %68, label %69, label %70, !prof !47, !nosanitize !46
 
 69:                                               ; preds = %65
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 70:                                               ; preds = %65
@@ -7187,7 +7187,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   br i1 %73, label %74, label %75, !prof !47, !nosanitize !46
 
 74:                                               ; preds = %70
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 75:                                               ; preds = %70
@@ -7200,7 +7200,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   store i32 %79, ptr %14, align 8, !tbaa !69
   br label %82
 
-80:                                               ; preds = %40, %75, %33
+80:                                               ; preds = %75, %40, %33
   %81 = load i32, ptr %14, align 8, !tbaa !69
   br label %82
 
@@ -7219,7 +7219,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   br i1 %91, label %92, label %93, !prof !47, !nosanitize !46
 
 92:                                               ; preds = %85
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 93:                                               ; preds = %85
@@ -7231,7 +7231,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   br i1 %98, label %99, label %100, !prof !47, !nosanitize !46
 
 99:                                               ; preds = %93
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 100:                                              ; preds = %93
@@ -7248,7 +7248,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   br i1 %108, label %109, label %110, !prof !47, !nosanitize !46
 
 109:                                              ; preds = %100
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 110:                                              ; preds = %100
@@ -7266,7 +7266,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   br i1 %119, label %120, label %121, !prof !47, !nosanitize !46
 
 120:                                              ; preds = %110
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 121:                                              ; preds = %110
@@ -7318,7 +7318,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   br i1 %156, label %157, label %158, !prof !47, !nosanitize !46
 
 157:                                              ; preds = %143
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 158:                                              ; preds = %143
@@ -7336,7 +7336,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   br i1 %166, label %167, label %168, !prof !47, !nosanitize !46
 
 167:                                              ; preds = %164
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 168:                                              ; preds = %164
@@ -7353,7 +7353,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   br i1 %175, label %176, label %177, !prof !47, !nosanitize !46
 
 176:                                              ; preds = %171
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 177:                                              ; preds = %171
@@ -7364,7 +7364,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   br i1 %180, label %181, label %182, !prof !47, !nosanitize !46
 
 181:                                              ; preds = %177
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 182:                                              ; preds = %177
@@ -7398,7 +7398,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   br i1 %206, label %207, label %208, !prof !47, !nosanitize !46
 
 207:                                              ; preds = %182
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 208:                                              ; preds = %182
@@ -7419,7 +7419,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   br i1 %216, label %217, label %218, !prof !47, !nosanitize !46
 
 217:                                              ; preds = %213
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 218:                                              ; preds = %213
@@ -7437,7 +7437,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   br i1 %226, label %227, label %281, !prof !47, !nosanitize !46
 
 227:                                              ; preds = %218
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 228:                                              ; preds = %82
@@ -7452,7 +7452,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   br i1 %236, label %237, label %238, !prof !47, !nosanitize !46
 
 237:                                              ; preds = %228
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 238:                                              ; preds = %228
@@ -7468,7 +7468,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   br i1 %245, label %246, label %247, !prof !47, !nosanitize !46
 
 246:                                              ; preds = %238
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 247:                                              ; preds = %238
@@ -7484,7 +7484,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   br i1 %254, label %255, label %256, !prof !47, !nosanitize !46
 
 255:                                              ; preds = %247
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 256:                                              ; preds = %247
@@ -7507,8 +7507,8 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   %270 = extractvalue { i32, i1 } %269, 1, !nosanitize !46
   br i1 %270, label %271, label %272, !prof !47, !nosanitize !46
 
-271:                                              ; preds = %300, %256, %437, %369
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+271:                                              ; preds = %437, %369, %300, %256
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 272:                                              ; preds = %256
@@ -7520,7 +7520,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   br i1 %276, label %277, label %278, !prof !47, !nosanitize !46
 
 277:                                              ; preds = %272
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 278:                                              ; preds = %272
@@ -7528,7 +7528,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   store i32 %279, ptr %5, align 4, !tbaa !64
   br i1 %267, label %292, label %280
 
-280:                                              ; preds = %278, %211, %352, %281
+280:                                              ; preds = %352, %281, %278, %211
   br label %24
 
 281:                                              ; preds = %218
@@ -7545,7 +7545,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   store i32 %291, ptr %7, align 8, !tbaa !71
   br i1 %152, label %292, label %280
 
-292:                                              ; preds = %278, %211, %281
+292:                                              ; preds = %281, %278, %211
   %293 = phi i32 [ %279, %278 ], [ %212, %211 ], [ %219, %281 ]
   %294 = load i64, ptr %23, align 8, !tbaa !65
   %295 = icmp sgt i64 %294, -1
@@ -7557,7 +7557,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   %299 = getelementptr inbounds nuw i8, ptr %297, i64 %298
   br label %300
 
-300:                                              ; preds = %292, %296
+300:                                              ; preds = %296, %292
   %301 = phi ptr [ %299, %296 ], [ null, %292 ]
   %302 = zext i32 %293 to i64
   %303 = tail call { i64, i1 } @llvm.ssub.with.overflow.i64(i64 %302, i64 %294), !nosanitize !46
@@ -7566,14 +7566,14 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
 
 305:                                              ; preds = %300
   %306 = extractvalue { i64, i1 } %303, 0, !nosanitize !46
-  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %301, i64 noundef %306, i32 noundef 0) #12
+  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %301, i64 noundef %306, i32 noundef 0) #11
   %307 = load i32, ptr %5, align 4, !tbaa !64
   %308 = zext i32 %307 to i64
   store i64 %308, ptr %23, align 8, !tbaa !65
   %309 = load ptr, ptr %0, align 8, !tbaa !19
   %310 = getelementptr inbounds nuw i8, ptr %309, i64 56
   %311 = load ptr, ptr %310, align 8, !tbaa !18
-  tail call void @_tr_flush_bits(ptr noundef %311) #12
+  tail call void @_tr_flush_bits(ptr noundef %311) #11
   %312 = getelementptr inbounds nuw i8, ptr %311, i64 40
   %313 = load i64, ptr %312, align 8, !tbaa !90
   %314 = getelementptr inbounds nuw i8, ptr %309, i64 32
@@ -7603,7 +7603,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   br i1 %332, label %333, label %334, !prof !47, !nosanitize !46
 
 333:                                              ; preds = %320
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 334:                                              ; preds = %320
@@ -7615,7 +7615,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   br i1 %338, label %339, label %340, !prof !47, !nosanitize !46
 
 339:                                              ; preds = %334
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 340:                                              ; preds = %334
@@ -7627,7 +7627,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   br i1 %344, label %345, label %346, !prof !47, !nosanitize !46
 
 345:                                              ; preds = %340
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 346:                                              ; preds = %340
@@ -7642,7 +7642,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   store ptr %351, ptr %323, align 8, !tbaa !91
   br label %352
 
-352:                                              ; preds = %305, %346, %349
+352:                                              ; preds = %349, %346, %305
   %353 = load ptr, ptr %0, align 8, !tbaa !19
   %354 = getelementptr inbounds nuw i8, ptr %353, i64 32
   %355 = load i32, ptr %354, align 8, !tbaa !101
@@ -7668,7 +7668,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   %368 = getelementptr inbounds nuw i8, ptr %366, i64 %367
   br label %369
 
-369:                                              ; preds = %362, %365
+369:                                              ; preds = %365, %362
   %370 = phi ptr [ %368, %365 ], [ null, %362 ]
   %371 = zext i32 %358 to i64
   %372 = tail call { i64, i1 } @llvm.ssub.with.overflow.i64(i64 %371, i64 %363), !nosanitize !46
@@ -7677,14 +7677,14 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
 
 374:                                              ; preds = %369
   %375 = extractvalue { i64, i1 } %372, 0, !nosanitize !46
-  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %370, i64 noundef %375, i32 noundef 1) #12
+  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %370, i64 noundef %375, i32 noundef 1) #11
   %376 = load i32, ptr %5, align 4, !tbaa !64
   %377 = zext i32 %376 to i64
   store i64 %377, ptr %23, align 8, !tbaa !65
   %378 = load ptr, ptr %0, align 8, !tbaa !19
   %379 = getelementptr inbounds nuw i8, ptr %378, i64 56
   %380 = load ptr, ptr %379, align 8, !tbaa !18
-  tail call void @_tr_flush_bits(ptr noundef %380) #12
+  tail call void @_tr_flush_bits(ptr noundef %380) #11
   %381 = getelementptr inbounds nuw i8, ptr %380, i64 40
   %382 = load i64, ptr %381, align 8, !tbaa !90
   %383 = getelementptr inbounds nuw i8, ptr %378, i64 32
@@ -7714,7 +7714,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   br i1 %401, label %402, label %403, !prof !47, !nosanitize !46
 
 402:                                              ; preds = %389
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 403:                                              ; preds = %389
@@ -7726,7 +7726,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   br i1 %407, label %408, label %409, !prof !47, !nosanitize !46
 
 408:                                              ; preds = %403
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 409:                                              ; preds = %403
@@ -7738,7 +7738,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   br i1 %413, label %414, label %415, !prof !47, !nosanitize !46
 
 414:                                              ; preds = %409
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 415:                                              ; preds = %409
@@ -7753,7 +7753,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   store ptr %420, ptr %392, align 8, !tbaa !91
   br label %421
 
-421:                                              ; preds = %374, %415, %418
+421:                                              ; preds = %418, %415, %374
   %422 = load ptr, ptr %0, align 8, !tbaa !19
   %423 = getelementptr inbounds nuw i8, ptr %422, i64 32
   %424 = load i32, ptr %423, align 8, !tbaa !101
@@ -7777,7 +7777,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   %436 = getelementptr inbounds nuw i8, ptr %434, i64 %435
   br label %437
 
-437:                                              ; preds = %430, %433
+437:                                              ; preds = %433, %430
   %438 = phi ptr [ %436, %433 ], [ null, %430 ]
   %439 = zext i32 %358 to i64
   %440 = tail call { i64, i1 } @llvm.ssub.with.overflow.i64(i64 %439, i64 %431), !nosanitize !46
@@ -7786,14 +7786,14 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
 
 442:                                              ; preds = %437
   %443 = extractvalue { i64, i1 } %440, 0, !nosanitize !46
-  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %438, i64 noundef %443, i32 noundef 0) #12
+  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %438, i64 noundef %443, i32 noundef 0) #11
   %444 = load i32, ptr %5, align 4, !tbaa !64
   %445 = zext i32 %444 to i64
   store i64 %445, ptr %23, align 8, !tbaa !65
   %446 = load ptr, ptr %0, align 8, !tbaa !19
   %447 = getelementptr inbounds nuw i8, ptr %446, i64 56
   %448 = load ptr, ptr %447, align 8, !tbaa !18
-  tail call void @_tr_flush_bits(ptr noundef %448) #12
+  tail call void @_tr_flush_bits(ptr noundef %448) #11
   %449 = getelementptr inbounds nuw i8, ptr %448, i64 40
   %450 = load i64, ptr %449, align 8, !tbaa !90
   %451 = getelementptr inbounds nuw i8, ptr %446, i64 32
@@ -7823,7 +7823,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   br i1 %469, label %470, label %471, !prof !47, !nosanitize !46
 
 470:                                              ; preds = %457
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 471:                                              ; preds = %457
@@ -7835,7 +7835,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   br i1 %475, label %476, label %477, !prof !47, !nosanitize !46
 
 476:                                              ; preds = %471
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 477:                                              ; preds = %471
@@ -7847,7 +7847,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   br i1 %481, label %482, label %483, !prof !47, !nosanitize !46
 
 482:                                              ; preds = %477
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 483:                                              ; preds = %477
@@ -7862,7 +7862,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   store ptr %488, ptr %460, align 8, !tbaa !91
   br label %489
 
-489:                                              ; preds = %442, %483, %486
+489:                                              ; preds = %486, %483, %442
   %490 = load ptr, ptr %0, align 8, !tbaa !19
   %491 = getelementptr inbounds nuw i8, ptr %490, i64 32
   %492 = load i32, ptr %491, align 8, !tbaa !101
@@ -7872,7 +7872,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
 494:                                              ; preds = %489, %427
   br label %495
 
-495:                                              ; preds = %352, %27, %489, %421, %494
+495:                                              ; preds = %494, %489, %421, %352, %27
   %496 = phi i32 [ 1, %494 ], [ %426, %421 ], [ 0, %489 ], [ 0, %27 ], [ 0, %352 ]
   ret i32 %496
 }
@@ -7934,14 +7934,14 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   store i32 2, ptr %5, align 8, !tbaa !69
   br label %111
 
-42:                                               ; preds = %28, %37
+42:                                               ; preds = %37, %28
   %43 = load i32, ptr %9, align 4, !tbaa !64
   %44 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %43, i32 2), !nosanitize !46
   %45 = extractvalue { i32, i1 } %44, 1, !nosanitize !46
   br i1 %45, label %46, label %47, !prof !47, !nosanitize !46
 
 46:                                               ; preds = %42
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 47:                                               ; preds = %42
@@ -7991,7 +7991,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %80, label %81, label %82, !prof !47, !nosanitize !46
 
 81:                                               ; preds = %77
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 82:                                               ; preds = %77
@@ -8001,7 +8001,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %85, label %86, label %87, !prof !47, !nosanitize !46
 
 86:                                               ; preds = %82
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 87:                                               ; preds = %82
@@ -8032,7 +8032,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %102, label %103, label %104, !prof !47, !nosanitize !46
 
 103:                                              ; preds = %98
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 104:                                              ; preds = %98
@@ -8044,12 +8044,12 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   store i32 2, ptr %5, align 8, !tbaa !69
   br label %108
 
-108:                                              ; preds = %74, %87, %107, %104, %96, %90
+108:                                              ; preds = %107, %104, %96, %90, %87, %74
   %109 = phi i32 [ 2, %74 ], [ 2, %87 ], [ 2, %107 ], [ 3, %104 ], [ %91, %96 ], [ %91, %90 ]
   %110 = load i32, ptr %6, align 8, !tbaa !68
   br label %111
 
-111:                                              ; preds = %108, %39, %47
+111:                                              ; preds = %108, %47, %39
   %112 = phi i32 [ %110, %108 ], [ %40, %39 ], [ %71, %47 ]
   %113 = phi i32 [ %109, %108 ], [ 2, %39 ], [ 2, %47 ]
   %114 = icmp ult i32 %112, 3
@@ -8065,7 +8065,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %121, label %122, label %123, !prof !47, !nosanitize !46
 
 122:                                              ; preds = %117
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 123:                                              ; preds = %117
@@ -8076,7 +8076,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %127, label %128, label %129, !prof !47, !nosanitize !46
 
 128:                                              ; preds = %123
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 129:                                              ; preds = %123
@@ -8087,7 +8087,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %133, label %134, label %135, !prof !47, !nosanitize !46
 
 134:                                              ; preds = %129
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 135:                                              ; preds = %129
@@ -8098,7 +8098,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %139, label %140, label %141, !prof !47, !nosanitize !46
 
 140:                                              ; preds = %135
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 141:                                              ; preds = %135
@@ -8110,7 +8110,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %146, label %147, label %148, !prof !47, !nosanitize !46
 
 147:                                              ; preds = %141
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 148:                                              ; preds = %141
@@ -8127,7 +8127,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %156, label %157, label %158, !prof !47, !nosanitize !46
 
 157:                                              ; preds = %148
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 158:                                              ; preds = %148
@@ -8145,7 +8145,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %167, label %168, label %169, !prof !47, !nosanitize !46
 
 168:                                              ; preds = %158
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 169:                                              ; preds = %158
@@ -8196,7 +8196,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %203, label %204, label %205, !prof !47, !nosanitize !46
 
 204:                                              ; preds = %191
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 205:                                              ; preds = %191
@@ -8207,7 +8207,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %209, label %210, label %211, !prof !47, !nosanitize !46
 
 210:                                              ; preds = %205
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 211:                                              ; preds = %205
@@ -8218,7 +8218,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %214, label %215, label %216, !prof !47, !nosanitize !46
 
 215:                                              ; preds = %211
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 216:                                              ; preds = %211
@@ -8236,7 +8236,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %224, label %225, label %226, !prof !47, !nosanitize !46
 
 225:                                              ; preds = %219
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 226:                                              ; preds = %219
@@ -8250,7 +8250,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %230, label %231, label %232, !prof !47, !nosanitize !46
 
 231:                                              ; preds = %228
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 232:                                              ; preds = %228
@@ -8281,13 +8281,13 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   store i16 %254, ptr %247, align 2, !tbaa !53
   br label %255
 
-255:                                              ; preds = %226, %232
+255:                                              ; preds = %232, %226
   %256 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %220, i32 1), !nosanitize !46
   %257 = extractvalue { i32, i1 } %256, 1, !nosanitize !46
   br i1 %257, label %258, label %259, !prof !47, !nosanitize !46
 
 258:                                              ; preds = %276, %255
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 259:                                              ; preds = %255
@@ -8304,7 +8304,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %264, label %265, label %266, !prof !47, !nosanitize !46
 
 265:                                              ; preds = %262
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 266:                                              ; preds = %262
@@ -8312,7 +8312,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   store i32 %267, ptr %9, align 4, !tbaa !64
   br i1 %200, label %269, label %268
 
-268:                                              ; preds = %266, %328, %469, %452
+268:                                              ; preds = %469, %452, %328, %266
   br label %28
 
 269:                                              ; preds = %266
@@ -8326,7 +8326,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   %275 = getelementptr inbounds nuw i8, ptr %273, i64 %274
   br label %276
 
-276:                                              ; preds = %269, %272
+276:                                              ; preds = %272, %269
   %277 = phi ptr [ %275, %272 ], [ null, %269 ]
   %278 = zext i32 %267 to i64
   %279 = tail call { i64, i1 } @llvm.ssub.with.overflow.i64(i64 %278, i64 %270), !nosanitize !46
@@ -8335,14 +8335,14 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
 
 281:                                              ; preds = %276
   %282 = extractvalue { i64, i1 } %279, 0, !nosanitize !46
-  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %277, i64 noundef %282, i32 noundef 0) #12
+  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %277, i64 noundef %282, i32 noundef 0) #11
   %283 = load i32, ptr %9, align 4, !tbaa !64
   %284 = zext i32 %283 to i64
   store i64 %284, ptr %26, align 8, !tbaa !65
   %285 = load ptr, ptr %0, align 8, !tbaa !19
   %286 = getelementptr inbounds nuw i8, ptr %285, i64 56
   %287 = load ptr, ptr %286, align 8, !tbaa !18
-  tail call void @_tr_flush_bits(ptr noundef %287) #12
+  tail call void @_tr_flush_bits(ptr noundef %287) #11
   %288 = getelementptr inbounds nuw i8, ptr %287, i64 40
   %289 = load i64, ptr %288, align 8, !tbaa !90
   %290 = getelementptr inbounds nuw i8, ptr %285, i64 32
@@ -8372,7 +8372,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %308, label %309, label %310, !prof !47, !nosanitize !46
 
 309:                                              ; preds = %296
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 310:                                              ; preds = %296
@@ -8384,7 +8384,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %314, label %315, label %316, !prof !47, !nosanitize !46
 
 315:                                              ; preds = %310
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 316:                                              ; preds = %310
@@ -8396,7 +8396,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %320, label %321, label %322, !prof !47, !nosanitize !46
 
 321:                                              ; preds = %316
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 322:                                              ; preds = %316
@@ -8411,7 +8411,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   store ptr %327, ptr %299, align 8, !tbaa !91
   br label %328
 
-328:                                              ; preds = %281, %322, %325
+328:                                              ; preds = %325, %322, %281
   %329 = load ptr, ptr %0, align 8, !tbaa !19
   %330 = getelementptr inbounds nuw i8, ptr %329, i64 32
   %331 = load i32, ptr %330, align 8, !tbaa !101
@@ -8430,7 +8430,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %339, label %340, label %341, !prof !47, !nosanitize !46
 
 340:                                              ; preds = %388, %336
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 341:                                              ; preds = %336
@@ -8445,7 +8445,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %349, label %350, label %351, !prof !47, !nosanitize !46
 
 350:                                              ; preds = %341
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 351:                                              ; preds = %341
@@ -8461,7 +8461,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %358, label %359, label %360, !prof !47, !nosanitize !46
 
 359:                                              ; preds = %351
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 360:                                              ; preds = %351
@@ -8477,7 +8477,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %367, label %368, label %369, !prof !47, !nosanitize !46
 
 368:                                              ; preds = %360
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 369:                                              ; preds = %360
@@ -8508,7 +8508,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   %387 = getelementptr inbounds nuw i8, ptr %385, i64 %386
   br label %388
 
-388:                                              ; preds = %381, %384
+388:                                              ; preds = %384, %381
   %389 = phi ptr [ %387, %384 ], [ null, %381 ]
   %390 = load i32, ptr %9, align 4, !tbaa !64
   %391 = zext i32 %390 to i64
@@ -8518,14 +8518,14 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
 
 394:                                              ; preds = %388
   %395 = extractvalue { i64, i1 } %392, 0, !nosanitize !46
-  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %389, i64 noundef %395, i32 noundef 0) #12
+  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %389, i64 noundef %395, i32 noundef 0) #11
   %396 = load i32, ptr %9, align 4, !tbaa !64
   %397 = zext i32 %396 to i64
   store i64 %397, ptr %26, align 8, !tbaa !65
   %398 = load ptr, ptr %0, align 8, !tbaa !19
   %399 = getelementptr inbounds nuw i8, ptr %398, i64 56
   %400 = load ptr, ptr %399, align 8, !tbaa !18
-  tail call void @_tr_flush_bits(ptr noundef %400) #12
+  tail call void @_tr_flush_bits(ptr noundef %400) #11
   %401 = getelementptr inbounds nuw i8, ptr %400, i64 40
   %402 = load i64, ptr %401, align 8, !tbaa !90
   %403 = getelementptr inbounds nuw i8, ptr %398, i64 32
@@ -8555,7 +8555,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %421, label %422, label %423, !prof !47, !nosanitize !46
 
 422:                                              ; preds = %409
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 423:                                              ; preds = %409
@@ -8567,7 +8567,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %427, label %428, label %429, !prof !47, !nosanitize !46
 
 428:                                              ; preds = %423
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 429:                                              ; preds = %423
@@ -8579,7 +8579,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %433, label %434, label %435, !prof !47, !nosanitize !46
 
 434:                                              ; preds = %429
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 435:                                              ; preds = %429
@@ -8601,7 +8601,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %444, label %445, label %446, !prof !47, !nosanitize !46
 
 445:                                              ; preds = %441
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 446:                                              ; preds = %441
@@ -8613,7 +8613,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %450, label %451, label %452, !prof !47, !nosanitize !46
 
 451:                                              ; preds = %446
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 452:                                              ; preds = %446
@@ -8633,7 +8633,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %461, label %462, label %463, !prof !47, !nosanitize !46
 
 462:                                              ; preds = %458
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 463:                                              ; preds = %458
@@ -8645,7 +8645,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %467, label %468, label %469, !prof !47, !nosanitize !46
 
 468:                                              ; preds = %463
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 469:                                              ; preds = %463
@@ -8665,7 +8665,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %477, label %478, label %479, !prof !47, !nosanitize !46
 
 478:                                              ; preds = %596, %528, %474
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 479:                                              ; preds = %474
@@ -8680,7 +8680,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %487, label %488, label %489, !prof !47, !nosanitize !46
 
 488:                                              ; preds = %479
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 489:                                              ; preds = %479
@@ -8696,7 +8696,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %496, label %497, label %498, !prof !47, !nosanitize !46
 
 497:                                              ; preds = %489
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 498:                                              ; preds = %489
@@ -8712,7 +8712,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %505, label %506, label %507, !prof !47, !nosanitize !46
 
 506:                                              ; preds = %498
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 507:                                              ; preds = %498
@@ -8749,7 +8749,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   %527 = getelementptr inbounds nuw i8, ptr %525, i64 %526
   br label %528
 
-528:                                              ; preds = %521, %524
+528:                                              ; preds = %524, %521
   %529 = phi ptr [ %527, %524 ], [ null, %521 ]
   %530 = zext i32 %517 to i64
   %531 = tail call { i64, i1 } @llvm.ssub.with.overflow.i64(i64 %530, i64 %522), !nosanitize !46
@@ -8758,14 +8758,14 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
 
 533:                                              ; preds = %528
   %534 = extractvalue { i64, i1 } %531, 0, !nosanitize !46
-  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %529, i64 noundef %534, i32 noundef 1) #12
+  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %529, i64 noundef %534, i32 noundef 1) #11
   %535 = load i32, ptr %9, align 4, !tbaa !64
   %536 = zext i32 %535 to i64
   store i64 %536, ptr %26, align 8, !tbaa !65
   %537 = load ptr, ptr %0, align 8, !tbaa !19
   %538 = getelementptr inbounds nuw i8, ptr %537, i64 56
   %539 = load ptr, ptr %538, align 8, !tbaa !18
-  tail call void @_tr_flush_bits(ptr noundef %539) #12
+  tail call void @_tr_flush_bits(ptr noundef %539) #11
   %540 = getelementptr inbounds nuw i8, ptr %539, i64 40
   %541 = load i64, ptr %540, align 8, !tbaa !90
   %542 = getelementptr inbounds nuw i8, ptr %537, i64 32
@@ -8795,7 +8795,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %560, label %561, label %562, !prof !47, !nosanitize !46
 
 561:                                              ; preds = %548
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 562:                                              ; preds = %548
@@ -8807,7 +8807,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %566, label %567, label %568, !prof !47, !nosanitize !46
 
 567:                                              ; preds = %562
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 568:                                              ; preds = %562
@@ -8819,7 +8819,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %572, label %573, label %574, !prof !47, !nosanitize !46
 
 573:                                              ; preds = %568
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 574:                                              ; preds = %568
@@ -8834,7 +8834,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   store ptr %579, ptr %551, align 8, !tbaa !91
   br label %580
 
-580:                                              ; preds = %533, %574, %577
+580:                                              ; preds = %577, %574, %533
   %581 = load ptr, ptr %0, align 8, !tbaa !19
   %582 = getelementptr inbounds nuw i8, ptr %581, i64 32
   %583 = load i32, ptr %582, align 8, !tbaa !101
@@ -8858,7 +8858,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   %595 = getelementptr inbounds nuw i8, ptr %593, i64 %594
   br label %596
 
-596:                                              ; preds = %589, %592
+596:                                              ; preds = %592, %589
   %597 = phi ptr [ %595, %592 ], [ null, %589 ]
   %598 = zext i32 %517 to i64
   %599 = tail call { i64, i1 } @llvm.ssub.with.overflow.i64(i64 %598, i64 %590), !nosanitize !46
@@ -8867,14 +8867,14 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
 
 601:                                              ; preds = %596
   %602 = extractvalue { i64, i1 } %599, 0, !nosanitize !46
-  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %597, i64 noundef %602, i32 noundef 0) #12
+  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %597, i64 noundef %602, i32 noundef 0) #11
   %603 = load i32, ptr %9, align 4, !tbaa !64
   %604 = zext i32 %603 to i64
   store i64 %604, ptr %26, align 8, !tbaa !65
   %605 = load ptr, ptr %0, align 8, !tbaa !19
   %606 = getelementptr inbounds nuw i8, ptr %605, i64 56
   %607 = load ptr, ptr %606, align 8, !tbaa !18
-  tail call void @_tr_flush_bits(ptr noundef %607) #12
+  tail call void @_tr_flush_bits(ptr noundef %607) #11
   %608 = getelementptr inbounds nuw i8, ptr %607, i64 40
   %609 = load i64, ptr %608, align 8, !tbaa !90
   %610 = getelementptr inbounds nuw i8, ptr %605, i64 32
@@ -8904,7 +8904,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %628, label %629, label %630, !prof !47, !nosanitize !46
 
 629:                                              ; preds = %616
-  tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 630:                                              ; preds = %616
@@ -8916,7 +8916,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %634, label %635, label %636, !prof !47, !nosanitize !46
 
 635:                                              ; preds = %630
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 636:                                              ; preds = %630
@@ -8928,7 +8928,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   br i1 %640, label %641, label %642, !prof !47, !nosanitize !46
 
 641:                                              ; preds = %636
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 642:                                              ; preds = %636
@@ -8943,7 +8943,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   store ptr %647, ptr %619, align 8, !tbaa !91
   br label %648
 
-648:                                              ; preds = %601, %642, %645
+648:                                              ; preds = %645, %642, %601
   %649 = load ptr, ptr %0, align 8, !tbaa !19
   %650 = getelementptr inbounds nuw i8, ptr %649, i64 32
   %651 = load i32, ptr %650, align 8, !tbaa !101
@@ -8953,7 +8953,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
 653:                                              ; preds = %648, %586
   br label %654
 
-654:                                              ; preds = %452, %328, %31, %648, %580, %653
+654:                                              ; preds = %653, %648, %580, %452, %328, %31
   %655 = phi i32 [ 0, %648 ], [ %585, %580 ], [ 1, %653 ], [ 0, %31 ], [ 0, %328 ], [ 0, %452 ]
   ret i32 %655
 }
@@ -8979,7 +8979,7 @@ define internal fastcc i32 @longest_match(ptr noundef captures(none) %0, i32 nou
   br i1 %18, label %19, label %20, !prof !47, !nosanitize !46
 
 19:                                               ; preds = %2
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 20:                                               ; preds = %2
@@ -8994,7 +8994,7 @@ define internal fastcc i32 @longest_match(ptr noundef captures(none) %0, i32 nou
   br i1 %28, label %29, label %30, !prof !47, !nosanitize !46
 
 29:                                               ; preds = %152, %62, %20
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 30:                                               ; preds = %20
@@ -9192,7 +9192,7 @@ define internal fastcc i32 @longest_match(ptr noundef captures(none) %0, i32 nou
   %169 = load i8, ptr %166, align 1, !tbaa !8
   br label %170
 
-170:                                              ; preds = %160, %164, %50, %65, %71, %75
+170:                                              ; preds = %164, %160, %75, %71, %65, %50
   %171 = phi i32 [ %51, %50 ], [ %51, %65 ], [ %51, %71 ], [ %51, %75 ], [ %158, %164 ], [ %51, %160 ]
   %172 = phi i8 [ %54, %50 ], [ %54, %65 ], [ %54, %71 ], [ %54, %75 ], [ %168, %164 ], [ %54, %160 ]
   %173 = phi i8 [ %55, %50 ], [ %55, %65 ], [ %55, %71 ], [ %55, %75 ], [ %169, %164 ], [ %55, %160 ]
@@ -9210,7 +9210,7 @@ define internal fastcc i32 @longest_match(ptr noundef captures(none) %0, i32 nou
   br i1 %182, label %183, label %184, !prof !47, !nosanitize !46
 
 183:                                              ; preds = %180
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !46
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !46
   unreachable, !nosanitize !46
 
 184:                                              ; preds = %180
@@ -9218,7 +9218,7 @@ define internal fastcc i32 @longest_match(ptr noundef captures(none) %0, i32 nou
   %186 = icmp eq i32 %185, 0
   br i1 %186, label %187, label %50, !llvm.loop !136
 
-187:                                              ; preds = %170, %162, %184
+187:                                              ; preds = %184, %170, %162
   %188 = phi i32 [ %171, %184 ], [ %171, %170 ], [ %158, %162 ]
   %189 = tail call i32 @llvm.umin.i32(i32 %188, i32 %45)
   ret i32 %189
@@ -9227,38 +9227,37 @@ define internal fastcc i32 @longest_match(ptr noundef captures(none) %0, i32 nou
 declare void @_tr_flush_block(ptr noundef, ptr noundef, i64 noundef, i32 noundef) local_unnamed_addr #1
 
 ; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
-declare i64 @llvm.umin.i64(i64, i64) #11
+declare i64 @llvm.umin.i64(i64, i64) #2
 
 ; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
-declare i64 @llvm.umax.i64(i64, i64) #11
+declare i64 @llvm.umax.i64(i64, i64) #2
 
 ; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
-declare i32 @llvm.umin.i32(i32, i32) #11
+declare i32 @llvm.umin.i32(i32, i32) #2
 
 ; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
-declare i32 @llvm.usub.sat.i32(i32, i32) #11
+declare i32 @llvm.usub.sat.i32(i32, i32) #2
 
 ; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
-declare i32 @llvm.smin.i32(i32, i32) #11
+declare i32 @llvm.smin.i32(i32, i32) #2
 
 ; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
-declare <8 x i32> @llvm.usub.sat.v8i32(<8 x i32>, <8 x i32>) #11
+declare <8 x i32> @llvm.usub.sat.v8i32(<8 x i32>, <8 x i32>) #2
 
 attributes #0 = { nounwind uwtable "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #1 = { "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
-attributes #2 = { mustprogress nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none) }
+attributes #2 = { nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none) }
 attributes #3 = { cold noreturn nounwind memory(inaccessiblemem: write) }
-attributes #4 = { mustprogress nocallback nofree nounwind willreturn memory(argmem: write) }
+attributes #4 = { nocallback nofree nounwind willreturn memory(argmem: write) }
 attributes #5 = { nounwind memory(readwrite, inaccessiblemem: write, target_mem: none) uwtable "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
-attributes #6 = { mustprogress nocallback nofree nounwind willreturn memory(argmem: readwrite) }
+attributes #6 = { nocallback nofree nounwind willreturn memory(argmem: readwrite) }
 attributes #7 = { mustprogress nofree norecurse nosync nounwind willreturn memory(readwrite, inaccessiblemem: none, target_mem: none) uwtable "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #8 = { mustprogress nofree norecurse nosync nounwind willreturn memory(read, argmem: readwrite, inaccessiblemem: none, target_mem: none) uwtable "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #9 = { nounwind memory(read, inaccessiblemem: write, target_mem: none) uwtable "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #10 = { nounwind memory(read, argmem: readwrite, inaccessiblemem: write, target_mem: none) uwtable "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
-attributes #11 = { nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none) }
-attributes #12 = { nounwind }
-attributes #13 = { nomerge noreturn nounwind }
-attributes #14 = { noreturn nounwind }
+attributes #11 = { nounwind }
+attributes #12 = { nomerge noreturn nounwind }
+attributes #13 = { noreturn nounwind }
 
 !llvm.module.flags = !{!0, !1, !2}
 !llvm.ident = !{!3}
