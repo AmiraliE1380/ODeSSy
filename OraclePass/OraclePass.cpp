@@ -10,38 +10,78 @@
 #include "llvm/IR/CFG.h"
 #include "llvm/ADT/PostOrderIterator.h"
 #include "Z3Encoder.h"
+#include "llvm/Support/Path.h"
 #include <chrono>
 #include <queue>
 #include <set>
+#include <vector>
+#include <utility>
+#include <string>
+#include <cctype>
 
 
 using namespace llvm;
 
 // --- THE DEBUG FLAG ---
-// cl::opt<bool> DebugOracle("oracle-debug", cl::desc("Enable Z3 Oracle Debugging"), cl::init(false));
-bool DebugOracle = false; // Changed from cl::opt
+bool DebugOracle = false;
 
 
 namespace {
-struct OraclePass : public PassInfoMixin<OraclePass> {
-    
-    // Store the filename globally for this pass instance
-    std::string LogFilename;
 
-    // CONSTRUCTOR: Runs exactly ONCE when the plugin is loaded
-    OraclePass() {
-        auto now = std::chrono::system_clock::now();
-        std::time_t now_c = std::chrono::system_clock::to_time_t(now);
-        LogFilename = "logs/compilations/oracle_pass_" + std::to_string(now_c) + ".txt";
+// Turn a module identifier (usually the input .ll path, e.g.
+// "evaluation/zlib/deflate_integer_O3.ll") into a safe, stable log
+// filename stem ("deflate_integer_O3"). Deterministic: the same input
+// always maps to the same log file, so one benchmark == one log.
+static std::string logStemForModule(const Module &M) {
+    StringRef Id = M.getModuleIdentifier();
+
+    // Strip directory and the final extension.
+    StringRef Base = sys::path::stem(sys::path::filename(Id));
+
+    std::string Stem;
+    if (Base.empty() || Base == "<stdin>") {
+        Stem = "module";
+    } else {
+        // Replace anything that isn't [A-Za-z0-9._-] with '_' so the
+        // name is always a valid single path component.
+        for (char c : Base) {
+            Stem.push_back((std::isalnum(static_cast<unsigned char>(c)) ||
+                            c == '.' || c == '_' || c == '-') ? c : '_');
+        }
     }
+    return Stem;
+}
+
+struct OraclePass : public PassInfoMixin<OraclePass> {
+
+    // Computed lazily on the first function of a given module, then reused
+    // for every remaining function in that same opt invocation.
+    std::string LogFilename;
+    bool LogInitialized = false;
+
+    OraclePass() = default;
 
 PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM) {
-        // --- START PASS TIMER ---
         auto function_start_time = std::chrono::high_resolution_clock::now();
 
-        // Setup the internal log file (Append mode) using the persistent filename
+        // --- Resolve the per-benchmark log file exactly once per module ---
+        // Filename is derived from the module (input .ll), NOT from a
+        // wall-clock timestamp. Consequences:
+        //   * one benchmark  -> one log file (all its functions share it)
+        //   * rerunning opt  -> overwrites the same file (idempotent),
+        //                       instead of leaving timestamped duplicates
+        //   * no same-second collision race between parallel opt runs
+        // The first function TRUNCATES the file; later functions APPEND.
+        sys::fs::OpenFlags OpenMode = sys::fs::OF_Append;
+        if (!LogInitialized) {
+            LogFilename = "logs/compilations/" +
+                          logStemForModule(*F.getParent()) + ".txt";
+            OpenMode = sys::fs::OF_None; // truncate on first open this run
+            LogInitialized = true;
+        }
+
         std::error_code EC;
-        raw_fd_ostream Log(LogFilename, EC, sys::fs::OF_Append);
+        raw_fd_ostream Log(LogFilename, EC, OpenMode);
 
         if (EC) {
             errs() << "[Error] Could not open log file: " << EC.message() << "\n";
@@ -56,9 +96,7 @@ PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM) {
         int trap_attempts = 0;
         int smt_queries = 0; 
 
-        // Fetch the Loop Analysis for the current function
         LoopInfo &LI = FAM.getResult<LoopAnalysis>(F);
-        // Fetch the Dominator Tree for the CFG Detective
         DominatorTree &DT = FAM.getResult<DominatorTreeAnalysis>(F);
 
         for (BasicBlock &BB : F) {
@@ -84,7 +122,6 @@ PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM) {
             auto *Br = dyn_cast<BranchInst>(PredBB->getTerminator());
             if (!Br || !Br->isConditional()) continue;
 
-            // Figure out which branch edge leads to the trap
             Value *OvfCondition = Br->getCondition();
             bool TrapOnTrue = (Br->getSuccessor(0) == &BB);
 
@@ -95,10 +132,9 @@ PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM) {
             Z3Encoder Encoder;
             trap_attempts++;
             
-            auto [Eliminated, Latency] = tryEliminateTrap(OvfCondition, TrapOnTrue, Encoder, LI, DT, Log);
+            auto [Eliminated, Latency] = tryEliminateTrap(OvfCondition, TrapOnTrue, PredBB, Encoder, LI, DT, Log);
             TotalLatency += Latency;
             
-            // Only count actual SMT executions
             if (Latency > 0.0) {
                 smt_queries++;
             }
@@ -118,7 +154,6 @@ PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM) {
         Log << "  => Total SMT Query Latency: " << TotalLatency << " ms\n";
         Log << "  => Average SMT Query Latency: " << (smt_queries > 0 ? TotalLatency / smt_queries : 0) << " ms\n";
 
-        // --- END PASS TIMER ---
         auto function_end_time = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double, std::milli> function_duration = function_end_time - function_start_time;
         
@@ -138,23 +173,7 @@ PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM) {
 
 private:
     // ==================================================================
-    // PHASE 1 (NEW): LINEAR BACKWARD REGION WALK
-    //
-    // The old findPathsDFS enumerated every simple path from the IDom to
-    // each incoming block just to collect the SET of branch conditions
-    // along those paths -- O(2^N) traversal for information that is fully
-    // determined by the region itself. The set of relevant conditions is
-    // exactly "the terminator conditions of every block on some
-    // IDom -> incoming-block route", and any such block is necessarily
-    // dominated by the IDom (otherwise a path to the Phi block would
-    // bypass its own immediate dominator). So a plain visited-set walk
-    // backwards over predecessors, filtered by DT.dominates(IDom, Pred),
-    // collects the same set in O(V + E) with zero backtracking.
-    //
-    // Side effects of the redesign:
-    //   - No depth cap needed (each block is visited at most once).
-    //   - No failure mode: an incoming edge with no feasible route simply
-    //     gets Reach = false in Phase 2 instead of aborting the query.
+    // PHASE 1: LINEAR BACKWARD REGION WALK (no path enumeration)
     // ==================================================================
     bool collectPhiConditions(PHINode *Phi, DominatorTree &DT, std::set<Value*> &Visited, std::queue<Value*> &Worklist, raw_fd_ostream &Log) {
         BasicBlock *PhiBB = Phi->getParent();
@@ -166,7 +185,6 @@ private:
         std::set<BasicBlock*> RegionVisited;
         std::queue<BasicBlock*> BlockWorklist;
 
-        // Seed: every incoming value (the math) + every incoming block.
         for (unsigned i = 0; i < Phi->getNumIncomingValues(); ++i) {
             Value *IncVal = Phi->getIncomingValue(i);
             if (Visited.insert(IncVal).second) Worklist.push(IncVal);
@@ -175,13 +193,10 @@ private:
             if (RegionVisited.insert(IncBB).second) BlockWorklist.push(IncBB);
         }
 
-        // Linear backward walk from the incoming blocks up to the IDom.
         while (!BlockWorklist.empty()) {
             BasicBlock *BB = BlockWorklist.front();
             BlockWorklist.pop();
 
-            // Slice this block's terminator condition: it gates
-            // reachability, so Phase 2's Reach() formulas will refer to it.
             auto *Term = BB->getTerminator();
             Value *Cond = nullptr;
             if (auto *Br = dyn_cast<BranchInst>(Term)) {
@@ -191,12 +206,11 @@ private:
             }
             if (Cond && Visited.insert(Cond).second) Worklist.push(Cond);
 
-            // Region root reached: don't walk past the IDom.
             if (BB == IDomBB) continue;
 
             for (BasicBlock *Pred : predecessors(BB)) {
-                if (Pred == PhiBB) continue;                 // boundary wall
-                if (!DT.dominates(IDomBB, Pred)) continue;   // outside region
+                if (Pred == PhiBB) continue;
+                if (!DT.dominates(IDomBB, Pred)) continue;
                 if (RegionVisited.insert(Pred).second) BlockWorklist.push(Pred);
             }
         }
@@ -206,11 +220,52 @@ private:
 
     
 private:
-std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Z3Encoder &Encoder, LoopInfo &LI, DominatorTree &DT, raw_fd_ostream &Log) {        std::queue<Value*> Worklist; 
+std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, BasicBlock *PredBB, Z3Encoder &Encoder, LoopInfo &LI, DominatorTree &DT, raw_fd_ostream &Log) {
+        std::queue<Value*> Worklist; 
         std::set<Value*> Visited;    
 
         Worklist.push(TargetCond);
         Visited.insert(TargetCond);
+
+        // ==============================================================
+        // PHASE 0: DOMINATING CONTEXT GUARDS
+        //
+        // The trap condition alone is almost never contradictory -- the
+        // proof of impossibility lives in the guards the programmer
+        // already wrote upstream (e.g. `if (len > MAX) return 0;`).
+        //
+        // Walk the dominator tree upward from the trap's branch block.
+        // For every dominator D that ends in a conditional branch, if one
+        // outgoing EDGE of D dominates the trap block, then every
+        // execution reaching the trap took that edge on its last visit
+        // to D. SSA immutability guarantees the condition's operands
+        // still denote those same values at the trap, so the edge's
+        // condition can be soundly asserted -- even across loops, since
+        // loop-variant inputs are already over-approximated as free
+        // variables.
+        // ==============================================================
+        std::vector<std::pair<Value*, bool>> Guards;
+        for (DomTreeNode *N = DT.getNode(PredBB); N && N->getIDom(); N = N->getIDom()) {
+            BasicBlock *D = N->getIDom()->getBlock();
+            auto *DBr = dyn_cast<BranchInst>(D->getTerminator());
+            if (!DBr || !DBr->isConditional()) continue;
+            if (DBr->getSuccessor(0) == DBr->getSuccessor(1)) continue;
+
+            Value *GCond = nullptr;
+            bool GVal = true;
+            if (DT.dominates(BasicBlockEdge(D, DBr->getSuccessor(0)), PredBB)) {
+                GCond = DBr->getCondition(); GVal = true;
+            } else if (DT.dominates(BasicBlockEdge(D, DBr->getSuccessor(1)), PredBB)) {
+                GCond = DBr->getCondition(); GVal = false;
+            }
+
+            if (GCond) {
+                Guards.push_back({GCond, GVal});
+                // Slice the guard too, so its defining math is encoded.
+                if (Visited.insert(GCond).second) Worklist.push(GCond);
+            }
+        }
+        Log << "    -> Collected " << Guards.size() << " dominating context guard(s).\n";
 
         // PHASE 1: BACKWARD SLICE
         while (!Worklist.empty()) {
@@ -225,24 +280,21 @@ std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Z3E
                 BasicBlock *PhiBB = Phi->getParent();
                 Loop *L = LI.getLoopFor(PhiBB);
                 
-                // Is this basic block the header of a loop?
                 if (L && L->getHeader() == PhiBB) {
                     if (DebugOracle) {
                         errs() << "    [DEBUG] Over-approximating Loop Header Phi: " << *Inst << "\n";
                     }
                     continue; // Stop slicing backwards, treat as a free variable!
                 } else {
-                    // Slicer Phase 1: Linear region walk (no path enumeration)
                     if (!collectPhiConditions(Phi, DT, Visited, Worklist, Log)) {
                         return {false, 0.0};
                     }
-                    continue; // Successfully crawled the entire N-Way Phi!
+                    continue;
                 }
             }
 
             // --- THE BOUNDARY LOGIC ---
             if (isa<LoadInst>(Inst) || isa<GetElementPtrInst>(Inst)) {
-                // Stop slicing backwards here, treat as free variable boundary!
                 if (DebugOracle) {
                     errs() << "    [DEBUG] Over-approximating Boundary: " << Inst->getOpcodeName() << "\n";
                 }
@@ -251,9 +303,10 @@ std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Z3E
             if (auto *Call = dyn_cast<CallInst>(Inst)) {
                 bool IsMathIntrinsic = false;
                 if (Function *F = Call->getCalledFunction()) {
-                    StringRef Name = F->getName();
-                    if (Name.starts_with("llvm.sadd.with.overflow") || Name.starts_with("llvm.ssub.with.overflow")) {
-                        IsMathIntrinsic = true; // Let it slice through our known math!
+                    // Slice through the ENTIRE overflow family:
+                    // sadd/ssub/smul/uadd/usub/umul.with.overflow
+                    if (F->getName().contains(".with.overflow")) {
+                        IsMathIntrinsic = true;
                     }
                 }
                 
@@ -261,12 +314,11 @@ std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Z3E
                     if (DebugOracle) {
                         errs() << "    [DEBUG] Over-approximating Alien Call\n";
                     }
-                    continue; // Stop slicing backwards for alien calls
+                    continue;
                 }
             }
             // ----------------------------------
             
-            // Slice backwards: Add all operands (dependencies) to the bag
             for (Use &U : Inst->operands()) {
                 Value *Operand = U.get();
                 if (Visited.find(Operand) == Visited.end()) {
@@ -276,21 +328,14 @@ std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Z3E
             }
         }
 
-        // PHASE 2: FORWARD ENCODE (Reverse Post-Order)
-        //
-        // RPO guarantees that in the acyclic portion of the CFG, defs are
-        // encoded before uses. This matters for the memoized Phi encoding:
-        // when Reach() calls getOrCreateZ3Expr on a branch condition, the
-        // icmp behind it must already be a real formula in the ValueMap --
-        // otherwise it would silently become a free variable and the
-        // constraint would be permanently lost. (Raw function block order
-        // gave no such guarantee.)
+        // PHASE 2: FORWARD ENCODE (Reverse Post-Order so defs are encoded
+        // before uses in the acyclic CFG -- prevents branch conditions
+        // from silently becoming free variables.)
         Function *F = cast<Instruction>(TargetCond)->getFunction();
         ReversePostOrderTraversal<Function*> RPOT(F);
         for (BasicBlock *BB : RPOT) {
             for (Instruction &Inst : *BB) {
                 if (Visited.find(&Inst) != Visited.end()) {
-                    // Pass &LI here!
                     if (!Encoder.encodeInstruction(&Inst, &DT, &LI)) {
                         Log << "    -> [Abort] Unsupported Instruction: " << Inst.getOpcodeName() << "\n";
                         errs() << "    -> [Abort] Unsupported Instruction: " << Inst.getOpcodeName() << "\n";
@@ -300,15 +345,18 @@ std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Z3E
             }
         }
 
+        // PHASE 3: ASSERT CONTEXT + TRAP CONDITION
+        for (auto &G : Guards) {
+            Encoder.assertCondition(G.first, G.second);
+        }
         Encoder.assertCondition(TargetCond, TrapOnTrue);
+
         auto [ResultString, QueryLatency] = Encoder.checkSatisfiability();
         
-        // ALWAYS write the result to the internal log file
         Log << "    -> " << ResultString << "\n";
         
         bool IsUnsat = (ResultString.find("UNSAT") != std::string::npos);
 
-        // Only print to the terminal if Debug is ON, OR if we successfully proved it UNSAT
         if (DebugOracle || IsUnsat) {
             errs() << "    -> " << ResultString << "\n";
         }
