@@ -1,15 +1,12 @@
 
 [Z3 Oracle] Analyzing Function: ZSTD_compressBound
   -> Found UB Trap. Starting Backward Slice...
-    -> Collected 1 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 15.487131 ms]
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 1
   => Total SMT Queries Executed: 1
-  => Total SMT Query Latency: 1.548713e+01 ms
-  => Average SMT Query Latency: 1.548713e+01 ms
-  => Total DFS & SMT Execution Time: 3.447913e+01 ms
---------------------------------------------------
+  => Total SMT Query Latency: 1.707850e+01 ms
+  => Average SMT Query Latency: 1.707850e+01 ms
+  => Total DFS & SMT Execution Time: 2.968014e+01 ms
 
 [Z3 Oracle] Analyzing Function: ZSTD_createCCtx
   => Total Traps Eliminated: 0
@@ -17,8 +14,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.963390e-01 ms
---------------------------------------------------
+  => Total DFS & SMT Execution Time: 1.165379e+00 ms
 
 [Z3 Oracle] Analyzing Function: ZSTD_createCCtx_advanced
   => Total Traps Eliminated: 0
@@ -26,8 +22,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.074000e-01 ms
---------------------------------------------------
+  => Total DFS & SMT Execution Time: 4.774200e-02 ms
 
 [Z3 Oracle] Analyzing Function: ZSTD_initStaticCCtx
   => Total Traps Eliminated: 0
@@ -35,8 +30,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.518530e-01 ms
---------------------------------------------------
+  => Total DFS & SMT Execution Time: 3.984300e-02 ms
 
 [Z3 Oracle] Analyzing Function: ZSTD_freeCCtx
   => Total Traps Eliminated: 0
@@ -44,50 +38,31 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.342490e-01 ms
---------------------------------------------------
+  => Total DFS & SMT Execution Time: 9.422600e-02 ms
 
 [Z3 Oracle] Analyzing Function: ZSTD_sizeof_CCtx
   -> Found UB Trap. Starting Backward Slice...
-    -> Collected 1 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.020287 ms]
   -> Found UB Trap. Starting Backward Slice...
-    -> Collected 3 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.570289 ms]
   -> Found UB Trap. Starting Backward Slice...
-    -> Collected 2 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.560948 ms]
   -> Found UB Trap. Starting Backward Slice...
-    -> Collected 3 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.205662 ms]
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 4
   => Total SMT Queries Executed: 4
-  => Total SMT Query Latency: 4.135719e+01 ms
-  => Average SMT Query Latency: 1.033930e+01 ms
-  => Total DFS & SMT Execution Time: 8.165716e+01 ms
---------------------------------------------------
+  => Total SMT Query Latency: 5.887620e+01 ms
+  => Average SMT Query Latency: 1.471905e+01 ms
+  => Total DFS & SMT Execution Time: 1.163488e+02 ms
 
 [Z3 Oracle] Analyzing Function: ZSTD_sizeof_CStream
   -> Found UB Trap. Starting Backward Slice...
-    -> Collected 1 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 23.496054 ms]
   -> Found UB Trap. Starting Backward Slice...
-    -> Collected 3 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 12.984222 ms]
   -> Found UB Trap. Starting Backward Slice...
-    -> Collected 2 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.266724 ms]
   -> Found UB Trap. Starting Backward Slice...
-    -> Collected 3 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.554587 ms]
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 4
   => Total SMT Queries Executed: 4
-  => Total SMT Query Latency: 5.430159e+01 ms
-  => Average SMT Query Latency: 1.357540e+01 ms
-  => Total DFS & SMT Execution Time: 1.117004e+02 ms
---------------------------------------------------
+  => Total SMT Query Latency: 6.602017e+01 ms
+  => Average SMT Query Latency: 1.650504e+01 ms
+  => Total DFS & SMT Execution Time: 1.245175e+02 ms
 
 [Z3 Oracle] Analyzing Function: ZSTD_getSeqStore
   => Total Traps Eliminated: 0
@@ -95,8 +70,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.251510e-01 ms
---------------------------------------------------
+  => Total DFS & SMT Execution Time: 5.780230e-01 ms
 
 [Z3 Oracle] Analyzing Function: ZSTD_createCCtxParams
   => Total Traps Eliminated: 0
@@ -104,8 +78,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 3.814500e-02 ms
---------------------------------------------------
+  => Total DFS & SMT Execution Time: 3.248900e-02 ms
 
 [Z3 Oracle] Analyzing Function: ZSTD_freeCCtxParams
   => Total Traps Eliminated: 0
@@ -113,8 +86,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 3.037000e-02 ms
---------------------------------------------------
+  => Total DFS & SMT Execution Time: 5.810700e-02 ms
 
 [Z3 Oracle] Analyzing Function: ZSTD_CCtxParams_reset
   => Total Traps Eliminated: 0
@@ -122,8 +94,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 2.717700e-02 ms
---------------------------------------------------
+  => Total DFS & SMT Execution Time: 2.769200e-02 ms
 
 [Z3 Oracle] Analyzing Function: ZSTD_CCtxParams_init
   => Total Traps Eliminated: 0
@@ -131,8 +102,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 2.730500e-02 ms
---------------------------------------------------
+  => Total DFS & SMT Execution Time: 3.106300e-02 ms
 
 [Z3 Oracle] Analyzing Function: ZSTD_CCtxParams_init_advanced
   => Total Traps Eliminated: 0
@@ -140,8 +110,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 4.555000e-02 ms
---------------------------------------------------
+  => Total DFS & SMT Execution Time: 3.484000e-02 ms
 
 [Z3 Oracle] Analyzing Function: ZSTD_checkCParams
   => Total Traps Eliminated: 0
@@ -149,8 +118,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.014510e-01 ms
---------------------------------------------------
+  => Total DFS & SMT Execution Time: 2.444200e-02 ms
 
 [Z3 Oracle] Analyzing Function: ZSTD_cParam_getBounds
   => Total Traps Eliminated: 0
@@ -158,8 +126,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 5.375600e-02 ms
---------------------------------------------------
+  => Total DFS & SMT Execution Time: 2.809800e-02 ms
 
 [Z3 Oracle] Analyzing Function: ZSTD_minCLevel
   => Total Traps Eliminated: 0
@@ -167,8 +134,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.133580e-01 ms
---------------------------------------------------
+  => Total DFS & SMT Execution Time: 1.927300e-02 ms
 
 [Z3 Oracle] Analyzing Function: ZSTD_maxCLevel
   => Total Traps Eliminated: 0
@@ -176,8 +142,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 2.607200e-02 ms
---------------------------------------------------
+  => Total DFS & SMT Execution Time: 3.668700e-02 ms
 
 [Z3 Oracle] Analyzing Function: ZSTD_CCtx_setParameter
   => Total Traps Eliminated: 0
@@ -185,8 +150,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 9.765800e-02 ms
---------------------------------------------------
+  => Total DFS & SMT Execution Time: 8.038300e-02 ms
 
 [Z3 Oracle] Analyzing Function: ZSTD_CCtxParams_setParameter
   => Total Traps Eliminated: 0
@@ -194,8 +158,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 2.303650e-01 ms
---------------------------------------------------
+  => Total DFS & SMT Execution Time: 1.455470e-01 ms
 
 [Z3 Oracle] Analyzing Function: ZSTD_CCtx_getParameter
   => Total Traps Eliminated: 0
@@ -203,8 +166,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 2.091400e-01 ms
---------------------------------------------------
+  => Total DFS & SMT Execution Time: 4.261900e-02 ms
 
 [Z3 Oracle] Analyzing Function: ZSTD_CCtxParams_getParameter
   => Total Traps Eliminated: 0
@@ -212,8 +174,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.823550e-01 ms
---------------------------------------------------
+  => Total DFS & SMT Execution Time: 3.809800e-02 ms
 
 [Z3 Oracle] Analyzing Function: ZSTD_CCtx_setParametersUsingCCtxParams
   => Total Traps Eliminated: 0
@@ -221,8 +182,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.593670e-01 ms
---------------------------------------------------
+  => Total DFS & SMT Execution Time: 2.037900e-02 ms
 
 [Z3 Oracle] Analyzing Function: ZSTD_CCtx_setCParams
   => Total Traps Eliminated: 0
@@ -230,8 +190,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.162690e-01 ms
---------------------------------------------------
+  => Total DFS & SMT Execution Time: 2.593500e-02 ms
 
 [Z3 Oracle] Analyzing Function: ZSTD_CCtx_setFParams
   => Total Traps Eliminated: 0
@@ -239,8 +198,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.274130e-01 ms
---------------------------------------------------
+  => Total DFS & SMT Execution Time: 1.918000e-02 ms
 
 [Z3 Oracle] Analyzing Function: ZSTD_CCtx_setParams
   => Total Traps Eliminated: 0
@@ -248,20 +206,16 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.273370e-01 ms
---------------------------------------------------
+  => Total DFS & SMT Execution Time: 2.515400e-02 ms
 
 [Z3 Oracle] Analyzing Function: ZSTD_CCtx_setPledgedSrcSize
   -> Found UB Trap. Starting Backward Slice...
-    -> Collected 1 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.294934 ms]
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 1
   => Total SMT Queries Executed: 1
-  => Total SMT Query Latency: 8.294934e+00 ms
-  => Average SMT Query Latency: 8.294934e+00 ms
-  => Total DFS & SMT Execution Time: 1.674779e+01 ms
---------------------------------------------------
+  => Total SMT Query Latency: 1.111647e+01 ms
+  => Average SMT Query Latency: 1.111647e+01 ms
+  => Total DFS & SMT Execution Time: 2.162389e+01 ms
 
 [Z3 Oracle] Analyzing Function: ZSTD_CCtx_loadDictionary_advanced
   => Total Traps Eliminated: 0
@@ -269,8 +223,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 5.178330e-01 ms
---------------------------------------------------
+  => Total DFS & SMT Execution Time: 4.289190e-01 ms
 
 [Z3 Oracle] Analyzing Function: ZSTD_CCtx_loadDictionary_byReference
   => Total Traps Eliminated: 0
@@ -278,8 +231,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.159870e-01 ms
---------------------------------------------------
+  => Total DFS & SMT Execution Time: 4.357500e-02 ms
 
 [Z3 Oracle] Analyzing Function: ZSTD_CCtx_loadDictionary
   => Total Traps Eliminated: 0
@@ -287,8 +239,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 9.805100e-02 ms
---------------------------------------------------
+  => Total DFS & SMT Execution Time: 4.026100e-02 ms
 
 [Z3 Oracle] Analyzing Function: ZSTD_CCtx_refCDict
   => Total Traps Eliminated: 0
@@ -296,8 +247,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 8.546600e-02 ms
---------------------------------------------------
+  => Total DFS & SMT Execution Time: 3.257100e-02 ms
 
 [Z3 Oracle] Analyzing Function: ZSTD_CCtx_refThreadPool
   => Total Traps Eliminated: 0
@@ -305,8 +255,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 6.914700e-02 ms
---------------------------------------------------
+  => Total DFS & SMT Execution Time: 2.007900e-02 ms
 
 [Z3 Oracle] Analyzing Function: ZSTD_CCtx_refPrefix
   => Total Traps Eliminated: 0
@@ -314,8 +263,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 3.981300e-02 ms
---------------------------------------------------
+  => Total DFS & SMT Execution Time: 3.774700e-02 ms
 
 [Z3 Oracle] Analyzing Function: ZSTD_CCtx_refPrefix_advanced
   => Total Traps Eliminated: 0
@@ -323,8 +271,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 5.031110e-01 ms
---------------------------------------------------
+  => Total DFS & SMT Execution Time: 3.164700e-02 ms
 
 [Z3 Oracle] Analyzing Function: ZSTD_CCtx_reset
   => Total Traps Eliminated: 0
@@ -332,5 +279,40 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.653430e-01 ms
---------------------------------------------------
+  => Total DFS & SMT Execution Time: 3.593200e-02 ms
+
+[Z3 Oracle] Analyzing Function: ZSTD_cycleLog
+  -> Found UB Trap. Starting Backward Slice...
+terminate called after throwing an instance of 'z3::exception'
+PLEASE submit a bug report to https://github.com/llvm/llvm-project/issues/ and include the crash backtrace and instructions to reproduce the bug.
+Stack dump:
+0.	Program arguments: opt -load-pass-plugin=build/OraclePass.so -passes=oracle-pass -disable-output evaluation/zstd/zstd_integer_O3.ll
+1.	Running pass "function((anonymous namespace)::OraclePass)" on module "evaluation/zstd/zstd_integer_O3.ll"
+2.	Running pass "(anonymous namespace)::OraclePass" on function "ZSTD_cycleLog"
+ #0 0x000055a6466c27af llvm::sys::PrintStackTrace(llvm::raw_ostream&, int) (/home/amiralie1380/michigan/pl/llvm-project/build/bin/opt+0x320d7af)
+ #1 0x000055a6466bf704 SignalHandler(int, siginfo_t*, void*) Signals.cpp:0:0
+ #2 0x00007fa823d83420 __restore_rt (/lib/x86_64-linux-gnu/libpthread.so.0+0x14420)
+ #3 0x00007fa82385600b raise (/lib/x86_64-linux-gnu/libc.so.6+0x4300b)
+ #4 0x00007fa823835859 abort (/lib/x86_64-linux-gnu/libc.so.6+0x22859)
+ #5 0x00007fa823c0f8d1 (/lib/x86_64-linux-gnu/libstdc++.so.6+0x9e8d1)
+ #6 0x00007fa823c1b37c (/lib/x86_64-linux-gnu/libstdc++.so.6+0xaa37c)
+ #7 0x00007fa823c1b3e7 (/lib/x86_64-linux-gnu/libstdc++.so.6+0xaa3e7)
+ #8 0x00007fa823c1b699 (/lib/x86_64-linux-gnu/libstdc++.so.6+0xaa699)
+ #9 0x00007fa8237ed952 z3::context::check_error() const (build/OraclePass.so+0x5e952)
+#10 0x00007fa8237eed08 z3::to_expr(z3::context&, _Z3_ast*) (build/OraclePass.so+0x5fd08)
+#11 0x00007fa8237ebebe z3::zext(z3::expr const&, unsigned int) (build/OraclePass.so+0x5cebe)
+#12 0x00007fa8237e7e06 Z3Encoder::encodeInstruction(llvm::Instruction*, llvm::DominatorTree*, llvm::LoopInfo*) (build/OraclePass.so+0x58e06)
+#13 0x00007fa8237d595b (anonymous namespace)::OraclePass::tryEliminateTrap(llvm::Value*, bool, llvm::BasicBlock*, Z3Encoder&, llvm::LoopInfo&, llvm::DominatorTree&, llvm::raw_fd_ostream&) OraclePass.cpp:0:0
+#14 0x00007fa8237d43a3 (anonymous namespace)::OraclePass::run(llvm::Function&, llvm::AnalysisManager<llvm::Function>&) OraclePass.cpp:0:0
+#15 0x00007fa8237d3a34 llvm::detail::PassModel<llvm::Function, (anonymous namespace)::OraclePass, llvm::AnalysisManager<llvm::Function>>::run(llvm::Function&, llvm::AnalysisManager<llvm::Function>&) OraclePass.cpp:0:0
+#16 0x000055a646421e54 llvm::PassManager<llvm::Function, llvm::AnalysisManager<llvm::Function>>::run(llvm::Function&, llvm::AnalysisManager<llvm::Function>&) (/home/amiralie1380/michigan/pl/llvm-project/build/bin/opt+0x2f6ce54)
+#17 0x000055a643adf786 llvm::detail::PassModel<llvm::Function, llvm::PassManager<llvm::Function, llvm::AnalysisManager<llvm::Function>>, llvm::AnalysisManager<llvm::Function>>::run(llvm::Function&, llvm::AnalysisManager<llvm::Function>&) (/home/amiralie1380/michigan/pl/llvm-project/build/bin/opt+0x62a786)
+#18 0x000055a646420ff3 llvm::ModuleToFunctionPassAdaptor::run(llvm::Module&, llvm::AnalysisManager<llvm::Module>&) (/home/amiralie1380/michigan/pl/llvm-project/build/bin/opt+0x2f6bff3)
+#19 0x000055a643a2d1e6 llvm::detail::PassModel<llvm::Module, llvm::ModuleToFunctionPassAdaptor, llvm::AnalysisManager<llvm::Module>>::run(llvm::Module&, llvm::AnalysisManager<llvm::Module>&) (/home/amiralie1380/michigan/pl/llvm-project/build/bin/opt+0x5781e6)
+#20 0x000055a64641e114 llvm::PassManager<llvm::Module, llvm::AnalysisManager<llvm::Module>>::run(llvm::Module&, llvm::AnalysisManager<llvm::Module>&) (/home/amiralie1380/michigan/pl/llvm-project/build/bin/opt+0x2f69114)
+#21 0x000055a643a37bcb llvm::runPassPipeline(llvm::StringRef, llvm::Module&, llvm::TargetMachine*, llvm::TargetLibraryInfoImpl*, llvm::ToolOutputFile*, llvm::ToolOutputFile*, llvm::ToolOutputFile*, llvm::StringRef, llvm::ArrayRef<llvm::PassPlugin>, llvm::ArrayRef<std::function<void (llvm::PassBuilder&)>>, llvm::opt_tool::OutputKind, llvm::opt_tool::VerifierKind, bool, bool, bool, bool, bool, bool, bool, bool) (/home/amiralie1380/michigan/pl/llvm-project/build/bin/opt+0x582bcb)
+#22 0x000055a643a2ad1e optMain (/home/amiralie1380/michigan/pl/llvm-project/build/bin/opt+0x575d1e)
+#23 0x00007fa823837083 __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x24083)
+#24 0x000055a643a21b4e _start (/home/amiralie1380/michigan/pl/llvm-project/build/bin/opt+0x56cb4e)
+timeout: the monitored command dumped core
+benchmark_commands.sh: line 73: 430029 Aborted                 timeout "${TIMEOUT_SECS}s" "$@"

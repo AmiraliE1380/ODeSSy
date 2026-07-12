@@ -144,14 +144,13 @@ echo "==== compiling baselines (O1 + O3, aggressive-inline=$INLINE_AGGRESSIVE) =
 declare -A COMPILE_OK
 for key in "${BENCH_KEYS[@]}"; do
   for opt in "${OPT_LEVELS[@]}"; do
-    stem="${BENCH_STEM[$key]}_${opt}"          # SAME key Step 2 reads
-    out="evaluation/${BENCH_SUBDIR[$key]}/${stem}.ll"
+    out="evaluation/${BENCH_SUBDIR[$key]}/${BENCH_STEM[$key]}_${opt}.ll"
     printf '  -> %-10s @ -%s ... ' "$key" "$opt"
     if "${BENCH_FN[$key]}" "$opt" "$out" && [ -s "$out" ]; then
-      COMPILE_OK["$stem"]=1
+      COMPILE_OK["${key}_${opt}"]=1
       echo "ok"
     else
-      COMPILE_OK["$stem"]=0
+      COMPILE_OK["${key}_${opt}"]=0
       echo "COMPILE FAILED"
     fi
   done
@@ -217,9 +216,7 @@ for key in "${BENCH_KEYS[@]}"; do
       status="OK"
     else
       after="NA"; elim="NA"
-      if [ "$rc_x" -eq 124 ]; then status="XFORM_TIMEOUT"
-      elif [ "$rc_x" -eq 0 ]; then status="XFORM_NO_OUTPUT"
-      else status="XFORM_CRASH(rc=$rc_x)"; fi
+      if [ "$rc_x" -eq 124 ]; then status="XFORM_TIMEOUT"; else status="XFORM_CRASH(rc=$rc_x)"; fi
       CRASHED+=("$stem [transform: see $xlog]")
     fi
     if [ "$rc_a" -ne 0 ]; then

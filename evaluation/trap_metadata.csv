@@ -1,0 +1,17 @@
+benchmark,opt_level,ubsantrap_before,overflow_intrinsics,unsat,sat,ubsantrap_after,traps_eliminated,status
+zstd,O1,3461,3331,0
+0,10,NA,NA,ANALYSIS_CRASH(rc=134);XFORM_CRASH(rc=134)
+zstd,O3,2339,3325,0
+0,10,NA,NA,ANALYSIS_CRASH(rc=134);XFORM_CRASH(rc=134)
+zlib,O1,474,495,0
+0,245,NA,NA,ANALYSIS_CRASH(rc=134);XFORM_CRASH(rc=134)
+zlib,O3,455,485,0
+0,225,NA,NA,ANALYSIS_CRASH(rc=134);XFORM_CRASH(rc=134)
+openssl,O1,2229,2222,0
+0,2228,2229,0,OK
+openssl,O3,2226,2219,0
+0,2225,2226,0,OK
+polybench,O1,2,2,0
+0,1,2,0,OK
+polybench,O3,2,2,0
+0,1,2,0,OK
