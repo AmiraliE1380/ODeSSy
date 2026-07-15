@@ -1,13 +1,32 @@
 #include "Z3Encoder.h"
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/IR/CFG.h"
+#include "llvm/ADT/SmallString.h"
 #include <chrono>
 #include <string>
 #include <sstream>
 
 using namespace llvm;
 
-Z3Encoder::Z3Encoder() : Solver(Ctx) {}
+Z3Encoder::Z3Encoder() : Solver(Ctx) {
+    // Per-query safety net: a pathological query returns UNKNOWN after 5 s
+    // (handled like SAT downstream) instead of eating the 600 s process budget.
+    Solver.set("timeout", 10000u);
+}
+
+z3::expr Z3Encoder::asBool(z3::expr e) {
+    if (e.is_bool()) return e;
+    return e != Ctx.bv_val(0, e.get_sort().bv_size());
+}
+
+z3::expr Z3Encoder::asBV(z3::expr e, unsigned w) {
+    if (e.is_bool())
+        return z3::ite(e, Ctx.bv_val(1, w), Ctx.bv_val(0, w));
+    unsigned s = e.get_sort().bv_size();
+    if (s == w) return e;                       // also guards zext(e, 0)
+    return s < w ? z3::zext(e, w - s) : e.extract(w - 1, 0);
+}
+
 
 // --- Handle unnamed LLVM IR values ---
 std::string getSafeName(Value *Val) {
@@ -30,8 +49,16 @@ z3::expr Z3Encoder::getOrCreateZ3Expr(Value *Val) {
         
         // DYNAMIC WIDTH: Read exact bit-width from LLVM type
         unsigned BitWidth = CI->getType()->getIntegerBitWidth();
-        uint64_t val = CI->getZExtValue();
-        z3::expr z3_const = Ctx.bv_val((unsigned)val, BitWidth); 
+        z3::expr z3_const(Ctx);
+        if (BitWidth <= 64) {
+            // uint64_t overload: no (unsigned) truncation of the top 32 bits
+            z3_const = Ctx.bv_val(CI->getZExtValue(), BitWidth);
+        } else {
+            // i128 etc.: getZExtValue() would assert; go via decimal string
+            llvm::SmallString<40> S;
+            CI->getValue().toString(S, /*Radix=*/10, /*Signed=*/false);
+            z3_const = Ctx.bv_val(S.c_str(), BitWidth);
+        }
         ValueMap.insert({Val, z3_const});
         return z3_const;
     }
@@ -84,7 +111,7 @@ z3::expr Z3Encoder::getEdgeCond(BasicBlock *Pred, BasicBlock *Succ) {
 
     if (auto *Br = dyn_cast<BranchInst>(Term)) {
         if (!Br->isConditional()) return Ctx.bool_val(true);
-        z3::expr c = getOrCreateZ3Expr(Br->getCondition());
+        z3::expr c = asBool(getOrCreateZ3Expr(Br->getCondition()));
         z3::expr e = Ctx.bool_val(false);
         // Both arms may target the same block (br %c, %bb, %bb), so OR
         // every matching successor instead of assuming exactly one.
@@ -94,22 +121,22 @@ z3::expr Z3Encoder::getEdgeCond(BasicBlock *Pred, BasicBlock *Succ) {
     }
 
     if (auto *Sw = dyn_cast<SwitchInst>(Term)) {
-        z3::expr c = getOrCreateZ3Expr(Sw->getCondition());
+        unsigned cw = Sw->getCondition()->getType()->getIntegerBitWidth();
+        z3::expr c = asBV(getOrCreateZ3Expr(Sw->getCondition()), cw);
         z3::expr e = Ctx.bool_val(false);
 
         // Default edge: cond != case_1 && cond != case_2 && ...
         if (Sw->getDefaultDest() == Succ) {
             z3::expr def = Ctx.bool_val(true);
             for (auto Case : Sw->cases()) {
-                def = def && (c != getOrCreateZ3Expr(Case.getCaseValue()));
+                def = def && (c != asBV(getOrCreateZ3Expr(Case.getCaseValue()), cw));
             }
             e = e || def;
         }
-
         // Case edges: several case values may share one successor block.
         for (auto Case : Sw->cases()) {
             if (Case.getCaseSuccessor() == Succ) {
-                e = e || (c == getOrCreateZ3Expr(Case.getCaseValue()));
+                e = e || (c == asBV(getOrCreateZ3Expr(Case.getCaseValue()), cw));
             }
         }
         return e;
@@ -167,21 +194,37 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo
     if (ValueMap.find(Inst) != ValueMap.end()) return true;
 
     if (auto *BinOp = dyn_cast<BinaryOperator>(Inst)) {
+        // Vector / FP binops: over-approximate instead of crashing on
+        // getIntegerBitWidth() (O3 + inlining can produce vectorized IR).
+        if (!BinOp->getType()->isIntegerTy()) {
+            getOrCreateZ3Expr(Inst);
+            return true;
+        }
+        unsigned W = BinOp->getType()->getIntegerBitWidth();
         z3::expr op1 = getOrCreateZ3Expr(BinOp->getOperand(0));
         z3::expr op2 = getOrCreateZ3Expr(BinOp->getOperand(1));
         z3::expr res(Ctx);
 
         switch (BinOp->getOpcode()) {
-            case Instruction::Add:  res = op1 + op2; break;
-            case Instruction::Sub:  res = op1 - op2; break;
-            case Instruction::Mul:  res = op1 * op2; break;
-            case Instruction::SDiv: res = op1 / op2; break;
-            case Instruction::UDiv: res = z3::udiv(op1, op2); break;
-            case Instruction::SRem: res = z3::srem(op1, op2); break;
-            case Instruction::URem: res = z3::urem(op1, op2); break;
-            case Instruction::And:  res = op1.is_bool() ? (op1 && op2) : (op1 & op2); break;
-            case Instruction::Or:   res = op1.is_bool() ? (op1 || op2) : (op1 | op2); break;
-            case Instruction::Xor:  res = op1.is_bool() ? (op1 != op2) : (op1 ^ op2); break;
+            case Instruction::Add:  res = asBV(op1, W) + asBV(op2, W); break;
+            case Instruction::Sub:  res = asBV(op1, W) - asBV(op2, W); break;
+            case Instruction::Mul:  res = asBV(op1, W) * asBV(op2, W); break;
+            case Instruction::SDiv: res = asBV(op1, W) / asBV(op2, W); break;
+            case Instruction::UDiv: res = z3::udiv(asBV(op1, W), asBV(op2, W)); break;
+            case Instruction::SRem: res = z3::srem(asBV(op1, W), asBV(op2, W)); break;
+            case Instruction::URem: res = z3::urem(asBV(op1, W), asBV(op2, W)); break;
+            case Instruction::And:
+                res = (W == 1) ? (asBool(op1) && asBool(op2))
+                               : (asBV(op1, W) & asBV(op2, W));
+                break;
+            case Instruction::Or:
+                res = (W == 1) ? (asBool(op1) || asBool(op2))
+                               : (asBV(op1, W) | asBV(op2, W));
+                break;
+            case Instruction::Xor:
+                res = (W == 1) ? (asBool(op1) != asBool(op2))
+                               : (asBV(op1, W) ^ asBV(op2, W));
+                break;
             default: 
                 // OVER-APPROXIMATE unsupported binary ops
                 getOrCreateZ3Expr(Inst); 
@@ -193,6 +236,14 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo
     else if (auto *Cmp = dyn_cast<ICmpInst>(Inst)) {
         z3::expr op1 = getOrCreateZ3Expr(Cmp->getOperand(0));
         z3::expr op2 = getOrCreateZ3Expr(Cmp->getOperand(1));
+
+        // i1 operands may be Bool or 1-bit BV depending on their producer;
+        // unify to 1-bit BV so every predicate below is sort-correct.
+        if (Cmp->getOperand(0)->getType()->isIntegerTy(1)) {
+            op1 = asBV(op1, 1);
+            op2 = asBV(op2, 1);
+        }
+
         z3::expr res(Ctx);
 
         switch (Cmp->getPredicate()) {
@@ -232,11 +283,25 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo
         z3::expr res(Ctx);
 
         if (isa<TruncInst>(Inst)) {
-            res = src.extract(dst_width - 1, 0); 
+            if (dst_width == 1) {
+                // trunc iN -> i1: result must be a Bool, because the rest of
+                // the system (branches, asserts, edge conds) treats i1 as Bool.
+                res = (asBV(src, src_width).extract(0, 0) == Ctx.bv_val(1, 1));
+            } else {
+                res = asBV(src, src_width).extract(dst_width - 1, 0);
+            }
         } else if (isa<ZExtInst>(Inst)) {
-            res = z3::zext(src, dst_width - src_width); 
+            // asBV totalizes this: a Bool i1 source becomes 0/1 then widens.
+            // This is the `zext i1 %cmp to i32` fix (x += (a < b), bool->int).
+            res = asBV(src, dst_width);
         } else if (isa<SExtInst>(Inst)) {
-            res = z3::sext(src, dst_width - src_width);
+            if (Cast->getSrcTy()->isIntegerTy(1)) {
+                // sext i1 -> 0 or all-ones (bv_val(-1, w) sign-extends to all-ones)
+                res = z3::ite(asBool(src), Ctx.bv_val(-1, dst_width),
+                                           Ctx.bv_val(0, dst_width));
+            } else {
+                res = z3::sext(asBV(src, src_width), dst_width - src_width);
+            }
         } else {
             // OVER-APPROXIMATE
             getOrCreateZ3Expr(Inst);
@@ -259,6 +324,7 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo
         if (IntrinsicName.starts_with("llvm.sadd.with.overflow")) {
             z3::expr op1 = getOrCreateZ3Expr(Call->getArgOperand(0));
             z3::expr op2 = getOrCreateZ3Expr(Call->getArgOperand(1));
+
             unsigned Index = ExtVal->getIndices()[0];
             z3::expr res(Ctx);
 
@@ -296,6 +362,15 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo
         getOrCreateZ3Expr(Inst);
         return true;
     }
+    else if (auto *Sel = dyn_cast<SelectInst>(Inst)) {
+        if (!Sel->getType()->isIntegerTy()) { getOrCreateZ3Expr(Inst); return true; }
+        z3::expr c = asBool(getOrCreateZ3Expr(Sel->getCondition()));
+        z3::expr t = getOrCreateZ3Expr(Sel->getTrueValue());
+        z3::expr f = getOrCreateZ3Expr(Sel->getFalseValue());
+        if (Sel->getType()->isIntegerTy(1)) { t = asBool(t); f = asBool(f); }
+        ValueMap.insert({Inst, z3::ite(c, t, f)});
+        return true;
+    }
     else if (auto *Phi = dyn_cast<PHINode>(Inst)) {
         if (!DT) { getOrCreateZ3Expr(Inst); return true; }
 
@@ -313,9 +388,11 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo
         if (!Node || !Node->getIDom()) { getOrCreateZ3Expr(Inst); return true; }
         BasicBlock *IDomBB = Node->getIDom()->getBlock();
 
+        bool PhiIsI1 = Phi->getType()->isIntegerTy(1);
         // Base case: incoming value 0 is the "default" leaf of the ite chain.
         z3::expr res = getOrCreateZ3Expr(Phi->getIncomingValue(0));
-
+        if (PhiIsI1) res = asBool(res);
+        
         for (unsigned i = 1; i < Phi->getNumIncomingValues(); ++i) {
             BasicBlock *IncBB = Phi->getIncomingBlock(i);
             Value *IncVal = Phi->getIncomingValue(i);
@@ -327,7 +404,9 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo
             z3::expr gate = getBlockReachCond(IncBB, IDomBB, PhiBB, DT)
                             && getEdgeCond(IncBB, PhiBB);
 
-            res = z3::ite(gate, getOrCreateZ3Expr(IncVal), res);
+            z3::expr IncExpr = getOrCreateZ3Expr(IncVal);
+            if (PhiIsI1) IncExpr = asBool(IncExpr);
+            res = z3::ite(gate, IncExpr, res);
         }
 
         ValueMap.insert({Inst, res});
@@ -359,7 +438,7 @@ void Z3Encoder::assertCondition(Value *Cond, bool IsTrue) {
         }
     }
     
-    z3::expr z3_cond = getOrCreateZ3Expr(Cond);
+    z3::expr z3_cond = asBool(getOrCreateZ3Expr(Cond));
     if (!IsTrue) {
         z3_cond = !z3_cond;
     }

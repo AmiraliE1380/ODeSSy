@@ -328,40 +328,50 @@ std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Bas
             }
         }
 
-        // PHASE 2: FORWARD ENCODE (Reverse Post-Order so defs are encoded
-        // before uses in the acyclic CFG -- prevents branch conditions
-        // from silently becoming free variables.)
-        Function *F = cast<Instruction>(TargetCond)->getFunction();
-        ReversePostOrderTraversal<Function*> RPOT(F);
-        for (BasicBlock *BB : RPOT) {
-            for (Instruction &Inst : *BB) {
-                if (Visited.find(&Inst) != Visited.end()) {
-                    if (!Encoder.encodeInstruction(&Inst, &DT, &LI)) {
-                        Log << "    -> [Abort] Unsupported Instruction: " << Inst.getOpcodeName() << "\n";
-                        errs() << "    -> [Abort] Unsupported Instruction: " << Inst.getOpcodeName() << "\n";
-                        return {false, 0.0};
+
+        try {
+            // PHASE 2: FORWARD ENCODE (Reverse Post-Order so defs are encoded
+            // before uses in the acyclic CFG -- prevents branch conditions
+            // from silently becoming free variables.)
+            Function *F = PredBB->getParent();
+            ReversePostOrderTraversal<Function*> RPOT(F);
+            for (BasicBlock *BB : RPOT) {
+                for (Instruction &Inst : *BB) {
+                    if (Visited.find(&Inst) != Visited.end()) {
+                        if (!Encoder.encodeInstruction(&Inst, &DT, &LI)) {
+                            Log << "    -> [Abort] Unsupported Instruction: " << Inst.getOpcodeName() << "\n";
+                            errs() << "    -> [Abort] Unsupported Instruction: " << Inst.getOpcodeName() << "\n";
+                            return {false, 0.0};
+                        }
                     }
                 }
             }
+
+            // PHASE 3: ASSERT CONTEXT + TRAP CONDITION
+            for (auto &G : Guards) {
+                Encoder.assertCondition(G.first, G.second);
+            }
+            Encoder.assertCondition(TargetCond, TrapOnTrue);
+            auto [ResultString, QueryLatency] = Encoder.checkSatisfiability();
+
+            Log << "    -> " << ResultString << "\n";
+
+            bool IsUnsat = (ResultString.find("UNSAT") != std::string::npos);
+            if (DebugOracle || IsUnsat) {
+                errs() << "    -> " << ResultString << "\n";
+            }
+            return {IsUnsat, QueryLatency};
+        } catch (const z3::exception &e) {
+            // Sort mismatch or any other Z3 throw: degrade to "can't prove it,
+            // keep the trap" instead of std::terminate'ing the whole opt process.
+            Log << "    -> [Skip] Z3 exception: " << e.msg() << "\n";
+            errs() << "    -> [Skip] Z3 exception: " << e.msg() << "\n";
+            return {false, 0.0};
+        } catch (const std::exception &e) {
+            Log << "    -> [Skip] C++ exception: " << e.what() << "\n";
+            errs() << "    -> [Skip] C++ exception: " << e.what() << "\n";
+            return {false, 0.0};
         }
-
-        // PHASE 3: ASSERT CONTEXT + TRAP CONDITION
-        for (auto &G : Guards) {
-            Encoder.assertCondition(G.first, G.second);
-        }
-        Encoder.assertCondition(TargetCond, TrapOnTrue);
-
-        auto [ResultString, QueryLatency] = Encoder.checkSatisfiability();
-        
-        Log << "    -> " << ResultString << "\n";
-        
-        bool IsUnsat = (ResultString.find("UNSAT") != std::string::npos);
-
-        if (DebugOracle || IsUnsat) {
-            errs() << "    -> " << ResultString << "\n";
-        }
-
-        return {IsUnsat, QueryLatency};
     }
 };
 }

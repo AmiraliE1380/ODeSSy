@@ -50,4 +50,11 @@ private:
     // through PhiBB (the "boundary wall"). O(V+E) total across a region.
     z3::expr getBlockReachCond(llvm::BasicBlock *BB, llvm::BasicBlock *Root,
                                llvm::BasicBlock *PhiBB, llvm::DominatorTree *DT);
+
+    // --- i1 sort-coercion helpers ---
+    // i1 lives a double life: icmp results / bool constants are Z3 Bools,
+    // but trunc-to-i1 and BV math produce 1-bit BVs. These make every
+    // Bool<->BV bridge total instead of throwing z3::exception.
+    z3::expr asBool(z3::expr e);
+    z3::expr asBV(z3::expr e, unsigned w);
 };

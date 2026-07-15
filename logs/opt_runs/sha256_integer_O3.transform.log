@@ -5,7 +5,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 6.907030e-01 ms
+  => Total DFS & SMT Execution Time: 2.737340e-01 ms
 
 [Z3 Oracle] Analyzing Function: SHA256_Init
   => Total Traps Eliminated: 0
@@ -13,7 +13,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 2.047270e-01 ms
+  => Total DFS & SMT Execution Time: 7.758000e-02 ms
 
 [Z3 Oracle] Analyzing Function: ossl_sha256_192_init
   => Total Traps Eliminated: 0
@@ -21,7 +21,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.583530e-01 ms
+  => Total DFS & SMT Execution Time: 1.601600e-02 ms
 
 [Z3 Oracle] Analyzing Function: SHA224_Update
   -> Found UB Trap. Starting Backward Slice...
@@ -433,9 +433,9 @@
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 406
   => Total SMT Queries Executed: 406
-  => Total SMT Query Latency: 4.888448e+03 ms
-  => Average SMT Query Latency: 1.204051e+01 ms
-  => Total DFS & SMT Execution Time: 1.325697e+04 ms
+  => Total SMT Query Latency: 3.331838e+03 ms
+  => Average SMT Query Latency: 8.206497e+00 ms
+  => Total DFS & SMT Execution Time: 8.315389e+03 ms
 
 [Z3 Oracle] Analyzing Function: SHA256_Update
   -> Found UB Trap. Starting Backward Slice...
@@ -847,9 +847,9 @@
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 406
   => Total SMT Queries Executed: 406
-  => Total SMT Query Latency: 4.937776e+03 ms
-  => Average SMT Query Latency: 1.216201e+01 ms
-  => Total DFS & SMT Execution Time: 1.321339e+04 ms
+  => Total SMT Query Latency: 3.216904e+03 ms
+  => Average SMT Query Latency: 7.923409e+00 ms
+  => Total DFS & SMT Execution Time: 8.017955e+03 ms
 
 [Z3 Oracle] Analyzing Function: SHA224_Final
   -> Found UB Trap. Starting Backward Slice...
@@ -1258,9 +1258,9 @@
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 403
   => Total SMT Queries Executed: 403
-  => Total SMT Query Latency: 4.782418e+03 ms
-  => Average SMT Query Latency: 1.186704e+01 ms
-  => Total DFS & SMT Execution Time: 1.251475e+04 ms
+  => Total SMT Query Latency: 3.017858e+03 ms
+  => Average SMT Query Latency: 7.488482e+00 ms
+  => Total DFS & SMT Execution Time: 7.906981e+03 ms
 
 [Z3 Oracle] Analyzing Function: SHA256_Final
   -> Found UB Trap. Starting Backward Slice...
@@ -1669,9 +1669,9 @@
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 403
   => Total SMT Queries Executed: 403
-  => Total SMT Query Latency: 4.715703e+03 ms
-  => Average SMT Query Latency: 1.170150e+01 ms
-  => Total DFS & SMT Execution Time: 1.246074e+04 ms
+  => Total SMT Query Latency: 2.988504e+03 ms
+  => Average SMT Query Latency: 7.415642e+00 ms
+  => Total DFS & SMT Execution Time: 7.780108e+03 ms
 
 [Z3 Oracle] Analyzing Function: SHA256_Update_thunk
   -> Found UB Trap. Starting Backward Slice...
@@ -2083,9 +2083,9 @@
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 406
   => Total SMT Queries Executed: 406
-  => Total SMT Query Latency: 4.602213e+03 ms
-  => Average SMT Query Latency: 1.133550e+01 ms
-  => Total DFS & SMT Execution Time: 1.237050e+04 ms
+  => Total SMT Query Latency: 3.002547e+03 ms
+  => Average SMT Query Latency: 7.395436e+00 ms
+  => Total DFS & SMT Execution Time: 7.537619e+03 ms
 
 [Z3 Oracle] Analyzing Function: SHA256_Transform
   -> Found UB Trap. Starting Backward Slice...
@@ -2292,6 +2292,6 @@
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 201
   => Total SMT Queries Executed: 201
-  => Total SMT Query Latency: 2.336260e+03 ms
-  => Average SMT Query Latency: 1.162318e+01 ms
-  => Total DFS & SMT Execution Time: 6.070698e+03 ms
+  => Total SMT Query Latency: 1.278115e+03 ms
+  => Average SMT Query Latency: 6.358783e+00 ms
+  => Total DFS & SMT Execution Time: 3.308679e+03 ms

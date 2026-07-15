@@ -5,7 +5,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.516696e+00 ms
+  => Total DFS & SMT Execution Time: 2.539470e-01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: polybench_flush_cache
@@ -14,7 +14,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.508410e-01 ms
+  => Total DFS & SMT Execution Time: 7.263800e-02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: polybench_prepare_instruments
@@ -23,7 +23,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.388620e-01 ms
+  => Total DFS & SMT Execution Time: 6.051300e-02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: polybench_timer_start
@@ -32,7 +32,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.022900e-01 ms
+  => Total DFS & SMT Execution Time: 6.023900e-02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: polybench_timer_stop
@@ -41,7 +41,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 4.712980e-01 ms
+  => Total DFS & SMT Execution Time: 5.665500e-02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: polybench_timer_print
@@ -50,7 +50,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.252800e-01 ms
+  => Total DFS & SMT Execution Time: 6.643300e-02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: polybench_free_data
@@ -59,17 +59,17 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 3.860200e-02 ms
+  => Total DFS & SMT Execution Time: 6.067600e-02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: polybench_alloc_data
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 0 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.112032 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.554868 ms]
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 1
   => Total SMT Queries Executed: 1
-  => Total SMT Query Latency: 1.311203e+01 ms
-  => Average SMT Query Latency: 1.311203e+01 ms
-  => Total DFS & SMT Execution Time: 2.324536e+01 ms
+  => Total SMT Query Latency: 5.554868e+00 ms
+  => Average SMT Query Latency: 5.554868e+00 ms
+  => Total DFS & SMT Execution Time: 1.243795e+01 ms
 --------------------------------------------------

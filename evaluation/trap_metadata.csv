@@ -1,12 +1,12 @@
 benchmark,opt_level,ubsantrap_before,overflow_intrinsics,unsat,sat,ubsantrap_after,traps_eliminated,status
 zstd,O1,3461,3331,0
-0,10,NA,NA,ANALYSIS_CRASH(rc=134);XFORM_CRASH(rc=134)
+0,1458,NA,NA,ANALYSIS_TIMEOUT;XFORM_TIMEOUT
 zstd,O3,2339,3325,0
-0,10,NA,NA,ANALYSIS_CRASH(rc=134);XFORM_CRASH(rc=134)
+0,2238,2339,0,OK
 zlib,O1,474,495,0
-0,245,NA,NA,ANALYSIS_CRASH(rc=134);XFORM_CRASH(rc=134)
+0,450,474,0,OK
 zlib,O3,455,485,0
-0,225,NA,NA,ANALYSIS_CRASH(rc=134);XFORM_CRASH(rc=134)
+0,423,455,0,OK
 openssl,O1,2229,2222,0
 0,2228,2229,0,OK
 openssl,O3,2226,2219,0
