@@ -1,9 +1,0 @@
-
-[Z3 Oracle] Analyzing Function: sanity_check_2
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 12.212407 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  => Total Traps Eliminated: 1
-  => Total Trap Attempts: 1
-  => Total SMT Query Latency: 1.221241e+01 ms
-  => Average SMT Query Latency: 1.221241e+01 ms
