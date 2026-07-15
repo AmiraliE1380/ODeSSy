@@ -1,0 +1,616 @@
+
+[Z3 Oracle] Analyzing Function: SHA224_Init
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 8.089450e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: SHA256_Init
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 9.937100e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ossl_sha256_192_init
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.193900e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: SHA224_Update
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 1 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.903407 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 2 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.090121 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 5 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 15.520205 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 6 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.552798 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 7 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.257639 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 8 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.667727 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 9 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.379449 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 10 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 19.515642 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 11 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 18.450617 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 12 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 35.385549 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 13 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 42.623816 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 14 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 53.378648 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 15 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 53.671183 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 16 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 50.736565 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 17 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 136.701870 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 18 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 112.785189 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 19 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 124.833867 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 20 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 103.133702 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 21 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 288.767851 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 22 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 121.777794 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 23 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 525.888271 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 24 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1994.752012 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 25 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 292.770008 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 26 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1561.574031 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 27 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1731.931391 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 28 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2324.640401 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 29 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6628.861617 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 30 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10014.065341 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 31 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10008.773562 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 32 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 6444.051493 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 33 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4179.893062 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 34 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4570.037121 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 35 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5798.381440 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 36 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3720.598020 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 37 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3222.606007 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 38 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4396.380573 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 39 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4021.900815 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 40 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5392.711027 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 41 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2952.429522 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 42 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5174.584932 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 43 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3676.696984 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 44 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3110.836631 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 45 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5295.089461 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 46 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 6102.780943 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 47 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 7001.555930 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 48 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1399.891827 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 49 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3947.629259 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 50 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1873.435433 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 51 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 6771.648237 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 52 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3320.633629 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 53 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3364.460136 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 54 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4569.298218 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 55 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1789.475316 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 56 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4382.799230 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 57 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1249.307035 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 58 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 6035.994680 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 59 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4973.674095 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 60 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4960.889992 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 61 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4877.461196 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 62 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 6376.685813 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 63 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5450.739623 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 64 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5487.605353 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 65 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3216.591499 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 66 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1939.807188 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 67 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5360.661996 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 68 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3834.745906 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 69 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3007.120965 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 70 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3718.609348 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 71 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4298.510541 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 72 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4720.763998 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 73 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5524.210519 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 74 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4383.425603 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 75 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3935.703777 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 76 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3021.495564 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 77 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5535.975375 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 78 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3921.971864 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 79 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4857.097079 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 80 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 8662.601614 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 81 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 6662.661173 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 82 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4870.907441 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 83 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3499.903298 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 84 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4500.409047 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 85 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4938.046216 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 86 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2137.117331 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 87 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5973.116605 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 88 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3274.673684 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 89 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3549.302417 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 90 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2257.927587 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 91 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5174.138999 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 92 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3163.014755 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 93 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3182.376527 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 94 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5355.715644 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 95 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 6029.707282 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 96 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3434.745499 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 97 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4136.123431 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 98 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5718.984643 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 99 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5603.227286 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 100 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2407.035896 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 101 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 6511.300204 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 102 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4303.556132 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 103 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4067.806111 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 104 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3184.511226 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 105 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4447.631924 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 106 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2870.783004 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 107 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3094.220072 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 108 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4105.509876 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 109 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5140.196132 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 110 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5829.006689 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 111 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2955.929498 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 112 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 6018.993705 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 113 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3517.503959 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 114 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4798.465908 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 115 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3588.973992 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 116 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3288.212155 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 117 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3526.270836 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 118 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5666.592797 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 119 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3588.593626 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 120 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3139.583952 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 121 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2651.634303 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 122 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3423.094034 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 123 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3255.948331 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 124 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1845.761708 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 125 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3561.214354 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 126 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3263.062236 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 127 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4659.321774 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 128 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4782.650921 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 129 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 6193.998170 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 130 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3285.351428 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 131 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 7608.595258 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 132 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5099.644260 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 133 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4753.989487 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 134 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2869.472563 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 135 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3755.624969 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 136 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4774.794778 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 137 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3576.495483 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 138 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 7255.073296 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 139 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3069.741802 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 140 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3164.922195 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 141 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3614.554105 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 142 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3486.535925 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 143 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4682.079176 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 144 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5349.811787 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 145 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3272.437778 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 146 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2805.786937 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 147 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5177.312792 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 148 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2141.863816 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 149 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3374.443356 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 150 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3153.383530 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 151 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4595.350495 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 152 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5238.238730 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 153 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3155.975300 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 154 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4832.277149 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 155 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3347.531377 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 156 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3247.035939 ms]
+  => SUCCESS: Trap mathemat

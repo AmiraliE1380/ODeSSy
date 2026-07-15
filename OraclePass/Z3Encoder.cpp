@@ -225,6 +225,9 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo
                 res = (W == 1) ? (asBool(op1) != asBool(op2))
                                : (asBV(op1, W) ^ asBV(op2, W));
                 break;
+            case Instruction::Shl:  res = z3::shl(asBV(op1, W), asBV(op2, W));  break;
+            case Instruction::LShr: res = z3::lshr(asBV(op1, W), asBV(op2, W)); break;
+            case Instruction::AShr: res = z3::ashr(asBV(op1, W), asBV(op2, W)); break;
             default: 
                 // OVER-APPROXIMATE unsupported binary ops
                 getOrCreateZ3Expr(Inst); 
@@ -319,30 +322,38 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo
             getOrCreateZ3Expr(Inst); return true;
         }
 
-        StringRef IntrinsicName = Call->getCalledFunction()->getName();
-        
-        if (IntrinsicName.starts_with("llvm.sadd.with.overflow")) {
-            z3::expr op1 = getOrCreateZ3Expr(Call->getArgOperand(0));
-            z3::expr op2 = getOrCreateZ3Expr(Call->getArgOperand(1));
-
+        StringRef Name = Call->getCalledFunction()->getName();
+        bool IsAdd = Name.starts_with("llvm.sadd.with.overflow") || Name.starts_with("llvm.uadd.with.overflow");
+        bool IsSub = Name.starts_with("llvm.ssub.with.overflow") || Name.starts_with("llvm.usub.with.overflow");
+        bool IsMul = Name.starts_with("llvm.smul.with.overflow") || Name.starts_with("llvm.umul.with.overflow");
+        if (IsAdd || IsSub || IsMul) {
+            bool Signed = Name.starts_with("llvm.s");
+            unsigned W = Call->getArgOperand(0)->getType()->getIntegerBitWidth();
+            z3::expr a = asBV(getOrCreateZ3Expr(Call->getArgOperand(0)), W);
+            z3::expr b = asBV(getOrCreateZ3Expr(Call->getArgOperand(1)), W);
             unsigned Index = ExtVal->getIndices()[0];
             z3::expr res(Ctx);
-
             if (Index == 0) {
-                res = op1 + op2;
+                // Wrapped result: BV arithmetic is already mod 2^W.
+                res = IsAdd ? (a + b) : IsSub ? (a - b) : (a * b);
             } else if (Index == 1) {
-                unsigned bw = op1.get_sort().bv_size();
-                z3::expr ext_op1 = z3::sext(op1, 1);
-                z3::expr ext_op2 = z3::sext(op2, 1);
-                z3::expr ext_add = ext_op1 + ext_op2;
-                
-                z3::expr max_val = Ctx.bv_val(static_cast<uint64_t>((1ull << (bw - 1)) - 1), bw + 1);
-                z3::expr min_val = z3::sext(Ctx.bv_val(static_cast<uint64_t>(1ull << (bw - 1)), bw), 1);
-                res = (ext_add > max_val) || (ext_add < min_val);
+                // Overflow bit via Z3's exact built-in predicates.
+                if (IsAdd) {
+                    z3::expr ok = z3::bvadd_no_overflow(a, b, Signed);
+                    if (Signed) ok = ok && z3::bvadd_no_underflow(a, b);
+                    res = !ok;
+                } else if (IsSub) {
+                    z3::expr ok = z3::bvsub_no_underflow(a, b, Signed);
+                    if (Signed) ok = ok && z3::bvsub_no_overflow(a, b);
+                    res = !ok;
+                } else {
+                    z3::expr ok = z3::bvmul_no_overflow(a, b, Signed);
+                    if (Signed) ok = ok && z3::bvmul_no_underflow(a, b);
+                    res = !ok;
+                }
             } else {
                 getOrCreateZ3Expr(Inst); return true;
             }
-
             ValueMap.insert({Inst, res});
             return true;
         }
