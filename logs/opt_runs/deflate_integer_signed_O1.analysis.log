@@ -5,7 +5,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 6.256690e-01 ms
+  => Total DFS & SMT Execution Time: 1.077910e+00 ms
 
 [Z3 Oracle] Analyzing Function: deflateInit2_
   => Total Traps Eliminated: 0
@@ -13,7 +13,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.148720e-01 ms
+  => Total DFS & SMT Execution Time: 8.355100e-02 ms
 
 [Z3 Oracle] Analyzing Function: deflateEnd
   => Total Traps Eliminated: 0
@@ -21,16 +21,16 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 3.006600e-02 ms
+  => Total DFS & SMT Execution Time: 4.798700e-02 ms
 
 [Z3 Oracle] Analyzing Function: deflateReset
   -> Found UB Trap. Starting Backward Slice...
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 1
   => Total SMT Queries Executed: 1
-  => Total SMT Query Latency: 2.774846e+01 ms
-  => Average SMT Query Latency: 2.774846e+01 ms
-  => Total DFS & SMT Execution Time: 5.085145e+01 ms
+  => Total SMT Query Latency: 1.198186e+00 ms
+  => Average SMT Query Latency: 1.198186e+00 ms
+  => Total DFS & SMT Execution Time: 1.556954e+01 ms
 
 [Z3 Oracle] Analyzing Function: deflateSetDictionary
   -> Found UB Trap. Starting Backward Slice...
@@ -38,9 +38,9 @@
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 2
   => Total SMT Queries Executed: 2
-  => Total SMT Query Latency: 3.707361e+01 ms
-  => Average SMT Query Latency: 1.853680e+01 ms
-  => Total DFS & SMT Execution Time: 5.797129e+01 ms
+  => Total SMT Query Latency: 9.462744e+00 ms
+  => Average SMT Query Latency: 4.731372e+00 ms
+  => Total DFS & SMT Execution Time: 4.029499e+01 ms
 
 [Z3 Oracle] Analyzing Function: deflateGetDictionary
   => Total Traps Eliminated: 0
@@ -48,16 +48,16 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.315420e-01 ms
+  => Total DFS & SMT Execution Time: 2.531240e-01 ms
 
 [Z3 Oracle] Analyzing Function: deflateResetKeep
   -> Found UB Trap. Starting Backward Slice...
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 1
   => Total SMT Queries Executed: 1
-  => Total SMT Query Latency: 1.784708e+01 ms
-  => Average SMT Query Latency: 1.784708e+01 ms
-  => Total DFS & SMT Execution Time: 3.317160e+01 ms
+  => Total SMT Query Latency: 1.069486e+00 ms
+  => Average SMT Query Latency: 1.069486e+00 ms
+  => Total DFS & SMT Execution Time: 1.731683e+01 ms
 
 [Z3 Oracle] Analyzing Function: deflateSetHeader
   => Total Traps Eliminated: 0
@@ -65,7 +65,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 2.336200e-01 ms
+  => Total DFS & SMT Execution Time: 3.822900e-01 ms
 
 [Z3 Oracle] Analyzing Function: deflatePending
   => Total Traps Eliminated: 0
@@ -73,7 +73,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 6.104400e-02 ms
+  => Total DFS & SMT Execution Time: 5.078500e-02 ms
 
 [Z3 Oracle] Analyzing Function: deflateUsed
   => Total Traps Eliminated: 0
@@ -81,42 +81,42 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 3.872600e-02 ms
+  => Total DFS & SMT Execution Time: 1.192770e-01 ms
 
 [Z3 Oracle] Analyzing Function: deflatePrime
   -> Found UB Trap. Starting Backward Slice...
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 1
   => Total SMT Queries Executed: 1
-  => Total SMT Query Latency: 3.949656e+01 ms
-  => Average SMT Query Latency: 3.949656e+01 ms
-  => Total DFS & SMT Execution Time: 5.281132e+01 ms
+  => Total SMT Query Latency: 3.722088e+00 ms
+  => Average SMT Query Latency: 3.722088e+00 ms
+  => Total DFS & SMT Execution Time: 1.572846e+01 ms
 
 [Z3 Oracle] Analyzing Function: deflateParams
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 14.862134 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1.764908 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
   => Total Traps Eliminated: 1
   => Total Trap Attempts: 4
   => Total SMT Queries Executed: 4
-  => Total SMT Query Latency: 8.142695e+01 ms
-  => Average SMT Query Latency: 2.035674e+01 ms
-  => Total DFS & SMT Execution Time: 1.347432e+02 ms
+  => Total SMT Query Latency: 1.826975e+01 ms
+  => Average SMT Query Latency: 4.567438e+00 ms
+  => Total DFS & SMT Execution Time: 7.071462e+01 ms
 
 [Z3 Oracle] Analyzing Function: deflate
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 16.344015 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1.821225 ms]
   => SUCCESS: Trap mathematically neutralized!
   => Total Traps Eliminated: 1
   => Total Trap Attempts: 2
   => Total SMT Queries Executed: 2
-  => Total SMT Query Latency: 2.514529e+01 ms
-  => Average SMT Query Latency: 1.257265e+01 ms
-  => Total DFS & SMT Execution Time: 5.330071e+01 ms
+  => Total SMT Query Latency: 4.756595e+00 ms
+  => Average SMT Query Latency: 2.378298e+00 ms
+  => Total DFS & SMT Execution Time: 3.011404e+01 ms
 
 [Z3 Oracle] Analyzing Function: slide_hash
   => Total Traps Eliminated: 0
@@ -124,7 +124,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.770690e-01 ms
+  => Total DFS & SMT Execution Time: 7.456890e-01 ms
 
 [Z3 Oracle] Analyzing Function: deflateTune
   => Total Traps Eliminated: 0
@@ -132,25 +132,25 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 5.817100e-02 ms
+  => Total DFS & SMT Execution Time: 9.651300e-02 ms
 
 [Z3 Oracle] Analyzing Function: deflateBound_z
   -> Found UB Trap. Starting Backward Slice...
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 1
   => Total SMT Queries Executed: 1
-  => Total SMT Query Latency: 1.089867e+01 ms
-  => Average SMT Query Latency: 1.089867e+01 ms
-  => Total DFS & SMT Execution Time: 2.004170e+01 ms
+  => Total SMT Query Latency: 8.675640e-01 ms
+  => Average SMT Query Latency: 8.675640e-01 ms
+  => Total DFS & SMT Execution Time: 1.245844e+01 ms
 
 [Z3 Oracle] Analyzing Function: deflateBound
   -> Found UB Trap. Starting Backward Slice...
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 1
   => Total SMT Queries Executed: 1
-  => Total SMT Query Latency: 1.322822e+01 ms
-  => Average SMT Query Latency: 1.322822e+01 ms
-  => Total DFS & SMT Execution Time: 2.414650e+01 ms
+  => Total SMT Query Latency: 1.060757e+00 ms
+  => Average SMT Query Latency: 1.060757e+00 ms
+  => Total DFS & SMT Execution Time: 1.418918e+01 ms
 
 [Z3 Oracle] Analyzing Function: flush_pending
   => Total Traps Eliminated: 0
@@ -158,7 +158,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.059700e-01 ms
+  => Total DFS & SMT Execution Time: 9.997700e-02 ms
 
 [Z3 Oracle] Analyzing Function: deflate_stored
   => Total Traps Eliminated: 0
@@ -166,25 +166,25 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.246690e-01 ms
+  => Total DFS & SMT Execution Time: 1.068590e-01 ms
 
 [Z3 Oracle] Analyzing Function: deflate_huff
   -> Found UB Trap. Starting Backward Slice...
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 1
   => Total SMT Queries Executed: 1
-  => Total SMT Query Latency: 2.486560e+01 ms
-  => Average SMT Query Latency: 2.486560e+01 ms
-  => Total DFS & SMT Execution Time: 4.321325e+01 ms
+  => Total SMT Query Latency: 5.956635e+00 ms
+  => Average SMT Query Latency: 5.956635e+00 ms
+  => Total DFS & SMT Execution Time: 2.547588e+01 ms
 
 [Z3 Oracle] Analyzing Function: deflate_rle
   -> Found UB Trap. Starting Backward Slice...
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 1
   => Total SMT Queries Executed: 1
-  => Total SMT Query Latency: 1.144670e+01 ms
-  => Average SMT Query Latency: 1.144670e+01 ms
-  => Total DFS & SMT Execution Time: 2.416592e+01 ms
+  => Total SMT Query Latency: 4.658458e+00 ms
+  => Average SMT Query Latency: 4.658458e+00 ms
+  => Total DFS & SMT Execution Time: 2.345134e+01 ms
 
 [Z3 Oracle] Analyzing Function: deflateCopy
   => Total Traps Eliminated: 0
@@ -192,22 +192,22 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 5.005130e-01 ms
+  => Total DFS & SMT Execution Time: 4.347600e-01 ms
 
 [Z3 Oracle] Analyzing Function: deflate_fast
   -> Found UB Trap. Starting Backward Slice...
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 1
   => Total SMT Queries Executed: 1
-  => Total SMT Query Latency: 2.097793e+01 ms
-  => Average SMT Query Latency: 2.097793e+01 ms
-  => Total DFS & SMT Execution Time: 3.622563e+01 ms
+  => Total SMT Query Latency: 2.594902e+00 ms
+  => Average SMT Query Latency: 2.594902e+00 ms
+  => Total DFS & SMT Execution Time: 1.733511e+01 ms
 
 [Z3 Oracle] Analyzing Function: deflate_slow
   -> Found UB Trap. Starting Backward Slice...
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 1
   => Total SMT Queries Executed: 1
-  => Total SMT Query Latency: 2.095108e+01 ms
-  => Average SMT Query Latency: 2.095108e+01 ms
-  => Total DFS & SMT Execution Time: 3.941544e+01 ms
+  => Total SMT Query Latency: 4.025355e+00 ms
+  => Average SMT Query Latency: 4.025355e+00 ms
+  => Total DFS & SMT Execution Time: 1.519204e+01 ms

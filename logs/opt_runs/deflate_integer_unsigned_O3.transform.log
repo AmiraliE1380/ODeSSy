@@ -5,9 +5,9 @@
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 2
   => Total SMT Queries Executed: 2
-  => Total SMT Query Latency: 1.946068e+01 ms
-  => Average SMT Query Latency: 9.730338e+00 ms
-  => Total DFS & SMT Execution Time: 4.030359e+01 ms
+  => Total SMT Query Latency: 8.378653e+00 ms
+  => Average SMT Query Latency: 4.189326e+00 ms
+  => Total DFS & SMT Execution Time: 4.588629e+01 ms
 
 [Z3 Oracle] Analyzing Function: deflateInit2_
   -> Found UB Trap. Starting Backward Slice...
@@ -15,9 +15,9 @@
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 2
   => Total SMT Queries Executed: 2
-  => Total SMT Query Latency: 2.953283e+01 ms
-  => Average SMT Query Latency: 1.476642e+01 ms
-  => Total DFS & SMT Execution Time: 4.768494e+01 ms
+  => Total SMT Query Latency: 9.010348e+00 ms
+  => Average SMT Query Latency: 4.505174e+00 ms
+  => Total DFS & SMT Execution Time: 5.552070e+01 ms
 
 [Z3 Oracle] Analyzing Function: deflateEnd
   => Total Traps Eliminated: 0
@@ -25,16 +25,16 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.331880e-01 ms
+  => Total DFS & SMT Execution Time: 2.137860e-01 ms
 
 [Z3 Oracle] Analyzing Function: deflateReset
   -> Found UB Trap. Starting Backward Slice...
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 1
   => Total SMT Queries Executed: 1
-  => Total SMT Query Latency: 1.346887e+01 ms
-  => Average SMT Query Latency: 1.346887e+01 ms
-  => Total DFS & SMT Execution Time: 2.326387e+01 ms
+  => Total SMT Query Latency: 1.340501e+00 ms
+  => Average SMT Query Latency: 1.340501e+00 ms
+  => Total DFS & SMT Execution Time: 1.557485e+01 ms
 
 [Z3 Oracle] Analyzing Function: deflateSetDictionary
   -> Found UB Trap. Starting Backward Slice...
@@ -59,7 +59,7 @@
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 152.399937 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 58.333525 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
@@ -83,25 +83,25 @@
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 276.489876 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 54.159227 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
   => Total Traps Eliminated: 2
   => Total Trap Attempts: 46
   => Total SMT Queries Executed: 46
-  => Total SMT Query Latency: 6.277666e+03 ms
-  => Average SMT Query Latency: 1.364710e+02 ms
-  => Total DFS & SMT Execution Time: 6.981207e+03 ms
+  => Total SMT Query Latency: 1.840169e+03 ms
+  => Average SMT Query Latency: 4.000368e+01 ms
+  => Total DFS & SMT Execution Time: 3.499853e+03 ms
 
 [Z3 Oracle] Analyzing Function: deflateGetDictionary
   -> Found UB Trap. Starting Backward Slice...
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 1
   => Total SMT Queries Executed: 1
-  => Total SMT Query Latency: 1.814895e+01 ms
-  => Average SMT Query Latency: 1.814895e+01 ms
-  => Total DFS & SMT Execution Time: 3.500284e+01 ms
+  => Total SMT Query Latency: 2.727832e+00 ms
+  => Average SMT Query Latency: 2.727832e+00 ms
+  => Total DFS & SMT Execution Time: 2.284026e+01 ms
 
 [Z3 Oracle] Analyzing Function: deflateResetKeep
   => Total Traps Eliminated: 0
@@ -109,7 +109,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 2.804580e-01 ms
+  => Total DFS & SMT Execution Time: 2.362120e-01 ms
 
 [Z3 Oracle] Analyzing Function: deflateSetHeader
   => Total Traps Eliminated: 0
@@ -117,7 +117,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.755850e-01 ms
+  => Total DFS & SMT Execution Time: 1.730090e-01 ms
 
 [Z3 Oracle] Analyzing Function: deflatePending
   => Total Traps Eliminated: 0
@@ -125,7 +125,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.845510e-01 ms
+  => Total DFS & SMT Execution Time: 5.193370e-01 ms
 
 [Z3 Oracle] Analyzing Function: deflateUsed
   => Total Traps Eliminated: 0
@@ -133,7 +133,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.327500e-01 ms
+  => Total DFS & SMT Execution Time: 1.678080e-01 ms
 
 [Z3 Oracle] Analyzing Function: deflatePrime
   => Total Traps Eliminated: 0
@@ -141,7 +141,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.423210e-01 ms
+  => Total DFS & SMT Execution Time: 7.649800e-02 ms
 
 [Z3 Oracle] Analyzing Function: deflateParams
   -> Found UB Trap. Starting Backward Slice...
@@ -193,9 +193,9 @@
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 46
   => Total SMT Queries Executed: 46
-  => Total SMT Query Latency: 9.351788e+02 ms
-  => Average SMT Query Latency: 2.032997e+01 ms
-  => Total DFS & SMT Execution Time: 1.529660e+03 ms
+  => Total SMT Query Latency: 3.847406e+02 ms
+  => Average SMT Query Latency: 8.363927e+00 ms
+  => Total DFS & SMT Execution Time: 1.206849e+03 ms
 
 [Z3 Oracle] Analyzing Function: deflate
   -> Found UB Trap. Starting Backward Slice...
@@ -259,9 +259,9 @@
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 58
   => Total SMT Queries Executed: 58
-  => Total SMT Query Latency: 1.116479e+03 ms
-  => Average SMT Query Latency: 1.924964e+01 ms
-  => Total DFS & SMT Execution Time: 1.876252e+03 ms
+  => Total SMT Query Latency: 3.441783e+02 ms
+  => Average SMT Query Latency: 5.934109e+00 ms
+  => Total DFS & SMT Execution Time: 1.394860e+03 ms
 
 [Z3 Oracle] Analyzing Function: slide_hash
   -> Found UB Trap. Starting Backward Slice...
@@ -269,9 +269,9 @@
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 2
   => Total SMT Queries Executed: 2
-  => Total SMT Query Latency: 1.816444e+01 ms
-  => Average SMT Query Latency: 9.082219e+00 ms
-  => Total DFS & SMT Execution Time: 3.152856e+01 ms
+  => Total SMT Query Latency: 1.267526e+00 ms
+  => Average SMT Query Latency: 6.337630e-01 ms
+  => Total DFS & SMT Execution Time: 2.300745e+01 ms
 
 [Z3 Oracle] Analyzing Function: deflateTune
   => Total Traps Eliminated: 0
@@ -279,7 +279,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.497240e-01 ms
+  => Total DFS & SMT Execution Time: 1.115600e-01 ms
 
 [Z3 Oracle] Analyzing Function: deflateBound_z
   -> Found UB Trap. Starting Backward Slice...
@@ -287,40 +287,40 @@
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 13.115013 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1.633351 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 21.394545 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2.738279 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 22.584619 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2.447548 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 22.833333 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2.944455 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 15.579842 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1.019752 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 32.197548 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1.761025 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 33.002407 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3.881493 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 58.806044 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3.163814 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
   => Total Traps Eliminated: 8
   => Total Trap Attempts: 17
   => Total SMT Queries Executed: 17
-  => Total SMT Query Latency: 5.700962e+02 ms
-  => Average SMT Query Latency: 3.353507e+01 ms
-  => Total DFS & SMT Execution Time: 7.404285e+02 ms
+  => Total SMT Query Latency: 2.430829e+02 ms
+  => Average SMT Query Latency: 1.429900e+01 ms
+  => Total DFS & SMT Execution Time: 5.748643e+02 ms
 
 [Z3 Oracle] Analyzing Function: deflateBound
   -> Found UB Trap. Starting Backward Slice...
@@ -328,40 +328,40 @@
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 15.031035 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 0.773378 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 35.590949 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1.847410 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 40.379731 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2.191134 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 44.429987 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3.051362 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 25.259013 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1.751324 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 26.467120 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2.947576 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 47.769062 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4.298530 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 40.114406 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5.060920 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
   => Total Traps Eliminated: 8
   => Total Trap Attempts: 17
   => Total SMT Queries Executed: 17
-  => Total SMT Query Latency: 6.481425e+02 ms
-  => Average SMT Query Latency: 3.812603e+01 ms
-  => Total DFS & SMT Execution Time: 8.585122e+02 ms
+  => Total SMT Query Latency: 2.676340e+02 ms
+  => Average SMT Query Latency: 1.574318e+01 ms
+  => Total DFS & SMT Execution Time: 6.562851e+02 ms
 
 [Z3 Oracle] Analyzing Function: flush_pending
   -> Found UB Trap. Starting Backward Slice...
@@ -370,15 +370,15 @@
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 3
   => Total SMT Queries Executed: 3
-  => Total SMT Query Latency: 5.065338e+01 ms
-  => Average SMT Query Latency: 1.688446e+01 ms
-  => Total DFS & SMT Execution Time: 8.355570e+01 ms
+  => Total SMT Query Latency: 4.294807e+00 ms
+  => Average SMT Query Latency: 1.431602e+00 ms
+  => Total DFS & SMT Execution Time: 3.905885e+01 ms
 
 [Z3 Oracle] Analyzing Function: deflate_stored
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 14.727847 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 0.519758 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
@@ -418,9 +418,9 @@
   => Total Traps Eliminated: 1
   => Total Trap Attempts: 38
   => Total SMT Queries Executed: 38
-  => Total SMT Query Latency: 1.079445e+03 ms
-  => Average SMT Query Latency: 2.840646e+01 ms
-  => Total DFS & SMT Execution Time: 1.555947e+03 ms
+  => Total SMT Query Latency: 4.052890e+02 ms
+  => Average SMT Query Latency: 1.066550e+01 ms
+  => Total DFS & SMT Execution Time: 1.192398e+03 ms
 
 [Z3 Oracle] Analyzing Function: deflate_huff
   -> Found UB Trap. Starting Backward Slice...
@@ -443,7 +443,7 @@
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 81.771687 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 29.991803 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
@@ -463,9 +463,9 @@
   => Total Traps Eliminated: 1
   => Total Trap Attempts: 35
   => Total SMT Queries Executed: 35
-  => Total SMT Query Latency: 1.932390e+03 ms
-  => Average SMT Query Latency: 5.521113e+01 ms
-  => Total DFS & SMT Execution Time: 2.404371e+03 ms
+  => Total SMT Query Latency: 4.002337e+02 ms
+  => Average SMT Query Latency: 1.143525e+01 ms
+  => Total DFS & SMT Execution Time: 1.058160e+03 ms
 
 [Z3 Oracle] Analyzing Function: deflate_rle
   -> Found UB Trap. Starting Backward Slice...
@@ -488,7 +488,7 @@
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 99.691113 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 22.622433 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
@@ -514,18 +514,18 @@
   => Total Traps Eliminated: 1
   => Total Trap Attempts: 41
   => Total SMT Queries Executed: 41
-  => Total SMT Query Latency: 2.470454e+03 ms
-  => Average SMT Query Latency: 6.025498e+01 ms
-  => Total DFS & SMT Execution Time: 3.051257e+03 ms
+  => Total SMT Query Latency: 7.771210e+02 ms
+  => Average SMT Query Latency: 1.895417e+01 ms
+  => Total DFS & SMT Execution Time: 1.836436e+03 ms
 
 [Z3 Oracle] Analyzing Function: deflateCopy
   -> Found UB Trap. Starting Backward Slice...
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 1
   => Total SMT Queries Executed: 1
-  => Total SMT Query Latency: 1.056076e+01 ms
-  => Average SMT Query Latency: 1.056076e+01 ms
-  => Total DFS & SMT Execution Time: 1.892742e+01 ms
+  => Total SMT Query Latency: 1.507089e+00 ms
+  => Average SMT Query Latency: 1.507089e+00 ms
+  => Total DFS & SMT Execution Time: 1.262342e+01 ms
 
 [Z3 Oracle] Analyzing Function: deflate_fast
   -> Found UB Trap. Starting Backward Slice...
@@ -548,7 +548,7 @@
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 99.859118 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 30.520424 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
@@ -583,9 +583,9 @@
   => Total Traps Eliminated: 1
   => Total Trap Attempts: 50
   => Total SMT Queries Executed: 50
-  => Total SMT Query Latency: 5.585863e+03 ms
-  => Average SMT Query Latency: 1.117173e+02 ms
-  => Total DFS & SMT Execution Time: 6.317099e+03 ms
+  => Total SMT Query Latency: 1.406598e+03 ms
+  => Average SMT Query Latency: 2.813196e+01 ms
+  => Total DFS & SMT Execution Time: 2.910762e+03 ms
 
 [Z3 Oracle] Analyzing Function: deflate_slow
   -> Found UB Trap. Starting Backward Slice...
@@ -608,7 +608,7 @@
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 150.604079 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 17.803886 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
@@ -628,7 +628,7 @@
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 184.881816 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5.261840 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
@@ -659,6 +659,6 @@
   => Total Traps Eliminated: 2
   => Total Trap Attempts: 64
   => Total SMT Queries Executed: 64
-  => Total SMT Query Latency: 9.160288e+03 ms
-  => Average SMT Query Latency: 1.431295e+02 ms
-  => Total DFS & SMT Execution Time: 1.030416e+04 ms
+  => Total SMT Query Latency: 2.886711e+03 ms
+  => Average SMT Query Latency: 4.510486e+01 ms
+  => Total DFS & SMT Execution Time: 5.457845e+03 ms

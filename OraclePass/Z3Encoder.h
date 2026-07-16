@@ -41,6 +41,9 @@ public:
     void assertCondition(llvm::Value *Cond, bool IsTrue);
     std::pair<std::string, double> checkSatisfiability();
 
+    void push();
+    void pop();
+
 private:
     // Encodes the branch/switch constraint attached to a single CFG edge
     // Pred -> Succ (br cond / !cond, switch == case, switch default, or a

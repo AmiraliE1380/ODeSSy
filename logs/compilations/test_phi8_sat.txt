@@ -1,0 +1,12 @@
+
+[Z3 Oracle] Analyzing Function: test_phi8_sat
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.455500 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.145550e+01 ms
+  => Average SMT Query Latency: 1.145550e+01 ms
+  => Total DFS & SMT Execution Time: 2.535288e+01 ms
+--------------------------------------------------

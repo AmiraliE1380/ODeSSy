@@ -351,16 +351,30 @@ std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Bas
             for (auto &G : Guards) {
                 Encoder.assertCondition(G.first, G.second);
             }
+            Encoder.push();                                    // context | trap boundary
             Encoder.assertCondition(TargetCond, TrapOnTrue);
             auto [ResultString, QueryLatency] = Encoder.checkSatisfiability();
-
             Log << "    -> " << ResultString << "\n";
-
             bool IsUnsat = (ResultString.find("UNSAT") != std::string::npos);
+            if (IsUnsat) {
+                // VACUITY AUDIT: an UNSAT only means "trap dead" if the guards
+                // ALONE are satisfiable. A contradictory context makes every
+                // query vacuously UNSAT (encoding bug or unreachable code).
+                Encoder.pop();                                 // drop trap condition only
+                auto [CtxResult, CtxLatency] = Encoder.checkSatisfiability();
+                QueryLatency += CtxLatency;
+                if (CtxResult.find("UNSAT") != std::string::npos) {
+                    Log << "    -> [VACUOUS] guards alone are contradictory -- refusing to eliminate. Investigate!\n";
+                    errs() << "    -> [VACUOUS] guards alone are contradictory -- refusing to eliminate. Investigate!\n";
+                    return {false, QueryLatency};
+                }
+                Log << "    -> [vacuity-ok] context alone is satisfiable\n";
+            }
             if (DebugOracle || IsUnsat) {
                 errs() << "    -> " << ResultString << "\n";
             }
             return {IsUnsat, QueryLatency};
+            
         } catch (const z3::exception &e) {
             // Sort mismatch or any other Z3 throw: degrade to "can't prove it,
             // keep the trap" instead of std::terminate'ing the whole opt process.

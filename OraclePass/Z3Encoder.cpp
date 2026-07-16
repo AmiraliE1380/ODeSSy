@@ -14,6 +14,9 @@ Z3Encoder::Z3Encoder() : Solver(Ctx) {
     Solver.set("timeout", 10000u);
 }
 
+void Z3Encoder::push() { Solver.push(); }
+void Z3Encoder::pop()  { Solver.pop(); }
+
 z3::expr Z3Encoder::asBool(z3::expr e) {
     if (e.is_bool()) return e;
     return e != Ctx.bv_val(0, e.get_sort().bv_size());
