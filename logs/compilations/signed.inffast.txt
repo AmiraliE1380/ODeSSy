@@ -1,0 +1,9 @@
+
+[Z3 Oracle] Analyzing Function: inflate_fast
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 6.058640e-01 ms
+--------------------------------------------------

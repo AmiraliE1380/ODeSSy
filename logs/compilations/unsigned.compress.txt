@@ -1,0 +1,102 @@
+
+[Z3 Oracle] Analyzing Function: compress2_z
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 4 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.775167 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 4 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.655879 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 2
+  => Total SMT Queries Executed: 2
+  => Total SMT Query Latency: 4.431046e+00 ms
+  => Average SMT Query Latency: 2.215523e+00 ms
+  => Total DFS & SMT Execution Time: 2.977219e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: compress2
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 4 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.672179 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 4 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.380036 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 2
+  => Total SMT Queries Executed: 2
+  => Total SMT Query Latency: 3.052215e+00 ms
+  => Average SMT Query Latency: 1.526108e+00 ms
+  => Total DFS & SMT Execution Time: 2.408970e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: compress_z
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 4 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.563321 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 4 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.433258 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 2
+  => Total SMT Queries Executed: 2
+  => Total SMT Query Latency: 2.996579e+00 ms
+  => Average SMT Query Latency: 1.498289e+00 ms
+  => Total DFS & SMT Execution Time: 1.963999e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: compress
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 4 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.016482 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 4 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.474470 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 2
+  => Total SMT Queries Executed: 2
+  => Total SMT Query Latency: 3.490952e+00 ms
+  => Average SMT Query Latency: 1.745476e+00 ms
+  => Total DFS & SMT Execution Time: 1.997741e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: compressBound_z
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.306338 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 1 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.534479 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 2 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.253236 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 3 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.685972 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 4
+  => Total SMT Queries Executed: 4
+  => Total SMT Query Latency: 1.078002e+01 ms
+  => Average SMT Query Latency: 2.695006e+00 ms
+  => Total DFS & SMT Execution Time: 4.915226e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: compressBound
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.427881 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 1 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.699316 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 2 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.988972 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 3 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.528706 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 4
+  => Total SMT Queries Executed: 4
+  => Total SMT Query Latency: 1.964487e+01 ms
+  => Average SMT Query Latency: 4.911219e+00 ms
+  => Total DFS & SMT Execution Time: 6.048164e+01 ms
+--------------------------------------------------

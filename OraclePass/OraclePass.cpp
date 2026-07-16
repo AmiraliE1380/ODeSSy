@@ -59,7 +59,12 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
     std::string LogFilename;
     bool LogInitialized = false;
 
+    // When true, every UNSAT is audited: guards alone must be SAT.
+    // Costs one extra solver query per UNSAT (not per trap) -- enable in
+    // dev/audit runs, disable for performance benchmarking.
+    bool VacuityCheck = false;
     OraclePass() = default;
+    explicit OraclePass(bool Vacuity) : VacuityCheck(Vacuity) {}
 
 PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM) {
         auto function_start_time = std::chrono::high_resolution_clock::now();
@@ -356,7 +361,7 @@ std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Bas
             auto [ResultString, QueryLatency] = Encoder.checkSatisfiability();
             Log << "    -> " << ResultString << "\n";
             bool IsUnsat = (ResultString.find("UNSAT") != std::string::npos);
-            if (IsUnsat) {
+            if (IsUnsat && VacuityCheck) {
                 // VACUITY AUDIT: an UNSAT only means "trap dead" if the guards
                 // ALONE are satisfiable. A contradictory context makes every
                 // query vacuously UNSAT (encoding bug or unreachable code).
@@ -398,7 +403,11 @@ llvmGetPassPluginInfo() {
                     [](StringRef Name, FunctionPassManager &FPM,
                        ArrayRef<PassBuilder::PipelineElement>) {
                         if (Name == "oracle-pass") {
-                            FPM.addPass(OraclePass());
+                            FPM.addPass(OraclePass(false));
+                            return true;
+                        }
+                        if (Name == "oracle-pass<vacuity>") {
+                            FPM.addPass(OraclePass(true));
                             return true;
                         }
                         return false;
