@@ -5,7 +5,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.330765e+00 ms
+  => Total DFS & SMT Execution Time: 2.343290e-01 ms
 
 [Z3 Oracle] Analyzing Function: uncompress2
   => Total Traps Eliminated: 0
@@ -13,7 +13,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.333940e-01 ms
+  => Total DFS & SMT Execution Time: 9.481100e-02 ms
 
 [Z3 Oracle] Analyzing Function: uncompress_z
   => Total Traps Eliminated: 0
@@ -21,7 +21,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.346750e-01 ms
+  => Total DFS & SMT Execution Time: 7.396400e-02 ms
 
 [Z3 Oracle] Analyzing Function: uncompress
   => Total Traps Eliminated: 0
@@ -29,4 +29,4 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 9.888500e-02 ms
+  => Total DFS & SMT Execution Time: 3.046900e-02 ms

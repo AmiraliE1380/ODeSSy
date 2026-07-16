@@ -10,9 +10,9 @@
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 7
   => Total SMT Queries Executed: 7
-  => Total SMT Query Latency: 4.871941e+01 ms
-  => Average SMT Query Latency: 6.959915e+00 ms
-  => Total DFS & SMT Execution Time: 2.960114e+02 ms
+  => Total SMT Query Latency: 5.669962e+01 ms
+  => Average SMT Query Latency: 8.099945e+00 ms
+  => Total DFS & SMT Execution Time: 2.554275e+02 ms
 
 [Z3 Oracle] Analyzing Function: inflate_fixed
   => Total Traps Eliminated: 0
@@ -20,4 +20,4 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 7.824400e-02 ms
+  => Total DFS & SMT Execution Time: 6.715700e-02 ms

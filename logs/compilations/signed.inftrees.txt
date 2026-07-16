@@ -2,13 +2,13 @@
 [Z3 Oracle] Analyzing Function: inflate_table
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 21 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 21.401065 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 17.091540 ms]
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 1
   => Total SMT Queries Executed: 1
-  => Total SMT Query Latency: 2.140106e+01 ms
-  => Average SMT Query Latency: 2.140106e+01 ms
-  => Total DFS & SMT Execution Time: 6.753378e+01 ms
+  => Total SMT Query Latency: 1.709154e+01 ms
+  => Average SMT Query Latency: 1.709154e+01 ms
+  => Total DFS & SMT Execution Time: 4.817901e+01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: inflate_fixed
@@ -17,5 +17,5 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.061350e-01 ms
+  => Total DFS & SMT Execution Time: 8.522400e-02 ms
 --------------------------------------------------

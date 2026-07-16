@@ -5,7 +5,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 5.063510e-01 ms
+  => Total DFS & SMT Execution Time: 2.676330e-01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: inflateReset
@@ -14,7 +14,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 9.501900e-02 ms
+  => Total DFS & SMT Execution Time: 6.526200e-02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: inflateReset2
@@ -23,7 +23,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.149510e-01 ms
+  => Total DFS & SMT Execution Time: 8.834600e-02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: inflateInit2_
@@ -32,7 +32,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.004580e-01 ms
+  => Total DFS & SMT Execution Time: 6.045200e-02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: inflateInit_
@@ -41,7 +41,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 9.188700e-02 ms
+  => Total DFS & SMT Execution Time: 5.629900e-02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: inflatePrime
@@ -50,7 +50,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 2.443520e-01 ms
+  => Total DFS & SMT Execution Time: 6.833400e-02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: inflate
@@ -59,7 +59,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 6.824420e-01 ms
+  => Total DFS & SMT Execution Time: 4.553280e-01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: inflateEnd
@@ -68,7 +68,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.000230e-01 ms
+  => Total DFS & SMT Execution Time: 5.862000e-02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: inflateGetDictionary
@@ -77,7 +77,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.082070e-01 ms
+  => Total DFS & SMT Execution Time: 9.583300e-02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: inflateSetDictionary
@@ -86,7 +86,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 7.343600e-02 ms
+  => Total DFS & SMT Execution Time: 9.033400e-02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: inflateGetHeader
@@ -95,7 +95,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 9.476800e-02 ms
+  => Total DFS & SMT Execution Time: 4.947300e-02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: inflateSync
@@ -104,7 +104,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 7.426600e-02 ms
+  => Total DFS & SMT Execution Time: 1.031750e-01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: inflateSyncPoint
@@ -113,7 +113,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.176940e-01 ms
+  => Total DFS & SMT Execution Time: 4.915400e-02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: inflateCopy
@@ -122,7 +122,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 3.955400e-02 ms
+  => Total DFS & SMT Execution Time: 7.956200e-02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: inflateUndermine
@@ -131,7 +131,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 2.503400e-02 ms
+  => Total DFS & SMT Execution Time: 5.111300e-02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: inflateValidate
@@ -140,7 +140,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 2.419800e-02 ms
+  => Total DFS & SMT Execution Time: 7.493900e-02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: inflateMark
@@ -149,7 +149,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 2.280700e-02 ms
+  => Total DFS & SMT Execution Time: 7.183800e-02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: inflateCodesUsed
@@ -158,5 +158,5 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 2.080200e-02 ms
+  => Total DFS & SMT Execution Time: 5.807400e-02 ms
 --------------------------------------------------

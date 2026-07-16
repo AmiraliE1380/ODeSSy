@@ -5,7 +5,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 3.786750e-01 ms
+  => Total DFS & SMT Execution Time: 3.179780e-01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: crc32_z
@@ -14,7 +14,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 2.389770e-01 ms
+  => Total DFS & SMT Execution Time: 1.627200e-01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: crc32
@@ -23,7 +23,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 2.072860e-01 ms
+  => Total DFS & SMT Execution Time: 1.424890e-01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: crc32_combine_gen64
@@ -32,7 +32,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 7.221400e-02 ms
+  => Total DFS & SMT Execution Time: 8.018200e-02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: crc32_combine_gen
@@ -41,7 +41,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 2.740200e-02 ms
+  => Total DFS & SMT Execution Time: 7.475000e-02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: crc32_combine_op
@@ -50,7 +50,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 3.008200e-02 ms
+  => Total DFS & SMT Execution Time: 7.943800e-02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: crc32_combine64
@@ -59,7 +59,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 3.061000e-02 ms
+  => Total DFS & SMT Execution Time: 8.664600e-02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: crc32_combine
@@ -68,5 +68,5 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.002740e-01 ms
+  => Total DFS & SMT Execution Time: 9.020700e-02 ms
 --------------------------------------------------

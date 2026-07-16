@@ -21,9 +21,9 @@
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 18
   => Total SMT Queries Executed: 18
-  => Total SMT Query Latency: 1.037114e+02 ms
-  => Average SMT Query Latency: 5.761747e+00 ms
-  => Total DFS & SMT Execution Time: 4.110583e+02 ms
+  => Total SMT Query Latency: 6.095939e+01 ms
+  => Average SMT Query Latency: 3.386633e+00 ms
+  => Total DFS & SMT Execution Time: 2.577524e+02 ms
 
 [Z3 Oracle] Analyzing Function: gzfwrite
   -> Found UB Trap. Starting Backward Slice...
@@ -48,9 +48,9 @@
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 19
   => Total SMT Queries Executed: 19
-  => Total SMT Query Latency: 9.677851e+03 ms
-  => Average SMT Query Latency: 5.093606e+02 ms
-  => Total DFS & SMT Execution Time: 1.047814e+04 ms
+  => Total SMT Query Latency: 4.088852e+03 ms
+  => Average SMT Query Latency: 2.152028e+02 ms
+  => Total DFS & SMT Execution Time: 4.568441e+03 ms
 
 [Z3 Oracle] Analyzing Function: gzputc
   -> Found UB Trap. Starting Backward Slice...
@@ -78,9 +78,9 @@
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 22
   => Total SMT Queries Executed: 22
-  => Total SMT Query Latency: 9.167943e+01 ms
-  => Average SMT Query Latency: 4.167247e+00 ms
-  => Total DFS & SMT Execution Time: 3.843761e+02 ms
+  => Total SMT Query Latency: 6.015546e+01 ms
+  => Average SMT Query Latency: 2.734339e+00 ms
+  => Total DFS & SMT Execution Time: 2.433826e+02 ms
 
 [Z3 Oracle] Analyzing Function: gzputs
   -> Found UB Trap. Starting Backward Slice...
@@ -104,9 +104,9 @@
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 18
   => Total SMT Queries Executed: 18
-  => Total SMT Query Latency: 8.225240e+01 ms
-  => Average SMT Query Latency: 4.569578e+00 ms
-  => Total DFS & SMT Execution Time: 3.549466e+02 ms
+  => Total SMT Query Latency: 5.917675e+01 ms
+  => Average SMT Query Latency: 3.287597e+00 ms
+  => Total DFS & SMT Execution Time: 2.328208e+02 ms
 
 [Z3 Oracle] Analyzing Function: gzvprintf
   -> Found UB Trap. Starting Backward Slice...
@@ -121,9 +121,9 @@
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 9
   => Total SMT Queries Executed: 9
-  => Total SMT Query Latency: 1.500389e+01 ms
-  => Average SMT Query Latency: 1.667099e+00 ms
-  => Total DFS & SMT Execution Time: 1.037387e+02 ms
+  => Total SMT Query Latency: 1.145734e+01 ms
+  => Average SMT Query Latency: 1.273038e+00 ms
+  => Total DFS & SMT Execution Time: 7.343055e+01 ms
 
 [Z3 Oracle] Analyzing Function: gz_vacate
   -> Found UB Trap. Starting Backward Slice...
@@ -131,9 +131,9 @@
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 2
   => Total SMT Queries Executed: 2
-  => Total SMT Query Latency: 4.131299e+00 ms
-  => Average SMT Query Latency: 2.065650e+00 ms
-  => Total DFS & SMT Execution Time: 2.495969e+01 ms
+  => Total SMT Query Latency: 3.205721e+00 ms
+  => Average SMT Query Latency: 1.602861e+00 ms
+  => Total DFS & SMT Execution Time: 1.903157e+01 ms
 
 [Z3 Oracle] Analyzing Function: gzprintf
   -> Found UB Trap. Starting Backward Slice...
@@ -148,9 +148,9 @@
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 9
   => Total SMT Queries Executed: 9
-  => Total SMT Query Latency: 1.868932e+01 ms
-  => Average SMT Query Latency: 2.076591e+00 ms
-  => Total DFS & SMT Execution Time: 1.123250e+02 ms
+  => Total SMT Query Latency: 1.727472e+01 ms
+  => Average SMT Query Latency: 1.919413e+00 ms
+  => Total DFS & SMT Execution Time: 1.188890e+02 ms
 
 [Z3 Oracle] Analyzing Function: gzflush
   -> Found UB Trap. Starting Backward Slice...
@@ -163,9 +163,9 @@
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 7
   => Total SMT Queries Executed: 7
-  => Total SMT Query Latency: 1.237345e+01 ms
-  => Average SMT Query Latency: 1.767635e+00 ms
-  => Total DFS & SMT Execution Time: 9.467523e+01 ms
+  => Total SMT Query Latency: 1.322873e+01 ms
+  => Average SMT Query Latency: 1.889819e+00 ms
+  => Total DFS & SMT Execution Time: 9.497009e+01 ms
 
 [Z3 Oracle] Analyzing Function: gzsetparams
   -> Found UB Trap. Starting Backward Slice...
@@ -178,9 +178,9 @@
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 7
   => Total SMT Queries Executed: 7
-  => Total SMT Query Latency: 1.170561e+01 ms
-  => Average SMT Query Latency: 1.672231e+00 ms
-  => Total DFS & SMT Execution Time: 7.886302e+01 ms
+  => Total SMT Query Latency: 1.276032e+01 ms
+  => Average SMT Query Latency: 1.822902e+00 ms
+  => Total DFS & SMT Execution Time: 9.423060e+01 ms
 
 [Z3 Oracle] Analyzing Function: gzclose_w
   -> Found UB Trap. Starting Backward Slice...
@@ -193,6 +193,6 @@
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 7
   => Total SMT Queries Executed: 7
-  => Total SMT Query Latency: 1.061963e+01 ms
-  => Average SMT Query Latency: 1.517090e+00 ms
-  => Total DFS & SMT Execution Time: 7.842893e+01 ms
+  => Total SMT Query Latency: 1.318273e+01 ms
+  => Average SMT Query Latency: 1.883247e+00 ms
+  => Total DFS & SMT Execution Time: 8.813604e+01 ms
