@@ -154,7 +154,7 @@ z3::expr Z3Encoder::getBlockReachCond(BasicBlock *BB, BasicBlock *Root,
                                       BasicBlock *PhiBB, DominatorTree *DT) {
     if (BB == Root) return Ctx.bool_val(true);
 
-    auto Key = std::make_pair(Root, BB);
+    auto Key = std::make_tuple(Root, BB, PhiBB);
     auto it = ReachCache.find(Key);
     if (it != ReachCache.end()) return it->second; // <-- the memoization
 

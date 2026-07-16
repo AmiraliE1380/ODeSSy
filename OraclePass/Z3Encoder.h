@@ -11,6 +11,7 @@
 #include <utility>
 #include <set>
 #include <vector>
+#include <tuple>
 
 extern bool DebugOracle;
 
@@ -26,7 +27,7 @@ class Z3Encoder {
     // formula stays O(E) in size even when the number of syntactic paths
     // is exponential. Keyed on (Root, BB) so Phis sharing an IDom region
     // reuse each other's work within the same trap query.
-    std::map<std::pair<llvm::BasicBlock*, llvm::BasicBlock*>, z3::expr> ReachCache;
+    std::map<std::tuple<llvm::BasicBlock*, llvm::BasicBlock*, llvm::BasicBlock*>, z3::expr> ReachCache;
 
     // Recursion-stack marker used to detect and skip back edges (this
     // reproduces the old simple-path / acyclic semantics without ever

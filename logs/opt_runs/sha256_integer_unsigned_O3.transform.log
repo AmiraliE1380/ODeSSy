@@ -5,7 +5,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 6.373300e-01 ms
+  => Total DFS & SMT Execution Time: 4.087380e-01 ms
 
 [Z3 Oracle] Analyzing Function: SHA256_Init
   => Total Traps Eliminated: 0
@@ -13,7 +13,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 6.796900e-02 ms
+  => Total DFS & SMT Execution Time: 8.561400e-02 ms
 
 [Z3 Oracle] Analyzing Function: ossl_sha256_192_init
   => Total Traps Eliminated: 0
@@ -21,7 +21,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.373600e-02 ms
+  => Total DFS & SMT Execution Time: 1.499600e-02 ms
 
 [Z3 Oracle] Analyzing Function: SHA224_Update
   -> Found UB Trap. Starting Backward Slice...
@@ -54,412 +54,261 @@
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4259.956433 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 6771.093739 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2365.123385 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2984.617979 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4059.691629 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4390.763352 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4127.745939 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 8366.419744 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 6200.129839 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3974.218462 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3734.754298 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 6930.045612 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3562.912079 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5445.150036 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3480.508328 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4742.433782 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4448.437344 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2037.368170 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3635.654517 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4983.550734 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 6416.694838 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5204.634879 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3977.376812 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1358.409620 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4925.365336 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5276.350564 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3184.340642 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3464.308993 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3765.139190 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3185.275440 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 7036.329041 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3686.103287 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 6237.215173 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3754.431993 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5238.338146 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4760.606685 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4204.158239 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5184.537033 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1891.823620 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5293.519292 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3741.424333 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5458.273898 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3671.296940 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 8167.330113 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2415.193522 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3057.876804 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4203.326759 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5671.376525 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2170.640113 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2512.405424 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4333.094842 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4817.660932 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3113.612209 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 7571.291739 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2991.506460 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4893.539768 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3474.109833 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3633.314684 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1824.538017 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5583.627160 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4913.384613 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1764.039955 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3716.985664 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2888.953767 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3779.740800 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4870.210228 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5984.650414 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3327.751284 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2937.784940 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4065.221164 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4476.086666 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5093.201563 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3805.463069 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5510.284645 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3523.973371 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2796.475991 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 6968.373403 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1837.435669 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4198.672612 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3358.132340 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 6507.732743 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5005.057913 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2008.779394 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2858.864625 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4134.688800 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4391.920485 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2613.057848 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3378.131913 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4374.637054 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 8627.834729 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2748.039348 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 6210.832708 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4683.875250 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3205.398433 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3517.108533 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3772.745363 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4163.092356 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4348.055395 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2109.434349 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4806.544610 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4578.930419 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1531.136398 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5766.372427 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2965.930988 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2380.115134 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 7164.266617 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 7143.980453 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4988.320251 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3774.309803 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1646.908273 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4896.691780 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3392.535084 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1780.007058 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4124.495649 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3466.066856 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2704.082435 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 6290.406131 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4255.634278 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4619.182470 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4137.666344 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3950.332809 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4293.787381 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2825.587952 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3440.818249 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2060.878700 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3391.370120 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 6645.000520 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3021.536546 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 9873.964537 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5220.197249 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2040.195652 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3009.228077 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 6049.602385 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2932.703793 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4980.580376 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2322.311773 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5288.728907 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2459.699837 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4749.313986 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 6244.056519 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1928.467156 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4443.751596 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2284.548460 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3264.133721 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2971.136348 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3539.165034 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2311.601622 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3275.753464 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2577.297019 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3147.512395 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4364.868218 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5005.358125 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5601.239160 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4630.016738 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5974.962667 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2741.587561 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4770.275375 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4972.484757 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 6006.905061 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4920.515359 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4977.312489 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3440.889518 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5390.079008 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4879.833492 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1420.014609 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3448.884704 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 6924.823404 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4406.974461 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3863.602099 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3958.497633 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 6180.014835 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5952.904349 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3092.656911 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4791.063687 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3764.566719 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5616.683213 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3899.756003 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2404.790687 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3737.284347 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4200.265336 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4843.575623 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2877.536294 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 6926.338295 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5588.412209 ms]
-  => SUCCESS: Trap mathematically neutralized!
-  -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2393.899579 ms]
-  => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3916.086703 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 7023.148347 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5744.858282 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4761.192240 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4357.629923 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 7283.269731 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4259.079360 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 7963.129195 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4660.750350 ms]
-  => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5032.053068 ms]
-  => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4202.302667 ms]
-  => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 6108.753849 ms]
-  => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5736.917303 ms]
-  => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3959.914795 ms]
-  => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3699.678620 ms]
-  => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5141.853015 ms]
-  => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3301.529685 ms]
-  => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3817.215606 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 7877.435547 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4826.890686 ms]
-  => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3764.160843 ms]
-  => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3595.478984 ms]
-  => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1366.552243 ms]
-  => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5158.258537 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 7114.066169 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3348.668371 ms]
-  => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3677.227665 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 9196.885914 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4898.716404 ms]
-  => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4007.454254 ms]
-  => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3516.405205 ms]
-  => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...

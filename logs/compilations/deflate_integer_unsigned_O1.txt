@@ -2,31 +2,31 @@
 [Z3 Oracle] Analyzing Function: deflateInit_
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.579683 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.574043 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.142843 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 18.772430 ms]
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 2
   => Total SMT Queries Executed: 2
-  => Total SMT Query Latency: 1.672253e+01 ms
-  => Average SMT Query Latency: 8.361263e+00 ms
-  => Total DFS & SMT Execution Time: 2.868421e+01 ms
+  => Total SMT Query Latency: 3.334647e+01 ms
+  => Average SMT Query Latency: 1.667324e+01 ms
+  => Total DFS & SMT Execution Time: 6.374799e+01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflateInit2_
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.614335 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 20.068445 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 10 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.344371 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 25.724713 ms]
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 2
   => Total SMT Queries Executed: 2
-  => Total SMT Query Latency: 1.995871e+01 ms
-  => Average SMT Query Latency: 9.979353e+00 ms
-  => Total DFS & SMT Execution Time: 3.423043e+01 ms
+  => Total SMT Query Latency: 4.579316e+01 ms
+  => Average SMT Query Latency: 2.289658e+01 ms
+  => Total DFS & SMT Execution Time: 7.304119e+01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflateEnd
@@ -35,202 +35,202 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.411810e-01 ms
+  => Total DFS & SMT Execution Time: 1.787090e-01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflateReset
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 1 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.524829 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 15.680997 ms]
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 1
   => Total SMT Queries Executed: 1
-  => Total SMT Query Latency: 7.524829e+00 ms
-  => Average SMT Query Latency: 7.524829e+00 ms
-  => Total DFS & SMT Execution Time: 1.494873e+01 ms
+  => Total SMT Query Latency: 1.568100e+01 ms
+  => Average SMT Query Latency: 1.568100e+01 ms
+  => Total DFS & SMT Execution Time: 2.610342e+01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflateSetDictionary
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 5 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.564791 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 15.602309 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 4 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.644439 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.048105 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 3 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.766257 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 16.361902 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 4 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 19.200085 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 38.219718 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 5 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 23.009237 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 50.813689 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 6 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 24.363688 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 61.862476 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 27.182067 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 73.686793 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 29.769695 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 41.707533 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 10 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 39.331366 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 52.778267 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 11 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 30.377537 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 40.021155 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 13 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 26.896173 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 39.929050 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 15 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 29.501571 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 43.481772 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 39.642847 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 111.633939 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 10 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 28.658089 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 52.519121 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 26.852192 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 39.821153 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 30.873589 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 49.157780 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 11 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 27.898382 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 82.061581 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 12 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 49.613166 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 127.863998 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 14 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 32.210761 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 61.544254 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 15 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 160.758305 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 295.729603 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 16 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 17.950751 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 43.292666 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 17 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 33.939287 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 83.001909 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 31.385763 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 36.502338 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 10 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 43.388853 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 60.026218 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 11 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 28.769046 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 65.808148 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 26.752859 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 61.195367 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 23.864387 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 59.966513 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 10 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 23.112953 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 45.872841 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 12 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 22.846372 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 57.440515 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 13 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 35.133213 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 78.593617 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 14 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 37.655294 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 99.501124 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 15 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 38.359806 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 73.875789 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 17 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 45.431784 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 68.103426 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 18 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 42.974378 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 91.710457 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 19 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 59.075927 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 86.468287 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 20 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 69.509219 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 99.113517 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 22 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 53.886591 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 107.829246 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 24 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 73.496021 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 144.271038 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 18 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 46.185747 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 103.815943 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 19 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 45.507843 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 91.706160 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 17 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 44.251088 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 89.355378 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 18 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 44.249543 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 75.656767 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 20 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 46.406604 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 80.901643 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 21 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 77.233941 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 135.788543 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 23 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 50.326003 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 74.765270 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 24 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 249.165369 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 624.334070 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 25 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 28.775701 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 57.845295 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 26 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 67.021444 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 151.206276 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 18 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 41.429386 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 63.265407 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 19 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 61.840634 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 92.440238 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 20 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 40.192962 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 76.942572 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 59.924320 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 143.380972 ms]
   => Total Traps Eliminated: 6
   => Total Trap Attempts: 52
   => Total SMT Queries Executed: 52
-  => Total SMT Query Latency: 2.279157e+03 ms
-  => Average SMT Query Latency: 4.382995e+01 ms
-  => Total DFS & SMT Execution Time: 2.607042e+03 ms
+  => Total SMT Query Latency: 4.531822e+03 ms
+  => Average SMT Query Latency: 8.715042e+01 ms
+  => Total DFS & SMT Execution Time: 5.199294e+03 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflateGetDictionary
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 5 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.467603 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 12.800232 ms]
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 1
   => Total SMT Queries Executed: 1
-  => Total SMT Query Latency: 5.467603e+00 ms
-  => Average SMT Query Latency: 5.467603e+00 ms
-  => Total DFS & SMT Execution Time: 1.041839e+01 ms
+  => Total SMT Query Latency: 1.280023e+01 ms
+  => Average SMT Query Latency: 1.280023e+01 ms
+  => Total DFS & SMT Execution Time: 2.636934e+01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflateResetKeep
@@ -239,7 +239,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 8.020300e-02 ms
+  => Total DFS & SMT Execution Time: 1.556950e-01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflateSetHeader
@@ -248,7 +248,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 5.154300e-02 ms
+  => Total DFS & SMT Execution Time: 9.022000e-02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflatePending
@@ -257,7 +257,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 9.128700e-02 ms
+  => Total DFS & SMT Execution Time: 2.871870e-01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflateUsed
@@ -266,7 +266,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 8.392000e-02 ms
+  => Total DFS & SMT Execution Time: 1.154270e-01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflatePrime
@@ -275,390 +275,390 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 2.091870e-01 ms
+  => Total DFS & SMT Execution Time: 9.455800e-02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflateParams
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 15 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.422834 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 17.634418 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 16 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.732748 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 17.359696 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 17 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.617460 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 12.240798 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 14 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.673803 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.125193 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 15 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.008434 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.372591 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 16 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.974710 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.218764 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 18 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.761837 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.613420 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 19 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.223156 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.364701 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 20 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.681712 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.197586 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 21 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.483710 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.957594 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 14 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.507251 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.446699 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 15 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.579955 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.306209 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 16 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.668477 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.212592 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 18 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.734121 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.742824 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 19 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.581898 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 19.419448 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 20 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.683210 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.749211 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 21 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.925334 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.110458 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 22 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.385429 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.726725 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 23 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.761164 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.380975 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 24 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.356459 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 16.936325 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 18 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.072594 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 12.216067 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 19 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.515307 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.677588 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 20 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.140645 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 12.267756 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 21 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.047270 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.324216 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 22 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.120530 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.999937 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 23 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.494357 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.204411 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 24 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.495082 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.824699 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 26 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.762767 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 12.790593 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 27 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.263014 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.202975 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 15 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.411657 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.738318 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 16 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.709826 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.813253 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 18 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.839062 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.015415 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 19 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.394982 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 21.268732 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 21 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 12.998514 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 21.142698 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 22 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.238724 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 22.373928 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 23 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.168987 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 27.518276 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 21 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 182.745703 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 354.156909 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 18 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.489495 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.824057 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 17 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.302512 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 12.063997 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 18 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.961595 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.746059 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 19 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.621746 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.885839 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 15 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.786787 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.058803 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 16 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 15.298905 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.400348 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 17 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.974367 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.220117 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 18 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.219066 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.743114 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 19 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.493235 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.864911 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 15 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.987780 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.616697 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 16 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.709291 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.812136 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 15 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 15.770302 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.663880 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 16 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.199530 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.225065 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 17 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.390218 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 17.704487 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.211355 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.807897 ms]
   => Total Traps Eliminated: 1
   => Total Trap Attempts: 52
   => Total SMT Queries Executed: 52
-  => Total SMT Query Latency: 6.415989e+02 ms
-  => Average SMT Query Latency: 1.233844e+01 ms
-  => Total DFS & SMT Execution Time: 9.873691e+02 ms
+  => Total SMT Query Latency: 1.002289e+03 ms
+  => Average SMT Query Latency: 1.927480e+01 ms
+  => Total DFS & SMT Execution Time: 1.519148e+03 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflate
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 6 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.822243 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.452673 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.793849 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.289897 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.722555 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 19.800644 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 5 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.503530 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.415432 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 6 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.489587 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 16.892578 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.798326 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 23.266837 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.322136 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 32.151509 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 10 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.355869 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 15.782628 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 11 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.882892 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 19.535215 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 12 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.979214 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 20.644481 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 5 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.392348 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 15.820430 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 6 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.658907 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 17.343964 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.160670 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.142606 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.008690 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.727560 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 10 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.926340 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.421990 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 11 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.819465 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.900021 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 12 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.107268 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.617554 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 13 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.493817 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.112231 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 14 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.330067 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.984989 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 15 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.492118 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.842345 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.913425 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.898995 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 10 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.470503 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.656062 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 11 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.721274 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 12.610981 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 12 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.135115 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 17.625512 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 13 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.469230 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 21.016608 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 14 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.731477 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 21.218616 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 15 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.847890 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 22.867251 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 17 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 18.186813 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.996018 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 18 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 15.331568 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 16.964229 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 6 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.566120 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.427464 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.972702 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.249049 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.377977 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 15.968739 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 10 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 15.180784 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 19.258649 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 12 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 15.715221 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 29.688280 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 13 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.776313 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 33.953940 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 14 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 27.192284 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 59.515260 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 12 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 111.263916 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 195.267728 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.542455 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 29.845856 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.621409 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 19.079545 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.732632 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 17.953123 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 10 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.395148 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 20.897901 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 6 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.449202 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.991874 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.483303 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.668050 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.092580 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 15.396626 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.808885 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.535315 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 10 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.971303 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 16.797234 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 6 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.400391 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.600693 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.391693 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.009534 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 6 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.056316 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 12.912837 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 12.710216 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.271185 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.294407 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.976364 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 16.120907 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.714053 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.144917 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.521251 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.807290 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.476131 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.802962 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.033870 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 10 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.605417 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.905400 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 11 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 15.412640 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.263199 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 12 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.614217 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 16.669868 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 13 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.694616 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 19.308402 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 14 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.655089 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 22.791308 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.966814 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.296148 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.247885 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 18.085361 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.967345 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 18.946855 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 10 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.672095 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.634323 ms]
   => Total Traps Eliminated: 1
   => Total Trap Attempts: 64
   => Total SMT Queries Executed: 64
-  => Total SMT Query Latency: 7.075746e+02 ms
-  => Average SMT Query Latency: 1.105585e+01 ms
-  => Total DFS & SMT Execution Time: 1.150006e+03 ms
+  => Total SMT Query Latency: 1.211911e+03 ms
+  => Average SMT Query Latency: 1.893611e+01 ms
+  => Total DFS & SMT Execution Time: 1.979975e+03 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: slide_hash
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 0 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.018059 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.424777 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 2 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.047705 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.288113 ms]
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 2
   => Total SMT Queries Executed: 2
-  => Total SMT Query Latency: 1.006576e+01 ms
-  => Average SMT Query Latency: 5.032882e+00 ms
-  => Total DFS & SMT Execution Time: 2.104072e+01 ms
+  => Total SMT Query Latency: 1.471289e+01 ms
+  => Average SMT Query Latency: 7.356445e+00 ms
+  => Total DFS & SMT Execution Time: 3.196473e+01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflateTune
@@ -667,944 +667,944 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.043850e-01 ms
+  => Total DFS & SMT Execution Time: 1.862720e-01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflateBound_z
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 0 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.758265 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.509834 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 1 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.080659 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.152809 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 2 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.649689 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.954353 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 3 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 47.804066 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 74.371072 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 4 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 8.225729 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 19.118560 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 5 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 22.801591 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 36.254526 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 6 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 21.665924 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 32.956747 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 19.374337 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 20.124897 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 22.558711 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 19.503532 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 15 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 19.475021 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 21.166152 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 15 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.975295 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 20.228493 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 13 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 34.695313 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 61.597531 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 15 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 9.188151 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 15.344272 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 16 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 24.040691 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 30.784830 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 17 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 22.642296 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 25.263918 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 18 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 25.403913 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 22.188782 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 19 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 149.596361 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 299.592498 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 20 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 43.231470 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 68.138812 ms]
   => Total Traps Eliminated: 9
   => Total Trap Attempts: 18
   => Total SMT Queries Executed: 18
-  => Total SMT Query Latency: 5.061675e+02 ms
-  => Average SMT Query Latency: 2.812042e+01 ms
-  => Total DFS & SMT Execution Time: 6.190500e+02 ms
+  => Total SMT Query Latency: 8.002516e+02 ms
+  => Average SMT Query Latency: 4.445842e+01 ms
+  => Total DFS & SMT Execution Time: 9.869454e+02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflateBound
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 0 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.931596 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 18.790514 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 1 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.113794 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 21.851193 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 2 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.566643 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 23.768452 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 3 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 45.280280 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 101.332989 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 4 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 8.566765 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 18.352440 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 5 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 22.550163 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 19.703945 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 6 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 21.118219 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 19.756452 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 18.177620 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 25.202976 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 15.363851 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 21.717492 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 15 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 15.717379 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 25.872567 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 15 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 15.921091 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 28.211845 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 13 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 33.858294 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 67.090784 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 15 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 11.057806 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 22.472276 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 16 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 16.073007 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 43.808201 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 17 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 16.473336 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 38.458187 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 18 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 16.123107 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 25.234934 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 19 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 153.494417 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 264.690251 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 20 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 28.424958 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 70.566149 ms]
   => Total Traps Eliminated: 9
   => Total Trap Attempts: 18
   => Total SMT Queries Executed: 18
-  => Total SMT Query Latency: 4.608123e+02 ms
-  => Average SMT Query Latency: 2.560068e+01 ms
-  => Total DFS & SMT Execution Time: 5.645438e+02 ms
+  => Total SMT Query Latency: 8.568816e+02 ms
+  => Average SMT Query Latency: 4.760454e+01 ms
+  => Total DFS & SMT Execution Time: 1.071006e+03 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: flush_pending
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 1 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.818026 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 17.850581 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 2 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.162240 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.991977 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 3 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.338440 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.676607 ms]
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 3
   => Total SMT Queries Executed: 3
-  => Total SMT Query Latency: 1.831871e+01 ms
-  => Average SMT Query Latency: 6.106235e+00 ms
-  => Total DFS & SMT Execution Time: 3.359443e+01 ms
+  => Total SMT Query Latency: 4.151917e+01 ms
+  => Average SMT Query Latency: 1.383972e+01 ms
+  => Total DFS & SMT Execution Time: 8.103829e+01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflate_stored
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 0 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.922202 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.060897 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 1 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.693437 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.027536 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 4 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 9.008521 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 12.907621 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 5 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.144832 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.745076 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 4 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.682027 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.211231 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 3 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.789677 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.881609 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 4 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.811824 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.745809 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 5 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.363117 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.212209 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 6 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.709303 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 15.419805 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.415317 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 16.657146 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.465251 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 19.379888 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 10 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 15.974662 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 19.654402 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.814007 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 15.556807 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.700228 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 12.312340 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 10 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.385332 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.167989 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.817607 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.075752 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 10 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.983307 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.910742 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.822523 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.058655 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.091990 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.540880 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 2 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.208063 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.069934 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 5 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.760851 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 16.743247 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.120085 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 35.604100 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 6 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.431735 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 23.713343 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.419165 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 20.214006 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.132176 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 26.769792 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 4 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 30.328868 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 45.787719 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 23.892927 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 56.071377 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 41.322350 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 42.492971 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 6 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 24.545687 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 49.988352 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 24.390328 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 39.729798 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 23.808582 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 47.049846 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 26.095594 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 42.388579 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 10 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 27.938985 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 53.811562 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 5 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 25.498051 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 30.148371 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 6 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 17.957649 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 49.537092 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 25.971424 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 47.778828 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 24.615763 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 44.321540 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 10 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 24.516355 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 47.284563 ms]
   => Total Traps Eliminated: 1
   => Total Trap Attempts: 38
   => Total SMT Queries Executed: 38
-  => Total SMT Query Latency: 5.525498e+02 ms
-  => Average SMT Query Latency: 1.454078e+01 ms
-  => Total DFS & SMT Execution Time: 8.145876e+02 ms
+  => Total SMT Query Latency: 9.610314e+02 ms
+  => Average SMT Query Latency: 2.529030e+01 ms
+  => Total DFS & SMT Execution Time: 1.441760e+03 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflate_huff
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 1 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.275234 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 12.851939 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 2 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 30.920803 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 55.740087 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 3 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 18.246188 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 66.761821 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 4 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 15.856804 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 44.164033 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 6 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 18.241380 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 34.778956 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 27.881347 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 66.497459 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 37.085578 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 82.883156 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 25.095053 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 49.894229 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 11 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 30.940910 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 61.991375 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 13 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 40.185410 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 65.099757 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 26.214691 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 44.290437 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 32.272419 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 39.269662 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 6 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 24.375766 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 107.979460 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 28.107331 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 79.656487 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 26.653538 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 45.677369 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 10 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 33.320465 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 81.821438 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 12 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 32.023720 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 57.400072 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 13 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 152.017552 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 351.654491 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 14 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 15.061060 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 42.341959 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 15 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 29.553791 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 42.269249 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 28.695265 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 41.511453 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 45.733778 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 83.903773 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 32.030974 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 84.865579 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 0 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.885474 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 15.061004 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 1 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.821010 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.216739 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 2 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.931327 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.923308 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 3 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.061415 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.294066 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 4 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.846036 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.574837 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.632648 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.696940 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.202191 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 12.786510 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.819113 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.774281 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 15.944190 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 34.835349 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 10 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 27.405351 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 61.697061 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 11 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 26.298001 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 60.324979 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 10 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 23.019971 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 43.880497 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 11 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 38.957700 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 37.807517 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 12 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 21.070264 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 32.263450 ms]
   => Total Traps Eliminated: 3
   => Total Trap Attempts: 37
   => Total SMT Queries Executed: 37
-  => Total SMT Query Latency: 9.706837e+02 ms
-  => Average SMT Query Latency: 2.623470e+01 ms
-  => Total DFS & SMT Execution Time: 1.194762e+03 ms
+  => Total SMT Query Latency: 1.993441e+03 ms
+  => Average SMT Query Latency: 5.387678e+01 ms
+  => Total DFS & SMT Execution Time: 2.456907e+03 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflate_rle
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 1 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.864251 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.128940 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 2 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 16.184315 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 33.283770 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 3 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 21.211476 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 29.549436 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 4 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 22.947598 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 30.392501 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 6 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 29.425299 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 37.328523 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 28.029929 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 36.454627 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 29.737617 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 46.676859 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 25.243234 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 49.943516 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 11 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 37.784817 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 76.864399 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 13 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 48.598464 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 71.844642 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 28.236059 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 41.103224 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 26.239162 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 72.763851 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 6 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 25.033111 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 78.247471 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 30.287459 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 55.082429 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 29.126637 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 79.206375 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 10 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 51.120680 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 71.331778 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 12 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 30.073507 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 56.263168 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 13 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 149.057399 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 251.537306 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 14 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 27.515726 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 23.456162 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 15 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 37.870403 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 44.656033 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 28.222712 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 43.397023 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 44.401181 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 66.438218 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 28.648821 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 40.809403 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 5 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.004455 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.934189 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 1 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 12.126744 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.986793 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 2 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 12.486538 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 17.719816 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 3 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 12.023204 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 12.597940 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 4 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.032237 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.816614 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 5 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.852066 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 15.967013 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 1 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.965168 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.311618 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 2 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.448965 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.886110 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 3 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.138232 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.746705 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 4 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.621871 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.449129 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 5 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.487771 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.342733 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 2 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.191508 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.975138 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 3 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.234465 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.417487 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 4 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.827031 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.435643 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 25.691300 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 30.922071 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 10 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 24.162486 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 31.965776 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 11 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 23.435921 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 32.032180 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 10 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 20.940470 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 31.228128 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 11 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 26.965726 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 35.288527 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 12 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 23.692204 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 47.946825 ms]
   => Total Traps Eliminated: 3
   => Total Trap Attempts: 43
   => Total SMT Queries Executed: 43
-  => Total SMT Query Latency: 1.065188e+03 ms
-  => Average SMT Query Latency: 2.477182e+01 ms
-  => Total DFS & SMT Execution Time: 1.349614e+03 ms
+  => Total SMT Query Latency: 1.706730e+03 ms
+  => Average SMT Query Latency: 3.969140e+01 ms
+  => Total DFS & SMT Execution Time: 2.138164e+03 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflateCopy
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 6 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.459879 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.598553 ms]
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 1
   => Total SMT Queries Executed: 1
-  => Total SMT Query Latency: 6.459879e+00 ms
-  => Average SMT Query Latency: 6.459879e+00 ms
-  => Total DFS & SMT Execution Time: 1.184829e+01 ms
+  => Total SMT Query Latency: 8.598553e+00 ms
+  => Average SMT Query Latency: 8.598553e+00 ms
+  => Total DFS & SMT Execution Time: 1.661785e+01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflate_fast
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 1 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.800694 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.348671 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 2 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 22.051139 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 31.526174 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 3 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 23.172188 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 42.206302 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 4 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 22.917431 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 52.453158 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 6 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 26.609258 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 39.889423 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 26.113176 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 39.109221 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 33.612072 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 41.956406 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 27.080153 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 46.369819 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 11 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 25.249333 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 42.587503 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 13 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 38.044628 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 65.637790 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 25.869522 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 36.265760 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 27.338992 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 48.405800 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 6 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 31.154658 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 38.790936 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 35.046593 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 70.709136 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 40.489839 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 59.538070 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 10 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 45.419054 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 105.710851 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 12 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 33.428466 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 64.588984 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 13 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 149.170287 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 295.746150 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 14 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 16.662092 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 40.724993 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 15 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 29.862158 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 78.784342 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 29.031192 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 72.889513 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 39.743472 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 88.445555 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 28.769423 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 44.949756 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 1 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.012778 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.358333 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 1 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.854285 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.580825 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 2 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 12.802867 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.443157 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 5 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.592945 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 12.345438 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 1 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.980133 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.007154 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 2 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.691842 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.751495 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 3 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.706652 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.532133 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 4 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.926458 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.998159 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 5 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.695042 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.690771 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.778185 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.398243 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.443498 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.923951 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 10 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.568356 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 23.280852 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 12 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 6.069647 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 13.485908 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.044615 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 12.209148 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 25.137835 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 35.080040 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 1 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.516530 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.958017 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 2 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.874191 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.440534 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 3 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.314638 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.563102 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 4 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.814685 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.630033 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 5 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.177890 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.329302 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 2 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.369659 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.643885 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 3 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.623725 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.140262 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 4 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.033436 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.272296 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 25.242835 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 36.287028 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 10 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 38.586467 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 34.107687 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 11 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 29.105558 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 44.622116 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 10 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 29.428913 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 43.071410 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 11 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 35.992458 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 38.805889 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 12 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 27.224574 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 32.661783 ms]
   => Total Traps Eliminated: 4
   => Total Trap Attempts: 52
   => Total SMT Queries Executed: 52
-  => Total SMT Query Latency: 1.160247e+03 ms
-  => Average SMT Query Latency: 2.231243e+01 ms
-  => Total DFS & SMT Execution Time: 1.506967e+03 ms
+  => Total SMT Query Latency: 1.944253e+03 ms
+  => Average SMT Query Latency: 3.738949e+01 ms
+  => Total DFS & SMT Execution Time: 2.456306e+03 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflate_slow
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 1 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.441653 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.710904 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 2 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 33.514008 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 29.568387 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 3 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 24.519881 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 29.809141 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 4 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 22.550066 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 30.798387 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 6 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 23.647685 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 36.004552 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 25.819389 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 36.803072 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 53.563770 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 37.050076 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 32.148726 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 37.169551 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 11 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 27.371721 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 54.378508 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 13 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 43.950782 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 85.884033 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 35.307331 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 37.690373 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 33.274001 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 37.695555 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 6 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 29.558745 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 50.198184 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 32.718688 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 68.586821 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 34.590155 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 73.068317 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 10 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 52.599949 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 90.724352 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 12 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 36.287020 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 85.530385 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 13 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 154.899240 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 303.284821 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 14 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 16.321186 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 28.957949 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 15 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 30.639580 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 67.992246 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 26.384537 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 64.991259 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 39.797322 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 80.194131 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 25.932371 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 56.146534 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 1 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.075802 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 24.554187 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 2 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.537795 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 16.545206 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 3 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 12.000319 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.176121 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 6 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.788906 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 34.718535 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.949342 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 16.815442 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 2 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.621106 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.964074 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 3 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.572951 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 35.389634 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 4 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.626734 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 22.739071 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 5 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 16.209541 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 24.771414 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 6 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 16.041234 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 24.112449 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.873938 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 23.182653 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 15.225682 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 23.239998 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 25.821434 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 22.199887 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 10 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 27.511345 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 35.648447 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 11 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 28.821231 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 49.381946 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 14 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 29.393709 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 28.821322 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 13 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 19.892924 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 28.224622 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 15 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 17.519205 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 27.721539 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 18 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.485600 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 18.761826 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 19 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 17.116084 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 25.154559 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 20 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 19.114421 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 27.097753 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 1 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.676267 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.643392 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 2 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.359744 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.871238 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 3 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.874989 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.068414 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 4 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.115122 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.665397 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 7 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 16.366460 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.525022 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 15.849536 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.750457 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.872683 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.238011 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 5 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.069727 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.477651 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 6 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.721546 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.203500 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 1 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 12.194346 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.511902 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 2 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.355668 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.226025 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 8 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 43.247254 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 30.095991 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 33.315069 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 42.784242 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 10 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 26.212669 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 67.099969 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 11 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 26.025465 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 63.292027 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 9 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 24.285571 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 65.335723 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 10 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 26.544261 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 44.425198 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 11 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 22.950527 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 31.490645 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 10 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 22.757756 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 36.058116 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 11 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 28.630326 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 35.491690 ms]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 12 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 25.412096 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 45.508447 ms]
   => Total Traps Eliminated: 4
   => Total Trap Attempts: 65
   => Total SMT Queries Executed: 65
-  => Total SMT Query Latency: 1.574874e+03 ms
-  => Average SMT Query Latency: 2.422883e+01 ms
-  => Total DFS & SMT Execution Time: 2.012505e+03 ms
+  => Total SMT Query Latency: 2.528221e+03 ms
+  => Average SMT Query Latency: 3.889571e+01 ms
+  => Total DFS & SMT Execution Time: 3.221185e+03 ms
 --------------------------------------------------

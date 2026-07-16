@@ -5,7 +5,7 @@ zlib,unsigned,O1,458,448,41,410,0,417,41,OK
 zlib,unsigned,O3,439,440,24,400,0,415,24,OK
 openssl,signed,O1,0,0,0,0,0,0,0,OK
 openssl,signed,O3,0,0,0,0,0,0,0,OK
-openssl,unsigned,O1,2229,2222,37,27,0,NA,NA,ANALYSIS_TIMEOUT;XFORM_TIMEOUT
+openssl,unsigned,O1,2229,2222,34,26,0,NA,NA,ANALYSIS_TIMEOUT;XFORM_TIMEOUT
 openssl,unsigned,O3,2226,2219,125,27,0,NA,NA,ANALYSIS_TIMEOUT;XFORM_TIMEOUT
 polybench,signed,O1,0,0,0,0,0,0,0,OK
 polybench,signed,O3,0,0,0,0,0,0,0,OK

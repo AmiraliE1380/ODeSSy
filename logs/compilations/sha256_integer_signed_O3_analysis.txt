@@ -5,7 +5,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 3.884210e-01 ms
+  => Total DFS & SMT Execution Time: 4.950140e-01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: SHA256_Init
@@ -14,7 +14,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 2.154700e-02 ms
+  => Total DFS & SMT Execution Time: 1.124570e-01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: ossl_sha256_192_init
@@ -23,7 +23,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 9.655000e-03 ms
+  => Total DFS & SMT Execution Time: 2.804200e-02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: SHA224_Update
@@ -32,7 +32,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.980340e-01 ms
+  => Total DFS & SMT Execution Time: 4.568360e-01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: SHA256_Update
@@ -41,7 +41,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 2.260840e-01 ms
+  => Total DFS & SMT Execution Time: 4.510420e-01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: SHA224_Final
@@ -50,7 +50,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 2.332420e-01 ms
+  => Total DFS & SMT Execution Time: 4.061370e-01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: SHA256_Final
@@ -59,7 +59,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 2.475130e-01 ms
+  => Total DFS & SMT Execution Time: 4.554980e-01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: SHA256_Update_thunk
@@ -68,7 +68,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 2.282420e-01 ms
+  => Total DFS & SMT Execution Time: 4.360640e-01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: SHA256_Transform
@@ -77,5 +77,5 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 8.038200e-02 ms
+  => Total DFS & SMT Execution Time: 2.706830e-01 ms
 --------------------------------------------------
