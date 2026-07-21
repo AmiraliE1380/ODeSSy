@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """
-make_perf_report.py -- turn evaluation/perf_zlib.csv into a readable report CSV.
+make_perf_report.py -- turn evaluation/perf_zlib.csv (v2: multi-size, shuffled,
+binary-size columns) into a readable report CSV.
 
-Renames columns with units, adds:
+Adds per (spec, config, size_mb) row:
   * traps_eliminated_n / traps_eliminated_pct
-  * runtime deltas vs base and vs base2x (avg- and min-based), signed % with
-    a human-readable flag like "2.3% speedup" / "1.9% slowdown"
-  * runtime vs the unsanitized 'none' binary (sanitizer overhead recovered?)
-  * compile-time overhead vs base
+  * binary size (file bytes + .text bytes) and delta vs base
+  * runtime deltas vs base / base2x / unsanitized (avg- and min-based),
+    flagged like "2.3% speedup" / "1.9% slowdown"
+  * compile-time overhead vs base, oracle per-trap cost
 
 Usage:  python3 make_perf_report.py [in.csv] [out.csv]
 Defaults: evaluation/perf_zlib.csv -> evaluation/perf_zlib_report.csv
@@ -26,7 +27,7 @@ def f(x):
         return None
 
 def pct(new, ref):
-    """Signed % change of runtime vs ref. Positive = faster (speedup)."""
+    """Signed % change vs ref. Positive = faster/smaller (improvement)."""
     if new is None or ref is None or ref == 0:
         return None
     return (ref - new) / ref * 100.0
@@ -38,22 +39,28 @@ def flag(p):
         return "no change"
     return f"{abs(p):.1f}% {'speedup' if p > 0 else 'slowdown'}"
 
-rows = list(csv.DictReader(open(IN, newline="")))
+def size_delta(new, ref):
+    if new is None or ref is None or ref == 0:
+        return ""
+    d = new - ref
+    return f"{d:+.0f} B ({d / ref * 100.0:+.2f}%)"
 
-# Reference lookups: per-spec base/base2x rows, and the global unsanitized row.
-by_key = {(r["spec"], r["config"]): r for r in rows}
-none_base = by_key.get(("none", "base"))
+rows = list(csv.DictReader(open(IN, newline="")))
+by_key = {(r["spec"], r["config"], r["size_mb"]): r for r in rows}
 
 out_fields = [
-    "sanitizer_spec", "pipeline_config",
+    "sanitizer_spec", "pipeline_config", "corpus_size_mb",
     "traps_before_pass_n", "traps_after_pipeline_n",
     "traps_eliminated_n", "traps_eliminated_pct",
-    "frontend_clang_O3_s", "oracle_smt_pass_s", "oracle_avg_per_trap_ms","extra_opt_O3_s",
-    "backend_llc_link_s", "total_compile_s", "compile_overhead_vs_base_pct",
+    "binary_file_bytes", "binary_text_bytes",
+    "binary_file_vs_base", "binary_text_vs_base",
+    "frontend_clang_O3_s", "oracle_smt_pass_s", "oracle_avg_per_trap_ms",
+    "extra_opt_O3_s", "backend_llc_link_s", "total_compile_s",
+    "compile_overhead_vs_base_pct",
     "avg_runtime_s", "min_runtime_s",
     "runtime_vs_base_avg", "runtime_vs_base_min",
     "runtime_vs_base2x_avg", "runtime_vs_base2x_min",
-    "runtime_vs_unsanitized_avg",
+    "runtime_vs_unsanitized_min",
     "raw_runtimes_s",
 ]
 
@@ -61,34 +68,45 @@ with open(OUT, "w", newline="") as fh:
     w = csv.DictWriter(fh, fieldnames=out_fields)
     w.writeheader()
     for r in rows:
-        spec, cfg = r["spec"], r["config"]
+        spec, cfg, mb = r["spec"], r["config"], r["size_mb"]
         t_in, t_fin = f(r["traps_in"]), f(r["traps_final"])
         elim = (t_in - t_fin) if (t_in is not None and t_fin is not None) else None
         elim_pct = (elim / t_in * 100.0) if (elim is not None and t_in) else 0.0
 
-        base = by_key.get((spec, "base"))
-        b2x = by_key.get((spec, "base2x"))
+        base = by_key.get((spec, "base", mb))
+        b2x = by_key.get((spec, "base2x", mb))
+        none_b = by_key.get(("none", "base", mb))
         avg, mn = f(r["avg_run_s"]), f(r["min_run_s"])
 
         d_base_avg = pct(avg, f(base["avg_run_s"])) if base else None
         d_base_min = pct(mn, f(base["min_run_s"])) if base else None
         d_b2x_avg = pct(avg, f(b2x["avg_run_s"])) if b2x else None
         d_b2x_min = pct(mn, f(b2x["min_run_s"])) if b2x else None
-        d_none_avg = pct(avg, f(none_base["avg_run_s"])) if none_base else None
+        d_none_min = pct(mn, f(none_b["min_run_s"])) if none_b else None
 
-        tc, tc_base = f(r["total_compile_s"]), f(base["total_compile_s"]) if base else None
+        tc = f(r["total_compile_s"])
+        tc_base = f(base["total_compile_s"]) if base else None
         c_over = ((tc - tc_base) / tc_base * 100.0) if (tc is not None and tc_base) else None
-        
+
         o_s = f(r["oracle_s"])
         per_trap_ms = (o_s / t_in * 1000.0) if (o_s and t_in) else None
-        
+
         w.writerow({
             "sanitizer_spec": spec,
             "pipeline_config": cfg,
+            "corpus_size_mb": mb,
             "traps_before_pass_n": r["traps_in"],
             "traps_after_pipeline_n": r["traps_final"],
             "traps_eliminated_n": int(elim) if elim is not None else "",
             "traps_eliminated_pct": f"{elim_pct:.1f}%",
+            "binary_file_bytes": r["bin_bytes"],
+            "binary_text_bytes": r["text_bytes"],
+            "binary_file_vs_base":
+                size_delta(f(r["bin_bytes"]), f(base["bin_bytes"]) if base else None)
+                if cfg != "base" else "(reference)",
+            "binary_text_vs_base":
+                size_delta(f(r["text_bytes"]), f(base["text_bytes"]) if base else None)
+                if cfg != "base" else "(reference)",
             "frontend_clang_O3_s": r["clang_s"],
             "oracle_smt_pass_s": r["oracle_s"],
             "oracle_avg_per_trap_ms": f"{per_trap_ms:.1f}" if per_trap_ms else "",
@@ -102,16 +120,36 @@ with open(OUT, "w", newline="") as fh:
             "runtime_vs_base_min": flag(d_base_min) if cfg != "base" else "(reference)",
             "runtime_vs_base2x_avg": flag(d_b2x_avg) if cfg == "oracle" else "",
             "runtime_vs_base2x_min": flag(d_b2x_min) if cfg == "oracle" else "",
-            "runtime_vs_unsanitized_avg": flag(d_none_avg) if spec != "none" else "(reference)",
+            "runtime_vs_unsanitized_min": flag(d_none_min) if spec != "none" else "(reference)",
             "raw_runtimes_s": r["runs_s"],
         })
 
 print(f"wrote {OUT}")
-# Console summary: the two lines that matter per spec.
-print(f"{'spec':9} {'config':7} {'elim':>5} {'avg_s':>7} {'min_s':>7}  vs_base2x(min)")
-for r in rows:
-    spec, cfg = r["spec"], r["config"]
-    b2x = by_key.get((spec, "base2x"))
-    d = pct(f(r["min_run_s"]), f(b2x["min_run_s"])) if (b2x and cfg == "oracle") else None
-    elim = int(f(r["traps_in"]) - f(r["traps_final"]))
-    print(f"{spec:9} {cfg:7} {elim:5d} {r['avg_run_s']:>7} {r['min_run_s']:>7}  {flag(d)}")
+
+# Console summary: oracle vs base2x (min-based) per spec, across sizes --
+# the cold-path diagnostic: shrinking % across sizes = cold-path savings.
+sizes = sorted({r["size_mb"] for r in rows}, key=float)
+print(f"\n{'spec':9} {'elim':>5} " + " ".join(f"{'@'+s+'MB':>12}" for s in sizes) +
+      "   (oracle vs base2x, min-based)")
+for spec in ("signed", "unsigned", "both"):
+    o = {s: by_key.get((spec, "oracle", s)) for s in sizes}
+    b = {s: by_key.get((spec, "base2x", s)) for s in sizes}
+    if not any(o.values()):
+        continue
+    any_o = next(v for v in o.values() if v)
+    elim = int(f(any_o["traps_in"]) - f(any_o["traps_final"]))
+    cells = []
+    for s in sizes:
+        d = pct(f(o[s]["min_run_s"]), f(b[s]["min_run_s"])) if (o.get(s) and b.get(s)) else None
+        cells.append(f"{d:+11.1f}%" if d is not None else f"{'--':>12}")
+    print(f"{spec:9} {elim:5d} " + " ".join(cells))
+
+print(f"\n{'spec':9} " + " ".join(f"{'@'+s+'MB':>12}" for s in sizes) +
+      "   (sanitizer overhead vs none, min-based)")
+for spec in ("signed", "unsigned", "both"):
+    cells = []
+    for s in sizes:
+        rr, nn = by_key.get((spec, "base", s)), by_key.get(("none", "base", s))
+        d = pct(f(rr["min_run_s"]), f(nn["min_run_s"])) if (rr and nn) else None
+        cells.append(f"{-d:+11.1f}%" if d is not None else f"{'--':>12}")
+    print(f"{spec:9} " + " ".join(cells))
