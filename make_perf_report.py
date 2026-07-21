@@ -54,6 +54,7 @@ out_fields = [
     "traps_eliminated_n", "traps_eliminated_pct",
     "binary_file_bytes", "binary_text_bytes",
     "binary_file_vs_base", "binary_text_vs_base",
+    "binary_file_vs_base2x", "binary_text_vs_base2x",
     "frontend_clang_O3_s", "oracle_smt_pass_s", "oracle_avg_per_trap_ms",
     "extra_opt_O3_s", "backend_llc_link_s", "total_compile_s",
     "compile_overhead_vs_base_pct",
@@ -107,6 +108,12 @@ with open(OUT, "w", newline="") as fh:
             "binary_text_vs_base":
                 size_delta(f(r["text_bytes"]), f(base["text_bytes"]) if base else None)
                 if cfg != "base" else "(reference)",
+            "binary_file_vs_base2x":
+                size_delta(f(r["bin_bytes"]), f(b2x["bin_bytes"]) if b2x else None)
+                if cfg == "oracle" else "",
+            "binary_text_vs_base2x":
+                size_delta(f(r["text_bytes"]), f(b2x["text_bytes"]) if b2x else None)
+                if cfg == "oracle" else "",
             "frontend_clang_O3_s": r["clang_s"],
             "oracle_smt_pass_s": r["oracle_s"],
             "oracle_avg_per_trap_ms": f"{per_trap_ms:.1f}" if per_trap_ms else "",
@@ -153,3 +160,11 @@ for spec in ("signed", "unsigned", "both"):
         d = pct(f(rr["min_run_s"]), f(nn["min_run_s"])) if (rr and nn) else None
         cells.append(f"{-d:+11.1f}%" if d is not None else f"{'--':>12}")
     print(f"{spec:9} " + " ".join(cells))
+
+print(f"\n{'spec':9} {'.text_vs_base2x':>20} {'file_vs_base2x':>20}   (oracle binary shrink)")
+for spec in ("signed", "unsigned", "both"):
+    o = by_key.get((spec, "oracle", sizes[0]))
+    b = by_key.get((spec, "base2x", sizes[0]))
+    if o and b:
+        print(f"{spec:9} {size_delta(f(o['text_bytes']), f(b['text_bytes'])):>20} "
+              f"{size_delta(f(o['bin_bytes']), f(b['bin_bytes'])):>20}")

@@ -63,8 +63,10 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
     // Costs one extra solver query per UNSAT (not per trap) -- enable in
     // dev/audit runs, disable for performance benchmarking.
     bool VacuityCheck = false;
+    unsigned QueryTimeoutMs = 10000;
     OraclePass() = default;
-    explicit OraclePass(bool Vacuity) : VacuityCheck(Vacuity) {}
+    OraclePass(bool Vacuity, unsigned TimeoutMs)
+        : VacuityCheck(Vacuity), QueryTimeoutMs(TimeoutMs) {}
 
 PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM) {
         auto function_start_time = std::chrono::high_resolution_clock::now();
@@ -134,7 +136,7 @@ PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM) {
             errs() << "  -> Found UB Trap. Starting Backward Slice...\n";
 
             // 3. The Slicer & Solver
-            Z3Encoder Encoder;
+            Z3Encoder Encoder(QueryTimeoutMs);
             trap_attempts++;
             
             auto [Eliminated, Latency] = tryEliminateTrap(OvfCondition, TrapOnTrue, PredBB, Encoder, LI, DT, Log);
@@ -402,15 +404,29 @@ llvmGetPassPluginInfo() {
                 PB.registerPipelineParsingCallback(
                     [](StringRef Name, FunctionPassManager &FPM,
                        ArrayRef<PassBuilder::PipelineElement>) {
-                        if (Name == "oracle-pass") {
-                            FPM.addPass(OraclePass(false));
-                            return true;
+                        if (!Name.consume_front("oracle-pass"))
+                            return false;
+                        bool Vacuity = false;
+                        unsigned TimeoutMs = 10000;
+                        if (!Name.empty()) {              // parse "<a;b;...>"
+                            if (!Name.consume_front("<") || !Name.consume_back(">"))
+                                return false;
+                            SmallVector<StringRef, 4> Parts;
+                            Name.split(Parts, ';');
+                            for (StringRef P : Parts) {
+                                P = P.trim();
+                                if (P == "vacuity")
+                                    Vacuity = true;
+                                else if (P.consume_front("timeout=")) {
+                                    if (P.getAsInteger(10, TimeoutMs))
+                                        return false;   // malformed number
+                                } else if (!P.empty())
+                                    return false;       // unknown parameter
+                            }
                         }
-                        if (Name == "oracle-pass<vacuity>") {
-                            FPM.addPass(OraclePass(true));
-                            return true;
-                        }
-                        return false;
-                    });
+                        FPM.addPass(OraclePass(Vacuity, TimeoutMs));
+                        return true;
+                    }
+                );
             }};
 }

@@ -35,7 +35,7 @@ class Z3Encoder {
     std::set<llvm::BasicBlock*> InProgress;
 
 public:
-    Z3Encoder();
+    explicit Z3Encoder(unsigned TimeoutMs = 10000);
     z3::expr getOrCreateZ3Expr(llvm::Value *Val);
     bool encodeInstruction(llvm::Instruction *Inst, llvm::DominatorTree *DT = nullptr, llvm::LoopInfo *LI = nullptr);
     void assertCondition(llvm::Value *Cond, bool IsTrue);

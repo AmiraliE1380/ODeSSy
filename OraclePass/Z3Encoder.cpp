@@ -8,10 +8,10 @@
 
 using namespace llvm;
 
-Z3Encoder::Z3Encoder() : Solver(Ctx) {
-    // Per-query safety net: a pathological query returns UNKNOWN after 5 s
-    // (handled like SAT downstream) instead of eating the 600 s process budget.
-    Solver.set("timeout", 10000u);
+Z3Encoder::Z3Encoder(unsigned TimeoutMs) : Solver(Ctx) {
+    // Per-query safety net: a pathological query returns UNKNOWN after
+    // TimeoutMs (handled like SAT downstream) instead of hanging the run.
+    Solver.set("timeout", TimeoutMs);
 }
 
 void Z3Encoder::push() { Solver.push(); }
