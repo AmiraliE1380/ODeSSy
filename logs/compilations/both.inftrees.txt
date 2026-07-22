@@ -1,32 +1,182 @@
 
 [Z3 Oracle] Analyzing Function: inflate_table
   -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %434 = icmp eq i64 %367, 4294967295
+    -> Guard[1] (true edge of ''):  %425 = icmp eq i32 %424, 0
+    -> Guard[2] (false edge of ''):  %417 = extractvalue { i32, i1 } %416, 1, !nosanitize !19
+    -> Guard[3] (true edge of ''):  %414 = icmp eq i32 %401, 0
+    -> Guard[4] (false edge of ''):  %406 = extractvalue { i32, i1 } %405, 1, !nosanitize !19
+    -> Guard[5] (false edge of ''):  %402 = extractvalue { i32, i1 } %400, 1, !nosanitize !19
+    -> Guard[6] (false edge of ''):  %254 = and i1 %251, %253
+    -> Guard[7] (false edge of ''):  %249 = icmp samesign ult i32 %247, %248
+    -> Guard[8] (false edge of ''):  %245 = icmp slt i32 %244, 0
+    -> Guard[9] (false edge of ''):  %238 = icmp slt i32 %237, 0
+    -> Guard[10] (false edge of ''):  %231 = icmp slt i32 %230, 0
+    -> Guard[11] (false edge of ''):  %224 = icmp slt i32 %223, 0
+    -> Guard[12] (false edge of ''):  %217 = icmp slt i32 %216, 0
+    -> Guard[13] (false edge of ''):  %210 = icmp slt i32 %209, 0
+    -> Guard[14] (false edge of ''):  %203 = icmp slt i32 %202, 0
+    -> Guard[15] (false edge of ''):  %196 = icmp slt i32 %195, 0
+    -> Guard[16] (false edge of ''):  %189 = icmp slt i32 %188, 0
+    -> Guard[17] (false edge of ''):  %182 = icmp slt i32 %181, 0
+    -> Guard[18] (false edge of ''):  %175 = icmp slt i32 %174, 0
+    -> Guard[19] (false edge of ''):  %168 = icmp slt i32 %167, 0
+    -> Guard[20] (false edge of ''):  %161 = icmp slt i32 %160, 0
+    -> Guard[21] (false edge of ''):  %266 = icmp ugt i16 %265, 2
     -> Collected 22 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.094651 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 17.241930 ms]
   -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %254 = and i1 %251, %253
+    -> Guard[1] (false edge of ''):  %249 = icmp samesign ult i32 %247, %248
+    -> Guard[2] (false edge of ''):  %245 = icmp slt i32 %244, 0
+    -> Guard[3] (false edge of ''):  %238 = icmp slt i32 %237, 0
+    -> Guard[4] (false edge of ''):  %231 = icmp slt i32 %230, 0
+    -> Guard[5] (false edge of ''):  %224 = icmp slt i32 %223, 0
+    -> Guard[6] (false edge of ''):  %217 = icmp slt i32 %216, 0
+    -> Guard[7] (false edge of ''):  %210 = icmp slt i32 %209, 0
+    -> Guard[8] (false edge of ''):  %203 = icmp slt i32 %202, 0
+    -> Guard[9] (false edge of ''):  %196 = icmp slt i32 %195, 0
+    -> Guard[10] (false edge of ''):  %189 = icmp slt i32 %188, 0
+    -> Guard[11] (false edge of ''):  %182 = icmp slt i32 %181, 0
+    -> Guard[12] (false edge of ''):  %175 = icmp slt i32 %174, 0
+    -> Guard[13] (false edge of ''):  %168 = icmp slt i32 %167, 0
+    -> Guard[14] (false edge of ''):  %161 = icmp slt i32 %160, 0
+    -> Guard[15] (false edge of ''):  %266 = icmp ugt i16 %265, 2
     -> Collected 16 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.907454 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 22.326215 ms]
   -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %402 = extractvalue { i32, i1 } %400, 1, !nosanitize !19
+    -> Guard[1] (false edge of ''):  %254 = and i1 %251, %253
+    -> Guard[2] (false edge of ''):  %249 = icmp samesign ult i32 %247, %248
+    -> Guard[3] (false edge of ''):  %245 = icmp slt i32 %244, 0
+    -> Guard[4] (false edge of ''):  %238 = icmp slt i32 %237, 0
+    -> Guard[5] (false edge of ''):  %231 = icmp slt i32 %230, 0
+    -> Guard[6] (false edge of ''):  %224 = icmp slt i32 %223, 0
+    -> Guard[7] (false edge of ''):  %217 = icmp slt i32 %216, 0
+    -> Guard[8] (false edge of ''):  %210 = icmp slt i32 %209, 0
+    -> Guard[9] (false edge of ''):  %203 = icmp slt i32 %202, 0
+    -> Guard[10] (false edge of ''):  %196 = icmp slt i32 %195, 0
+    -> Guard[11] (false edge of ''):  %189 = icmp slt i32 %188, 0
+    -> Guard[12] (false edge of ''):  %182 = icmp slt i32 %181, 0
+    -> Guard[13] (false edge of ''):  %175 = icmp slt i32 %174, 0
+    -> Guard[14] (false edge of ''):  %168 = icmp slt i32 %167, 0
+    -> Guard[15] (false edge of ''):  %161 = icmp slt i32 %160, 0
+    -> Guard[16] (false edge of ''):  %266 = icmp ugt i16 %265, 2
     -> Collected 17 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 15.058837 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 17.090940 ms]
   -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %414 = icmp eq i32 %401, 0
+    -> Guard[1] (false edge of ''):  %406 = extractvalue { i32, i1 } %405, 1, !nosanitize !19
+    -> Guard[2] (false edge of ''):  %402 = extractvalue { i32, i1 } %400, 1, !nosanitize !19
+    -> Guard[3] (false edge of ''):  %254 = and i1 %251, %253
+    -> Guard[4] (false edge of ''):  %249 = icmp samesign ult i32 %247, %248
+    -> Guard[5] (false edge of ''):  %245 = icmp slt i32 %244, 0
+    -> Guard[6] (false edge of ''):  %238 = icmp slt i32 %237, 0
+    -> Guard[7] (false edge of ''):  %231 = icmp slt i32 %230, 0
+    -> Guard[8] (false edge of ''):  %224 = icmp slt i32 %223, 0
+    -> Guard[9] (false edge of ''):  %217 = icmp slt i32 %216, 0
+    -> Guard[10] (false edge of ''):  %210 = icmp slt i32 %209, 0
+    -> Guard[11] (false edge of ''):  %203 = icmp slt i32 %202, 0
+    -> Guard[12] (false edge of ''):  %196 = icmp slt i32 %195, 0
+    -> Guard[13] (false edge of ''):  %189 = icmp slt i32 %188, 0
+    -> Guard[14] (false edge of ''):  %182 = icmp slt i32 %181, 0
+    -> Guard[15] (false edge of ''):  %175 = icmp slt i32 %174, 0
+    -> Guard[16] (false edge of ''):  %168 = icmp slt i32 %167, 0
+    -> Guard[17] (false edge of ''):  %161 = icmp slt i32 %160, 0
+    -> Guard[18] (false edge of ''):  %266 = icmp ugt i16 %265, 2
     -> Collected 19 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.975244 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.446285 ms]
   -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %425 = icmp eq i32 %424, 0
+    -> Guard[1] (false edge of ''):  %417 = extractvalue { i32, i1 } %416, 1, !nosanitize !19
+    -> Guard[2] (true edge of ''):  %414 = icmp eq i32 %401, 0
+    -> Guard[3] (false edge of ''):  %406 = extractvalue { i32, i1 } %405, 1, !nosanitize !19
+    -> Guard[4] (false edge of ''):  %402 = extractvalue { i32, i1 } %400, 1, !nosanitize !19
+    -> Guard[5] (false edge of ''):  %254 = and i1 %251, %253
+    -> Guard[6] (false edge of ''):  %249 = icmp samesign ult i32 %247, %248
+    -> Guard[7] (false edge of ''):  %245 = icmp slt i32 %244, 0
+    -> Guard[8] (false edge of ''):  %238 = icmp slt i32 %237, 0
+    -> Guard[9] (false edge of ''):  %231 = icmp slt i32 %230, 0
+    -> Guard[10] (false edge of ''):  %224 = icmp slt i32 %223, 0
+    -> Guard[11] (false edge of ''):  %217 = icmp slt i32 %216, 0
+    -> Guard[12] (false edge of ''):  %210 = icmp slt i32 %209, 0
+    -> Guard[13] (false edge of ''):  %203 = icmp slt i32 %202, 0
+    -> Guard[14] (false edge of ''):  %196 = icmp slt i32 %195, 0
+    -> Guard[15] (false edge of ''):  %189 = icmp slt i32 %188, 0
+    -> Guard[16] (false edge of ''):  %182 = icmp slt i32 %181, 0
+    -> Guard[17] (false edge of ''):  %175 = icmp slt i32 %174, 0
+    -> Guard[18] (false edge of ''):  %168 = icmp slt i32 %167, 0
+    -> Guard[19] (false edge of ''):  %161 = icmp slt i32 %160, 0
+    -> Guard[20] (false edge of ''):  %266 = icmp ugt i16 %265, 2
     -> Collected 21 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.522677 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 17.160839 ms]
   -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %488 = icmp slt i32 %485, 1
+    -> Guard[1] (false edge of ''):  %486 = extractvalue { i32, i1 } %484, 1, !nosanitize !19
+    -> Guard[2] (true edge of ''):  %478 = icmp ult i32 %477, %260
+    -> Guard[3] (false edge of ''):  %469 = extractvalue { i32, i1 } %468, 1, !nosanitize !19
+    -> Guard[4] (false edge of ''):  %464 = extractvalue { i32, i1 } %463, 1, !nosanitize !19
+    -> Guard[5] (false edge of ''):  %457 = icmp eq i32 %456, %370
+    -> Guard[6] (true edge of ''):  %454 = icmp ugt i32 %453, %259
+    -> Guard[7] (false edge of ''):  %434 = icmp eq i64 %367, 4294967295
+    -> Guard[8] (true edge of ''):  %425 = icmp eq i32 %424, 0
+    -> Guard[9] (false edge of ''):  %417 = extractvalue { i32, i1 } %416, 1, !nosanitize !19
+    -> Guard[10] (true edge of ''):  %414 = icmp eq i32 %401, 0
+    -> Guard[11] (false edge of ''):  %406 = extractvalue { i32, i1 } %405, 1, !nosanitize !19
+    -> Guard[12] (false edge of ''):  %402 = extractvalue { i32, i1 } %400, 1, !nosanitize !19
+    -> Guard[13] (false edge of ''):  %254 = and i1 %251, %253
+    -> Guard[14] (false edge of ''):  %249 = icmp samesign ult i32 %247, %248
+    -> Guard[15] (false edge of ''):  %245 = icmp slt i32 %244, 0
+    -> Guard[16] (false edge of ''):  %238 = icmp slt i32 %237, 0
+    -> Guard[17] (false edge of ''):  %231 = icmp slt i32 %230, 0
+    -> Guard[18] (false edge of ''):  %224 = icmp slt i32 %223, 0
+    -> Guard[19] (false edge of ''):  %217 = icmp slt i32 %216, 0
+    -> Guard[20] (false edge of ''):  %210 = icmp slt i32 %209, 0
+    -> Guard[21] (false edge of ''):  %203 = icmp slt i32 %202, 0
+    -> Guard[22] (false edge of ''):  %196 = icmp slt i32 %195, 0
+    -> Guard[23] (false edge of ''):  %189 = icmp slt i32 %188, 0
+    -> Guard[24] (false edge of ''):  %182 = icmp slt i32 %181, 0
+    -> Guard[25] (false edge of ''):  %175 = icmp slt i32 %174, 0
+    -> Guard[26] (false edge of ''):  %168 = icmp slt i32 %167, 0
+    -> Guard[27] (false edge of ''):  %161 = icmp slt i32 %160, 0
+    -> Guard[28] (false edge of ''):  %266 = icmp ugt i16 %265, 2
     -> Collected 29 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.707763 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.839957 ms]
   -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %469 = extractvalue { i32, i1 } %468, 1, !nosanitize !19
+    -> Guard[1] (false edge of ''):  %464 = extractvalue { i32, i1 } %463, 1, !nosanitize !19
+    -> Guard[2] (false edge of ''):  %457 = icmp eq i32 %456, %370
+    -> Guard[3] (true edge of ''):  %454 = icmp ugt i32 %453, %259
+    -> Guard[4] (false edge of ''):  %434 = icmp eq i64 %367, 4294967295
+    -> Guard[5] (true edge of ''):  %425 = icmp eq i32 %424, 0
+    -> Guard[6] (false edge of ''):  %417 = extractvalue { i32, i1 } %416, 1, !nosanitize !19
+    -> Guard[7] (true edge of ''):  %414 = icmp eq i32 %401, 0
+    -> Guard[8] (false edge of ''):  %406 = extractvalue { i32, i1 } %405, 1, !nosanitize !19
+    -> Guard[9] (false edge of ''):  %402 = extractvalue { i32, i1 } %400, 1, !nosanitize !19
+    -> Guard[10] (false edge of ''):  %254 = and i1 %251, %253
+    -> Guard[11] (false edge of ''):  %249 = icmp samesign ult i32 %247, %248
+    -> Guard[12] (false edge of ''):  %245 = icmp slt i32 %244, 0
+    -> Guard[13] (false edge of ''):  %238 = icmp slt i32 %237, 0
+    -> Guard[14] (false edge of ''):  %231 = icmp slt i32 %230, 0
+    -> Guard[15] (false edge of ''):  %224 = icmp slt i32 %223, 0
+    -> Guard[16] (false edge of ''):  %217 = icmp slt i32 %216, 0
+    -> Guard[17] (false edge of ''):  %210 = icmp slt i32 %209, 0
+    -> Guard[18] (false edge of ''):  %203 = icmp slt i32 %202, 0
+    -> Guard[19] (false edge of ''):  %196 = icmp slt i32 %195, 0
+    -> Guard[20] (false edge of ''):  %189 = icmp slt i32 %188, 0
+    -> Guard[21] (false edge of ''):  %182 = icmp slt i32 %181, 0
+    -> Guard[22] (false edge of ''):  %175 = icmp slt i32 %174, 0
+    -> Guard[23] (false edge of ''):  %168 = icmp slt i32 %167, 0
+    -> Guard[24] (false edge of ''):  %161 = icmp slt i32 %160, 0
+    -> Guard[25] (false edge of ''):  %266 = icmp ugt i16 %265, 2
     -> Collected 26 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.432990 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 15.351556 ms]
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 7
   => Total SMT Queries Executed: 7
-  => Total SMT Query Latency: 5.669962e+01 ms
-  => Average SMT Query Latency: 8.099945e+00 ms
-  => Total DFS & SMT Execution Time: 2.554275e+02 ms
+  => Total SMT Query Latency: 1.004577e+02 ms
+  => Average SMT Query Latency: 1.435110e+01 ms
+  => Total DFS & SMT Execution Time: 2.823741e+02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: inflate_fixed
@@ -35,5 +185,5 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 6.715700e-02 ms
+  => Total DFS & SMT Execution Time: 4.712400e-02 ms
 --------------------------------------------------

@@ -1,0 +1,203 @@
+nohup: ignoring input
+==== rebuilding pass ====
+ninja: no work to do.
+==== minigzip driver (unsanitized, shared by every build) ====
+
+==== PHASE A: building all binaries ====
+  built none.base        traps     0->0     bin   196056 B text   179378 B compile    4.316s (smt 0.000s)
+  built signed.base      traps   125->125   bin   200152 B text   181570 B compile    3.117s (smt 0.000s)
+  built signed.base2x    traps   125->125   bin   200152 B text   181602 B compile    4.638s (smt 0.000s)
+  built signed.oracle    traps   125->115   bin   200152 B text   181522 B compile    5.798s (smt 1.431s)
+  built unsigned.base    traps  1219->1219  bin   212440 B text   193850 B compile    3.140s (smt 0.000s)
+  built unsigned.base2x  traps  1219->1219  bin   212440 B text   193866 B compile    4.400s (smt 0.000s)
+  built unsigned.oracle  traps  1219->1081  bin   212440 B text   193746 B compile  289.002s (smt 284.311s)
+  built both.base        traps  1296->1296  bin   212440 B text   195986 B compile    3.406s (smt 0.000s)
+  built both.base2x      traps  1296->1296  bin   212440 B text   196434 B compile    4.874s (smt 0.000s)
+  built both.oracle      traps  1296->1154  bin   212440 B text   195778 B compile  170.204s (smt 165.587s)
+
+==== PHASE B: corpora (8 64 512 MB) ====
+  corpus 8 MB ready
+  corpus 64 MB ready
+  corpus 512 MB ready
+
+==== cooldown 60s after compile phase (thermal settle) ====
+==== PHASE C: warmup ====
+run_zlib_perf.sh: line 183:  4081 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] unsigned.base @512MB warmup died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 183:  4088 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] unsigned.base2x @512MB warmup died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 183:  4093 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] unsigned.oracle @512MB warmup died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 183:  4102 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] both.base @512MB warmup died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 183:  4109 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] both.base2x @512MB warmup died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 183:  4116 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] both.oracle @512MB warmup died rc=132 -- a trap fired!
+==== PHASE D: 10 shuffled reps x 30 (binary x size) pairs ====
+  rep 1/10  (23:27:52)
+run_zlib_perf.sh: line 198:  4194 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] both.base @512MB rep 1 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  4213 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] both.base2x @512MB rep 1 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  4314 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] unsigned.base2x @512MB rep 1 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  4330 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] unsigned.oracle @512MB rep 1 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  4339 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] unsigned.base @512MB rep 1 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  4349 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] both.oracle @512MB rep 1 died rc=132 -- a trap fired!
+  rep 2/10  (23:44:00)
+run_zlib_perf.sh: line 198:  4370 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] both.base @512MB rep 2 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  4421 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] unsigned.base @512MB rep 2 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  4430 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] unsigned.oracle @512MB rep 2 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  4476 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] both.oracle @512MB rep 2 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  4499 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] unsigned.base2x @512MB rep 2 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  4568 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] both.base2x @512MB rep 2 died rc=132 -- a trap fired!
+  rep 3/10  (00:00:19)
+run_zlib_perf.sh: line 198:  4640 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] unsigned.base2x @512MB rep 3 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  4699 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] both.oracle @512MB rep 3 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  4708 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] both.base @512MB rep 3 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  4731 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] unsigned.base @512MB rep 3 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  4776 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] both.base2x @512MB rep 3 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  4866 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] unsigned.oracle @512MB rep 3 died rc=132 -- a trap fired!
+  rep 4/10  (00:16:27)
+run_zlib_perf.sh: line 198:  4879 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] unsigned.base @512MB rep 4 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  4898 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] both.base2x @512MB rep 4 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  4936 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] unsigned.oracle @512MB rep 4 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  5003 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] unsigned.base2x @512MB rep 4 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  5033 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] both.oracle @512MB rep 4 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  5056 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] both.base @512MB rep 4 died rc=132 -- a trap fired!
+  rep 5/10  (00:32:40)
+run_zlib_perf.sh: line 198:  5134 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] unsigned.oracle @512MB rep 5 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  5171 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] unsigned.base2x @512MB rep 5 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  5267 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] unsigned.base @512MB rep 5 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  5284 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] both.oracle @512MB rep 5 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  5300 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] both.base @512MB rep 5 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  5309 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] both.base2x @512MB rep 5 died rc=132 -- a trap fired!
+  rep 6/10  (00:48:49)
+run_zlib_perf.sh: line 198:  5344 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] unsigned.base @512MB rep 6 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  5423 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] both.base2x @512MB rep 6 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  5433 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] both.base @512MB rep 6 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  5464 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] unsigned.oracle @512MB rep 6 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  5487 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] both.oracle @512MB rep 6 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  5511 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] unsigned.base2x @512MB rep 6 died rc=132 -- a trap fired!
+  rep 7/10  (01:04:58)
+run_zlib_perf.sh: line 198:  5610 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] unsigned.base @512MB rep 7 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  5619 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] both.base2x @512MB rep 7 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  5663 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] both.base @512MB rep 7 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  5694 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] unsigned.base2x @512MB rep 7 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  5732 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] both.oracle @512MB rep 7 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  5772 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] unsigned.oracle @512MB rep 7 died rc=132 -- a trap fired!
+  rep 8/10  (01:21:06)
+run_zlib_perf.sh: line 198:  5871 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] both.base2x @512MB rep 8 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  5880 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] both.base @512MB rep 8 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  5896 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] both.oracle @512MB rep 8 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  5912 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] unsigned.base2x @512MB rep 8 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  5964 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] unsigned.oracle @512MB rep 8 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  6009 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] unsigned.base @512MB rep 8 died rc=132 -- a trap fired!
+  rep 9/10  (01:37:14)
+run_zlib_perf.sh: line 198:  6093 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] both.oracle @512MB rep 9 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  6102 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] unsigned.oracle @512MB rep 9 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  6118 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] both.base2x @512MB rep 9 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  6207 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] unsigned.base2x @512MB rep 9 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  6237 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] both.base @512MB rep 9 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  6254 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] unsigned.base @512MB rep 9 died rc=132 -- a trap fired!
+  rep 10/10  (01:53:25)
+run_zlib_perf.sh: line 198:  6296 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] both.oracle @512MB rep 10 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  6305 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] both.base2x @512MB rep 10 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  6349 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] unsigned.oracle @512MB rep 10 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  6367 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] unsigned.base @512MB rep 10 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  6418 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] both.base @512MB rep 10 died rc=132 -- a trap fired!
+run_zlib_perf.sh: line 198:  6470 Illegal instruction     (core dumped) "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+  [TRAP] unsigned.base2x @512MB rep 10 died rc=132 -- a trap fired!
+
+spec      config     MB   t_in  t_fin      bin_B    text_B   total_s   avg_run   min_run
+none      base        8      0      0     196056    179378     4.316     1.367     1.356
+none      base       64      0      0     196056    179378     4.316    11.079    10.865
+none      base      512      0      0     196056    179378     4.316    87.274    86.874
+signed    base        8    125    125     200152    181570     3.117     1.378     1.371
+signed    base       64    125    125     200152    181570     3.117    11.030    10.929
+signed    base      512    125    125     200152    181570     3.117    87.920    87.667
+signed    base2x      8    125    125     200152    181602     4.638     1.385     1.373
+signed    base2x     64    125    125     200152    181602     4.638    11.068    10.942
+signed    base2x    512    125    125     200152    181602     4.638    88.471    87.598
+signed    oracle      8    125    115     200152    181522     5.798     1.375     1.366
+signed    oracle     64    125    115     200152    181522     5.798    10.971    10.930
+signed    oracle    512    125    115     200152    181522     5.798    88.238    87.608
+unsigned  base        8   1219   1219     212440    193850     3.140     1.406     1.392
+unsigned  base       64   1219   1219     212440    193850     3.140    11.190    11.145
+unsigned  base      512   1219   1219     212440    193850     3.140    81.505    80.846
+unsigned  base2x      8   1219   1219     212440    193866     4.400     1.397     1.392
+unsigned  base2x     64   1219   1219     212440    193866     4.400    11.332    11.126
+unsigned  base2x    512   1219   1219     212440    193866     4.400    81.070    80.785
+unsigned  oracle      8   1219   1081     212440    193746   289.002     1.388     1.379
+unsigned  oracle     64   1219   1081     212440    193746   289.002    11.110    11.037
+unsigned  oracle    512   1219   1081     212440    193746   289.002    81.213    80.186
+both      base        8   1296   1296     212440    195986     3.406     1.441     1.436
+both      base       64   1296   1296     212440    195986     3.406    11.531    11.475
+both      base      512   1296   1296     212440    195986     3.406    83.409    83.234
+both      base2x      8   1296   1296     212440    196434     4.874     1.435     1.429
+both      base2x     64   1296   1296     212440    196434     4.874    11.606    11.430
+both      base2x    512   1296   1296     212440    196434     4.874    83.087    82.989
+both      oracle      8   1296   1154     212440    195778   170.204     1.405     1.397
+both      oracle     64   1296   1154     212440    195778   170.204    11.230    11.193
+both      oracle    512   1296   1154     212440    195778   170.204    81.359    81.251
+
+CSV: /home/amiralie1380/michigan/pl/smt-compiler-oracle/evaluation/perf_zlib.csv   (then: python3 make_perf_report.py)
+Cold-path check: if %-speedup shrinks 8 -> 64 -> 512 MB, the savings are
+constant-per-invocation (cold path); flat % means a scaled path changed.

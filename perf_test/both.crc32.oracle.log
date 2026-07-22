@@ -5,89 +5,89 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 3.788960e-01 ms
+  => Total DFS & SMT Execution Time: 2.577680e-01 ms
 
 [Z3 Oracle] Analyzing Function: crc32_z
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2418.866718 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1678.630764 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
   => Total Traps Eliminated: 1
   => Total Trap Attempts: 2
   => Total SMT Queries Executed: 2
-  => Total SMT Query Latency: 2.719959e+03 ms
-  => Average SMT Query Latency: 1.359979e+03 ms
-  => Total DFS & SMT Execution Time: 2.782084e+03 ms
+  => Total SMT Query Latency: 1.986871e+03 ms
+  => Average SMT Query Latency: 9.934355e+02 ms
+  => Total DFS & SMT Execution Time: 2.078029e+03 ms
 
 [Z3 Oracle] Analyzing Function: crc32
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2055.825714 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1778.845508 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
   => Total Traps Eliminated: 1
   => Total Trap Attempts: 2
   => Total SMT Queries Executed: 2
-  => Total SMT Query Latency: 2.335126e+03 ms
-  => Average SMT Query Latency: 1.167563e+03 ms
-  => Total DFS & SMT Execution Time: 2.382467e+03 ms
+  => Total SMT Query Latency: 2.063880e+03 ms
+  => Average SMT Query Latency: 1.031940e+03 ms
+  => Total DFS & SMT Execution Time: 2.136026e+03 ms
 
 [Z3 Oracle] Analyzing Function: crc32_combine_gen64
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1.166789 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1.094710 ms]
   => SUCCESS: Trap mathematically neutralized!
   => Total Traps Eliminated: 1
   => Total Trap Attempts: 1
   => Total SMT Queries Executed: 1
-  => Total SMT Query Latency: 1.166789e+00 ms
-  => Average SMT Query Latency: 1.166789e+00 ms
-  => Total DFS & SMT Execution Time: 7.751160e+00 ms
+  => Total SMT Query Latency: 1.094710e+00 ms
+  => Average SMT Query Latency: 1.094710e+00 ms
+  => Total DFS & SMT Execution Time: 7.150592e+00 ms
 
 [Z3 Oracle] Analyzing Function: crc32_combine_gen
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1.438781 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1.262720 ms]
   => SUCCESS: Trap mathematically neutralized!
   => Total Traps Eliminated: 1
   => Total Trap Attempts: 1
   => Total SMT Queries Executed: 1
-  => Total SMT Query Latency: 1.438781e+00 ms
-  => Average SMT Query Latency: 1.438781e+00 ms
-  => Total DFS & SMT Execution Time: 9.425483e+00 ms
+  => Total SMT Query Latency: 1.262720e+00 ms
+  => Average SMT Query Latency: 1.262720e+00 ms
+  => Total DFS & SMT Execution Time: 7.194314e+00 ms
 
 [Z3 Oracle] Analyzing Function: crc32_combine_op
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1.147659 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1.077030 ms]
   => SUCCESS: Trap mathematically neutralized!
   => Total Traps Eliminated: 1
   => Total Trap Attempts: 1
   => Total SMT Queries Executed: 1
-  => Total SMT Query Latency: 1.147659e+00 ms
-  => Average SMT Query Latency: 1.147659e+00 ms
-  => Total DFS & SMT Execution Time: 1.027817e+01 ms
+  => Total SMT Query Latency: 1.077030e+00 ms
+  => Average SMT Query Latency: 1.077030e+00 ms
+  => Total DFS & SMT Execution Time: 6.432720e+00 ms
 
 [Z3 Oracle] Analyzing Function: crc32_combine64
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1.744285 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1.042156 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1.269436 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1.044823 ms]
   => SUCCESS: Trap mathematically neutralized!
   => Total Traps Eliminated: 2
   => Total Trap Attempts: 2
   => Total SMT Queries Executed: 2
-  => Total SMT Query Latency: 3.013721e+00 ms
-  => Average SMT Query Latency: 1.506861e+00 ms
-  => Total DFS & SMT Execution Time: 2.314396e+01 ms
+  => Total SMT Query Latency: 2.086979e+00 ms
+  => Average SMT Query Latency: 1.043490e+00 ms
+  => Total DFS & SMT Execution Time: 1.526245e+01 ms
 
 [Z3 Oracle] Analyzing Function: crc32_combine
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1.432390 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 0.961573 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Found UB Trap. Starting Backward Slice...
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1.348270 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1.098600 ms]
   => SUCCESS: Trap mathematically neutralized!
   => Total Traps Eliminated: 2
   => Total Trap Attempts: 2
   => Total SMT Queries Executed: 2
-  => Total SMT Query Latency: 2.780660e+00 ms
-  => Average SMT Query Latency: 1.390330e+00 ms
-  => Total DFS & SMT Execution Time: 2.301381e+01 ms
+  => Total SMT Query Latency: 2.060173e+00 ms
+  => Average SMT Query Latency: 1.030086e+00 ms
+  => Total DFS & SMT Execution Time: 1.506253e+01 ms

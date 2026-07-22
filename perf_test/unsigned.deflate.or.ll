@@ -892,35 +892,35 @@ define dso_local range(i32 -2, 1) i32 @deflateReset(ptr noundef captures(address
 ; Function Attrs: nounwind uwtable
 define dso_local range(i32 -2, 1) i32 @deflateSetDictionary(ptr noundef captures(address) %0, ptr noundef %1, i32 noundef %2) local_unnamed_addr #0 {
   %4 = icmp eq ptr %0, null
-  br i1 %4, label %815, label %5
+  br i1 %4, label %809, label %5
 
 5:                                                ; preds = %3
   %6 = getelementptr inbounds nuw i8, ptr %0, i64 64
   %7 = load ptr, ptr %6, align 8, !tbaa !15
   %8 = icmp eq ptr %7, null
-  br i1 %8, label %815, label %9
+  br i1 %8, label %809, label %9
 
 9:                                                ; preds = %5
   %10 = getelementptr inbounds nuw i8, ptr %0, i64 72
   %11 = load ptr, ptr %10, align 8, !tbaa !17
   %12 = icmp eq ptr %11, null
-  br i1 %12, label %815, label %13
+  br i1 %12, label %809, label %13
 
 13:                                               ; preds = %9
   %14 = getelementptr inbounds nuw i8, ptr %0, i64 56
   %15 = load ptr, ptr %14, align 8, !tbaa !19
   %16 = icmp eq ptr %15, null
-  br i1 %16, label %815, label %17
+  br i1 %16, label %809, label %17
 
 17:                                               ; preds = %13
   %18 = load ptr, ptr %15, align 8, !tbaa !20
   %19 = icmp eq ptr %18, %0
-  br i1 %19, label %20, label %815
+  br i1 %19, label %20, label %809
 
 20:                                               ; preds = %17
   %21 = getelementptr inbounds nuw i8, ptr %15, i64 8
   %22 = load i32, ptr %21, align 8, !tbaa !29
-  switch i32 %22, label %815 [
+  switch i32 %22, label %809 [
     i32 42, label %23
     i32 57, label %23
     i32 69, label %23
@@ -933,31 +933,31 @@ define dso_local range(i32 -2, 1) i32 @deflateSetDictionary(ptr noundef captures
 
 23:                                               ; preds = %20, %20, %20, %20, %20, %20, %20, %20
   %24 = icmp eq ptr %1, null
-  br i1 %24, label %815, label %25
+  br i1 %24, label %809, label %25
 
 25:                                               ; preds = %23
   %26 = getelementptr inbounds nuw i8, ptr %15, i64 48
   %27 = load i32, ptr %26, align 8, !tbaa !30
   switch i32 %27, label %34 [
-    i32 2, label %815
+    i32 2, label %809
     i32 1, label %28
   ]
 
 28:                                               ; preds = %25
   %29 = icmp eq i32 %22, 42
-  br i1 %29, label %30, label %815
+  br i1 %29, label %30, label %809
 
 30:                                               ; preds = %28
   %31 = getelementptr inbounds nuw i8, ptr %15, i64 180
   %32 = load i32, ptr %31, align 4, !tbaa !75
   %33 = icmp eq i32 %32, 0
-  br i1 %33, label %42, label %815
+  br i1 %33, label %42, label %809
 
 34:                                               ; preds = %25
   %35 = getelementptr inbounds nuw i8, ptr %15, i64 180
   %36 = load i32, ptr %35, align 4, !tbaa !75
   %37 = icmp eq i32 %36, 0
-  br i1 %37, label %38, label %815
+  br i1 %37, label %38, label %809
 
 38:                                               ; preds = %34
   store i32 0, ptr %26, align 8, !tbaa !30
@@ -1059,8 +1059,8 @@ define dso_local range(i32 -2, 1) i32 @deflateSetDictionary(ptr noundef captures
   %104 = load i32, ptr %82, align 4, !tbaa !75
   br label %105
 
-105:                                              ; preds = %384, %80
-  %106 = phi i32 [ %311, %384 ], [ %104, %80 ]
+105:                                              ; preds = %381, %80
+  %106 = phi i32 [ %308, %381 ], [ %104, %80 ]
   %107 = load i64, ptr %89, align 8, !tbaa !61
   %108 = zext i32 %106 to i64
   %109 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %107, i64 %108), !nosanitize !45
@@ -1313,7 +1313,7 @@ define dso_local range(i32 -2, 1) i32 @deflateSetDictionary(ptr noundef captures
   %263 = getelementptr inbounds nuw i8, ptr %262, i64 8
   %264 = load i32, ptr %263, align 8, !tbaa !81
   %265 = icmp eq i32 %264, 0
-  br i1 %265, label %389, label %266
+  br i1 %265, label %386, label %266
 
 266:                                              ; preds = %258
   %267 = load ptr, ptr %92, align 8, !tbaa !34
@@ -1323,888 +1323,872 @@ define dso_local range(i32 -2, 1) i32 @deflateSetDictionary(ptr noundef captures
   %271 = getelementptr inbounds nuw i8, ptr %269, i64 %270
   %272 = tail call i32 @llvm.umin.i32(i32 %264, i32 %261)
   %273 = icmp eq i32 %261, 0
-  br i1 %273, label %305, label %274
+  br i1 %273, label %302, label %274
 
 274:                                              ; preds = %266
   %275 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %264, i32 %272), !nosanitize !45
-  %276 = extractvalue { i32, i1 } %275, 1, !nosanitize !45
-  br i1 %276, label %277, label %278, !prof !46, !nosanitize !45
-
-277:                                              ; preds = %274
-  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
-  unreachable, !nosanitize !45
-
-278:                                              ; preds = %274
-  %279 = extractvalue { i32, i1 } %275, 0, !nosanitize !45
-  store i32 %279, ptr %263, align 8, !tbaa !81
-  %280 = load ptr, ptr %262, align 8, !tbaa !82
-  %281 = zext i32 %272 to i64
-  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %271, ptr align 1 %280, i64 %281, i1 false)
-  %282 = getelementptr inbounds nuw i8, ptr %262, i64 56
-  %283 = load ptr, ptr %282, align 8, !tbaa !19
-  %284 = getelementptr inbounds nuw i8, ptr %283, i64 48
-  %285 = load i32, ptr %284, align 8, !tbaa !30
-  switch i32 %285, label %294 [
-    i32 1, label %286
-    i32 2, label %290
+  %276 = extractvalue { i32, i1 } %275, 0, !nosanitize !45
+  store i32 %276, ptr %263, align 8, !tbaa !81
+  %277 = load ptr, ptr %262, align 8, !tbaa !82
+  %278 = zext i32 %272 to i64
+  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %271, ptr align 1 %277, i64 %278, i1 false)
+  %279 = getelementptr inbounds nuw i8, ptr %262, i64 56
+  %280 = load ptr, ptr %279, align 8, !tbaa !19
+  %281 = getelementptr inbounds nuw i8, ptr %280, i64 48
+  %282 = load i32, ptr %281, align 8, !tbaa !30
+  switch i32 %282, label %291 [
+    i32 1, label %283
+    i32 2, label %287
   ]
 
-286:                                              ; preds = %278
-  %287 = getelementptr inbounds nuw i8, ptr %262, i64 96
-  %288 = load i64, ptr %287, align 8, !tbaa !59
-  %289 = tail call i64 @adler32(i64 noundef %288, ptr noundef %271, i32 noundef %272) #11
-  store i64 %289, ptr %287, align 8, !tbaa !59
-  br label %294
+283:                                              ; preds = %274
+  %284 = getelementptr inbounds nuw i8, ptr %262, i64 96
+  %285 = load i64, ptr %284, align 8, !tbaa !59
+  %286 = tail call i64 @adler32(i64 noundef %285, ptr noundef %271, i32 noundef %272) #11
+  store i64 %286, ptr %284, align 8, !tbaa !59
+  br label %291
 
-290:                                              ; preds = %278
-  %291 = getelementptr inbounds nuw i8, ptr %262, i64 96
-  %292 = load i64, ptr %291, align 8, !tbaa !59
-  %293 = tail call i64 @crc32(i64 noundef %292, ptr noundef %271, i32 noundef %272) #11
-  store i64 %293, ptr %291, align 8, !tbaa !59
-  br label %294
+287:                                              ; preds = %274
+  %288 = getelementptr inbounds nuw i8, ptr %262, i64 96
+  %289 = load i64, ptr %288, align 8, !tbaa !59
+  %290 = tail call i64 @crc32(i64 noundef %289, ptr noundef %271, i32 noundef %272) #11
+  store i64 %290, ptr %288, align 8, !tbaa !59
+  br label %291
 
-294:                                              ; preds = %290, %286, %278
-  %295 = load ptr, ptr %262, align 8, !tbaa !82
-  %296 = getelementptr inbounds nuw i8, ptr %295, i64 %281
-  store ptr %296, ptr %262, align 8, !tbaa !82
-  %297 = getelementptr inbounds nuw i8, ptr %262, i64 16
-  %298 = load i64, ptr %297, align 8, !tbaa !55
-  %299 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %298, i64 %281), !nosanitize !45
-  %300 = extractvalue { i64, i1 } %299, 1, !nosanitize !45
-  br i1 %300, label %301, label %302, !prof !46, !nosanitize !45
+291:                                              ; preds = %287, %283, %274
+  %292 = load ptr, ptr %262, align 8, !tbaa !82
+  %293 = getelementptr inbounds nuw i8, ptr %292, i64 %278
+  store ptr %293, ptr %262, align 8, !tbaa !82
+  %294 = getelementptr inbounds nuw i8, ptr %262, i64 16
+  %295 = load i64, ptr %294, align 8, !tbaa !55
+  %296 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %295, i64 %278), !nosanitize !45
+  %297 = extractvalue { i64, i1 } %296, 1, !nosanitize !45
+  br i1 %297, label %298, label %299, !prof !46, !nosanitize !45
 
-301:                                              ; preds = %294
+298:                                              ; preds = %291
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-302:                                              ; preds = %294
-  %303 = extractvalue { i64, i1 } %299, 0, !nosanitize !45
-  store i64 %303, ptr %297, align 8, !tbaa !55
-  %304 = load i32, ptr %82, align 4, !tbaa !75
-  br label %305
+299:                                              ; preds = %291
+  %300 = extractvalue { i64, i1 } %296, 0, !nosanitize !45
+  store i64 %300, ptr %294, align 8, !tbaa !55
+  %301 = load i32, ptr %82, align 4, !tbaa !75
+  br label %302
 
-305:                                              ; preds = %302, %266
-  %306 = phi i32 [ %259, %266 ], [ %304, %302 ]
-  %307 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %306, i32 %272), !nosanitize !45
-  %308 = extractvalue { i32, i1 } %307, 1, !nosanitize !45
-  br i1 %308, label %309, label %310, !prof !46, !nosanitize !45
+302:                                              ; preds = %299, %266
+  %303 = phi i32 [ %259, %266 ], [ %301, %299 ]
+  %304 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %303, i32 %272), !nosanitize !45
+  %305 = extractvalue { i32, i1 } %304, 1, !nosanitize !45
+  br i1 %305, label %306, label %307, !prof !46, !nosanitize !45
 
-309:                                              ; preds = %305
+306:                                              ; preds = %302
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-310:                                              ; preds = %305
-  %311 = extractvalue { i32, i1 } %307, 0, !nosanitize !45
-  store i32 %311, ptr %82, align 4, !tbaa !75
-  %312 = load i32, ptr %95, align 4, !tbaa !76
-  %313 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %311, i32 %312), !nosanitize !45
-  %314 = extractvalue { i32, i1 } %313, 1, !nosanitize !45
-  br i1 %314, label %315, label %316, !prof !46, !nosanitize !45
+307:                                              ; preds = %302
+  %308 = extractvalue { i32, i1 } %304, 0, !nosanitize !45
+  store i32 %308, ptr %82, align 4, !tbaa !75
+  %309 = load i32, ptr %95, align 4, !tbaa !76
+  %310 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %308, i32 %309), !nosanitize !45
+  %311 = extractvalue { i32, i1 } %310, 1, !nosanitize !45
+  br i1 %311, label %312, label %313, !prof !46, !nosanitize !45
 
-315:                                              ; preds = %310
+312:                                              ; preds = %307
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-316:                                              ; preds = %310
-  %317 = extractvalue { i32, i1 } %313, 0, !nosanitize !45
-  %318 = icmp ugt i32 %317, 2
-  br i1 %318, label %319, label %382
+313:                                              ; preds = %307
+  %314 = extractvalue { i32, i1 } %310, 0, !nosanitize !45
+  %315 = icmp ugt i32 %314, 2
+  br i1 %315, label %316, label %379
 
-319:                                              ; preds = %316
-  %320 = load i32, ptr %90, align 4, !tbaa !73
-  %321 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %320, i32 %312), !nosanitize !45
-  %322 = extractvalue { i32, i1 } %321, 0, !nosanitize !45
-  %323 = extractvalue { i32, i1 } %321, 1, !nosanitize !45
-  br i1 %323, label %324, label %325, !prof !46, !nosanitize !45
+316:                                              ; preds = %313
+  %317 = load i32, ptr %90, align 4, !tbaa !73
+  %318 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %317, i32 %309), !nosanitize !45
+  %319 = extractvalue { i32, i1 } %318, 0, !nosanitize !45
+  %320 = extractvalue { i32, i1 } %318, 1, !nosanitize !45
+  br i1 %320, label %321, label %322, !prof !46, !nosanitize !45
 
-324:                                              ; preds = %319
+321:                                              ; preds = %316
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-325:                                              ; preds = %319
-  %326 = load ptr, ptr %92, align 8, !tbaa !34
-  %327 = zext i32 %322 to i64
-  %328 = getelementptr inbounds nuw i8, ptr %326, i64 %327
-  %329 = load i8, ptr %328, align 1, !tbaa !8
-  %330 = zext i8 %329 to i32
-  store i32 %330, ptr %100, align 8, !tbaa !80
-  %331 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %322, i32 1), !nosanitize !45
-  %332 = extractvalue { i32, i1 } %331, 1, !nosanitize !45
-  br i1 %332, label %333, label %334, !prof !46, !nosanitize !45
+322:                                              ; preds = %316
+  %323 = load ptr, ptr %92, align 8, !tbaa !34
+  %324 = zext i32 %319 to i64
+  %325 = getelementptr inbounds nuw i8, ptr %323, i64 %324
+  %326 = load i8, ptr %325, align 1, !tbaa !8
+  %327 = zext i8 %326 to i32
+  store i32 %327, ptr %100, align 8, !tbaa !80
+  %328 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %319, i32 1), !nosanitize !45
+  %329 = extractvalue { i32, i1 } %328, 1, !nosanitize !45
+  br i1 %329, label %330, label %331, !prof !46, !nosanitize !45
 
-333:                                              ; preds = %325
+330:                                              ; preds = %322
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-334:                                              ; preds = %325
-  %335 = extractvalue { i32, i1 } %331, 0, !nosanitize !45
-  %336 = load i32, ptr %101, align 8, !tbaa !53
-  %337 = shl i32 %330, %336
-  %338 = zext i32 %335 to i64
-  %339 = getelementptr inbounds nuw i8, ptr %326, i64 %338
-  %340 = load i8, ptr %339, align 1, !tbaa !8
-  %341 = zext i8 %340 to i32
-  %342 = xor i32 %337, %341
-  %343 = load i32, ptr %102, align 4, !tbaa !52
-  %344 = and i32 %342, %343
-  store i32 %344, ptr %100, align 8, !tbaa !80
-  br label %345
+331:                                              ; preds = %322
+  %332 = extractvalue { i32, i1 } %328, 0, !nosanitize !45
+  %333 = load i32, ptr %101, align 8, !tbaa !53
+  %334 = shl i32 %327, %333
+  %335 = zext i32 %332 to i64
+  %336 = getelementptr inbounds nuw i8, ptr %323, i64 %335
+  %337 = load i8, ptr %336, align 1, !tbaa !8
+  %338 = zext i8 %337 to i32
+  %339 = xor i32 %334, %338
+  %340 = load i32, ptr %102, align 4, !tbaa !52
+  %341 = and i32 %339, %340
+  store i32 %341, ptr %100, align 8, !tbaa !80
+  br label %342
 
-345:                                              ; preds = %378, %334
-  %346 = phi i32 [ %344, %334 ], [ %363, %378 ]
-  %347 = phi i32 [ %312, %334 ], [ %374, %378 ]
-  %348 = phi i32 [ %322, %334 ], [ %379, %378 ]
-  %349 = icmp eq i32 %347, 0
-  br i1 %349, label %382, label %350
+342:                                              ; preds = %375, %331
+  %343 = phi i32 [ %341, %331 ], [ %360, %375 ]
+  %344 = phi i32 [ %309, %331 ], [ %371, %375 ]
+  %345 = phi i32 [ %319, %331 ], [ %376, %375 ]
+  %346 = icmp eq i32 %344, 0
+  br i1 %346, label %379, label %347
 
-350:                                              ; preds = %345
-  %351 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %348, i32 3), !nosanitize !45
-  %352 = extractvalue { i32, i1 } %351, 1, !nosanitize !45
-  br i1 %352, label %353, label %354, !prof !46, !nosanitize !45
+347:                                              ; preds = %342
+  %348 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %345, i32 3), !nosanitize !45
+  %349 = extractvalue { i32, i1 } %348, 1, !nosanitize !45
+  br i1 %349, label %350, label %351, !prof !46, !nosanitize !45
 
-353:                                              ; preds = %350
+350:                                              ; preds = %347
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-354:                                              ; preds = %350
-  %355 = shl i32 %346, %336
-  %356 = extractvalue { i32, i1 } %351, 0, !nosanitize !45
-  %357 = add i32 %356, -1
-  %358 = zext i32 %357 to i64
-  %359 = getelementptr inbounds nuw i8, ptr %326, i64 %358
-  %360 = load i8, ptr %359, align 1, !tbaa !8
-  %361 = zext i8 %360 to i32
-  %362 = xor i32 %355, %361
-  %363 = and i32 %362, %343
-  store i32 %363, ptr %100, align 8, !tbaa !80
-  %364 = load ptr, ptr %97, align 8, !tbaa !37
-  %365 = zext i32 %363 to i64
-  %366 = getelementptr inbounds nuw [2 x i8], ptr %364, i64 %365
-  %367 = load i16, ptr %366, align 2, !tbaa !62
-  %368 = load ptr, ptr %98, align 8, !tbaa !35
-  %369 = load i32, ptr %103, align 8, !tbaa !33
-  %370 = and i32 %369, %348
-  %371 = zext i32 %370 to i64
-  %372 = getelementptr inbounds nuw [2 x i8], ptr %368, i64 %371
-  store i16 %367, ptr %372, align 2, !tbaa !62
-  %373 = trunc i32 %348 to i16
-  store i16 %373, ptr %366, align 2, !tbaa !62
-  %374 = add i32 %347, -1
-  store i32 %374, ptr %95, align 4, !tbaa !76
-  %375 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %311, i32 %374), !nosanitize !45
-  %376 = extractvalue { i32, i1 } %375, 1, !nosanitize !45
-  br i1 %376, label %377, label %378, !prof !46, !nosanitize !45
+351:                                              ; preds = %347
+  %352 = shl i32 %343, %333
+  %353 = extractvalue { i32, i1 } %348, 0, !nosanitize !45
+  %354 = add i32 %353, -1
+  %355 = zext i32 %354 to i64
+  %356 = getelementptr inbounds nuw i8, ptr %323, i64 %355
+  %357 = load i8, ptr %356, align 1, !tbaa !8
+  %358 = zext i8 %357 to i32
+  %359 = xor i32 %352, %358
+  %360 = and i32 %359, %340
+  store i32 %360, ptr %100, align 8, !tbaa !80
+  %361 = load ptr, ptr %97, align 8, !tbaa !37
+  %362 = zext i32 %360 to i64
+  %363 = getelementptr inbounds nuw [2 x i8], ptr %361, i64 %362
+  %364 = load i16, ptr %363, align 2, !tbaa !62
+  %365 = load ptr, ptr %98, align 8, !tbaa !35
+  %366 = load i32, ptr %103, align 8, !tbaa !33
+  %367 = and i32 %366, %345
+  %368 = zext i32 %367 to i64
+  %369 = getelementptr inbounds nuw [2 x i8], ptr %365, i64 %368
+  store i16 %364, ptr %369, align 2, !tbaa !62
+  %370 = trunc i32 %345 to i16
+  store i16 %370, ptr %363, align 2, !tbaa !62
+  %371 = add i32 %344, -1
+  store i32 %371, ptr %95, align 4, !tbaa !76
+  %372 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %308, i32 %371), !nosanitize !45
+  %373 = extractvalue { i32, i1 } %372, 1, !nosanitize !45
+  br i1 %373, label %374, label %375, !prof !46, !nosanitize !45
 
-377:                                              ; preds = %354
+374:                                              ; preds = %351
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-378:                                              ; preds = %354
-  %379 = add nuw i32 %348, 1
-  %380 = extractvalue { i32, i1 } %375, 0, !nosanitize !45
-  %381 = icmp ult i32 %380, 3
-  br i1 %381, label %382, label %345, !llvm.loop !91
+375:                                              ; preds = %351
+  %376 = add nuw i32 %345, 1
+  %377 = extractvalue { i32, i1 } %372, 0, !nosanitize !45
+  %378 = icmp ult i32 %377, 3
+  br i1 %378, label %379, label %342, !llvm.loop !91
 
-382:                                              ; preds = %378, %345, %316
-  %383 = icmp ult i32 %311, 262
-  br i1 %383, label %384, label %389
+379:                                              ; preds = %375, %342, %313
+  %380 = icmp ult i32 %308, 262
+  br i1 %380, label %381, label %386
 
-384:                                              ; preds = %382
-  %385 = load ptr, ptr %15, align 8, !tbaa !20
-  %386 = getelementptr inbounds nuw i8, ptr %385, i64 8
-  %387 = load i32, ptr %386, align 8, !tbaa !81
-  %388 = icmp eq i32 %387, 0
-  br i1 %388, label %389, label %105, !llvm.loop !92
+381:                                              ; preds = %379
+  %382 = load ptr, ptr %15, align 8, !tbaa !20
+  %383 = getelementptr inbounds nuw i8, ptr %382, i64 8
+  %384 = load i32, ptr %383, align 8, !tbaa !81
+  %385 = icmp eq i32 %384, 0
+  br i1 %385, label %386, label %105, !llvm.loop !92
 
-389:                                              ; preds = %384, %382, %258
-  %390 = phi i32 [ %311, %384 ], [ %311, %382 ], [ %259, %258 ]
-  %391 = getelementptr inbounds nuw i8, ptr %15, i64 5952
-  %392 = load i64, ptr %391, align 8, !tbaa !38
-  %393 = load i64, ptr %89, align 8, !tbaa !61
-  %394 = icmp ult i64 %392, %393
-  br i1 %394, label %395, label %431
+386:                                              ; preds = %381, %379, %258
+  %387 = phi i32 [ %308, %381 ], [ %308, %379 ], [ %259, %258 ]
+  %388 = getelementptr inbounds nuw i8, ptr %15, i64 5952
+  %389 = load i64, ptr %388, align 8, !tbaa !38
+  %390 = load i64, ptr %89, align 8, !tbaa !61
+  %391 = icmp ult i64 %389, %390
+  br i1 %391, label %392, label %428
 
-395:                                              ; preds = %389
-  %396 = load i32, ptr %90, align 4, !tbaa !73
-  %397 = zext i32 %396 to i64
-  %398 = zext i32 %390 to i64
-  %399 = add nuw nsw i64 %398, %397
-  %400 = icmp ult i64 %392, %399
-  br i1 %400, label %401, label %411
+392:                                              ; preds = %386
+  %393 = load i32, ptr %90, align 4, !tbaa !73
+  %394 = zext i32 %393 to i64
+  %395 = zext i32 %387 to i64
+  %396 = add nuw nsw i64 %395, %394
+  %397 = icmp ult i64 %389, %396
+  br i1 %397, label %398, label %408
 
-401:                                              ; preds = %395
-  %402 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %393, i64 %399), !nosanitize !45
-  %403 = extractvalue { i64, i1 } %402, 1, !nosanitize !45
-  br i1 %403, label %404, label %405, !prof !46, !nosanitize !45
+398:                                              ; preds = %392
+  %399 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %390, i64 %396), !nosanitize !45
+  %400 = extractvalue { i64, i1 } %399, 1, !nosanitize !45
+  br i1 %400, label %401, label %402, !prof !46, !nosanitize !45
 
-404:                                              ; preds = %401
+401:                                              ; preds = %398
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-405:                                              ; preds = %401
-  %406 = extractvalue { i64, i1 } %402, 0, !nosanitize !45
-  %407 = tail call i64 @llvm.umin.i64(i64 %406, i64 258)
-  %408 = load ptr, ptr %92, align 8, !tbaa !34
-  %409 = getelementptr inbounds nuw i8, ptr %408, i64 %399
-  tail call void @llvm.memset.p0.i64(ptr nonnull align 1 %409, i8 0, i64 %407, i1 false)
-  %410 = add nuw nsw i64 %407, %399
-  br label %428
+402:                                              ; preds = %398
+  %403 = extractvalue { i64, i1 } %399, 0, !nosanitize !45
+  %404 = tail call i64 @llvm.umin.i64(i64 %403, i64 258)
+  %405 = load ptr, ptr %92, align 8, !tbaa !34
+  %406 = getelementptr inbounds nuw i8, ptr %405, i64 %396
+  tail call void @llvm.memset.p0.i64(ptr nonnull align 1 %406, i8 0, i64 %404, i1 false)
+  %407 = add nuw nsw i64 %404, %396
+  br label %425
 
-411:                                              ; preds = %395
-  %412 = add nuw nsw i64 %399, 258
-  %413 = icmp ult i64 %392, %412
-  br i1 %413, label %414, label %431
+408:                                              ; preds = %392
+  %409 = add nuw nsw i64 %396, 258
+  %410 = icmp ult i64 %389, %409
+  br i1 %410, label %411, label %428
 
-414:                                              ; preds = %411
-  %415 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %393, i64 %392), !nosanitize !45
-  %416 = sub nuw nsw i64 %412, %392
-  %417 = extractvalue { i64, i1 } %415, 0, !nosanitize !45
-  %418 = tail call i64 @llvm.umin.i64(i64 %416, i64 %417)
-  %419 = load ptr, ptr %92, align 8, !tbaa !34
-  %420 = getelementptr inbounds nuw i8, ptr %419, i64 %392
-  %421 = and i64 %418, 4294967295
-  tail call void @llvm.memset.p0.i64(ptr align 1 %420, i8 0, i64 %421, i1 false)
-  %422 = load i64, ptr %391, align 8, !tbaa !38
-  %423 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %422, i64 %418), !nosanitize !45
-  %424 = extractvalue { i64, i1 } %423, 1, !nosanitize !45
-  br i1 %424, label %425, label %426, !prof !46, !nosanitize !45
+411:                                              ; preds = %408
+  %412 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %390, i64 %389), !nosanitize !45
+  %413 = sub nuw nsw i64 %409, %389
+  %414 = extractvalue { i64, i1 } %412, 0, !nosanitize !45
+  %415 = tail call i64 @llvm.umin.i64(i64 %413, i64 %414)
+  %416 = load ptr, ptr %92, align 8, !tbaa !34
+  %417 = getelementptr inbounds nuw i8, ptr %416, i64 %389
+  %418 = and i64 %415, 4294967295
+  tail call void @llvm.memset.p0.i64(ptr align 1 %417, i8 0, i64 %418, i1 false)
+  %419 = load i64, ptr %388, align 8, !tbaa !38
+  %420 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %419, i64 %415), !nosanitize !45
+  %421 = extractvalue { i64, i1 } %420, 1, !nosanitize !45
+  br i1 %421, label %422, label %423, !prof !46, !nosanitize !45
 
-425:                                              ; preds = %414
+422:                                              ; preds = %411
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-426:                                              ; preds = %414
-  %427 = extractvalue { i64, i1 } %423, 0, !nosanitize !45
+423:                                              ; preds = %411
+  %424 = extractvalue { i64, i1 } %420, 0, !nosanitize !45
+  br label %425
+
+425:                                              ; preds = %423, %402
+  %426 = phi i64 [ %407, %402 ], [ %424, %423 ]
+  store i64 %426, ptr %388, align 8, !tbaa !38
+  %427 = load i32, ptr %82, align 4, !tbaa !75
   br label %428
 
-428:                                              ; preds = %426, %405
-  %429 = phi i64 [ %410, %405 ], [ %427, %426 ]
-  store i64 %429, ptr %391, align 8, !tbaa !38
-  %430 = load i32, ptr %82, align 4, !tbaa !75
-  br label %431
+428:                                              ; preds = %425, %408, %386
+  %429 = phi i32 [ %387, %386 ], [ %387, %408 ], [ %427, %425 ]
+  %430 = icmp ugt i32 %429, 2
+  br i1 %430, label %431, label %797
 
-431:                                              ; preds = %428, %411, %389
-  %432 = phi i32 [ %390, %389 ], [ %390, %411 ], [ %430, %428 ]
-  %433 = icmp ugt i32 %432, 2
-  br i1 %433, label %434, label %803
+431:                                              ; preds = %794, %428
+  %432 = phi i32 [ %795, %794 ], [ %429, %428 ]
+  %433 = load i32, ptr %90, align 4, !tbaa !73
+  %434 = load i32, ptr %101, align 8, !tbaa !53
+  %435 = load ptr, ptr %92, align 8, !tbaa !34
+  %436 = tail call i32 @llvm.usub.sat.i32(i32 -3, i32 %433)
+  %437 = add i32 %432, -3
+  %438 = icmp ugt i32 %436, %437
+  br i1 %438, label %439, label %468, !prof !93, !nosanitize !45
 
-434:                                              ; preds = %800, %431
-  %435 = phi i32 [ %801, %800 ], [ %432, %431 ]
-  %436 = load i32, ptr %90, align 4, !tbaa !73
-  %437 = load i32, ptr %101, align 8, !tbaa !53
-  %438 = load ptr, ptr %92, align 8, !tbaa !34
-  %439 = tail call i32 @llvm.usub.sat.i32(i32 -3, i32 %436)
-  %440 = add i32 %435, -3
-  %441 = icmp ugt i32 %439, %440
-  br i1 %441, label %442, label %471, !prof !93, !nosanitize !45
+439:                                              ; preds = %431
+  %440 = load i32, ptr %100, align 8, !tbaa !80
+  %441 = add i32 %432, -2
+  %442 = load i32, ptr %102, align 4, !tbaa !52
+  %443 = load ptr, ptr %97, align 8, !tbaa !37
+  %444 = load ptr, ptr %98, align 8, !tbaa !35
+  %445 = load i32, ptr %103, align 8, !tbaa !33
+  br label %446
 
-442:                                              ; preds = %434
-  %443 = load i32, ptr %100, align 8, !tbaa !80
-  %444 = add i32 %435, -2
-  %445 = load i32, ptr %102, align 4, !tbaa !52
-  %446 = load ptr, ptr %97, align 8, !tbaa !37
-  %447 = load ptr, ptr %98, align 8, !tbaa !35
-  %448 = load i32, ptr %103, align 8, !tbaa !33
-  br label %449
+446:                                              ; preds = %446, %439
+  %447 = phi i32 [ %440, %439 ], [ %457, %446 ]
+  %448 = phi i32 [ %433, %439 ], [ %465, %446 ]
+  %449 = phi i32 [ %441, %439 ], [ %466, %446 ]
+  %450 = shl i32 %447, %434
+  %451 = add i32 %448, 2
+  %452 = zext i32 %451 to i64
+  %453 = getelementptr inbounds nuw i8, ptr %435, i64 %452
+  %454 = load i8, ptr %453, align 1, !tbaa !8
+  %455 = zext i8 %454 to i32
+  %456 = xor i32 %450, %455
+  %457 = and i32 %456, %442
+  store i32 %457, ptr %100, align 8, !tbaa !80
+  %458 = zext i32 %457 to i64
+  %459 = getelementptr inbounds nuw [2 x i8], ptr %443, i64 %458
+  %460 = load i16, ptr %459, align 2, !tbaa !62
+  %461 = and i32 %445, %448
+  %462 = zext i32 %461 to i64
+  %463 = getelementptr inbounds nuw [2 x i8], ptr %444, i64 %462
+  store i16 %460, ptr %463, align 2, !tbaa !62
+  %464 = trunc i32 %448 to i16
+  store i16 %464, ptr %459, align 2, !tbaa !62
+  %465 = add nuw i32 %448, 1
+  %466 = add i32 %449, -1
+  %467 = icmp eq i32 %466, 0
+  br i1 %467, label %469, label %446, !llvm.loop !94
 
-449:                                              ; preds = %449, %442
-  %450 = phi i32 [ %443, %442 ], [ %460, %449 ]
-  %451 = phi i32 [ %436, %442 ], [ %468, %449 ]
-  %452 = phi i32 [ %444, %442 ], [ %469, %449 ]
-  %453 = shl i32 %450, %437
-  %454 = add i32 %451, 2
-  %455 = zext i32 %454 to i64
-  %456 = getelementptr inbounds nuw i8, ptr %438, i64 %455
-  %457 = load i8, ptr %456, align 1, !tbaa !8
-  %458 = zext i8 %457 to i32
-  %459 = xor i32 %453, %458
-  %460 = and i32 %459, %445
-  store i32 %460, ptr %100, align 8, !tbaa !80
-  %461 = zext i32 %460 to i64
-  %462 = getelementptr inbounds nuw [2 x i8], ptr %446, i64 %461
-  %463 = load i16, ptr %462, align 2, !tbaa !62
-  %464 = and i32 %448, %451
-  %465 = zext i32 %464 to i64
-  %466 = getelementptr inbounds nuw [2 x i8], ptr %447, i64 %465
-  store i16 %463, ptr %466, align 2, !tbaa !62
-  %467 = trunc i32 %451 to i16
-  store i16 %467, ptr %462, align 2, !tbaa !62
-  %468 = add nuw i32 %451, 1
-  %469 = add i32 %452, -1
-  %470 = icmp eq i32 %469, 0
-  br i1 %470, label %472, label %449, !llvm.loop !94
-
-471:                                              ; preds = %434
+468:                                              ; preds = %431
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-472:                                              ; preds = %449
-  store i32 %468, ptr %90, align 4, !tbaa !73
+469:                                              ; preds = %446
+  store i32 %465, ptr %90, align 4, !tbaa !73
   store i32 2, ptr %82, align 4, !tbaa !75
-  %473 = load i32, ptr %81, align 8, !tbaa !32
-  %474 = zext i32 %473 to i64
-  br label %475
+  %470 = load i32, ptr %81, align 8, !tbaa !32
+  %471 = zext i32 %470 to i64
+  br label %472
 
-475:                                              ; preds = %754, %472
-  %476 = phi i32 [ %681, %754 ], [ 2, %472 ]
-  %477 = load i64, ptr %89, align 8, !tbaa !61
-  %478 = zext nneg i32 %476 to i64
-  %479 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %477, i64 %478), !nosanitize !45
-  %480 = extractvalue { i64, i1 } %479, 1, !nosanitize !45
-  br i1 %480, label %481, label %482, !prof !46, !nosanitize !45
+472:                                              ; preds = %748, %469
+  %473 = phi i32 [ %675, %748 ], [ 2, %469 ]
+  %474 = load i64, ptr %89, align 8, !tbaa !61
+  %475 = zext nneg i32 %473 to i64
+  %476 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %474, i64 %475), !nosanitize !45
+  %477 = extractvalue { i64, i1 } %476, 1, !nosanitize !45
+  br i1 %477, label %478, label %479, !prof !46, !nosanitize !45
 
-481:                                              ; preds = %475
+478:                                              ; preds = %472
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-482:                                              ; preds = %475
-  %483 = extractvalue { i64, i1 } %479, 0, !nosanitize !45
-  %484 = load i32, ptr %90, align 4, !tbaa !73
-  %485 = zext i32 %484 to i64
-  %486 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %483, i64 %485), !nosanitize !45
-  %487 = extractvalue { i64, i1 } %486, 1, !nosanitize !45
-  br i1 %487, label %488, label %489, !prof !46, !nosanitize !45
+479:                                              ; preds = %472
+  %480 = extractvalue { i64, i1 } %476, 0, !nosanitize !45
+  %481 = load i32, ptr %90, align 4, !tbaa !73
+  %482 = zext i32 %481 to i64
+  %483 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %480, i64 %482), !nosanitize !45
+  %484 = extractvalue { i64, i1 } %483, 1, !nosanitize !45
+  br i1 %484, label %485, label %486, !prof !46, !nosanitize !45
 
-488:                                              ; preds = %482
+485:                                              ; preds = %479
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-489:                                              ; preds = %482
-  %490 = extractvalue { i64, i1 } %486, 0, !nosanitize !45
-  %491 = trunc i64 %490 to i32
-  %492 = load i32, ptr %81, align 8, !tbaa !32
-  %493 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %492, i32 262), !nosanitize !45
-  %494 = extractvalue { i32, i1 } %493, 1, !nosanitize !45
-  br i1 %494, label %495, label %496, !prof !46, !nosanitize !45
+486:                                              ; preds = %479
+  %487 = extractvalue { i64, i1 } %483, 0, !nosanitize !45
+  %488 = trunc i64 %487 to i32
+  %489 = load i32, ptr %81, align 8, !tbaa !32
+  %490 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %489, i32 262), !nosanitize !45
+  %491 = extractvalue { i32, i1 } %490, 1, !nosanitize !45
+  br i1 %491, label %492, label %493, !prof !46, !nosanitize !45
 
-495:                                              ; preds = %489
+492:                                              ; preds = %486
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-496:                                              ; preds = %489
-  %497 = extractvalue { i32, i1 } %493, 0, !nosanitize !45
-  %498 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %473, i32 %497), !nosanitize !45
-  %499 = extractvalue { i32, i1 } %498, 1, !nosanitize !45
-  br i1 %499, label %500, label %501, !prof !46, !nosanitize !45
+493:                                              ; preds = %486
+  %494 = extractvalue { i32, i1 } %490, 0, !nosanitize !45
+  %495 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %470, i32 %494), !nosanitize !45
+  %496 = extractvalue { i32, i1 } %495, 1, !nosanitize !45
+  br i1 %496, label %497, label %498, !prof !46, !nosanitize !45
 
-500:                                              ; preds = %496
+497:                                              ; preds = %493
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-501:                                              ; preds = %496
-  %502 = extractvalue { i32, i1 } %498, 0, !nosanitize !45
-  %503 = icmp ult i32 %484, %502
-  br i1 %503, label %628, label %504
+498:                                              ; preds = %493
+  %499 = extractvalue { i32, i1 } %495, 0, !nosanitize !45
+  %500 = icmp ult i32 %481, %499
+  br i1 %500, label %625, label %501
+
+501:                                              ; preds = %498
+  %502 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %470, i32 %488), !nosanitize !45
+  %503 = extractvalue { i32, i1 } %502, 1, !nosanitize !45
+  br i1 %503, label %504, label %505, !prof !46, !nosanitize !45
 
 504:                                              ; preds = %501
-  %505 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %473, i32 %491), !nosanitize !45
-  %506 = extractvalue { i32, i1 } %505, 1, !nosanitize !45
-  br i1 %506, label %507, label %508, !prof !46, !nosanitize !45
-
-507:                                              ; preds = %504
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-508:                                              ; preds = %504
-  %509 = extractvalue { i32, i1 } %505, 0, !nosanitize !45
-  %510 = load ptr, ptr %92, align 8, !tbaa !34
-  %511 = getelementptr inbounds nuw i8, ptr %510, i64 %474
-  %512 = zext i32 %509 to i64
-  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %510, ptr align 1 %511, i64 %512, i1 false)
-  %513 = load i32, ptr %93, align 8, !tbaa !83
-  %514 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %513, i32 %473), !nosanitize !45
-  %515 = extractvalue { i32, i1 } %514, 1, !nosanitize !45
-  br i1 %515, label %516, label %517, !prof !46, !nosanitize !45
+505:                                              ; preds = %501
+  %506 = extractvalue { i32, i1 } %502, 0, !nosanitize !45
+  %507 = load ptr, ptr %92, align 8, !tbaa !34
+  %508 = getelementptr inbounds nuw i8, ptr %507, i64 %471
+  %509 = zext i32 %506 to i64
+  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %507, ptr align 1 %508, i64 %509, i1 false)
+  %510 = load i32, ptr %93, align 8, !tbaa !83
+  %511 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %510, i32 %470), !nosanitize !45
+  %512 = extractvalue { i32, i1 } %511, 1, !nosanitize !45
+  br i1 %512, label %513, label %514, !prof !46, !nosanitize !45
 
-516:                                              ; preds = %508
+513:                                              ; preds = %505
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-517:                                              ; preds = %508
-  %518 = extractvalue { i32, i1 } %514, 0, !nosanitize !45
-  store i32 %518, ptr %93, align 8, !tbaa !83
-  %519 = load i32, ptr %90, align 4, !tbaa !73
-  %520 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %519, i32 %473), !nosanitize !45
-  %521 = extractvalue { i32, i1 } %520, 1, !nosanitize !45
-  br i1 %521, label %522, label %523, !prof !46, !nosanitize !45
+514:                                              ; preds = %505
+  %515 = extractvalue { i32, i1 } %511, 0, !nosanitize !45
+  store i32 %515, ptr %93, align 8, !tbaa !83
+  %516 = load i32, ptr %90, align 4, !tbaa !73
+  %517 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %516, i32 %470), !nosanitize !45
+  %518 = extractvalue { i32, i1 } %517, 1, !nosanitize !45
+  br i1 %518, label %519, label %520, !prof !46, !nosanitize !45
 
-522:                                              ; preds = %517
+519:                                              ; preds = %514
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-523:                                              ; preds = %517
-  %524 = extractvalue { i32, i1 } %520, 0, !nosanitize !45
-  store i32 %524, ptr %90, align 4, !tbaa !73
-  %525 = load i64, ptr %94, align 8, !tbaa !74
-  %526 = sub nsw i64 %525, %474
-  store i64 %526, ptr %94, align 8, !tbaa !74
-  %527 = load i32, ptr %95, align 4, !tbaa !76
-  %528 = icmp ugt i32 %527, %524
-  br i1 %528, label %529, label %530
+520:                                              ; preds = %514
+  %521 = extractvalue { i32, i1 } %517, 0, !nosanitize !45
+  store i32 %521, ptr %90, align 4, !tbaa !73
+  %522 = load i64, ptr %94, align 8, !tbaa !74
+  %523 = sub nsw i64 %522, %471
+  store i64 %523, ptr %94, align 8, !tbaa !74
+  %524 = load i32, ptr %95, align 4, !tbaa !76
+  %525 = icmp ugt i32 %524, %521
+  br i1 %525, label %526, label %527
 
-529:                                              ; preds = %523
-  store i32 %524, ptr %95, align 4, !tbaa !76
-  br label %530
+526:                                              ; preds = %520
+  store i32 %521, ptr %95, align 4, !tbaa !76
+  br label %527
 
-530:                                              ; preds = %529, %523
-  %531 = load i32, ptr %81, align 8, !tbaa !32
-  %532 = load i32, ptr %96, align 4, !tbaa !36
-  %533 = load ptr, ptr %97, align 8, !tbaa !37
-  %534 = zext i32 %532 to i64
-  %535 = getelementptr inbounds nuw [2 x i8], ptr %533, i64 %534
-  %536 = icmp eq i32 %532, 0
-  br i1 %536, label %563, label %537, !prof !46, !nosanitize !45
+527:                                              ; preds = %526, %520
+  %528 = load i32, ptr %81, align 8, !tbaa !32
+  %529 = load i32, ptr %96, align 4, !tbaa !36
+  %530 = load ptr, ptr %97, align 8, !tbaa !37
+  %531 = zext i32 %529 to i64
+  %532 = getelementptr inbounds nuw [2 x i8], ptr %530, i64 %531
+  %533 = icmp eq i32 %529, 0
+  br i1 %533, label %560, label %534, !prof !46, !nosanitize !45
 
-537:                                              ; preds = %530
-  %538 = icmp ult i32 %532, 8
-  br i1 %538, label %560, label %539
+534:                                              ; preds = %527
+  %535 = icmp ult i32 %529, 8
+  br i1 %535, label %557, label %536
 
-539:                                              ; preds = %537
-  %540 = and i64 %534, 4294967288
-  %541 = mul nsw i64 %540, -2
-  %542 = getelementptr i8, ptr %535, i64 %541
-  %543 = trunc nuw i64 %540 to i32
-  %544 = sub i32 %532, %543
-  %545 = insertelement <8 x i32> poison, i32 %531, i64 0
-  %546 = shufflevector <8 x i32> %545, <8 x i32> poison, <8 x i32> zeroinitializer
-  br label %547
+536:                                              ; preds = %534
+  %537 = and i64 %531, 4294967288
+  %538 = mul nsw i64 %537, -2
+  %539 = getelementptr i8, ptr %532, i64 %538
+  %540 = trunc nuw i64 %537 to i32
+  %541 = sub i32 %529, %540
+  %542 = insertelement <8 x i32> poison, i32 %528, i64 0
+  %543 = shufflevector <8 x i32> %542, <8 x i32> poison, <8 x i32> zeroinitializer
+  br label %544
 
-547:                                              ; preds = %547, %539
-  %548 = phi i64 [ 0, %539 ], [ %556, %547 ]
-  %549 = mul i64 %548, -2
-  %550 = getelementptr i8, ptr %535, i64 %549
-  %551 = getelementptr inbounds i8, ptr %550, i64 -16
-  %552 = load <8 x i16>, ptr %551, align 2, !tbaa !62
-  %553 = zext <8 x i16> %552 to <8 x i32>
-  %554 = tail call <8 x i32> @llvm.usub.sat.v8i32(<8 x i32> %553, <8 x i32> %546)
-  %555 = trunc nuw <8 x i32> %554 to <8 x i16>
-  store <8 x i16> %555, ptr %551, align 2, !tbaa !62
-  %556 = add nuw i64 %548, 8
-  %557 = icmp eq i64 %556, %540
-  br i1 %557, label %558, label %547, !llvm.loop !95
+544:                                              ; preds = %544, %536
+  %545 = phi i64 [ 0, %536 ], [ %553, %544 ]
+  %546 = mul i64 %545, -2
+  %547 = getelementptr i8, ptr %532, i64 %546
+  %548 = getelementptr inbounds i8, ptr %547, i64 -16
+  %549 = load <8 x i16>, ptr %548, align 2, !tbaa !62
+  %550 = zext <8 x i16> %549 to <8 x i32>
+  %551 = tail call <8 x i32> @llvm.usub.sat.v8i32(<8 x i32> %550, <8 x i32> %543)
+  %552 = trunc nuw <8 x i32> %551 to <8 x i16>
+  store <8 x i16> %552, ptr %548, align 2, !tbaa !62
+  %553 = add nuw i64 %545, 8
+  %554 = icmp eq i64 %553, %537
+  br i1 %554, label %555, label %544, !llvm.loop !95
 
-558:                                              ; preds = %547
-  %559 = icmp eq i64 %540, %534
-  br i1 %559, label %579, label %560
+555:                                              ; preds = %544
+  %556 = icmp eq i64 %537, %531
+  br i1 %556, label %576, label %557
 
-560:                                              ; preds = %558, %537
-  %561 = phi ptr [ %535, %537 ], [ %542, %558 ]
-  %562 = phi i32 [ %532, %537 ], [ %544, %558 ]
-  br label %569
+557:                                              ; preds = %555, %534
+  %558 = phi ptr [ %532, %534 ], [ %539, %555 ]
+  %559 = phi i32 [ %529, %534 ], [ %541, %555 ]
+  br label %566
 
-563:                                              ; preds = %530
-  %564 = getelementptr inbounds i8, ptr %535, i64 -2
-  %565 = load i16, ptr %564, align 2, !tbaa !62
-  %566 = zext i16 %565 to i32
-  %567 = tail call i32 @llvm.usub.sat.i32(i32 %566, i32 %531)
-  %568 = trunc nuw i32 %567 to i16
-  store i16 %568, ptr %564, align 2, !tbaa !62
+560:                                              ; preds = %527
+  %561 = getelementptr inbounds i8, ptr %532, i64 -2
+  %562 = load i16, ptr %561, align 2, !tbaa !62
+  %563 = zext i16 %562 to i32
+  %564 = tail call i32 @llvm.usub.sat.i32(i32 %563, i32 %528)
+  %565 = trunc nuw i32 %564 to i16
+  store i16 %565, ptr %561, align 2, !tbaa !62
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-569:                                              ; preds = %569, %560
-  %570 = phi ptr [ %572, %569 ], [ %561, %560 ]
-  %571 = phi i32 [ %577, %569 ], [ %562, %560 ]
-  %572 = getelementptr inbounds i8, ptr %570, i64 -2
-  %573 = load i16, ptr %572, align 2, !tbaa !62
-  %574 = zext i16 %573 to i32
-  %575 = tail call i32 @llvm.usub.sat.i32(i32 %574, i32 %531)
-  %576 = trunc nuw i32 %575 to i16
-  store i16 %576, ptr %572, align 2, !tbaa !62
-  %577 = add i32 %571, -1
-  %578 = icmp eq i32 %577, 0
-  br i1 %578, label %579, label %569, !llvm.loop !96
+566:                                              ; preds = %566, %557
+  %567 = phi ptr [ %569, %566 ], [ %558, %557 ]
+  %568 = phi i32 [ %574, %566 ], [ %559, %557 ]
+  %569 = getelementptr inbounds i8, ptr %567, i64 -2
+  %570 = load i16, ptr %569, align 2, !tbaa !62
+  %571 = zext i16 %570 to i32
+  %572 = tail call i32 @llvm.usub.sat.i32(i32 %571, i32 %528)
+  %573 = trunc nuw i32 %572 to i16
+  store i16 %573, ptr %569, align 2, !tbaa !62
+  %574 = add i32 %568, -1
+  %575 = icmp eq i32 %574, 0
+  br i1 %575, label %576, label %566, !llvm.loop !96
 
-579:                                              ; preds = %569, %558
-  %580 = icmp eq i32 %531, 0
-  br i1 %580, label %581, label %582, !prof !46, !nosanitize !45
+576:                                              ; preds = %566, %555
+  %577 = icmp eq i32 %528, 0
+  br i1 %577, label %578, label %579, !prof !46, !nosanitize !45
 
-581:                                              ; preds = %579
+578:                                              ; preds = %576
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-582:                                              ; preds = %579
-  %583 = load ptr, ptr %98, align 8, !tbaa !35
-  %584 = zext i32 %531 to i64
-  %585 = getelementptr inbounds nuw [2 x i8], ptr %583, i64 %584
-  %586 = icmp ult i32 %531, 8
-  br i1 %586, label %608, label %587
+579:                                              ; preds = %576
+  %580 = load ptr, ptr %98, align 8, !tbaa !35
+  %581 = zext i32 %528 to i64
+  %582 = getelementptr inbounds nuw [2 x i8], ptr %580, i64 %581
+  %583 = icmp ult i32 %528, 8
+  br i1 %583, label %605, label %584
 
-587:                                              ; preds = %582
-  %588 = and i64 %584, 4294967288
-  %589 = mul nsw i64 %588, -2
-  %590 = getelementptr i8, ptr %585, i64 %589
-  %591 = trunc nuw i64 %588 to i32
-  %592 = sub i32 %531, %591
-  %593 = insertelement <8 x i32> poison, i32 %531, i64 0
-  %594 = shufflevector <8 x i32> %593, <8 x i32> poison, <8 x i32> zeroinitializer
-  br label %595
+584:                                              ; preds = %579
+  %585 = and i64 %581, 4294967288
+  %586 = mul nsw i64 %585, -2
+  %587 = getelementptr i8, ptr %582, i64 %586
+  %588 = trunc nuw i64 %585 to i32
+  %589 = sub i32 %528, %588
+  %590 = insertelement <8 x i32> poison, i32 %528, i64 0
+  %591 = shufflevector <8 x i32> %590, <8 x i32> poison, <8 x i32> zeroinitializer
+  br label %592
 
-595:                                              ; preds = %595, %587
-  %596 = phi i64 [ 0, %587 ], [ %604, %595 ]
-  %597 = mul i64 %596, -2
-  %598 = getelementptr i8, ptr %585, i64 %597
-  %599 = getelementptr inbounds i8, ptr %598, i64 -16
-  %600 = load <8 x i16>, ptr %599, align 2, !tbaa !62
-  %601 = zext <8 x i16> %600 to <8 x i32>
-  %602 = tail call <8 x i32> @llvm.usub.sat.v8i32(<8 x i32> %601, <8 x i32> %594)
-  %603 = trunc nuw <8 x i32> %602 to <8 x i16>
-  store <8 x i16> %603, ptr %599, align 2, !tbaa !62
-  %604 = add nuw i64 %596, 8
-  %605 = icmp eq i64 %604, %588
-  br i1 %605, label %606, label %595, !llvm.loop !97
+592:                                              ; preds = %592, %584
+  %593 = phi i64 [ 0, %584 ], [ %601, %592 ]
+  %594 = mul i64 %593, -2
+  %595 = getelementptr i8, ptr %582, i64 %594
+  %596 = getelementptr inbounds i8, ptr %595, i64 -16
+  %597 = load <8 x i16>, ptr %596, align 2, !tbaa !62
+  %598 = zext <8 x i16> %597 to <8 x i32>
+  %599 = tail call <8 x i32> @llvm.usub.sat.v8i32(<8 x i32> %598, <8 x i32> %591)
+  %600 = trunc nuw <8 x i32> %599 to <8 x i16>
+  store <8 x i16> %600, ptr %596, align 2, !tbaa !62
+  %601 = add nuw i64 %593, 8
+  %602 = icmp eq i64 %601, %585
+  br i1 %602, label %603, label %592, !llvm.loop !97
 
-606:                                              ; preds = %595
-  %607 = icmp eq i64 %588, %584
-  br i1 %607, label %621, label %608
+603:                                              ; preds = %592
+  %604 = icmp eq i64 %585, %581
+  br i1 %604, label %618, label %605
 
-608:                                              ; preds = %606, %582
-  %609 = phi ptr [ %585, %582 ], [ %590, %606 ]
-  %610 = phi i32 [ %531, %582 ], [ %592, %606 ]
-  br label %611
+605:                                              ; preds = %603, %579
+  %606 = phi ptr [ %582, %579 ], [ %587, %603 ]
+  %607 = phi i32 [ %528, %579 ], [ %589, %603 ]
+  br label %608
 
-611:                                              ; preds = %611, %608
-  %612 = phi ptr [ %614, %611 ], [ %609, %608 ]
-  %613 = phi i32 [ %619, %611 ], [ %610, %608 ]
-  %614 = getelementptr inbounds i8, ptr %612, i64 -2
-  %615 = load i16, ptr %614, align 2, !tbaa !62
-  %616 = zext i16 %615 to i32
-  %617 = tail call i32 @llvm.usub.sat.i32(i32 %616, i32 %531)
-  %618 = trunc nuw i32 %617 to i16
-  store i16 %618, ptr %614, align 2, !tbaa !62
-  %619 = add i32 %613, -1
-  %620 = icmp eq i32 %619, 0
-  br i1 %620, label %621, label %611, !llvm.loop !98
+608:                                              ; preds = %608, %605
+  %609 = phi ptr [ %611, %608 ], [ %606, %605 ]
+  %610 = phi i32 [ %616, %608 ], [ %607, %605 ]
+  %611 = getelementptr inbounds i8, ptr %609, i64 -2
+  %612 = load i16, ptr %611, align 2, !tbaa !62
+  %613 = zext i16 %612 to i32
+  %614 = tail call i32 @llvm.usub.sat.i32(i32 %613, i32 %528)
+  %615 = trunc nuw i32 %614 to i16
+  store i16 %615, ptr %611, align 2, !tbaa !62
+  %616 = add i32 %610, -1
+  %617 = icmp eq i32 %616, 0
+  br i1 %617, label %618, label %608, !llvm.loop !98
 
-621:                                              ; preds = %611, %606
+618:                                              ; preds = %608, %603
   store i32 1, ptr %99, align 8, !tbaa !63
-  %622 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %491, i32 %473), !nosanitize !45
-  %623 = extractvalue { i32, i1 } %622, 1, !nosanitize !45
-  br i1 %623, label %624, label %625, !prof !46, !nosanitize !45
+  %619 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %488, i32 %470), !nosanitize !45
+  %620 = extractvalue { i32, i1 } %619, 1, !nosanitize !45
+  br i1 %620, label %621, label %622, !prof !46, !nosanitize !45
 
-624:                                              ; preds = %621
+621:                                              ; preds = %618
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-625:                                              ; preds = %621
-  %626 = extractvalue { i32, i1 } %622, 0, !nosanitize !45
-  %627 = load i32, ptr %82, align 4, !tbaa !75
-  br label %628
+622:                                              ; preds = %618
+  %623 = extractvalue { i32, i1 } %619, 0, !nosanitize !45
+  %624 = load i32, ptr %82, align 4, !tbaa !75
+  br label %625
 
-628:                                              ; preds = %625, %501
-  %629 = phi i32 [ %627, %625 ], [ %476, %501 ]
-  %630 = phi i32 [ %524, %625 ], [ %484, %501 ]
-  %631 = phi i32 [ %626, %625 ], [ %491, %501 ]
-  %632 = load ptr, ptr %15, align 8, !tbaa !20
-  %633 = getelementptr inbounds nuw i8, ptr %632, i64 8
-  %634 = load i32, ptr %633, align 8, !tbaa !81
-  %635 = icmp eq i32 %634, 0
-  br i1 %635, label %759, label %636
+625:                                              ; preds = %622, %498
+  %626 = phi i32 [ %624, %622 ], [ %473, %498 ]
+  %627 = phi i32 [ %521, %622 ], [ %481, %498 ]
+  %628 = phi i32 [ %623, %622 ], [ %488, %498 ]
+  %629 = load ptr, ptr %15, align 8, !tbaa !20
+  %630 = getelementptr inbounds nuw i8, ptr %629, i64 8
+  %631 = load i32, ptr %630, align 8, !tbaa !81
+  %632 = icmp eq i32 %631, 0
+  br i1 %632, label %753, label %633
 
-636:                                              ; preds = %628
-  %637 = load ptr, ptr %92, align 8, !tbaa !34
-  %638 = zext i32 %630 to i64
-  %639 = getelementptr inbounds nuw i8, ptr %637, i64 %638
-  %640 = zext i32 %629 to i64
-  %641 = getelementptr inbounds nuw i8, ptr %639, i64 %640
-  %642 = tail call i32 @llvm.umin.i32(i32 %634, i32 %631)
-  %643 = icmp eq i32 %631, 0
-  br i1 %643, label %675, label %644
+633:                                              ; preds = %625
+  %634 = load ptr, ptr %92, align 8, !tbaa !34
+  %635 = zext i32 %627 to i64
+  %636 = getelementptr inbounds nuw i8, ptr %634, i64 %635
+  %637 = zext i32 %626 to i64
+  %638 = getelementptr inbounds nuw i8, ptr %636, i64 %637
+  %639 = tail call i32 @llvm.umin.i32(i32 %631, i32 %628)
+  %640 = icmp eq i32 %628, 0
+  br i1 %640, label %669, label %641
 
-644:                                              ; preds = %636
-  %645 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %634, i32 %642), !nosanitize !45
-  %646 = extractvalue { i32, i1 } %645, 1, !nosanitize !45
-  br i1 %646, label %647, label %648, !prof !46, !nosanitize !45
-
-647:                                              ; preds = %644
-  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
-  unreachable, !nosanitize !45
-
-648:                                              ; preds = %644
-  %649 = extractvalue { i32, i1 } %645, 0, !nosanitize !45
-  store i32 %649, ptr %633, align 8, !tbaa !81
-  %650 = load ptr, ptr %632, align 8, !tbaa !82
-  %651 = zext i32 %642 to i64
-  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %641, ptr align 1 %650, i64 %651, i1 false)
-  %652 = getelementptr inbounds nuw i8, ptr %632, i64 56
-  %653 = load ptr, ptr %652, align 8, !tbaa !19
-  %654 = getelementptr inbounds nuw i8, ptr %653, i64 48
-  %655 = load i32, ptr %654, align 8, !tbaa !30
-  switch i32 %655, label %664 [
-    i32 1, label %656
-    i32 2, label %660
+641:                                              ; preds = %633
+  %642 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %631, i32 %639), !nosanitize !45
+  %643 = extractvalue { i32, i1 } %642, 0, !nosanitize !45
+  store i32 %643, ptr %630, align 8, !tbaa !81
+  %644 = load ptr, ptr %629, align 8, !tbaa !82
+  %645 = zext i32 %639 to i64
+  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %638, ptr align 1 %644, i64 %645, i1 false)
+  %646 = getelementptr inbounds nuw i8, ptr %629, i64 56
+  %647 = load ptr, ptr %646, align 8, !tbaa !19
+  %648 = getelementptr inbounds nuw i8, ptr %647, i64 48
+  %649 = load i32, ptr %648, align 8, !tbaa !30
+  switch i32 %649, label %658 [
+    i32 1, label %650
+    i32 2, label %654
   ]
 
-656:                                              ; preds = %648
-  %657 = getelementptr inbounds nuw i8, ptr %632, i64 96
-  %658 = load i64, ptr %657, align 8, !tbaa !59
-  %659 = tail call i64 @adler32(i64 noundef %658, ptr noundef %641, i32 noundef %642) #11
-  store i64 %659, ptr %657, align 8, !tbaa !59
-  br label %664
+650:                                              ; preds = %641
+  %651 = getelementptr inbounds nuw i8, ptr %629, i64 96
+  %652 = load i64, ptr %651, align 8, !tbaa !59
+  %653 = tail call i64 @adler32(i64 noundef %652, ptr noundef %638, i32 noundef %639) #11
+  store i64 %653, ptr %651, align 8, !tbaa !59
+  br label %658
 
-660:                                              ; preds = %648
-  %661 = getelementptr inbounds nuw i8, ptr %632, i64 96
-  %662 = load i64, ptr %661, align 8, !tbaa !59
-  %663 = tail call i64 @crc32(i64 noundef %662, ptr noundef %641, i32 noundef %642) #11
-  store i64 %663, ptr %661, align 8, !tbaa !59
-  br label %664
+654:                                              ; preds = %641
+  %655 = getelementptr inbounds nuw i8, ptr %629, i64 96
+  %656 = load i64, ptr %655, align 8, !tbaa !59
+  %657 = tail call i64 @crc32(i64 noundef %656, ptr noundef %638, i32 noundef %639) #11
+  store i64 %657, ptr %655, align 8, !tbaa !59
+  br label %658
 
-664:                                              ; preds = %660, %656, %648
-  %665 = load ptr, ptr %632, align 8, !tbaa !82
-  %666 = getelementptr inbounds nuw i8, ptr %665, i64 %651
-  store ptr %666, ptr %632, align 8, !tbaa !82
-  %667 = getelementptr inbounds nuw i8, ptr %632, i64 16
-  %668 = load i64, ptr %667, align 8, !tbaa !55
-  %669 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %668, i64 %651), !nosanitize !45
-  %670 = extractvalue { i64, i1 } %669, 1, !nosanitize !45
-  br i1 %670, label %671, label %672, !prof !46, !nosanitize !45
+658:                                              ; preds = %654, %650, %641
+  %659 = load ptr, ptr %629, align 8, !tbaa !82
+  %660 = getelementptr inbounds nuw i8, ptr %659, i64 %645
+  store ptr %660, ptr %629, align 8, !tbaa !82
+  %661 = getelementptr inbounds nuw i8, ptr %629, i64 16
+  %662 = load i64, ptr %661, align 8, !tbaa !55
+  %663 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %662, i64 %645), !nosanitize !45
+  %664 = extractvalue { i64, i1 } %663, 1, !nosanitize !45
+  br i1 %664, label %665, label %666, !prof !46, !nosanitize !45
 
-671:                                              ; preds = %664
+665:                                              ; preds = %658
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-672:                                              ; preds = %664
-  %673 = extractvalue { i64, i1 } %669, 0, !nosanitize !45
-  store i64 %673, ptr %667, align 8, !tbaa !55
-  %674 = load i32, ptr %82, align 4, !tbaa !75
-  br label %675
+666:                                              ; preds = %658
+  %667 = extractvalue { i64, i1 } %663, 0, !nosanitize !45
+  store i64 %667, ptr %661, align 8, !tbaa !55
+  %668 = load i32, ptr %82, align 4, !tbaa !75
+  br label %669
 
-675:                                              ; preds = %672, %636
-  %676 = phi i32 [ %629, %636 ], [ %674, %672 ]
-  %677 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %676, i32 %642), !nosanitize !45
+669:                                              ; preds = %666, %633
+  %670 = phi i32 [ %626, %633 ], [ %668, %666 ]
+  %671 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %670, i32 %639), !nosanitize !45
+  %672 = extractvalue { i32, i1 } %671, 1, !nosanitize !45
+  br i1 %672, label %673, label %674, !prof !46, !nosanitize !45
+
+673:                                              ; preds = %669
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
+  unreachable, !nosanitize !45
+
+674:                                              ; preds = %669
+  %675 = extractvalue { i32, i1 } %671, 0, !nosanitize !45
+  store i32 %675, ptr %82, align 4, !tbaa !75
+  %676 = load i32, ptr %95, align 4, !tbaa !76
+  %677 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %675, i32 %676), !nosanitize !45
   %678 = extractvalue { i32, i1 } %677, 1, !nosanitize !45
   br i1 %678, label %679, label %680, !prof !46, !nosanitize !45
 
-679:                                              ; preds = %675
+679:                                              ; preds = %674
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-680:                                              ; preds = %675
+680:                                              ; preds = %674
   %681 = extractvalue { i32, i1 } %677, 0, !nosanitize !45
-  store i32 %681, ptr %82, align 4, !tbaa !75
-  %682 = load i32, ptr %95, align 4, !tbaa !76
-  %683 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %681, i32 %682), !nosanitize !45
-  %684 = extractvalue { i32, i1 } %683, 1, !nosanitize !45
-  br i1 %684, label %685, label %686, !prof !46, !nosanitize !45
+  %682 = icmp ugt i32 %681, 2
+  br i1 %682, label %683, label %746
 
-685:                                              ; preds = %680
-  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
-  unreachable, !nosanitize !45
+683:                                              ; preds = %680
+  %684 = load i32, ptr %90, align 4, !tbaa !73
+  %685 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %684, i32 %676), !nosanitize !45
+  %686 = extractvalue { i32, i1 } %685, 0, !nosanitize !45
+  %687 = extractvalue { i32, i1 } %685, 1, !nosanitize !45
+  br i1 %687, label %688, label %689, !prof !46, !nosanitize !45
 
-686:                                              ; preds = %680
-  %687 = extractvalue { i32, i1 } %683, 0, !nosanitize !45
-  %688 = icmp ugt i32 %687, 2
-  br i1 %688, label %689, label %752
-
-689:                                              ; preds = %686
-  %690 = load i32, ptr %90, align 4, !tbaa !73
-  %691 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %690, i32 %682), !nosanitize !45
-  %692 = extractvalue { i32, i1 } %691, 0, !nosanitize !45
-  %693 = extractvalue { i32, i1 } %691, 1, !nosanitize !45
-  br i1 %693, label %694, label %695, !prof !46, !nosanitize !45
-
-694:                                              ; preds = %689
+688:                                              ; preds = %683
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-695:                                              ; preds = %689
-  %696 = load ptr, ptr %92, align 8, !tbaa !34
-  %697 = zext i32 %692 to i64
-  %698 = getelementptr inbounds nuw i8, ptr %696, i64 %697
-  %699 = load i8, ptr %698, align 1, !tbaa !8
-  %700 = zext i8 %699 to i32
-  store i32 %700, ptr %100, align 8, !tbaa !80
-  %701 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %692, i32 1), !nosanitize !45
-  %702 = extractvalue { i32, i1 } %701, 1, !nosanitize !45
-  br i1 %702, label %703, label %704, !prof !46, !nosanitize !45
+689:                                              ; preds = %683
+  %690 = load ptr, ptr %92, align 8, !tbaa !34
+  %691 = zext i32 %686 to i64
+  %692 = getelementptr inbounds nuw i8, ptr %690, i64 %691
+  %693 = load i8, ptr %692, align 1, !tbaa !8
+  %694 = zext i8 %693 to i32
+  store i32 %694, ptr %100, align 8, !tbaa !80
+  %695 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %686, i32 1), !nosanitize !45
+  %696 = extractvalue { i32, i1 } %695, 1, !nosanitize !45
+  br i1 %696, label %697, label %698, !prof !46, !nosanitize !45
 
-703:                                              ; preds = %695
+697:                                              ; preds = %689
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-704:                                              ; preds = %695
-  %705 = extractvalue { i32, i1 } %701, 0, !nosanitize !45
-  %706 = load i32, ptr %101, align 8, !tbaa !53
-  %707 = shl i32 %700, %706
-  %708 = zext i32 %705 to i64
-  %709 = getelementptr inbounds nuw i8, ptr %696, i64 %708
-  %710 = load i8, ptr %709, align 1, !tbaa !8
-  %711 = zext i8 %710 to i32
-  %712 = xor i32 %707, %711
-  %713 = load i32, ptr %102, align 4, !tbaa !52
-  %714 = and i32 %712, %713
-  store i32 %714, ptr %100, align 8, !tbaa !80
-  br label %715
+698:                                              ; preds = %689
+  %699 = extractvalue { i32, i1 } %695, 0, !nosanitize !45
+  %700 = load i32, ptr %101, align 8, !tbaa !53
+  %701 = shl i32 %694, %700
+  %702 = zext i32 %699 to i64
+  %703 = getelementptr inbounds nuw i8, ptr %690, i64 %702
+  %704 = load i8, ptr %703, align 1, !tbaa !8
+  %705 = zext i8 %704 to i32
+  %706 = xor i32 %701, %705
+  %707 = load i32, ptr %102, align 4, !tbaa !52
+  %708 = and i32 %706, %707
+  store i32 %708, ptr %100, align 8, !tbaa !80
+  br label %709
 
-715:                                              ; preds = %748, %704
-  %716 = phi i32 [ %714, %704 ], [ %733, %748 ]
-  %717 = phi i32 [ %682, %704 ], [ %744, %748 ]
-  %718 = phi i32 [ %692, %704 ], [ %749, %748 ]
-  %719 = icmp eq i32 %717, 0
-  br i1 %719, label %752, label %720
+709:                                              ; preds = %742, %698
+  %710 = phi i32 [ %708, %698 ], [ %727, %742 ]
+  %711 = phi i32 [ %676, %698 ], [ %738, %742 ]
+  %712 = phi i32 [ %686, %698 ], [ %743, %742 ]
+  %713 = icmp eq i32 %711, 0
+  br i1 %713, label %746, label %714
 
-720:                                              ; preds = %715
-  %721 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %718, i32 3), !nosanitize !45
-  %722 = extractvalue { i32, i1 } %721, 1, !nosanitize !45
-  br i1 %722, label %723, label %724, !prof !46, !nosanitize !45
+714:                                              ; preds = %709
+  %715 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %712, i32 3), !nosanitize !45
+  %716 = extractvalue { i32, i1 } %715, 1, !nosanitize !45
+  br i1 %716, label %717, label %718, !prof !46, !nosanitize !45
 
-723:                                              ; preds = %720
+717:                                              ; preds = %714
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-724:                                              ; preds = %720
-  %725 = shl i32 %716, %706
-  %726 = extractvalue { i32, i1 } %721, 0, !nosanitize !45
-  %727 = add i32 %726, -1
-  %728 = zext i32 %727 to i64
-  %729 = getelementptr inbounds nuw i8, ptr %696, i64 %728
-  %730 = load i8, ptr %729, align 1, !tbaa !8
-  %731 = zext i8 %730 to i32
-  %732 = xor i32 %725, %731
-  %733 = and i32 %732, %713
-  store i32 %733, ptr %100, align 8, !tbaa !80
-  %734 = load ptr, ptr %97, align 8, !tbaa !37
-  %735 = zext i32 %733 to i64
-  %736 = getelementptr inbounds nuw [2 x i8], ptr %734, i64 %735
-  %737 = load i16, ptr %736, align 2, !tbaa !62
-  %738 = load ptr, ptr %98, align 8, !tbaa !35
-  %739 = load i32, ptr %103, align 8, !tbaa !33
-  %740 = and i32 %739, %718
-  %741 = zext i32 %740 to i64
-  %742 = getelementptr inbounds nuw [2 x i8], ptr %738, i64 %741
-  store i16 %737, ptr %742, align 2, !tbaa !62
-  %743 = trunc i32 %718 to i16
-  store i16 %743, ptr %736, align 2, !tbaa !62
-  %744 = add i32 %717, -1
-  store i32 %744, ptr %95, align 4, !tbaa !76
-  %745 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %681, i32 %744), !nosanitize !45
-  %746 = extractvalue { i32, i1 } %745, 1, !nosanitize !45
-  br i1 %746, label %747, label %748, !prof !46, !nosanitize !45
+718:                                              ; preds = %714
+  %719 = shl i32 %710, %700
+  %720 = extractvalue { i32, i1 } %715, 0, !nosanitize !45
+  %721 = add i32 %720, -1
+  %722 = zext i32 %721 to i64
+  %723 = getelementptr inbounds nuw i8, ptr %690, i64 %722
+  %724 = load i8, ptr %723, align 1, !tbaa !8
+  %725 = zext i8 %724 to i32
+  %726 = xor i32 %719, %725
+  %727 = and i32 %726, %707
+  store i32 %727, ptr %100, align 8, !tbaa !80
+  %728 = load ptr, ptr %97, align 8, !tbaa !37
+  %729 = zext i32 %727 to i64
+  %730 = getelementptr inbounds nuw [2 x i8], ptr %728, i64 %729
+  %731 = load i16, ptr %730, align 2, !tbaa !62
+  %732 = load ptr, ptr %98, align 8, !tbaa !35
+  %733 = load i32, ptr %103, align 8, !tbaa !33
+  %734 = and i32 %733, %712
+  %735 = zext i32 %734 to i64
+  %736 = getelementptr inbounds nuw [2 x i8], ptr %732, i64 %735
+  store i16 %731, ptr %736, align 2, !tbaa !62
+  %737 = trunc i32 %712 to i16
+  store i16 %737, ptr %730, align 2, !tbaa !62
+  %738 = add i32 %711, -1
+  store i32 %738, ptr %95, align 4, !tbaa !76
+  %739 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %675, i32 %738), !nosanitize !45
+  %740 = extractvalue { i32, i1 } %739, 1, !nosanitize !45
+  br i1 %740, label %741, label %742, !prof !46, !nosanitize !45
 
-747:                                              ; preds = %724
+741:                                              ; preds = %718
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-748:                                              ; preds = %724
-  %749 = add nuw i32 %718, 1
-  %750 = extractvalue { i32, i1 } %745, 0, !nosanitize !45
-  %751 = icmp ult i32 %750, 3
-  br i1 %751, label %752, label %715, !llvm.loop !91
+742:                                              ; preds = %718
+  %743 = add nuw i32 %712, 1
+  %744 = extractvalue { i32, i1 } %739, 0, !nosanitize !45
+  %745 = icmp ult i32 %744, 3
+  br i1 %745, label %746, label %709, !llvm.loop !91
 
-752:                                              ; preds = %748, %715, %686
-  %753 = icmp ult i32 %681, 262
-  br i1 %753, label %754, label %759
+746:                                              ; preds = %742, %709, %680
+  %747 = icmp ult i32 %675, 262
+  br i1 %747, label %748, label %753
 
-754:                                              ; preds = %752
-  %755 = load ptr, ptr %15, align 8, !tbaa !20
-  %756 = getelementptr inbounds nuw i8, ptr %755, i64 8
-  %757 = load i32, ptr %756, align 8, !tbaa !81
-  %758 = icmp eq i32 %757, 0
-  br i1 %758, label %759, label %475, !llvm.loop !92
+748:                                              ; preds = %746
+  %749 = load ptr, ptr %15, align 8, !tbaa !20
+  %750 = getelementptr inbounds nuw i8, ptr %749, i64 8
+  %751 = load i32, ptr %750, align 8, !tbaa !81
+  %752 = icmp eq i32 %751, 0
+  br i1 %752, label %753, label %472, !llvm.loop !92
 
-759:                                              ; preds = %754, %752, %628
-  %760 = phi i32 [ %681, %754 ], [ %681, %752 ], [ %629, %628 ]
-  %761 = load i64, ptr %391, align 8, !tbaa !38
-  %762 = load i64, ptr %89, align 8, !tbaa !61
-  %763 = icmp ult i64 %761, %762
-  br i1 %763, label %764, label %800
+753:                                              ; preds = %748, %746, %625
+  %754 = phi i32 [ %675, %748 ], [ %675, %746 ], [ %626, %625 ]
+  %755 = load i64, ptr %388, align 8, !tbaa !38
+  %756 = load i64, ptr %89, align 8, !tbaa !61
+  %757 = icmp ult i64 %755, %756
+  br i1 %757, label %758, label %794
 
-764:                                              ; preds = %759
-  %765 = load i32, ptr %90, align 4, !tbaa !73
-  %766 = zext i32 %765 to i64
-  %767 = zext i32 %760 to i64
-  %768 = add nuw nsw i64 %767, %766
-  %769 = icmp ult i64 %761, %768
-  br i1 %769, label %770, label %780
+758:                                              ; preds = %753
+  %759 = load i32, ptr %90, align 4, !tbaa !73
+  %760 = zext i32 %759 to i64
+  %761 = zext i32 %754 to i64
+  %762 = add nuw nsw i64 %761, %760
+  %763 = icmp ult i64 %755, %762
+  br i1 %763, label %764, label %774
 
-770:                                              ; preds = %764
-  %771 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %762, i64 %768), !nosanitize !45
-  %772 = extractvalue { i64, i1 } %771, 1, !nosanitize !45
-  br i1 %772, label %773, label %774, !prof !46, !nosanitize !45
+764:                                              ; preds = %758
+  %765 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %756, i64 %762), !nosanitize !45
+  %766 = extractvalue { i64, i1 } %765, 1, !nosanitize !45
+  br i1 %766, label %767, label %768, !prof !46, !nosanitize !45
 
-773:                                              ; preds = %770
+767:                                              ; preds = %764
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-774:                                              ; preds = %770
-  %775 = extractvalue { i64, i1 } %771, 0, !nosanitize !45
-  %776 = tail call i64 @llvm.umin.i64(i64 %775, i64 258)
-  %777 = load ptr, ptr %92, align 8, !tbaa !34
-  %778 = getelementptr inbounds nuw i8, ptr %777, i64 %768
-  tail call void @llvm.memset.p0.i64(ptr nonnull align 1 %778, i8 0, i64 %776, i1 false)
-  %779 = add nuw nsw i64 %776, %768
-  br label %797
+768:                                              ; preds = %764
+  %769 = extractvalue { i64, i1 } %765, 0, !nosanitize !45
+  %770 = tail call i64 @llvm.umin.i64(i64 %769, i64 258)
+  %771 = load ptr, ptr %92, align 8, !tbaa !34
+  %772 = getelementptr inbounds nuw i8, ptr %771, i64 %762
+  tail call void @llvm.memset.p0.i64(ptr nonnull align 1 %772, i8 0, i64 %770, i1 false)
+  %773 = add nuw nsw i64 %770, %762
+  br label %791
 
-780:                                              ; preds = %764
-  %781 = add nuw nsw i64 %768, 258
-  %782 = icmp ult i64 %761, %781
-  br i1 %782, label %783, label %800
+774:                                              ; preds = %758
+  %775 = add nuw nsw i64 %762, 258
+  %776 = icmp ult i64 %755, %775
+  br i1 %776, label %777, label %794
 
-783:                                              ; preds = %780
-  %784 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %762, i64 %761), !nosanitize !45
-  %785 = sub nuw nsw i64 %781, %761
-  %786 = extractvalue { i64, i1 } %784, 0, !nosanitize !45
-  %787 = tail call i64 @llvm.umin.i64(i64 %785, i64 %786)
-  %788 = load ptr, ptr %92, align 8, !tbaa !34
-  %789 = getelementptr inbounds nuw i8, ptr %788, i64 %761
-  %790 = and i64 %787, 4294967295
-  tail call void @llvm.memset.p0.i64(ptr align 1 %789, i8 0, i64 %790, i1 false)
-  %791 = load i64, ptr %391, align 8, !tbaa !38
-  %792 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %791, i64 %787), !nosanitize !45
-  %793 = extractvalue { i64, i1 } %792, 1, !nosanitize !45
-  br i1 %793, label %794, label %795, !prof !46, !nosanitize !45
+777:                                              ; preds = %774
+  %778 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %756, i64 %755), !nosanitize !45
+  %779 = sub nuw nsw i64 %775, %755
+  %780 = extractvalue { i64, i1 } %778, 0, !nosanitize !45
+  %781 = tail call i64 @llvm.umin.i64(i64 %779, i64 %780)
+  %782 = load ptr, ptr %92, align 8, !tbaa !34
+  %783 = getelementptr inbounds nuw i8, ptr %782, i64 %755
+  %784 = and i64 %781, 4294967295
+  tail call void @llvm.memset.p0.i64(ptr align 1 %783, i8 0, i64 %784, i1 false)
+  %785 = load i64, ptr %388, align 8, !tbaa !38
+  %786 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %785, i64 %781), !nosanitize !45
+  %787 = extractvalue { i64, i1 } %786, 1, !nosanitize !45
+  br i1 %787, label %788, label %789, !prof !46, !nosanitize !45
 
-794:                                              ; preds = %783
+788:                                              ; preds = %777
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-795:                                              ; preds = %783
-  %796 = extractvalue { i64, i1 } %792, 0, !nosanitize !45
-  br label %797
+789:                                              ; preds = %777
+  %790 = extractvalue { i64, i1 } %786, 0, !nosanitize !45
+  br label %791
 
-797:                                              ; preds = %795, %774
-  %798 = phi i64 [ %779, %774 ], [ %796, %795 ]
-  store i64 %798, ptr %391, align 8, !tbaa !38
-  %799 = load i32, ptr %82, align 4, !tbaa !75
-  br label %800
+791:                                              ; preds = %789, %768
+  %792 = phi i64 [ %773, %768 ], [ %790, %789 ]
+  store i64 %792, ptr %388, align 8, !tbaa !38
+  %793 = load i32, ptr %82, align 4, !tbaa !75
+  br label %794
 
-800:                                              ; preds = %797, %780, %759
-  %801 = phi i32 [ %760, %759 ], [ %760, %780 ], [ %799, %797 ]
-  %802 = icmp ugt i32 %801, 2
-  br i1 %802, label %434, label %803, !llvm.loop !99
+794:                                              ; preds = %791, %774, %753
+  %795 = phi i32 [ %754, %753 ], [ %754, %774 ], [ %793, %791 ]
+  %796 = icmp ugt i32 %795, 2
+  br i1 %796, label %431, label %797, !llvm.loop !99
 
-803:                                              ; preds = %800, %431
-  %804 = phi i32 [ %432, %431 ], [ %801, %800 ]
-  %805 = load i32, ptr %90, align 4, !tbaa !73
-  %806 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %805, i32 %804), !nosanitize !45
-  %807 = extractvalue { i32, i1 } %806, 1, !nosanitize !45
-  br i1 %807, label %808, label %809, !prof !46, !nosanitize !45
+797:                                              ; preds = %794, %428
+  %798 = phi i32 [ %429, %428 ], [ %795, %794 ]
+  %799 = load i32, ptr %90, align 4, !tbaa !73
+  %800 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %799, i32 %798), !nosanitize !45
+  %801 = extractvalue { i32, i1 } %800, 1, !nosanitize !45
+  br i1 %801, label %802, label %803, !prof !46, !nosanitize !45
 
-808:                                              ; preds = %803
+802:                                              ; preds = %797
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-809:                                              ; preds = %803
-  %810 = extractvalue { i32, i1 } %806, 0, !nosanitize !45
-  store i32 %810, ptr %90, align 4, !tbaa !73
-  %811 = zext i32 %810 to i64
-  store i64 %811, ptr %94, align 8, !tbaa !74
-  store i32 %804, ptr %95, align 4, !tbaa !76
+803:                                              ; preds = %797
+  %804 = extractvalue { i32, i1 } %800, 0, !nosanitize !45
+  store i32 %804, ptr %90, align 4, !tbaa !73
+  %805 = zext i32 %804 to i64
+  store i64 %805, ptr %94, align 8, !tbaa !74
+  store i32 %798, ptr %95, align 4, !tbaa !76
   store i32 0, ptr %82, align 4, !tbaa !75
-  %812 = getelementptr inbounds nuw i8, ptr %15, i64 184
-  store i32 2, ptr %812, align 8, !tbaa !77
-  %813 = getelementptr inbounds nuw i8, ptr %15, i64 160
-  store i32 2, ptr %813, align 8, !tbaa !78
-  %814 = getelementptr inbounds nuw i8, ptr %15, i64 168
-  store i32 0, ptr %814, align 8, !tbaa !79
+  %806 = getelementptr inbounds nuw i8, ptr %15, i64 184
+  store i32 2, ptr %806, align 8, !tbaa !77
+  %807 = getelementptr inbounds nuw i8, ptr %15, i64 160
+  store i32 2, ptr %807, align 8, !tbaa !78
+  %808 = getelementptr inbounds nuw i8, ptr %15, i64 168
+  store i32 0, ptr %808, align 8, !tbaa !79
   store ptr %88, ptr %0, align 8, !tbaa !82
   store i32 %87, ptr %86, align 8, !tbaa !81
   store i32 %27, ptr %26, align 8, !tbaa !30
-  br label %815
+  br label %809
 
-815:                                              ; preds = %809, %34, %30, %28, %25, %23, %20, %17, %13, %9, %5, %3
-  %816 = phi i32 [ 0, %809 ], [ -2, %23 ], [ -2, %30 ], [ -2, %28 ], [ -2, %25 ], [ -2, %34 ], [ -2, %3 ], [ -2, %9 ], [ -2, %5 ], [ -2, %20 ], [ -2, %17 ], [ -2, %13 ]
-  ret i32 %816
+809:                                              ; preds = %803, %34, %30, %28, %25, %23, %20, %17, %13, %9, %5, %3
+  %810 = phi i32 [ 0, %803 ], [ -2, %23 ], [ -2, %30 ], [ -2, %28 ], [ -2, %25 ], [ -2, %34 ], [ -2, %3 ], [ -2, %9 ], [ -2, %5 ], [ -2, %20 ], [ -2, %17 ], [ -2, %13 ]
+  ret i32 %810
 }
 
 declare i64 @adler32(i64 noundef, ptr noundef, i32 noundef) local_unnamed_addr #1
@@ -7463,7 +7447,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   %26 = getelementptr inbounds nuw i8, ptr %0, i64 96
   br label %27
 
-27:                                               ; preds = %262, %8
+27:                                               ; preds = %256, %8
   %28 = load i32, ptr %18, align 4, !tbaa !101
   %29 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %28, i32 42), !nosanitize !45
   %30 = extractvalue { i32, i1 } %29, 1, !nosanitize !45
@@ -7480,7 +7464,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   %36 = getelementptr inbounds nuw i8, ptr %35, i64 32
   %37 = load i32, ptr %36, align 8, !tbaa !107
   %38 = icmp ult i32 %37, %34
-  br i1 %38, label %266, label %39
+  br i1 %38, label %260, label %39
 
 39:                                               ; preds = %32
   %40 = sub nuw i32 %37, %34
@@ -7511,7 +7495,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   %59 = icmp eq i32 %56, 0
   %60 = and i1 %21, %59
   %61 = or i1 %22, %60
-  br i1 %61, label %266, label %62
+  br i1 %61, label %260, label %62
 
 62:                                               ; preds = %58
   %63 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %44, i32 %46), !nosanitize !45
@@ -7525,7 +7509,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
 66:                                               ; preds = %62
   %67 = extractvalue { i32, i1 } %63, 0, !nosanitize !45
   %68 = icmp eq i32 %56, %67
-  br i1 %68, label %69, label %266
+  br i1 %68, label %69, label %260
 
 69:                                               ; preds = %66, %54
   br i1 %23, label %70, label %78
@@ -7685,7 +7669,7 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
 
 162:                                              ; preds = %159, %156, %113
   %163 = icmp eq i32 %41, %43
-  br i1 %163, label %198, label %164
+  br i1 %163, label %195, label %164
 
 164:                                              ; preds = %162
   %165 = tail call i32 @llvm.umin.i32(i32 %44, i32 %56)
@@ -7732,677 +7716,653 @@ define internal range(i32 0, 4) i32 @deflate_stored(ptr noundef %0, i32 noundef 
   %192 = add nsw i64 %191, %172
   store i64 %192, ptr %20, align 8, !tbaa !74
   %193 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %56, i32 %165), !nosanitize !45
-  %194 = extractvalue { i32, i1 } %193, 1, !nosanitize !45
-  br i1 %194, label %195, label %196, !prof !46, !nosanitize !45
+  %194 = extractvalue { i32, i1 } %193, 0, !nosanitize !45
+  br label %195
 
-195:                                              ; preds = %189
-  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
-  unreachable, !nosanitize !45
+195:                                              ; preds = %189, %162
+  %196 = phi i32 [ %194, %189 ], [ %56, %162 ]
+  %197 = icmp eq i32 %196, 0
+  br i1 %197, label %256, label %198
 
-196:                                              ; preds = %189
-  %197 = extractvalue { i32, i1 } %193, 0, !nosanitize !45
-  br label %198
+198:                                              ; preds = %195
+  %199 = load ptr, ptr %0, align 8, !tbaa !20
+  %200 = getelementptr inbounds nuw i8, ptr %199, i64 24
+  %201 = load ptr, ptr %200, align 8, !tbaa !106
+  %202 = getelementptr inbounds nuw i8, ptr %199, i64 8
+  %203 = load i32, ptr %202, align 8, !tbaa !81
+  %204 = tail call i32 @llvm.umin.i32(i32 %203, i32 %196)
+  %205 = icmp eq i32 %203, 0
+  br i1 %205, label %236, label %206
 
-198:                                              ; preds = %196, %162
-  %199 = phi i32 [ %197, %196 ], [ %56, %162 ]
-  %200 = icmp eq i32 %199, 0
-  br i1 %200, label %262, label %201
-
-201:                                              ; preds = %198
-  %202 = load ptr, ptr %0, align 8, !tbaa !20
-  %203 = getelementptr inbounds nuw i8, ptr %202, i64 24
-  %204 = load ptr, ptr %203, align 8, !tbaa !106
-  %205 = getelementptr inbounds nuw i8, ptr %202, i64 8
-  %206 = load i32, ptr %205, align 8, !tbaa !81
-  %207 = tail call i32 @llvm.umin.i32(i32 %206, i32 %199)
-  %208 = icmp eq i32 %206, 0
-  br i1 %208, label %242, label %209
-
-209:                                              ; preds = %201
-  %210 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %206, i32 %207), !nosanitize !45
-  %211 = extractvalue { i32, i1 } %210, 1, !nosanitize !45
-  br i1 %211, label %212, label %213, !prof !46, !nosanitize !45
-
-212:                                              ; preds = %209
-  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
-  unreachable, !nosanitize !45
-
-213:                                              ; preds = %209
-  %214 = extractvalue { i32, i1 } %210, 0, !nosanitize !45
-  store i32 %214, ptr %205, align 8, !tbaa !81
-  %215 = load ptr, ptr %202, align 8, !tbaa !82
-  %216 = zext i32 %207 to i64
-  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %204, ptr align 1 %215, i64 %216, i1 false)
-  %217 = getelementptr inbounds nuw i8, ptr %202, i64 56
-  %218 = load ptr, ptr %217, align 8, !tbaa !19
-  %219 = getelementptr inbounds nuw i8, ptr %218, i64 48
-  %220 = load i32, ptr %219, align 8, !tbaa !30
-  switch i32 %220, label %229 [
-    i32 1, label %221
-    i32 2, label %225
+206:                                              ; preds = %198
+  %207 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %203, i32 %204), !nosanitize !45
+  %208 = extractvalue { i32, i1 } %207, 0, !nosanitize !45
+  store i32 %208, ptr %202, align 8, !tbaa !81
+  %209 = load ptr, ptr %199, align 8, !tbaa !82
+  %210 = zext i32 %204 to i64
+  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %201, ptr align 1 %209, i64 %210, i1 false)
+  %211 = getelementptr inbounds nuw i8, ptr %199, i64 56
+  %212 = load ptr, ptr %211, align 8, !tbaa !19
+  %213 = getelementptr inbounds nuw i8, ptr %212, i64 48
+  %214 = load i32, ptr %213, align 8, !tbaa !30
+  switch i32 %214, label %223 [
+    i32 1, label %215
+    i32 2, label %219
   ]
 
-221:                                              ; preds = %213
-  %222 = getelementptr inbounds nuw i8, ptr %202, i64 96
-  %223 = load i64, ptr %222, align 8, !tbaa !59
-  %224 = tail call i64 @adler32(i64 noundef %223, ptr noundef %204, i32 noundef %207) #11
-  store i64 %224, ptr %222, align 8, !tbaa !59
-  br label %229
+215:                                              ; preds = %206
+  %216 = getelementptr inbounds nuw i8, ptr %199, i64 96
+  %217 = load i64, ptr %216, align 8, !tbaa !59
+  %218 = tail call i64 @adler32(i64 noundef %217, ptr noundef %201, i32 noundef %204) #11
+  store i64 %218, ptr %216, align 8, !tbaa !59
+  br label %223
 
-225:                                              ; preds = %213
-  %226 = getelementptr inbounds nuw i8, ptr %202, i64 96
-  %227 = load i64, ptr %226, align 8, !tbaa !59
-  %228 = tail call i64 @crc32(i64 noundef %227, ptr noundef %204, i32 noundef %207) #11
-  store i64 %228, ptr %226, align 8, !tbaa !59
-  br label %229
+219:                                              ; preds = %206
+  %220 = getelementptr inbounds nuw i8, ptr %199, i64 96
+  %221 = load i64, ptr %220, align 8, !tbaa !59
+  %222 = tail call i64 @crc32(i64 noundef %221, ptr noundef %201, i32 noundef %204) #11
+  store i64 %222, ptr %220, align 8, !tbaa !59
+  br label %223
 
-229:                                              ; preds = %225, %221, %213
-  %230 = load ptr, ptr %202, align 8, !tbaa !82
-  %231 = getelementptr inbounds nuw i8, ptr %230, i64 %216
-  store ptr %231, ptr %202, align 8, !tbaa !82
-  %232 = getelementptr inbounds nuw i8, ptr %202, i64 16
-  %233 = load i64, ptr %232, align 8, !tbaa !55
-  %234 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %233, i64 %216), !nosanitize !45
-  %235 = extractvalue { i64, i1 } %234, 1, !nosanitize !45
-  br i1 %235, label %236, label %237, !prof !46, !nosanitize !45
+223:                                              ; preds = %219, %215, %206
+  %224 = load ptr, ptr %199, align 8, !tbaa !82
+  %225 = getelementptr inbounds nuw i8, ptr %224, i64 %210
+  store ptr %225, ptr %199, align 8, !tbaa !82
+  %226 = getelementptr inbounds nuw i8, ptr %199, i64 16
+  %227 = load i64, ptr %226, align 8, !tbaa !55
+  %228 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %227, i64 %210), !nosanitize !45
+  %229 = extractvalue { i64, i1 } %228, 1, !nosanitize !45
+  br i1 %229, label %230, label %231, !prof !46, !nosanitize !45
 
-236:                                              ; preds = %229
+230:                                              ; preds = %223
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-237:                                              ; preds = %229
-  %238 = extractvalue { i64, i1 } %234, 0, !nosanitize !45
-  store i64 %238, ptr %232, align 8, !tbaa !55
-  %239 = load ptr, ptr %0, align 8, !tbaa !20
-  %240 = getelementptr inbounds nuw i8, ptr %239, i64 24
-  %241 = load ptr, ptr %240, align 8, !tbaa !106
-  br label %242
+231:                                              ; preds = %223
+  %232 = extractvalue { i64, i1 } %228, 0, !nosanitize !45
+  store i64 %232, ptr %226, align 8, !tbaa !55
+  %233 = load ptr, ptr %0, align 8, !tbaa !20
+  %234 = getelementptr inbounds nuw i8, ptr %233, i64 24
+  %235 = load ptr, ptr %234, align 8, !tbaa !106
+  br label %236
 
-242:                                              ; preds = %237, %201
-  %243 = phi ptr [ %204, %201 ], [ %241, %237 ]
-  %244 = phi ptr [ %202, %201 ], [ %239, %237 ]
-  %245 = getelementptr inbounds nuw i8, ptr %244, i64 24
-  %246 = zext i32 %199 to i64
-  %247 = getelementptr inbounds nuw i8, ptr %243, i64 %246
-  store ptr %247, ptr %245, align 8, !tbaa !106
-  %248 = getelementptr inbounds nuw i8, ptr %244, i64 32
-  %249 = load i32, ptr %248, align 8, !tbaa !107
-  %250 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %249, i32 %199), !nosanitize !45
-  %251 = extractvalue { i32, i1 } %250, 1, !nosanitize !45
-  br i1 %251, label %252, label %253, !prof !46, !nosanitize !45
+236:                                              ; preds = %231, %198
+  %237 = phi ptr [ %201, %198 ], [ %235, %231 ]
+  %238 = phi ptr [ %199, %198 ], [ %233, %231 ]
+  %239 = getelementptr inbounds nuw i8, ptr %238, i64 24
+  %240 = zext i32 %196 to i64
+  %241 = getelementptr inbounds nuw i8, ptr %237, i64 %240
+  store ptr %241, ptr %239, align 8, !tbaa !106
+  %242 = getelementptr inbounds nuw i8, ptr %238, i64 32
+  %243 = load i32, ptr %242, align 8, !tbaa !107
+  %244 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %243, i32 %196), !nosanitize !45
+  %245 = extractvalue { i32, i1 } %244, 1, !nosanitize !45
+  br i1 %245, label %246, label %247, !prof !46, !nosanitize !45
 
-252:                                              ; preds = %242
+246:                                              ; preds = %236
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-253:                                              ; preds = %242
-  %254 = extractvalue { i32, i1 } %250, 0, !nosanitize !45
-  store i32 %254, ptr %248, align 8, !tbaa !107
-  %255 = getelementptr inbounds nuw i8, ptr %244, i64 40
-  %256 = load i64, ptr %255, align 8, !tbaa !108
-  %257 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %256, i64 %246), !nosanitize !45
-  %258 = extractvalue { i64, i1 } %257, 1, !nosanitize !45
-  br i1 %258, label %259, label %260, !prof !46, !nosanitize !45
+247:                                              ; preds = %236
+  %248 = extractvalue { i32, i1 } %244, 0, !nosanitize !45
+  store i32 %248, ptr %242, align 8, !tbaa !107
+  %249 = getelementptr inbounds nuw i8, ptr %238, i64 40
+  %250 = load i64, ptr %249, align 8, !tbaa !108
+  %251 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %250, i64 %240), !nosanitize !45
+  %252 = extractvalue { i64, i1 } %251, 1, !nosanitize !45
+  br i1 %252, label %253, label %254, !prof !46, !nosanitize !45
 
-259:                                              ; preds = %253
+253:                                              ; preds = %247
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-260:                                              ; preds = %253
-  %261 = extractvalue { i64, i1 } %257, 0, !nosanitize !45
-  store i64 %261, ptr %255, align 8, !tbaa !108
-  br label %262
+254:                                              ; preds = %247
+  %255 = extractvalue { i64, i1 } %251, 0, !nosanitize !45
+  store i64 %255, ptr %249, align 8, !tbaa !108
+  br label %256
 
-262:                                              ; preds = %260, %198
-  %263 = icmp eq i32 %79, 0
-  br i1 %263, label %27, label %264, !llvm.loop !134
+256:                                              ; preds = %254, %195
+  %257 = icmp eq i32 %79, 0
+  br i1 %257, label %27, label %258, !llvm.loop !134
 
-264:                                              ; preds = %262
-  %265 = load ptr, ptr %0, align 8, !tbaa !20
-  br label %266, !llvm.loop !134
+258:                                              ; preds = %256
+  %259 = load ptr, ptr %0, align 8, !tbaa !20
+  br label %260, !llvm.loop !134
 
-266:                                              ; preds = %264, %66, %58, %32
-  %267 = phi ptr [ %265, %264 ], [ %35, %32 ], [ %35, %58 ], [ %35, %66 ]
-  %268 = phi i1 [ false, %264 ], [ true, %32 ], [ true, %58 ], [ true, %66 ]
-  %269 = getelementptr inbounds nuw i8, ptr %267, i64 8
-  %270 = load i32, ptr %269, align 8, !tbaa !81
-  %271 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %17, i32 %270), !nosanitize !45
-  %272 = extractvalue { i32, i1 } %271, 0, !nosanitize !45
-  %273 = extractvalue { i32, i1 } %271, 1, !nosanitize !45
-  br i1 %273, label %274, label %275, !prof !46, !nosanitize !45
+260:                                              ; preds = %258, %66, %58, %32
+  %261 = phi ptr [ %259, %258 ], [ %35, %32 ], [ %35, %58 ], [ %35, %66 ]
+  %262 = phi i1 [ false, %258 ], [ true, %32 ], [ true, %58 ], [ true, %66 ]
+  %263 = getelementptr inbounds nuw i8, ptr %261, i64 8
+  %264 = load i32, ptr %263, align 8, !tbaa !81
+  %265 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %17, i32 %264), !nosanitize !45
+  %266 = extractvalue { i32, i1 } %265, 0, !nosanitize !45
+  %267 = extractvalue { i32, i1 } %265, 1, !nosanitize !45
+  br i1 %267, label %268, label %269, !prof !46, !nosanitize !45
 
-274:                                              ; preds = %266
+268:                                              ; preds = %260
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-275:                                              ; preds = %266
-  %276 = icmp eq i32 %272, 0
-  br i1 %276, label %277, label %280
+269:                                              ; preds = %260
+  %270 = icmp eq i32 %266, 0
+  br i1 %270, label %271, label %274
 
-277:                                              ; preds = %275
-  %278 = load i32, ptr %19, align 4, !tbaa !73
-  %279 = zext i32 %278 to i64
-  br label %357
+271:                                              ; preds = %269
+  %272 = load i32, ptr %19, align 4, !tbaa !73
+  %273 = zext i32 %272 to i64
+  br label %351
 
-280:                                              ; preds = %275
-  %281 = load i32, ptr %10, align 8, !tbaa !32
-  %282 = icmp ult i32 %272, %281
-  br i1 %282, label %292, label %283
+274:                                              ; preds = %269
+  %275 = load i32, ptr %10, align 8, !tbaa !32
+  %276 = icmp ult i32 %266, %275
+  br i1 %276, label %286, label %277
 
-283:                                              ; preds = %280
-  %284 = getelementptr inbounds nuw i8, ptr %0, i64 5928
-  store i32 2, ptr %284, align 8, !tbaa !125
-  %285 = load ptr, ptr %26, align 8, !tbaa !34
-  %286 = load ptr, ptr %267, align 8, !tbaa !82
-  %287 = zext i32 %281 to i64
-  %288 = sub nsw i64 0, %287
-  %289 = getelementptr inbounds i8, ptr %286, i64 %288
-  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %285, ptr align 1 %289, i64 %287, i1 false)
-  %290 = load i32, ptr %10, align 8, !tbaa !32
-  store i32 %290, ptr %19, align 4, !tbaa !73
-  %291 = getelementptr inbounds nuw i8, ptr %0, i64 5932
-  store i32 %290, ptr %291, align 4, !tbaa !76
-  br label %354
+277:                                              ; preds = %274
+  %278 = getelementptr inbounds nuw i8, ptr %0, i64 5928
+  store i32 2, ptr %278, align 8, !tbaa !125
+  %279 = load ptr, ptr %26, align 8, !tbaa !34
+  %280 = load ptr, ptr %261, align 8, !tbaa !82
+  %281 = zext i32 %275 to i64
+  %282 = sub nsw i64 0, %281
+  %283 = getelementptr inbounds i8, ptr %280, i64 %282
+  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %279, ptr align 1 %283, i64 %281, i1 false)
+  %284 = load i32, ptr %10, align 8, !tbaa !32
+  store i32 %284, ptr %19, align 4, !tbaa !73
+  %285 = getelementptr inbounds nuw i8, ptr %0, i64 5932
+  store i32 %284, ptr %285, align 4, !tbaa !76
+  br label %348
 
-292:                                              ; preds = %280
-  %293 = getelementptr inbounds nuw i8, ptr %0, i64 104
-  %294 = load i64, ptr %293, align 8, !tbaa !61
-  %295 = load i32, ptr %19, align 4, !tbaa !73
-  %296 = zext i32 %295 to i64
-  %297 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %294, i64 %296), !nosanitize !45
-  %298 = extractvalue { i64, i1 } %297, 1, !nosanitize !45
-  br i1 %298, label %299, label %300, !prof !46, !nosanitize !45
+286:                                              ; preds = %274
+  %287 = getelementptr inbounds nuw i8, ptr %0, i64 104
+  %288 = load i64, ptr %287, align 8, !tbaa !61
+  %289 = load i32, ptr %19, align 4, !tbaa !73
+  %290 = zext i32 %289 to i64
+  %291 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %288, i64 %290), !nosanitize !45
+  %292 = extractvalue { i64, i1 } %291, 1, !nosanitize !45
+  br i1 %292, label %293, label %294, !prof !46, !nosanitize !45
 
-299:                                              ; preds = %292
+293:                                              ; preds = %286
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-300:                                              ; preds = %292
-  %301 = extractvalue { i64, i1 } %297, 0, !nosanitize !45
-  %302 = zext i32 %272 to i64
-  %303 = icmp ugt i64 %301, %302
-  br i1 %303, label %325, label %304
+294:                                              ; preds = %286
+  %295 = extractvalue { i64, i1 } %291, 0, !nosanitize !45
+  %296 = zext i32 %266 to i64
+  %297 = icmp ugt i64 %295, %296
+  br i1 %297, label %319, label %298
 
-304:                                              ; preds = %300
-  %305 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %295, i32 %281), !nosanitize !45
-  %306 = extractvalue { i32, i1 } %305, 1, !nosanitize !45
-  br i1 %306, label %307, label %308, !prof !46, !nosanitize !45
+298:                                              ; preds = %294
+  %299 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %289, i32 %275), !nosanitize !45
+  %300 = extractvalue { i32, i1 } %299, 1, !nosanitize !45
+  br i1 %300, label %301, label %302, !prof !46, !nosanitize !45
 
-307:                                              ; preds = %304
+301:                                              ; preds = %298
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-308:                                              ; preds = %304
-  %309 = extractvalue { i32, i1 } %305, 0, !nosanitize !45
-  store i32 %309, ptr %19, align 4, !tbaa !73
-  %310 = load ptr, ptr %26, align 8, !tbaa !34
-  %311 = zext i32 %281 to i64
-  %312 = getelementptr inbounds nuw i8, ptr %310, i64 %311
-  %313 = zext i32 %309 to i64
-  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %310, ptr nonnull align 1 %312, i64 %313, i1 false)
-  %314 = getelementptr inbounds nuw i8, ptr %0, i64 5928
-  %315 = load i32, ptr %314, align 8, !tbaa !125
-  %316 = icmp ult i32 %315, 2
-  br i1 %316, label %317, label %319
+302:                                              ; preds = %298
+  %303 = extractvalue { i32, i1 } %299, 0, !nosanitize !45
+  store i32 %303, ptr %19, align 4, !tbaa !73
+  %304 = load ptr, ptr %26, align 8, !tbaa !34
+  %305 = zext i32 %275 to i64
+  %306 = getelementptr inbounds nuw i8, ptr %304, i64 %305
+  %307 = zext i32 %303 to i64
+  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %304, ptr nonnull align 1 %306, i64 %307, i1 false)
+  %308 = getelementptr inbounds nuw i8, ptr %0, i64 5928
+  %309 = load i32, ptr %308, align 8, !tbaa !125
+  %310 = icmp ult i32 %309, 2
+  br i1 %310, label %311, label %313
 
-317:                                              ; preds = %308
-  %318 = add nuw nsw i32 %315, 1
-  store i32 %318, ptr %314, align 8, !tbaa !125
+311:                                              ; preds = %302
+  %312 = add nuw nsw i32 %309, 1
+  store i32 %312, ptr %308, align 8, !tbaa !125
+  br label %313
+
+313:                                              ; preds = %311, %302
+  %314 = getelementptr inbounds nuw i8, ptr %0, i64 5932
+  %315 = load i32, ptr %314, align 4, !tbaa !76
+  %316 = load i32, ptr %19, align 4, !tbaa !73
+  %317 = icmp ugt i32 %315, %316
+  br i1 %317, label %318, label %319
+
+318:                                              ; preds = %313
+  store i32 %316, ptr %314, align 4, !tbaa !76
   br label %319
 
-319:                                              ; preds = %317, %308
-  %320 = getelementptr inbounds nuw i8, ptr %0, i64 5932
-  %321 = load i32, ptr %320, align 4, !tbaa !76
-  %322 = load i32, ptr %19, align 4, !tbaa !73
-  %323 = icmp ugt i32 %321, %322
-  br i1 %323, label %324, label %325
+319:                                              ; preds = %318, %313, %294
+  %320 = phi i32 [ %316, %313 ], [ %316, %318 ], [ %289, %294 ]
+  %321 = load ptr, ptr %26, align 8, !tbaa !34
+  %322 = zext i32 %320 to i64
+  %323 = getelementptr inbounds nuw i8, ptr %321, i64 %322
+  %324 = load ptr, ptr %0, align 8, !tbaa !20
+  %325 = load ptr, ptr %324, align 8, !tbaa !82
+  %326 = sub nsw i64 0, %296
+  %327 = getelementptr inbounds i8, ptr %325, i64 %326
+  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %323, ptr nonnull align 1 %327, i64 %296, i1 false)
+  %328 = load i32, ptr %19, align 4, !tbaa !73
+  %329 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %328, i32 %266), !nosanitize !45
+  %330 = extractvalue { i32, i1 } %329, 1, !nosanitize !45
+  br i1 %330, label %331, label %332, !prof !46, !nosanitize !45
 
-324:                                              ; preds = %319
-  store i32 %322, ptr %320, align 4, !tbaa !76
-  br label %325
-
-325:                                              ; preds = %324, %319, %300
-  %326 = phi i32 [ %322, %319 ], [ %322, %324 ], [ %295, %300 ]
-  %327 = load ptr, ptr %26, align 8, !tbaa !34
-  %328 = zext i32 %326 to i64
-  %329 = getelementptr inbounds nuw i8, ptr %327, i64 %328
-  %330 = load ptr, ptr %0, align 8, !tbaa !20
-  %331 = load ptr, ptr %330, align 8, !tbaa !82
-  %332 = sub nsw i64 0, %302
-  %333 = getelementptr inbounds i8, ptr %331, i64 %332
-  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %329, ptr nonnull align 1 %333, i64 %302, i1 false)
-  %334 = load i32, ptr %19, align 4, !tbaa !73
-  %335 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %334, i32 %272), !nosanitize !45
-  %336 = extractvalue { i32, i1 } %335, 1, !nosanitize !45
-  br i1 %336, label %337, label %338, !prof !46, !nosanitize !45
-
-337:                                              ; preds = %325
+331:                                              ; preds = %319
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-338:                                              ; preds = %325
-  %339 = extractvalue { i32, i1 } %335, 0, !nosanitize !45
-  store i32 %339, ptr %19, align 4, !tbaa !73
-  %340 = load i32, ptr %10, align 8, !tbaa !32
-  %341 = getelementptr inbounds nuw i8, ptr %0, i64 5932
-  %342 = load i32, ptr %341, align 4, !tbaa !76
-  %343 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %340, i32 %342), !nosanitize !45
+332:                                              ; preds = %319
+  %333 = extractvalue { i32, i1 } %329, 0, !nosanitize !45
+  store i32 %333, ptr %19, align 4, !tbaa !73
+  %334 = load i32, ptr %10, align 8, !tbaa !32
+  %335 = getelementptr inbounds nuw i8, ptr %0, i64 5932
+  %336 = load i32, ptr %335, align 4, !tbaa !76
+  %337 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %334, i32 %336), !nosanitize !45
+  %338 = extractvalue { i32, i1 } %337, 1, !nosanitize !45
+  br i1 %338, label %339, label %340, !prof !46, !nosanitize !45
+
+339:                                              ; preds = %332
+  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
+  unreachable, !nosanitize !45
+
+340:                                              ; preds = %332
+  %341 = extractvalue { i32, i1 } %337, 0, !nosanitize !45
+  %342 = tail call i32 @llvm.umin.i32(i32 %266, i32 %341)
+  %343 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %336, i32 %342), !nosanitize !45
   %344 = extractvalue { i32, i1 } %343, 1, !nosanitize !45
   br i1 %344, label %345, label %346, !prof !46, !nosanitize !45
 
-345:                                              ; preds = %338
-  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
-  unreachable, !nosanitize !45
-
-346:                                              ; preds = %338
-  %347 = extractvalue { i32, i1 } %343, 0, !nosanitize !45
-  %348 = tail call i32 @llvm.umin.i32(i32 %272, i32 %347)
-  %349 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %342, i32 %348), !nosanitize !45
-  %350 = extractvalue { i32, i1 } %349, 1, !nosanitize !45
-  br i1 %350, label %351, label %352, !prof !46, !nosanitize !45
-
-351:                                              ; preds = %346
+345:                                              ; preds = %340
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-352:                                              ; preds = %346
-  %353 = extractvalue { i32, i1 } %349, 0, !nosanitize !45
-  store i32 %353, ptr %341, align 4, !tbaa !76
-  br label %354
+346:                                              ; preds = %340
+  %347 = extractvalue { i32, i1 } %343, 0, !nosanitize !45
+  store i32 %347, ptr %335, align 4, !tbaa !76
+  br label %348
 
-354:                                              ; preds = %352, %283
-  %355 = phi i32 [ %339, %352 ], [ %290, %283 ]
-  %356 = zext i32 %355 to i64
-  store i64 %356, ptr %20, align 8, !tbaa !74
-  br label %357
+348:                                              ; preds = %346, %277
+  %349 = phi i32 [ %333, %346 ], [ %284, %277 ]
+  %350 = zext i32 %349 to i64
+  store i64 %350, ptr %20, align 8, !tbaa !74
+  br label %351
 
-357:                                              ; preds = %354, %277
-  %358 = phi i64 [ %279, %277 ], [ %356, %354 ]
-  %359 = phi i32 [ %278, %277 ], [ %355, %354 ]
-  %360 = getelementptr inbounds nuw i8, ptr %0, i64 5952
-  %361 = load i64, ptr %360, align 8, !tbaa !38
-  %362 = icmp ult i64 %361, %358
-  br i1 %362, label %363, label %364
+351:                                              ; preds = %348, %271
+  %352 = phi i64 [ %273, %271 ], [ %350, %348 ]
+  %353 = phi i32 [ %272, %271 ], [ %349, %348 ]
+  %354 = getelementptr inbounds nuw i8, ptr %0, i64 5952
+  %355 = load i64, ptr %354, align 8, !tbaa !38
+  %356 = icmp ult i64 %355, %352
+  br i1 %356, label %357, label %358
 
-363:                                              ; preds = %357
-  store i64 %358, ptr %360, align 8, !tbaa !38
-  br label %364
+357:                                              ; preds = %351
+  store i64 %352, ptr %354, align 8, !tbaa !38
+  br label %358
 
-364:                                              ; preds = %363, %357
-  br i1 %268, label %365, label %581
+358:                                              ; preds = %357, %351
+  br i1 %262, label %359, label %572
 
-365:                                              ; preds = %364
-  %366 = icmp ne i32 %1, 0
-  switch i32 %1, label %367 [
-    i32 4, label %375
-    i32 0, label %375
+359:                                              ; preds = %358
+  %360 = icmp ne i32 %1, 0
+  switch i32 %1, label %361 [
+    i32 4, label %369
+    i32 0, label %369
   ]
 
-367:                                              ; preds = %365
-  %368 = load ptr, ptr %0, align 8, !tbaa !20
-  %369 = getelementptr inbounds nuw i8, ptr %368, i64 8
-  %370 = load i32, ptr %369, align 8, !tbaa !81
-  %371 = icmp eq i32 %370, 0
-  br i1 %371, label %372, label %375
+361:                                              ; preds = %359
+  %362 = load ptr, ptr %0, align 8, !tbaa !20
+  %363 = getelementptr inbounds nuw i8, ptr %362, i64 8
+  %364 = load i32, ptr %363, align 8, !tbaa !81
+  %365 = icmp eq i32 %364, 0
+  br i1 %365, label %366, label %369
 
-372:                                              ; preds = %367
-  %373 = load i64, ptr %20, align 8, !tbaa !74
-  %374 = icmp eq i64 %373, %358
-  br i1 %374, label %584, label %375
+366:                                              ; preds = %361
+  %367 = load i64, ptr %20, align 8, !tbaa !74
+  %368 = icmp eq i64 %367, %352
+  br i1 %368, label %575, label %369
 
-375:                                              ; preds = %372, %367, %365, %365
-  %376 = getelementptr inbounds nuw i8, ptr %0, i64 104
-  %377 = load i64, ptr %376, align 8, !tbaa !61
-  %378 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %377, i64 %358), !nosanitize !45
-  %379 = extractvalue { i64, i1 } %378, 1, !nosanitize !45
-  br i1 %379, label %380, label %381, !prof !46, !nosanitize !45
+369:                                              ; preds = %366, %361, %359, %359
+  %370 = getelementptr inbounds nuw i8, ptr %0, i64 104
+  %371 = load i64, ptr %370, align 8, !tbaa !61
+  %372 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %371, i64 %352), !nosanitize !45
+  %373 = extractvalue { i64, i1 } %372, 1, !nosanitize !45
+  br i1 %373, label %374, label %375, !prof !46, !nosanitize !45
 
-380:                                              ; preds = %375
+374:                                              ; preds = %369
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-381:                                              ; preds = %375
-  %382 = extractvalue { i64, i1 } %378, 0, !nosanitize !45
-  %383 = trunc i64 %382 to i32
-  %384 = load ptr, ptr %0, align 8, !tbaa !20
-  %385 = getelementptr inbounds nuw i8, ptr %384, i64 8
-  %386 = load i32, ptr %385, align 8, !tbaa !81
-  %387 = icmp ugt i32 %386, %383
-  br i1 %387, label %388, label %420
+375:                                              ; preds = %369
+  %376 = extractvalue { i64, i1 } %372, 0, !nosanitize !45
+  %377 = trunc i64 %376 to i32
+  %378 = load ptr, ptr %0, align 8, !tbaa !20
+  %379 = getelementptr inbounds nuw i8, ptr %378, i64 8
+  %380 = load i32, ptr %379, align 8, !tbaa !81
+  %381 = icmp ugt i32 %380, %377
+  br i1 %381, label %382, label %414
 
-388:                                              ; preds = %381
-  %389 = load i64, ptr %20, align 8, !tbaa !74
-  %390 = load i32, ptr %10, align 8, !tbaa !32
-  %391 = zext i32 %390 to i64
-  %392 = icmp slt i64 %389, %391
-  br i1 %392, label %420, label %393
+382:                                              ; preds = %375
+  %383 = load i64, ptr %20, align 8, !tbaa !74
+  %384 = load i32, ptr %10, align 8, !tbaa !32
+  %385 = zext i32 %384 to i64
+  %386 = icmp slt i64 %383, %385
+  br i1 %386, label %414, label %387
 
-393:                                              ; preds = %388
-  %394 = sub nsw i64 %389, %391
-  store i64 %394, ptr %20, align 8, !tbaa !74
-  %395 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %359, i32 %390), !nosanitize !45
-  %396 = extractvalue { i32, i1 } %395, 1, !nosanitize !45
-  br i1 %396, label %397, label %398, !prof !46, !nosanitize !45
+387:                                              ; preds = %382
+  %388 = sub nsw i64 %383, %385
+  store i64 %388, ptr %20, align 8, !tbaa !74
+  %389 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %353, i32 %384), !nosanitize !45
+  %390 = extractvalue { i32, i1 } %389, 1, !nosanitize !45
+  br i1 %390, label %391, label %392, !prof !46, !nosanitize !45
 
-397:                                              ; preds = %393
+391:                                              ; preds = %387
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-398:                                              ; preds = %393
-  %399 = extractvalue { i32, i1 } %395, 0, !nosanitize !45
-  store i32 %399, ptr %19, align 4, !tbaa !73
-  %400 = load ptr, ptr %26, align 8, !tbaa !34
-  %401 = getelementptr inbounds nuw i8, ptr %400, i64 %391
-  %402 = zext i32 %399 to i64
-  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %400, ptr align 1 %401, i64 %402, i1 false)
-  %403 = getelementptr inbounds nuw i8, ptr %0, i64 5928
-  %404 = load i32, ptr %403, align 8, !tbaa !125
-  %405 = icmp ult i32 %404, 2
-  br i1 %405, label %406, label %408
+392:                                              ; preds = %387
+  %393 = extractvalue { i32, i1 } %389, 0, !nosanitize !45
+  store i32 %393, ptr %19, align 4, !tbaa !73
+  %394 = load ptr, ptr %26, align 8, !tbaa !34
+  %395 = getelementptr inbounds nuw i8, ptr %394, i64 %385
+  %396 = zext i32 %393 to i64
+  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %394, ptr align 1 %395, i64 %396, i1 false)
+  %397 = getelementptr inbounds nuw i8, ptr %0, i64 5928
+  %398 = load i32, ptr %397, align 8, !tbaa !125
+  %399 = icmp ult i32 %398, 2
+  br i1 %399, label %400, label %402
 
-406:                                              ; preds = %398
-  %407 = add nuw nsw i32 %404, 1
-  store i32 %407, ptr %403, align 8, !tbaa !125
-  br label %408
+400:                                              ; preds = %392
+  %401 = add nuw nsw i32 %398, 1
+  store i32 %401, ptr %397, align 8, !tbaa !125
+  br label %402
 
-408:                                              ; preds = %406, %398
-  %409 = load i32, ptr %10, align 8, !tbaa !32
-  %410 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %383, i32 %409), !nosanitize !45
-  %411 = extractvalue { i32, i1 } %410, 0, !nosanitize !45
-  %412 = extractvalue { i32, i1 } %410, 1, !nosanitize !45
-  br i1 %412, label %413, label %414, !prof !46, !nosanitize !45
+402:                                              ; preds = %400, %392
+  %403 = load i32, ptr %10, align 8, !tbaa !32
+  %404 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %377, i32 %403), !nosanitize !45
+  %405 = extractvalue { i32, i1 } %404, 0, !nosanitize !45
+  %406 = extractvalue { i32, i1 } %404, 1, !nosanitize !45
+  br i1 %406, label %407, label %408, !prof !46, !nosanitize !45
+
+407:                                              ; preds = %402
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
+  unreachable, !nosanitize !45
+
+408:                                              ; preds = %402
+  %409 = getelementptr inbounds nuw i8, ptr %0, i64 5932
+  %410 = load i32, ptr %409, align 4, !tbaa !76
+  %411 = load i32, ptr %19, align 4, !tbaa !73
+  %412 = icmp ugt i32 %410, %411
+  br i1 %412, label %413, label %414
 
 413:                                              ; preds = %408
-  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
-  unreachable, !nosanitize !45
+  store i32 %411, ptr %409, align 4, !tbaa !76
+  br label %414
 
-414:                                              ; preds = %408
-  %415 = getelementptr inbounds nuw i8, ptr %0, i64 5932
-  %416 = load i32, ptr %415, align 4, !tbaa !76
-  %417 = load i32, ptr %19, align 4, !tbaa !73
-  %418 = icmp ugt i32 %416, %417
-  br i1 %418, label %419, label %420
+414:                                              ; preds = %413, %408, %382, %375
+  %415 = phi i32 [ %411, %413 ], [ %411, %408 ], [ %353, %382 ], [ %353, %375 ]
+  %416 = phi i32 [ %405, %413 ], [ %405, %408 ], [ %377, %382 ], [ %377, %375 ]
+  %417 = load ptr, ptr %0, align 8, !tbaa !20
+  %418 = getelementptr inbounds nuw i8, ptr %417, i64 8
+  %419 = load i32, ptr %418, align 8, !tbaa !81
+  %420 = tail call i32 @llvm.umin.i32(i32 %416, i32 %419)
+  %421 = icmp eq i32 %420, 0
+  br i1 %421, label %472, label %422
 
-419:                                              ; preds = %414
-  store i32 %417, ptr %415, align 4, !tbaa !76
-  br label %420
-
-420:                                              ; preds = %419, %414, %388, %381
-  %421 = phi i32 [ %417, %419 ], [ %417, %414 ], [ %359, %388 ], [ %359, %381 ]
-  %422 = phi i32 [ %411, %419 ], [ %411, %414 ], [ %383, %388 ], [ %383, %381 ]
-  %423 = load ptr, ptr %0, align 8, !tbaa !20
-  %424 = getelementptr inbounds nuw i8, ptr %423, i64 8
-  %425 = load i32, ptr %424, align 8, !tbaa !81
-  %426 = tail call i32 @llvm.umin.i32(i32 %422, i32 %425)
-  %427 = icmp eq i32 %426, 0
-  br i1 %427, label %481, label %428
-
-428:                                              ; preds = %420
-  %429 = load ptr, ptr %26, align 8, !tbaa !34
-  %430 = zext i32 %421 to i64
-  %431 = getelementptr inbounds nuw i8, ptr %429, i64 %430
-  %432 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %425, i32 %426), !nosanitize !45
-  %433 = extractvalue { i32, i1 } %432, 1, !nosanitize !45
-  br i1 %433, label %434, label %435, !prof !46, !nosanitize !45
-
-434:                                              ; preds = %428
-  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
-  unreachable, !nosanitize !45
-
-435:                                              ; preds = %428
-  %436 = extractvalue { i32, i1 } %432, 0, !nosanitize !45
-  store i32 %436, ptr %424, align 8, !tbaa !81
-  %437 = load ptr, ptr %423, align 8, !tbaa !82
-  %438 = zext i32 %426 to i64
-  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %431, ptr align 1 %437, i64 %438, i1 false)
-  %439 = getelementptr inbounds nuw i8, ptr %423, i64 56
-  %440 = load ptr, ptr %439, align 8, !tbaa !19
-  %441 = getelementptr inbounds nuw i8, ptr %440, i64 48
-  %442 = load i32, ptr %441, align 8, !tbaa !30
-  switch i32 %442, label %451 [
-    i32 1, label %443
-    i32 2, label %447
+422:                                              ; preds = %414
+  %423 = load ptr, ptr %26, align 8, !tbaa !34
+  %424 = zext i32 %415 to i64
+  %425 = getelementptr inbounds nuw i8, ptr %423, i64 %424
+  %426 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %419, i32 %420), !nosanitize !45
+  %427 = extractvalue { i32, i1 } %426, 0, !nosanitize !45
+  store i32 %427, ptr %418, align 8, !tbaa !81
+  %428 = load ptr, ptr %417, align 8, !tbaa !82
+  %429 = zext i32 %420 to i64
+  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %425, ptr align 1 %428, i64 %429, i1 false)
+  %430 = getelementptr inbounds nuw i8, ptr %417, i64 56
+  %431 = load ptr, ptr %430, align 8, !tbaa !19
+  %432 = getelementptr inbounds nuw i8, ptr %431, i64 48
+  %433 = load i32, ptr %432, align 8, !tbaa !30
+  switch i32 %433, label %442 [
+    i32 1, label %434
+    i32 2, label %438
   ]
 
-443:                                              ; preds = %435
-  %444 = getelementptr inbounds nuw i8, ptr %423, i64 96
-  %445 = load i64, ptr %444, align 8, !tbaa !59
-  %446 = tail call i64 @adler32(i64 noundef %445, ptr noundef %431, i32 noundef %426) #11
-  store i64 %446, ptr %444, align 8, !tbaa !59
-  br label %451
+434:                                              ; preds = %422
+  %435 = getelementptr inbounds nuw i8, ptr %417, i64 96
+  %436 = load i64, ptr %435, align 8, !tbaa !59
+  %437 = tail call i64 @adler32(i64 noundef %436, ptr noundef %425, i32 noundef %420) #11
+  store i64 %437, ptr %435, align 8, !tbaa !59
+  br label %442
 
-447:                                              ; preds = %435
-  %448 = getelementptr inbounds nuw i8, ptr %423, i64 96
-  %449 = load i64, ptr %448, align 8, !tbaa !59
-  %450 = tail call i64 @crc32(i64 noundef %449, ptr noundef %431, i32 noundef %426) #11
-  store i64 %450, ptr %448, align 8, !tbaa !59
-  br label %451
+438:                                              ; preds = %422
+  %439 = getelementptr inbounds nuw i8, ptr %417, i64 96
+  %440 = load i64, ptr %439, align 8, !tbaa !59
+  %441 = tail call i64 @crc32(i64 noundef %440, ptr noundef %425, i32 noundef %420) #11
+  store i64 %441, ptr %439, align 8, !tbaa !59
+  br label %442
 
-451:                                              ; preds = %447, %443, %435
-  %452 = load ptr, ptr %423, align 8, !tbaa !82
-  %453 = getelementptr inbounds nuw i8, ptr %452, i64 %438
-  store ptr %453, ptr %423, align 8, !tbaa !82
-  %454 = getelementptr inbounds nuw i8, ptr %423, i64 16
-  %455 = load i64, ptr %454, align 8, !tbaa !55
-  %456 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %455, i64 %438), !nosanitize !45
-  %457 = extractvalue { i64, i1 } %456, 1, !nosanitize !45
-  br i1 %457, label %458, label %459, !prof !46, !nosanitize !45
+442:                                              ; preds = %438, %434, %422
+  %443 = load ptr, ptr %417, align 8, !tbaa !82
+  %444 = getelementptr inbounds nuw i8, ptr %443, i64 %429
+  store ptr %444, ptr %417, align 8, !tbaa !82
+  %445 = getelementptr inbounds nuw i8, ptr %417, i64 16
+  %446 = load i64, ptr %445, align 8, !tbaa !55
+  %447 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %446, i64 %429), !nosanitize !45
+  %448 = extractvalue { i64, i1 } %447, 1, !nosanitize !45
+  br i1 %448, label %449, label %450, !prof !46, !nosanitize !45
 
-458:                                              ; preds = %451
+449:                                              ; preds = %442
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-459:                                              ; preds = %451
-  %460 = extractvalue { i64, i1 } %456, 0, !nosanitize !45
-  store i64 %460, ptr %454, align 8, !tbaa !55
-  %461 = load i32, ptr %19, align 4, !tbaa !73
-  %462 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %461, i32 %426), !nosanitize !45
-  %463 = extractvalue { i32, i1 } %462, 1, !nosanitize !45
-  br i1 %463, label %464, label %465, !prof !46, !nosanitize !45
+450:                                              ; preds = %442
+  %451 = extractvalue { i64, i1 } %447, 0, !nosanitize !45
+  store i64 %451, ptr %445, align 8, !tbaa !55
+  %452 = load i32, ptr %19, align 4, !tbaa !73
+  %453 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %452, i32 %420), !nosanitize !45
+  %454 = extractvalue { i32, i1 } %453, 1, !nosanitize !45
+  br i1 %454, label %455, label %456, !prof !46, !nosanitize !45
 
-464:                                              ; preds = %459
+455:                                              ; preds = %450
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-465:                                              ; preds = %459
-  %466 = extractvalue { i32, i1 } %462, 0, !nosanitize !45
-  store i32 %466, ptr %19, align 4, !tbaa !73
-  %467 = load i32, ptr %10, align 8, !tbaa !32
-  %468 = getelementptr inbounds nuw i8, ptr %0, i64 5932
-  %469 = load i32, ptr %468, align 4, !tbaa !76
-  %470 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %467, i32 %469), !nosanitize !45
-  %471 = extractvalue { i32, i1 } %470, 1, !nosanitize !45
-  br i1 %471, label %472, label %473, !prof !46, !nosanitize !45
+456:                                              ; preds = %450
+  %457 = extractvalue { i32, i1 } %453, 0, !nosanitize !45
+  store i32 %457, ptr %19, align 4, !tbaa !73
+  %458 = load i32, ptr %10, align 8, !tbaa !32
+  %459 = getelementptr inbounds nuw i8, ptr %0, i64 5932
+  %460 = load i32, ptr %459, align 4, !tbaa !76
+  %461 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %458, i32 %460), !nosanitize !45
+  %462 = extractvalue { i32, i1 } %461, 1, !nosanitize !45
+  br i1 %462, label %463, label %464, !prof !46, !nosanitize !45
 
-472:                                              ; preds = %465
+463:                                              ; preds = %456
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-473:                                              ; preds = %465
-  %474 = extractvalue { i32, i1 } %470, 0, !nosanitize !45
-  %475 = tail call i32 @llvm.umin.i32(i32 %426, i32 %474)
-  %476 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %469, i32 %475), !nosanitize !45
-  %477 = extractvalue { i32, i1 } %476, 1, !nosanitize !45
-  br i1 %477, label %478, label %479, !prof !46, !nosanitize !45
+464:                                              ; preds = %456
+  %465 = extractvalue { i32, i1 } %461, 0, !nosanitize !45
+  %466 = tail call i32 @llvm.umin.i32(i32 %420, i32 %465)
+  %467 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %460, i32 %466), !nosanitize !45
+  %468 = extractvalue { i32, i1 } %467, 1, !nosanitize !45
+  br i1 %468, label %469, label %470, !prof !46, !nosanitize !45
 
-478:                                              ; preds = %473
+469:                                              ; preds = %464
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-479:                                              ; preds = %473
-  %480 = extractvalue { i32, i1 } %476, 0, !nosanitize !45
-  store i32 %480, ptr %468, align 4, !tbaa !76
-  br label %481
+470:                                              ; preds = %464
+  %471 = extractvalue { i32, i1 } %467, 0, !nosanitize !45
+  store i32 %471, ptr %459, align 4, !tbaa !76
+  br label %472
 
-481:                                              ; preds = %479, %420
-  %482 = phi i32 [ %466, %479 ], [ %421, %420 ]
-  %483 = load i64, ptr %360, align 8, !tbaa !38
-  %484 = zext i32 %482 to i64
-  %485 = icmp ult i64 %483, %484
-  br i1 %485, label %486, label %487
+472:                                              ; preds = %470, %414
+  %473 = phi i32 [ %457, %470 ], [ %415, %414 ]
+  %474 = load i64, ptr %354, align 8, !tbaa !38
+  %475 = zext i32 %473 to i64
+  %476 = icmp ult i64 %474, %475
+  br i1 %476, label %477, label %478
 
-486:                                              ; preds = %481
-  store i64 %484, ptr %360, align 8, !tbaa !38
-  br label %487
+477:                                              ; preds = %472
+  store i64 %475, ptr %354, align 8, !tbaa !38
+  br label %478
 
-487:                                              ; preds = %486, %481
-  %488 = load i32, ptr %18, align 4, !tbaa !101
-  %489 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %488, i32 42), !nosanitize !45
-  %490 = extractvalue { i32, i1 } %489, 1, !nosanitize !45
-  br i1 %490, label %491, label %492, !prof !46, !nosanitize !45
+478:                                              ; preds = %477, %472
+  %479 = load i32, ptr %18, align 4, !tbaa !101
+  %480 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %479, i32 42), !nosanitize !45
+  %481 = extractvalue { i32, i1 } %480, 1, !nosanitize !45
+  br i1 %481, label %482, label %483, !prof !46, !nosanitize !45
 
-491:                                              ; preds = %487
+482:                                              ; preds = %478
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-492:                                              ; preds = %487
-  %493 = extractvalue { i32, i1 } %489, 0, !nosanitize !45
-  %494 = lshr i32 %493, 3
-  %495 = load i64, ptr %3, align 8, !tbaa !41
-  %496 = zext nneg i32 %494 to i64
-  %497 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %495, i64 %496), !nosanitize !45
-  %498 = extractvalue { i64, i1 } %497, 1, !nosanitize !45
-  br i1 %498, label %499, label %500, !prof !46, !nosanitize !45
+483:                                              ; preds = %478
+  %484 = extractvalue { i32, i1 } %480, 0, !nosanitize !45
+  %485 = lshr i32 %484, 3
+  %486 = load i64, ptr %3, align 8, !tbaa !41
+  %487 = zext nneg i32 %485 to i64
+  %488 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %486, i64 %487), !nosanitize !45
+  %489 = extractvalue { i64, i1 } %488, 1, !nosanitize !45
+  br i1 %489, label %490, label %491, !prof !46, !nosanitize !45
 
-499:                                              ; preds = %492
+490:                                              ; preds = %483
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-500:                                              ; preds = %492
-  %501 = extractvalue { i64, i1 } %497, 0, !nosanitize !45
-  %502 = tail call i64 @llvm.umin.i64(i64 %501, i64 65535)
-  %503 = trunc nuw nsw i64 %502 to i32
-  %504 = load i32, ptr %10, align 8, !tbaa !32
-  %505 = tail call i32 @llvm.umin.i32(i32 %504, i32 %503)
-  %506 = load i64, ptr %20, align 8, !tbaa !74
-  %507 = trunc i64 %506 to i32
-  %508 = sub i32 %482, %507
-  %509 = icmp ult i32 %508, %505
-  br i1 %509, label %510, label %519
+491:                                              ; preds = %483
+  %492 = extractvalue { i64, i1 } %488, 0, !nosanitize !45
+  %493 = tail call i64 @llvm.umin.i64(i64 %492, i64 65535)
+  %494 = trunc nuw nsw i64 %493 to i32
+  %495 = load i32, ptr %10, align 8, !tbaa !32
+  %496 = tail call i32 @llvm.umin.i32(i32 %495, i32 %494)
+  %497 = load i64, ptr %20, align 8, !tbaa !74
+  %498 = trunc i64 %497 to i32
+  %499 = sub i32 %473, %498
+  %500 = icmp ult i32 %499, %496
+  br i1 %500, label %501, label %510
 
-510:                                              ; preds = %500
-  %511 = icmp ne i32 %482, %507
-  %512 = or i1 %23, %511
-  %513 = and i1 %366, %512
-  br i1 %513, label %514, label %584
+501:                                              ; preds = %491
+  %502 = icmp ne i32 %473, %498
+  %503 = or i1 %23, %502
+  %504 = and i1 %360, %503
+  br i1 %504, label %505, label %575
 
-514:                                              ; preds = %510
-  %515 = load ptr, ptr %0, align 8, !tbaa !20
-  %516 = getelementptr inbounds nuw i8, ptr %515, i64 8
-  %517 = load i32, ptr %516, align 8, !tbaa !81
-  %518 = icmp eq i32 %517, 0
-  br i1 %518, label %519, label %584
+505:                                              ; preds = %501
+  %506 = load ptr, ptr %0, align 8, !tbaa !20
+  %507 = getelementptr inbounds nuw i8, ptr %506, i64 8
+  %508 = load i32, ptr %507, align 8, !tbaa !81
+  %509 = icmp eq i32 %508, 0
+  br i1 %509, label %510, label %575
 
-519:                                              ; preds = %514, %500
-  %520 = tail call i32 @llvm.umin.i32(i32 %508, i32 %503)
-  br i1 %23, label %521, label %529
+510:                                              ; preds = %505, %491
+  %511 = tail call i32 @llvm.umin.i32(i32 %499, i32 %494)
+  br i1 %23, label %512, label %520
 
-521:                                              ; preds = %519
-  %522 = load ptr, ptr %0, align 8, !tbaa !20
-  %523 = getelementptr inbounds nuw i8, ptr %522, i64 8
-  %524 = load i32, ptr %523, align 8, !tbaa !81
-  %525 = icmp eq i32 %524, 0
-  br i1 %525, label %526, label %529
+512:                                              ; preds = %510
+  %513 = load ptr, ptr %0, align 8, !tbaa !20
+  %514 = getelementptr inbounds nuw i8, ptr %513, i64 8
+  %515 = load i32, ptr %514, align 8, !tbaa !81
+  %516 = icmp eq i32 %515, 0
+  br i1 %516, label %517, label %520
 
-526:                                              ; preds = %521
-  %527 = icmp ule i32 %508, %503
-  %528 = zext i1 %527 to i32
-  br label %529
+517:                                              ; preds = %512
+  %518 = icmp ule i32 %499, %494
+  %519 = zext i1 %518 to i32
+  br label %520
 
-529:                                              ; preds = %526, %521, %519
-  %530 = phi i32 [ 0, %521 ], [ 0, %519 ], [ %528, %526 ]
-  %531 = load ptr, ptr %26, align 8, !tbaa !34
-  %532 = getelementptr inbounds i8, ptr %531, i64 %506
-  %533 = zext nneg i32 %520 to i64
-  tail call void @_tr_stored_block(ptr noundef nonnull %0, ptr noundef %532, i64 noundef %533, i32 noundef %530) #11
-  %534 = load i64, ptr %20, align 8, !tbaa !74
-  %535 = add nsw i64 %534, %533
-  store i64 %535, ptr %20, align 8, !tbaa !74
-  %536 = load ptr, ptr %0, align 8, !tbaa !20
-  %537 = getelementptr inbounds nuw i8, ptr %536, i64 56
-  %538 = load ptr, ptr %537, align 8, !tbaa !19
-  tail call void @_tr_flush_bits(ptr noundef %538) #11
-  %539 = getelementptr inbounds nuw i8, ptr %538, i64 40
-  %540 = load i64, ptr %539, align 8, !tbaa !57
-  %541 = getelementptr inbounds nuw i8, ptr %536, i64 32
-  %542 = load i32, ptr %541, align 8, !tbaa !107
-  %543 = zext i32 %542 to i64
-  %544 = tail call i64 @llvm.umin.i64(i64 %540, i64 %543)
-  %545 = trunc nuw i64 %544 to i32
-  %546 = icmp eq i64 %544, 0
-  br i1 %546, label %579, label %547
+520:                                              ; preds = %517, %512, %510
+  %521 = phi i32 [ 0, %512 ], [ 0, %510 ], [ %519, %517 ]
+  %522 = load ptr, ptr %26, align 8, !tbaa !34
+  %523 = getelementptr inbounds i8, ptr %522, i64 %497
+  %524 = zext nneg i32 %511 to i64
+  tail call void @_tr_stored_block(ptr noundef nonnull %0, ptr noundef %523, i64 noundef %524, i32 noundef %521) #11
+  %525 = load i64, ptr %20, align 8, !tbaa !74
+  %526 = add nsw i64 %525, %524
+  store i64 %526, ptr %20, align 8, !tbaa !74
+  %527 = load ptr, ptr %0, align 8, !tbaa !20
+  %528 = getelementptr inbounds nuw i8, ptr %527, i64 56
+  %529 = load ptr, ptr %528, align 8, !tbaa !19
+  tail call void @_tr_flush_bits(ptr noundef %529) #11
+  %530 = getelementptr inbounds nuw i8, ptr %529, i64 40
+  %531 = load i64, ptr %530, align 8, !tbaa !57
+  %532 = getelementptr inbounds nuw i8, ptr %527, i64 32
+  %533 = load i32, ptr %532, align 8, !tbaa !107
+  %534 = zext i32 %533 to i64
+  %535 = tail call i64 @llvm.umin.i64(i64 %531, i64 %534)
+  %536 = trunc nuw i64 %535 to i32
+  %537 = icmp eq i64 %535, 0
+  br i1 %537, label %570, label %538
 
-547:                                              ; preds = %529
-  %548 = getelementptr inbounds nuw i8, ptr %536, i64 24
-  %549 = load ptr, ptr %548, align 8, !tbaa !106
-  %550 = getelementptr inbounds nuw i8, ptr %538, i64 32
-  %551 = load ptr, ptr %550, align 8, !tbaa !58
-  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %549, ptr align 1 %551, i64 %544, i1 false)
-  %552 = load ptr, ptr %548, align 8, !tbaa !106
-  %553 = getelementptr inbounds nuw i8, ptr %552, i64 %544
-  store ptr %553, ptr %548, align 8, !tbaa !106
-  %554 = load ptr, ptr %550, align 8, !tbaa !58
-  %555 = getelementptr inbounds nuw i8, ptr %554, i64 %544
-  store ptr %555, ptr %550, align 8, !tbaa !58
-  %556 = getelementptr inbounds nuw i8, ptr %536, i64 40
-  %557 = load i64, ptr %556, align 8, !tbaa !108
-  %558 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %557, i64 %544), !nosanitize !45
-  %559 = extractvalue { i64, i1 } %558, 1, !nosanitize !45
-  br i1 %559, label %560, label %561, !prof !46, !nosanitize !45
+538:                                              ; preds = %520
+  %539 = getelementptr inbounds nuw i8, ptr %527, i64 24
+  %540 = load ptr, ptr %539, align 8, !tbaa !106
+  %541 = getelementptr inbounds nuw i8, ptr %529, i64 32
+  %542 = load ptr, ptr %541, align 8, !tbaa !58
+  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %540, ptr align 1 %542, i64 %535, i1 false)
+  %543 = load ptr, ptr %539, align 8, !tbaa !106
+  %544 = getelementptr inbounds nuw i8, ptr %543, i64 %535
+  store ptr %544, ptr %539, align 8, !tbaa !106
+  %545 = load ptr, ptr %541, align 8, !tbaa !58
+  %546 = getelementptr inbounds nuw i8, ptr %545, i64 %535
+  store ptr %546, ptr %541, align 8, !tbaa !58
+  %547 = getelementptr inbounds nuw i8, ptr %527, i64 40
+  %548 = load i64, ptr %547, align 8, !tbaa !108
+  %549 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %548, i64 %535), !nosanitize !45
+  %550 = extractvalue { i64, i1 } %549, 1, !nosanitize !45
+  br i1 %550, label %551, label %552, !prof !46, !nosanitize !45
 
-560:                                              ; preds = %547
+551:                                              ; preds = %538
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-561:                                              ; preds = %547
-  %562 = extractvalue { i64, i1 } %558, 0, !nosanitize !45
-  store i64 %562, ptr %556, align 8, !tbaa !108
-  %563 = load i32, ptr %541, align 8, !tbaa !107
-  %564 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %563, i32 %545), !nosanitize !45
-  %565 = extractvalue { i32, i1 } %564, 1, !nosanitize !45
-  br i1 %565, label %566, label %567, !prof !46, !nosanitize !45
+552:                                              ; preds = %538
+  %553 = extractvalue { i64, i1 } %549, 0, !nosanitize !45
+  store i64 %553, ptr %547, align 8, !tbaa !108
+  %554 = load i32, ptr %532, align 8, !tbaa !107
+  %555 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %554, i32 %536), !nosanitize !45
+  %556 = extractvalue { i32, i1 } %555, 1, !nosanitize !45
+  br i1 %556, label %557, label %558, !prof !46, !nosanitize !45
 
-566:                                              ; preds = %561
+557:                                              ; preds = %552
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-567:                                              ; preds = %561
-  %568 = extractvalue { i32, i1 } %564, 0, !nosanitize !45
-  store i32 %568, ptr %541, align 8, !tbaa !107
-  %569 = load i64, ptr %539, align 8, !tbaa !57
-  %570 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %569, i64 %544), !nosanitize !45
-  %571 = extractvalue { i64, i1 } %570, 1, !nosanitize !45
-  br i1 %571, label %572, label %573, !prof !46, !nosanitize !45
+558:                                              ; preds = %552
+  %559 = extractvalue { i32, i1 } %555, 0, !nosanitize !45
+  store i32 %559, ptr %532, align 8, !tbaa !107
+  %560 = load i64, ptr %530, align 8, !tbaa !57
+  %561 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %560, i64 %535), !nosanitize !45
+  %562 = extractvalue { i64, i1 } %561, 1, !nosanitize !45
+  br i1 %562, label %563, label %564, !prof !46, !nosanitize !45
 
-572:                                              ; preds = %567
+563:                                              ; preds = %558
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-573:                                              ; preds = %567
-  %574 = extractvalue { i64, i1 } %570, 0, !nosanitize !45
-  store i64 %574, ptr %539, align 8, !tbaa !57
-  %575 = icmp eq i64 %574, 0
-  br i1 %575, label %576, label %579
+564:                                              ; preds = %558
+  %565 = extractvalue { i64, i1 } %561, 0, !nosanitize !45
+  store i64 %565, ptr %530, align 8, !tbaa !57
+  %566 = icmp eq i64 %565, 0
+  br i1 %566, label %567, label %570
 
-576:                                              ; preds = %573
-  %577 = getelementptr inbounds nuw i8, ptr %538, i64 16
-  %578 = load ptr, ptr %577, align 8, !tbaa !40
-  store ptr %578, ptr %550, align 8, !tbaa !58
-  br label %579
+567:                                              ; preds = %564
+  %568 = getelementptr inbounds nuw i8, ptr %529, i64 16
+  %569 = load ptr, ptr %568, align 8, !tbaa !40
+  store ptr %569, ptr %541, align 8, !tbaa !58
+  br label %570
 
-579:                                              ; preds = %576, %573, %529
-  %580 = icmp eq i32 %530, 0
-  br i1 %580, label %584, label %581
+570:                                              ; preds = %567, %564, %520
+  %571 = icmp eq i32 %521, 0
+  br i1 %571, label %575, label %572
 
-581:                                              ; preds = %579, %364
-  %582 = phi i32 [ 3, %364 ], [ 2, %579 ]
-  %583 = getelementptr inbounds nuw i8, ptr %0, i64 5944
-  store i32 8, ptr %583, align 8, !tbaa !102
-  br label %584
+572:                                              ; preds = %570, %358
+  %573 = phi i32 [ 3, %358 ], [ 2, %570 ]
+  %574 = getelementptr inbounds nuw i8, ptr %0, i64 5944
+  store i32 8, ptr %574, align 8, !tbaa !102
+  br label %575
 
-584:                                              ; preds = %581, %579, %514, %510, %372
-  %585 = phi i32 [ 0, %514 ], [ 1, %372 ], [ 0, %510 ], [ 0, %579 ], [ %582, %581 ]
-  ret i32 %585
+575:                                              ; preds = %572, %570, %505, %501, %366
+  %576 = phi i32 [ 0, %505 ], [ 1, %366 ], [ 0, %501 ], [ 0, %570 ], [ %573, %572 ]
+  ret i32 %576
 }
 
 ; Function Attrs: nounwind uwtable
@@ -8431,18 +8391,18 @@ define internal fastcc range(i32 0, 4) i32 @deflate_huff(ptr noundef %0, i32 nou
   %24 = getelementptr inbounds nuw i8, ptr %0, i64 5904
   br label %25
 
-25:                                               ; preds = %474, %2
+25:                                               ; preds = %471, %2
   %26 = load i32, ptr %3, align 4, !tbaa !75
   %27 = icmp eq i32 %26, 0
-  br i1 %27, label %28, label %361
+  br i1 %27, label %28, label %358
 
 28:                                               ; preds = %25
   %29 = load i32, ptr %4, align 8, !tbaa !32
   %30 = zext i32 %29 to i64
   br label %31
 
-31:                                               ; preds = %310, %28
-  %32 = phi i32 [ %237, %310 ], [ 0, %28 ]
+31:                                               ; preds = %307, %28
+  %32 = phi i32 [ %234, %307 ], [ 0, %28 ]
   %33 = load i64, ptr %5, align 8, !tbaa !61
   %34 = zext nneg i32 %32 to i64
   %35 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %33, i64 %34), !nosanitize !45
@@ -8695,7 +8655,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_huff(ptr noundef %0, i32 nou
   %189 = getelementptr inbounds nuw i8, ptr %188, i64 8
   %190 = load i32, ptr %189, align 8, !tbaa !81
   %191 = icmp eq i32 %190, 0
-  br i1 %191, label %315, label %192
+  br i1 %191, label %312, label %192
 
 192:                                              ; preds = %184
   %193 = load ptr, ptr %7, align 8, !tbaa !34
@@ -8705,679 +8665,671 @@ define internal fastcc range(i32 0, 4) i32 @deflate_huff(ptr noundef %0, i32 nou
   %197 = getelementptr inbounds nuw i8, ptr %195, i64 %196
   %198 = tail call i32 @llvm.umin.i32(i32 %190, i32 %187)
   %199 = icmp eq i32 %187, 0
-  br i1 %199, label %231, label %200
+  br i1 %199, label %228, label %200
 
 200:                                              ; preds = %192
   %201 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %190, i32 %198), !nosanitize !45
-  %202 = extractvalue { i32, i1 } %201, 1, !nosanitize !45
-  br i1 %202, label %203, label %204, !prof !46, !nosanitize !45
-
-203:                                              ; preds = %200
-  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
-  unreachable, !nosanitize !45
-
-204:                                              ; preds = %200
-  %205 = extractvalue { i32, i1 } %201, 0, !nosanitize !45
-  store i32 %205, ptr %189, align 8, !tbaa !81
-  %206 = load ptr, ptr %188, align 8, !tbaa !82
-  %207 = zext i32 %198 to i64
-  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %197, ptr align 1 %206, i64 %207, i1 false)
-  %208 = getelementptr inbounds nuw i8, ptr %188, i64 56
-  %209 = load ptr, ptr %208, align 8, !tbaa !19
-  %210 = getelementptr inbounds nuw i8, ptr %209, i64 48
-  %211 = load i32, ptr %210, align 8, !tbaa !30
-  switch i32 %211, label %220 [
-    i32 1, label %212
-    i32 2, label %216
+  %202 = extractvalue { i32, i1 } %201, 0, !nosanitize !45
+  store i32 %202, ptr %189, align 8, !tbaa !81
+  %203 = load ptr, ptr %188, align 8, !tbaa !82
+  %204 = zext i32 %198 to i64
+  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %197, ptr align 1 %203, i64 %204, i1 false)
+  %205 = getelementptr inbounds nuw i8, ptr %188, i64 56
+  %206 = load ptr, ptr %205, align 8, !tbaa !19
+  %207 = getelementptr inbounds nuw i8, ptr %206, i64 48
+  %208 = load i32, ptr %207, align 8, !tbaa !30
+  switch i32 %208, label %217 [
+    i32 1, label %209
+    i32 2, label %213
   ]
 
-212:                                              ; preds = %204
-  %213 = getelementptr inbounds nuw i8, ptr %188, i64 96
-  %214 = load i64, ptr %213, align 8, !tbaa !59
-  %215 = tail call i64 @adler32(i64 noundef %214, ptr noundef %197, i32 noundef %198) #11
-  store i64 %215, ptr %213, align 8, !tbaa !59
-  br label %220
+209:                                              ; preds = %200
+  %210 = getelementptr inbounds nuw i8, ptr %188, i64 96
+  %211 = load i64, ptr %210, align 8, !tbaa !59
+  %212 = tail call i64 @adler32(i64 noundef %211, ptr noundef %197, i32 noundef %198) #11
+  store i64 %212, ptr %210, align 8, !tbaa !59
+  br label %217
 
-216:                                              ; preds = %204
-  %217 = getelementptr inbounds nuw i8, ptr %188, i64 96
-  %218 = load i64, ptr %217, align 8, !tbaa !59
-  %219 = tail call i64 @crc32(i64 noundef %218, ptr noundef %197, i32 noundef %198) #11
-  store i64 %219, ptr %217, align 8, !tbaa !59
-  br label %220
+213:                                              ; preds = %200
+  %214 = getelementptr inbounds nuw i8, ptr %188, i64 96
+  %215 = load i64, ptr %214, align 8, !tbaa !59
+  %216 = tail call i64 @crc32(i64 noundef %215, ptr noundef %197, i32 noundef %198) #11
+  store i64 %216, ptr %214, align 8, !tbaa !59
+  br label %217
 
-220:                                              ; preds = %216, %212, %204
-  %221 = load ptr, ptr %188, align 8, !tbaa !82
-  %222 = getelementptr inbounds nuw i8, ptr %221, i64 %207
-  store ptr %222, ptr %188, align 8, !tbaa !82
-  %223 = getelementptr inbounds nuw i8, ptr %188, i64 16
-  %224 = load i64, ptr %223, align 8, !tbaa !55
-  %225 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %224, i64 %207), !nosanitize !45
-  %226 = extractvalue { i64, i1 } %225, 1, !nosanitize !45
-  br i1 %226, label %227, label %228, !prof !46, !nosanitize !45
+217:                                              ; preds = %213, %209, %200
+  %218 = load ptr, ptr %188, align 8, !tbaa !82
+  %219 = getelementptr inbounds nuw i8, ptr %218, i64 %204
+  store ptr %219, ptr %188, align 8, !tbaa !82
+  %220 = getelementptr inbounds nuw i8, ptr %188, i64 16
+  %221 = load i64, ptr %220, align 8, !tbaa !55
+  %222 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %221, i64 %204), !nosanitize !45
+  %223 = extractvalue { i64, i1 } %222, 1, !nosanitize !45
+  br i1 %223, label %224, label %225, !prof !46, !nosanitize !45
 
-227:                                              ; preds = %220
+224:                                              ; preds = %217
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-228:                                              ; preds = %220
-  %229 = extractvalue { i64, i1 } %225, 0, !nosanitize !45
-  store i64 %229, ptr %223, align 8, !tbaa !55
-  %230 = load i32, ptr %3, align 4, !tbaa !75
-  br label %231
+225:                                              ; preds = %217
+  %226 = extractvalue { i64, i1 } %222, 0, !nosanitize !45
+  store i64 %226, ptr %220, align 8, !tbaa !55
+  %227 = load i32, ptr %3, align 4, !tbaa !75
+  br label %228
 
-231:                                              ; preds = %228, %192
-  %232 = phi i32 [ %185, %192 ], [ %230, %228 ]
-  %233 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %232, i32 %198), !nosanitize !45
-  %234 = extractvalue { i32, i1 } %233, 1, !nosanitize !45
-  br i1 %234, label %235, label %236, !prof !46, !nosanitize !45
+228:                                              ; preds = %225, %192
+  %229 = phi i32 [ %185, %192 ], [ %227, %225 ]
+  %230 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %229, i32 %198), !nosanitize !45
+  %231 = extractvalue { i32, i1 } %230, 1, !nosanitize !45
+  br i1 %231, label %232, label %233, !prof !46, !nosanitize !45
 
-235:                                              ; preds = %231
+232:                                              ; preds = %228
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-236:                                              ; preds = %231
-  %237 = extractvalue { i32, i1 } %233, 0, !nosanitize !45
-  store i32 %237, ptr %3, align 4, !tbaa !75
-  %238 = load i32, ptr %10, align 4, !tbaa !76
-  %239 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %237, i32 %238), !nosanitize !45
-  %240 = extractvalue { i32, i1 } %239, 1, !nosanitize !45
-  br i1 %240, label %241, label %242, !prof !46, !nosanitize !45
+233:                                              ; preds = %228
+  %234 = extractvalue { i32, i1 } %230, 0, !nosanitize !45
+  store i32 %234, ptr %3, align 4, !tbaa !75
+  %235 = load i32, ptr %10, align 4, !tbaa !76
+  %236 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %234, i32 %235), !nosanitize !45
+  %237 = extractvalue { i32, i1 } %236, 1, !nosanitize !45
+  br i1 %237, label %238, label %239, !prof !46, !nosanitize !45
 
-241:                                              ; preds = %236
+238:                                              ; preds = %233
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-242:                                              ; preds = %236
-  %243 = extractvalue { i32, i1 } %239, 0, !nosanitize !45
-  %244 = icmp ugt i32 %243, 2
-  br i1 %244, label %245, label %308
+239:                                              ; preds = %233
+  %240 = extractvalue { i32, i1 } %236, 0, !nosanitize !45
+  %241 = icmp ugt i32 %240, 2
+  br i1 %241, label %242, label %305
 
-245:                                              ; preds = %242
-  %246 = load i32, ptr %6, align 4, !tbaa !73
-  %247 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %246, i32 %238), !nosanitize !45
-  %248 = extractvalue { i32, i1 } %247, 0, !nosanitize !45
-  %249 = extractvalue { i32, i1 } %247, 1, !nosanitize !45
-  br i1 %249, label %250, label %251, !prof !46, !nosanitize !45
+242:                                              ; preds = %239
+  %243 = load i32, ptr %6, align 4, !tbaa !73
+  %244 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %243, i32 %235), !nosanitize !45
+  %245 = extractvalue { i32, i1 } %244, 0, !nosanitize !45
+  %246 = extractvalue { i32, i1 } %244, 1, !nosanitize !45
+  br i1 %246, label %247, label %248, !prof !46, !nosanitize !45
 
-250:                                              ; preds = %245
+247:                                              ; preds = %242
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-251:                                              ; preds = %245
-  %252 = load ptr, ptr %7, align 8, !tbaa !34
-  %253 = zext i32 %248 to i64
-  %254 = getelementptr inbounds nuw i8, ptr %252, i64 %253
-  %255 = load i8, ptr %254, align 1, !tbaa !8
-  %256 = zext i8 %255 to i32
-  store i32 %256, ptr %15, align 8, !tbaa !80
-  %257 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %248, i32 1), !nosanitize !45
-  %258 = extractvalue { i32, i1 } %257, 1, !nosanitize !45
-  br i1 %258, label %259, label %260, !prof !46, !nosanitize !45
+248:                                              ; preds = %242
+  %249 = load ptr, ptr %7, align 8, !tbaa !34
+  %250 = zext i32 %245 to i64
+  %251 = getelementptr inbounds nuw i8, ptr %249, i64 %250
+  %252 = load i8, ptr %251, align 1, !tbaa !8
+  %253 = zext i8 %252 to i32
+  store i32 %253, ptr %15, align 8, !tbaa !80
+  %254 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %245, i32 1), !nosanitize !45
+  %255 = extractvalue { i32, i1 } %254, 1, !nosanitize !45
+  br i1 %255, label %256, label %257, !prof !46, !nosanitize !45
 
-259:                                              ; preds = %251
+256:                                              ; preds = %248
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-260:                                              ; preds = %251
-  %261 = extractvalue { i32, i1 } %257, 0, !nosanitize !45
-  %262 = load i32, ptr %16, align 8, !tbaa !53
-  %263 = shl i32 %256, %262
-  %264 = zext i32 %261 to i64
-  %265 = getelementptr inbounds nuw i8, ptr %252, i64 %264
-  %266 = load i8, ptr %265, align 1, !tbaa !8
-  %267 = zext i8 %266 to i32
-  %268 = xor i32 %263, %267
-  %269 = load i32, ptr %17, align 4, !tbaa !52
-  %270 = and i32 %268, %269
-  store i32 %270, ptr %15, align 8, !tbaa !80
-  br label %271
+257:                                              ; preds = %248
+  %258 = extractvalue { i32, i1 } %254, 0, !nosanitize !45
+  %259 = load i32, ptr %16, align 8, !tbaa !53
+  %260 = shl i32 %253, %259
+  %261 = zext i32 %258 to i64
+  %262 = getelementptr inbounds nuw i8, ptr %249, i64 %261
+  %263 = load i8, ptr %262, align 1, !tbaa !8
+  %264 = zext i8 %263 to i32
+  %265 = xor i32 %260, %264
+  %266 = load i32, ptr %17, align 4, !tbaa !52
+  %267 = and i32 %265, %266
+  store i32 %267, ptr %15, align 8, !tbaa !80
+  br label %268
 
-271:                                              ; preds = %304, %260
-  %272 = phi i32 [ %270, %260 ], [ %289, %304 ]
-  %273 = phi i32 [ %238, %260 ], [ %300, %304 ]
-  %274 = phi i32 [ %248, %260 ], [ %305, %304 ]
-  %275 = icmp eq i32 %273, 0
-  br i1 %275, label %308, label %276
+268:                                              ; preds = %301, %257
+  %269 = phi i32 [ %267, %257 ], [ %286, %301 ]
+  %270 = phi i32 [ %235, %257 ], [ %297, %301 ]
+  %271 = phi i32 [ %245, %257 ], [ %302, %301 ]
+  %272 = icmp eq i32 %270, 0
+  br i1 %272, label %305, label %273
 
-276:                                              ; preds = %271
-  %277 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %274, i32 3), !nosanitize !45
-  %278 = extractvalue { i32, i1 } %277, 1, !nosanitize !45
-  br i1 %278, label %279, label %280, !prof !46, !nosanitize !45
+273:                                              ; preds = %268
+  %274 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %271, i32 3), !nosanitize !45
+  %275 = extractvalue { i32, i1 } %274, 1, !nosanitize !45
+  br i1 %275, label %276, label %277, !prof !46, !nosanitize !45
 
-279:                                              ; preds = %276
+276:                                              ; preds = %273
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-280:                                              ; preds = %276
-  %281 = shl i32 %272, %262
-  %282 = extractvalue { i32, i1 } %277, 0, !nosanitize !45
-  %283 = add i32 %282, -1
-  %284 = zext i32 %283 to i64
-  %285 = getelementptr inbounds nuw i8, ptr %252, i64 %284
-  %286 = load i8, ptr %285, align 1, !tbaa !8
-  %287 = zext i8 %286 to i32
-  %288 = xor i32 %281, %287
-  %289 = and i32 %288, %269
-  store i32 %289, ptr %15, align 8, !tbaa !80
-  %290 = load ptr, ptr %12, align 8, !tbaa !37
-  %291 = zext i32 %289 to i64
-  %292 = getelementptr inbounds nuw [2 x i8], ptr %290, i64 %291
-  %293 = load i16, ptr %292, align 2, !tbaa !62
-  %294 = load ptr, ptr %13, align 8, !tbaa !35
-  %295 = load i32, ptr %18, align 8, !tbaa !33
-  %296 = and i32 %295, %274
-  %297 = zext i32 %296 to i64
-  %298 = getelementptr inbounds nuw [2 x i8], ptr %294, i64 %297
-  store i16 %293, ptr %298, align 2, !tbaa !62
-  %299 = trunc i32 %274 to i16
-  store i16 %299, ptr %292, align 2, !tbaa !62
-  %300 = add i32 %273, -1
-  store i32 %300, ptr %10, align 4, !tbaa !76
-  %301 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %237, i32 %300), !nosanitize !45
-  %302 = extractvalue { i32, i1 } %301, 1, !nosanitize !45
-  br i1 %302, label %303, label %304, !prof !46, !nosanitize !45
+277:                                              ; preds = %273
+  %278 = shl i32 %269, %259
+  %279 = extractvalue { i32, i1 } %274, 0, !nosanitize !45
+  %280 = add i32 %279, -1
+  %281 = zext i32 %280 to i64
+  %282 = getelementptr inbounds nuw i8, ptr %249, i64 %281
+  %283 = load i8, ptr %282, align 1, !tbaa !8
+  %284 = zext i8 %283 to i32
+  %285 = xor i32 %278, %284
+  %286 = and i32 %285, %266
+  store i32 %286, ptr %15, align 8, !tbaa !80
+  %287 = load ptr, ptr %12, align 8, !tbaa !37
+  %288 = zext i32 %286 to i64
+  %289 = getelementptr inbounds nuw [2 x i8], ptr %287, i64 %288
+  %290 = load i16, ptr %289, align 2, !tbaa !62
+  %291 = load ptr, ptr %13, align 8, !tbaa !35
+  %292 = load i32, ptr %18, align 8, !tbaa !33
+  %293 = and i32 %292, %271
+  %294 = zext i32 %293 to i64
+  %295 = getelementptr inbounds nuw [2 x i8], ptr %291, i64 %294
+  store i16 %290, ptr %295, align 2, !tbaa !62
+  %296 = trunc i32 %271 to i16
+  store i16 %296, ptr %289, align 2, !tbaa !62
+  %297 = add i32 %270, -1
+  store i32 %297, ptr %10, align 4, !tbaa !76
+  %298 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %234, i32 %297), !nosanitize !45
+  %299 = extractvalue { i32, i1 } %298, 1, !nosanitize !45
+  br i1 %299, label %300, label %301, !prof !46, !nosanitize !45
 
-303:                                              ; preds = %280
+300:                                              ; preds = %277
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-304:                                              ; preds = %280
-  %305 = add nuw i32 %274, 1
-  %306 = extractvalue { i32, i1 } %301, 0, !nosanitize !45
-  %307 = icmp ult i32 %306, 3
-  br i1 %307, label %308, label %271, !llvm.loop !91
+301:                                              ; preds = %277
+  %302 = add nuw i32 %271, 1
+  %303 = extractvalue { i32, i1 } %298, 0, !nosanitize !45
+  %304 = icmp ult i32 %303, 3
+  br i1 %304, label %305, label %268, !llvm.loop !91
 
-308:                                              ; preds = %304, %271, %242
-  %309 = icmp ult i32 %237, 262
-  br i1 %309, label %310, label %315
+305:                                              ; preds = %301, %268, %239
+  %306 = icmp ult i32 %234, 262
+  br i1 %306, label %307, label %312
 
-310:                                              ; preds = %308
-  %311 = load ptr, ptr %0, align 8, !tbaa !20
-  %312 = getelementptr inbounds nuw i8, ptr %311, i64 8
-  %313 = load i32, ptr %312, align 8, !tbaa !81
-  %314 = icmp eq i32 %313, 0
-  br i1 %314, label %315, label %31, !llvm.loop !92
+307:                                              ; preds = %305
+  %308 = load ptr, ptr %0, align 8, !tbaa !20
+  %309 = getelementptr inbounds nuw i8, ptr %308, i64 8
+  %310 = load i32, ptr %309, align 8, !tbaa !81
+  %311 = icmp eq i32 %310, 0
+  br i1 %311, label %312, label %31, !llvm.loop !92
 
-315:                                              ; preds = %310, %308, %184
-  %316 = phi i32 [ %237, %310 ], [ %237, %308 ], [ %185, %184 ]
-  %317 = load i64, ptr %19, align 8, !tbaa !38
-  %318 = load i64, ptr %5, align 8, !tbaa !61
-  %319 = icmp ult i64 %317, %318
-  br i1 %319, label %320, label %356
+312:                                              ; preds = %307, %305, %184
+  %313 = phi i32 [ %234, %307 ], [ %234, %305 ], [ %185, %184 ]
+  %314 = load i64, ptr %19, align 8, !tbaa !38
+  %315 = load i64, ptr %5, align 8, !tbaa !61
+  %316 = icmp ult i64 %314, %315
+  br i1 %316, label %317, label %353
 
-320:                                              ; preds = %315
-  %321 = load i32, ptr %6, align 4, !tbaa !73
-  %322 = zext i32 %321 to i64
-  %323 = zext i32 %316 to i64
-  %324 = add nuw nsw i64 %323, %322
-  %325 = icmp ult i64 %317, %324
-  br i1 %325, label %326, label %336
+317:                                              ; preds = %312
+  %318 = load i32, ptr %6, align 4, !tbaa !73
+  %319 = zext i32 %318 to i64
+  %320 = zext i32 %313 to i64
+  %321 = add nuw nsw i64 %320, %319
+  %322 = icmp ult i64 %314, %321
+  br i1 %322, label %323, label %333
 
-326:                                              ; preds = %320
-  %327 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %318, i64 %324), !nosanitize !45
-  %328 = extractvalue { i64, i1 } %327, 1, !nosanitize !45
-  br i1 %328, label %329, label %330, !prof !46, !nosanitize !45
+323:                                              ; preds = %317
+  %324 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %315, i64 %321), !nosanitize !45
+  %325 = extractvalue { i64, i1 } %324, 1, !nosanitize !45
+  br i1 %325, label %326, label %327, !prof !46, !nosanitize !45
 
-329:                                              ; preds = %326
+326:                                              ; preds = %323
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-330:                                              ; preds = %326
-  %331 = extractvalue { i64, i1 } %327, 0, !nosanitize !45
-  %332 = tail call i64 @llvm.umin.i64(i64 %331, i64 258)
-  %333 = load ptr, ptr %7, align 8, !tbaa !34
-  %334 = getelementptr inbounds nuw i8, ptr %333, i64 %324
-  tail call void @llvm.memset.p0.i64(ptr nonnull align 1 %334, i8 0, i64 %332, i1 false)
-  %335 = add nuw nsw i64 %332, %324
-  br label %353
+327:                                              ; preds = %323
+  %328 = extractvalue { i64, i1 } %324, 0, !nosanitize !45
+  %329 = tail call i64 @llvm.umin.i64(i64 %328, i64 258)
+  %330 = load ptr, ptr %7, align 8, !tbaa !34
+  %331 = getelementptr inbounds nuw i8, ptr %330, i64 %321
+  tail call void @llvm.memset.p0.i64(ptr nonnull align 1 %331, i8 0, i64 %329, i1 false)
+  %332 = add nuw nsw i64 %329, %321
+  br label %350
 
-336:                                              ; preds = %320
-  %337 = add nuw nsw i64 %324, 258
-  %338 = icmp ult i64 %317, %337
-  br i1 %338, label %339, label %356
+333:                                              ; preds = %317
+  %334 = add nuw nsw i64 %321, 258
+  %335 = icmp ult i64 %314, %334
+  br i1 %335, label %336, label %353
 
-339:                                              ; preds = %336
-  %340 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %318, i64 %317), !nosanitize !45
-  %341 = sub nuw nsw i64 %337, %317
-  %342 = extractvalue { i64, i1 } %340, 0, !nosanitize !45
-  %343 = tail call i64 @llvm.umin.i64(i64 %341, i64 %342)
-  %344 = load ptr, ptr %7, align 8, !tbaa !34
-  %345 = getelementptr inbounds nuw i8, ptr %344, i64 %317
-  %346 = and i64 %343, 4294967295
-  tail call void @llvm.memset.p0.i64(ptr align 1 %345, i8 0, i64 %346, i1 false)
-  %347 = load i64, ptr %19, align 8, !tbaa !38
-  %348 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %347, i64 %343), !nosanitize !45
-  %349 = extractvalue { i64, i1 } %348, 1, !nosanitize !45
-  br i1 %349, label %350, label %351, !prof !46, !nosanitize !45
+336:                                              ; preds = %333
+  %337 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %315, i64 %314), !nosanitize !45
+  %338 = sub nuw nsw i64 %334, %314
+  %339 = extractvalue { i64, i1 } %337, 0, !nosanitize !45
+  %340 = tail call i64 @llvm.umin.i64(i64 %338, i64 %339)
+  %341 = load ptr, ptr %7, align 8, !tbaa !34
+  %342 = getelementptr inbounds nuw i8, ptr %341, i64 %314
+  %343 = and i64 %340, 4294967295
+  tail call void @llvm.memset.p0.i64(ptr align 1 %342, i8 0, i64 %343, i1 false)
+  %344 = load i64, ptr %19, align 8, !tbaa !38
+  %345 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %344, i64 %340), !nosanitize !45
+  %346 = extractvalue { i64, i1 } %345, 1, !nosanitize !45
+  br i1 %346, label %347, label %348, !prof !46, !nosanitize !45
 
-350:                                              ; preds = %339
+347:                                              ; preds = %336
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-351:                                              ; preds = %339
-  %352 = extractvalue { i64, i1 } %348, 0, !nosanitize !45
+348:                                              ; preds = %336
+  %349 = extractvalue { i64, i1 } %345, 0, !nosanitize !45
+  br label %350
+
+350:                                              ; preds = %348, %327
+  %351 = phi i64 [ %332, %327 ], [ %349, %348 ]
+  store i64 %351, ptr %19, align 8, !tbaa !38
+  %352 = load i32, ptr %3, align 4, !tbaa !75
   br label %353
 
-353:                                              ; preds = %351, %330
-  %354 = phi i64 [ %335, %330 ], [ %352, %351 ]
-  store i64 %354, ptr %19, align 8, !tbaa !38
-  %355 = load i32, ptr %3, align 4, !tbaa !75
-  br label %356
+353:                                              ; preds = %350, %333, %312
+  %354 = phi i32 [ %313, %312 ], [ %313, %333 ], [ %352, %350 ]
+  %355 = icmp eq i32 %354, 0
+  br i1 %355, label %356, label %358
 
-356:                                              ; preds = %353, %336, %315
-  %357 = phi i32 [ %316, %315 ], [ %316, %336 ], [ %355, %353 ]
-  %358 = icmp eq i32 %357, 0
-  br i1 %358, label %359, label %361
+356:                                              ; preds = %353
+  %357 = icmp eq i32 %1, 0
+  br i1 %357, label %603, label %472
 
-359:                                              ; preds = %356
-  %360 = icmp eq i32 %1, 0
-  br i1 %360, label %606, label %475
-
-361:                                              ; preds = %356, %25
+358:                                              ; preds = %353, %25
   store i32 0, ptr %20, align 8, !tbaa !78
-  %362 = load ptr, ptr %7, align 8, !tbaa !34
-  %363 = load i32, ptr %6, align 4, !tbaa !73
-  %364 = zext i32 %363 to i64
-  %365 = getelementptr inbounds nuw i8, ptr %362, i64 %364
-  %366 = load i8, ptr %365, align 1, !tbaa !8
-  %367 = load i32, ptr %22, align 4, !tbaa !139
-  %368 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %367, i32 1), !nosanitize !45
-  %369 = extractvalue { i32, i1 } %368, 1, !nosanitize !45
-  br i1 %369, label %370, label %371, !prof !46, !nosanitize !45
+  %359 = load ptr, ptr %7, align 8, !tbaa !34
+  %360 = load i32, ptr %6, align 4, !tbaa !73
+  %361 = zext i32 %360 to i64
+  %362 = getelementptr inbounds nuw i8, ptr %359, i64 %361
+  %363 = load i8, ptr %362, align 1, !tbaa !8
+  %364 = load i32, ptr %22, align 4, !tbaa !139
+  %365 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %364, i32 1), !nosanitize !45
+  %366 = extractvalue { i32, i1 } %365, 1, !nosanitize !45
+  br i1 %366, label %367, label %368, !prof !46, !nosanitize !45
 
-370:                                              ; preds = %361
+367:                                              ; preds = %358
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-371:                                              ; preds = %361
-  %372 = extractvalue { i32, i1 } %368, 0, !nosanitize !45
-  %373 = load ptr, ptr %21, align 8, !tbaa !44
-  store i32 %372, ptr %22, align 4, !tbaa !139
-  %374 = zext i32 %367 to i64
-  %375 = getelementptr inbounds nuw i8, ptr %373, i64 %374
-  store i8 0, ptr %375, align 1, !tbaa !8
-  %376 = load i32, ptr %22, align 4, !tbaa !139
-  %377 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %376, i32 1), !nosanitize !45
-  %378 = extractvalue { i32, i1 } %377, 1, !nosanitize !45
-  br i1 %378, label %379, label %380, !prof !46, !nosanitize !45
+368:                                              ; preds = %358
+  %369 = extractvalue { i32, i1 } %365, 0, !nosanitize !45
+  %370 = load ptr, ptr %21, align 8, !tbaa !44
+  store i32 %369, ptr %22, align 4, !tbaa !139
+  %371 = zext i32 %364 to i64
+  %372 = getelementptr inbounds nuw i8, ptr %370, i64 %371
+  store i8 0, ptr %372, align 1, !tbaa !8
+  %373 = load i32, ptr %22, align 4, !tbaa !139
+  %374 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %373, i32 1), !nosanitize !45
+  %375 = extractvalue { i32, i1 } %374, 1, !nosanitize !45
+  br i1 %375, label %376, label %377, !prof !46, !nosanitize !45
 
-379:                                              ; preds = %371
+376:                                              ; preds = %368
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-380:                                              ; preds = %371
-  %381 = extractvalue { i32, i1 } %377, 0, !nosanitize !45
-  %382 = load ptr, ptr %21, align 8, !tbaa !44
-  store i32 %381, ptr %22, align 4, !tbaa !139
-  %383 = zext i32 %376 to i64
-  %384 = getelementptr inbounds nuw i8, ptr %382, i64 %383
-  store i8 0, ptr %384, align 1, !tbaa !8
-  %385 = load i32, ptr %22, align 4, !tbaa !139
-  %386 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %385, i32 1), !nosanitize !45
-  %387 = extractvalue { i32, i1 } %386, 1, !nosanitize !45
-  br i1 %387, label %388, label %389, !prof !46, !nosanitize !45
+377:                                              ; preds = %368
+  %378 = extractvalue { i32, i1 } %374, 0, !nosanitize !45
+  %379 = load ptr, ptr %21, align 8, !tbaa !44
+  store i32 %378, ptr %22, align 4, !tbaa !139
+  %380 = zext i32 %373 to i64
+  %381 = getelementptr inbounds nuw i8, ptr %379, i64 %380
+  store i8 0, ptr %381, align 1, !tbaa !8
+  %382 = load i32, ptr %22, align 4, !tbaa !139
+  %383 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %382, i32 1), !nosanitize !45
+  %384 = extractvalue { i32, i1 } %383, 1, !nosanitize !45
+  br i1 %384, label %385, label %386, !prof !46, !nosanitize !45
 
-388:                                              ; preds = %380
+385:                                              ; preds = %377
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-389:                                              ; preds = %380
-  %390 = extractvalue { i32, i1 } %386, 0, !nosanitize !45
-  %391 = load ptr, ptr %21, align 8, !tbaa !44
-  store i32 %390, ptr %22, align 4, !tbaa !139
-  %392 = zext i32 %385 to i64
-  %393 = getelementptr inbounds nuw i8, ptr %391, i64 %392
-  store i8 %366, ptr %393, align 1, !tbaa !8
-  %394 = zext i8 %366 to i64
-  %395 = getelementptr inbounds nuw [4 x i8], ptr %23, i64 %394
-  %396 = load i16, ptr %395, align 4, !tbaa !8
-  %397 = add i16 %396, 1
-  store i16 %397, ptr %395, align 4, !tbaa !8
-  %398 = load i32, ptr %22, align 4, !tbaa !139
-  %399 = load i32, ptr %24, align 8, !tbaa !47
-  %400 = icmp eq i32 %398, %399
-  %401 = load i32, ptr %3, align 4, !tbaa !75
-  %402 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %401, i32 1), !nosanitize !45
-  %403 = extractvalue { i32, i1 } %402, 1, !nosanitize !45
-  br i1 %403, label %404, label %405, !prof !46, !nosanitize !45
+386:                                              ; preds = %377
+  %387 = extractvalue { i32, i1 } %383, 0, !nosanitize !45
+  %388 = load ptr, ptr %21, align 8, !tbaa !44
+  store i32 %387, ptr %22, align 4, !tbaa !139
+  %389 = zext i32 %382 to i64
+  %390 = getelementptr inbounds nuw i8, ptr %388, i64 %389
+  store i8 %363, ptr %390, align 1, !tbaa !8
+  %391 = zext i8 %363 to i64
+  %392 = getelementptr inbounds nuw [4 x i8], ptr %23, i64 %391
+  %393 = load i16, ptr %392, align 4, !tbaa !8
+  %394 = add i16 %393, 1
+  store i16 %394, ptr %392, align 4, !tbaa !8
+  %395 = load i32, ptr %22, align 4, !tbaa !139
+  %396 = load i32, ptr %24, align 8, !tbaa !47
+  %397 = icmp eq i32 %395, %396
+  %398 = load i32, ptr %3, align 4, !tbaa !75
+  %399 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %398, i32 1), !nosanitize !45
+  %400 = extractvalue { i32, i1 } %399, 1, !nosanitize !45
+  br i1 %400, label %401, label %402, !prof !46, !nosanitize !45
 
-404:                                              ; preds = %389
+401:                                              ; preds = %386
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-405:                                              ; preds = %389
-  %406 = extractvalue { i32, i1 } %402, 0, !nosanitize !45
-  store i32 %406, ptr %3, align 4, !tbaa !75
-  %407 = load i32, ptr %6, align 4, !tbaa !73
-  %408 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %407, i32 1), !nosanitize !45
-  %409 = extractvalue { i32, i1 } %408, 1, !nosanitize !45
-  br i1 %409, label %410, label %411, !prof !46, !nosanitize !45
+402:                                              ; preds = %386
+  %403 = extractvalue { i32, i1 } %399, 0, !nosanitize !45
+  store i32 %403, ptr %3, align 4, !tbaa !75
+  %404 = load i32, ptr %6, align 4, !tbaa !73
+  %405 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %404, i32 1), !nosanitize !45
+  %406 = extractvalue { i32, i1 } %405, 1, !nosanitize !45
+  br i1 %406, label %407, label %408, !prof !46, !nosanitize !45
 
-410:                                              ; preds = %405
+407:                                              ; preds = %402
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-411:                                              ; preds = %405
-  %412 = extractvalue { i32, i1 } %408, 0, !nosanitize !45
-  store i32 %412, ptr %6, align 4, !tbaa !73
-  br i1 %400, label %413, label %474
+408:                                              ; preds = %402
+  %409 = extractvalue { i32, i1 } %405, 0, !nosanitize !45
+  store i32 %409, ptr %6, align 4, !tbaa !73
+  br i1 %397, label %410, label %471
 
-413:                                              ; preds = %411
-  %414 = load i64, ptr %9, align 8, !tbaa !74
-  %415 = icmp sgt i64 %414, -1
-  br i1 %415, label %416, label %420
+410:                                              ; preds = %408
+  %411 = load i64, ptr %9, align 8, !tbaa !74
+  %412 = icmp sgt i64 %411, -1
+  br i1 %412, label %413, label %417
 
-416:                                              ; preds = %413
-  %417 = load ptr, ptr %7, align 8, !tbaa !34
-  %418 = and i64 %414, 4294967295
-  %419 = getelementptr inbounds nuw i8, ptr %417, i64 %418
-  br label %420
+413:                                              ; preds = %410
+  %414 = load ptr, ptr %7, align 8, !tbaa !34
+  %415 = and i64 %411, 4294967295
+  %416 = getelementptr inbounds nuw i8, ptr %414, i64 %415
+  br label %417
 
-420:                                              ; preds = %416, %413
-  %421 = phi ptr [ %419, %416 ], [ null, %413 ]
-  %422 = zext i32 %412 to i64
-  %423 = sub nsw i64 %422, %414
-  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %421, i64 noundef %423, i32 noundef 0) #11
-  %424 = load i32, ptr %6, align 4, !tbaa !73
-  %425 = zext i32 %424 to i64
-  store i64 %425, ptr %9, align 8, !tbaa !74
-  %426 = load ptr, ptr %0, align 8, !tbaa !20
-  %427 = getelementptr inbounds nuw i8, ptr %426, i64 56
-  %428 = load ptr, ptr %427, align 8, !tbaa !19
-  tail call void @_tr_flush_bits(ptr noundef %428) #11
-  %429 = getelementptr inbounds nuw i8, ptr %428, i64 40
-  %430 = load i64, ptr %429, align 8, !tbaa !57
-  %431 = getelementptr inbounds nuw i8, ptr %426, i64 32
-  %432 = load i32, ptr %431, align 8, !tbaa !107
-  %433 = zext i32 %432 to i64
-  %434 = tail call i64 @llvm.umin.i64(i64 %430, i64 %433)
-  %435 = trunc nuw i64 %434 to i32
-  %436 = icmp eq i64 %434, 0
-  br i1 %436, label %469, label %437
+417:                                              ; preds = %413, %410
+  %418 = phi ptr [ %416, %413 ], [ null, %410 ]
+  %419 = zext i32 %409 to i64
+  %420 = sub nsw i64 %419, %411
+  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %418, i64 noundef %420, i32 noundef 0) #11
+  %421 = load i32, ptr %6, align 4, !tbaa !73
+  %422 = zext i32 %421 to i64
+  store i64 %422, ptr %9, align 8, !tbaa !74
+  %423 = load ptr, ptr %0, align 8, !tbaa !20
+  %424 = getelementptr inbounds nuw i8, ptr %423, i64 56
+  %425 = load ptr, ptr %424, align 8, !tbaa !19
+  tail call void @_tr_flush_bits(ptr noundef %425) #11
+  %426 = getelementptr inbounds nuw i8, ptr %425, i64 40
+  %427 = load i64, ptr %426, align 8, !tbaa !57
+  %428 = getelementptr inbounds nuw i8, ptr %423, i64 32
+  %429 = load i32, ptr %428, align 8, !tbaa !107
+  %430 = zext i32 %429 to i64
+  %431 = tail call i64 @llvm.umin.i64(i64 %427, i64 %430)
+  %432 = trunc nuw i64 %431 to i32
+  %433 = icmp eq i64 %431, 0
+  br i1 %433, label %466, label %434
 
-437:                                              ; preds = %420
-  %438 = getelementptr inbounds nuw i8, ptr %426, i64 24
-  %439 = load ptr, ptr %438, align 8, !tbaa !106
-  %440 = getelementptr inbounds nuw i8, ptr %428, i64 32
-  %441 = load ptr, ptr %440, align 8, !tbaa !58
-  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %439, ptr align 1 %441, i64 %434, i1 false)
-  %442 = load ptr, ptr %438, align 8, !tbaa !106
-  %443 = getelementptr inbounds nuw i8, ptr %442, i64 %434
-  store ptr %443, ptr %438, align 8, !tbaa !106
-  %444 = load ptr, ptr %440, align 8, !tbaa !58
-  %445 = getelementptr inbounds nuw i8, ptr %444, i64 %434
-  store ptr %445, ptr %440, align 8, !tbaa !58
-  %446 = getelementptr inbounds nuw i8, ptr %426, i64 40
-  %447 = load i64, ptr %446, align 8, !tbaa !108
-  %448 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %447, i64 %434), !nosanitize !45
-  %449 = extractvalue { i64, i1 } %448, 1, !nosanitize !45
-  br i1 %449, label %450, label %451, !prof !46, !nosanitize !45
+434:                                              ; preds = %417
+  %435 = getelementptr inbounds nuw i8, ptr %423, i64 24
+  %436 = load ptr, ptr %435, align 8, !tbaa !106
+  %437 = getelementptr inbounds nuw i8, ptr %425, i64 32
+  %438 = load ptr, ptr %437, align 8, !tbaa !58
+  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %436, ptr align 1 %438, i64 %431, i1 false)
+  %439 = load ptr, ptr %435, align 8, !tbaa !106
+  %440 = getelementptr inbounds nuw i8, ptr %439, i64 %431
+  store ptr %440, ptr %435, align 8, !tbaa !106
+  %441 = load ptr, ptr %437, align 8, !tbaa !58
+  %442 = getelementptr inbounds nuw i8, ptr %441, i64 %431
+  store ptr %442, ptr %437, align 8, !tbaa !58
+  %443 = getelementptr inbounds nuw i8, ptr %423, i64 40
+  %444 = load i64, ptr %443, align 8, !tbaa !108
+  %445 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %444, i64 %431), !nosanitize !45
+  %446 = extractvalue { i64, i1 } %445, 1, !nosanitize !45
+  br i1 %446, label %447, label %448, !prof !46, !nosanitize !45
 
-450:                                              ; preds = %437
+447:                                              ; preds = %434
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-451:                                              ; preds = %437
-  %452 = extractvalue { i64, i1 } %448, 0, !nosanitize !45
-  store i64 %452, ptr %446, align 8, !tbaa !108
-  %453 = load i32, ptr %431, align 8, !tbaa !107
-  %454 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %453, i32 %435), !nosanitize !45
-  %455 = extractvalue { i32, i1 } %454, 1, !nosanitize !45
-  br i1 %455, label %456, label %457, !prof !46, !nosanitize !45
+448:                                              ; preds = %434
+  %449 = extractvalue { i64, i1 } %445, 0, !nosanitize !45
+  store i64 %449, ptr %443, align 8, !tbaa !108
+  %450 = load i32, ptr %428, align 8, !tbaa !107
+  %451 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %450, i32 %432), !nosanitize !45
+  %452 = extractvalue { i32, i1 } %451, 1, !nosanitize !45
+  br i1 %452, label %453, label %454, !prof !46, !nosanitize !45
 
-456:                                              ; preds = %451
+453:                                              ; preds = %448
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-457:                                              ; preds = %451
-  %458 = extractvalue { i32, i1 } %454, 0, !nosanitize !45
-  store i32 %458, ptr %431, align 8, !tbaa !107
-  %459 = load i64, ptr %429, align 8, !tbaa !57
-  %460 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %459, i64 %434), !nosanitize !45
-  %461 = extractvalue { i64, i1 } %460, 1, !nosanitize !45
-  br i1 %461, label %462, label %463, !prof !46, !nosanitize !45
+454:                                              ; preds = %448
+  %455 = extractvalue { i32, i1 } %451, 0, !nosanitize !45
+  store i32 %455, ptr %428, align 8, !tbaa !107
+  %456 = load i64, ptr %426, align 8, !tbaa !57
+  %457 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %456, i64 %431), !nosanitize !45
+  %458 = extractvalue { i64, i1 } %457, 1, !nosanitize !45
+  br i1 %458, label %459, label %460, !prof !46, !nosanitize !45
 
-462:                                              ; preds = %457
+459:                                              ; preds = %454
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-463:                                              ; preds = %457
-  %464 = extractvalue { i64, i1 } %460, 0, !nosanitize !45
-  store i64 %464, ptr %429, align 8, !tbaa !57
-  %465 = icmp eq i64 %464, 0
-  br i1 %465, label %466, label %469
+460:                                              ; preds = %454
+  %461 = extractvalue { i64, i1 } %457, 0, !nosanitize !45
+  store i64 %461, ptr %426, align 8, !tbaa !57
+  %462 = icmp eq i64 %461, 0
+  br i1 %462, label %463, label %466
 
-466:                                              ; preds = %463
-  %467 = getelementptr inbounds nuw i8, ptr %428, i64 16
-  %468 = load ptr, ptr %467, align 8, !tbaa !40
-  store ptr %468, ptr %440, align 8, !tbaa !58
-  br label %469
+463:                                              ; preds = %460
+  %464 = getelementptr inbounds nuw i8, ptr %425, i64 16
+  %465 = load ptr, ptr %464, align 8, !tbaa !40
+  store ptr %465, ptr %437, align 8, !tbaa !58
+  br label %466
 
-469:                                              ; preds = %466, %463, %420
-  %470 = load ptr, ptr %0, align 8, !tbaa !20
-  %471 = getelementptr inbounds nuw i8, ptr %470, i64 32
-  %472 = load i32, ptr %471, align 8, !tbaa !107
-  %473 = icmp eq i32 %472, 0
-  br i1 %473, label %606, label %474
+466:                                              ; preds = %463, %460, %417
+  %467 = load ptr, ptr %0, align 8, !tbaa !20
+  %468 = getelementptr inbounds nuw i8, ptr %467, i64 32
+  %469 = load i32, ptr %468, align 8, !tbaa !107
+  %470 = icmp eq i32 %469, 0
+  br i1 %470, label %603, label %471
 
-474:                                              ; preds = %469, %411
+471:                                              ; preds = %466, %408
   br label %25
 
-475:                                              ; preds = %359
+472:                                              ; preds = %356
   store i32 0, ptr %10, align 4, !tbaa !76
-  %476 = icmp eq i32 %1, 4
-  br i1 %476, label %477, label %540
+  %473 = icmp eq i32 %1, 4
+  br i1 %473, label %474, label %537
 
-477:                                              ; preds = %475
-  %478 = load i64, ptr %9, align 8, !tbaa !74
-  %479 = icmp sgt i64 %478, -1
-  br i1 %479, label %480, label %484
+474:                                              ; preds = %472
+  %475 = load i64, ptr %9, align 8, !tbaa !74
+  %476 = icmp sgt i64 %475, -1
+  br i1 %476, label %477, label %481
 
-480:                                              ; preds = %477
-  %481 = load ptr, ptr %7, align 8, !tbaa !34
-  %482 = and i64 %478, 4294967295
-  %483 = getelementptr inbounds nuw i8, ptr %481, i64 %482
-  br label %484
+477:                                              ; preds = %474
+  %478 = load ptr, ptr %7, align 8, !tbaa !34
+  %479 = and i64 %475, 4294967295
+  %480 = getelementptr inbounds nuw i8, ptr %478, i64 %479
+  br label %481
 
-484:                                              ; preds = %480, %477
-  %485 = phi ptr [ %483, %480 ], [ null, %477 ]
+481:                                              ; preds = %477, %474
+  %482 = phi ptr [ %480, %477 ], [ null, %474 ]
+  %483 = load i32, ptr %6, align 4, !tbaa !73
+  %484 = zext i32 %483 to i64
+  %485 = sub nsw i64 %484, %475
+  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %482, i64 noundef %485, i32 noundef 1) #11
   %486 = load i32, ptr %6, align 4, !tbaa !73
   %487 = zext i32 %486 to i64
-  %488 = sub nsw i64 %487, %478
-  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %485, i64 noundef %488, i32 noundef 1) #11
-  %489 = load i32, ptr %6, align 4, !tbaa !73
-  %490 = zext i32 %489 to i64
-  store i64 %490, ptr %9, align 8, !tbaa !74
-  %491 = load ptr, ptr %0, align 8, !tbaa !20
-  %492 = getelementptr inbounds nuw i8, ptr %491, i64 56
-  %493 = load ptr, ptr %492, align 8, !tbaa !19
-  tail call void @_tr_flush_bits(ptr noundef %493) #11
-  %494 = getelementptr inbounds nuw i8, ptr %493, i64 40
-  %495 = load i64, ptr %494, align 8, !tbaa !57
-  %496 = getelementptr inbounds nuw i8, ptr %491, i64 32
-  %497 = load i32, ptr %496, align 8, !tbaa !107
-  %498 = zext i32 %497 to i64
-  %499 = tail call i64 @llvm.umin.i64(i64 %495, i64 %498)
-  %500 = trunc nuw i64 %499 to i32
-  %501 = icmp eq i64 %499, 0
-  br i1 %501, label %534, label %502
+  store i64 %487, ptr %9, align 8, !tbaa !74
+  %488 = load ptr, ptr %0, align 8, !tbaa !20
+  %489 = getelementptr inbounds nuw i8, ptr %488, i64 56
+  %490 = load ptr, ptr %489, align 8, !tbaa !19
+  tail call void @_tr_flush_bits(ptr noundef %490) #11
+  %491 = getelementptr inbounds nuw i8, ptr %490, i64 40
+  %492 = load i64, ptr %491, align 8, !tbaa !57
+  %493 = getelementptr inbounds nuw i8, ptr %488, i64 32
+  %494 = load i32, ptr %493, align 8, !tbaa !107
+  %495 = zext i32 %494 to i64
+  %496 = tail call i64 @llvm.umin.i64(i64 %492, i64 %495)
+  %497 = trunc nuw i64 %496 to i32
+  %498 = icmp eq i64 %496, 0
+  br i1 %498, label %531, label %499
 
-502:                                              ; preds = %484
-  %503 = getelementptr inbounds nuw i8, ptr %491, i64 24
-  %504 = load ptr, ptr %503, align 8, !tbaa !106
-  %505 = getelementptr inbounds nuw i8, ptr %493, i64 32
-  %506 = load ptr, ptr %505, align 8, !tbaa !58
-  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %504, ptr align 1 %506, i64 %499, i1 false)
-  %507 = load ptr, ptr %503, align 8, !tbaa !106
-  %508 = getelementptr inbounds nuw i8, ptr %507, i64 %499
-  store ptr %508, ptr %503, align 8, !tbaa !106
-  %509 = load ptr, ptr %505, align 8, !tbaa !58
-  %510 = getelementptr inbounds nuw i8, ptr %509, i64 %499
-  store ptr %510, ptr %505, align 8, !tbaa !58
-  %511 = getelementptr inbounds nuw i8, ptr %491, i64 40
-  %512 = load i64, ptr %511, align 8, !tbaa !108
-  %513 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %512, i64 %499), !nosanitize !45
-  %514 = extractvalue { i64, i1 } %513, 1, !nosanitize !45
-  br i1 %514, label %515, label %516, !prof !46, !nosanitize !45
+499:                                              ; preds = %481
+  %500 = getelementptr inbounds nuw i8, ptr %488, i64 24
+  %501 = load ptr, ptr %500, align 8, !tbaa !106
+  %502 = getelementptr inbounds nuw i8, ptr %490, i64 32
+  %503 = load ptr, ptr %502, align 8, !tbaa !58
+  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %501, ptr align 1 %503, i64 %496, i1 false)
+  %504 = load ptr, ptr %500, align 8, !tbaa !106
+  %505 = getelementptr inbounds nuw i8, ptr %504, i64 %496
+  store ptr %505, ptr %500, align 8, !tbaa !106
+  %506 = load ptr, ptr %502, align 8, !tbaa !58
+  %507 = getelementptr inbounds nuw i8, ptr %506, i64 %496
+  store ptr %507, ptr %502, align 8, !tbaa !58
+  %508 = getelementptr inbounds nuw i8, ptr %488, i64 40
+  %509 = load i64, ptr %508, align 8, !tbaa !108
+  %510 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %509, i64 %496), !nosanitize !45
+  %511 = extractvalue { i64, i1 } %510, 1, !nosanitize !45
+  br i1 %511, label %512, label %513, !prof !46, !nosanitize !45
 
-515:                                              ; preds = %502
+512:                                              ; preds = %499
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-516:                                              ; preds = %502
-  %517 = extractvalue { i64, i1 } %513, 0, !nosanitize !45
-  store i64 %517, ptr %511, align 8, !tbaa !108
-  %518 = load i32, ptr %496, align 8, !tbaa !107
-  %519 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %518, i32 %500), !nosanitize !45
-  %520 = extractvalue { i32, i1 } %519, 1, !nosanitize !45
-  br i1 %520, label %521, label %522, !prof !46, !nosanitize !45
+513:                                              ; preds = %499
+  %514 = extractvalue { i64, i1 } %510, 0, !nosanitize !45
+  store i64 %514, ptr %508, align 8, !tbaa !108
+  %515 = load i32, ptr %493, align 8, !tbaa !107
+  %516 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %515, i32 %497), !nosanitize !45
+  %517 = extractvalue { i32, i1 } %516, 1, !nosanitize !45
+  br i1 %517, label %518, label %519, !prof !46, !nosanitize !45
 
-521:                                              ; preds = %516
+518:                                              ; preds = %513
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-522:                                              ; preds = %516
-  %523 = extractvalue { i32, i1 } %519, 0, !nosanitize !45
-  store i32 %523, ptr %496, align 8, !tbaa !107
-  %524 = load i64, ptr %494, align 8, !tbaa !57
-  %525 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %524, i64 %499), !nosanitize !45
-  %526 = extractvalue { i64, i1 } %525, 1, !nosanitize !45
-  br i1 %526, label %527, label %528, !prof !46, !nosanitize !45
+519:                                              ; preds = %513
+  %520 = extractvalue { i32, i1 } %516, 0, !nosanitize !45
+  store i32 %520, ptr %493, align 8, !tbaa !107
+  %521 = load i64, ptr %491, align 8, !tbaa !57
+  %522 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %521, i64 %496), !nosanitize !45
+  %523 = extractvalue { i64, i1 } %522, 1, !nosanitize !45
+  br i1 %523, label %524, label %525, !prof !46, !nosanitize !45
 
-527:                                              ; preds = %522
+524:                                              ; preds = %519
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-528:                                              ; preds = %522
-  %529 = extractvalue { i64, i1 } %525, 0, !nosanitize !45
-  store i64 %529, ptr %494, align 8, !tbaa !57
-  %530 = icmp eq i64 %529, 0
-  br i1 %530, label %531, label %534
+525:                                              ; preds = %519
+  %526 = extractvalue { i64, i1 } %522, 0, !nosanitize !45
+  store i64 %526, ptr %491, align 8, !tbaa !57
+  %527 = icmp eq i64 %526, 0
+  br i1 %527, label %528, label %531
 
-531:                                              ; preds = %528
-  %532 = getelementptr inbounds nuw i8, ptr %493, i64 16
-  %533 = load ptr, ptr %532, align 8, !tbaa !40
-  store ptr %533, ptr %505, align 8, !tbaa !58
-  br label %534
+528:                                              ; preds = %525
+  %529 = getelementptr inbounds nuw i8, ptr %490, i64 16
+  %530 = load ptr, ptr %529, align 8, !tbaa !40
+  store ptr %530, ptr %502, align 8, !tbaa !58
+  br label %531
 
-534:                                              ; preds = %531, %528, %484
-  %535 = load ptr, ptr %0, align 8, !tbaa !20
-  %536 = getelementptr inbounds nuw i8, ptr %535, i64 32
-  %537 = load i32, ptr %536, align 8, !tbaa !107
-  %538 = icmp eq i32 %537, 0
-  %539 = select i1 %538, i32 2, i32 3
-  br label %606
+531:                                              ; preds = %528, %525, %481
+  %532 = load ptr, ptr %0, align 8, !tbaa !20
+  %533 = getelementptr inbounds nuw i8, ptr %532, i64 32
+  %534 = load i32, ptr %533, align 8, !tbaa !107
+  %535 = icmp eq i32 %534, 0
+  %536 = select i1 %535, i32 2, i32 3
+  br label %603
 
-540:                                              ; preds = %475
-  %541 = load i32, ptr %22, align 4, !tbaa !139
-  %542 = icmp eq i32 %541, 0
-  br i1 %542, label %605, label %543
+537:                                              ; preds = %472
+  %538 = load i32, ptr %22, align 4, !tbaa !139
+  %539 = icmp eq i32 %538, 0
+  br i1 %539, label %602, label %540
+
+540:                                              ; preds = %537
+  %541 = load i64, ptr %9, align 8, !tbaa !74
+  %542 = icmp sgt i64 %541, -1
+  br i1 %542, label %543, label %547
 
 543:                                              ; preds = %540
-  %544 = load i64, ptr %9, align 8, !tbaa !74
-  %545 = icmp sgt i64 %544, -1
-  br i1 %545, label %546, label %550
+  %544 = load ptr, ptr %7, align 8, !tbaa !34
+  %545 = and i64 %541, 4294967295
+  %546 = getelementptr inbounds nuw i8, ptr %544, i64 %545
+  br label %547
 
-546:                                              ; preds = %543
-  %547 = load ptr, ptr %7, align 8, !tbaa !34
-  %548 = and i64 %544, 4294967295
-  %549 = getelementptr inbounds nuw i8, ptr %547, i64 %548
-  br label %550
-
-550:                                              ; preds = %546, %543
-  %551 = phi ptr [ %549, %546 ], [ null, %543 ]
+547:                                              ; preds = %543, %540
+  %548 = phi ptr [ %546, %543 ], [ null, %540 ]
+  %549 = load i32, ptr %6, align 4, !tbaa !73
+  %550 = zext i32 %549 to i64
+  %551 = sub nsw i64 %550, %541
+  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %548, i64 noundef %551, i32 noundef 0) #11
   %552 = load i32, ptr %6, align 4, !tbaa !73
   %553 = zext i32 %552 to i64
-  %554 = sub nsw i64 %553, %544
-  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %551, i64 noundef %554, i32 noundef 0) #11
-  %555 = load i32, ptr %6, align 4, !tbaa !73
-  %556 = zext i32 %555 to i64
-  store i64 %556, ptr %9, align 8, !tbaa !74
-  %557 = load ptr, ptr %0, align 8, !tbaa !20
-  %558 = getelementptr inbounds nuw i8, ptr %557, i64 56
-  %559 = load ptr, ptr %558, align 8, !tbaa !19
-  tail call void @_tr_flush_bits(ptr noundef %559) #11
-  %560 = getelementptr inbounds nuw i8, ptr %559, i64 40
-  %561 = load i64, ptr %560, align 8, !tbaa !57
-  %562 = getelementptr inbounds nuw i8, ptr %557, i64 32
-  %563 = load i32, ptr %562, align 8, !tbaa !107
-  %564 = zext i32 %563 to i64
-  %565 = tail call i64 @llvm.umin.i64(i64 %561, i64 %564)
-  %566 = trunc nuw i64 %565 to i32
-  %567 = icmp eq i64 %565, 0
-  br i1 %567, label %600, label %568
+  store i64 %553, ptr %9, align 8, !tbaa !74
+  %554 = load ptr, ptr %0, align 8, !tbaa !20
+  %555 = getelementptr inbounds nuw i8, ptr %554, i64 56
+  %556 = load ptr, ptr %555, align 8, !tbaa !19
+  tail call void @_tr_flush_bits(ptr noundef %556) #11
+  %557 = getelementptr inbounds nuw i8, ptr %556, i64 40
+  %558 = load i64, ptr %557, align 8, !tbaa !57
+  %559 = getelementptr inbounds nuw i8, ptr %554, i64 32
+  %560 = load i32, ptr %559, align 8, !tbaa !107
+  %561 = zext i32 %560 to i64
+  %562 = tail call i64 @llvm.umin.i64(i64 %558, i64 %561)
+  %563 = trunc nuw i64 %562 to i32
+  %564 = icmp eq i64 %562, 0
+  br i1 %564, label %597, label %565
 
-568:                                              ; preds = %550
-  %569 = getelementptr inbounds nuw i8, ptr %557, i64 24
-  %570 = load ptr, ptr %569, align 8, !tbaa !106
-  %571 = getelementptr inbounds nuw i8, ptr %559, i64 32
-  %572 = load ptr, ptr %571, align 8, !tbaa !58
-  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %570, ptr align 1 %572, i64 %565, i1 false)
-  %573 = load ptr, ptr %569, align 8, !tbaa !106
-  %574 = getelementptr inbounds nuw i8, ptr %573, i64 %565
-  store ptr %574, ptr %569, align 8, !tbaa !106
-  %575 = load ptr, ptr %571, align 8, !tbaa !58
-  %576 = getelementptr inbounds nuw i8, ptr %575, i64 %565
-  store ptr %576, ptr %571, align 8, !tbaa !58
-  %577 = getelementptr inbounds nuw i8, ptr %557, i64 40
-  %578 = load i64, ptr %577, align 8, !tbaa !108
-  %579 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %578, i64 %565), !nosanitize !45
-  %580 = extractvalue { i64, i1 } %579, 1, !nosanitize !45
-  br i1 %580, label %581, label %582, !prof !46, !nosanitize !45
+565:                                              ; preds = %547
+  %566 = getelementptr inbounds nuw i8, ptr %554, i64 24
+  %567 = load ptr, ptr %566, align 8, !tbaa !106
+  %568 = getelementptr inbounds nuw i8, ptr %556, i64 32
+  %569 = load ptr, ptr %568, align 8, !tbaa !58
+  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %567, ptr align 1 %569, i64 %562, i1 false)
+  %570 = load ptr, ptr %566, align 8, !tbaa !106
+  %571 = getelementptr inbounds nuw i8, ptr %570, i64 %562
+  store ptr %571, ptr %566, align 8, !tbaa !106
+  %572 = load ptr, ptr %568, align 8, !tbaa !58
+  %573 = getelementptr inbounds nuw i8, ptr %572, i64 %562
+  store ptr %573, ptr %568, align 8, !tbaa !58
+  %574 = getelementptr inbounds nuw i8, ptr %554, i64 40
+  %575 = load i64, ptr %574, align 8, !tbaa !108
+  %576 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %575, i64 %562), !nosanitize !45
+  %577 = extractvalue { i64, i1 } %576, 1, !nosanitize !45
+  br i1 %577, label %578, label %579, !prof !46, !nosanitize !45
 
-581:                                              ; preds = %568
+578:                                              ; preds = %565
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-582:                                              ; preds = %568
-  %583 = extractvalue { i64, i1 } %579, 0, !nosanitize !45
-  store i64 %583, ptr %577, align 8, !tbaa !108
-  %584 = load i32, ptr %562, align 8, !tbaa !107
-  %585 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %584, i32 %566), !nosanitize !45
-  %586 = extractvalue { i32, i1 } %585, 1, !nosanitize !45
-  br i1 %586, label %587, label %588, !prof !46, !nosanitize !45
+579:                                              ; preds = %565
+  %580 = extractvalue { i64, i1 } %576, 0, !nosanitize !45
+  store i64 %580, ptr %574, align 8, !tbaa !108
+  %581 = load i32, ptr %559, align 8, !tbaa !107
+  %582 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %581, i32 %563), !nosanitize !45
+  %583 = extractvalue { i32, i1 } %582, 1, !nosanitize !45
+  br i1 %583, label %584, label %585, !prof !46, !nosanitize !45
 
-587:                                              ; preds = %582
+584:                                              ; preds = %579
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-588:                                              ; preds = %582
-  %589 = extractvalue { i32, i1 } %585, 0, !nosanitize !45
-  store i32 %589, ptr %562, align 8, !tbaa !107
-  %590 = load i64, ptr %560, align 8, !tbaa !57
-  %591 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %590, i64 %565), !nosanitize !45
-  %592 = extractvalue { i64, i1 } %591, 1, !nosanitize !45
-  br i1 %592, label %593, label %594, !prof !46, !nosanitize !45
+585:                                              ; preds = %579
+  %586 = extractvalue { i32, i1 } %582, 0, !nosanitize !45
+  store i32 %586, ptr %559, align 8, !tbaa !107
+  %587 = load i64, ptr %557, align 8, !tbaa !57
+  %588 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %587, i64 %562), !nosanitize !45
+  %589 = extractvalue { i64, i1 } %588, 1, !nosanitize !45
+  br i1 %589, label %590, label %591, !prof !46, !nosanitize !45
 
-593:                                              ; preds = %588
+590:                                              ; preds = %585
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-594:                                              ; preds = %588
-  %595 = extractvalue { i64, i1 } %591, 0, !nosanitize !45
-  store i64 %595, ptr %560, align 8, !tbaa !57
-  %596 = icmp eq i64 %595, 0
-  br i1 %596, label %597, label %600
+591:                                              ; preds = %585
+  %592 = extractvalue { i64, i1 } %588, 0, !nosanitize !45
+  store i64 %592, ptr %557, align 8, !tbaa !57
+  %593 = icmp eq i64 %592, 0
+  br i1 %593, label %594, label %597
 
-597:                                              ; preds = %594
-  %598 = getelementptr inbounds nuw i8, ptr %559, i64 16
-  %599 = load ptr, ptr %598, align 8, !tbaa !40
-  store ptr %599, ptr %571, align 8, !tbaa !58
-  br label %600
+594:                                              ; preds = %591
+  %595 = getelementptr inbounds nuw i8, ptr %556, i64 16
+  %596 = load ptr, ptr %595, align 8, !tbaa !40
+  store ptr %596, ptr %568, align 8, !tbaa !58
+  br label %597
 
-600:                                              ; preds = %597, %594, %550
-  %601 = load ptr, ptr %0, align 8, !tbaa !20
-  %602 = getelementptr inbounds nuw i8, ptr %601, i64 32
-  %603 = load i32, ptr %602, align 8, !tbaa !107
-  %604 = icmp eq i32 %603, 0
-  br i1 %604, label %606, label %605
+597:                                              ; preds = %594, %591, %547
+  %598 = load ptr, ptr %0, align 8, !tbaa !20
+  %599 = getelementptr inbounds nuw i8, ptr %598, i64 32
+  %600 = load i32, ptr %599, align 8, !tbaa !107
+  %601 = icmp eq i32 %600, 0
+  br i1 %601, label %603, label %602
 
-605:                                              ; preds = %600, %540
-  br label %606
+602:                                              ; preds = %597, %537
+  br label %603
 
-606:                                              ; preds = %605, %600, %534, %469, %359
-  %607 = phi i32 [ 0, %359 ], [ %539, %534 ], [ 0, %600 ], [ 1, %605 ], [ 0, %469 ]
-  ret i32 %607
+603:                                              ; preds = %602, %597, %531, %466, %356
+  %604 = phi i32 [ 0, %356 ], [ %536, %531 ], [ 0, %597 ], [ 1, %602 ], [ 0, %466 ]
+  ret i32 %604
 }
 
 ; Function Attrs: nounwind uwtable
@@ -9409,7 +9361,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
   %27 = getelementptr inbounds nuw i8, ptr %0, i64 2504
   br label %28
 
-28:                                               ; preds = %516, %2
+28:                                               ; preds = %513, %2
   %29 = load i32, ptr %3, align 4, !tbaa !75
   %30 = icmp ult i32 %29, 259
   br i1 %30, label %33, label %31
@@ -9417,15 +9369,15 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
 31:                                               ; preds = %28
   store i32 0, ptr %4, align 8, !tbaa !78
   %32 = load i32, ptr %7, align 4, !tbaa !73
-  br label %370
+  br label %367
 
 33:                                               ; preds = %28
   %34 = load i32, ptr %5, align 8, !tbaa !32
   %35 = zext i32 %34 to i64
   br label %36
 
-36:                                               ; preds = %315, %33
-  %37 = phi i32 [ %242, %315 ], [ %29, %33 ]
+36:                                               ; preds = %312, %33
+  %37 = phi i32 [ %239, %312 ], [ %29, %33 ]
   %38 = load i64, ptr %6, align 8, !tbaa !61
   %39 = zext nneg i32 %37 to i64
   %40 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %38, i64 %39), !nosanitize !45
@@ -9678,7 +9630,7 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
   %194 = getelementptr inbounds nuw i8, ptr %193, i64 8
   %195 = load i32, ptr %194, align 8, !tbaa !81
   %196 = icmp eq i32 %195, 0
-  br i1 %196, label %320, label %197
+  br i1 %196, label %317, label %197
 
 197:                                              ; preds = %189
   %198 = load ptr, ptr %8, align 8, !tbaa !34
@@ -9688,925 +9640,917 @@ define internal fastcc range(i32 0, 4) i32 @deflate_rle(ptr noundef %0, i32 noun
   %202 = getelementptr inbounds nuw i8, ptr %200, i64 %201
   %203 = tail call i32 @llvm.umin.i32(i32 %195, i32 %192)
   %204 = icmp eq i32 %192, 0
-  br i1 %204, label %236, label %205
+  br i1 %204, label %233, label %205
 
 205:                                              ; preds = %197
   %206 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %195, i32 %203), !nosanitize !45
-  %207 = extractvalue { i32, i1 } %206, 1, !nosanitize !45
-  br i1 %207, label %208, label %209, !prof !46, !nosanitize !45
-
-208:                                              ; preds = %205
-  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
-  unreachable, !nosanitize !45
-
-209:                                              ; preds = %205
-  %210 = extractvalue { i32, i1 } %206, 0, !nosanitize !45
-  store i32 %210, ptr %194, align 8, !tbaa !81
-  %211 = load ptr, ptr %193, align 8, !tbaa !82
-  %212 = zext i32 %203 to i64
-  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %202, ptr align 1 %211, i64 %212, i1 false)
-  %213 = getelementptr inbounds nuw i8, ptr %193, i64 56
-  %214 = load ptr, ptr %213, align 8, !tbaa !19
-  %215 = getelementptr inbounds nuw i8, ptr %214, i64 48
-  %216 = load i32, ptr %215, align 8, !tbaa !30
-  switch i32 %216, label %225 [
-    i32 1, label %217
-    i32 2, label %221
+  %207 = extractvalue { i32, i1 } %206, 0, !nosanitize !45
+  store i32 %207, ptr %194, align 8, !tbaa !81
+  %208 = load ptr, ptr %193, align 8, !tbaa !82
+  %209 = zext i32 %203 to i64
+  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %202, ptr align 1 %208, i64 %209, i1 false)
+  %210 = getelementptr inbounds nuw i8, ptr %193, i64 56
+  %211 = load ptr, ptr %210, align 8, !tbaa !19
+  %212 = getelementptr inbounds nuw i8, ptr %211, i64 48
+  %213 = load i32, ptr %212, align 8, !tbaa !30
+  switch i32 %213, label %222 [
+    i32 1, label %214
+    i32 2, label %218
   ]
 
-217:                                              ; preds = %209
-  %218 = getelementptr inbounds nuw i8, ptr %193, i64 96
-  %219 = load i64, ptr %218, align 8, !tbaa !59
-  %220 = tail call i64 @adler32(i64 noundef %219, ptr noundef %202, i32 noundef %203) #11
-  store i64 %220, ptr %218, align 8, !tbaa !59
-  br label %225
+214:                                              ; preds = %205
+  %215 = getelementptr inbounds nuw i8, ptr %193, i64 96
+  %216 = load i64, ptr %215, align 8, !tbaa !59
+  %217 = tail call i64 @adler32(i64 noundef %216, ptr noundef %202, i32 noundef %203) #11
+  store i64 %217, ptr %215, align 8, !tbaa !59
+  br label %222
 
-221:                                              ; preds = %209
-  %222 = getelementptr inbounds nuw i8, ptr %193, i64 96
-  %223 = load i64, ptr %222, align 8, !tbaa !59
-  %224 = tail call i64 @crc32(i64 noundef %223, ptr noundef %202, i32 noundef %203) #11
-  store i64 %224, ptr %222, align 8, !tbaa !59
-  br label %225
+218:                                              ; preds = %205
+  %219 = getelementptr inbounds nuw i8, ptr %193, i64 96
+  %220 = load i64, ptr %219, align 8, !tbaa !59
+  %221 = tail call i64 @crc32(i64 noundef %220, ptr noundef %202, i32 noundef %203) #11
+  store i64 %221, ptr %219, align 8, !tbaa !59
+  br label %222
 
-225:                                              ; preds = %221, %217, %209
-  %226 = load ptr, ptr %193, align 8, !tbaa !82
-  %227 = getelementptr inbounds nuw i8, ptr %226, i64 %212
-  store ptr %227, ptr %193, align 8, !tbaa !82
-  %228 = getelementptr inbounds nuw i8, ptr %193, i64 16
-  %229 = load i64, ptr %228, align 8, !tbaa !55
-  %230 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %229, i64 %212), !nosanitize !45
-  %231 = extractvalue { i64, i1 } %230, 1, !nosanitize !45
-  br i1 %231, label %232, label %233, !prof !46, !nosanitize !45
+222:                                              ; preds = %218, %214, %205
+  %223 = load ptr, ptr %193, align 8, !tbaa !82
+  %224 = getelementptr inbounds nuw i8, ptr %223, i64 %209
+  store ptr %224, ptr %193, align 8, !tbaa !82
+  %225 = getelementptr inbounds nuw i8, ptr %193, i64 16
+  %226 = load i64, ptr %225, align 8, !tbaa !55
+  %227 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %226, i64 %209), !nosanitize !45
+  %228 = extractvalue { i64, i1 } %227, 1, !nosanitize !45
+  br i1 %228, label %229, label %230, !prof !46, !nosanitize !45
 
-232:                                              ; preds = %225
+229:                                              ; preds = %222
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-233:                                              ; preds = %225
-  %234 = extractvalue { i64, i1 } %230, 0, !nosanitize !45
-  store i64 %234, ptr %228, align 8, !tbaa !55
-  %235 = load i32, ptr %3, align 4, !tbaa !75
-  br label %236
+230:                                              ; preds = %222
+  %231 = extractvalue { i64, i1 } %227, 0, !nosanitize !45
+  store i64 %231, ptr %225, align 8, !tbaa !55
+  %232 = load i32, ptr %3, align 4, !tbaa !75
+  br label %233
 
-236:                                              ; preds = %233, %197
-  %237 = phi i32 [ %190, %197 ], [ %235, %233 ]
-  %238 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %237, i32 %203), !nosanitize !45
-  %239 = extractvalue { i32, i1 } %238, 1, !nosanitize !45
-  br i1 %239, label %240, label %241, !prof !46, !nosanitize !45
+233:                                              ; preds = %230, %197
+  %234 = phi i32 [ %190, %197 ], [ %232, %230 ]
+  %235 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %234, i32 %203), !nosanitize !45
+  %236 = extractvalue { i32, i1 } %235, 1, !nosanitize !45
+  br i1 %236, label %237, label %238, !prof !46, !nosanitize !45
 
-240:                                              ; preds = %236
+237:                                              ; preds = %233
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-241:                                              ; preds = %236
-  %242 = extractvalue { i32, i1 } %238, 0, !nosanitize !45
-  store i32 %242, ptr %3, align 4, !tbaa !75
-  %243 = load i32, ptr %11, align 4, !tbaa !76
-  %244 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %242, i32 %243), !nosanitize !45
-  %245 = extractvalue { i32, i1 } %244, 1, !nosanitize !45
-  br i1 %245, label %246, label %247, !prof !46, !nosanitize !45
+238:                                              ; preds = %233
+  %239 = extractvalue { i32, i1 } %235, 0, !nosanitize !45
+  store i32 %239, ptr %3, align 4, !tbaa !75
+  %240 = load i32, ptr %11, align 4, !tbaa !76
+  %241 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %239, i32 %240), !nosanitize !45
+  %242 = extractvalue { i32, i1 } %241, 1, !nosanitize !45
+  br i1 %242, label %243, label %244, !prof !46, !nosanitize !45
 
-246:                                              ; preds = %241
+243:                                              ; preds = %238
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-247:                                              ; preds = %241
-  %248 = extractvalue { i32, i1 } %244, 0, !nosanitize !45
-  %249 = icmp ugt i32 %248, 2
-  br i1 %249, label %250, label %313
+244:                                              ; preds = %238
+  %245 = extractvalue { i32, i1 } %241, 0, !nosanitize !45
+  %246 = icmp ugt i32 %245, 2
+  br i1 %246, label %247, label %310
 
-250:                                              ; preds = %247
-  %251 = load i32, ptr %7, align 4, !tbaa !73
-  %252 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %251, i32 %243), !nosanitize !45
-  %253 = extractvalue { i32, i1 } %252, 0, !nosanitize !45
-  %254 = extractvalue { i32, i1 } %252, 1, !nosanitize !45
-  br i1 %254, label %255, label %256, !prof !46, !nosanitize !45
+247:                                              ; preds = %244
+  %248 = load i32, ptr %7, align 4, !tbaa !73
+  %249 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %248, i32 %240), !nosanitize !45
+  %250 = extractvalue { i32, i1 } %249, 0, !nosanitize !45
+  %251 = extractvalue { i32, i1 } %249, 1, !nosanitize !45
+  br i1 %251, label %252, label %253, !prof !46, !nosanitize !45
 
-255:                                              ; preds = %250
+252:                                              ; preds = %247
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-256:                                              ; preds = %250
-  %257 = load ptr, ptr %8, align 8, !tbaa !34
-  %258 = zext i32 %253 to i64
-  %259 = getelementptr inbounds nuw i8, ptr %257, i64 %258
-  %260 = load i8, ptr %259, align 1, !tbaa !8
-  %261 = zext i8 %260 to i32
-  store i32 %261, ptr %16, align 8, !tbaa !80
-  %262 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %253, i32 1), !nosanitize !45
-  %263 = extractvalue { i32, i1 } %262, 1, !nosanitize !45
-  br i1 %263, label %264, label %265, !prof !46, !nosanitize !45
+253:                                              ; preds = %247
+  %254 = load ptr, ptr %8, align 8, !tbaa !34
+  %255 = zext i32 %250 to i64
+  %256 = getelementptr inbounds nuw i8, ptr %254, i64 %255
+  %257 = load i8, ptr %256, align 1, !tbaa !8
+  %258 = zext i8 %257 to i32
+  store i32 %258, ptr %16, align 8, !tbaa !80
+  %259 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %250, i32 1), !nosanitize !45
+  %260 = extractvalue { i32, i1 } %259, 1, !nosanitize !45
+  br i1 %260, label %261, label %262, !prof !46, !nosanitize !45
 
-264:                                              ; preds = %256
+261:                                              ; preds = %253
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-265:                                              ; preds = %256
-  %266 = extractvalue { i32, i1 } %262, 0, !nosanitize !45
-  %267 = load i32, ptr %17, align 8, !tbaa !53
-  %268 = shl i32 %261, %267
-  %269 = zext i32 %266 to i64
-  %270 = getelementptr inbounds nuw i8, ptr %257, i64 %269
-  %271 = load i8, ptr %270, align 1, !tbaa !8
-  %272 = zext i8 %271 to i32
-  %273 = xor i32 %268, %272
-  %274 = load i32, ptr %18, align 4, !tbaa !52
-  %275 = and i32 %273, %274
-  store i32 %275, ptr %16, align 8, !tbaa !80
-  br label %276
+262:                                              ; preds = %253
+  %263 = extractvalue { i32, i1 } %259, 0, !nosanitize !45
+  %264 = load i32, ptr %17, align 8, !tbaa !53
+  %265 = shl i32 %258, %264
+  %266 = zext i32 %263 to i64
+  %267 = getelementptr inbounds nuw i8, ptr %254, i64 %266
+  %268 = load i8, ptr %267, align 1, !tbaa !8
+  %269 = zext i8 %268 to i32
+  %270 = xor i32 %265, %269
+  %271 = load i32, ptr %18, align 4, !tbaa !52
+  %272 = and i32 %270, %271
+  store i32 %272, ptr %16, align 8, !tbaa !80
+  br label %273
 
-276:                                              ; preds = %309, %265
-  %277 = phi i32 [ %275, %265 ], [ %294, %309 ]
-  %278 = phi i32 [ %243, %265 ], [ %305, %309 ]
-  %279 = phi i32 [ %253, %265 ], [ %310, %309 ]
-  %280 = icmp eq i32 %278, 0
-  br i1 %280, label %313, label %281
+273:                                              ; preds = %306, %262
+  %274 = phi i32 [ %272, %262 ], [ %291, %306 ]
+  %275 = phi i32 [ %240, %262 ], [ %302, %306 ]
+  %276 = phi i32 [ %250, %262 ], [ %307, %306 ]
+  %277 = icmp eq i32 %275, 0
+  br i1 %277, label %310, label %278
 
-281:                                              ; preds = %276
-  %282 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %279, i32 3), !nosanitize !45
-  %283 = extractvalue { i32, i1 } %282, 1, !nosanitize !45
-  br i1 %283, label %284, label %285, !prof !46, !nosanitize !45
+278:                                              ; preds = %273
+  %279 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %276, i32 3), !nosanitize !45
+  %280 = extractvalue { i32, i1 } %279, 1, !nosanitize !45
+  br i1 %280, label %281, label %282, !prof !46, !nosanitize !45
 
-284:                                              ; preds = %281
+281:                                              ; preds = %278
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-285:                                              ; preds = %281
-  %286 = shl i32 %277, %267
-  %287 = extractvalue { i32, i1 } %282, 0, !nosanitize !45
-  %288 = add i32 %287, -1
-  %289 = zext i32 %288 to i64
-  %290 = getelementptr inbounds nuw i8, ptr %257, i64 %289
-  %291 = load i8, ptr %290, align 1, !tbaa !8
-  %292 = zext i8 %291 to i32
-  %293 = xor i32 %286, %292
-  %294 = and i32 %293, %274
-  store i32 %294, ptr %16, align 8, !tbaa !80
-  %295 = load ptr, ptr %13, align 8, !tbaa !37
-  %296 = zext i32 %294 to i64
-  %297 = getelementptr inbounds nuw [2 x i8], ptr %295, i64 %296
-  %298 = load i16, ptr %297, align 2, !tbaa !62
-  %299 = load ptr, ptr %14, align 8, !tbaa !35
-  %300 = load i32, ptr %19, align 8, !tbaa !33
-  %301 = and i32 %300, %279
-  %302 = zext i32 %301 to i64
-  %303 = getelementptr inbounds nuw [2 x i8], ptr %299, i64 %302
-  store i16 %298, ptr %303, align 2, !tbaa !62
-  %304 = trunc i32 %279 to i16
-  store i16 %304, ptr %297, align 2, !tbaa !62
-  %305 = add i32 %278, -1
-  store i32 %305, ptr %11, align 4, !tbaa !76
-  %306 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %242, i32 %305), !nosanitize !45
-  %307 = extractvalue { i32, i1 } %306, 1, !nosanitize !45
-  br i1 %307, label %308, label %309, !prof !46, !nosanitize !45
+282:                                              ; preds = %278
+  %283 = shl i32 %274, %264
+  %284 = extractvalue { i32, i1 } %279, 0, !nosanitize !45
+  %285 = add i32 %284, -1
+  %286 = zext i32 %285 to i64
+  %287 = getelementptr inbounds nuw i8, ptr %254, i64 %286
+  %288 = load i8, ptr %287, align 1, !tbaa !8
+  %289 = zext i8 %288 to i32
+  %290 = xor i32 %283, %289
+  %291 = and i32 %290, %271
+  store i32 %291, ptr %16, align 8, !tbaa !80
+  %292 = load ptr, ptr %13, align 8, !tbaa !37
+  %293 = zext i32 %291 to i64
+  %294 = getelementptr inbounds nuw [2 x i8], ptr %292, i64 %293
+  %295 = load i16, ptr %294, align 2, !tbaa !62
+  %296 = load ptr, ptr %14, align 8, !tbaa !35
+  %297 = load i32, ptr %19, align 8, !tbaa !33
+  %298 = and i32 %297, %276
+  %299 = zext i32 %298 to i64
+  %300 = getelementptr inbounds nuw [2 x i8], ptr %296, i64 %299
+  store i16 %295, ptr %300, align 2, !tbaa !62
+  %301 = trunc i32 %276 to i16
+  store i16 %301, ptr %294, align 2, !tbaa !62
+  %302 = add i32 %275, -1
+  store i32 %302, ptr %11, align 4, !tbaa !76
+  %303 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %239, i32 %302), !nosanitize !45
+  %304 = extractvalue { i32, i1 } %303, 1, !nosanitize !45
+  br i1 %304, label %305, label %306, !prof !46, !nosanitize !45
 
-308:                                              ; preds = %285
+305:                                              ; preds = %282
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-309:                                              ; preds = %285
-  %310 = add nuw i32 %279, 1
-  %311 = extractvalue { i32, i1 } %306, 0, !nosanitize !45
-  %312 = icmp ult i32 %311, 3
-  br i1 %312, label %313, label %276, !llvm.loop !91
+306:                                              ; preds = %282
+  %307 = add nuw i32 %276, 1
+  %308 = extractvalue { i32, i1 } %303, 0, !nosanitize !45
+  %309 = icmp ult i32 %308, 3
+  br i1 %309, label %310, label %273, !llvm.loop !91
 
-313:                                              ; preds = %309, %276, %247
-  %314 = icmp ult i32 %242, 262
-  br i1 %314, label %315, label %320
+310:                                              ; preds = %306, %273, %244
+  %311 = icmp ult i32 %239, 262
+  br i1 %311, label %312, label %317
 
-315:                                              ; preds = %313
-  %316 = load ptr, ptr %0, align 8, !tbaa !20
-  %317 = getelementptr inbounds nuw i8, ptr %316, i64 8
-  %318 = load i32, ptr %317, align 8, !tbaa !81
-  %319 = icmp eq i32 %318, 0
-  br i1 %319, label %320, label %36, !llvm.loop !92
+312:                                              ; preds = %310
+  %313 = load ptr, ptr %0, align 8, !tbaa !20
+  %314 = getelementptr inbounds nuw i8, ptr %313, i64 8
+  %315 = load i32, ptr %314, align 8, !tbaa !81
+  %316 = icmp eq i32 %315, 0
+  br i1 %316, label %317, label %36, !llvm.loop !92
 
-320:                                              ; preds = %315, %313, %189
-  %321 = phi i32 [ %242, %315 ], [ %242, %313 ], [ %190, %189 ]
-  %322 = load i64, ptr %20, align 8, !tbaa !38
-  %323 = load i64, ptr %6, align 8, !tbaa !61
-  %324 = icmp ult i64 %322, %323
-  br i1 %324, label %325, label %361
+317:                                              ; preds = %312, %310, %189
+  %318 = phi i32 [ %239, %312 ], [ %239, %310 ], [ %190, %189 ]
+  %319 = load i64, ptr %20, align 8, !tbaa !38
+  %320 = load i64, ptr %6, align 8, !tbaa !61
+  %321 = icmp ult i64 %319, %320
+  br i1 %321, label %322, label %358
 
-325:                                              ; preds = %320
-  %326 = load i32, ptr %7, align 4, !tbaa !73
-  %327 = zext i32 %326 to i64
-  %328 = zext i32 %321 to i64
-  %329 = add nuw nsw i64 %328, %327
-  %330 = icmp ult i64 %322, %329
-  br i1 %330, label %331, label %341
+322:                                              ; preds = %317
+  %323 = load i32, ptr %7, align 4, !tbaa !73
+  %324 = zext i32 %323 to i64
+  %325 = zext i32 %318 to i64
+  %326 = add nuw nsw i64 %325, %324
+  %327 = icmp ult i64 %319, %326
+  br i1 %327, label %328, label %338
 
-331:                                              ; preds = %325
-  %332 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %323, i64 %329), !nosanitize !45
-  %333 = extractvalue { i64, i1 } %332, 1, !nosanitize !45
-  br i1 %333, label %334, label %335, !prof !46, !nosanitize !45
+328:                                              ; preds = %322
+  %329 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %320, i64 %326), !nosanitize !45
+  %330 = extractvalue { i64, i1 } %329, 1, !nosanitize !45
+  br i1 %330, label %331, label %332, !prof !46, !nosanitize !45
 
-334:                                              ; preds = %331
+331:                                              ; preds = %328
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-335:                                              ; preds = %331
-  %336 = extractvalue { i64, i1 } %332, 0, !nosanitize !45
-  %337 = tail call i64 @llvm.umin.i64(i64 %336, i64 258)
-  %338 = load ptr, ptr %8, align 8, !tbaa !34
-  %339 = getelementptr inbounds nuw i8, ptr %338, i64 %329
-  tail call void @llvm.memset.p0.i64(ptr nonnull align 1 %339, i8 0, i64 %337, i1 false)
-  %340 = add nuw nsw i64 %337, %329
+332:                                              ; preds = %328
+  %333 = extractvalue { i64, i1 } %329, 0, !nosanitize !45
+  %334 = tail call i64 @llvm.umin.i64(i64 %333, i64 258)
+  %335 = load ptr, ptr %8, align 8, !tbaa !34
+  %336 = getelementptr inbounds nuw i8, ptr %335, i64 %326
+  tail call void @llvm.memset.p0.i64(ptr nonnull align 1 %336, i8 0, i64 %334, i1 false)
+  %337 = add nuw nsw i64 %334, %326
+  br label %355
+
+338:                                              ; preds = %322
+  %339 = add nuw nsw i64 %326, 258
+  %340 = icmp ult i64 %319, %339
+  br i1 %340, label %341, label %358
+
+341:                                              ; preds = %338
+  %342 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %320, i64 %319), !nosanitize !45
+  %343 = sub nuw nsw i64 %339, %319
+  %344 = extractvalue { i64, i1 } %342, 0, !nosanitize !45
+  %345 = tail call i64 @llvm.umin.i64(i64 %343, i64 %344)
+  %346 = load ptr, ptr %8, align 8, !tbaa !34
+  %347 = getelementptr inbounds nuw i8, ptr %346, i64 %319
+  %348 = and i64 %345, 4294967295
+  tail call void @llvm.memset.p0.i64(ptr align 1 %347, i8 0, i64 %348, i1 false)
+  %349 = load i64, ptr %20, align 8, !tbaa !38
+  %350 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %349, i64 %345), !nosanitize !45
+  %351 = extractvalue { i64, i1 } %350, 1, !nosanitize !45
+  br i1 %351, label %352, label %353, !prof !46, !nosanitize !45
+
+352:                                              ; preds = %341
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
+  unreachable, !nosanitize !45
+
+353:                                              ; preds = %341
+  %354 = extractvalue { i64, i1 } %350, 0, !nosanitize !45
+  br label %355
+
+355:                                              ; preds = %353, %332
+  %356 = phi i64 [ %337, %332 ], [ %354, %353 ]
+  store i64 %356, ptr %20, align 8, !tbaa !38
+  %357 = load i32, ptr %3, align 4, !tbaa !75
   br label %358
 
-341:                                              ; preds = %325
-  %342 = add nuw nsw i64 %329, 258
-  %343 = icmp ult i64 %322, %342
-  br i1 %343, label %344, label %361
+358:                                              ; preds = %355, %338, %317
+  %359 = phi i32 [ %318, %317 ], [ %318, %338 ], [ %357, %355 ]
+  %360 = icmp ult i32 %359, 259
+  %361 = and i1 %21, %360
+  br i1 %361, label %762, label %362
 
-344:                                              ; preds = %341
-  %345 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %323, i64 %322), !nosanitize !45
-  %346 = sub nuw nsw i64 %342, %322
-  %347 = extractvalue { i64, i1 } %345, 0, !nosanitize !45
-  %348 = tail call i64 @llvm.umin.i64(i64 %346, i64 %347)
-  %349 = load ptr, ptr %8, align 8, !tbaa !34
-  %350 = getelementptr inbounds nuw i8, ptr %349, i64 %322
-  %351 = and i64 %348, 4294967295
-  tail call void @llvm.memset.p0.i64(ptr align 1 %350, i8 0, i64 %351, i1 false)
-  %352 = load i64, ptr %20, align 8, !tbaa !38
-  %353 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %352, i64 %348), !nosanitize !45
-  %354 = extractvalue { i64, i1 } %353, 1, !nosanitize !45
-  br i1 %354, label %355, label %356, !prof !46, !nosanitize !45
+362:                                              ; preds = %358
+  %363 = icmp eq i32 %359, 0
+  br i1 %363, label %631, label %364
 
-355:                                              ; preds = %344
-  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
-  unreachable, !nosanitize !45
-
-356:                                              ; preds = %344
-  %357 = extractvalue { i64, i1 } %353, 0, !nosanitize !45
-  br label %358
-
-358:                                              ; preds = %356, %335
-  %359 = phi i64 [ %340, %335 ], [ %357, %356 ]
-  store i64 %359, ptr %20, align 8, !tbaa !38
-  %360 = load i32, ptr %3, align 4, !tbaa !75
-  br label %361
-
-361:                                              ; preds = %358, %341, %320
-  %362 = phi i32 [ %321, %320 ], [ %321, %341 ], [ %360, %358 ]
-  %363 = icmp ult i32 %362, 259
-  %364 = and i1 %21, %363
-  br i1 %364, label %765, label %365
-
-365:                                              ; preds = %361
-  %366 = icmp eq i32 %362, 0
-  br i1 %366, label %634, label %367
-
-367:                                              ; preds = %365
+364:                                              ; preds = %362
   store i32 0, ptr %4, align 8, !tbaa !78
-  %368 = icmp ugt i32 %362, 2
-  %369 = load i32, ptr %7, align 4, !tbaa !73
-  br i1 %368, label %370, label %517
+  %365 = icmp ugt i32 %359, 2
+  %366 = load i32, ptr %7, align 4, !tbaa !73
+  br i1 %365, label %367, label %514
 
-370:                                              ; preds = %367, %31
-  %371 = phi i32 [ %32, %31 ], [ %369, %367 ]
-  %372 = phi i32 [ %29, %31 ], [ %362, %367 ]
-  %373 = icmp eq i32 %371, 0
-  br i1 %373, label %517, label %374
+367:                                              ; preds = %364, %31
+  %368 = phi i32 [ %32, %31 ], [ %366, %364 ]
+  %369 = phi i32 [ %29, %31 ], [ %359, %364 ]
+  %370 = icmp eq i32 %368, 0
+  br i1 %370, label %514, label %371
 
-374:                                              ; preds = %370
-  %375 = load ptr, ptr %8, align 8, !tbaa !34
-  %376 = zext i32 %371 to i64
-  %377 = getelementptr inbounds nuw i8, ptr %375, i64 %376
-  %378 = getelementptr inbounds i8, ptr %377, i64 -1
-  %379 = load i8, ptr %378, align 1, !tbaa !8
-  %380 = load i8, ptr %377, align 1, !tbaa !8
-  %381 = icmp eq i8 %379, %380
-  br i1 %381, label %382, label %517
+371:                                              ; preds = %367
+  %372 = load ptr, ptr %8, align 8, !tbaa !34
+  %373 = zext i32 %368 to i64
+  %374 = getelementptr inbounds nuw i8, ptr %372, i64 %373
+  %375 = getelementptr inbounds i8, ptr %374, i64 -1
+  %376 = load i8, ptr %375, align 1, !tbaa !8
+  %377 = load i8, ptr %374, align 1, !tbaa !8
+  %378 = icmp eq i8 %376, %377
+  br i1 %378, label %379, label %514
 
-382:                                              ; preds = %374
-  %383 = getelementptr inbounds nuw i8, ptr %377, i64 1
-  %384 = load i8, ptr %383, align 1, !tbaa !8
-  %385 = icmp eq i8 %379, %384
-  br i1 %385, label %386, label %517
+379:                                              ; preds = %371
+  %380 = getelementptr inbounds nuw i8, ptr %374, i64 1
+  %381 = load i8, ptr %380, align 1, !tbaa !8
+  %382 = icmp eq i8 %376, %381
+  br i1 %382, label %383, label %514
 
-386:                                              ; preds = %382
-  %387 = getelementptr inbounds nuw i8, ptr %377, i64 2
-  %388 = load i8, ptr %387, align 1, !tbaa !8
-  %389 = icmp eq i8 %379, %388
-  br i1 %389, label %390, label %517
+383:                                              ; preds = %379
+  %384 = getelementptr inbounds nuw i8, ptr %374, i64 2
+  %385 = load i8, ptr %384, align 1, !tbaa !8
+  %386 = icmp eq i8 %376, %385
+  br i1 %386, label %387, label %514
 
-390:                                              ; preds = %386
-  %391 = getelementptr inbounds nuw i8, ptr %377, i64 258
-  br label %392
+387:                                              ; preds = %383
+  %388 = getelementptr inbounds nuw i8, ptr %374, i64 258
+  br label %389
 
-392:                                              ; preds = %422, %390
-  %393 = phi i64 [ 2, %390 ], [ %423, %422 ]
-  %394 = getelementptr inbounds nuw i8, ptr %377, i64 %393
-  %395 = getelementptr inbounds nuw i8, ptr %394, i64 1
-  %396 = load i8, ptr %395, align 1, !tbaa !8
-  %397 = icmp eq i8 %379, %396
-  br i1 %397, label %398, label %429
+389:                                              ; preds = %419, %387
+  %390 = phi i64 [ 2, %387 ], [ %420, %419 ]
+  %391 = getelementptr inbounds nuw i8, ptr %374, i64 %390
+  %392 = getelementptr inbounds nuw i8, ptr %391, i64 1
+  %393 = load i8, ptr %392, align 1, !tbaa !8
+  %394 = icmp eq i8 %376, %393
+  br i1 %394, label %395, label %426
 
-398:                                              ; preds = %392
-  %399 = getelementptr inbounds nuw i8, ptr %394, i64 2
-  %400 = load i8, ptr %399, align 1, !tbaa !8
-  %401 = icmp eq i8 %379, %400
-  br i1 %401, label %402, label %431
+395:                                              ; preds = %389
+  %396 = getelementptr inbounds nuw i8, ptr %391, i64 2
+  %397 = load i8, ptr %396, align 1, !tbaa !8
+  %398 = icmp eq i8 %376, %397
+  br i1 %398, label %399, label %428
 
-402:                                              ; preds = %398
-  %403 = getelementptr inbounds nuw i8, ptr %394, i64 3
-  %404 = load i8, ptr %403, align 1, !tbaa !8
-  %405 = icmp eq i8 %379, %404
-  br i1 %405, label %406, label %433
+399:                                              ; preds = %395
+  %400 = getelementptr inbounds nuw i8, ptr %391, i64 3
+  %401 = load i8, ptr %400, align 1, !tbaa !8
+  %402 = icmp eq i8 %376, %401
+  br i1 %402, label %403, label %430
 
-406:                                              ; preds = %402
-  %407 = getelementptr inbounds nuw i8, ptr %394, i64 4
-  %408 = load i8, ptr %407, align 1, !tbaa !8
-  %409 = icmp eq i8 %379, %408
-  br i1 %409, label %410, label %435
+403:                                              ; preds = %399
+  %404 = getelementptr inbounds nuw i8, ptr %391, i64 4
+  %405 = load i8, ptr %404, align 1, !tbaa !8
+  %406 = icmp eq i8 %376, %405
+  br i1 %406, label %407, label %432
 
-410:                                              ; preds = %406
-  %411 = getelementptr inbounds nuw i8, ptr %394, i64 5
-  %412 = load i8, ptr %411, align 1, !tbaa !8
-  %413 = icmp eq i8 %379, %412
-  br i1 %413, label %414, label %437
+407:                                              ; preds = %403
+  %408 = getelementptr inbounds nuw i8, ptr %391, i64 5
+  %409 = load i8, ptr %408, align 1, !tbaa !8
+  %410 = icmp eq i8 %376, %409
+  br i1 %410, label %411, label %434
 
-414:                                              ; preds = %410
-  %415 = getelementptr inbounds nuw i8, ptr %394, i64 6
-  %416 = load i8, ptr %415, align 1, !tbaa !8
-  %417 = icmp eq i8 %379, %416
-  br i1 %417, label %418, label %439
+411:                                              ; preds = %407
+  %412 = getelementptr inbounds nuw i8, ptr %391, i64 6
+  %413 = load i8, ptr %412, align 1, !tbaa !8
+  %414 = icmp eq i8 %376, %413
+  br i1 %414, label %415, label %436
 
-418:                                              ; preds = %414
-  %419 = getelementptr inbounds nuw i8, ptr %394, i64 7
-  %420 = load i8, ptr %419, align 1, !tbaa !8
-  %421 = icmp eq i8 %379, %420
-  br i1 %421, label %422, label %441
+415:                                              ; preds = %411
+  %416 = getelementptr inbounds nuw i8, ptr %391, i64 7
+  %417 = load i8, ptr %416, align 1, !tbaa !8
+  %418 = icmp eq i8 %376, %417
+  br i1 %418, label %419, label %438
 
-422:                                              ; preds = %418
-  %423 = add nuw nsw i64 %393, 8
-  %424 = getelementptr inbounds nuw i8, ptr %377, i64 %423
-  %425 = load i8, ptr %424, align 1, !tbaa !8
-  %426 = icmp eq i8 %379, %425
-  %427 = icmp samesign ult i64 %393, 250
-  %428 = select i1 %426, i1 %427, i1 false
-  br i1 %428, label %392, label %443, !llvm.loop !144
+419:                                              ; preds = %415
+  %420 = add nuw nsw i64 %390, 8
+  %421 = getelementptr inbounds nuw i8, ptr %374, i64 %420
+  %422 = load i8, ptr %421, align 1, !tbaa !8
+  %423 = icmp eq i8 %376, %422
+  %424 = icmp samesign ult i64 %390, 250
+  %425 = select i1 %423, i1 %424, i1 false
+  br i1 %425, label %389, label %440, !llvm.loop !144
 
-429:                                              ; preds = %392
-  %430 = getelementptr inbounds nuw i8, ptr %394, i64 1
-  br label %445
+426:                                              ; preds = %389
+  %427 = getelementptr inbounds nuw i8, ptr %391, i64 1
+  br label %442
 
-431:                                              ; preds = %398
-  %432 = getelementptr inbounds nuw i8, ptr %394, i64 2
-  br label %445
+428:                                              ; preds = %395
+  %429 = getelementptr inbounds nuw i8, ptr %391, i64 2
+  br label %442
 
-433:                                              ; preds = %402
-  %434 = getelementptr inbounds nuw i8, ptr %394, i64 3
-  br label %445
+430:                                              ; preds = %399
+  %431 = getelementptr inbounds nuw i8, ptr %391, i64 3
+  br label %442
 
-435:                                              ; preds = %406
-  %436 = getelementptr inbounds nuw i8, ptr %394, i64 4
-  br label %445
+432:                                              ; preds = %403
+  %433 = getelementptr inbounds nuw i8, ptr %391, i64 4
+  br label %442
 
-437:                                              ; preds = %410
-  %438 = getelementptr inbounds nuw i8, ptr %394, i64 5
-  br label %445
+434:                                              ; preds = %407
+  %435 = getelementptr inbounds nuw i8, ptr %391, i64 5
+  br label %442
 
-439:                                              ; preds = %414
-  %440 = getelementptr inbounds nuw i8, ptr %394, i64 6
-  br label %445
+436:                                              ; preds = %411
+  %437 = getelementptr inbounds nuw i8, ptr %391, i64 6
+  br label %442
 
-441:                                              ; preds = %418
-  %442 = getelementptr inbounds nuw i8, ptr %394, i64 7
-  br label %445
+438:                                              ; preds = %415
+  %439 = getelementptr inbounds nuw i8, ptr %391, i64 7
+  br label %442
 
-443:                                              ; preds = %422
-  %444 = getelementptr inbounds nuw i8, ptr %377, i64 %423
-  br label %445
+440:                                              ; preds = %419
+  %441 = getelementptr inbounds nuw i8, ptr %374, i64 %420
+  br label %442
 
-445:                                              ; preds = %443, %441, %439, %437, %435, %433, %431, %429
-  %446 = phi ptr [ %432, %431 ], [ %434, %433 ], [ %430, %429 ], [ %442, %441 ], [ %440, %439 ], [ %438, %437 ], [ %436, %435 ], [ %444, %443 ]
-  %447 = ptrtoint ptr %391 to i64
-  %448 = ptrtoint ptr %446 to i64
-  %449 = sub i64 %447, %448
-  %450 = trunc i64 %449 to i32
-  %451 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 258, i32 %450), !nosanitize !45
-  %452 = extractvalue { i32, i1 } %451, 1, !nosanitize !45
-  br i1 %452, label %453, label %454, !prof !46, !nosanitize !45
+442:                                              ; preds = %440, %438, %436, %434, %432, %430, %428, %426
+  %443 = phi ptr [ %429, %428 ], [ %431, %430 ], [ %427, %426 ], [ %439, %438 ], [ %437, %436 ], [ %435, %434 ], [ %433, %432 ], [ %441, %440 ]
+  %444 = ptrtoint ptr %388 to i64
+  %445 = ptrtoint ptr %443 to i64
+  %446 = sub i64 %444, %445
+  %447 = trunc i64 %446 to i32
+  %448 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 258, i32 %447), !nosanitize !45
+  %449 = extractvalue { i32, i1 } %448, 1, !nosanitize !45
+  br i1 %449, label %450, label %451, !prof !46, !nosanitize !45
 
-453:                                              ; preds = %445
+450:                                              ; preds = %442
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-454:                                              ; preds = %445
-  %455 = extractvalue { i32, i1 } %451, 0, !nosanitize !45
-  %456 = tail call i32 @llvm.umin.i32(i32 %455, i32 %372)
-  store i32 %456, ptr %4, align 8
-  %457 = icmp ugt i32 %456, 2
-  %458 = load i32, ptr %23, align 4, !tbaa !139
-  br i1 %457, label %459, label %520
+451:                                              ; preds = %442
+  %452 = extractvalue { i32, i1 } %448, 0, !nosanitize !45
+  %453 = tail call i32 @llvm.umin.i32(i32 %452, i32 %369)
+  store i32 %453, ptr %4, align 8
+  %454 = icmp ugt i32 %453, 2
+  %455 = load i32, ptr %23, align 4, !tbaa !139
+  br i1 %454, label %456, label %517
 
-459:                                              ; preds = %454
-  %460 = trunc i32 %456 to i8
-  %461 = add i8 %460, -3
-  %462 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %458, i32 1), !nosanitize !45
-  %463 = extractvalue { i32, i1 } %462, 1, !nosanitize !45
-  br i1 %463, label %464, label %465, !prof !46, !nosanitize !45
+456:                                              ; preds = %451
+  %457 = trunc i32 %453 to i8
+  %458 = add i8 %457, -3
+  %459 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %455, i32 1), !nosanitize !45
+  %460 = extractvalue { i32, i1 } %459, 1, !nosanitize !45
+  br i1 %460, label %461, label %462, !prof !46, !nosanitize !45
 
-464:                                              ; preds = %459
+461:                                              ; preds = %456
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-465:                                              ; preds = %459
-  %466 = extractvalue { i32, i1 } %462, 0, !nosanitize !45
-  %467 = load ptr, ptr %22, align 8, !tbaa !44
-  store i32 %466, ptr %23, align 4, !tbaa !139
-  %468 = zext i32 %458 to i64
-  %469 = getelementptr inbounds nuw i8, ptr %467, i64 %468
-  store i8 1, ptr %469, align 1, !tbaa !8
-  %470 = load i32, ptr %23, align 4, !tbaa !139
-  %471 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %470, i32 1), !nosanitize !45
-  %472 = extractvalue { i32, i1 } %471, 1, !nosanitize !45
-  br i1 %472, label %473, label %474, !prof !46, !nosanitize !45
+462:                                              ; preds = %456
+  %463 = extractvalue { i32, i1 } %459, 0, !nosanitize !45
+  %464 = load ptr, ptr %22, align 8, !tbaa !44
+  store i32 %463, ptr %23, align 4, !tbaa !139
+  %465 = zext i32 %455 to i64
+  %466 = getelementptr inbounds nuw i8, ptr %464, i64 %465
+  store i8 1, ptr %466, align 1, !tbaa !8
+  %467 = load i32, ptr %23, align 4, !tbaa !139
+  %468 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %467, i32 1), !nosanitize !45
+  %469 = extractvalue { i32, i1 } %468, 1, !nosanitize !45
+  br i1 %469, label %470, label %471, !prof !46, !nosanitize !45
 
-473:                                              ; preds = %465
+470:                                              ; preds = %462
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-474:                                              ; preds = %465
-  %475 = extractvalue { i32, i1 } %471, 0, !nosanitize !45
-  %476 = load ptr, ptr %22, align 8, !tbaa !44
-  store i32 %475, ptr %23, align 4, !tbaa !139
-  %477 = zext i32 %470 to i64
-  %478 = getelementptr inbounds nuw i8, ptr %476, i64 %477
-  store i8 0, ptr %478, align 1, !tbaa !8
-  %479 = load i32, ptr %23, align 4, !tbaa !139
-  %480 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %479, i32 1), !nosanitize !45
-  %481 = extractvalue { i32, i1 } %480, 1, !nosanitize !45
-  br i1 %481, label %482, label %483, !prof !46, !nosanitize !45
+471:                                              ; preds = %462
+  %472 = extractvalue { i32, i1 } %468, 0, !nosanitize !45
+  %473 = load ptr, ptr %22, align 8, !tbaa !44
+  store i32 %472, ptr %23, align 4, !tbaa !139
+  %474 = zext i32 %467 to i64
+  %475 = getelementptr inbounds nuw i8, ptr %473, i64 %474
+  store i8 0, ptr %475, align 1, !tbaa !8
+  %476 = load i32, ptr %23, align 4, !tbaa !139
+  %477 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %476, i32 1), !nosanitize !45
+  %478 = extractvalue { i32, i1 } %477, 1, !nosanitize !45
+  br i1 %478, label %479, label %480, !prof !46, !nosanitize !45
 
-482:                                              ; preds = %474
+479:                                              ; preds = %471
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-483:                                              ; preds = %474
-  %484 = extractvalue { i32, i1 } %480, 0, !nosanitize !45
-  %485 = load ptr, ptr %22, align 8, !tbaa !44
-  store i32 %484, ptr %23, align 4, !tbaa !139
-  %486 = zext i32 %479 to i64
-  %487 = getelementptr inbounds nuw i8, ptr %485, i64 %486
-  store i8 %461, ptr %487, align 1, !tbaa !8
-  %488 = zext i8 %461 to i64
-  %489 = getelementptr inbounds nuw i8, ptr @_length_code, i64 %488
-  %490 = load i8, ptr %489, align 1, !tbaa !8
-  %491 = zext i8 %490 to i64
-  %492 = getelementptr [4 x i8], ptr %26, i64 %491
-  %493 = load i16, ptr %492, align 4, !tbaa !8
-  %494 = add i16 %493, 1
-  store i16 %494, ptr %492, align 4, !tbaa !8
-  %495 = load i8, ptr @_dist_code, align 1, !tbaa !8
-  %496 = zext i8 %495 to i64
-  %497 = getelementptr inbounds nuw [4 x i8], ptr %27, i64 %496
-  %498 = load i16, ptr %497, align 4, !tbaa !8
-  %499 = add i16 %498, 1
-  store i16 %499, ptr %497, align 4, !tbaa !8
-  %500 = load i32, ptr %23, align 4, !tbaa !139
-  %501 = load i32, ptr %25, align 8, !tbaa !47
-  %502 = icmp eq i32 %500, %501
-  %503 = load i32, ptr %4, align 8, !tbaa !78
-  %504 = load i32, ptr %3, align 4, !tbaa !75
-  %505 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %504, i32 %503), !nosanitize !45
-  %506 = extractvalue { i32, i1 } %505, 1, !nosanitize !45
-  br i1 %506, label %507, label %508, !prof !46, !nosanitize !45
+480:                                              ; preds = %471
+  %481 = extractvalue { i32, i1 } %477, 0, !nosanitize !45
+  %482 = load ptr, ptr %22, align 8, !tbaa !44
+  store i32 %481, ptr %23, align 4, !tbaa !139
+  %483 = zext i32 %476 to i64
+  %484 = getelementptr inbounds nuw i8, ptr %482, i64 %483
+  store i8 %458, ptr %484, align 1, !tbaa !8
+  %485 = zext i8 %458 to i64
+  %486 = getelementptr inbounds nuw i8, ptr @_length_code, i64 %485
+  %487 = load i8, ptr %486, align 1, !tbaa !8
+  %488 = zext i8 %487 to i64
+  %489 = getelementptr [4 x i8], ptr %26, i64 %488
+  %490 = load i16, ptr %489, align 4, !tbaa !8
+  %491 = add i16 %490, 1
+  store i16 %491, ptr %489, align 4, !tbaa !8
+  %492 = load i8, ptr @_dist_code, align 1, !tbaa !8
+  %493 = zext i8 %492 to i64
+  %494 = getelementptr inbounds nuw [4 x i8], ptr %27, i64 %493
+  %495 = load i16, ptr %494, align 4, !tbaa !8
+  %496 = add i16 %495, 1
+  store i16 %496, ptr %494, align 4, !tbaa !8
+  %497 = load i32, ptr %23, align 4, !tbaa !139
+  %498 = load i32, ptr %25, align 8, !tbaa !47
+  %499 = icmp eq i32 %497, %498
+  %500 = load i32, ptr %4, align 8, !tbaa !78
+  %501 = load i32, ptr %3, align 4, !tbaa !75
+  %502 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %501, i32 %500), !nosanitize !45
+  %503 = extractvalue { i32, i1 } %502, 1, !nosanitize !45
+  br i1 %503, label %504, label %505, !prof !46, !nosanitize !45
 
-507:                                              ; preds = %483
+504:                                              ; preds = %480
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-508:                                              ; preds = %483
-  %509 = extractvalue { i32, i1 } %505, 0, !nosanitize !45
-  store i32 %509, ptr %3, align 4, !tbaa !75
-  %510 = load i32, ptr %7, align 4, !tbaa !73
-  %511 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %510, i32 %503), !nosanitize !45
-  %512 = extractvalue { i32, i1 } %511, 1, !nosanitize !45
-  br i1 %512, label %513, label %514, !prof !46, !nosanitize !45
+505:                                              ; preds = %480
+  %506 = extractvalue { i32, i1 } %502, 0, !nosanitize !45
+  store i32 %506, ptr %3, align 4, !tbaa !75
+  %507 = load i32, ptr %7, align 4, !tbaa !73
+  %508 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %507, i32 %500), !nosanitize !45
+  %509 = extractvalue { i32, i1 } %508, 1, !nosanitize !45
+  br i1 %509, label %510, label %511, !prof !46, !nosanitize !45
 
-513:                                              ; preds = %508
+510:                                              ; preds = %505
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-514:                                              ; preds = %508
-  %515 = extractvalue { i32, i1 } %511, 0, !nosanitize !45
-  store i32 %515, ptr %7, align 4, !tbaa !73
+511:                                              ; preds = %505
+  %512 = extractvalue { i32, i1 } %508, 0, !nosanitize !45
+  store i32 %512, ptr %7, align 4, !tbaa !73
   store i32 0, ptr %4, align 8, !tbaa !78
-  br i1 %502, label %572, label %516
+  br i1 %499, label %569, label %513
 
-516:                                              ; preds = %629, %570, %514
+513:                                              ; preds = %626, %567, %511
   br label %28
 
-517:                                              ; preds = %386, %382, %374, %370, %367
-  %518 = phi i32 [ %369, %367 ], [ %371, %370 ], [ %371, %386 ], [ %371, %382 ], [ %371, %374 ]
-  %519 = load i32, ptr %23, align 4, !tbaa !139
-  br label %520
+514:                                              ; preds = %383, %379, %371, %367, %364
+  %515 = phi i32 [ %366, %364 ], [ %368, %367 ], [ %368, %383 ], [ %368, %379 ], [ %368, %371 ]
+  %516 = load i32, ptr %23, align 4, !tbaa !139
+  br label %517
 
-520:                                              ; preds = %517, %454
-  %521 = phi i32 [ %458, %454 ], [ %519, %517 ]
-  %522 = phi i32 [ %371, %454 ], [ %518, %517 ]
-  %523 = load ptr, ptr %8, align 8, !tbaa !34
-  %524 = zext i32 %522 to i64
-  %525 = getelementptr inbounds nuw i8, ptr %523, i64 %524
-  %526 = load i8, ptr %525, align 1, !tbaa !8
-  %527 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %521, i32 1), !nosanitize !45
-  %528 = extractvalue { i32, i1 } %527, 1, !nosanitize !45
-  br i1 %528, label %529, label %530, !prof !46, !nosanitize !45
+517:                                              ; preds = %514, %451
+  %518 = phi i32 [ %455, %451 ], [ %516, %514 ]
+  %519 = phi i32 [ %368, %451 ], [ %515, %514 ]
+  %520 = load ptr, ptr %8, align 8, !tbaa !34
+  %521 = zext i32 %519 to i64
+  %522 = getelementptr inbounds nuw i8, ptr %520, i64 %521
+  %523 = load i8, ptr %522, align 1, !tbaa !8
+  %524 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %518, i32 1), !nosanitize !45
+  %525 = extractvalue { i32, i1 } %524, 1, !nosanitize !45
+  br i1 %525, label %526, label %527, !prof !46, !nosanitize !45
 
-529:                                              ; preds = %520
+526:                                              ; preds = %517
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-530:                                              ; preds = %520
-  %531 = extractvalue { i32, i1 } %527, 0, !nosanitize !45
-  %532 = load ptr, ptr %22, align 8, !tbaa !44
-  store i32 %531, ptr %23, align 4, !tbaa !139
-  %533 = zext i32 %521 to i64
-  %534 = getelementptr inbounds nuw i8, ptr %532, i64 %533
-  store i8 0, ptr %534, align 1, !tbaa !8
-  %535 = load i32, ptr %23, align 4, !tbaa !139
-  %536 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %535, i32 1), !nosanitize !45
-  %537 = extractvalue { i32, i1 } %536, 1, !nosanitize !45
-  br i1 %537, label %538, label %539, !prof !46, !nosanitize !45
+527:                                              ; preds = %517
+  %528 = extractvalue { i32, i1 } %524, 0, !nosanitize !45
+  %529 = load ptr, ptr %22, align 8, !tbaa !44
+  store i32 %528, ptr %23, align 4, !tbaa !139
+  %530 = zext i32 %518 to i64
+  %531 = getelementptr inbounds nuw i8, ptr %529, i64 %530
+  store i8 0, ptr %531, align 1, !tbaa !8
+  %532 = load i32, ptr %23, align 4, !tbaa !139
+  %533 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %532, i32 1), !nosanitize !45
+  %534 = extractvalue { i32, i1 } %533, 1, !nosanitize !45
+  br i1 %534, label %535, label %536, !prof !46, !nosanitize !45
 
-538:                                              ; preds = %530
+535:                                              ; preds = %527
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-539:                                              ; preds = %530
-  %540 = extractvalue { i32, i1 } %536, 0, !nosanitize !45
-  %541 = load ptr, ptr %22, align 8, !tbaa !44
-  store i32 %540, ptr %23, align 4, !tbaa !139
-  %542 = zext i32 %535 to i64
-  %543 = getelementptr inbounds nuw i8, ptr %541, i64 %542
-  store i8 0, ptr %543, align 1, !tbaa !8
-  %544 = load i32, ptr %23, align 4, !tbaa !139
-  %545 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %544, i32 1), !nosanitize !45
-  %546 = extractvalue { i32, i1 } %545, 1, !nosanitize !45
-  br i1 %546, label %547, label %548, !prof !46, !nosanitize !45
+536:                                              ; preds = %527
+  %537 = extractvalue { i32, i1 } %533, 0, !nosanitize !45
+  %538 = load ptr, ptr %22, align 8, !tbaa !44
+  store i32 %537, ptr %23, align 4, !tbaa !139
+  %539 = zext i32 %532 to i64
+  %540 = getelementptr inbounds nuw i8, ptr %538, i64 %539
+  store i8 0, ptr %540, align 1, !tbaa !8
+  %541 = load i32, ptr %23, align 4, !tbaa !139
+  %542 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %541, i32 1), !nosanitize !45
+  %543 = extractvalue { i32, i1 } %542, 1, !nosanitize !45
+  br i1 %543, label %544, label %545, !prof !46, !nosanitize !45
 
-547:                                              ; preds = %539
+544:                                              ; preds = %536
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-548:                                              ; preds = %539
-  %549 = extractvalue { i32, i1 } %545, 0, !nosanitize !45
-  %550 = load ptr, ptr %22, align 8, !tbaa !44
-  store i32 %549, ptr %23, align 4, !tbaa !139
-  %551 = zext i32 %544 to i64
-  %552 = getelementptr inbounds nuw i8, ptr %550, i64 %551
-  store i8 %526, ptr %552, align 1, !tbaa !8
-  %553 = zext i8 %526 to i64
-  %554 = getelementptr inbounds nuw [4 x i8], ptr %24, i64 %553
-  %555 = load i16, ptr %554, align 4, !tbaa !8
-  %556 = add i16 %555, 1
-  store i16 %556, ptr %554, align 4, !tbaa !8
-  %557 = load i32, ptr %23, align 4, !tbaa !139
-  %558 = load i32, ptr %25, align 8, !tbaa !47
-  %559 = icmp eq i32 %557, %558
-  %560 = load i32, ptr %3, align 4, !tbaa !75
-  %561 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %560, i32 1), !nosanitize !45
-  %562 = extractvalue { i32, i1 } %561, 1, !nosanitize !45
-  br i1 %562, label %563, label %564, !prof !46, !nosanitize !45
+545:                                              ; preds = %536
+  %546 = extractvalue { i32, i1 } %542, 0, !nosanitize !45
+  %547 = load ptr, ptr %22, align 8, !tbaa !44
+  store i32 %546, ptr %23, align 4, !tbaa !139
+  %548 = zext i32 %541 to i64
+  %549 = getelementptr inbounds nuw i8, ptr %547, i64 %548
+  store i8 %523, ptr %549, align 1, !tbaa !8
+  %550 = zext i8 %523 to i64
+  %551 = getelementptr inbounds nuw [4 x i8], ptr %24, i64 %550
+  %552 = load i16, ptr %551, align 4, !tbaa !8
+  %553 = add i16 %552, 1
+  store i16 %553, ptr %551, align 4, !tbaa !8
+  %554 = load i32, ptr %23, align 4, !tbaa !139
+  %555 = load i32, ptr %25, align 8, !tbaa !47
+  %556 = icmp eq i32 %554, %555
+  %557 = load i32, ptr %3, align 4, !tbaa !75
+  %558 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %557, i32 1), !nosanitize !45
+  %559 = extractvalue { i32, i1 } %558, 1, !nosanitize !45
+  br i1 %559, label %560, label %561, !prof !46, !nosanitize !45
 
-563:                                              ; preds = %548
+560:                                              ; preds = %545
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-564:                                              ; preds = %548
-  %565 = extractvalue { i32, i1 } %561, 0, !nosanitize !45
-  store i32 %565, ptr %3, align 4, !tbaa !75
-  %566 = load i32, ptr %7, align 4, !tbaa !73
-  %567 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %566, i32 1), !nosanitize !45
-  %568 = extractvalue { i32, i1 } %567, 1, !nosanitize !45
-  br i1 %568, label %569, label %570, !prof !46, !nosanitize !45
+561:                                              ; preds = %545
+  %562 = extractvalue { i32, i1 } %558, 0, !nosanitize !45
+  store i32 %562, ptr %3, align 4, !tbaa !75
+  %563 = load i32, ptr %7, align 4, !tbaa !73
+  %564 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %563, i32 1), !nosanitize !45
+  %565 = extractvalue { i32, i1 } %564, 1, !nosanitize !45
+  br i1 %565, label %566, label %567, !prof !46, !nosanitize !45
 
-569:                                              ; preds = %564
+566:                                              ; preds = %561
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-570:                                              ; preds = %564
-  %571 = extractvalue { i32, i1 } %567, 0, !nosanitize !45
-  store i32 %571, ptr %7, align 4, !tbaa !73
-  br i1 %559, label %572, label %516
+567:                                              ; preds = %561
+  %568 = extractvalue { i32, i1 } %564, 0, !nosanitize !45
+  store i32 %568, ptr %7, align 4, !tbaa !73
+  br i1 %556, label %569, label %513
 
-572:                                              ; preds = %570, %514
-  %573 = phi i32 [ %515, %514 ], [ %571, %570 ]
-  %574 = load i64, ptr %10, align 8, !tbaa !74
-  %575 = icmp sgt i64 %574, -1
-  br i1 %575, label %576, label %580
+569:                                              ; preds = %567, %511
+  %570 = phi i32 [ %512, %511 ], [ %568, %567 ]
+  %571 = load i64, ptr %10, align 8, !tbaa !74
+  %572 = icmp sgt i64 %571, -1
+  br i1 %572, label %573, label %577
 
-576:                                              ; preds = %572
-  %577 = load ptr, ptr %8, align 8, !tbaa !34
-  %578 = and i64 %574, 4294967295
-  %579 = getelementptr inbounds nuw i8, ptr %577, i64 %578
-  br label %580
+573:                                              ; preds = %569
+  %574 = load ptr, ptr %8, align 8, !tbaa !34
+  %575 = and i64 %571, 4294967295
+  %576 = getelementptr inbounds nuw i8, ptr %574, i64 %575
+  br label %577
 
-580:                                              ; preds = %576, %572
-  %581 = phi ptr [ %579, %576 ], [ null, %572 ]
-  %582 = zext i32 %573 to i64
-  %583 = sub nsw i64 %582, %574
-  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %581, i64 noundef %583, i32 noundef 0) #11
-  %584 = load i32, ptr %7, align 4, !tbaa !73
-  %585 = zext i32 %584 to i64
-  store i64 %585, ptr %10, align 8, !tbaa !74
-  %586 = load ptr, ptr %0, align 8, !tbaa !20
-  %587 = getelementptr inbounds nuw i8, ptr %586, i64 56
-  %588 = load ptr, ptr %587, align 8, !tbaa !19
-  tail call void @_tr_flush_bits(ptr noundef %588) #11
-  %589 = getelementptr inbounds nuw i8, ptr %588, i64 40
-  %590 = load i64, ptr %589, align 8, !tbaa !57
-  %591 = getelementptr inbounds nuw i8, ptr %586, i64 32
-  %592 = load i32, ptr %591, align 8, !tbaa !107
-  %593 = zext i32 %592 to i64
-  %594 = tail call i64 @llvm.umin.i64(i64 %590, i64 %593)
-  %595 = trunc nuw i64 %594 to i32
-  %596 = icmp eq i64 %594, 0
-  br i1 %596, label %629, label %597
+577:                                              ; preds = %573, %569
+  %578 = phi ptr [ %576, %573 ], [ null, %569 ]
+  %579 = zext i32 %570 to i64
+  %580 = sub nsw i64 %579, %571
+  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %578, i64 noundef %580, i32 noundef 0) #11
+  %581 = load i32, ptr %7, align 4, !tbaa !73
+  %582 = zext i32 %581 to i64
+  store i64 %582, ptr %10, align 8, !tbaa !74
+  %583 = load ptr, ptr %0, align 8, !tbaa !20
+  %584 = getelementptr inbounds nuw i8, ptr %583, i64 56
+  %585 = load ptr, ptr %584, align 8, !tbaa !19
+  tail call void @_tr_flush_bits(ptr noundef %585) #11
+  %586 = getelementptr inbounds nuw i8, ptr %585, i64 40
+  %587 = load i64, ptr %586, align 8, !tbaa !57
+  %588 = getelementptr inbounds nuw i8, ptr %583, i64 32
+  %589 = load i32, ptr %588, align 8, !tbaa !107
+  %590 = zext i32 %589 to i64
+  %591 = tail call i64 @llvm.umin.i64(i64 %587, i64 %590)
+  %592 = trunc nuw i64 %591 to i32
+  %593 = icmp eq i64 %591, 0
+  br i1 %593, label %626, label %594
 
-597:                                              ; preds = %580
-  %598 = getelementptr inbounds nuw i8, ptr %586, i64 24
-  %599 = load ptr, ptr %598, align 8, !tbaa !106
-  %600 = getelementptr inbounds nuw i8, ptr %588, i64 32
-  %601 = load ptr, ptr %600, align 8, !tbaa !58
-  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %599, ptr align 1 %601, i64 %594, i1 false)
-  %602 = load ptr, ptr %598, align 8, !tbaa !106
-  %603 = getelementptr inbounds nuw i8, ptr %602, i64 %594
-  store ptr %603, ptr %598, align 8, !tbaa !106
-  %604 = load ptr, ptr %600, align 8, !tbaa !58
-  %605 = getelementptr inbounds nuw i8, ptr %604, i64 %594
-  store ptr %605, ptr %600, align 8, !tbaa !58
-  %606 = getelementptr inbounds nuw i8, ptr %586, i64 40
-  %607 = load i64, ptr %606, align 8, !tbaa !108
-  %608 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %607, i64 %594), !nosanitize !45
-  %609 = extractvalue { i64, i1 } %608, 1, !nosanitize !45
-  br i1 %609, label %610, label %611, !prof !46, !nosanitize !45
+594:                                              ; preds = %577
+  %595 = getelementptr inbounds nuw i8, ptr %583, i64 24
+  %596 = load ptr, ptr %595, align 8, !tbaa !106
+  %597 = getelementptr inbounds nuw i8, ptr %585, i64 32
+  %598 = load ptr, ptr %597, align 8, !tbaa !58
+  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %596, ptr align 1 %598, i64 %591, i1 false)
+  %599 = load ptr, ptr %595, align 8, !tbaa !106
+  %600 = getelementptr inbounds nuw i8, ptr %599, i64 %591
+  store ptr %600, ptr %595, align 8, !tbaa !106
+  %601 = load ptr, ptr %597, align 8, !tbaa !58
+  %602 = getelementptr inbounds nuw i8, ptr %601, i64 %591
+  store ptr %602, ptr %597, align 8, !tbaa !58
+  %603 = getelementptr inbounds nuw i8, ptr %583, i64 40
+  %604 = load i64, ptr %603, align 8, !tbaa !108
+  %605 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %604, i64 %591), !nosanitize !45
+  %606 = extractvalue { i64, i1 } %605, 1, !nosanitize !45
+  br i1 %606, label %607, label %608, !prof !46, !nosanitize !45
 
-610:                                              ; preds = %597
+607:                                              ; preds = %594
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-611:                                              ; preds = %597
-  %612 = extractvalue { i64, i1 } %608, 0, !nosanitize !45
-  store i64 %612, ptr %606, align 8, !tbaa !108
-  %613 = load i32, ptr %591, align 8, !tbaa !107
-  %614 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %613, i32 %595), !nosanitize !45
-  %615 = extractvalue { i32, i1 } %614, 1, !nosanitize !45
-  br i1 %615, label %616, label %617, !prof !46, !nosanitize !45
+608:                                              ; preds = %594
+  %609 = extractvalue { i64, i1 } %605, 0, !nosanitize !45
+  store i64 %609, ptr %603, align 8, !tbaa !108
+  %610 = load i32, ptr %588, align 8, !tbaa !107
+  %611 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %610, i32 %592), !nosanitize !45
+  %612 = extractvalue { i32, i1 } %611, 1, !nosanitize !45
+  br i1 %612, label %613, label %614, !prof !46, !nosanitize !45
 
-616:                                              ; preds = %611
+613:                                              ; preds = %608
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-617:                                              ; preds = %611
-  %618 = extractvalue { i32, i1 } %614, 0, !nosanitize !45
-  store i32 %618, ptr %591, align 8, !tbaa !107
-  %619 = load i64, ptr %589, align 8, !tbaa !57
-  %620 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %619, i64 %594), !nosanitize !45
-  %621 = extractvalue { i64, i1 } %620, 1, !nosanitize !45
-  br i1 %621, label %622, label %623, !prof !46, !nosanitize !45
+614:                                              ; preds = %608
+  %615 = extractvalue { i32, i1 } %611, 0, !nosanitize !45
+  store i32 %615, ptr %588, align 8, !tbaa !107
+  %616 = load i64, ptr %586, align 8, !tbaa !57
+  %617 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %616, i64 %591), !nosanitize !45
+  %618 = extractvalue { i64, i1 } %617, 1, !nosanitize !45
+  br i1 %618, label %619, label %620, !prof !46, !nosanitize !45
 
-622:                                              ; preds = %617
+619:                                              ; preds = %614
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-623:                                              ; preds = %617
-  %624 = extractvalue { i64, i1 } %620, 0, !nosanitize !45
-  store i64 %624, ptr %589, align 8, !tbaa !57
-  %625 = icmp eq i64 %624, 0
-  br i1 %625, label %626, label %629
+620:                                              ; preds = %614
+  %621 = extractvalue { i64, i1 } %617, 0, !nosanitize !45
+  store i64 %621, ptr %586, align 8, !tbaa !57
+  %622 = icmp eq i64 %621, 0
+  br i1 %622, label %623, label %626
 
-626:                                              ; preds = %623
-  %627 = getelementptr inbounds nuw i8, ptr %588, i64 16
-  %628 = load ptr, ptr %627, align 8, !tbaa !40
-  store ptr %628, ptr %600, align 8, !tbaa !58
-  br label %629
+623:                                              ; preds = %620
+  %624 = getelementptr inbounds nuw i8, ptr %585, i64 16
+  %625 = load ptr, ptr %624, align 8, !tbaa !40
+  store ptr %625, ptr %597, align 8, !tbaa !58
+  br label %626
 
-629:                                              ; preds = %626, %623, %580
-  %630 = load ptr, ptr %0, align 8, !tbaa !20
-  %631 = getelementptr inbounds nuw i8, ptr %630, i64 32
-  %632 = load i32, ptr %631, align 8, !tbaa !107
-  %633 = icmp eq i32 %632, 0
-  br i1 %633, label %765, label %516
+626:                                              ; preds = %623, %620, %577
+  %627 = load ptr, ptr %0, align 8, !tbaa !20
+  %628 = getelementptr inbounds nuw i8, ptr %627, i64 32
+  %629 = load i32, ptr %628, align 8, !tbaa !107
+  %630 = icmp eq i32 %629, 0
+  br i1 %630, label %762, label %513
 
-634:                                              ; preds = %365
+631:                                              ; preds = %362
   store i32 0, ptr %11, align 4, !tbaa !76
-  %635 = icmp eq i32 %1, 4
-  br i1 %635, label %636, label %699
+  %632 = icmp eq i32 %1, 4
+  br i1 %632, label %633, label %696
 
-636:                                              ; preds = %634
-  %637 = load i64, ptr %10, align 8, !tbaa !74
-  %638 = icmp sgt i64 %637, -1
-  br i1 %638, label %639, label %643
+633:                                              ; preds = %631
+  %634 = load i64, ptr %10, align 8, !tbaa !74
+  %635 = icmp sgt i64 %634, -1
+  br i1 %635, label %636, label %640
 
-639:                                              ; preds = %636
-  %640 = load ptr, ptr %8, align 8, !tbaa !34
-  %641 = and i64 %637, 4294967295
-  %642 = getelementptr inbounds nuw i8, ptr %640, i64 %641
-  br label %643
+636:                                              ; preds = %633
+  %637 = load ptr, ptr %8, align 8, !tbaa !34
+  %638 = and i64 %634, 4294967295
+  %639 = getelementptr inbounds nuw i8, ptr %637, i64 %638
+  br label %640
 
-643:                                              ; preds = %639, %636
-  %644 = phi ptr [ %642, %639 ], [ null, %636 ]
+640:                                              ; preds = %636, %633
+  %641 = phi ptr [ %639, %636 ], [ null, %633 ]
+  %642 = load i32, ptr %7, align 4, !tbaa !73
+  %643 = zext i32 %642 to i64
+  %644 = sub nsw i64 %643, %634
+  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %641, i64 noundef %644, i32 noundef 1) #11
   %645 = load i32, ptr %7, align 4, !tbaa !73
   %646 = zext i32 %645 to i64
-  %647 = sub nsw i64 %646, %637
-  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %644, i64 noundef %647, i32 noundef 1) #11
-  %648 = load i32, ptr %7, align 4, !tbaa !73
-  %649 = zext i32 %648 to i64
-  store i64 %649, ptr %10, align 8, !tbaa !74
-  %650 = load ptr, ptr %0, align 8, !tbaa !20
-  %651 = getelementptr inbounds nuw i8, ptr %650, i64 56
-  %652 = load ptr, ptr %651, align 8, !tbaa !19
-  tail call void @_tr_flush_bits(ptr noundef %652) #11
-  %653 = getelementptr inbounds nuw i8, ptr %652, i64 40
-  %654 = load i64, ptr %653, align 8, !tbaa !57
-  %655 = getelementptr inbounds nuw i8, ptr %650, i64 32
-  %656 = load i32, ptr %655, align 8, !tbaa !107
-  %657 = zext i32 %656 to i64
-  %658 = tail call i64 @llvm.umin.i64(i64 %654, i64 %657)
-  %659 = trunc nuw i64 %658 to i32
-  %660 = icmp eq i64 %658, 0
-  br i1 %660, label %693, label %661
+  store i64 %646, ptr %10, align 8, !tbaa !74
+  %647 = load ptr, ptr %0, align 8, !tbaa !20
+  %648 = getelementptr inbounds nuw i8, ptr %647, i64 56
+  %649 = load ptr, ptr %648, align 8, !tbaa !19
+  tail call void @_tr_flush_bits(ptr noundef %649) #11
+  %650 = getelementptr inbounds nuw i8, ptr %649, i64 40
+  %651 = load i64, ptr %650, align 8, !tbaa !57
+  %652 = getelementptr inbounds nuw i8, ptr %647, i64 32
+  %653 = load i32, ptr %652, align 8, !tbaa !107
+  %654 = zext i32 %653 to i64
+  %655 = tail call i64 @llvm.umin.i64(i64 %651, i64 %654)
+  %656 = trunc nuw i64 %655 to i32
+  %657 = icmp eq i64 %655, 0
+  br i1 %657, label %690, label %658
 
-661:                                              ; preds = %643
-  %662 = getelementptr inbounds nuw i8, ptr %650, i64 24
-  %663 = load ptr, ptr %662, align 8, !tbaa !106
-  %664 = getelementptr inbounds nuw i8, ptr %652, i64 32
-  %665 = load ptr, ptr %664, align 8, !tbaa !58
-  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %663, ptr align 1 %665, i64 %658, i1 false)
-  %666 = load ptr, ptr %662, align 8, !tbaa !106
-  %667 = getelementptr inbounds nuw i8, ptr %666, i64 %658
-  store ptr %667, ptr %662, align 8, !tbaa !106
-  %668 = load ptr, ptr %664, align 8, !tbaa !58
-  %669 = getelementptr inbounds nuw i8, ptr %668, i64 %658
-  store ptr %669, ptr %664, align 8, !tbaa !58
-  %670 = getelementptr inbounds nuw i8, ptr %650, i64 40
-  %671 = load i64, ptr %670, align 8, !tbaa !108
-  %672 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %671, i64 %658), !nosanitize !45
-  %673 = extractvalue { i64, i1 } %672, 1, !nosanitize !45
-  br i1 %673, label %674, label %675, !prof !46, !nosanitize !45
+658:                                              ; preds = %640
+  %659 = getelementptr inbounds nuw i8, ptr %647, i64 24
+  %660 = load ptr, ptr %659, align 8, !tbaa !106
+  %661 = getelementptr inbounds nuw i8, ptr %649, i64 32
+  %662 = load ptr, ptr %661, align 8, !tbaa !58
+  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %660, ptr align 1 %662, i64 %655, i1 false)
+  %663 = load ptr, ptr %659, align 8, !tbaa !106
+  %664 = getelementptr inbounds nuw i8, ptr %663, i64 %655
+  store ptr %664, ptr %659, align 8, !tbaa !106
+  %665 = load ptr, ptr %661, align 8, !tbaa !58
+  %666 = getelementptr inbounds nuw i8, ptr %665, i64 %655
+  store ptr %666, ptr %661, align 8, !tbaa !58
+  %667 = getelementptr inbounds nuw i8, ptr %647, i64 40
+  %668 = load i64, ptr %667, align 8, !tbaa !108
+  %669 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %668, i64 %655), !nosanitize !45
+  %670 = extractvalue { i64, i1 } %669, 1, !nosanitize !45
+  br i1 %670, label %671, label %672, !prof !46, !nosanitize !45
 
-674:                                              ; preds = %661
+671:                                              ; preds = %658
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-675:                                              ; preds = %661
-  %676 = extractvalue { i64, i1 } %672, 0, !nosanitize !45
-  store i64 %676, ptr %670, align 8, !tbaa !108
-  %677 = load i32, ptr %655, align 8, !tbaa !107
-  %678 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %677, i32 %659), !nosanitize !45
-  %679 = extractvalue { i32, i1 } %678, 1, !nosanitize !45
-  br i1 %679, label %680, label %681, !prof !46, !nosanitize !45
+672:                                              ; preds = %658
+  %673 = extractvalue { i64, i1 } %669, 0, !nosanitize !45
+  store i64 %673, ptr %667, align 8, !tbaa !108
+  %674 = load i32, ptr %652, align 8, !tbaa !107
+  %675 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %674, i32 %656), !nosanitize !45
+  %676 = extractvalue { i32, i1 } %675, 1, !nosanitize !45
+  br i1 %676, label %677, label %678, !prof !46, !nosanitize !45
 
-680:                                              ; preds = %675
+677:                                              ; preds = %672
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-681:                                              ; preds = %675
-  %682 = extractvalue { i32, i1 } %678, 0, !nosanitize !45
-  store i32 %682, ptr %655, align 8, !tbaa !107
-  %683 = load i64, ptr %653, align 8, !tbaa !57
-  %684 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %683, i64 %658), !nosanitize !45
-  %685 = extractvalue { i64, i1 } %684, 1, !nosanitize !45
-  br i1 %685, label %686, label %687, !prof !46, !nosanitize !45
+678:                                              ; preds = %672
+  %679 = extractvalue { i32, i1 } %675, 0, !nosanitize !45
+  store i32 %679, ptr %652, align 8, !tbaa !107
+  %680 = load i64, ptr %650, align 8, !tbaa !57
+  %681 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %680, i64 %655), !nosanitize !45
+  %682 = extractvalue { i64, i1 } %681, 1, !nosanitize !45
+  br i1 %682, label %683, label %684, !prof !46, !nosanitize !45
 
-686:                                              ; preds = %681
+683:                                              ; preds = %678
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-687:                                              ; preds = %681
-  %688 = extractvalue { i64, i1 } %684, 0, !nosanitize !45
-  store i64 %688, ptr %653, align 8, !tbaa !57
-  %689 = icmp eq i64 %688, 0
-  br i1 %689, label %690, label %693
+684:                                              ; preds = %678
+  %685 = extractvalue { i64, i1 } %681, 0, !nosanitize !45
+  store i64 %685, ptr %650, align 8, !tbaa !57
+  %686 = icmp eq i64 %685, 0
+  br i1 %686, label %687, label %690
 
-690:                                              ; preds = %687
-  %691 = getelementptr inbounds nuw i8, ptr %652, i64 16
-  %692 = load ptr, ptr %691, align 8, !tbaa !40
-  store ptr %692, ptr %664, align 8, !tbaa !58
-  br label %693
+687:                                              ; preds = %684
+  %688 = getelementptr inbounds nuw i8, ptr %649, i64 16
+  %689 = load ptr, ptr %688, align 8, !tbaa !40
+  store ptr %689, ptr %661, align 8, !tbaa !58
+  br label %690
 
-693:                                              ; preds = %690, %687, %643
-  %694 = load ptr, ptr %0, align 8, !tbaa !20
-  %695 = getelementptr inbounds nuw i8, ptr %694, i64 32
-  %696 = load i32, ptr %695, align 8, !tbaa !107
-  %697 = icmp eq i32 %696, 0
-  %698 = select i1 %697, i32 2, i32 3
-  br label %765
+690:                                              ; preds = %687, %684, %640
+  %691 = load ptr, ptr %0, align 8, !tbaa !20
+  %692 = getelementptr inbounds nuw i8, ptr %691, i64 32
+  %693 = load i32, ptr %692, align 8, !tbaa !107
+  %694 = icmp eq i32 %693, 0
+  %695 = select i1 %694, i32 2, i32 3
+  br label %762
 
-699:                                              ; preds = %634
-  %700 = load i32, ptr %23, align 4, !tbaa !139
-  %701 = icmp eq i32 %700, 0
-  br i1 %701, label %764, label %702
+696:                                              ; preds = %631
+  %697 = load i32, ptr %23, align 4, !tbaa !139
+  %698 = icmp eq i32 %697, 0
+  br i1 %698, label %761, label %699
+
+699:                                              ; preds = %696
+  %700 = load i64, ptr %10, align 8, !tbaa !74
+  %701 = icmp sgt i64 %700, -1
+  br i1 %701, label %702, label %706
 
 702:                                              ; preds = %699
-  %703 = load i64, ptr %10, align 8, !tbaa !74
-  %704 = icmp sgt i64 %703, -1
-  br i1 %704, label %705, label %709
+  %703 = load ptr, ptr %8, align 8, !tbaa !34
+  %704 = and i64 %700, 4294967295
+  %705 = getelementptr inbounds nuw i8, ptr %703, i64 %704
+  br label %706
 
-705:                                              ; preds = %702
-  %706 = load ptr, ptr %8, align 8, !tbaa !34
-  %707 = and i64 %703, 4294967295
-  %708 = getelementptr inbounds nuw i8, ptr %706, i64 %707
-  br label %709
-
-709:                                              ; preds = %705, %702
-  %710 = phi ptr [ %708, %705 ], [ null, %702 ]
+706:                                              ; preds = %702, %699
+  %707 = phi ptr [ %705, %702 ], [ null, %699 ]
+  %708 = load i32, ptr %7, align 4, !tbaa !73
+  %709 = zext i32 %708 to i64
+  %710 = sub nsw i64 %709, %700
+  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %707, i64 noundef %710, i32 noundef 0) #11
   %711 = load i32, ptr %7, align 4, !tbaa !73
   %712 = zext i32 %711 to i64
-  %713 = sub nsw i64 %712, %703
-  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %710, i64 noundef %713, i32 noundef 0) #11
-  %714 = load i32, ptr %7, align 4, !tbaa !73
-  %715 = zext i32 %714 to i64
-  store i64 %715, ptr %10, align 8, !tbaa !74
-  %716 = load ptr, ptr %0, align 8, !tbaa !20
-  %717 = getelementptr inbounds nuw i8, ptr %716, i64 56
-  %718 = load ptr, ptr %717, align 8, !tbaa !19
-  tail call void @_tr_flush_bits(ptr noundef %718) #11
-  %719 = getelementptr inbounds nuw i8, ptr %718, i64 40
-  %720 = load i64, ptr %719, align 8, !tbaa !57
-  %721 = getelementptr inbounds nuw i8, ptr %716, i64 32
-  %722 = load i32, ptr %721, align 8, !tbaa !107
-  %723 = zext i32 %722 to i64
-  %724 = tail call i64 @llvm.umin.i64(i64 %720, i64 %723)
-  %725 = trunc nuw i64 %724 to i32
-  %726 = icmp eq i64 %724, 0
-  br i1 %726, label %759, label %727
+  store i64 %712, ptr %10, align 8, !tbaa !74
+  %713 = load ptr, ptr %0, align 8, !tbaa !20
+  %714 = getelementptr inbounds nuw i8, ptr %713, i64 56
+  %715 = load ptr, ptr %714, align 8, !tbaa !19
+  tail call void @_tr_flush_bits(ptr noundef %715) #11
+  %716 = getelementptr inbounds nuw i8, ptr %715, i64 40
+  %717 = load i64, ptr %716, align 8, !tbaa !57
+  %718 = getelementptr inbounds nuw i8, ptr %713, i64 32
+  %719 = load i32, ptr %718, align 8, !tbaa !107
+  %720 = zext i32 %719 to i64
+  %721 = tail call i64 @llvm.umin.i64(i64 %717, i64 %720)
+  %722 = trunc nuw i64 %721 to i32
+  %723 = icmp eq i64 %721, 0
+  br i1 %723, label %756, label %724
 
-727:                                              ; preds = %709
-  %728 = getelementptr inbounds nuw i8, ptr %716, i64 24
-  %729 = load ptr, ptr %728, align 8, !tbaa !106
-  %730 = getelementptr inbounds nuw i8, ptr %718, i64 32
-  %731 = load ptr, ptr %730, align 8, !tbaa !58
-  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %729, ptr align 1 %731, i64 %724, i1 false)
-  %732 = load ptr, ptr %728, align 8, !tbaa !106
-  %733 = getelementptr inbounds nuw i8, ptr %732, i64 %724
-  store ptr %733, ptr %728, align 8, !tbaa !106
-  %734 = load ptr, ptr %730, align 8, !tbaa !58
-  %735 = getelementptr inbounds nuw i8, ptr %734, i64 %724
-  store ptr %735, ptr %730, align 8, !tbaa !58
-  %736 = getelementptr inbounds nuw i8, ptr %716, i64 40
-  %737 = load i64, ptr %736, align 8, !tbaa !108
-  %738 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %737, i64 %724), !nosanitize !45
-  %739 = extractvalue { i64, i1 } %738, 1, !nosanitize !45
-  br i1 %739, label %740, label %741, !prof !46, !nosanitize !45
+724:                                              ; preds = %706
+  %725 = getelementptr inbounds nuw i8, ptr %713, i64 24
+  %726 = load ptr, ptr %725, align 8, !tbaa !106
+  %727 = getelementptr inbounds nuw i8, ptr %715, i64 32
+  %728 = load ptr, ptr %727, align 8, !tbaa !58
+  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %726, ptr align 1 %728, i64 %721, i1 false)
+  %729 = load ptr, ptr %725, align 8, !tbaa !106
+  %730 = getelementptr inbounds nuw i8, ptr %729, i64 %721
+  store ptr %730, ptr %725, align 8, !tbaa !106
+  %731 = load ptr, ptr %727, align 8, !tbaa !58
+  %732 = getelementptr inbounds nuw i8, ptr %731, i64 %721
+  store ptr %732, ptr %727, align 8, !tbaa !58
+  %733 = getelementptr inbounds nuw i8, ptr %713, i64 40
+  %734 = load i64, ptr %733, align 8, !tbaa !108
+  %735 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %734, i64 %721), !nosanitize !45
+  %736 = extractvalue { i64, i1 } %735, 1, !nosanitize !45
+  br i1 %736, label %737, label %738, !prof !46, !nosanitize !45
 
-740:                                              ; preds = %727
+737:                                              ; preds = %724
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-741:                                              ; preds = %727
-  %742 = extractvalue { i64, i1 } %738, 0, !nosanitize !45
-  store i64 %742, ptr %736, align 8, !tbaa !108
-  %743 = load i32, ptr %721, align 8, !tbaa !107
-  %744 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %743, i32 %725), !nosanitize !45
-  %745 = extractvalue { i32, i1 } %744, 1, !nosanitize !45
-  br i1 %745, label %746, label %747, !prof !46, !nosanitize !45
+738:                                              ; preds = %724
+  %739 = extractvalue { i64, i1 } %735, 0, !nosanitize !45
+  store i64 %739, ptr %733, align 8, !tbaa !108
+  %740 = load i32, ptr %718, align 8, !tbaa !107
+  %741 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %740, i32 %722), !nosanitize !45
+  %742 = extractvalue { i32, i1 } %741, 1, !nosanitize !45
+  br i1 %742, label %743, label %744, !prof !46, !nosanitize !45
 
-746:                                              ; preds = %741
+743:                                              ; preds = %738
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-747:                                              ; preds = %741
-  %748 = extractvalue { i32, i1 } %744, 0, !nosanitize !45
-  store i32 %748, ptr %721, align 8, !tbaa !107
-  %749 = load i64, ptr %719, align 8, !tbaa !57
-  %750 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %749, i64 %724), !nosanitize !45
-  %751 = extractvalue { i64, i1 } %750, 1, !nosanitize !45
-  br i1 %751, label %752, label %753, !prof !46, !nosanitize !45
+744:                                              ; preds = %738
+  %745 = extractvalue { i32, i1 } %741, 0, !nosanitize !45
+  store i32 %745, ptr %718, align 8, !tbaa !107
+  %746 = load i64, ptr %716, align 8, !tbaa !57
+  %747 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %746, i64 %721), !nosanitize !45
+  %748 = extractvalue { i64, i1 } %747, 1, !nosanitize !45
+  br i1 %748, label %749, label %750, !prof !46, !nosanitize !45
 
-752:                                              ; preds = %747
+749:                                              ; preds = %744
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-753:                                              ; preds = %747
-  %754 = extractvalue { i64, i1 } %750, 0, !nosanitize !45
-  store i64 %754, ptr %719, align 8, !tbaa !57
-  %755 = icmp eq i64 %754, 0
-  br i1 %755, label %756, label %759
+750:                                              ; preds = %744
+  %751 = extractvalue { i64, i1 } %747, 0, !nosanitize !45
+  store i64 %751, ptr %716, align 8, !tbaa !57
+  %752 = icmp eq i64 %751, 0
+  br i1 %752, label %753, label %756
 
-756:                                              ; preds = %753
-  %757 = getelementptr inbounds nuw i8, ptr %718, i64 16
-  %758 = load ptr, ptr %757, align 8, !tbaa !40
-  store ptr %758, ptr %730, align 8, !tbaa !58
-  br label %759
+753:                                              ; preds = %750
+  %754 = getelementptr inbounds nuw i8, ptr %715, i64 16
+  %755 = load ptr, ptr %754, align 8, !tbaa !40
+  store ptr %755, ptr %727, align 8, !tbaa !58
+  br label %756
 
-759:                                              ; preds = %756, %753, %709
-  %760 = load ptr, ptr %0, align 8, !tbaa !20
-  %761 = getelementptr inbounds nuw i8, ptr %760, i64 32
-  %762 = load i32, ptr %761, align 8, !tbaa !107
-  %763 = icmp eq i32 %762, 0
-  br i1 %763, label %765, label %764
+756:                                              ; preds = %753, %750, %706
+  %757 = load ptr, ptr %0, align 8, !tbaa !20
+  %758 = getelementptr inbounds nuw i8, ptr %757, i64 32
+  %759 = load i32, ptr %758, align 8, !tbaa !107
+  %760 = icmp eq i32 %759, 0
+  br i1 %760, label %762, label %761
 
-764:                                              ; preds = %759, %699
-  br label %765
+761:                                              ; preds = %756, %696
+  br label %762
 
-765:                                              ; preds = %764, %759, %693, %629, %361
-  %766 = phi i32 [ 1, %764 ], [ %698, %693 ], [ 0, %759 ], [ 0, %361 ], [ 0, %629 ]
-  ret i32 %766
+762:                                              ; preds = %761, %756, %690, %626, %358
+  %763 = phi i32 [ 1, %761 ], [ %695, %690 ], [ 0, %756 ], [ 0, %358 ], [ 0, %626 ]
+  ret i32 %763
 }
 
 declare void @_tr_align(ptr noundef) local_unnamed_addr #1
@@ -10945,18 +10889,18 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   %32 = getelementptr inbounds nuw i8, ptr %0, i64 192
   br label %33
 
-33:                                               ; preds = %771, %2
+33:                                               ; preds = %768, %2
   %34 = load i32, ptr %3, align 4, !tbaa !75
   %35 = icmp ult i32 %34, 262
-  br i1 %35, label %36, label %372
+  br i1 %35, label %36, label %369
 
 36:                                               ; preds = %33
   %37 = load i32, ptr %4, align 8, !tbaa !32
   %38 = zext i32 %37 to i64
   br label %39
 
-39:                                               ; preds = %318, %36
-  %40 = phi i32 [ %245, %318 ], [ %34, %36 ]
+39:                                               ; preds = %315, %36
+  %40 = phi i32 [ %242, %315 ], [ %34, %36 ]
   %41 = load i64, ptr %5, align 8, !tbaa !61
   %42 = zext nneg i32 %40 to i64
   %43 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %41, i64 %42), !nosanitize !45
@@ -11209,7 +11153,7 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   %197 = getelementptr inbounds nuw i8, ptr %196, i64 8
   %198 = load i32, ptr %197, align 8, !tbaa !81
   %199 = icmp eq i32 %198, 0
-  br i1 %199, label %323, label %200
+  br i1 %199, label %320, label %200
 
 200:                                              ; preds = %192
   %201 = load ptr, ptr %7, align 8, !tbaa !34
@@ -11219,1222 +11163,1214 @@ define internal range(i32 0, 4) i32 @deflate_fast(ptr noundef %0, i32 noundef %1
   %205 = getelementptr inbounds nuw i8, ptr %203, i64 %204
   %206 = tail call i32 @llvm.umin.i32(i32 %198, i32 %195)
   %207 = icmp eq i32 %195, 0
-  br i1 %207, label %239, label %208
+  br i1 %207, label %236, label %208
 
 208:                                              ; preds = %200
   %209 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %198, i32 %206), !nosanitize !45
-  %210 = extractvalue { i32, i1 } %209, 1, !nosanitize !45
-  br i1 %210, label %211, label %212, !prof !46, !nosanitize !45
-
-211:                                              ; preds = %208
-  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
-  unreachable, !nosanitize !45
-
-212:                                              ; preds = %208
-  %213 = extractvalue { i32, i1 } %209, 0, !nosanitize !45
-  store i32 %213, ptr %197, align 8, !tbaa !81
-  %214 = load ptr, ptr %196, align 8, !tbaa !82
-  %215 = zext i32 %206 to i64
-  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %205, ptr align 1 %214, i64 %215, i1 false)
-  %216 = getelementptr inbounds nuw i8, ptr %196, i64 56
-  %217 = load ptr, ptr %216, align 8, !tbaa !19
-  %218 = getelementptr inbounds nuw i8, ptr %217, i64 48
-  %219 = load i32, ptr %218, align 8, !tbaa !30
-  switch i32 %219, label %228 [
-    i32 1, label %220
-    i32 2, label %224
+  %210 = extractvalue { i32, i1 } %209, 0, !nosanitize !45
+  store i32 %210, ptr %197, align 8, !tbaa !81
+  %211 = load ptr, ptr %196, align 8, !tbaa !82
+  %212 = zext i32 %206 to i64
+  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %205, ptr align 1 %211, i64 %212, i1 false)
+  %213 = getelementptr inbounds nuw i8, ptr %196, i64 56
+  %214 = load ptr, ptr %213, align 8, !tbaa !19
+  %215 = getelementptr inbounds nuw i8, ptr %214, i64 48
+  %216 = load i32, ptr %215, align 8, !tbaa !30
+  switch i32 %216, label %225 [
+    i32 1, label %217
+    i32 2, label %221
   ]
 
-220:                                              ; preds = %212
-  %221 = getelementptr inbounds nuw i8, ptr %196, i64 96
-  %222 = load i64, ptr %221, align 8, !tbaa !59
-  %223 = tail call i64 @adler32(i64 noundef %222, ptr noundef %205, i32 noundef %206) #11
-  store i64 %223, ptr %221, align 8, !tbaa !59
-  br label %228
+217:                                              ; preds = %208
+  %218 = getelementptr inbounds nuw i8, ptr %196, i64 96
+  %219 = load i64, ptr %218, align 8, !tbaa !59
+  %220 = tail call i64 @adler32(i64 noundef %219, ptr noundef %205, i32 noundef %206) #11
+  store i64 %220, ptr %218, align 8, !tbaa !59
+  br label %225
 
-224:                                              ; preds = %212
-  %225 = getelementptr inbounds nuw i8, ptr %196, i64 96
-  %226 = load i64, ptr %225, align 8, !tbaa !59
-  %227 = tail call i64 @crc32(i64 noundef %226, ptr noundef %205, i32 noundef %206) #11
-  store i64 %227, ptr %225, align 8, !tbaa !59
-  br label %228
+221:                                              ; preds = %208
+  %222 = getelementptr inbounds nuw i8, ptr %196, i64 96
+  %223 = load i64, ptr %222, align 8, !tbaa !59
+  %224 = tail call i64 @crc32(i64 noundef %223, ptr noundef %205, i32 noundef %206) #11
+  store i64 %224, ptr %222, align 8, !tbaa !59
+  br label %225
 
-228:                                              ; preds = %224, %220, %212
-  %229 = load ptr, ptr %196, align 8, !tbaa !82
-  %230 = getelementptr inbounds nuw i8, ptr %229, i64 %215
-  store ptr %230, ptr %196, align 8, !tbaa !82
-  %231 = getelementptr inbounds nuw i8, ptr %196, i64 16
-  %232 = load i64, ptr %231, align 8, !tbaa !55
-  %233 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %232, i64 %215), !nosanitize !45
-  %234 = extractvalue { i64, i1 } %233, 1, !nosanitize !45
-  br i1 %234, label %235, label %236, !prof !46, !nosanitize !45
+225:                                              ; preds = %221, %217, %208
+  %226 = load ptr, ptr %196, align 8, !tbaa !82
+  %227 = getelementptr inbounds nuw i8, ptr %226, i64 %212
+  store ptr %227, ptr %196, align 8, !tbaa !82
+  %228 = getelementptr inbounds nuw i8, ptr %196, i64 16
+  %229 = load i64, ptr %228, align 8, !tbaa !55
+  %230 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %229, i64 %212), !nosanitize !45
+  %231 = extractvalue { i64, i1 } %230, 1, !nosanitize !45
+  br i1 %231, label %232, label %233, !prof !46, !nosanitize !45
 
-235:                                              ; preds = %228
+232:                                              ; preds = %225
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-236:                                              ; preds = %228
-  %237 = extractvalue { i64, i1 } %233, 0, !nosanitize !45
-  store i64 %237, ptr %231, align 8, !tbaa !55
-  %238 = load i32, ptr %3, align 4, !tbaa !75
-  br label %239
+233:                                              ; preds = %225
+  %234 = extractvalue { i64, i1 } %230, 0, !nosanitize !45
+  store i64 %234, ptr %228, align 8, !tbaa !55
+  %235 = load i32, ptr %3, align 4, !tbaa !75
+  br label %236
 
-239:                                              ; preds = %236, %200
-  %240 = phi i32 [ %193, %200 ], [ %238, %236 ]
-  %241 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %240, i32 %206), !nosanitize !45
-  %242 = extractvalue { i32, i1 } %241, 1, !nosanitize !45
-  br i1 %242, label %243, label %244, !prof !46, !nosanitize !45
+236:                                              ; preds = %233, %200
+  %237 = phi i32 [ %193, %200 ], [ %235, %233 ]
+  %238 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %237, i32 %206), !nosanitize !45
+  %239 = extractvalue { i32, i1 } %238, 1, !nosanitize !45
+  br i1 %239, label %240, label %241, !prof !46, !nosanitize !45
 
-243:                                              ; preds = %239
+240:                                              ; preds = %236
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-244:                                              ; preds = %239
-  %245 = extractvalue { i32, i1 } %241, 0, !nosanitize !45
-  store i32 %245, ptr %3, align 4, !tbaa !75
-  %246 = load i32, ptr %10, align 4, !tbaa !76
-  %247 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %245, i32 %246), !nosanitize !45
-  %248 = extractvalue { i32, i1 } %247, 1, !nosanitize !45
-  br i1 %248, label %249, label %250, !prof !46, !nosanitize !45
+241:                                              ; preds = %236
+  %242 = extractvalue { i32, i1 } %238, 0, !nosanitize !45
+  store i32 %242, ptr %3, align 4, !tbaa !75
+  %243 = load i32, ptr %10, align 4, !tbaa !76
+  %244 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %242, i32 %243), !nosanitize !45
+  %245 = extractvalue { i32, i1 } %244, 1, !nosanitize !45
+  br i1 %245, label %246, label %247, !prof !46, !nosanitize !45
 
-249:                                              ; preds = %244
+246:                                              ; preds = %241
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-250:                                              ; preds = %244
-  %251 = extractvalue { i32, i1 } %247, 0, !nosanitize !45
-  %252 = icmp ugt i32 %251, 2
-  br i1 %252, label %253, label %316
+247:                                              ; preds = %241
+  %248 = extractvalue { i32, i1 } %244, 0, !nosanitize !45
+  %249 = icmp ugt i32 %248, 2
+  br i1 %249, label %250, label %313
 
-253:                                              ; preds = %250
-  %254 = load i32, ptr %6, align 4, !tbaa !73
-  %255 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %254, i32 %246), !nosanitize !45
-  %256 = extractvalue { i32, i1 } %255, 0, !nosanitize !45
-  %257 = extractvalue { i32, i1 } %255, 1, !nosanitize !45
-  br i1 %257, label %258, label %259, !prof !46, !nosanitize !45
+250:                                              ; preds = %247
+  %251 = load i32, ptr %6, align 4, !tbaa !73
+  %252 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %251, i32 %243), !nosanitize !45
+  %253 = extractvalue { i32, i1 } %252, 0, !nosanitize !45
+  %254 = extractvalue { i32, i1 } %252, 1, !nosanitize !45
+  br i1 %254, label %255, label %256, !prof !46, !nosanitize !45
 
-258:                                              ; preds = %253
+255:                                              ; preds = %250
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-259:                                              ; preds = %253
-  %260 = load ptr, ptr %7, align 8, !tbaa !34
-  %261 = zext i32 %256 to i64
-  %262 = getelementptr inbounds nuw i8, ptr %260, i64 %261
-  %263 = load i8, ptr %262, align 1, !tbaa !8
-  %264 = zext i8 %263 to i32
-  store i32 %264, ptr %15, align 8, !tbaa !80
-  %265 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %256, i32 1), !nosanitize !45
-  %266 = extractvalue { i32, i1 } %265, 1, !nosanitize !45
-  br i1 %266, label %267, label %268, !prof !46, !nosanitize !45
+256:                                              ; preds = %250
+  %257 = load ptr, ptr %7, align 8, !tbaa !34
+  %258 = zext i32 %253 to i64
+  %259 = getelementptr inbounds nuw i8, ptr %257, i64 %258
+  %260 = load i8, ptr %259, align 1, !tbaa !8
+  %261 = zext i8 %260 to i32
+  store i32 %261, ptr %15, align 8, !tbaa !80
+  %262 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %253, i32 1), !nosanitize !45
+  %263 = extractvalue { i32, i1 } %262, 1, !nosanitize !45
+  br i1 %263, label %264, label %265, !prof !46, !nosanitize !45
 
-267:                                              ; preds = %259
+264:                                              ; preds = %256
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-268:                                              ; preds = %259
-  %269 = extractvalue { i32, i1 } %265, 0, !nosanitize !45
-  %270 = load i32, ptr %16, align 8, !tbaa !53
-  %271 = shl i32 %264, %270
-  %272 = zext i32 %269 to i64
-  %273 = getelementptr inbounds nuw i8, ptr %260, i64 %272
-  %274 = load i8, ptr %273, align 1, !tbaa !8
-  %275 = zext i8 %274 to i32
-  %276 = xor i32 %271, %275
-  %277 = load i32, ptr %17, align 4, !tbaa !52
-  %278 = and i32 %276, %277
-  store i32 %278, ptr %15, align 8, !tbaa !80
-  br label %279
+265:                                              ; preds = %256
+  %266 = extractvalue { i32, i1 } %262, 0, !nosanitize !45
+  %267 = load i32, ptr %16, align 8, !tbaa !53
+  %268 = shl i32 %261, %267
+  %269 = zext i32 %266 to i64
+  %270 = getelementptr inbounds nuw i8, ptr %257, i64 %269
+  %271 = load i8, ptr %270, align 1, !tbaa !8
+  %272 = zext i8 %271 to i32
+  %273 = xor i32 %268, %272
+  %274 = load i32, ptr %17, align 4, !tbaa !52
+  %275 = and i32 %273, %274
+  store i32 %275, ptr %15, align 8, !tbaa !80
+  br label %276
 
-279:                                              ; preds = %312, %268
-  %280 = phi i32 [ %278, %268 ], [ %297, %312 ]
-  %281 = phi i32 [ %246, %268 ], [ %308, %312 ]
-  %282 = phi i32 [ %256, %268 ], [ %313, %312 ]
-  %283 = icmp eq i32 %281, 0
-  br i1 %283, label %316, label %284
+276:                                              ; preds = %309, %265
+  %277 = phi i32 [ %275, %265 ], [ %294, %309 ]
+  %278 = phi i32 [ %243, %265 ], [ %305, %309 ]
+  %279 = phi i32 [ %253, %265 ], [ %310, %309 ]
+  %280 = icmp eq i32 %278, 0
+  br i1 %280, label %313, label %281
 
-284:                                              ; preds = %279
-  %285 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %282, i32 3), !nosanitize !45
-  %286 = extractvalue { i32, i1 } %285, 1, !nosanitize !45
-  br i1 %286, label %287, label %288, !prof !46, !nosanitize !45
+281:                                              ; preds = %276
+  %282 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %279, i32 3), !nosanitize !45
+  %283 = extractvalue { i32, i1 } %282, 1, !nosanitize !45
+  br i1 %283, label %284, label %285, !prof !46, !nosanitize !45
 
-287:                                              ; preds = %284
+284:                                              ; preds = %281
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-288:                                              ; preds = %284
-  %289 = shl i32 %280, %270
-  %290 = extractvalue { i32, i1 } %285, 0, !nosanitize !45
-  %291 = add i32 %290, -1
-  %292 = zext i32 %291 to i64
-  %293 = getelementptr inbounds nuw i8, ptr %260, i64 %292
-  %294 = load i8, ptr %293, align 1, !tbaa !8
-  %295 = zext i8 %294 to i32
-  %296 = xor i32 %289, %295
-  %297 = and i32 %296, %277
-  store i32 %297, ptr %15, align 8, !tbaa !80
-  %298 = load ptr, ptr %12, align 8, !tbaa !37
-  %299 = zext i32 %297 to i64
-  %300 = getelementptr inbounds nuw [2 x i8], ptr %298, i64 %299
-  %301 = load i16, ptr %300, align 2, !tbaa !62
-  %302 = load ptr, ptr %13, align 8, !tbaa !35
-  %303 = load i32, ptr %18, align 8, !tbaa !33
-  %304 = and i32 %303, %282
-  %305 = zext i32 %304 to i64
-  %306 = getelementptr inbounds nuw [2 x i8], ptr %302, i64 %305
-  store i16 %301, ptr %306, align 2, !tbaa !62
-  %307 = trunc i32 %282 to i16
-  store i16 %307, ptr %300, align 2, !tbaa !62
-  %308 = add i32 %281, -1
-  store i32 %308, ptr %10, align 4, !tbaa !76
-  %309 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %245, i32 %308), !nosanitize !45
-  %310 = extractvalue { i32, i1 } %309, 1, !nosanitize !45
-  br i1 %310, label %311, label %312, !prof !46, !nosanitize !45
+285:                                              ; preds = %281
+  %286 = shl i32 %277, %267
+  %287 = extractvalue { i32, i1 } %282, 0, !nosanitize !45
+  %288 = add i32 %287, -1
+  %289 = zext i32 %288 to i64
+  %290 = getelementptr inbounds nuw i8, ptr %257, i64 %289
+  %291 = load i8, ptr %290, align 1, !tbaa !8
+  %292 = zext i8 %291 to i32
+  %293 = xor i32 %286, %292
+  %294 = and i32 %293, %274
+  store i32 %294, ptr %15, align 8, !tbaa !80
+  %295 = load ptr, ptr %12, align 8, !tbaa !37
+  %296 = zext i32 %294 to i64
+  %297 = getelementptr inbounds nuw [2 x i8], ptr %295, i64 %296
+  %298 = load i16, ptr %297, align 2, !tbaa !62
+  %299 = load ptr, ptr %13, align 8, !tbaa !35
+  %300 = load i32, ptr %18, align 8, !tbaa !33
+  %301 = and i32 %300, %279
+  %302 = zext i32 %301 to i64
+  %303 = getelementptr inbounds nuw [2 x i8], ptr %299, i64 %302
+  store i16 %298, ptr %303, align 2, !tbaa !62
+  %304 = trunc i32 %279 to i16
+  store i16 %304, ptr %297, align 2, !tbaa !62
+  %305 = add i32 %278, -1
+  store i32 %305, ptr %10, align 4, !tbaa !76
+  %306 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %242, i32 %305), !nosanitize !45
+  %307 = extractvalue { i32, i1 } %306, 1, !nosanitize !45
+  br i1 %307, label %308, label %309, !prof !46, !nosanitize !45
 
-311:                                              ; preds = %288
+308:                                              ; preds = %285
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-312:                                              ; preds = %288
-  %313 = add nuw i32 %282, 1
-  %314 = extractvalue { i32, i1 } %309, 0, !nosanitize !45
-  %315 = icmp ult i32 %314, 3
-  br i1 %315, label %316, label %279, !llvm.loop !91
+309:                                              ; preds = %285
+  %310 = add nuw i32 %279, 1
+  %311 = extractvalue { i32, i1 } %306, 0, !nosanitize !45
+  %312 = icmp ult i32 %311, 3
+  br i1 %312, label %313, label %276, !llvm.loop !91
 
-316:                                              ; preds = %312, %279, %250
-  %317 = icmp ult i32 %245, 262
-  br i1 %317, label %318, label %323
+313:                                              ; preds = %309, %276, %247
+  %314 = icmp ult i32 %242, 262
+  br i1 %314, label %315, label %320
 
-318:                                              ; preds = %316
-  %319 = load ptr, ptr %0, align 8, !tbaa !20
-  %320 = getelementptr inbounds nuw i8, ptr %319, i64 8
-  %321 = load i32, ptr %320, align 8, !tbaa !81
-  %322 = icmp eq i32 %321, 0
-  br i1 %322, label %323, label %39, !llvm.loop !92
+315:                                              ; preds = %313
+  %316 = load ptr, ptr %0, align 8, !tbaa !20
+  %317 = getelementptr inbounds nuw i8, ptr %316, i64 8
+  %318 = load i32, ptr %317, align 8, !tbaa !81
+  %319 = icmp eq i32 %318, 0
+  br i1 %319, label %320, label %39, !llvm.loop !92
 
-323:                                              ; preds = %318, %316, %192
-  %324 = phi i32 [ %245, %318 ], [ %245, %316 ], [ %193, %192 ]
-  %325 = load i64, ptr %19, align 8, !tbaa !38
-  %326 = load i64, ptr %5, align 8, !tbaa !61
-  %327 = icmp ult i64 %325, %326
-  br i1 %327, label %328, label %364
+320:                                              ; preds = %315, %313, %192
+  %321 = phi i32 [ %242, %315 ], [ %242, %313 ], [ %193, %192 ]
+  %322 = load i64, ptr %19, align 8, !tbaa !38
+  %323 = load i64, ptr %5, align 8, !tbaa !61
+  %324 = icmp ult i64 %322, %323
+  br i1 %324, label %325, label %361
 
-328:                                              ; preds = %323
-  %329 = load i32, ptr %6, align 4, !tbaa !73
-  %330 = zext i32 %329 to i64
-  %331 = zext i32 %324 to i64
-  %332 = add nuw nsw i64 %331, %330
-  %333 = icmp ult i64 %325, %332
-  br i1 %333, label %334, label %344
+325:                                              ; preds = %320
+  %326 = load i32, ptr %6, align 4, !tbaa !73
+  %327 = zext i32 %326 to i64
+  %328 = zext i32 %321 to i64
+  %329 = add nuw nsw i64 %328, %327
+  %330 = icmp ult i64 %322, %329
+  br i1 %330, label %331, label %341
 
-334:                                              ; preds = %328
-  %335 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %326, i64 %332), !nosanitize !45
-  %336 = extractvalue { i64, i1 } %335, 1, !nosanitize !45
-  br i1 %336, label %337, label %338, !prof !46, !nosanitize !45
+331:                                              ; preds = %325
+  %332 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %323, i64 %329), !nosanitize !45
+  %333 = extractvalue { i64, i1 } %332, 1, !nosanitize !45
+  br i1 %333, label %334, label %335, !prof !46, !nosanitize !45
 
-337:                                              ; preds = %334
+334:                                              ; preds = %331
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-338:                                              ; preds = %334
-  %339 = extractvalue { i64, i1 } %335, 0, !nosanitize !45
-  %340 = tail call i64 @llvm.umin.i64(i64 %339, i64 258)
-  %341 = load ptr, ptr %7, align 8, !tbaa !34
-  %342 = getelementptr inbounds nuw i8, ptr %341, i64 %332
-  tail call void @llvm.memset.p0.i64(ptr nonnull align 1 %342, i8 0, i64 %340, i1 false)
-  %343 = add nuw nsw i64 %340, %332
+335:                                              ; preds = %331
+  %336 = extractvalue { i64, i1 } %332, 0, !nosanitize !45
+  %337 = tail call i64 @llvm.umin.i64(i64 %336, i64 258)
+  %338 = load ptr, ptr %7, align 8, !tbaa !34
+  %339 = getelementptr inbounds nuw i8, ptr %338, i64 %329
+  tail call void @llvm.memset.p0.i64(ptr nonnull align 1 %339, i8 0, i64 %337, i1 false)
+  %340 = add nuw nsw i64 %337, %329
+  br label %358
+
+341:                                              ; preds = %325
+  %342 = add nuw nsw i64 %329, 258
+  %343 = icmp ult i64 %322, %342
+  br i1 %343, label %344, label %361
+
+344:                                              ; preds = %341
+  %345 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %323, i64 %322), !nosanitize !45
+  %346 = sub nuw nsw i64 %342, %322
+  %347 = extractvalue { i64, i1 } %345, 0, !nosanitize !45
+  %348 = tail call i64 @llvm.umin.i64(i64 %346, i64 %347)
+  %349 = load ptr, ptr %7, align 8, !tbaa !34
+  %350 = getelementptr inbounds nuw i8, ptr %349, i64 %322
+  %351 = and i64 %348, 4294967295
+  tail call void @llvm.memset.p0.i64(ptr align 1 %350, i8 0, i64 %351, i1 false)
+  %352 = load i64, ptr %19, align 8, !tbaa !38
+  %353 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %352, i64 %348), !nosanitize !45
+  %354 = extractvalue { i64, i1 } %353, 1, !nosanitize !45
+  br i1 %354, label %355, label %356, !prof !46, !nosanitize !45
+
+355:                                              ; preds = %344
+  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
+  unreachable, !nosanitize !45
+
+356:                                              ; preds = %344
+  %357 = extractvalue { i64, i1 } %353, 0, !nosanitize !45
+  br label %358
+
+358:                                              ; preds = %356, %335
+  %359 = phi i64 [ %340, %335 ], [ %357, %356 ]
+  store i64 %359, ptr %19, align 8, !tbaa !38
+  %360 = load i32, ptr %3, align 4, !tbaa !75
   br label %361
 
-344:                                              ; preds = %328
-  %345 = add nuw nsw i64 %332, 258
-  %346 = icmp ult i64 %325, %345
-  br i1 %346, label %347, label %364
+361:                                              ; preds = %358, %341, %320
+  %362 = phi i32 [ %321, %320 ], [ %321, %341 ], [ %360, %358 ]
+  %363 = icmp ult i32 %362, 262
+  %364 = and i1 %20, %363
+  br i1 %364, label %973, label %365
 
-347:                                              ; preds = %344
-  %348 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %326, i64 %325), !nosanitize !45
-  %349 = sub nuw nsw i64 %345, %325
-  %350 = extractvalue { i64, i1 } %348, 0, !nosanitize !45
-  %351 = tail call i64 @llvm.umin.i64(i64 %349, i64 %350)
-  %352 = load ptr, ptr %7, align 8, !tbaa !34
-  %353 = getelementptr inbounds nuw i8, ptr %352, i64 %325
-  %354 = and i64 %351, 4294967295
-  tail call void @llvm.memset.p0.i64(ptr align 1 %353, i8 0, i64 %354, i1 false)
-  %355 = load i64, ptr %19, align 8, !tbaa !38
-  %356 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %355, i64 %351), !nosanitize !45
-  %357 = extractvalue { i64, i1 } %356, 1, !nosanitize !45
-  br i1 %357, label %358, label %359, !prof !46, !nosanitize !45
+365:                                              ; preds = %361
+  %366 = icmp eq i32 %362, 0
+  br i1 %366, label %842, label %367
 
-358:                                              ; preds = %347
+367:                                              ; preds = %365
+  %368 = icmp ugt i32 %362, 2
+  br i1 %368, label %369, label %568
+
+369:                                              ; preds = %367, %33
+  %370 = phi i32 [ %362, %367 ], [ %34, %33 ]
+  %371 = load i32, ptr %6, align 4, !tbaa !73
+  %372 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %371, i32 2), !nosanitize !45
+  %373 = extractvalue { i32, i1 } %372, 1, !nosanitize !45
+  br i1 %373, label %374, label %375, !prof !46, !nosanitize !45
+
+374:                                              ; preds = %369
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-359:                                              ; preds = %347
-  %360 = extractvalue { i64, i1 } %356, 0, !nosanitize !45
-  br label %361
+375:                                              ; preds = %369
+  %376 = extractvalue { i32, i1 } %372, 0, !nosanitize !45
+  %377 = load ptr, ptr %7, align 8, !tbaa !34
+  %378 = load i32, ptr %15, align 8, !tbaa !80
+  %379 = load i32, ptr %16, align 8, !tbaa !53
+  %380 = shl i32 %378, %379
+  %381 = zext i32 %376 to i64
+  %382 = getelementptr inbounds nuw i8, ptr %377, i64 %381
+  %383 = load i8, ptr %382, align 1, !tbaa !8
+  %384 = zext i8 %383 to i32
+  %385 = xor i32 %380, %384
+  %386 = load i32, ptr %17, align 4, !tbaa !52
+  %387 = and i32 %385, %386
+  store i32 %387, ptr %15, align 8, !tbaa !80
+  %388 = load ptr, ptr %12, align 8, !tbaa !37
+  %389 = zext i32 %387 to i64
+  %390 = getelementptr inbounds nuw [2 x i8], ptr %388, i64 %389
+  %391 = load i16, ptr %390, align 2, !tbaa !62
+  %392 = load ptr, ptr %13, align 8, !tbaa !35
+  %393 = load i32, ptr %18, align 8, !tbaa !33
+  %394 = and i32 %393, %371
+  %395 = zext i32 %394 to i64
+  %396 = getelementptr inbounds nuw [2 x i8], ptr %392, i64 %395
+  store i16 %391, ptr %396, align 2, !tbaa !62
+  %397 = zext i16 %391 to i32
+  %398 = trunc i32 %371 to i16
+  store i16 %398, ptr %390, align 2, !tbaa !62
+  %399 = icmp eq i16 %391, 0
+  br i1 %399, label %568, label %400
 
-361:                                              ; preds = %359, %338
-  %362 = phi i64 [ %343, %338 ], [ %360, %359 ]
-  store i64 %362, ptr %19, align 8, !tbaa !38
-  %363 = load i32, ptr %3, align 4, !tbaa !75
-  br label %364
+400:                                              ; preds = %375
+  %401 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %371, i32 %397), !nosanitize !45
+  %402 = extractvalue { i32, i1 } %401, 0, !nosanitize !45
+  %403 = extractvalue { i32, i1 } %401, 1, !nosanitize !45
+  br i1 %403, label %404, label %405, !prof !46, !nosanitize !45
 
-364:                                              ; preds = %361, %344, %323
-  %365 = phi i32 [ %324, %323 ], [ %324, %344 ], [ %363, %361 ]
-  %366 = icmp ult i32 %365, 262
-  %367 = and i1 %20, %366
-  br i1 %367, label %976, label %368
-
-368:                                              ; preds = %364
-  %369 = icmp eq i32 %365, 0
-  br i1 %369, label %845, label %370
-
-370:                                              ; preds = %368
-  %371 = icmp ugt i32 %365, 2
-  br i1 %371, label %372, label %571
-
-372:                                              ; preds = %370, %33
-  %373 = phi i32 [ %365, %370 ], [ %34, %33 ]
-  %374 = load i32, ptr %6, align 4, !tbaa !73
-  %375 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %374, i32 2), !nosanitize !45
-  %376 = extractvalue { i32, i1 } %375, 1, !nosanitize !45
-  br i1 %376, label %377, label %378, !prof !46, !nosanitize !45
-
-377:                                              ; preds = %372
-  tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
-  unreachable, !nosanitize !45
-
-378:                                              ; preds = %372
-  %379 = extractvalue { i32, i1 } %375, 0, !nosanitize !45
-  %380 = load ptr, ptr %7, align 8, !tbaa !34
-  %381 = load i32, ptr %15, align 8, !tbaa !80
-  %382 = load i32, ptr %16, align 8, !tbaa !53
-  %383 = shl i32 %381, %382
-  %384 = zext i32 %379 to i64
-  %385 = getelementptr inbounds nuw i8, ptr %380, i64 %384
-  %386 = load i8, ptr %385, align 1, !tbaa !8
-  %387 = zext i8 %386 to i32
-  %388 = xor i32 %383, %387
-  %389 = load i32, ptr %17, align 4, !tbaa !52
-  %390 = and i32 %388, %389
-  store i32 %390, ptr %15, align 8, !tbaa !80
-  %391 = load ptr, ptr %12, align 8, !tbaa !37
-  %392 = zext i32 %390 to i64
-  %393 = getelementptr inbounds nuw [2 x i8], ptr %391, i64 %392
-  %394 = load i16, ptr %393, align 2, !tbaa !62
-  %395 = load ptr, ptr %13, align 8, !tbaa !35
-  %396 = load i32, ptr %18, align 8, !tbaa !33
-  %397 = and i32 %396, %374
-  %398 = zext i32 %397 to i64
-  %399 = getelementptr inbounds nuw [2 x i8], ptr %395, i64 %398
-  store i16 %394, ptr %399, align 2, !tbaa !62
-  %400 = zext i16 %394 to i32
-  %401 = trunc i32 %374 to i16
-  store i16 %401, ptr %393, align 2, !tbaa !62
-  %402 = icmp eq i16 %394, 0
-  br i1 %402, label %571, label %403
-
-403:                                              ; preds = %378
-  %404 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %374, i32 %400), !nosanitize !45
-  %405 = extractvalue { i32, i1 } %404, 0, !nosanitize !45
-  %406 = extractvalue { i32, i1 } %404, 1, !nosanitize !45
-  br i1 %406, label %407, label %408, !prof !46, !nosanitize !45
-
-407:                                              ; preds = %403
+404:                                              ; preds = %400
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-408:                                              ; preds = %403
-  %409 = load i32, ptr %4, align 8, !tbaa !32
-  %410 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %409, i32 262), !nosanitize !45
-  %411 = extractvalue { i32, i1 } %410, 1, !nosanitize !45
-  br i1 %411, label %412, label %413, !prof !46, !nosanitize !45
+405:                                              ; preds = %400
+  %406 = load i32, ptr %4, align 8, !tbaa !32
+  %407 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %406, i32 262), !nosanitize !45
+  %408 = extractvalue { i32, i1 } %407, 1, !nosanitize !45
+  br i1 %408, label %409, label %410, !prof !46, !nosanitize !45
 
-412:                                              ; preds = %408
+409:                                              ; preds = %405
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-413:                                              ; preds = %408
-  %414 = extractvalue { i32, i1 } %410, 0, !nosanitize !45
-  %415 = icmp ugt i32 %405, %414
-  br i1 %415, label %571, label %416
+410:                                              ; preds = %405
+  %411 = extractvalue { i32, i1 } %407, 0, !nosanitize !45
+  %412 = icmp ugt i32 %402, %411
+  br i1 %412, label %568, label %413
 
-416:                                              ; preds = %413
-  %417 = zext i32 %374 to i64
-  %418 = getelementptr inbounds nuw i8, ptr %380, i64 %417
-  %419 = load i32, ptr %21, align 8, !tbaa !70
-  %420 = load i32, ptr %22, align 8, !tbaa !77
-  %421 = load i32, ptr %23, align 4, !tbaa !72
-  %422 = tail call i32 @llvm.usub.sat.i32(i32 %374, i32 %414)
-  %423 = getelementptr inbounds nuw i8, ptr %418, i64 258
-  %424 = sext i32 %420 to i64
-  %425 = getelementptr i8, ptr %418, i64 %424
-  %426 = getelementptr i8, ptr %425, i64 -1
-  %427 = load i8, ptr %426, align 1, !tbaa !8
-  %428 = load i8, ptr %425, align 1, !tbaa !8
-  %429 = load i32, ptr %24, align 4, !tbaa !68
-  %430 = icmp ult i32 %420, %429
-  %431 = lshr i32 %421, 2
-  %432 = select i1 %430, i32 %421, i32 %431
-  %433 = tail call i32 @llvm.umin.i32(i32 %419, i32 %373)
-  %434 = getelementptr inbounds nuw i8, ptr %418, i64 1
-  %435 = ptrtoint ptr %423 to i64
-  br label %436
+413:                                              ; preds = %410
+  %414 = zext i32 %371 to i64
+  %415 = getelementptr inbounds nuw i8, ptr %377, i64 %414
+  %416 = load i32, ptr %21, align 8, !tbaa !70
+  %417 = load i32, ptr %22, align 8, !tbaa !77
+  %418 = load i32, ptr %23, align 4, !tbaa !72
+  %419 = tail call i32 @llvm.usub.sat.i32(i32 %371, i32 %411)
+  %420 = getelementptr inbounds nuw i8, ptr %415, i64 258
+  %421 = sext i32 %417 to i64
+  %422 = getelementptr i8, ptr %415, i64 %421
+  %423 = getelementptr i8, ptr %422, i64 -1
+  %424 = load i8, ptr %423, align 1, !tbaa !8
+  %425 = load i8, ptr %422, align 1, !tbaa !8
+  %426 = load i32, ptr %24, align 4, !tbaa !68
+  %427 = icmp ult i32 %417, %426
+  %428 = lshr i32 %418, 2
+  %429 = select i1 %427, i32 %418, i32 %428
+  %430 = tail call i32 @llvm.umin.i32(i32 %416, i32 %370)
+  %431 = getelementptr inbounds nuw i8, ptr %415, i64 1
+  %432 = ptrtoint ptr %420 to i64
+  br label %433
 
-436:                                              ; preds = %565, %416
-  %437 = phi i32 [ %420, %416 ], [ %552, %565 ]
-  %438 = phi i32 [ %432, %416 ], [ %566, %565 ]
-  %439 = phi i32 [ %400, %416 ], [ %559, %565 ]
-  %440 = phi i8 [ %427, %416 ], [ %553, %565 ]
-  %441 = phi i8 [ %428, %416 ], [ %554, %565 ]
-  %442 = zext nneg i32 %439 to i64
-  %443 = getelementptr inbounds nuw i8, ptr %380, i64 %442
-  %444 = sext i32 %437 to i64
-  %445 = getelementptr inbounds i8, ptr %443, i64 %444
-  %446 = load i8, ptr %445, align 1, !tbaa !8
-  %447 = icmp eq i8 %446, %441
-  br i1 %447, label %448, label %551
+433:                                              ; preds = %562, %413
+  %434 = phi i32 [ %417, %413 ], [ %549, %562 ]
+  %435 = phi i32 [ %429, %413 ], [ %563, %562 ]
+  %436 = phi i32 [ %397, %413 ], [ %556, %562 ]
+  %437 = phi i8 [ %424, %413 ], [ %550, %562 ]
+  %438 = phi i8 [ %425, %413 ], [ %551, %562 ]
+  %439 = zext nneg i32 %436 to i64
+  %440 = getelementptr inbounds nuw i8, ptr %377, i64 %439
+  %441 = sext i32 %434 to i64
+  %442 = getelementptr inbounds i8, ptr %440, i64 %441
+  %443 = load i8, ptr %442, align 1, !tbaa !8
+  %444 = icmp eq i8 %443, %438
+  br i1 %444, label %445, label %548
 
-448:                                              ; preds = %436
-  %449 = getelementptr i8, ptr %445, i64 -1
-  %450 = load i8, ptr %449, align 1, !tbaa !8
-  %451 = icmp eq i8 %450, %440
-  br i1 %451, label %452, label %551
+445:                                              ; preds = %433
+  %446 = getelementptr i8, ptr %442, i64 -1
+  %447 = load i8, ptr %446, align 1, !tbaa !8
+  %448 = icmp eq i8 %447, %437
+  br i1 %448, label %449, label %548
 
-452:                                              ; preds = %448
-  %453 = load i8, ptr %443, align 1, !tbaa !8
-  %454 = load i8, ptr %418, align 1, !tbaa !8
-  %455 = icmp eq i8 %453, %454
-  br i1 %455, label %456, label %551
+449:                                              ; preds = %445
+  %450 = load i8, ptr %440, align 1, !tbaa !8
+  %451 = load i8, ptr %415, align 1, !tbaa !8
+  %452 = icmp eq i8 %450, %451
+  br i1 %452, label %453, label %548
 
-456:                                              ; preds = %452
-  %457 = getelementptr inbounds nuw i8, ptr %443, i64 1
-  %458 = load i8, ptr %457, align 1, !tbaa !8
-  %459 = load i8, ptr %434, align 1, !tbaa !8
-  %460 = icmp eq i8 %458, %459
-  br i1 %460, label %461, label %551
+453:                                              ; preds = %449
+  %454 = getelementptr inbounds nuw i8, ptr %440, i64 1
+  %455 = load i8, ptr %454, align 1, !tbaa !8
+  %456 = load i8, ptr %431, align 1, !tbaa !8
+  %457 = icmp eq i8 %455, %456
+  br i1 %457, label %458, label %548
 
-461:                                              ; preds = %456
-  %462 = getelementptr inbounds nuw i8, ptr %443, i64 2
-  br label %463
+458:                                              ; preds = %453
+  %459 = getelementptr inbounds nuw i8, ptr %440, i64 2
+  br label %460
 
-463:                                              ; preds = %508, %461
-  %464 = phi ptr [ %462, %461 ], [ %512, %508 ]
-  %465 = phi i64 [ 2, %461 ], [ %509, %508 ]
-  %466 = getelementptr inbounds nuw i8, ptr %418, i64 %465
-  %467 = getelementptr inbounds nuw i8, ptr %466, i64 1
-  %468 = load i8, ptr %467, align 1, !tbaa !8
-  %469 = getelementptr inbounds nuw i8, ptr %464, i64 1
-  %470 = load i8, ptr %469, align 1, !tbaa !8
-  %471 = icmp eq i8 %468, %470
-  br i1 %471, label %472, label %517
+460:                                              ; preds = %505, %458
+  %461 = phi ptr [ %459, %458 ], [ %509, %505 ]
+  %462 = phi i64 [ 2, %458 ], [ %506, %505 ]
+  %463 = getelementptr inbounds nuw i8, ptr %415, i64 %462
+  %464 = getelementptr inbounds nuw i8, ptr %463, i64 1
+  %465 = load i8, ptr %464, align 1, !tbaa !8
+  %466 = getelementptr inbounds nuw i8, ptr %461, i64 1
+  %467 = load i8, ptr %466, align 1, !tbaa !8
+  %468 = icmp eq i8 %465, %467
+  br i1 %468, label %469, label %514
 
-472:                                              ; preds = %463
-  %473 = getelementptr inbounds nuw i8, ptr %466, i64 2
-  %474 = load i8, ptr %473, align 1, !tbaa !8
-  %475 = getelementptr inbounds nuw i8, ptr %464, i64 2
-  %476 = load i8, ptr %475, align 1, !tbaa !8
-  %477 = icmp eq i8 %474, %476
-  br i1 %477, label %478, label %519
+469:                                              ; preds = %460
+  %470 = getelementptr inbounds nuw i8, ptr %463, i64 2
+  %471 = load i8, ptr %470, align 1, !tbaa !8
+  %472 = getelementptr inbounds nuw i8, ptr %461, i64 2
+  %473 = load i8, ptr %472, align 1, !tbaa !8
+  %474 = icmp eq i8 %471, %473
+  br i1 %474, label %475, label %516
 
-478:                                              ; preds = %472
-  %479 = getelementptr inbounds nuw i8, ptr %466, i64 3
-  %480 = load i8, ptr %479, align 1, !tbaa !8
-  %481 = getelementptr inbounds nuw i8, ptr %464, i64 3
-  %482 = load i8, ptr %481, align 1, !tbaa !8
-  %483 = icmp eq i8 %480, %482
-  br i1 %483, label %484, label %521
+475:                                              ; preds = %469
+  %476 = getelementptr inbounds nuw i8, ptr %463, i64 3
+  %477 = load i8, ptr %476, align 1, !tbaa !8
+  %478 = getelementptr inbounds nuw i8, ptr %461, i64 3
+  %479 = load i8, ptr %478, align 1, !tbaa !8
+  %480 = icmp eq i8 %477, %479
+  br i1 %480, label %481, label %518
 
-484:                                              ; preds = %478
-  %485 = getelementptr inbounds nuw i8, ptr %466, i64 4
-  %486 = load i8, ptr %485, align 1, !tbaa !8
-  %487 = getelementptr inbounds nuw i8, ptr %464, i64 4
-  %488 = load i8, ptr %487, align 1, !tbaa !8
-  %489 = icmp eq i8 %486, %488
-  br i1 %489, label %490, label %523
+481:                                              ; preds = %475
+  %482 = getelementptr inbounds nuw i8, ptr %463, i64 4
+  %483 = load i8, ptr %482, align 1, !tbaa !8
+  %484 = getelementptr inbounds nuw i8, ptr %461, i64 4
+  %485 = load i8, ptr %484, align 1, !tbaa !8
+  %486 = icmp eq i8 %483, %485
+  br i1 %486, label %487, label %520
 
-490:                                              ; preds = %484
-  %491 = getelementptr inbounds nuw i8, ptr %466, i64 5
-  %492 = load i8, ptr %491, align 1, !tbaa !8
-  %493 = getelementptr inbounds nuw i8, ptr %464, i64 5
-  %494 = load i8, ptr %493, align 1, !tbaa !8
-  %495 = icmp eq i8 %492, %494
-  br i1 %495, label %496, label %525
+487:                                              ; preds = %481
+  %488 = getelementptr inbounds nuw i8, ptr %463, i64 5
+  %489 = load i8, ptr %488, align 1, !tbaa !8
+  %490 = getelementptr inbounds nuw i8, ptr %461, i64 5
+  %491 = load i8, ptr %490, align 1, !tbaa !8
+  %492 = icmp eq i8 %489, %491
+  br i1 %492, label %493, label %522
 
-496:                                              ; preds = %490
-  %497 = getelementptr inbounds nuw i8, ptr %466, i64 6
-  %498 = load i8, ptr %497, align 1, !tbaa !8
-  %499 = getelementptr inbounds nuw i8, ptr %464, i64 6
-  %500 = load i8, ptr %499, align 1, !tbaa !8
-  %501 = icmp eq i8 %498, %500
-  br i1 %501, label %502, label %527
+493:                                              ; preds = %487
+  %494 = getelementptr inbounds nuw i8, ptr %463, i64 6
+  %495 = load i8, ptr %494, align 1, !tbaa !8
+  %496 = getelementptr inbounds nuw i8, ptr %461, i64 6
+  %497 = load i8, ptr %496, align 1, !tbaa !8
+  %498 = icmp eq i8 %495, %497
+  br i1 %498, label %499, label %524
 
-502:                                              ; preds = %496
-  %503 = getelementptr inbounds nuw i8, ptr %466, i64 7
-  %504 = load i8, ptr %503, align 1, !tbaa !8
-  %505 = getelementptr inbounds nuw i8, ptr %464, i64 7
-  %506 = load i8, ptr %505, align 1, !tbaa !8
-  %507 = icmp eq i8 %504, %506
-  br i1 %507, label %508, label %529
+499:                                              ; preds = %493
+  %500 = getelementptr inbounds nuw i8, ptr %463, i64 7
+  %501 = load i8, ptr %500, align 1, !tbaa !8
+  %502 = getelementptr inbounds nuw i8, ptr %461, i64 7
+  %503 = load i8, ptr %502, align 1, !tbaa !8
+  %504 = icmp eq i8 %501, %503
+  br i1 %504, label %505, label %526
 
-508:                                              ; preds = %502
-  %509 = add nuw nsw i64 %465, 8
-  %510 = getelementptr inbounds nuw i8, ptr %418, i64 %509
-  %511 = load i8, ptr %510, align 1, !tbaa !8
-  %512 = getelementptr inbounds nuw i8, ptr %464, i64 8
-  %513 = load i8, ptr %512, align 1, !tbaa !8
-  %514 = icmp eq i8 %511, %513
-  %515 = icmp samesign ult i64 %465, 250
-  %516 = select i1 %514, i1 %515, i1 false
-  br i1 %516, label %463, label %531, !llvm.loop !152
+505:                                              ; preds = %499
+  %506 = add nuw nsw i64 %462, 8
+  %507 = getelementptr inbounds nuw i8, ptr %415, i64 %506
+  %508 = load i8, ptr %507, align 1, !tbaa !8
+  %509 = getelementptr inbounds nuw i8, ptr %461, i64 8
+  %510 = load i8, ptr %509, align 1, !tbaa !8
+  %511 = icmp eq i8 %508, %510
+  %512 = icmp samesign ult i64 %462, 250
+  %513 = select i1 %511, i1 %512, i1 false
+  br i1 %513, label %460, label %528, !llvm.loop !152
 
-517:                                              ; preds = %463
-  %518 = getelementptr inbounds nuw i8, ptr %466, i64 1
-  br label %533
+514:                                              ; preds = %460
+  %515 = getelementptr inbounds nuw i8, ptr %463, i64 1
+  br label %530
 
-519:                                              ; preds = %472
-  %520 = getelementptr inbounds nuw i8, ptr %466, i64 2
-  br label %533
+516:                                              ; preds = %469
+  %517 = getelementptr inbounds nuw i8, ptr %463, i64 2
+  br label %530
 
-521:                                              ; preds = %478
-  %522 = getelementptr inbounds nuw i8, ptr %466, i64 3
-  br label %533
+518:                                              ; preds = %475
+  %519 = getelementptr inbounds nuw i8, ptr %463, i64 3
+  br label %530
 
-523:                                              ; preds = %484
-  %524 = getelementptr inbounds nuw i8, ptr %466, i64 4
-  br label %533
+520:                                              ; preds = %481
+  %521 = getelementptr inbounds nuw i8, ptr %463, i64 4
+  br label %530
 
-525:                                              ; preds = %490
-  %526 = getelementptr inbounds nuw i8, ptr %466, i64 5
-  br label %533
+522:                                              ; preds = %487
+  %523 = getelementptr inbounds nuw i8, ptr %463, i64 5
+  br label %530
 
-527:                                              ; preds = %496
-  %528 = getelementptr inbounds nuw i8, ptr %466, i64 6
-  br label %533
+524:                                              ; preds = %493
+  %525 = getelementptr inbounds nuw i8, ptr %463, i64 6
+  br label %530
 
-529:                                              ; preds = %502
-  %530 = getelementptr inbounds nuw i8, ptr %466, i64 7
-  br label %533
+526:                                              ; preds = %499
+  %527 = getelementptr inbounds nuw i8, ptr %463, i64 7
+  br label %530
 
-531:                                              ; preds = %508
-  %532 = getelementptr inbounds nuw i8, ptr %418, i64 %509
-  br label %533
+528:                                              ; preds = %505
+  %529 = getelementptr inbounds nuw i8, ptr %415, i64 %506
+  br label %530
 
-533:                                              ; preds = %531, %529, %527, %525, %523, %521, %519, %517
-  %534 = phi ptr [ %520, %519 ], [ %522, %521 ], [ %518, %517 ], [ %530, %529 ], [ %528, %527 ], [ %526, %525 ], [ %524, %523 ], [ %532, %531 ]
-  %535 = ptrtoint ptr %534 to i64
-  %536 = sub i64 %535, %435
-  %537 = trunc i64 %536 to i32
-  %538 = add i32 %537, 258
-  %539 = icmp sgt i32 %538, %437
-  br i1 %539, label %540, label %551
+530:                                              ; preds = %528, %526, %524, %522, %520, %518, %516, %514
+  %531 = phi ptr [ %517, %516 ], [ %519, %518 ], [ %515, %514 ], [ %527, %526 ], [ %525, %524 ], [ %523, %522 ], [ %521, %520 ], [ %529, %528 ]
+  %532 = ptrtoint ptr %531 to i64
+  %533 = sub i64 %532, %432
+  %534 = trunc i64 %533 to i32
+  %535 = add i32 %534, 258
+  %536 = icmp sgt i32 %535, %434
+  br i1 %536, label %537, label %548
 
-540:                                              ; preds = %533
-  store i32 %439, ptr %8, align 8, !tbaa !83
-  %541 = icmp slt i32 %538, %433
-  br i1 %541, label %542, label %568
+537:                                              ; preds = %530
+  store i32 %436, ptr %8, align 8, !tbaa !83
+  %538 = icmp slt i32 %535, %430
+  br i1 %538, label %539, label %565
 
-542:                                              ; preds = %540
-  %543 = shl i64 %536, 32
-  %544 = add i64 %543, 1103806595072
-  %545 = ashr exact i64 %544, 32
-  %546 = getelementptr inbounds i8, ptr %418, i64 %545
+539:                                              ; preds = %537
+  %540 = shl i64 %533, 32
+  %541 = add i64 %540, 1103806595072
+  %542 = ashr exact i64 %541, 32
+  %543 = getelementptr inbounds i8, ptr %415, i64 %542
+  %544 = load i8, ptr %543, align 1, !tbaa !8
+  %545 = sext i32 %535 to i64
+  %546 = getelementptr inbounds i8, ptr %415, i64 %545
   %547 = load i8, ptr %546, align 1, !tbaa !8
-  %548 = sext i32 %538 to i64
-  %549 = getelementptr inbounds i8, ptr %418, i64 %548
-  %550 = load i8, ptr %549, align 1, !tbaa !8
-  br label %551
+  br label %548
 
-551:                                              ; preds = %542, %533, %456, %452, %448, %436
-  %552 = phi i32 [ %437, %436 ], [ %437, %448 ], [ %437, %452 ], [ %437, %456 ], [ %538, %542 ], [ %437, %533 ]
-  %553 = phi i8 [ %440, %436 ], [ %440, %448 ], [ %440, %452 ], [ %440, %456 ], [ %547, %542 ], [ %440, %533 ]
-  %554 = phi i8 [ %441, %436 ], [ %441, %448 ], [ %441, %452 ], [ %441, %456 ], [ %550, %542 ], [ %441, %533 ]
-  %555 = and i32 %439, %396
-  %556 = zext nneg i32 %555 to i64
-  %557 = getelementptr inbounds nuw [2 x i8], ptr %395, i64 %556
-  %558 = load i16, ptr %557, align 2, !tbaa !62
-  %559 = zext i16 %558 to i32
-  %560 = icmp ult i32 %422, %559
-  br i1 %560, label %561, label %568
+548:                                              ; preds = %539, %530, %453, %449, %445, %433
+  %549 = phi i32 [ %434, %433 ], [ %434, %445 ], [ %434, %449 ], [ %434, %453 ], [ %535, %539 ], [ %434, %530 ]
+  %550 = phi i8 [ %437, %433 ], [ %437, %445 ], [ %437, %449 ], [ %437, %453 ], [ %544, %539 ], [ %437, %530 ]
+  %551 = phi i8 [ %438, %433 ], [ %438, %445 ], [ %438, %449 ], [ %438, %453 ], [ %547, %539 ], [ %438, %530 ]
+  %552 = and i32 %436, %393
+  %553 = zext nneg i32 %552 to i64
+  %554 = getelementptr inbounds nuw [2 x i8], ptr %392, i64 %553
+  %555 = load i16, ptr %554, align 2, !tbaa !62
+  %556 = zext i16 %555 to i32
+  %557 = icmp ult i32 %419, %556
+  br i1 %557, label %558, label %565
 
-561:                                              ; preds = %551
-  %562 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %438, i32 1), !nosanitize !45
-  %563 = extractvalue { i32, i1 } %562, 1, !nosanitize !45
-  br i1 %563, label %564, label %565, !prof !46, !nosanitize !45
+558:                                              ; preds = %548
+  %559 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %435, i32 1), !nosanitize !45
+  %560 = extractvalue { i32, i1 } %559, 1, !nosanitize !45
+  br i1 %560, label %561, label %562, !prof !46, !nosanitize !45
 
-564:                                              ; preds = %561
+561:                                              ; preds = %558
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-565:                                              ; preds = %561
-  %566 = extractvalue { i32, i1 } %562, 0, !nosanitize !45
-  %567 = icmp eq i32 %566, 0
-  br i1 %567, label %568, label %436, !llvm.loop !153
+562:                                              ; preds = %558
+  %563 = extractvalue { i32, i1 } %559, 0, !nosanitize !45
+  %564 = icmp eq i32 %563, 0
+  br i1 %564, label %565, label %433, !llvm.loop !153
 
-568:                                              ; preds = %565, %551, %540
-  %569 = phi i32 [ %552, %565 ], [ %552, %551 ], [ %538, %540 ]
-  %570 = tail call i32 @llvm.umin.i32(i32 %569, i32 %373)
-  store i32 %570, ptr %25, align 8, !tbaa !78
-  br label %573
+565:                                              ; preds = %562, %548, %537
+  %566 = phi i32 [ %549, %562 ], [ %549, %548 ], [ %535, %537 ]
+  %567 = tail call i32 @llvm.umin.i32(i32 %566, i32 %370)
+  store i32 %567, ptr %25, align 8, !tbaa !78
+  br label %570
 
-571:                                              ; preds = %413, %378, %370
-  %572 = load i32, ptr %25, align 8, !tbaa !78
-  br label %573
+568:                                              ; preds = %410, %375, %367
+  %569 = load i32, ptr %25, align 8, !tbaa !78
+  br label %570
 
-573:                                              ; preds = %571, %568
-  %574 = phi i32 [ %572, %571 ], [ %570, %568 ]
-  %575 = icmp ugt i32 %574, 2
-  br i1 %575, label %576, label %719
+570:                                              ; preds = %568, %565
+  %571 = phi i32 [ %569, %568 ], [ %567, %565 ]
+  %572 = icmp ugt i32 %571, 2
+  br i1 %572, label %573, label %716
 
-576:                                              ; preds = %573
-  %577 = trunc i32 %574 to i8
-  %578 = add i8 %577, -3
-  %579 = load i32, ptr %6, align 4, !tbaa !73
-  %580 = load i32, ptr %8, align 8, !tbaa !83
-  %581 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %579, i32 %580), !nosanitize !45
-  %582 = extractvalue { i32, i1 } %581, 1, !nosanitize !45
-  br i1 %582, label %583, label %584, !prof !46, !nosanitize !45
+573:                                              ; preds = %570
+  %574 = trunc i32 %571 to i8
+  %575 = add i8 %574, -3
+  %576 = load i32, ptr %6, align 4, !tbaa !73
+  %577 = load i32, ptr %8, align 8, !tbaa !83
+  %578 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %576, i32 %577), !nosanitize !45
+  %579 = extractvalue { i32, i1 } %578, 1, !nosanitize !45
+  br i1 %579, label %580, label %581, !prof !46, !nosanitize !45
 
-583:                                              ; preds = %576
+580:                                              ; preds = %573
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-584:                                              ; preds = %576
-  %585 = extractvalue { i32, i1 } %581, 0, !nosanitize !45
-  %586 = trunc i32 %585 to i16
-  %587 = load i32, ptr %27, align 4, !tbaa !139
-  %588 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %587, i32 1), !nosanitize !45
-  %589 = extractvalue { i32, i1 } %588, 1, !nosanitize !45
-  br i1 %589, label %590, label %591, !prof !46, !nosanitize !45
+581:                                              ; preds = %573
+  %582 = extractvalue { i32, i1 } %578, 0, !nosanitize !45
+  %583 = trunc i32 %582 to i16
+  %584 = load i32, ptr %27, align 4, !tbaa !139
+  %585 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %584, i32 1), !nosanitize !45
+  %586 = extractvalue { i32, i1 } %585, 1, !nosanitize !45
+  br i1 %586, label %587, label %588, !prof !46, !nosanitize !45
 
-590:                                              ; preds = %584
+587:                                              ; preds = %581
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-591:                                              ; preds = %584
-  %592 = extractvalue { i32, i1 } %588, 0, !nosanitize !45
-  %593 = load ptr, ptr %26, align 8, !tbaa !44
-  %594 = trunc i32 %585 to i8
-  store i32 %592, ptr %27, align 4, !tbaa !139
-  %595 = zext i32 %587 to i64
-  %596 = getelementptr inbounds nuw i8, ptr %593, i64 %595
-  store i8 %594, ptr %596, align 1, !tbaa !8
-  %597 = load i32, ptr %27, align 4, !tbaa !139
-  %598 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %597, i32 1), !nosanitize !45
-  %599 = extractvalue { i32, i1 } %598, 1, !nosanitize !45
-  br i1 %599, label %600, label %601, !prof !46, !nosanitize !45
+588:                                              ; preds = %581
+  %589 = extractvalue { i32, i1 } %585, 0, !nosanitize !45
+  %590 = load ptr, ptr %26, align 8, !tbaa !44
+  %591 = trunc i32 %582 to i8
+  store i32 %589, ptr %27, align 4, !tbaa !139
+  %592 = zext i32 %584 to i64
+  %593 = getelementptr inbounds nuw i8, ptr %590, i64 %592
+  store i8 %591, ptr %593, align 1, !tbaa !8
+  %594 = load i32, ptr %27, align 4, !tbaa !139
+  %595 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %594, i32 1), !nosanitize !45
+  %596 = extractvalue { i32, i1 } %595, 1, !nosanitize !45
+  br i1 %596, label %597, label %598, !prof !46, !nosanitize !45
 
-600:                                              ; preds = %591
+597:                                              ; preds = %588
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-601:                                              ; preds = %591
-  %602 = extractvalue { i32, i1 } %598, 0, !nosanitize !45
-  %603 = load ptr, ptr %26, align 8, !tbaa !44
-  %604 = lshr i32 %585, 8
-  %605 = trunc i32 %604 to i8
-  store i32 %602, ptr %27, align 4, !tbaa !139
-  %606 = zext i32 %597 to i64
-  %607 = getelementptr inbounds nuw i8, ptr %603, i64 %606
-  store i8 %605, ptr %607, align 1, !tbaa !8
-  %608 = load i32, ptr %27, align 4, !tbaa !139
-  %609 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %608, i32 1), !nosanitize !45
-  %610 = extractvalue { i32, i1 } %609, 1, !nosanitize !45
-  br i1 %610, label %611, label %612, !prof !46, !nosanitize !45
+598:                                              ; preds = %588
+  %599 = extractvalue { i32, i1 } %595, 0, !nosanitize !45
+  %600 = load ptr, ptr %26, align 8, !tbaa !44
+  %601 = lshr i32 %582, 8
+  %602 = trunc i32 %601 to i8
+  store i32 %599, ptr %27, align 4, !tbaa !139
+  %603 = zext i32 %594 to i64
+  %604 = getelementptr inbounds nuw i8, ptr %600, i64 %603
+  store i8 %602, ptr %604, align 1, !tbaa !8
+  %605 = load i32, ptr %27, align 4, !tbaa !139
+  %606 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %605, i32 1), !nosanitize !45
+  %607 = extractvalue { i32, i1 } %606, 1, !nosanitize !45
+  br i1 %607, label %608, label %609, !prof !46, !nosanitize !45
 
-611:                                              ; preds = %601
+608:                                              ; preds = %598
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-612:                                              ; preds = %601
-  %613 = extractvalue { i32, i1 } %609, 0, !nosanitize !45
-  %614 = load ptr, ptr %26, align 8, !tbaa !44
-  store i32 %613, ptr %27, align 4, !tbaa !139
-  %615 = zext i32 %608 to i64
-  %616 = getelementptr inbounds nuw i8, ptr %614, i64 %615
-  store i8 %578, ptr %616, align 1, !tbaa !8
-  %617 = add i16 %586, -1
-  %618 = zext i8 %578 to i64
-  %619 = getelementptr inbounds nuw i8, ptr @_length_code, i64 %618
-  %620 = load i8, ptr %619, align 1, !tbaa !8
-  %621 = zext i8 %620 to i64
-  %622 = getelementptr [4 x i8], ptr %30, i64 %621
-  %623 = load i16, ptr %622, align 4, !tbaa !8
-  %624 = add i16 %623, 1
-  store i16 %624, ptr %622, align 4, !tbaa !8
-  %625 = icmp ult i16 %617, 256
-  br i1 %625, label %626, label %629
+609:                                              ; preds = %598
+  %610 = extractvalue { i32, i1 } %606, 0, !nosanitize !45
+  %611 = load ptr, ptr %26, align 8, !tbaa !44
+  store i32 %610, ptr %27, align 4, !tbaa !139
+  %612 = zext i32 %605 to i64
+  %613 = getelementptr inbounds nuw i8, ptr %611, i64 %612
+  store i8 %575, ptr %613, align 1, !tbaa !8
+  %614 = add i16 %583, -1
+  %615 = zext i8 %575 to i64
+  %616 = getelementptr inbounds nuw i8, ptr @_length_code, i64 %615
+  %617 = load i8, ptr %616, align 1, !tbaa !8
+  %618 = zext i8 %617 to i64
+  %619 = getelementptr [4 x i8], ptr %30, i64 %618
+  %620 = load i16, ptr %619, align 4, !tbaa !8
+  %621 = add i16 %620, 1
+  store i16 %621, ptr %619, align 4, !tbaa !8
+  %622 = icmp ult i16 %614, 256
+  br i1 %622, label %623, label %626
 
-626:                                              ; preds = %612
-  %627 = zext nneg i16 %617 to i64
-  %628 = getelementptr inbounds nuw i8, ptr @_dist_code, i64 %627
-  br label %634
+623:                                              ; preds = %609
+  %624 = zext nneg i16 %614 to i64
+  %625 = getelementptr inbounds nuw i8, ptr @_dist_code, i64 %624
+  br label %631
 
-629:                                              ; preds = %612
-  %630 = lshr i16 %617, 7
-  %631 = zext nneg i16 %630 to i64
-  %632 = getelementptr inbounds nuw i8, ptr @_dist_code, i64 %631
-  %633 = getelementptr inbounds nuw i8, ptr %632, i64 256
-  br label %634
+626:                                              ; preds = %609
+  %627 = lshr i16 %614, 7
+  %628 = zext nneg i16 %627 to i64
+  %629 = getelementptr inbounds nuw i8, ptr @_dist_code, i64 %628
+  %630 = getelementptr inbounds nuw i8, ptr %629, i64 256
+  br label %631
 
-634:                                              ; preds = %629, %626
-  %635 = phi ptr [ %628, %626 ], [ %633, %629 ]
-  %636 = load i8, ptr %635, align 1, !tbaa !8
-  %637 = zext i8 %636 to i64
-  %638 = getelementptr inbounds nuw [4 x i8], ptr %31, i64 %637
-  %639 = load i16, ptr %638, align 4, !tbaa !8
-  %640 = add i16 %639, 1
-  store i16 %640, ptr %638, align 4, !tbaa !8
-  %641 = load i32, ptr %27, align 4, !tbaa !139
-  %642 = load i32, ptr %29, align 8, !tbaa !47
-  %643 = icmp eq i32 %641, %642
-  %644 = load i32, ptr %25, align 8, !tbaa !78
-  %645 = load i32, ptr %3, align 4, !tbaa !75
-  %646 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %645, i32 %644), !nosanitize !45
-  %647 = extractvalue { i32, i1 } %646, 1, !nosanitize !45
-  br i1 %647, label %648, label %649, !prof !46, !nosanitize !45
+631:                                              ; preds = %626, %623
+  %632 = phi ptr [ %625, %623 ], [ %630, %626 ]
+  %633 = load i8, ptr %632, align 1, !tbaa !8
+  %634 = zext i8 %633 to i64
+  %635 = getelementptr inbounds nuw [4 x i8], ptr %31, i64 %634
+  %636 = load i16, ptr %635, align 4, !tbaa !8
+  %637 = add i16 %636, 1
+  store i16 %637, ptr %635, align 4, !tbaa !8
+  %638 = load i32, ptr %27, align 4, !tbaa !139
+  %639 = load i32, ptr %29, align 8, !tbaa !47
+  %640 = icmp eq i32 %638, %639
+  %641 = load i32, ptr %25, align 8, !tbaa !78
+  %642 = load i32, ptr %3, align 4, !tbaa !75
+  %643 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %642, i32 %641), !nosanitize !45
+  %644 = extractvalue { i32, i1 } %643, 1, !nosanitize !45
+  br i1 %644, label %645, label %646, !prof !46, !nosanitize !45
 
-648:                                              ; preds = %634
+645:                                              ; preds = %631
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-649:                                              ; preds = %634
-  %650 = extractvalue { i32, i1 } %646, 0, !nosanitize !45
-  store i32 %650, ptr %3, align 4, !tbaa !75
-  %651 = load i32, ptr %32, align 8, !tbaa !66
-  %652 = icmp ule i32 %644, %651
-  %653 = icmp ugt i32 %650, 2
-  %654 = select i1 %652, i1 %653, i1 false
-  br i1 %654, label %655, label %704
+646:                                              ; preds = %631
+  %647 = extractvalue { i32, i1 } %643, 0, !nosanitize !45
+  store i32 %647, ptr %3, align 4, !tbaa !75
+  %648 = load i32, ptr %32, align 8, !tbaa !66
+  %649 = icmp ule i32 %641, %648
+  %650 = icmp ugt i32 %647, 2
+  %651 = select i1 %649, i1 %650, i1 false
+  br i1 %651, label %652, label %701
 
-655:                                              ; preds = %649
-  %656 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %644, i32 1), !nosanitize !45
-  %657 = extractvalue { i32, i1 } %656, 1, !nosanitize !45
-  br i1 %657, label %658, label %659, !prof !46, !nosanitize !45
+652:                                              ; preds = %646
+  %653 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %641, i32 1), !nosanitize !45
+  %654 = extractvalue { i32, i1 } %653, 1, !nosanitize !45
+  br i1 %654, label %655, label %656, !prof !46, !nosanitize !45
 
-658:                                              ; preds = %655
+655:                                              ; preds = %652
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-659:                                              ; preds = %655
-  %660 = extractvalue { i32, i1 } %656, 0, !nosanitize !45
-  store i32 %660, ptr %25, align 8, !tbaa !78
-  %661 = load i32, ptr %6, align 4, !tbaa !73
-  br label %662
+656:                                              ; preds = %652
+  %657 = extractvalue { i32, i1 } %653, 0, !nosanitize !45
+  store i32 %657, ptr %25, align 8, !tbaa !78
+  %658 = load i32, ptr %6, align 4, !tbaa !73
+  br label %659
 
-662:                                              ; preds = %699, %659
-  %663 = phi i32 [ %700, %699 ], [ %660, %659 ]
-  %664 = phi i32 [ %669, %699 ], [ %661, %659 ]
-  %665 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %664, i32 1), !nosanitize !45
-  %666 = extractvalue { i32, i1 } %665, 1, !nosanitize !45
-  br i1 %666, label %667, label %668, !prof !46, !nosanitize !45
+659:                                              ; preds = %696, %656
+  %660 = phi i32 [ %697, %696 ], [ %657, %656 ]
+  %661 = phi i32 [ %666, %696 ], [ %658, %656 ]
+  %662 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %661, i32 1), !nosanitize !45
+  %663 = extractvalue { i32, i1 } %662, 1, !nosanitize !45
+  br i1 %663, label %664, label %665, !prof !46, !nosanitize !45
 
-667:                                              ; preds = %662
+664:                                              ; preds = %659
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-668:                                              ; preds = %662
-  %669 = extractvalue { i32, i1 } %665, 0, !nosanitize !45
-  store i32 %669, ptr %6, align 4, !tbaa !73
-  %670 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %669, i32 2), !nosanitize !45
-  %671 = extractvalue { i32, i1 } %670, 1, !nosanitize !45
-  br i1 %671, label %672, label %673, !prof !46, !nosanitize !45
+665:                                              ; preds = %659
+  %666 = extractvalue { i32, i1 } %662, 0, !nosanitize !45
+  store i32 %666, ptr %6, align 4, !tbaa !73
+  %667 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %666, i32 2), !nosanitize !45
+  %668 = extractvalue { i32, i1 } %667, 1, !nosanitize !45
+  br i1 %668, label %669, label %670, !prof !46, !nosanitize !45
 
-672:                                              ; preds = %668
+669:                                              ; preds = %665
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-673:                                              ; preds = %668
-  %674 = extractvalue { i32, i1 } %670, 0, !nosanitize !45
-  %675 = load ptr, ptr %7, align 8, !tbaa !34
-  %676 = load i32, ptr %15, align 8, !tbaa !80
-  %677 = load i32, ptr %16, align 8, !tbaa !53
-  %678 = shl i32 %676, %677
-  %679 = zext i32 %674 to i64
-  %680 = getelementptr inbounds nuw i8, ptr %675, i64 %679
-  %681 = load i8, ptr %680, align 1, !tbaa !8
-  %682 = zext i8 %681 to i32
-  %683 = xor i32 %678, %682
-  %684 = load i32, ptr %17, align 4, !tbaa !52
-  %685 = and i32 %683, %684
-  store i32 %685, ptr %15, align 8, !tbaa !80
-  %686 = load ptr, ptr %12, align 8, !tbaa !37
-  %687 = zext i32 %685 to i64
-  %688 = getelementptr inbounds nuw [2 x i8], ptr %686, i64 %687
-  %689 = load i16, ptr %688, align 2, !tbaa !62
-  %690 = load ptr, ptr %13, align 8, !tbaa !35
-  %691 = load i32, ptr %18, align 8, !tbaa !33
-  %692 = and i32 %691, %669
-  %693 = zext i32 %692 to i64
-  %694 = getelementptr inbounds nuw [2 x i8], ptr %690, i64 %693
-  store i16 %689, ptr %694, align 2, !tbaa !62
-  %695 = trunc i32 %669 to i16
-  store i16 %695, ptr %688, align 2, !tbaa !62
-  %696 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %663, i32 1), !nosanitize !45
-  %697 = extractvalue { i32, i1 } %696, 1, !nosanitize !45
-  br i1 %697, label %698, label %699, !prof !46, !nosanitize !45
+670:                                              ; preds = %665
+  %671 = extractvalue { i32, i1 } %667, 0, !nosanitize !45
+  %672 = load ptr, ptr %7, align 8, !tbaa !34
+  %673 = load i32, ptr %15, align 8, !tbaa !80
+  %674 = load i32, ptr %16, align 8, !tbaa !53
+  %675 = shl i32 %673, %674
+  %676 = zext i32 %671 to i64
+  %677 = getelementptr inbounds nuw i8, ptr %672, i64 %676
+  %678 = load i8, ptr %677, align 1, !tbaa !8
+  %679 = zext i8 %678 to i32
+  %680 = xor i32 %675, %679
+  %681 = load i32, ptr %17, align 4, !tbaa !52
+  %682 = and i32 %680, %681
+  store i32 %682, ptr %15, align 8, !tbaa !80
+  %683 = load ptr, ptr %12, align 8, !tbaa !37
+  %684 = zext i32 %682 to i64
+  %685 = getelementptr inbounds nuw [2 x i8], ptr %683, i64 %684
+  %686 = load i16, ptr %685, align 2, !tbaa !62
+  %687 = load ptr, ptr %13, align 8, !tbaa !35
+  %688 = load i32, ptr %18, align 8, !tbaa !33
+  %689 = and i32 %688, %666
+  %690 = zext i32 %689 to i64
+  %691 = getelementptr inbounds nuw [2 x i8], ptr %687, i64 %690
+  store i16 %686, ptr %691, align 2, !tbaa !62
+  %692 = trunc i32 %666 to i16
+  store i16 %692, ptr %685, align 2, !tbaa !62
+  %693 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %660, i32 1), !nosanitize !45
+  %694 = extractvalue { i32, i1 } %693, 1, !nosanitize !45
+  br i1 %694, label %695, label %696, !prof !46, !nosanitize !45
 
-698:                                              ; preds = %673
+695:                                              ; preds = %670
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-699:                                              ; preds = %673
-  %700 = extractvalue { i32, i1 } %696, 0, !nosanitize !45
-  store i32 %700, ptr %25, align 8, !tbaa !78
-  %701 = icmp eq i32 %700, 0
-  br i1 %701, label %702, label %662, !llvm.loop !154
+696:                                              ; preds = %670
+  %697 = extractvalue { i32, i1 } %693, 0, !nosanitize !45
+  store i32 %697, ptr %25, align 8, !tbaa !78
+  %698 = icmp eq i32 %697, 0
+  br i1 %698, label %699, label %659, !llvm.loop !154
 
-702:                                              ; preds = %699
-  %703 = add nuw i32 %669, 1
-  store i32 %703, ptr %6, align 4, !tbaa !73
-  br i1 %643, label %783, label %771
+699:                                              ; preds = %696
+  %700 = add nuw i32 %666, 1
+  store i32 %700, ptr %6, align 4, !tbaa !73
+  br i1 %640, label %780, label %768
 
-704:                                              ; preds = %649
-  %705 = load i32, ptr %6, align 4, !tbaa !73
-  %706 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %705, i32 %644), !nosanitize !45
-  %707 = extractvalue { i32, i1 } %706, 1, !nosanitize !45
-  br i1 %707, label %708, label %709, !prof !46, !nosanitize !45
+701:                                              ; preds = %646
+  %702 = load i32, ptr %6, align 4, !tbaa !73
+  %703 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %702, i32 %641), !nosanitize !45
+  %704 = extractvalue { i32, i1 } %703, 1, !nosanitize !45
+  br i1 %704, label %705, label %706, !prof !46, !nosanitize !45
 
-708:                                              ; preds = %704
+705:                                              ; preds = %701
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-709:                                              ; preds = %704
-  %710 = extractvalue { i32, i1 } %706, 0, !nosanitize !45
-  store i32 %710, ptr %6, align 4, !tbaa !73
+706:                                              ; preds = %701
+  %707 = extractvalue { i32, i1 } %703, 0, !nosanitize !45
+  store i32 %707, ptr %6, align 4, !tbaa !73
   store i32 0, ptr %25, align 8, !tbaa !78
-  %711 = load ptr, ptr %7, align 8, !tbaa !34
-  %712 = zext i32 %710 to i64
-  %713 = getelementptr inbounds nuw i8, ptr %711, i64 %712
-  %714 = load i8, ptr %713, align 1, !tbaa !8
-  %715 = zext i8 %714 to i32
-  store i32 %715, ptr %15, align 8, !tbaa !80
-  %716 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %710, i32 1), !nosanitize !45
-  %717 = extractvalue { i32, i1 } %716, 1, !nosanitize !45
-  br i1 %717, label %718, label %772, !prof !46, !nosanitize !45
+  %708 = load ptr, ptr %7, align 8, !tbaa !34
+  %709 = zext i32 %707 to i64
+  %710 = getelementptr inbounds nuw i8, ptr %708, i64 %709
+  %711 = load i8, ptr %710, align 1, !tbaa !8
+  %712 = zext i8 %711 to i32
+  store i32 %712, ptr %15, align 8, !tbaa !80
+  %713 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %707, i32 1), !nosanitize !45
+  %714 = extractvalue { i32, i1 } %713, 1, !nosanitize !45
+  br i1 %714, label %715, label %769, !prof !46, !nosanitize !45
 
-718:                                              ; preds = %709
+715:                                              ; preds = %706
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-719:                                              ; preds = %573
-  %720 = load ptr, ptr %7, align 8, !tbaa !34
-  %721 = load i32, ptr %6, align 4, !tbaa !73
-  %722 = zext i32 %721 to i64
-  %723 = getelementptr inbounds nuw i8, ptr %720, i64 %722
-  %724 = load i8, ptr %723, align 1, !tbaa !8
-  %725 = load i32, ptr %27, align 4, !tbaa !139
-  %726 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %725, i32 1), !nosanitize !45
-  %727 = extractvalue { i32, i1 } %726, 1, !nosanitize !45
-  br i1 %727, label %728, label %729, !prof !46, !nosanitize !45
+716:                                              ; preds = %570
+  %717 = load ptr, ptr %7, align 8, !tbaa !34
+  %718 = load i32, ptr %6, align 4, !tbaa !73
+  %719 = zext i32 %718 to i64
+  %720 = getelementptr inbounds nuw i8, ptr %717, i64 %719
+  %721 = load i8, ptr %720, align 1, !tbaa !8
+  %722 = load i32, ptr %27, align 4, !tbaa !139
+  %723 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %722, i32 1), !nosanitize !45
+  %724 = extractvalue { i32, i1 } %723, 1, !nosanitize !45
+  br i1 %724, label %725, label %726, !prof !46, !nosanitize !45
 
-728:                                              ; preds = %719
+725:                                              ; preds = %716
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-729:                                              ; preds = %719
-  %730 = extractvalue { i32, i1 } %726, 0, !nosanitize !45
-  %731 = load ptr, ptr %26, align 8, !tbaa !44
-  store i32 %730, ptr %27, align 4, !tbaa !139
-  %732 = zext i32 %725 to i64
-  %733 = getelementptr inbounds nuw i8, ptr %731, i64 %732
-  store i8 0, ptr %733, align 1, !tbaa !8
-  %734 = load i32, ptr %27, align 4, !tbaa !139
-  %735 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %734, i32 1), !nosanitize !45
-  %736 = extractvalue { i32, i1 } %735, 1, !nosanitize !45
-  br i1 %736, label %737, label %738, !prof !46, !nosanitize !45
+726:                                              ; preds = %716
+  %727 = extractvalue { i32, i1 } %723, 0, !nosanitize !45
+  %728 = load ptr, ptr %26, align 8, !tbaa !44
+  store i32 %727, ptr %27, align 4, !tbaa !139
+  %729 = zext i32 %722 to i64
+  %730 = getelementptr inbounds nuw i8, ptr %728, i64 %729
+  store i8 0, ptr %730, align 1, !tbaa !8
+  %731 = load i32, ptr %27, align 4, !tbaa !139
+  %732 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %731, i32 1), !nosanitize !45
+  %733 = extractvalue { i32, i1 } %732, 1, !nosanitize !45
+  br i1 %733, label %734, label %735, !prof !46, !nosanitize !45
 
-737:                                              ; preds = %729
+734:                                              ; preds = %726
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-738:                                              ; preds = %729
-  %739 = extractvalue { i32, i1 } %735, 0, !nosanitize !45
-  %740 = load ptr, ptr %26, align 8, !tbaa !44
-  store i32 %739, ptr %27, align 4, !tbaa !139
-  %741 = zext i32 %734 to i64
-  %742 = getelementptr inbounds nuw i8, ptr %740, i64 %741
-  store i8 0, ptr %742, align 1, !tbaa !8
-  %743 = load i32, ptr %27, align 4, !tbaa !139
-  %744 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %743, i32 1), !nosanitize !45
-  %745 = extractvalue { i32, i1 } %744, 1, !nosanitize !45
-  br i1 %745, label %746, label %747, !prof !46, !nosanitize !45
+735:                                              ; preds = %726
+  %736 = extractvalue { i32, i1 } %732, 0, !nosanitize !45
+  %737 = load ptr, ptr %26, align 8, !tbaa !44
+  store i32 %736, ptr %27, align 4, !tbaa !139
+  %738 = zext i32 %731 to i64
+  %739 = getelementptr inbounds nuw i8, ptr %737, i64 %738
+  store i8 0, ptr %739, align 1, !tbaa !8
+  %740 = load i32, ptr %27, align 4, !tbaa !139
+  %741 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %740, i32 1), !nosanitize !45
+  %742 = extractvalue { i32, i1 } %741, 1, !nosanitize !45
+  br i1 %742, label %743, label %744, !prof !46, !nosanitize !45
 
-746:                                              ; preds = %738
+743:                                              ; preds = %735
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-747:                                              ; preds = %738
-  %748 = extractvalue { i32, i1 } %744, 0, !nosanitize !45
-  %749 = load ptr, ptr %26, align 8, !tbaa !44
-  store i32 %748, ptr %27, align 4, !tbaa !139
-  %750 = zext i32 %743 to i64
-  %751 = getelementptr inbounds nuw i8, ptr %749, i64 %750
-  store i8 %724, ptr %751, align 1, !tbaa !8
-  %752 = zext i8 %724 to i64
-  %753 = getelementptr inbounds nuw [4 x i8], ptr %28, i64 %752
-  %754 = load i16, ptr %753, align 4, !tbaa !8
-  %755 = add i16 %754, 1
-  store i16 %755, ptr %753, align 4, !tbaa !8
-  %756 = load i32, ptr %27, align 4, !tbaa !139
-  %757 = load i32, ptr %29, align 8, !tbaa !47
-  %758 = icmp eq i32 %756, %757
-  %759 = load i32, ptr %3, align 4, !tbaa !75
-  %760 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %759, i32 1), !nosanitize !45
-  %761 = extractvalue { i32, i1 } %760, 1, !nosanitize !45
-  br i1 %761, label %762, label %763, !prof !46, !nosanitize !45
+744:                                              ; preds = %735
+  %745 = extractvalue { i32, i1 } %741, 0, !nosanitize !45
+  %746 = load ptr, ptr %26, align 8, !tbaa !44
+  store i32 %745, ptr %27, align 4, !tbaa !139
+  %747 = zext i32 %740 to i64
+  %748 = getelementptr inbounds nuw i8, ptr %746, i64 %747
+  store i8 %721, ptr %748, align 1, !tbaa !8
+  %749 = zext i8 %721 to i64
+  %750 = getelementptr inbounds nuw [4 x i8], ptr %28, i64 %749
+  %751 = load i16, ptr %750, align 4, !tbaa !8
+  %752 = add i16 %751, 1
+  store i16 %752, ptr %750, align 4, !tbaa !8
+  %753 = load i32, ptr %27, align 4, !tbaa !139
+  %754 = load i32, ptr %29, align 8, !tbaa !47
+  %755 = icmp eq i32 %753, %754
+  %756 = load i32, ptr %3, align 4, !tbaa !75
+  %757 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %756, i32 1), !nosanitize !45
+  %758 = extractvalue { i32, i1 } %757, 1, !nosanitize !45
+  br i1 %758, label %759, label %760, !prof !46, !nosanitize !45
 
-762:                                              ; preds = %747
+759:                                              ; preds = %744
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-763:                                              ; preds = %747
-  %764 = extractvalue { i32, i1 } %760, 0, !nosanitize !45
-  store i32 %764, ptr %3, align 4, !tbaa !75
-  %765 = load i32, ptr %6, align 4, !tbaa !73
-  %766 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %765, i32 1), !nosanitize !45
-  %767 = extractvalue { i32, i1 } %766, 1, !nosanitize !45
-  br i1 %767, label %768, label %769, !prof !46, !nosanitize !45
+760:                                              ; preds = %744
+  %761 = extractvalue { i32, i1 } %757, 0, !nosanitize !45
+  store i32 %761, ptr %3, align 4, !tbaa !75
+  %762 = load i32, ptr %6, align 4, !tbaa !73
+  %763 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %762, i32 1), !nosanitize !45
+  %764 = extractvalue { i32, i1 } %763, 1, !nosanitize !45
+  br i1 %764, label %765, label %766, !prof !46, !nosanitize !45
 
-768:                                              ; preds = %763
+765:                                              ; preds = %760
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-769:                                              ; preds = %763
-  %770 = extractvalue { i32, i1 } %766, 0, !nosanitize !45
-  store i32 %770, ptr %6, align 4, !tbaa !73
-  br i1 %758, label %783, label %771
+766:                                              ; preds = %760
+  %767 = extractvalue { i32, i1 } %763, 0, !nosanitize !45
+  store i32 %767, ptr %6, align 4, !tbaa !73
+  br i1 %755, label %780, label %768
 
-771:                                              ; preds = %840, %772, %769, %702
+768:                                              ; preds = %837, %769, %766, %699
   br label %33
 
-772:                                              ; preds = %709
-  %773 = extractvalue { i32, i1 } %716, 0, !nosanitize !45
-  %774 = load i32, ptr %16, align 8, !tbaa !53
-  %775 = shl i32 %715, %774
-  %776 = zext i32 %773 to i64
-  %777 = getelementptr inbounds nuw i8, ptr %711, i64 %776
-  %778 = load i8, ptr %777, align 1, !tbaa !8
-  %779 = zext i8 %778 to i32
-  %780 = xor i32 %775, %779
-  %781 = load i32, ptr %17, align 4, !tbaa !52
-  %782 = and i32 %780, %781
-  store i32 %782, ptr %15, align 8, !tbaa !80
-  br i1 %643, label %783, label %771
+769:                                              ; preds = %706
+  %770 = extractvalue { i32, i1 } %713, 0, !nosanitize !45
+  %771 = load i32, ptr %16, align 8, !tbaa !53
+  %772 = shl i32 %712, %771
+  %773 = zext i32 %770 to i64
+  %774 = getelementptr inbounds nuw i8, ptr %708, i64 %773
+  %775 = load i8, ptr %774, align 1, !tbaa !8
+  %776 = zext i8 %775 to i32
+  %777 = xor i32 %772, %776
+  %778 = load i32, ptr %17, align 4, !tbaa !52
+  %779 = and i32 %777, %778
+  store i32 %779, ptr %15, align 8, !tbaa !80
+  br i1 %640, label %780, label %768
 
-783:                                              ; preds = %772, %769, %702
-  %784 = phi i32 [ %770, %769 ], [ %703, %702 ], [ %710, %772 ]
-  %785 = load i64, ptr %9, align 8, !tbaa !74
-  %786 = icmp sgt i64 %785, -1
-  br i1 %786, label %787, label %791
+780:                                              ; preds = %769, %766, %699
+  %781 = phi i32 [ %767, %766 ], [ %700, %699 ], [ %707, %769 ]
+  %782 = load i64, ptr %9, align 8, !tbaa !74
+  %783 = icmp sgt i64 %782, -1
+  br i1 %783, label %784, label %788
 
-787:                                              ; preds = %783
-  %788 = load ptr, ptr %7, align 8, !tbaa !34
-  %789 = and i64 %785, 4294967295
-  %790 = getelementptr inbounds nuw i8, ptr %788, i64 %789
-  br label %791
+784:                                              ; preds = %780
+  %785 = load ptr, ptr %7, align 8, !tbaa !34
+  %786 = and i64 %782, 4294967295
+  %787 = getelementptr inbounds nuw i8, ptr %785, i64 %786
+  br label %788
 
-791:                                              ; preds = %787, %783
-  %792 = phi ptr [ %790, %787 ], [ null, %783 ]
-  %793 = zext i32 %784 to i64
-  %794 = sub nsw i64 %793, %785
-  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %792, i64 noundef %794, i32 noundef 0) #11
-  %795 = load i32, ptr %6, align 4, !tbaa !73
-  %796 = zext i32 %795 to i64
-  store i64 %796, ptr %9, align 8, !tbaa !74
-  %797 = load ptr, ptr %0, align 8, !tbaa !20
-  %798 = getelementptr inbounds nuw i8, ptr %797, i64 56
-  %799 = load ptr, ptr %798, align 8, !tbaa !19
-  tail call void @_tr_flush_bits(ptr noundef %799) #11
-  %800 = getelementptr inbounds nuw i8, ptr %799, i64 40
-  %801 = load i64, ptr %800, align 8, !tbaa !57
-  %802 = getelementptr inbounds nuw i8, ptr %797, i64 32
-  %803 = load i32, ptr %802, align 8, !tbaa !107
-  %804 = zext i32 %803 to i64
-  %805 = tail call i64 @llvm.umin.i64(i64 %801, i64 %804)
-  %806 = trunc nuw i64 %805 to i32
-  %807 = icmp eq i64 %805, 0
-  br i1 %807, label %840, label %808
+788:                                              ; preds = %784, %780
+  %789 = phi ptr [ %787, %784 ], [ null, %780 ]
+  %790 = zext i32 %781 to i64
+  %791 = sub nsw i64 %790, %782
+  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %789, i64 noundef %791, i32 noundef 0) #11
+  %792 = load i32, ptr %6, align 4, !tbaa !73
+  %793 = zext i32 %792 to i64
+  store i64 %793, ptr %9, align 8, !tbaa !74
+  %794 = load ptr, ptr %0, align 8, !tbaa !20
+  %795 = getelementptr inbounds nuw i8, ptr %794, i64 56
+  %796 = load ptr, ptr %795, align 8, !tbaa !19
+  tail call void @_tr_flush_bits(ptr noundef %796) #11
+  %797 = getelementptr inbounds nuw i8, ptr %796, i64 40
+  %798 = load i64, ptr %797, align 8, !tbaa !57
+  %799 = getelementptr inbounds nuw i8, ptr %794, i64 32
+  %800 = load i32, ptr %799, align 8, !tbaa !107
+  %801 = zext i32 %800 to i64
+  %802 = tail call i64 @llvm.umin.i64(i64 %798, i64 %801)
+  %803 = trunc nuw i64 %802 to i32
+  %804 = icmp eq i64 %802, 0
+  br i1 %804, label %837, label %805
 
-808:                                              ; preds = %791
-  %809 = getelementptr inbounds nuw i8, ptr %797, i64 24
-  %810 = load ptr, ptr %809, align 8, !tbaa !106
-  %811 = getelementptr inbounds nuw i8, ptr %799, i64 32
-  %812 = load ptr, ptr %811, align 8, !tbaa !58
-  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %810, ptr align 1 %812, i64 %805, i1 false)
-  %813 = load ptr, ptr %809, align 8, !tbaa !106
-  %814 = getelementptr inbounds nuw i8, ptr %813, i64 %805
-  store ptr %814, ptr %809, align 8, !tbaa !106
-  %815 = load ptr, ptr %811, align 8, !tbaa !58
-  %816 = getelementptr inbounds nuw i8, ptr %815, i64 %805
-  store ptr %816, ptr %811, align 8, !tbaa !58
-  %817 = getelementptr inbounds nuw i8, ptr %797, i64 40
-  %818 = load i64, ptr %817, align 8, !tbaa !108
-  %819 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %818, i64 %805), !nosanitize !45
-  %820 = extractvalue { i64, i1 } %819, 1, !nosanitize !45
-  br i1 %820, label %821, label %822, !prof !46, !nosanitize !45
+805:                                              ; preds = %788
+  %806 = getelementptr inbounds nuw i8, ptr %794, i64 24
+  %807 = load ptr, ptr %806, align 8, !tbaa !106
+  %808 = getelementptr inbounds nuw i8, ptr %796, i64 32
+  %809 = load ptr, ptr %808, align 8, !tbaa !58
+  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %807, ptr align 1 %809, i64 %802, i1 false)
+  %810 = load ptr, ptr %806, align 8, !tbaa !106
+  %811 = getelementptr inbounds nuw i8, ptr %810, i64 %802
+  store ptr %811, ptr %806, align 8, !tbaa !106
+  %812 = load ptr, ptr %808, align 8, !tbaa !58
+  %813 = getelementptr inbounds nuw i8, ptr %812, i64 %802
+  store ptr %813, ptr %808, align 8, !tbaa !58
+  %814 = getelementptr inbounds nuw i8, ptr %794, i64 40
+  %815 = load i64, ptr %814, align 8, !tbaa !108
+  %816 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %815, i64 %802), !nosanitize !45
+  %817 = extractvalue { i64, i1 } %816, 1, !nosanitize !45
+  br i1 %817, label %818, label %819, !prof !46, !nosanitize !45
 
-821:                                              ; preds = %808
+818:                                              ; preds = %805
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-822:                                              ; preds = %808
-  %823 = extractvalue { i64, i1 } %819, 0, !nosanitize !45
-  store i64 %823, ptr %817, align 8, !tbaa !108
-  %824 = load i32, ptr %802, align 8, !tbaa !107
-  %825 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %824, i32 %806), !nosanitize !45
-  %826 = extractvalue { i32, i1 } %825, 1, !nosanitize !45
-  br i1 %826, label %827, label %828, !prof !46, !nosanitize !45
+819:                                              ; preds = %805
+  %820 = extractvalue { i64, i1 } %816, 0, !nosanitize !45
+  store i64 %820, ptr %814, align 8, !tbaa !108
+  %821 = load i32, ptr %799, align 8, !tbaa !107
+  %822 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %821, i32 %803), !nosanitize !45
+  %823 = extractvalue { i32, i1 } %822, 1, !nosanitize !45
+  br i1 %823, label %824, label %825, !prof !46, !nosanitize !45
 
-827:                                              ; preds = %822
+824:                                              ; preds = %819
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-828:                                              ; preds = %822
-  %829 = extractvalue { i32, i1 } %825, 0, !nosanitize !45
-  store i32 %829, ptr %802, align 8, !tbaa !107
-  %830 = load i64, ptr %800, align 8, !tbaa !57
-  %831 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %830, i64 %805), !nosanitize !45
-  %832 = extractvalue { i64, i1 } %831, 1, !nosanitize !45
-  br i1 %832, label %833, label %834, !prof !46, !nosanitize !45
+825:                                              ; preds = %819
+  %826 = extractvalue { i32, i1 } %822, 0, !nosanitize !45
+  store i32 %826, ptr %799, align 8, !tbaa !107
+  %827 = load i64, ptr %797, align 8, !tbaa !57
+  %828 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %827, i64 %802), !nosanitize !45
+  %829 = extractvalue { i64, i1 } %828, 1, !nosanitize !45
+  br i1 %829, label %830, label %831, !prof !46, !nosanitize !45
 
-833:                                              ; preds = %828
+830:                                              ; preds = %825
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-834:                                              ; preds = %828
-  %835 = extractvalue { i64, i1 } %831, 0, !nosanitize !45
-  store i64 %835, ptr %800, align 8, !tbaa !57
-  %836 = icmp eq i64 %835, 0
-  br i1 %836, label %837, label %840
+831:                                              ; preds = %825
+  %832 = extractvalue { i64, i1 } %828, 0, !nosanitize !45
+  store i64 %832, ptr %797, align 8, !tbaa !57
+  %833 = icmp eq i64 %832, 0
+  br i1 %833, label %834, label %837
 
-837:                                              ; preds = %834
-  %838 = getelementptr inbounds nuw i8, ptr %799, i64 16
-  %839 = load ptr, ptr %838, align 8, !tbaa !40
-  store ptr %839, ptr %811, align 8, !tbaa !58
-  br label %840
+834:                                              ; preds = %831
+  %835 = getelementptr inbounds nuw i8, ptr %796, i64 16
+  %836 = load ptr, ptr %835, align 8, !tbaa !40
+  store ptr %836, ptr %808, align 8, !tbaa !58
+  br label %837
 
-840:                                              ; preds = %837, %834, %791
-  %841 = load ptr, ptr %0, align 8, !tbaa !20
-  %842 = getelementptr inbounds nuw i8, ptr %841, i64 32
-  %843 = load i32, ptr %842, align 8, !tbaa !107
-  %844 = icmp eq i32 %843, 0
-  br i1 %844, label %976, label %771
+837:                                              ; preds = %834, %831, %788
+  %838 = load ptr, ptr %0, align 8, !tbaa !20
+  %839 = getelementptr inbounds nuw i8, ptr %838, i64 32
+  %840 = load i32, ptr %839, align 8, !tbaa !107
+  %841 = icmp eq i32 %840, 0
+  br i1 %841, label %973, label %768
 
-845:                                              ; preds = %368
-  %846 = load i32, ptr %6, align 4, !tbaa !73
-  %847 = tail call i32 @llvm.umin.i32(i32 %846, i32 2)
-  store i32 %847, ptr %10, align 4, !tbaa !76
-  %848 = icmp eq i32 %1, 4
-  br i1 %848, label %849, label %911
+842:                                              ; preds = %365
+  %843 = load i32, ptr %6, align 4, !tbaa !73
+  %844 = tail call i32 @llvm.umin.i32(i32 %843, i32 2)
+  store i32 %844, ptr %10, align 4, !tbaa !76
+  %845 = icmp eq i32 %1, 4
+  br i1 %845, label %846, label %908
 
-849:                                              ; preds = %845
-  %850 = load i64, ptr %9, align 8, !tbaa !74
-  %851 = icmp sgt i64 %850, -1
-  br i1 %851, label %852, label %856
+846:                                              ; preds = %842
+  %847 = load i64, ptr %9, align 8, !tbaa !74
+  %848 = icmp sgt i64 %847, -1
+  br i1 %848, label %849, label %853
 
-852:                                              ; preds = %849
-  %853 = load ptr, ptr %7, align 8, !tbaa !34
-  %854 = and i64 %850, 4294967295
-  %855 = getelementptr inbounds nuw i8, ptr %853, i64 %854
-  br label %856
+849:                                              ; preds = %846
+  %850 = load ptr, ptr %7, align 8, !tbaa !34
+  %851 = and i64 %847, 4294967295
+  %852 = getelementptr inbounds nuw i8, ptr %850, i64 %851
+  br label %853
 
-856:                                              ; preds = %852, %849
-  %857 = phi ptr [ %855, %852 ], [ null, %849 ]
-  %858 = zext i32 %846 to i64
-  %859 = sub nsw i64 %858, %850
-  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %857, i64 noundef %859, i32 noundef 1) #11
-  %860 = load i32, ptr %6, align 4, !tbaa !73
-  %861 = zext i32 %860 to i64
-  store i64 %861, ptr %9, align 8, !tbaa !74
-  %862 = load ptr, ptr %0, align 8, !tbaa !20
-  %863 = getelementptr inbounds nuw i8, ptr %862, i64 56
-  %864 = load ptr, ptr %863, align 8, !tbaa !19
-  tail call void @_tr_flush_bits(ptr noundef %864) #11
-  %865 = getelementptr inbounds nuw i8, ptr %864, i64 40
-  %866 = load i64, ptr %865, align 8, !tbaa !57
-  %867 = getelementptr inbounds nuw i8, ptr %862, i64 32
-  %868 = load i32, ptr %867, align 8, !tbaa !107
-  %869 = zext i32 %868 to i64
-  %870 = tail call i64 @llvm.umin.i64(i64 %866, i64 %869)
-  %871 = trunc nuw i64 %870 to i32
-  %872 = icmp eq i64 %870, 0
-  br i1 %872, label %905, label %873
+853:                                              ; preds = %849, %846
+  %854 = phi ptr [ %852, %849 ], [ null, %846 ]
+  %855 = zext i32 %843 to i64
+  %856 = sub nsw i64 %855, %847
+  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %854, i64 noundef %856, i32 noundef 1) #11
+  %857 = load i32, ptr %6, align 4, !tbaa !73
+  %858 = zext i32 %857 to i64
+  store i64 %858, ptr %9, align 8, !tbaa !74
+  %859 = load ptr, ptr %0, align 8, !tbaa !20
+  %860 = getelementptr inbounds nuw i8, ptr %859, i64 56
+  %861 = load ptr, ptr %860, align 8, !tbaa !19
+  tail call void @_tr_flush_bits(ptr noundef %861) #11
+  %862 = getelementptr inbounds nuw i8, ptr %861, i64 40
+  %863 = load i64, ptr %862, align 8, !tbaa !57
+  %864 = getelementptr inbounds nuw i8, ptr %859, i64 32
+  %865 = load i32, ptr %864, align 8, !tbaa !107
+  %866 = zext i32 %865 to i64
+  %867 = tail call i64 @llvm.umin.i64(i64 %863, i64 %866)
+  %868 = trunc nuw i64 %867 to i32
+  %869 = icmp eq i64 %867, 0
+  br i1 %869, label %902, label %870
 
-873:                                              ; preds = %856
-  %874 = getelementptr inbounds nuw i8, ptr %862, i64 24
-  %875 = load ptr, ptr %874, align 8, !tbaa !106
-  %876 = getelementptr inbounds nuw i8, ptr %864, i64 32
-  %877 = load ptr, ptr %876, align 8, !tbaa !58
-  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %875, ptr align 1 %877, i64 %870, i1 false)
-  %878 = load ptr, ptr %874, align 8, !tbaa !106
-  %879 = getelementptr inbounds nuw i8, ptr %878, i64 %870
-  store ptr %879, ptr %874, align 8, !tbaa !106
-  %880 = load ptr, ptr %876, align 8, !tbaa !58
-  %881 = getelementptr inbounds nuw i8, ptr %880, i64 %870
-  store ptr %881, ptr %876, align 8, !tbaa !58
-  %882 = getelementptr inbounds nuw i8, ptr %862, i64 40
-  %883 = load i64, ptr %882, align 8, !tbaa !108
-  %884 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %883, i64 %870), !nosanitize !45
-  %885 = extractvalue { i64, i1 } %884, 1, !nosanitize !45
-  br i1 %885, label %886, label %887, !prof !46, !nosanitize !45
+870:                                              ; preds = %853
+  %871 = getelementptr inbounds nuw i8, ptr %859, i64 24
+  %872 = load ptr, ptr %871, align 8, !tbaa !106
+  %873 = getelementptr inbounds nuw i8, ptr %861, i64 32
+  %874 = load ptr, ptr %873, align 8, !tbaa !58
+  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %872, ptr align 1 %874, i64 %867, i1 false)
+  %875 = load ptr, ptr %871, align 8, !tbaa !106
+  %876 = getelementptr inbounds nuw i8, ptr %875, i64 %867
+  store ptr %876, ptr %871, align 8, !tbaa !106
+  %877 = load ptr, ptr %873, align 8, !tbaa !58
+  %878 = getelementptr inbounds nuw i8, ptr %877, i64 %867
+  store ptr %878, ptr %873, align 8, !tbaa !58
+  %879 = getelementptr inbounds nuw i8, ptr %859, i64 40
+  %880 = load i64, ptr %879, align 8, !tbaa !108
+  %881 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %880, i64 %867), !nosanitize !45
+  %882 = extractvalue { i64, i1 } %881, 1, !nosanitize !45
+  br i1 %882, label %883, label %884, !prof !46, !nosanitize !45
 
-886:                                              ; preds = %873
+883:                                              ; preds = %870
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-887:                                              ; preds = %873
-  %888 = extractvalue { i64, i1 } %884, 0, !nosanitize !45
-  store i64 %888, ptr %882, align 8, !tbaa !108
-  %889 = load i32, ptr %867, align 8, !tbaa !107
-  %890 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %889, i32 %871), !nosanitize !45
-  %891 = extractvalue { i32, i1 } %890, 1, !nosanitize !45
-  br i1 %891, label %892, label %893, !prof !46, !nosanitize !45
+884:                                              ; preds = %870
+  %885 = extractvalue { i64, i1 } %881, 0, !nosanitize !45
+  store i64 %885, ptr %879, align 8, !tbaa !108
+  %886 = load i32, ptr %864, align 8, !tbaa !107
+  %887 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %886, i32 %868), !nosanitize !45
+  %888 = extractvalue { i32, i1 } %887, 1, !nosanitize !45
+  br i1 %888, label %889, label %890, !prof !46, !nosanitize !45
 
-892:                                              ; preds = %887
+889:                                              ; preds = %884
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-893:                                              ; preds = %887
-  %894 = extractvalue { i32, i1 } %890, 0, !nosanitize !45
-  store i32 %894, ptr %867, align 8, !tbaa !107
-  %895 = load i64, ptr %865, align 8, !tbaa !57
-  %896 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %895, i64 %870), !nosanitize !45
-  %897 = extractvalue { i64, i1 } %896, 1, !nosanitize !45
-  br i1 %897, label %898, label %899, !prof !46, !nosanitize !45
+890:                                              ; preds = %884
+  %891 = extractvalue { i32, i1 } %887, 0, !nosanitize !45
+  store i32 %891, ptr %864, align 8, !tbaa !107
+  %892 = load i64, ptr %862, align 8, !tbaa !57
+  %893 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %892, i64 %867), !nosanitize !45
+  %894 = extractvalue { i64, i1 } %893, 1, !nosanitize !45
+  br i1 %894, label %895, label %896, !prof !46, !nosanitize !45
 
-898:                                              ; preds = %893
+895:                                              ; preds = %890
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-899:                                              ; preds = %893
-  %900 = extractvalue { i64, i1 } %896, 0, !nosanitize !45
-  store i64 %900, ptr %865, align 8, !tbaa !57
-  %901 = icmp eq i64 %900, 0
-  br i1 %901, label %902, label %905
+896:                                              ; preds = %890
+  %897 = extractvalue { i64, i1 } %893, 0, !nosanitize !45
+  store i64 %897, ptr %862, align 8, !tbaa !57
+  %898 = icmp eq i64 %897, 0
+  br i1 %898, label %899, label %902
 
-902:                                              ; preds = %899
-  %903 = getelementptr inbounds nuw i8, ptr %864, i64 16
-  %904 = load ptr, ptr %903, align 8, !tbaa !40
-  store ptr %904, ptr %876, align 8, !tbaa !58
-  br label %905
+899:                                              ; preds = %896
+  %900 = getelementptr inbounds nuw i8, ptr %861, i64 16
+  %901 = load ptr, ptr %900, align 8, !tbaa !40
+  store ptr %901, ptr %873, align 8, !tbaa !58
+  br label %902
 
-905:                                              ; preds = %902, %899, %856
-  %906 = load ptr, ptr %0, align 8, !tbaa !20
-  %907 = getelementptr inbounds nuw i8, ptr %906, i64 32
-  %908 = load i32, ptr %907, align 8, !tbaa !107
-  %909 = icmp eq i32 %908, 0
-  %910 = select i1 %909, i32 2, i32 3
-  br label %976
+902:                                              ; preds = %899, %896, %853
+  %903 = load ptr, ptr %0, align 8, !tbaa !20
+  %904 = getelementptr inbounds nuw i8, ptr %903, i64 32
+  %905 = load i32, ptr %904, align 8, !tbaa !107
+  %906 = icmp eq i32 %905, 0
+  %907 = select i1 %906, i32 2, i32 3
+  br label %973
 
-911:                                              ; preds = %845
-  %912 = load i32, ptr %27, align 4, !tbaa !139
-  %913 = icmp eq i32 %912, 0
-  br i1 %913, label %975, label %914
+908:                                              ; preds = %842
+  %909 = load i32, ptr %27, align 4, !tbaa !139
+  %910 = icmp eq i32 %909, 0
+  br i1 %910, label %972, label %911
+
+911:                                              ; preds = %908
+  %912 = load i64, ptr %9, align 8, !tbaa !74
+  %913 = icmp sgt i64 %912, -1
+  br i1 %913, label %914, label %918
 
 914:                                              ; preds = %911
-  %915 = load i64, ptr %9, align 8, !tbaa !74
-  %916 = icmp sgt i64 %915, -1
-  br i1 %916, label %917, label %921
+  %915 = load ptr, ptr %7, align 8, !tbaa !34
+  %916 = and i64 %912, 4294967295
+  %917 = getelementptr inbounds nuw i8, ptr %915, i64 %916
+  br label %918
 
-917:                                              ; preds = %914
-  %918 = load ptr, ptr %7, align 8, !tbaa !34
-  %919 = and i64 %915, 4294967295
-  %920 = getelementptr inbounds nuw i8, ptr %918, i64 %919
-  br label %921
+918:                                              ; preds = %914, %911
+  %919 = phi ptr [ %917, %914 ], [ null, %911 ]
+  %920 = zext i32 %843 to i64
+  %921 = sub nsw i64 %920, %912
+  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %919, i64 noundef %921, i32 noundef 0) #11
+  %922 = load i32, ptr %6, align 4, !tbaa !73
+  %923 = zext i32 %922 to i64
+  store i64 %923, ptr %9, align 8, !tbaa !74
+  %924 = load ptr, ptr %0, align 8, !tbaa !20
+  %925 = getelementptr inbounds nuw i8, ptr %924, i64 56
+  %926 = load ptr, ptr %925, align 8, !tbaa !19
+  tail call void @_tr_flush_bits(ptr noundef %926) #11
+  %927 = getelementptr inbounds nuw i8, ptr %926, i64 40
+  %928 = load i64, ptr %927, align 8, !tbaa !57
+  %929 = getelementptr inbounds nuw i8, ptr %924, i64 32
+  %930 = load i32, ptr %929, align 8, !tbaa !107
+  %931 = zext i32 %930 to i64
+  %932 = tail call i64 @llvm.umin.i64(i64 %928, i64 %931)
+  %933 = trunc nuw i64 %932 to i32
+  %934 = icmp eq i64 %932, 0
+  br i1 %934, label %967, label %935
 
-921:                                              ; preds = %917, %914
-  %922 = phi ptr [ %920, %917 ], [ null, %914 ]
-  %923 = zext i32 %846 to i64
-  %924 = sub nsw i64 %923, %915
-  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %922, i64 noundef %924, i32 noundef 0) #11
-  %925 = load i32, ptr %6, align 4, !tbaa !73
-  %926 = zext i32 %925 to i64
-  store i64 %926, ptr %9, align 8, !tbaa !74
-  %927 = load ptr, ptr %0, align 8, !tbaa !20
-  %928 = getelementptr inbounds nuw i8, ptr %927, i64 56
-  %929 = load ptr, ptr %928, align 8, !tbaa !19
-  tail call void @_tr_flush_bits(ptr noundef %929) #11
-  %930 = getelementptr inbounds nuw i8, ptr %929, i64 40
-  %931 = load i64, ptr %930, align 8, !tbaa !57
-  %932 = getelementptr inbounds nuw i8, ptr %927, i64 32
-  %933 = load i32, ptr %932, align 8, !tbaa !107
-  %934 = zext i32 %933 to i64
-  %935 = tail call i64 @llvm.umin.i64(i64 %931, i64 %934)
-  %936 = trunc nuw i64 %935 to i32
-  %937 = icmp eq i64 %935, 0
-  br i1 %937, label %970, label %938
+935:                                              ; preds = %918
+  %936 = getelementptr inbounds nuw i8, ptr %924, i64 24
+  %937 = load ptr, ptr %936, align 8, !tbaa !106
+  %938 = getelementptr inbounds nuw i8, ptr %926, i64 32
+  %939 = load ptr, ptr %938, align 8, !tbaa !58
+  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %937, ptr align 1 %939, i64 %932, i1 false)
+  %940 = load ptr, ptr %936, align 8, !tbaa !106
+  %941 = getelementptr inbounds nuw i8, ptr %940, i64 %932
+  store ptr %941, ptr %936, align 8, !tbaa !106
+  %942 = load ptr, ptr %938, align 8, !tbaa !58
+  %943 = getelementptr inbounds nuw i8, ptr %942, i64 %932
+  store ptr %943, ptr %938, align 8, !tbaa !58
+  %944 = getelementptr inbounds nuw i8, ptr %924, i64 40
+  %945 = load i64, ptr %944, align 8, !tbaa !108
+  %946 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %945, i64 %932), !nosanitize !45
+  %947 = extractvalue { i64, i1 } %946, 1, !nosanitize !45
+  br i1 %947, label %948, label %949, !prof !46, !nosanitize !45
 
-938:                                              ; preds = %921
-  %939 = getelementptr inbounds nuw i8, ptr %927, i64 24
-  %940 = load ptr, ptr %939, align 8, !tbaa !106
-  %941 = getelementptr inbounds nuw i8, ptr %929, i64 32
-  %942 = load ptr, ptr %941, align 8, !tbaa !58
-  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %940, ptr align 1 %942, i64 %935, i1 false)
-  %943 = load ptr, ptr %939, align 8, !tbaa !106
-  %944 = getelementptr inbounds nuw i8, ptr %943, i64 %935
-  store ptr %944, ptr %939, align 8, !tbaa !106
-  %945 = load ptr, ptr %941, align 8, !tbaa !58
-  %946 = getelementptr inbounds nuw i8, ptr %945, i64 %935
-  store ptr %946, ptr %941, align 8, !tbaa !58
-  %947 = getelementptr inbounds nuw i8, ptr %927, i64 40
-  %948 = load i64, ptr %947, align 8, !tbaa !108
-  %949 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %948, i64 %935), !nosanitize !45
-  %950 = extractvalue { i64, i1 } %949, 1, !nosanitize !45
-  br i1 %950, label %951, label %952, !prof !46, !nosanitize !45
-
-951:                                              ; preds = %938
+948:                                              ; preds = %935
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-952:                                              ; preds = %938
-  %953 = extractvalue { i64, i1 } %949, 0, !nosanitize !45
-  store i64 %953, ptr %947, align 8, !tbaa !108
-  %954 = load i32, ptr %932, align 8, !tbaa !107
-  %955 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %954, i32 %936), !nosanitize !45
-  %956 = extractvalue { i32, i1 } %955, 1, !nosanitize !45
-  br i1 %956, label %957, label %958, !prof !46, !nosanitize !45
+949:                                              ; preds = %935
+  %950 = extractvalue { i64, i1 } %946, 0, !nosanitize !45
+  store i64 %950, ptr %944, align 8, !tbaa !108
+  %951 = load i32, ptr %929, align 8, !tbaa !107
+  %952 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %951, i32 %933), !nosanitize !45
+  %953 = extractvalue { i32, i1 } %952, 1, !nosanitize !45
+  br i1 %953, label %954, label %955, !prof !46, !nosanitize !45
 
-957:                                              ; preds = %952
+954:                                              ; preds = %949
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-958:                                              ; preds = %952
-  %959 = extractvalue { i32, i1 } %955, 0, !nosanitize !45
-  store i32 %959, ptr %932, align 8, !tbaa !107
-  %960 = load i64, ptr %930, align 8, !tbaa !57
-  %961 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %960, i64 %935), !nosanitize !45
-  %962 = extractvalue { i64, i1 } %961, 1, !nosanitize !45
-  br i1 %962, label %963, label %964, !prof !46, !nosanitize !45
+955:                                              ; preds = %949
+  %956 = extractvalue { i32, i1 } %952, 0, !nosanitize !45
+  store i32 %956, ptr %929, align 8, !tbaa !107
+  %957 = load i64, ptr %927, align 8, !tbaa !57
+  %958 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %957, i64 %932), !nosanitize !45
+  %959 = extractvalue { i64, i1 } %958, 1, !nosanitize !45
+  br i1 %959, label %960, label %961, !prof !46, !nosanitize !45
 
-963:                                              ; preds = %958
+960:                                              ; preds = %955
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-964:                                              ; preds = %958
-  %965 = extractvalue { i64, i1 } %961, 0, !nosanitize !45
-  store i64 %965, ptr %930, align 8, !tbaa !57
-  %966 = icmp eq i64 %965, 0
-  br i1 %966, label %967, label %970
+961:                                              ; preds = %955
+  %962 = extractvalue { i64, i1 } %958, 0, !nosanitize !45
+  store i64 %962, ptr %927, align 8, !tbaa !57
+  %963 = icmp eq i64 %962, 0
+  br i1 %963, label %964, label %967
 
-967:                                              ; preds = %964
-  %968 = getelementptr inbounds nuw i8, ptr %929, i64 16
-  %969 = load ptr, ptr %968, align 8, !tbaa !40
-  store ptr %969, ptr %941, align 8, !tbaa !58
-  br label %970
+964:                                              ; preds = %961
+  %965 = getelementptr inbounds nuw i8, ptr %926, i64 16
+  %966 = load ptr, ptr %965, align 8, !tbaa !40
+  store ptr %966, ptr %938, align 8, !tbaa !58
+  br label %967
 
-970:                                              ; preds = %967, %964, %921
-  %971 = load ptr, ptr %0, align 8, !tbaa !20
-  %972 = getelementptr inbounds nuw i8, ptr %971, i64 32
-  %973 = load i32, ptr %972, align 8, !tbaa !107
-  %974 = icmp eq i32 %973, 0
-  br i1 %974, label %976, label %975
+967:                                              ; preds = %964, %961, %918
+  %968 = load ptr, ptr %0, align 8, !tbaa !20
+  %969 = getelementptr inbounds nuw i8, ptr %968, i64 32
+  %970 = load i32, ptr %969, align 8, !tbaa !107
+  %971 = icmp eq i32 %970, 0
+  br i1 %971, label %973, label %972
 
-975:                                              ; preds = %970, %911
-  br label %976
+972:                                              ; preds = %967, %908
+  br label %973
 
-976:                                              ; preds = %975, %970, %905, %840, %364
-  %977 = phi i32 [ 1, %975 ], [ %910, %905 ], [ 0, %970 ], [ 0, %364 ], [ 0, %840 ]
-  ret i32 %977
+973:                                              ; preds = %972, %967, %902, %837, %361
+  %974 = phi i32 [ 1, %972 ], [ %907, %902 ], [ 0, %967 ], [ 0, %361 ], [ 0, %837 ]
+  ret i32 %974
 }
 
 ; Function Attrs: nounwind uwtable
@@ -12474,18 +12410,18 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   %35 = getelementptr inbounds nuw i8, ptr %0, i64 212
   br label %36
 
-36:                                               ; preds = %755, %2
+36:                                               ; preds = %752, %2
   %37 = load i32, ptr %3, align 4, !tbaa !75
   %38 = icmp ult i32 %37, 262
-  br i1 %38, label %39, label %378
+  br i1 %38, label %39, label %375
 
 39:                                               ; preds = %36
   %40 = load i32, ptr %4, align 8, !tbaa !32
   %41 = zext i32 %40 to i64
   br label %42
 
-42:                                               ; preds = %321, %39
-  %43 = phi i32 [ %248, %321 ], [ %37, %39 ]
+42:                                               ; preds = %318, %39
+  %43 = phi i32 [ %245, %318 ], [ %37, %39 ]
   %44 = load i64, ptr %5, align 8, !tbaa !61
   %45 = zext nneg i32 %43 to i64
   %46 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %44, i64 %45), !nosanitize !45
@@ -12738,7 +12674,7 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   %200 = getelementptr inbounds nuw i8, ptr %199, i64 8
   %201 = load i32, ptr %200, align 8, !tbaa !81
   %202 = icmp eq i32 %201, 0
-  br i1 %202, label %326, label %203
+  br i1 %202, label %323, label %203
 
 203:                                              ; preds = %195
   %204 = load ptr, ptr %7, align 8, !tbaa !34
@@ -12748,1491 +12684,1483 @@ define internal range(i32 0, 4) i32 @deflate_slow(ptr noundef %0, i32 noundef %1
   %208 = getelementptr inbounds nuw i8, ptr %206, i64 %207
   %209 = tail call i32 @llvm.umin.i32(i32 %201, i32 %198)
   %210 = icmp eq i32 %198, 0
-  br i1 %210, label %242, label %211
+  br i1 %210, label %239, label %211
 
 211:                                              ; preds = %203
   %212 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %201, i32 %209), !nosanitize !45
-  %213 = extractvalue { i32, i1 } %212, 1, !nosanitize !45
-  br i1 %213, label %214, label %215, !prof !46, !nosanitize !45
-
-214:                                              ; preds = %211
-  tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
-  unreachable, !nosanitize !45
-
-215:                                              ; preds = %211
-  %216 = extractvalue { i32, i1 } %212, 0, !nosanitize !45
-  store i32 %216, ptr %200, align 8, !tbaa !81
-  %217 = load ptr, ptr %199, align 8, !tbaa !82
-  %218 = zext i32 %209 to i64
-  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %208, ptr align 1 %217, i64 %218, i1 false)
-  %219 = getelementptr inbounds nuw i8, ptr %199, i64 56
-  %220 = load ptr, ptr %219, align 8, !tbaa !19
-  %221 = getelementptr inbounds nuw i8, ptr %220, i64 48
-  %222 = load i32, ptr %221, align 8, !tbaa !30
-  switch i32 %222, label %231 [
-    i32 1, label %223
-    i32 2, label %227
+  %213 = extractvalue { i32, i1 } %212, 0, !nosanitize !45
+  store i32 %213, ptr %200, align 8, !tbaa !81
+  %214 = load ptr, ptr %199, align 8, !tbaa !82
+  %215 = zext i32 %209 to i64
+  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %208, ptr align 1 %214, i64 %215, i1 false)
+  %216 = getelementptr inbounds nuw i8, ptr %199, i64 56
+  %217 = load ptr, ptr %216, align 8, !tbaa !19
+  %218 = getelementptr inbounds nuw i8, ptr %217, i64 48
+  %219 = load i32, ptr %218, align 8, !tbaa !30
+  switch i32 %219, label %228 [
+    i32 1, label %220
+    i32 2, label %224
   ]
 
-223:                                              ; preds = %215
-  %224 = getelementptr inbounds nuw i8, ptr %199, i64 96
-  %225 = load i64, ptr %224, align 8, !tbaa !59
-  %226 = tail call i64 @adler32(i64 noundef %225, ptr noundef %208, i32 noundef %209) #11
-  store i64 %226, ptr %224, align 8, !tbaa !59
-  br label %231
+220:                                              ; preds = %211
+  %221 = getelementptr inbounds nuw i8, ptr %199, i64 96
+  %222 = load i64, ptr %221, align 8, !tbaa !59
+  %223 = tail call i64 @adler32(i64 noundef %222, ptr noundef %208, i32 noundef %209) #11
+  store i64 %223, ptr %221, align 8, !tbaa !59
+  br label %228
 
-227:                                              ; preds = %215
-  %228 = getelementptr inbounds nuw i8, ptr %199, i64 96
-  %229 = load i64, ptr %228, align 8, !tbaa !59
-  %230 = tail call i64 @crc32(i64 noundef %229, ptr noundef %208, i32 noundef %209) #11
-  store i64 %230, ptr %228, align 8, !tbaa !59
-  br label %231
+224:                                              ; preds = %211
+  %225 = getelementptr inbounds nuw i8, ptr %199, i64 96
+  %226 = load i64, ptr %225, align 8, !tbaa !59
+  %227 = tail call i64 @crc32(i64 noundef %226, ptr noundef %208, i32 noundef %209) #11
+  store i64 %227, ptr %225, align 8, !tbaa !59
+  br label %228
 
-231:                                              ; preds = %227, %223, %215
-  %232 = load ptr, ptr %199, align 8, !tbaa !82
-  %233 = getelementptr inbounds nuw i8, ptr %232, i64 %218
-  store ptr %233, ptr %199, align 8, !tbaa !82
-  %234 = getelementptr inbounds nuw i8, ptr %199, i64 16
-  %235 = load i64, ptr %234, align 8, !tbaa !55
-  %236 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %235, i64 %218), !nosanitize !45
-  %237 = extractvalue { i64, i1 } %236, 1, !nosanitize !45
-  br i1 %237, label %238, label %239, !prof !46, !nosanitize !45
+228:                                              ; preds = %224, %220, %211
+  %229 = load ptr, ptr %199, align 8, !tbaa !82
+  %230 = getelementptr inbounds nuw i8, ptr %229, i64 %215
+  store ptr %230, ptr %199, align 8, !tbaa !82
+  %231 = getelementptr inbounds nuw i8, ptr %199, i64 16
+  %232 = load i64, ptr %231, align 8, !tbaa !55
+  %233 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %232, i64 %215), !nosanitize !45
+  %234 = extractvalue { i64, i1 } %233, 1, !nosanitize !45
+  br i1 %234, label %235, label %236, !prof !46, !nosanitize !45
 
-238:                                              ; preds = %231
+235:                                              ; preds = %228
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-239:                                              ; preds = %231
-  %240 = extractvalue { i64, i1 } %236, 0, !nosanitize !45
-  store i64 %240, ptr %234, align 8, !tbaa !55
-  %241 = load i32, ptr %3, align 4, !tbaa !75
-  br label %242
+236:                                              ; preds = %228
+  %237 = extractvalue { i64, i1 } %233, 0, !nosanitize !45
+  store i64 %237, ptr %231, align 8, !tbaa !55
+  %238 = load i32, ptr %3, align 4, !tbaa !75
+  br label %239
 
-242:                                              ; preds = %239, %203
-  %243 = phi i32 [ %196, %203 ], [ %241, %239 ]
-  %244 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %243, i32 %209), !nosanitize !45
-  %245 = extractvalue { i32, i1 } %244, 1, !nosanitize !45
-  br i1 %245, label %246, label %247, !prof !46, !nosanitize !45
+239:                                              ; preds = %236, %203
+  %240 = phi i32 [ %196, %203 ], [ %238, %236 ]
+  %241 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %240, i32 %209), !nosanitize !45
+  %242 = extractvalue { i32, i1 } %241, 1, !nosanitize !45
+  br i1 %242, label %243, label %244, !prof !46, !nosanitize !45
 
-246:                                              ; preds = %242
+243:                                              ; preds = %239
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-247:                                              ; preds = %242
-  %248 = extractvalue { i32, i1 } %244, 0, !nosanitize !45
-  store i32 %248, ptr %3, align 4, !tbaa !75
-  %249 = load i32, ptr %10, align 4, !tbaa !76
-  %250 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %248, i32 %249), !nosanitize !45
-  %251 = extractvalue { i32, i1 } %250, 1, !nosanitize !45
-  br i1 %251, label %252, label %253, !prof !46, !nosanitize !45
+244:                                              ; preds = %239
+  %245 = extractvalue { i32, i1 } %241, 0, !nosanitize !45
+  store i32 %245, ptr %3, align 4, !tbaa !75
+  %246 = load i32, ptr %10, align 4, !tbaa !76
+  %247 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %245, i32 %246), !nosanitize !45
+  %248 = extractvalue { i32, i1 } %247, 1, !nosanitize !45
+  br i1 %248, label %249, label %250, !prof !46, !nosanitize !45
 
-252:                                              ; preds = %247
+249:                                              ; preds = %244
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-253:                                              ; preds = %247
-  %254 = extractvalue { i32, i1 } %250, 0, !nosanitize !45
-  %255 = icmp ugt i32 %254, 2
-  br i1 %255, label %256, label %319
+250:                                              ; preds = %244
+  %251 = extractvalue { i32, i1 } %247, 0, !nosanitize !45
+  %252 = icmp ugt i32 %251, 2
+  br i1 %252, label %253, label %316
 
-256:                                              ; preds = %253
-  %257 = load i32, ptr %6, align 4, !tbaa !73
-  %258 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %257, i32 %249), !nosanitize !45
-  %259 = extractvalue { i32, i1 } %258, 0, !nosanitize !45
-  %260 = extractvalue { i32, i1 } %258, 1, !nosanitize !45
-  br i1 %260, label %261, label %262, !prof !46, !nosanitize !45
+253:                                              ; preds = %250
+  %254 = load i32, ptr %6, align 4, !tbaa !73
+  %255 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %254, i32 %246), !nosanitize !45
+  %256 = extractvalue { i32, i1 } %255, 0, !nosanitize !45
+  %257 = extractvalue { i32, i1 } %255, 1, !nosanitize !45
+  br i1 %257, label %258, label %259, !prof !46, !nosanitize !45
 
-261:                                              ; preds = %256
+258:                                              ; preds = %253
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-262:                                              ; preds = %256
-  %263 = load ptr, ptr %7, align 8, !tbaa !34
-  %264 = zext i32 %259 to i64
-  %265 = getelementptr inbounds nuw i8, ptr %263, i64 %264
-  %266 = load i8, ptr %265, align 1, !tbaa !8
-  %267 = zext i8 %266 to i32
-  store i32 %267, ptr %15, align 8, !tbaa !80
-  %268 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %259, i32 1), !nosanitize !45
-  %269 = extractvalue { i32, i1 } %268, 1, !nosanitize !45
-  br i1 %269, label %270, label %271, !prof !46, !nosanitize !45
+259:                                              ; preds = %253
+  %260 = load ptr, ptr %7, align 8, !tbaa !34
+  %261 = zext i32 %256 to i64
+  %262 = getelementptr inbounds nuw i8, ptr %260, i64 %261
+  %263 = load i8, ptr %262, align 1, !tbaa !8
+  %264 = zext i8 %263 to i32
+  store i32 %264, ptr %15, align 8, !tbaa !80
+  %265 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %256, i32 1), !nosanitize !45
+  %266 = extractvalue { i32, i1 } %265, 1, !nosanitize !45
+  br i1 %266, label %267, label %268, !prof !46, !nosanitize !45
 
-270:                                              ; preds = %262
+267:                                              ; preds = %259
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-271:                                              ; preds = %262
-  %272 = extractvalue { i32, i1 } %268, 0, !nosanitize !45
-  %273 = load i32, ptr %16, align 8, !tbaa !53
-  %274 = shl i32 %267, %273
-  %275 = zext i32 %272 to i64
-  %276 = getelementptr inbounds nuw i8, ptr %263, i64 %275
-  %277 = load i8, ptr %276, align 1, !tbaa !8
-  %278 = zext i8 %277 to i32
-  %279 = xor i32 %274, %278
-  %280 = load i32, ptr %17, align 4, !tbaa !52
-  %281 = and i32 %279, %280
-  store i32 %281, ptr %15, align 8, !tbaa !80
-  br label %282
+268:                                              ; preds = %259
+  %269 = extractvalue { i32, i1 } %265, 0, !nosanitize !45
+  %270 = load i32, ptr %16, align 8, !tbaa !53
+  %271 = shl i32 %264, %270
+  %272 = zext i32 %269 to i64
+  %273 = getelementptr inbounds nuw i8, ptr %260, i64 %272
+  %274 = load i8, ptr %273, align 1, !tbaa !8
+  %275 = zext i8 %274 to i32
+  %276 = xor i32 %271, %275
+  %277 = load i32, ptr %17, align 4, !tbaa !52
+  %278 = and i32 %276, %277
+  store i32 %278, ptr %15, align 8, !tbaa !80
+  br label %279
 
-282:                                              ; preds = %315, %271
-  %283 = phi i32 [ %281, %271 ], [ %300, %315 ]
-  %284 = phi i32 [ %249, %271 ], [ %311, %315 ]
-  %285 = phi i32 [ %259, %271 ], [ %316, %315 ]
-  %286 = icmp eq i32 %284, 0
-  br i1 %286, label %319, label %287
+279:                                              ; preds = %312, %268
+  %280 = phi i32 [ %278, %268 ], [ %297, %312 ]
+  %281 = phi i32 [ %246, %268 ], [ %308, %312 ]
+  %282 = phi i32 [ %256, %268 ], [ %313, %312 ]
+  %283 = icmp eq i32 %281, 0
+  br i1 %283, label %316, label %284
 
-287:                                              ; preds = %282
-  %288 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %285, i32 3), !nosanitize !45
-  %289 = extractvalue { i32, i1 } %288, 1, !nosanitize !45
-  br i1 %289, label %290, label %291, !prof !46, !nosanitize !45
+284:                                              ; preds = %279
+  %285 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %282, i32 3), !nosanitize !45
+  %286 = extractvalue { i32, i1 } %285, 1, !nosanitize !45
+  br i1 %286, label %287, label %288, !prof !46, !nosanitize !45
 
-290:                                              ; preds = %287
+287:                                              ; preds = %284
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-291:                                              ; preds = %287
-  %292 = shl i32 %283, %273
-  %293 = extractvalue { i32, i1 } %288, 0, !nosanitize !45
-  %294 = add i32 %293, -1
-  %295 = zext i32 %294 to i64
-  %296 = getelementptr inbounds nuw i8, ptr %263, i64 %295
-  %297 = load i8, ptr %296, align 1, !tbaa !8
-  %298 = zext i8 %297 to i32
-  %299 = xor i32 %292, %298
-  %300 = and i32 %299, %280
-  store i32 %300, ptr %15, align 8, !tbaa !80
-  %301 = load ptr, ptr %12, align 8, !tbaa !37
-  %302 = zext i32 %300 to i64
-  %303 = getelementptr inbounds nuw [2 x i8], ptr %301, i64 %302
-  %304 = load i16, ptr %303, align 2, !tbaa !62
-  %305 = load ptr, ptr %13, align 8, !tbaa !35
-  %306 = load i32, ptr %18, align 8, !tbaa !33
-  %307 = and i32 %306, %285
-  %308 = zext i32 %307 to i64
-  %309 = getelementptr inbounds nuw [2 x i8], ptr %305, i64 %308
-  store i16 %304, ptr %309, align 2, !tbaa !62
-  %310 = trunc i32 %285 to i16
-  store i16 %310, ptr %303, align 2, !tbaa !62
-  %311 = add i32 %284, -1
-  store i32 %311, ptr %10, align 4, !tbaa !76
-  %312 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %248, i32 %311), !nosanitize !45
-  %313 = extractvalue { i32, i1 } %312, 1, !nosanitize !45
-  br i1 %313, label %314, label %315, !prof !46, !nosanitize !45
+288:                                              ; preds = %284
+  %289 = shl i32 %280, %270
+  %290 = extractvalue { i32, i1 } %285, 0, !nosanitize !45
+  %291 = add i32 %290, -1
+  %292 = zext i32 %291 to i64
+  %293 = getelementptr inbounds nuw i8, ptr %260, i64 %292
+  %294 = load i8, ptr %293, align 1, !tbaa !8
+  %295 = zext i8 %294 to i32
+  %296 = xor i32 %289, %295
+  %297 = and i32 %296, %277
+  store i32 %297, ptr %15, align 8, !tbaa !80
+  %298 = load ptr, ptr %12, align 8, !tbaa !37
+  %299 = zext i32 %297 to i64
+  %300 = getelementptr inbounds nuw [2 x i8], ptr %298, i64 %299
+  %301 = load i16, ptr %300, align 2, !tbaa !62
+  %302 = load ptr, ptr %13, align 8, !tbaa !35
+  %303 = load i32, ptr %18, align 8, !tbaa !33
+  %304 = and i32 %303, %282
+  %305 = zext i32 %304 to i64
+  %306 = getelementptr inbounds nuw [2 x i8], ptr %302, i64 %305
+  store i16 %301, ptr %306, align 2, !tbaa !62
+  %307 = trunc i32 %282 to i16
+  store i16 %307, ptr %300, align 2, !tbaa !62
+  %308 = add i32 %281, -1
+  store i32 %308, ptr %10, align 4, !tbaa !76
+  %309 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %245, i32 %308), !nosanitize !45
+  %310 = extractvalue { i32, i1 } %309, 1, !nosanitize !45
+  br i1 %310, label %311, label %312, !prof !46, !nosanitize !45
 
-314:                                              ; preds = %291
+311:                                              ; preds = %288
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-315:                                              ; preds = %291
-  %316 = add nuw i32 %285, 1
-  %317 = extractvalue { i32, i1 } %312, 0, !nosanitize !45
-  %318 = icmp ult i32 %317, 3
-  br i1 %318, label %319, label %282, !llvm.loop !91
+312:                                              ; preds = %288
+  %313 = add nuw i32 %282, 1
+  %314 = extractvalue { i32, i1 } %309, 0, !nosanitize !45
+  %315 = icmp ult i32 %314, 3
+  br i1 %315, label %316, label %279, !llvm.loop !91
 
-319:                                              ; preds = %315, %282, %253
-  %320 = icmp ult i32 %248, 262
-  br i1 %320, label %321, label %326
+316:                                              ; preds = %312, %279, %250
+  %317 = icmp ult i32 %245, 262
+  br i1 %317, label %318, label %323
 
-321:                                              ; preds = %319
-  %322 = load ptr, ptr %0, align 8, !tbaa !20
-  %323 = getelementptr inbounds nuw i8, ptr %322, i64 8
-  %324 = load i32, ptr %323, align 8, !tbaa !81
-  %325 = icmp eq i32 %324, 0
-  br i1 %325, label %326, label %42, !llvm.loop !92
+318:                                              ; preds = %316
+  %319 = load ptr, ptr %0, align 8, !tbaa !20
+  %320 = getelementptr inbounds nuw i8, ptr %319, i64 8
+  %321 = load i32, ptr %320, align 8, !tbaa !81
+  %322 = icmp eq i32 %321, 0
+  br i1 %322, label %323, label %42, !llvm.loop !92
 
-326:                                              ; preds = %321, %319, %195
-  %327 = phi i32 [ %248, %321 ], [ %248, %319 ], [ %196, %195 ]
-  %328 = load i64, ptr %19, align 8, !tbaa !38
-  %329 = load i64, ptr %5, align 8, !tbaa !61
-  %330 = icmp ult i64 %328, %329
-  br i1 %330, label %331, label %367
+323:                                              ; preds = %318, %316, %195
+  %324 = phi i32 [ %245, %318 ], [ %245, %316 ], [ %196, %195 ]
+  %325 = load i64, ptr %19, align 8, !tbaa !38
+  %326 = load i64, ptr %5, align 8, !tbaa !61
+  %327 = icmp ult i64 %325, %326
+  br i1 %327, label %328, label %364
 
-331:                                              ; preds = %326
-  %332 = load i32, ptr %6, align 4, !tbaa !73
-  %333 = zext i32 %332 to i64
-  %334 = zext i32 %327 to i64
-  %335 = add nuw nsw i64 %334, %333
-  %336 = icmp ult i64 %328, %335
-  br i1 %336, label %337, label %347
+328:                                              ; preds = %323
+  %329 = load i32, ptr %6, align 4, !tbaa !73
+  %330 = zext i32 %329 to i64
+  %331 = zext i32 %324 to i64
+  %332 = add nuw nsw i64 %331, %330
+  %333 = icmp ult i64 %325, %332
+  br i1 %333, label %334, label %344
 
-337:                                              ; preds = %331
-  %338 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %329, i64 %335), !nosanitize !45
-  %339 = extractvalue { i64, i1 } %338, 1, !nosanitize !45
-  br i1 %339, label %340, label %341, !prof !46, !nosanitize !45
+334:                                              ; preds = %328
+  %335 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %326, i64 %332), !nosanitize !45
+  %336 = extractvalue { i64, i1 } %335, 1, !nosanitize !45
+  br i1 %336, label %337, label %338, !prof !46, !nosanitize !45
 
-340:                                              ; preds = %337
+337:                                              ; preds = %334
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-341:                                              ; preds = %337
-  %342 = extractvalue { i64, i1 } %338, 0, !nosanitize !45
-  %343 = tail call i64 @llvm.umin.i64(i64 %342, i64 258)
-  %344 = load ptr, ptr %7, align 8, !tbaa !34
-  %345 = getelementptr inbounds nuw i8, ptr %344, i64 %335
-  tail call void @llvm.memset.p0.i64(ptr nonnull align 1 %345, i8 0, i64 %343, i1 false)
-  %346 = add nuw nsw i64 %343, %335
-  br label %364
+338:                                              ; preds = %334
+  %339 = extractvalue { i64, i1 } %335, 0, !nosanitize !45
+  %340 = tail call i64 @llvm.umin.i64(i64 %339, i64 258)
+  %341 = load ptr, ptr %7, align 8, !tbaa !34
+  %342 = getelementptr inbounds nuw i8, ptr %341, i64 %332
+  tail call void @llvm.memset.p0.i64(ptr nonnull align 1 %342, i8 0, i64 %340, i1 false)
+  %343 = add nuw nsw i64 %340, %332
+  br label %361
 
-347:                                              ; preds = %331
-  %348 = add nuw nsw i64 %335, 258
-  %349 = icmp ult i64 %328, %348
-  br i1 %349, label %350, label %367
+344:                                              ; preds = %328
+  %345 = add nuw nsw i64 %332, 258
+  %346 = icmp ult i64 %325, %345
+  br i1 %346, label %347, label %364
 
-350:                                              ; preds = %347
-  %351 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %329, i64 %328), !nosanitize !45
-  %352 = sub nuw nsw i64 %348, %328
-  %353 = extractvalue { i64, i1 } %351, 0, !nosanitize !45
-  %354 = tail call i64 @llvm.umin.i64(i64 %352, i64 %353)
-  %355 = load ptr, ptr %7, align 8, !tbaa !34
-  %356 = getelementptr inbounds nuw i8, ptr %355, i64 %328
-  %357 = and i64 %354, 4294967295
-  tail call void @llvm.memset.p0.i64(ptr align 1 %356, i8 0, i64 %357, i1 false)
-  %358 = load i64, ptr %19, align 8, !tbaa !38
-  %359 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %358, i64 %354), !nosanitize !45
-  %360 = extractvalue { i64, i1 } %359, 1, !nosanitize !45
-  br i1 %360, label %361, label %362, !prof !46, !nosanitize !45
+347:                                              ; preds = %344
+  %348 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %326, i64 %325), !nosanitize !45
+  %349 = sub nuw nsw i64 %345, %325
+  %350 = extractvalue { i64, i1 } %348, 0, !nosanitize !45
+  %351 = tail call i64 @llvm.umin.i64(i64 %349, i64 %350)
+  %352 = load ptr, ptr %7, align 8, !tbaa !34
+  %353 = getelementptr inbounds nuw i8, ptr %352, i64 %325
+  %354 = and i64 %351, 4294967295
+  tail call void @llvm.memset.p0.i64(ptr align 1 %353, i8 0, i64 %354, i1 false)
+  %355 = load i64, ptr %19, align 8, !tbaa !38
+  %356 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %355, i64 %351), !nosanitize !45
+  %357 = extractvalue { i64, i1 } %356, 1, !nosanitize !45
+  br i1 %357, label %358, label %359, !prof !46, !nosanitize !45
 
-361:                                              ; preds = %350
+358:                                              ; preds = %347
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-362:                                              ; preds = %350
-  %363 = extractvalue { i64, i1 } %359, 0, !nosanitize !45
+359:                                              ; preds = %347
+  %360 = extractvalue { i64, i1 } %356, 0, !nosanitize !45
+  br label %361
+
+361:                                              ; preds = %359, %338
+  %362 = phi i64 [ %343, %338 ], [ %360, %359 ]
+  store i64 %362, ptr %19, align 8, !tbaa !38
+  %363 = load i32, ptr %3, align 4, !tbaa !75
   br label %364
 
-364:                                              ; preds = %362, %341
-  %365 = phi i64 [ %346, %341 ], [ %363, %362 ]
-  store i64 %365, ptr %19, align 8, !tbaa !38
-  %366 = load i32, ptr %3, align 4, !tbaa !75
-  br label %367
+364:                                              ; preds = %361, %344, %323
+  %365 = phi i32 [ %324, %323 ], [ %324, %344 ], [ %363, %361 ]
+  %366 = icmp ult i32 %365, 262
+  %367 = and i1 %20, %366
+  br i1 %367, label %1125, label %368
 
-367:                                              ; preds = %364, %347, %326
-  %368 = phi i32 [ %327, %326 ], [ %327, %347 ], [ %366, %364 ]
-  %369 = icmp ult i32 %368, 262
-  %370 = and i1 %20, %369
-  br i1 %370, label %1128, label %371
+368:                                              ; preds = %364
+  %369 = icmp eq i32 %365, 0
+  br i1 %369, label %948, label %370
 
-371:                                              ; preds = %367
-  %372 = icmp eq i32 %368, 0
-  br i1 %372, label %951, label %373
+370:                                              ; preds = %368
+  %371 = icmp ugt i32 %365, 2
+  br i1 %371, label %375, label %372
 
-373:                                              ; preds = %371
-  %374 = icmp ugt i32 %368, 2
-  br i1 %374, label %378, label %375
+372:                                              ; preds = %370
+  %373 = load i32, ptr %21, align 8, !tbaa !78
+  store i32 %373, ptr %22, align 8, !tbaa !77
+  %374 = load i32, ptr %8, align 8, !tbaa !83
+  store i32 %374, ptr %23, align 4, !tbaa !159
+  br label %594
 
-375:                                              ; preds = %373
-  %376 = load i32, ptr %21, align 8, !tbaa !78
-  store i32 %376, ptr %22, align 8, !tbaa !77
-  %377 = load i32, ptr %8, align 8, !tbaa !83
-  store i32 %377, ptr %23, align 4, !tbaa !159
-  br label %597
+375:                                              ; preds = %370, %36
+  %376 = phi i32 [ %365, %370 ], [ %37, %36 ]
+  %377 = load i32, ptr %6, align 4, !tbaa !73
+  %378 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %377, i32 2), !nosanitize !45
+  %379 = extractvalue { i32, i1 } %378, 1, !nosanitize !45
+  br i1 %379, label %380, label %381, !prof !46, !nosanitize !45
 
-378:                                              ; preds = %373, %36
-  %379 = phi i32 [ %368, %373 ], [ %37, %36 ]
-  %380 = load i32, ptr %6, align 4, !tbaa !73
-  %381 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %380, i32 2), !nosanitize !45
-  %382 = extractvalue { i32, i1 } %381, 1, !nosanitize !45
-  br i1 %382, label %383, label %384, !prof !46, !nosanitize !45
-
-383:                                              ; preds = %378
+380:                                              ; preds = %375
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-384:                                              ; preds = %378
-  %385 = extractvalue { i32, i1 } %381, 0, !nosanitize !45
-  %386 = load ptr, ptr %7, align 8, !tbaa !34
-  %387 = load i32, ptr %15, align 8, !tbaa !80
-  %388 = load i32, ptr %16, align 8, !tbaa !53
-  %389 = shl i32 %387, %388
-  %390 = zext i32 %385 to i64
-  %391 = getelementptr inbounds nuw i8, ptr %386, i64 %390
-  %392 = load i8, ptr %391, align 1, !tbaa !8
-  %393 = zext i8 %392 to i32
-  %394 = xor i32 %389, %393
-  %395 = load i32, ptr %17, align 4, !tbaa !52
-  %396 = and i32 %394, %395
-  store i32 %396, ptr %15, align 8, !tbaa !80
-  %397 = load ptr, ptr %12, align 8, !tbaa !37
-  %398 = zext i32 %396 to i64
-  %399 = getelementptr inbounds nuw [2 x i8], ptr %397, i64 %398
-  %400 = load i16, ptr %399, align 2, !tbaa !62
-  %401 = load ptr, ptr %13, align 8, !tbaa !35
-  %402 = load i32, ptr %18, align 8, !tbaa !33
-  %403 = and i32 %402, %380
-  %404 = zext i32 %403 to i64
-  %405 = getelementptr inbounds nuw [2 x i8], ptr %401, i64 %404
-  store i16 %400, ptr %405, align 2, !tbaa !62
-  %406 = zext i16 %400 to i32
-  %407 = trunc i32 %380 to i16
-  store i16 %407, ptr %399, align 2, !tbaa !62
-  %408 = load i32, ptr %21, align 8, !tbaa !78
-  store i32 %408, ptr %22, align 8, !tbaa !77
-  %409 = load i32, ptr %8, align 8, !tbaa !83
-  store i32 %409, ptr %23, align 4, !tbaa !159
+381:                                              ; preds = %375
+  %382 = extractvalue { i32, i1 } %378, 0, !nosanitize !45
+  %383 = load ptr, ptr %7, align 8, !tbaa !34
+  %384 = load i32, ptr %15, align 8, !tbaa !80
+  %385 = load i32, ptr %16, align 8, !tbaa !53
+  %386 = shl i32 %384, %385
+  %387 = zext i32 %382 to i64
+  %388 = getelementptr inbounds nuw i8, ptr %383, i64 %387
+  %389 = load i8, ptr %388, align 1, !tbaa !8
+  %390 = zext i8 %389 to i32
+  %391 = xor i32 %386, %390
+  %392 = load i32, ptr %17, align 4, !tbaa !52
+  %393 = and i32 %391, %392
+  store i32 %393, ptr %15, align 8, !tbaa !80
+  %394 = load ptr, ptr %12, align 8, !tbaa !37
+  %395 = zext i32 %393 to i64
+  %396 = getelementptr inbounds nuw [2 x i8], ptr %394, i64 %395
+  %397 = load i16, ptr %396, align 2, !tbaa !62
+  %398 = load ptr, ptr %13, align 8, !tbaa !35
+  %399 = load i32, ptr %18, align 8, !tbaa !33
+  %400 = and i32 %399, %377
+  %401 = zext i32 %400 to i64
+  %402 = getelementptr inbounds nuw [2 x i8], ptr %398, i64 %401
+  store i16 %397, ptr %402, align 2, !tbaa !62
+  %403 = zext i16 %397 to i32
+  %404 = trunc i32 %377 to i16
+  store i16 %404, ptr %396, align 2, !tbaa !62
+  %405 = load i32, ptr %21, align 8, !tbaa !78
+  store i32 %405, ptr %22, align 8, !tbaa !77
+  %406 = load i32, ptr %8, align 8, !tbaa !83
+  store i32 %406, ptr %23, align 4, !tbaa !159
   store i32 2, ptr %21, align 8, !tbaa !78
-  %410 = icmp eq i16 %400, 0
-  br i1 %410, label %601, label %411
+  %407 = icmp eq i16 %397, 0
+  br i1 %407, label %598, label %408
 
-411:                                              ; preds = %384
-  %412 = load i32, ptr %24, align 8, !tbaa !66
-  %413 = icmp ult i32 %408, %412
-  br i1 %413, label %414, label %601
+408:                                              ; preds = %381
+  %409 = load i32, ptr %24, align 8, !tbaa !66
+  %410 = icmp ult i32 %405, %409
+  br i1 %410, label %411, label %598
 
-414:                                              ; preds = %411
-  %415 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %380, i32 %406), !nosanitize !45
-  %416 = extractvalue { i32, i1 } %415, 0, !nosanitize !45
-  %417 = extractvalue { i32, i1 } %415, 1, !nosanitize !45
-  br i1 %417, label %418, label %419, !prof !46, !nosanitize !45
+411:                                              ; preds = %408
+  %412 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %377, i32 %403), !nosanitize !45
+  %413 = extractvalue { i32, i1 } %412, 0, !nosanitize !45
+  %414 = extractvalue { i32, i1 } %412, 1, !nosanitize !45
+  br i1 %414, label %415, label %416, !prof !46, !nosanitize !45
 
-418:                                              ; preds = %414
+415:                                              ; preds = %411
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-419:                                              ; preds = %414
-  %420 = load i32, ptr %4, align 8, !tbaa !32
-  %421 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %420, i32 262), !nosanitize !45
-  %422 = extractvalue { i32, i1 } %421, 1, !nosanitize !45
-  br i1 %422, label %423, label %424, !prof !46, !nosanitize !45
+416:                                              ; preds = %411
+  %417 = load i32, ptr %4, align 8, !tbaa !32
+  %418 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %417, i32 262), !nosanitize !45
+  %419 = extractvalue { i32, i1 } %418, 1, !nosanitize !45
+  br i1 %419, label %420, label %421, !prof !46, !nosanitize !45
 
-423:                                              ; preds = %419
+420:                                              ; preds = %416
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-424:                                              ; preds = %419
-  %425 = extractvalue { i32, i1 } %421, 0, !nosanitize !45
-  %426 = icmp ugt i32 %416, %425
-  br i1 %426, label %601, label %427
+421:                                              ; preds = %416
+  %422 = extractvalue { i32, i1 } %418, 0, !nosanitize !45
+  %423 = icmp ugt i32 %413, %422
+  br i1 %423, label %598, label %424
 
-427:                                              ; preds = %424
-  %428 = zext i32 %380 to i64
-  %429 = getelementptr inbounds nuw i8, ptr %386, i64 %428
-  %430 = load i32, ptr %25, align 8, !tbaa !70
-  %431 = load i32, ptr %26, align 4, !tbaa !72
-  %432 = tail call i32 @llvm.usub.sat.i32(i32 %380, i32 %425)
-  %433 = getelementptr inbounds nuw i8, ptr %429, i64 258
-  %434 = sext i32 %408 to i64
-  %435 = getelementptr i8, ptr %429, i64 %434
-  %436 = getelementptr i8, ptr %435, i64 -1
-  %437 = load i8, ptr %436, align 1, !tbaa !8
-  %438 = load i8, ptr %435, align 1, !tbaa !8
-  %439 = load i32, ptr %27, align 4, !tbaa !68
-  %440 = icmp ult i32 %408, %439
-  %441 = lshr i32 %431, 2
-  %442 = select i1 %440, i32 %431, i32 %441
-  %443 = tail call i32 @llvm.umin.i32(i32 %430, i32 %379)
-  %444 = getelementptr inbounds nuw i8, ptr %429, i64 1
-  %445 = ptrtoint ptr %433 to i64
-  br label %446
+424:                                              ; preds = %421
+  %425 = zext i32 %377 to i64
+  %426 = getelementptr inbounds nuw i8, ptr %383, i64 %425
+  %427 = load i32, ptr %25, align 8, !tbaa !70
+  %428 = load i32, ptr %26, align 4, !tbaa !72
+  %429 = tail call i32 @llvm.usub.sat.i32(i32 %377, i32 %422)
+  %430 = getelementptr inbounds nuw i8, ptr %426, i64 258
+  %431 = sext i32 %405 to i64
+  %432 = getelementptr i8, ptr %426, i64 %431
+  %433 = getelementptr i8, ptr %432, i64 -1
+  %434 = load i8, ptr %433, align 1, !tbaa !8
+  %435 = load i8, ptr %432, align 1, !tbaa !8
+  %436 = load i32, ptr %27, align 4, !tbaa !68
+  %437 = icmp ult i32 %405, %436
+  %438 = lshr i32 %428, 2
+  %439 = select i1 %437, i32 %428, i32 %438
+  %440 = tail call i32 @llvm.umin.i32(i32 %427, i32 %376)
+  %441 = getelementptr inbounds nuw i8, ptr %426, i64 1
+  %442 = ptrtoint ptr %430 to i64
+  br label %443
 
-446:                                              ; preds = %577, %427
-  %447 = phi i32 [ %409, %427 ], [ %563, %577 ]
-  %448 = phi i32 [ %408, %427 ], [ %564, %577 ]
-  %449 = phi i32 [ %442, %427 ], [ %578, %577 ]
-  %450 = phi i32 [ %406, %427 ], [ %571, %577 ]
-  %451 = phi i8 [ %437, %427 ], [ %565, %577 ]
-  %452 = phi i8 [ %438, %427 ], [ %566, %577 ]
-  %453 = zext nneg i32 %450 to i64
-  %454 = getelementptr inbounds nuw i8, ptr %386, i64 %453
-  %455 = sext i32 %448 to i64
-  %456 = getelementptr inbounds i8, ptr %454, i64 %455
-  %457 = load i8, ptr %456, align 1, !tbaa !8
-  %458 = icmp eq i8 %457, %452
-  br i1 %458, label %459, label %562
+443:                                              ; preds = %574, %424
+  %444 = phi i32 [ %406, %424 ], [ %560, %574 ]
+  %445 = phi i32 [ %405, %424 ], [ %561, %574 ]
+  %446 = phi i32 [ %439, %424 ], [ %575, %574 ]
+  %447 = phi i32 [ %403, %424 ], [ %568, %574 ]
+  %448 = phi i8 [ %434, %424 ], [ %562, %574 ]
+  %449 = phi i8 [ %435, %424 ], [ %563, %574 ]
+  %450 = zext nneg i32 %447 to i64
+  %451 = getelementptr inbounds nuw i8, ptr %383, i64 %450
+  %452 = sext i32 %445 to i64
+  %453 = getelementptr inbounds i8, ptr %451, i64 %452
+  %454 = load i8, ptr %453, align 1, !tbaa !8
+  %455 = icmp eq i8 %454, %449
+  br i1 %455, label %456, label %559
 
-459:                                              ; preds = %446
-  %460 = getelementptr i8, ptr %456, i64 -1
-  %461 = load i8, ptr %460, align 1, !tbaa !8
-  %462 = icmp eq i8 %461, %451
-  br i1 %462, label %463, label %562
+456:                                              ; preds = %443
+  %457 = getelementptr i8, ptr %453, i64 -1
+  %458 = load i8, ptr %457, align 1, !tbaa !8
+  %459 = icmp eq i8 %458, %448
+  br i1 %459, label %460, label %559
 
-463:                                              ; preds = %459
-  %464 = load i8, ptr %454, align 1, !tbaa !8
-  %465 = load i8, ptr %429, align 1, !tbaa !8
-  %466 = icmp eq i8 %464, %465
-  br i1 %466, label %467, label %562
+460:                                              ; preds = %456
+  %461 = load i8, ptr %451, align 1, !tbaa !8
+  %462 = load i8, ptr %426, align 1, !tbaa !8
+  %463 = icmp eq i8 %461, %462
+  br i1 %463, label %464, label %559
 
-467:                                              ; preds = %463
-  %468 = getelementptr inbounds nuw i8, ptr %454, i64 1
-  %469 = load i8, ptr %468, align 1, !tbaa !8
-  %470 = load i8, ptr %444, align 1, !tbaa !8
-  %471 = icmp eq i8 %469, %470
-  br i1 %471, label %472, label %562
+464:                                              ; preds = %460
+  %465 = getelementptr inbounds nuw i8, ptr %451, i64 1
+  %466 = load i8, ptr %465, align 1, !tbaa !8
+  %467 = load i8, ptr %441, align 1, !tbaa !8
+  %468 = icmp eq i8 %466, %467
+  br i1 %468, label %469, label %559
 
-472:                                              ; preds = %467
-  %473 = getelementptr inbounds nuw i8, ptr %454, i64 2
-  br label %474
+469:                                              ; preds = %464
+  %470 = getelementptr inbounds nuw i8, ptr %451, i64 2
+  br label %471
 
-474:                                              ; preds = %519, %472
-  %475 = phi ptr [ %473, %472 ], [ %523, %519 ]
-  %476 = phi i64 [ 2, %472 ], [ %520, %519 ]
-  %477 = getelementptr inbounds nuw i8, ptr %429, i64 %476
-  %478 = getelementptr inbounds nuw i8, ptr %477, i64 1
-  %479 = load i8, ptr %478, align 1, !tbaa !8
-  %480 = getelementptr inbounds nuw i8, ptr %475, i64 1
-  %481 = load i8, ptr %480, align 1, !tbaa !8
-  %482 = icmp eq i8 %479, %481
-  br i1 %482, label %483, label %528
+471:                                              ; preds = %516, %469
+  %472 = phi ptr [ %470, %469 ], [ %520, %516 ]
+  %473 = phi i64 [ 2, %469 ], [ %517, %516 ]
+  %474 = getelementptr inbounds nuw i8, ptr %426, i64 %473
+  %475 = getelementptr inbounds nuw i8, ptr %474, i64 1
+  %476 = load i8, ptr %475, align 1, !tbaa !8
+  %477 = getelementptr inbounds nuw i8, ptr %472, i64 1
+  %478 = load i8, ptr %477, align 1, !tbaa !8
+  %479 = icmp eq i8 %476, %478
+  br i1 %479, label %480, label %525
 
-483:                                              ; preds = %474
-  %484 = getelementptr inbounds nuw i8, ptr %477, i64 2
-  %485 = load i8, ptr %484, align 1, !tbaa !8
-  %486 = getelementptr inbounds nuw i8, ptr %475, i64 2
-  %487 = load i8, ptr %486, align 1, !tbaa !8
-  %488 = icmp eq i8 %485, %487
-  br i1 %488, label %489, label %530
+480:                                              ; preds = %471
+  %481 = getelementptr inbounds nuw i8, ptr %474, i64 2
+  %482 = load i8, ptr %481, align 1, !tbaa !8
+  %483 = getelementptr inbounds nuw i8, ptr %472, i64 2
+  %484 = load i8, ptr %483, align 1, !tbaa !8
+  %485 = icmp eq i8 %482, %484
+  br i1 %485, label %486, label %527
 
-489:                                              ; preds = %483
-  %490 = getelementptr inbounds nuw i8, ptr %477, i64 3
-  %491 = load i8, ptr %490, align 1, !tbaa !8
-  %492 = getelementptr inbounds nuw i8, ptr %475, i64 3
-  %493 = load i8, ptr %492, align 1, !tbaa !8
-  %494 = icmp eq i8 %491, %493
-  br i1 %494, label %495, label %532
+486:                                              ; preds = %480
+  %487 = getelementptr inbounds nuw i8, ptr %474, i64 3
+  %488 = load i8, ptr %487, align 1, !tbaa !8
+  %489 = getelementptr inbounds nuw i8, ptr %472, i64 3
+  %490 = load i8, ptr %489, align 1, !tbaa !8
+  %491 = icmp eq i8 %488, %490
+  br i1 %491, label %492, label %529
 
-495:                                              ; preds = %489
-  %496 = getelementptr inbounds nuw i8, ptr %477, i64 4
-  %497 = load i8, ptr %496, align 1, !tbaa !8
-  %498 = getelementptr inbounds nuw i8, ptr %475, i64 4
-  %499 = load i8, ptr %498, align 1, !tbaa !8
-  %500 = icmp eq i8 %497, %499
-  br i1 %500, label %501, label %534
+492:                                              ; preds = %486
+  %493 = getelementptr inbounds nuw i8, ptr %474, i64 4
+  %494 = load i8, ptr %493, align 1, !tbaa !8
+  %495 = getelementptr inbounds nuw i8, ptr %472, i64 4
+  %496 = load i8, ptr %495, align 1, !tbaa !8
+  %497 = icmp eq i8 %494, %496
+  br i1 %497, label %498, label %531
 
-501:                                              ; preds = %495
-  %502 = getelementptr inbounds nuw i8, ptr %477, i64 5
-  %503 = load i8, ptr %502, align 1, !tbaa !8
-  %504 = getelementptr inbounds nuw i8, ptr %475, i64 5
-  %505 = load i8, ptr %504, align 1, !tbaa !8
-  %506 = icmp eq i8 %503, %505
-  br i1 %506, label %507, label %536
+498:                                              ; preds = %492
+  %499 = getelementptr inbounds nuw i8, ptr %474, i64 5
+  %500 = load i8, ptr %499, align 1, !tbaa !8
+  %501 = getelementptr inbounds nuw i8, ptr %472, i64 5
+  %502 = load i8, ptr %501, align 1, !tbaa !8
+  %503 = icmp eq i8 %500, %502
+  br i1 %503, label %504, label %533
 
-507:                                              ; preds = %501
-  %508 = getelementptr inbounds nuw i8, ptr %477, i64 6
-  %509 = load i8, ptr %508, align 1, !tbaa !8
-  %510 = getelementptr inbounds nuw i8, ptr %475, i64 6
-  %511 = load i8, ptr %510, align 1, !tbaa !8
-  %512 = icmp eq i8 %509, %511
-  br i1 %512, label %513, label %538
+504:                                              ; preds = %498
+  %505 = getelementptr inbounds nuw i8, ptr %474, i64 6
+  %506 = load i8, ptr %505, align 1, !tbaa !8
+  %507 = getelementptr inbounds nuw i8, ptr %472, i64 6
+  %508 = load i8, ptr %507, align 1, !tbaa !8
+  %509 = icmp eq i8 %506, %508
+  br i1 %509, label %510, label %535
 
-513:                                              ; preds = %507
-  %514 = getelementptr inbounds nuw i8, ptr %477, i64 7
-  %515 = load i8, ptr %514, align 1, !tbaa !8
-  %516 = getelementptr inbounds nuw i8, ptr %475, i64 7
-  %517 = load i8, ptr %516, align 1, !tbaa !8
-  %518 = icmp eq i8 %515, %517
-  br i1 %518, label %519, label %540
+510:                                              ; preds = %504
+  %511 = getelementptr inbounds nuw i8, ptr %474, i64 7
+  %512 = load i8, ptr %511, align 1, !tbaa !8
+  %513 = getelementptr inbounds nuw i8, ptr %472, i64 7
+  %514 = load i8, ptr %513, align 1, !tbaa !8
+  %515 = icmp eq i8 %512, %514
+  br i1 %515, label %516, label %537
 
-519:                                              ; preds = %513
-  %520 = add nuw nsw i64 %476, 8
-  %521 = getelementptr inbounds nuw i8, ptr %429, i64 %520
-  %522 = load i8, ptr %521, align 1, !tbaa !8
-  %523 = getelementptr inbounds nuw i8, ptr %475, i64 8
-  %524 = load i8, ptr %523, align 1, !tbaa !8
-  %525 = icmp eq i8 %522, %524
-  %526 = icmp samesign ult i64 %476, 250
-  %527 = select i1 %525, i1 %526, i1 false
-  br i1 %527, label %474, label %542, !llvm.loop !152
+516:                                              ; preds = %510
+  %517 = add nuw nsw i64 %473, 8
+  %518 = getelementptr inbounds nuw i8, ptr %426, i64 %517
+  %519 = load i8, ptr %518, align 1, !tbaa !8
+  %520 = getelementptr inbounds nuw i8, ptr %472, i64 8
+  %521 = load i8, ptr %520, align 1, !tbaa !8
+  %522 = icmp eq i8 %519, %521
+  %523 = icmp samesign ult i64 %473, 250
+  %524 = select i1 %522, i1 %523, i1 false
+  br i1 %524, label %471, label %539, !llvm.loop !152
 
-528:                                              ; preds = %474
-  %529 = getelementptr inbounds nuw i8, ptr %477, i64 1
-  br label %544
+525:                                              ; preds = %471
+  %526 = getelementptr inbounds nuw i8, ptr %474, i64 1
+  br label %541
 
-530:                                              ; preds = %483
-  %531 = getelementptr inbounds nuw i8, ptr %477, i64 2
-  br label %544
+527:                                              ; preds = %480
+  %528 = getelementptr inbounds nuw i8, ptr %474, i64 2
+  br label %541
 
-532:                                              ; preds = %489
-  %533 = getelementptr inbounds nuw i8, ptr %477, i64 3
-  br label %544
+529:                                              ; preds = %486
+  %530 = getelementptr inbounds nuw i8, ptr %474, i64 3
+  br label %541
 
-534:                                              ; preds = %495
-  %535 = getelementptr inbounds nuw i8, ptr %477, i64 4
-  br label %544
+531:                                              ; preds = %492
+  %532 = getelementptr inbounds nuw i8, ptr %474, i64 4
+  br label %541
 
-536:                                              ; preds = %501
-  %537 = getelementptr inbounds nuw i8, ptr %477, i64 5
-  br label %544
+533:                                              ; preds = %498
+  %534 = getelementptr inbounds nuw i8, ptr %474, i64 5
+  br label %541
 
-538:                                              ; preds = %507
-  %539 = getelementptr inbounds nuw i8, ptr %477, i64 6
-  br label %544
+535:                                              ; preds = %504
+  %536 = getelementptr inbounds nuw i8, ptr %474, i64 6
+  br label %541
 
-540:                                              ; preds = %513
-  %541 = getelementptr inbounds nuw i8, ptr %477, i64 7
-  br label %544
+537:                                              ; preds = %510
+  %538 = getelementptr inbounds nuw i8, ptr %474, i64 7
+  br label %541
 
-542:                                              ; preds = %519
-  %543 = getelementptr inbounds nuw i8, ptr %429, i64 %520
-  br label %544
+539:                                              ; preds = %516
+  %540 = getelementptr inbounds nuw i8, ptr %426, i64 %517
+  br label %541
 
-544:                                              ; preds = %542, %540, %538, %536, %534, %532, %530, %528
-  %545 = phi ptr [ %531, %530 ], [ %533, %532 ], [ %529, %528 ], [ %541, %540 ], [ %539, %538 ], [ %537, %536 ], [ %535, %534 ], [ %543, %542 ]
-  %546 = ptrtoint ptr %545 to i64
-  %547 = sub i64 %546, %445
-  %548 = trunc i64 %547 to i32
-  %549 = add i32 %548, 258
-  %550 = icmp sgt i32 %549, %448
-  br i1 %550, label %551, label %562
+541:                                              ; preds = %539, %537, %535, %533, %531, %529, %527, %525
+  %542 = phi ptr [ %528, %527 ], [ %530, %529 ], [ %526, %525 ], [ %538, %537 ], [ %536, %535 ], [ %534, %533 ], [ %532, %531 ], [ %540, %539 ]
+  %543 = ptrtoint ptr %542 to i64
+  %544 = sub i64 %543, %442
+  %545 = trunc i64 %544 to i32
+  %546 = add i32 %545, 258
+  %547 = icmp sgt i32 %546, %445
+  br i1 %547, label %548, label %559
 
-551:                                              ; preds = %544
-  store i32 %450, ptr %8, align 8, !tbaa !83
-  %552 = icmp slt i32 %549, %443
-  br i1 %552, label %553, label %580
+548:                                              ; preds = %541
+  store i32 %447, ptr %8, align 8, !tbaa !83
+  %549 = icmp slt i32 %546, %440
+  br i1 %549, label %550, label %577
 
-553:                                              ; preds = %551
-  %554 = shl i64 %547, 32
-  %555 = add i64 %554, 1103806595072
-  %556 = ashr exact i64 %555, 32
-  %557 = getelementptr inbounds i8, ptr %429, i64 %556
+550:                                              ; preds = %548
+  %551 = shl i64 %544, 32
+  %552 = add i64 %551, 1103806595072
+  %553 = ashr exact i64 %552, 32
+  %554 = getelementptr inbounds i8, ptr %426, i64 %553
+  %555 = load i8, ptr %554, align 1, !tbaa !8
+  %556 = sext i32 %546 to i64
+  %557 = getelementptr inbounds i8, ptr %426, i64 %556
   %558 = load i8, ptr %557, align 1, !tbaa !8
-  %559 = sext i32 %549 to i64
-  %560 = getelementptr inbounds i8, ptr %429, i64 %559
-  %561 = load i8, ptr %560, align 1, !tbaa !8
-  br label %562
+  br label %559
 
-562:                                              ; preds = %553, %544, %467, %463, %459, %446
-  %563 = phi i32 [ %447, %446 ], [ %447, %459 ], [ %447, %463 ], [ %447, %467 ], [ %450, %553 ], [ %447, %544 ]
-  %564 = phi i32 [ %448, %446 ], [ %448, %459 ], [ %448, %463 ], [ %448, %467 ], [ %549, %553 ], [ %448, %544 ]
-  %565 = phi i8 [ %451, %446 ], [ %451, %459 ], [ %451, %463 ], [ %451, %467 ], [ %558, %553 ], [ %451, %544 ]
-  %566 = phi i8 [ %452, %446 ], [ %452, %459 ], [ %452, %463 ], [ %452, %467 ], [ %561, %553 ], [ %452, %544 ]
-  %567 = and i32 %450, %402
-  %568 = zext nneg i32 %567 to i64
-  %569 = getelementptr inbounds nuw [2 x i8], ptr %401, i64 %568
-  %570 = load i16, ptr %569, align 2, !tbaa !62
-  %571 = zext i16 %570 to i32
-  %572 = icmp ult i32 %432, %571
-  br i1 %572, label %573, label %580
+559:                                              ; preds = %550, %541, %464, %460, %456, %443
+  %560 = phi i32 [ %444, %443 ], [ %444, %456 ], [ %444, %460 ], [ %444, %464 ], [ %447, %550 ], [ %444, %541 ]
+  %561 = phi i32 [ %445, %443 ], [ %445, %456 ], [ %445, %460 ], [ %445, %464 ], [ %546, %550 ], [ %445, %541 ]
+  %562 = phi i8 [ %448, %443 ], [ %448, %456 ], [ %448, %460 ], [ %448, %464 ], [ %555, %550 ], [ %448, %541 ]
+  %563 = phi i8 [ %449, %443 ], [ %449, %456 ], [ %449, %460 ], [ %449, %464 ], [ %558, %550 ], [ %449, %541 ]
+  %564 = and i32 %447, %399
+  %565 = zext nneg i32 %564 to i64
+  %566 = getelementptr inbounds nuw [2 x i8], ptr %398, i64 %565
+  %567 = load i16, ptr %566, align 2, !tbaa !62
+  %568 = zext i16 %567 to i32
+  %569 = icmp ult i32 %429, %568
+  br i1 %569, label %570, label %577
 
-573:                                              ; preds = %562
-  %574 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %449, i32 1), !nosanitize !45
-  %575 = extractvalue { i32, i1 } %574, 1, !nosanitize !45
-  br i1 %575, label %576, label %577, !prof !46, !nosanitize !45
+570:                                              ; preds = %559
+  %571 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %446, i32 1), !nosanitize !45
+  %572 = extractvalue { i32, i1 } %571, 1, !nosanitize !45
+  br i1 %572, label %573, label %574, !prof !46, !nosanitize !45
 
-576:                                              ; preds = %573
+573:                                              ; preds = %570
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-577:                                              ; preds = %573
-  %578 = extractvalue { i32, i1 } %574, 0, !nosanitize !45
-  %579 = icmp eq i32 %578, 0
-  br i1 %579, label %580, label %446, !llvm.loop !153
+574:                                              ; preds = %570
+  %575 = extractvalue { i32, i1 } %571, 0, !nosanitize !45
+  %576 = icmp eq i32 %575, 0
+  br i1 %576, label %577, label %443, !llvm.loop !153
 
-580:                                              ; preds = %577, %562, %551
-  %581 = phi i32 [ %563, %577 ], [ %563, %562 ], [ %450, %551 ]
-  %582 = phi i32 [ %564, %577 ], [ %564, %562 ], [ %549, %551 ]
-  %583 = tail call i32 @llvm.umin.i32(i32 %582, i32 %379)
-  store i32 %583, ptr %21, align 8, !tbaa !78
-  %584 = icmp ult i32 %583, 6
-  br i1 %584, label %585, label %601
+577:                                              ; preds = %574, %559, %548
+  %578 = phi i32 [ %560, %574 ], [ %560, %559 ], [ %447, %548 ]
+  %579 = phi i32 [ %561, %574 ], [ %561, %559 ], [ %546, %548 ]
+  %580 = tail call i32 @llvm.umin.i32(i32 %579, i32 %376)
+  store i32 %580, ptr %21, align 8, !tbaa !78
+  %581 = icmp ult i32 %580, 6
+  br i1 %581, label %582, label %598
 
-585:                                              ; preds = %580
-  %586 = load i32, ptr %28, align 8, !tbaa !49
-  %587 = icmp eq i32 %586, 1
-  br i1 %587, label %597, label %588
+582:                                              ; preds = %577
+  %583 = load i32, ptr %28, align 8, !tbaa !49
+  %584 = icmp eq i32 %583, 1
+  br i1 %584, label %594, label %585
 
-588:                                              ; preds = %585
-  %589 = icmp eq i32 %583, 3
-  br i1 %589, label %590, label %601
+585:                                              ; preds = %582
+  %586 = icmp eq i32 %580, 3
+  br i1 %586, label %587, label %598
 
-590:                                              ; preds = %588
-  %591 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %380, i32 %581), !nosanitize !45
-  %592 = extractvalue { i32, i1 } %591, 1, !nosanitize !45
-  br i1 %592, label %593, label %594, !prof !46, !nosanitize !45
+587:                                              ; preds = %585
+  %588 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %377, i32 %578), !nosanitize !45
+  %589 = extractvalue { i32, i1 } %588, 1, !nosanitize !45
+  br i1 %589, label %590, label %591, !prof !46, !nosanitize !45
 
-593:                                              ; preds = %590
+590:                                              ; preds = %587
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-594:                                              ; preds = %590
-  %595 = extractvalue { i32, i1 } %591, 0, !nosanitize !45
-  %596 = icmp ugt i32 %595, 4096
-  br i1 %596, label %597, label %601
+591:                                              ; preds = %587
+  %592 = extractvalue { i32, i1 } %588, 0, !nosanitize !45
+  %593 = icmp ugt i32 %592, 4096
+  br i1 %593, label %594, label %598
 
-597:                                              ; preds = %594, %585, %375
-  %598 = phi i32 [ %377, %375 ], [ %409, %594 ], [ %409, %585 ]
-  %599 = phi i32 [ %376, %375 ], [ %408, %594 ], [ %408, %585 ]
-  %600 = phi i32 [ %368, %375 ], [ %379, %594 ], [ %379, %585 ]
+594:                                              ; preds = %591, %582, %372
+  %595 = phi i32 [ %374, %372 ], [ %406, %591 ], [ %406, %582 ]
+  %596 = phi i32 [ %373, %372 ], [ %405, %591 ], [ %405, %582 ]
+  %597 = phi i32 [ %365, %372 ], [ %376, %591 ], [ %376, %582 ]
   store i32 2, ptr %21, align 8, !tbaa !78
-  br label %601
+  br label %598
 
-601:                                              ; preds = %597, %594, %588, %580, %424, %411, %384
-  %602 = phi i32 [ 2, %411 ], [ %583, %580 ], [ %583, %588 ], [ 3, %594 ], [ 2, %384 ], [ 2, %424 ], [ 2, %597 ]
-  %603 = phi i32 [ %409, %411 ], [ %409, %580 ], [ %409, %588 ], [ %409, %594 ], [ %409, %384 ], [ %409, %424 ], [ %598, %597 ]
-  %604 = phi i32 [ %408, %411 ], [ %408, %580 ], [ %408, %588 ], [ %408, %594 ], [ %408, %384 ], [ %408, %424 ], [ %599, %597 ]
-  %605 = phi i32 [ %379, %411 ], [ %379, %580 ], [ %379, %588 ], [ %379, %594 ], [ %379, %384 ], [ %379, %424 ], [ %600, %597 ]
-  %606 = icmp ult i32 %604, 3
-  %607 = icmp ugt i32 %602, %604
-  %608 = or i1 %606, %607
-  br i1 %608, label %817, label %609
+598:                                              ; preds = %594, %591, %585, %577, %421, %408, %381
+  %599 = phi i32 [ 2, %408 ], [ %580, %577 ], [ %580, %585 ], [ 3, %591 ], [ 2, %381 ], [ 2, %421 ], [ 2, %594 ]
+  %600 = phi i32 [ %406, %408 ], [ %406, %577 ], [ %406, %585 ], [ %406, %591 ], [ %406, %381 ], [ %406, %421 ], [ %595, %594 ]
+  %601 = phi i32 [ %405, %408 ], [ %405, %577 ], [ %405, %585 ], [ %405, %591 ], [ %405, %381 ], [ %405, %421 ], [ %596, %594 ]
+  %602 = phi i32 [ %376, %408 ], [ %376, %577 ], [ %376, %585 ], [ %376, %591 ], [ %376, %381 ], [ %376, %421 ], [ %597, %594 ]
+  %603 = icmp ult i32 %601, 3
+  %604 = icmp ugt i32 %599, %601
+  %605 = or i1 %603, %604
+  br i1 %605, label %814, label %606
 
-609:                                              ; preds = %601
-  %610 = load i32, ptr %6, align 4, !tbaa !73
-  %611 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %610, i32 %605), !nosanitize !45
-  %612 = extractvalue { i32, i1 } %611, 1, !nosanitize !45
-  br i1 %612, label %613, label %614, !prof !46, !nosanitize !45
+606:                                              ; preds = %598
+  %607 = load i32, ptr %6, align 4, !tbaa !73
+  %608 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %607, i32 %602), !nosanitize !45
+  %609 = extractvalue { i32, i1 } %608, 1, !nosanitize !45
+  br i1 %609, label %610, label %611, !prof !46, !nosanitize !45
 
-613:                                              ; preds = %609
+610:                                              ; preds = %606
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-614:                                              ; preds = %609
-  %615 = extractvalue { i32, i1 } %611, 0, !nosanitize !45
-  %616 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %615, i32 3), !nosanitize !45
-  %617 = extractvalue { i32, i1 } %616, 0, !nosanitize !45
-  %618 = extractvalue { i32, i1 } %616, 1, !nosanitize !45
-  br i1 %618, label %619, label %620, !prof !46, !nosanitize !45
+611:                                              ; preds = %606
+  %612 = extractvalue { i32, i1 } %608, 0, !nosanitize !45
+  %613 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %612, i32 3), !nosanitize !45
+  %614 = extractvalue { i32, i1 } %613, 0, !nosanitize !45
+  %615 = extractvalue { i32, i1 } %613, 1, !nosanitize !45
+  br i1 %615, label %616, label %617, !prof !46, !nosanitize !45
 
-619:                                              ; preds = %614
+616:                                              ; preds = %611
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-620:                                              ; preds = %614
-  %621 = trunc i32 %604 to i8
-  %622 = add i8 %621, -3
-  %623 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %610, i32 1), !nosanitize !45
-  %624 = extractvalue { i32, i1 } %623, 1, !nosanitize !45
-  br i1 %624, label %625, label %626, !prof !46, !nosanitize !45
+617:                                              ; preds = %611
+  %618 = trunc i32 %601 to i8
+  %619 = add i8 %618, -3
+  %620 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %607, i32 1), !nosanitize !45
+  %621 = extractvalue { i32, i1 } %620, 1, !nosanitize !45
+  br i1 %621, label %622, label %623, !prof !46, !nosanitize !45
 
-625:                                              ; preds = %620
+622:                                              ; preds = %617
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-626:                                              ; preds = %620
-  %627 = extractvalue { i32, i1 } %623, 0, !nosanitize !45
-  %628 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %627, i32 %603), !nosanitize !45
-  %629 = extractvalue { i32, i1 } %628, 1, !nosanitize !45
-  br i1 %629, label %630, label %631, !prof !46, !nosanitize !45
+623:                                              ; preds = %617
+  %624 = extractvalue { i32, i1 } %620, 0, !nosanitize !45
+  %625 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %624, i32 %600), !nosanitize !45
+  %626 = extractvalue { i32, i1 } %625, 1, !nosanitize !45
+  br i1 %626, label %627, label %628, !prof !46, !nosanitize !45
 
-630:                                              ; preds = %626
+627:                                              ; preds = %623
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-631:                                              ; preds = %626
-  %632 = extractvalue { i32, i1 } %628, 0, !nosanitize !45
-  %633 = trunc i32 %632 to i16
-  %634 = load i32, ptr %30, align 4, !tbaa !139
-  %635 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %634, i32 1), !nosanitize !45
-  %636 = extractvalue { i32, i1 } %635, 1, !nosanitize !45
-  br i1 %636, label %637, label %638, !prof !46, !nosanitize !45
+628:                                              ; preds = %623
+  %629 = extractvalue { i32, i1 } %625, 0, !nosanitize !45
+  %630 = trunc i32 %629 to i16
+  %631 = load i32, ptr %30, align 4, !tbaa !139
+  %632 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %631, i32 1), !nosanitize !45
+  %633 = extractvalue { i32, i1 } %632, 1, !nosanitize !45
+  br i1 %633, label %634, label %635, !prof !46, !nosanitize !45
 
-637:                                              ; preds = %631
+634:                                              ; preds = %628
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-638:                                              ; preds = %631
-  %639 = extractvalue { i32, i1 } %635, 0, !nosanitize !45
-  %640 = load ptr, ptr %29, align 8, !tbaa !44
-  %641 = trunc i32 %632 to i8
-  store i32 %639, ptr %30, align 4, !tbaa !139
-  %642 = zext i32 %634 to i64
-  %643 = getelementptr inbounds nuw i8, ptr %640, i64 %642
-  store i8 %641, ptr %643, align 1, !tbaa !8
-  %644 = load i32, ptr %30, align 4, !tbaa !139
-  %645 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %644, i32 1), !nosanitize !45
-  %646 = extractvalue { i32, i1 } %645, 1, !nosanitize !45
-  br i1 %646, label %647, label %648, !prof !46, !nosanitize !45
+635:                                              ; preds = %628
+  %636 = extractvalue { i32, i1 } %632, 0, !nosanitize !45
+  %637 = load ptr, ptr %29, align 8, !tbaa !44
+  %638 = trunc i32 %629 to i8
+  store i32 %636, ptr %30, align 4, !tbaa !139
+  %639 = zext i32 %631 to i64
+  %640 = getelementptr inbounds nuw i8, ptr %637, i64 %639
+  store i8 %638, ptr %640, align 1, !tbaa !8
+  %641 = load i32, ptr %30, align 4, !tbaa !139
+  %642 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %641, i32 1), !nosanitize !45
+  %643 = extractvalue { i32, i1 } %642, 1, !nosanitize !45
+  br i1 %643, label %644, label %645, !prof !46, !nosanitize !45
 
-647:                                              ; preds = %638
+644:                                              ; preds = %635
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-648:                                              ; preds = %638
-  %649 = extractvalue { i32, i1 } %645, 0, !nosanitize !45
-  %650 = load ptr, ptr %29, align 8, !tbaa !44
-  %651 = lshr i32 %632, 8
-  %652 = trunc i32 %651 to i8
-  store i32 %649, ptr %30, align 4, !tbaa !139
-  %653 = zext i32 %644 to i64
-  %654 = getelementptr inbounds nuw i8, ptr %650, i64 %653
-  store i8 %652, ptr %654, align 1, !tbaa !8
-  %655 = load i32, ptr %30, align 4, !tbaa !139
-  %656 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %655, i32 1), !nosanitize !45
-  %657 = extractvalue { i32, i1 } %656, 1, !nosanitize !45
-  br i1 %657, label %658, label %659, !prof !46, !nosanitize !45
+645:                                              ; preds = %635
+  %646 = extractvalue { i32, i1 } %642, 0, !nosanitize !45
+  %647 = load ptr, ptr %29, align 8, !tbaa !44
+  %648 = lshr i32 %629, 8
+  %649 = trunc i32 %648 to i8
+  store i32 %646, ptr %30, align 4, !tbaa !139
+  %650 = zext i32 %641 to i64
+  %651 = getelementptr inbounds nuw i8, ptr %647, i64 %650
+  store i8 %649, ptr %651, align 1, !tbaa !8
+  %652 = load i32, ptr %30, align 4, !tbaa !139
+  %653 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %652, i32 1), !nosanitize !45
+  %654 = extractvalue { i32, i1 } %653, 1, !nosanitize !45
+  br i1 %654, label %655, label %656, !prof !46, !nosanitize !45
 
-658:                                              ; preds = %648
+655:                                              ; preds = %645
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-659:                                              ; preds = %648
-  %660 = extractvalue { i32, i1 } %656, 0, !nosanitize !45
-  %661 = load ptr, ptr %29, align 8, !tbaa !44
-  store i32 %660, ptr %30, align 4, !tbaa !139
-  %662 = zext i32 %655 to i64
-  %663 = getelementptr inbounds nuw i8, ptr %661, i64 %662
-  store i8 %622, ptr %663, align 1, !tbaa !8
-  %664 = add i16 %633, -1
-  %665 = zext i8 %622 to i64
-  %666 = getelementptr inbounds nuw i8, ptr @_length_code, i64 %665
-  %667 = load i8, ptr %666, align 1, !tbaa !8
-  %668 = zext i8 %667 to i64
-  %669 = getelementptr [4 x i8], ptr %31, i64 %668
-  %670 = load i16, ptr %669, align 4, !tbaa !8
-  %671 = add i16 %670, 1
-  store i16 %671, ptr %669, align 4, !tbaa !8
-  %672 = icmp ult i16 %664, 256
-  br i1 %672, label %673, label %676
+656:                                              ; preds = %645
+  %657 = extractvalue { i32, i1 } %653, 0, !nosanitize !45
+  %658 = load ptr, ptr %29, align 8, !tbaa !44
+  store i32 %657, ptr %30, align 4, !tbaa !139
+  %659 = zext i32 %652 to i64
+  %660 = getelementptr inbounds nuw i8, ptr %658, i64 %659
+  store i8 %619, ptr %660, align 1, !tbaa !8
+  %661 = add i16 %630, -1
+  %662 = zext i8 %619 to i64
+  %663 = getelementptr inbounds nuw i8, ptr @_length_code, i64 %662
+  %664 = load i8, ptr %663, align 1, !tbaa !8
+  %665 = zext i8 %664 to i64
+  %666 = getelementptr [4 x i8], ptr %31, i64 %665
+  %667 = load i16, ptr %666, align 4, !tbaa !8
+  %668 = add i16 %667, 1
+  store i16 %668, ptr %666, align 4, !tbaa !8
+  %669 = icmp ult i16 %661, 256
+  br i1 %669, label %670, label %673
 
-673:                                              ; preds = %659
-  %674 = zext nneg i16 %664 to i64
-  %675 = getelementptr inbounds nuw i8, ptr @_dist_code, i64 %674
-  br label %681
+670:                                              ; preds = %656
+  %671 = zext nneg i16 %661 to i64
+  %672 = getelementptr inbounds nuw i8, ptr @_dist_code, i64 %671
+  br label %678
 
-676:                                              ; preds = %659
-  %677 = lshr i16 %664, 7
-  %678 = zext nneg i16 %677 to i64
-  %679 = getelementptr inbounds nuw i8, ptr @_dist_code, i64 %678
-  %680 = getelementptr inbounds nuw i8, ptr %679, i64 256
-  br label %681
+673:                                              ; preds = %656
+  %674 = lshr i16 %661, 7
+  %675 = zext nneg i16 %674 to i64
+  %676 = getelementptr inbounds nuw i8, ptr @_dist_code, i64 %675
+  %677 = getelementptr inbounds nuw i8, ptr %676, i64 256
+  br label %678
 
-681:                                              ; preds = %676, %673
-  %682 = phi ptr [ %675, %673 ], [ %680, %676 ]
-  %683 = load i8, ptr %682, align 1, !tbaa !8
-  %684 = zext i8 %683 to i64
-  %685 = getelementptr inbounds nuw [4 x i8], ptr %32, i64 %684
-  %686 = load i16, ptr %685, align 4, !tbaa !8
-  %687 = add i16 %686, 1
-  store i16 %687, ptr %685, align 4, !tbaa !8
-  %688 = load i32, ptr %30, align 4, !tbaa !139
-  %689 = load i32, ptr %33, align 8, !tbaa !47
-  %690 = icmp eq i32 %688, %689
-  %691 = load i32, ptr %22, align 8, !tbaa !77
-  %692 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %691, i32 1), !nosanitize !45
-  %693 = extractvalue { i32, i1 } %692, 1, !nosanitize !45
-  br i1 %693, label %694, label %695, !prof !46, !nosanitize !45
+678:                                              ; preds = %673, %670
+  %679 = phi ptr [ %672, %670 ], [ %677, %673 ]
+  %680 = load i8, ptr %679, align 1, !tbaa !8
+  %681 = zext i8 %680 to i64
+  %682 = getelementptr inbounds nuw [4 x i8], ptr %32, i64 %681
+  %683 = load i16, ptr %682, align 4, !tbaa !8
+  %684 = add i16 %683, 1
+  store i16 %684, ptr %682, align 4, !tbaa !8
+  %685 = load i32, ptr %30, align 4, !tbaa !139
+  %686 = load i32, ptr %33, align 8, !tbaa !47
+  %687 = icmp eq i32 %685, %686
+  %688 = load i32, ptr %22, align 8, !tbaa !77
+  %689 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %688, i32 1), !nosanitize !45
+  %690 = extractvalue { i32, i1 } %689, 1, !nosanitize !45
+  br i1 %690, label %691, label %692, !prof !46, !nosanitize !45
 
-694:                                              ; preds = %681
+691:                                              ; preds = %678
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-695:                                              ; preds = %681
-  %696 = extractvalue { i32, i1 } %692, 0, !nosanitize !45
-  %697 = load i32, ptr %3, align 4, !tbaa !75
-  %698 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %697, i32 %696), !nosanitize !45
-  %699 = extractvalue { i32, i1 } %698, 1, !nosanitize !45
-  br i1 %699, label %700, label %701, !prof !46, !nosanitize !45
+692:                                              ; preds = %678
+  %693 = extractvalue { i32, i1 } %689, 0, !nosanitize !45
+  %694 = load i32, ptr %3, align 4, !tbaa !75
+  %695 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %694, i32 %693), !nosanitize !45
+  %696 = extractvalue { i32, i1 } %695, 1, !nosanitize !45
+  br i1 %696, label %697, label %698, !prof !46, !nosanitize !45
 
-700:                                              ; preds = %695
+697:                                              ; preds = %692
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-701:                                              ; preds = %695
-  %702 = extractvalue { i32, i1 } %698, 0, !nosanitize !45
-  store i32 %702, ptr %3, align 4, !tbaa !75
-  %703 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %691, i32 2), !nosanitize !45
-  %704 = extractvalue { i32, i1 } %703, 1, !nosanitize !45
-  br i1 %704, label %705, label %706, !prof !46, !nosanitize !45
+698:                                              ; preds = %692
+  %699 = extractvalue { i32, i1 } %695, 0, !nosanitize !45
+  store i32 %699, ptr %3, align 4, !tbaa !75
+  %700 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %688, i32 2), !nosanitize !45
+  %701 = extractvalue { i32, i1 } %700, 1, !nosanitize !45
+  br i1 %701, label %702, label %703, !prof !46, !nosanitize !45
 
-705:                                              ; preds = %701
+702:                                              ; preds = %698
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-706:                                              ; preds = %701
-  %707 = extractvalue { i32, i1 } %703, 0, !nosanitize !45
-  store i32 %707, ptr %22, align 8, !tbaa !77
-  %708 = load i32, ptr %6, align 4, !tbaa !73
-  br label %709
+703:                                              ; preds = %698
+  %704 = extractvalue { i32, i1 } %700, 0, !nosanitize !45
+  store i32 %704, ptr %22, align 8, !tbaa !77
+  %705 = load i32, ptr %6, align 4, !tbaa !73
+  br label %706
 
-709:                                              ; preds = %746, %706
-  %710 = phi i32 [ %747, %746 ], [ %707, %706 ]
-  %711 = phi i32 [ %713, %746 ], [ %708, %706 ]
-  %712 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %711, i32 1), !nosanitize !45
-  %713 = extractvalue { i32, i1 } %712, 0, !nosanitize !45
-  %714 = extractvalue { i32, i1 } %712, 1, !nosanitize !45
-  br i1 %714, label %715, label %716, !prof !46, !nosanitize !45
+706:                                              ; preds = %743, %703
+  %707 = phi i32 [ %744, %743 ], [ %704, %703 ]
+  %708 = phi i32 [ %710, %743 ], [ %705, %703 ]
+  %709 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %708, i32 1), !nosanitize !45
+  %710 = extractvalue { i32, i1 } %709, 0, !nosanitize !45
+  %711 = extractvalue { i32, i1 } %709, 1, !nosanitize !45
+  br i1 %711, label %712, label %713, !prof !46, !nosanitize !45
 
-715:                                              ; preds = %709
+712:                                              ; preds = %706
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-716:                                              ; preds = %709
-  store i32 %713, ptr %6, align 4, !tbaa !73
-  %717 = icmp ugt i32 %713, %617
-  br i1 %717, label %742, label %718
+713:                                              ; preds = %706
+  store i32 %710, ptr %6, align 4, !tbaa !73
+  %714 = icmp ugt i32 %710, %614
+  br i1 %714, label %739, label %715
 
-718:                                              ; preds = %716
-  %719 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %713, i32 2), !nosanitize !45
-  %720 = extractvalue { i32, i1 } %719, 0, !nosanitize !45
-  %721 = load ptr, ptr %7, align 8, !tbaa !34
-  %722 = load i32, ptr %15, align 8, !tbaa !80
-  %723 = load i32, ptr %16, align 8, !tbaa !53
-  %724 = shl i32 %722, %723
-  %725 = zext i32 %720 to i64
-  %726 = getelementptr inbounds nuw i8, ptr %721, i64 %725
-  %727 = load i8, ptr %726, align 1, !tbaa !8
-  %728 = zext i8 %727 to i32
-  %729 = xor i32 %724, %728
-  %730 = load i32, ptr %17, align 4, !tbaa !52
-  %731 = and i32 %729, %730
-  store i32 %731, ptr %15, align 8, !tbaa !80
-  %732 = load ptr, ptr %12, align 8, !tbaa !37
-  %733 = zext i32 %731 to i64
-  %734 = getelementptr inbounds nuw [2 x i8], ptr %732, i64 %733
-  %735 = load i16, ptr %734, align 2, !tbaa !62
-  %736 = load ptr, ptr %13, align 8, !tbaa !35
-  %737 = load i32, ptr %18, align 8, !tbaa !33
-  %738 = and i32 %737, %713
-  %739 = zext i32 %738 to i64
-  %740 = getelementptr inbounds nuw [2 x i8], ptr %736, i64 %739
-  store i16 %735, ptr %740, align 2, !tbaa !62
-  %741 = trunc i32 %713 to i16
-  store i16 %741, ptr %734, align 2, !tbaa !62
-  br label %742
+715:                                              ; preds = %713
+  %716 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %710, i32 2), !nosanitize !45
+  %717 = extractvalue { i32, i1 } %716, 0, !nosanitize !45
+  %718 = load ptr, ptr %7, align 8, !tbaa !34
+  %719 = load i32, ptr %15, align 8, !tbaa !80
+  %720 = load i32, ptr %16, align 8, !tbaa !53
+  %721 = shl i32 %719, %720
+  %722 = zext i32 %717 to i64
+  %723 = getelementptr inbounds nuw i8, ptr %718, i64 %722
+  %724 = load i8, ptr %723, align 1, !tbaa !8
+  %725 = zext i8 %724 to i32
+  %726 = xor i32 %721, %725
+  %727 = load i32, ptr %17, align 4, !tbaa !52
+  %728 = and i32 %726, %727
+  store i32 %728, ptr %15, align 8, !tbaa !80
+  %729 = load ptr, ptr %12, align 8, !tbaa !37
+  %730 = zext i32 %728 to i64
+  %731 = getelementptr inbounds nuw [2 x i8], ptr %729, i64 %730
+  %732 = load i16, ptr %731, align 2, !tbaa !62
+  %733 = load ptr, ptr %13, align 8, !tbaa !35
+  %734 = load i32, ptr %18, align 8, !tbaa !33
+  %735 = and i32 %734, %710
+  %736 = zext i32 %735 to i64
+  %737 = getelementptr inbounds nuw [2 x i8], ptr %733, i64 %736
+  store i16 %732, ptr %737, align 2, !tbaa !62
+  %738 = trunc i32 %710 to i16
+  store i16 %738, ptr %731, align 2, !tbaa !62
+  br label %739
 
-742:                                              ; preds = %718, %716
-  %743 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %710, i32 1), !nosanitize !45
-  %744 = extractvalue { i32, i1 } %743, 1, !nosanitize !45
-  br i1 %744, label %745, label %746, !prof !46, !nosanitize !45
+739:                                              ; preds = %715, %713
+  %740 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %707, i32 1), !nosanitize !45
+  %741 = extractvalue { i32, i1 } %740, 1, !nosanitize !45
+  br i1 %741, label %742, label %743, !prof !46, !nosanitize !45
 
-745:                                              ; preds = %742
+742:                                              ; preds = %739
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-746:                                              ; preds = %742
-  %747 = extractvalue { i32, i1 } %743, 0, !nosanitize !45
-  store i32 %747, ptr %22, align 8, !tbaa !77
-  %748 = icmp eq i32 %747, 0
-  br i1 %748, label %749, label %709, !llvm.loop !160
+743:                                              ; preds = %739
+  %744 = extractvalue { i32, i1 } %740, 0, !nosanitize !45
+  store i32 %744, ptr %22, align 8, !tbaa !77
+  %745 = icmp eq i32 %744, 0
+  br i1 %745, label %746, label %706, !llvm.loop !160
+
+746:                                              ; preds = %743
+  store i32 0, ptr %34, align 8, !tbaa !79
+  store i32 2, ptr %21, align 8, !tbaa !78
+  %747 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %710, i32 1), !nosanitize !45
+  %748 = extractvalue { i32, i1 } %747, 1, !nosanitize !45
+  br i1 %748, label %749, label %750, !prof !46, !nosanitize !45
 
 749:                                              ; preds = %746
-  store i32 0, ptr %34, align 8, !tbaa !79
-  store i32 2, ptr %21, align 8, !tbaa !78
-  %750 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %713, i32 1), !nosanitize !45
-  %751 = extractvalue { i32, i1 } %750, 1, !nosanitize !45
-  br i1 %751, label %752, label %753, !prof !46, !nosanitize !45
-
-752:                                              ; preds = %749
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-753:                                              ; preds = %749
-  %754 = extractvalue { i32, i1 } %750, 0, !nosanitize !45
-  store i32 %754, ptr %6, align 4, !tbaa !73
-  br i1 %690, label %756, label %755
+750:                                              ; preds = %746
+  %751 = extractvalue { i32, i1 } %747, 0, !nosanitize !45
+  store i32 %751, ptr %6, align 4, !tbaa !73
+  br i1 %687, label %753, label %752
 
-755:                                              ; preds = %949, %933, %812, %753
+752:                                              ; preds = %946, %930, %809, %750
   br label %36
 
+753:                                              ; preds = %750
+  %754 = load i64, ptr %9, align 8, !tbaa !74
+  %755 = icmp sgt i64 %754, -1
+  br i1 %755, label %756, label %760
+
 756:                                              ; preds = %753
-  %757 = load i64, ptr %9, align 8, !tbaa !74
-  %758 = icmp sgt i64 %757, -1
-  br i1 %758, label %759, label %763
+  %757 = load ptr, ptr %7, align 8, !tbaa !34
+  %758 = and i64 %754, 4294967295
+  %759 = getelementptr inbounds nuw i8, ptr %757, i64 %758
+  br label %760
 
-759:                                              ; preds = %756
-  %760 = load ptr, ptr %7, align 8, !tbaa !34
-  %761 = and i64 %757, 4294967295
-  %762 = getelementptr inbounds nuw i8, ptr %760, i64 %761
-  br label %763
+760:                                              ; preds = %756, %753
+  %761 = phi ptr [ %759, %756 ], [ null, %753 ]
+  %762 = zext i32 %751 to i64
+  %763 = sub nsw i64 %762, %754
+  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %761, i64 noundef %763, i32 noundef 0) #11
+  %764 = load i32, ptr %6, align 4, !tbaa !73
+  %765 = zext i32 %764 to i64
+  store i64 %765, ptr %9, align 8, !tbaa !74
+  %766 = load ptr, ptr %0, align 8, !tbaa !20
+  %767 = getelementptr inbounds nuw i8, ptr %766, i64 56
+  %768 = load ptr, ptr %767, align 8, !tbaa !19
+  tail call void @_tr_flush_bits(ptr noundef %768) #11
+  %769 = getelementptr inbounds nuw i8, ptr %768, i64 40
+  %770 = load i64, ptr %769, align 8, !tbaa !57
+  %771 = getelementptr inbounds nuw i8, ptr %766, i64 32
+  %772 = load i32, ptr %771, align 8, !tbaa !107
+  %773 = zext i32 %772 to i64
+  %774 = tail call i64 @llvm.umin.i64(i64 %770, i64 %773)
+  %775 = trunc nuw i64 %774 to i32
+  %776 = icmp eq i64 %774, 0
+  br i1 %776, label %809, label %777
 
-763:                                              ; preds = %759, %756
-  %764 = phi ptr [ %762, %759 ], [ null, %756 ]
-  %765 = zext i32 %754 to i64
-  %766 = sub nsw i64 %765, %757
-  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %764, i64 noundef %766, i32 noundef 0) #11
-  %767 = load i32, ptr %6, align 4, !tbaa !73
-  %768 = zext i32 %767 to i64
-  store i64 %768, ptr %9, align 8, !tbaa !74
-  %769 = load ptr, ptr %0, align 8, !tbaa !20
-  %770 = getelementptr inbounds nuw i8, ptr %769, i64 56
-  %771 = load ptr, ptr %770, align 8, !tbaa !19
-  tail call void @_tr_flush_bits(ptr noundef %771) #11
-  %772 = getelementptr inbounds nuw i8, ptr %771, i64 40
-  %773 = load i64, ptr %772, align 8, !tbaa !57
-  %774 = getelementptr inbounds nuw i8, ptr %769, i64 32
-  %775 = load i32, ptr %774, align 8, !tbaa !107
-  %776 = zext i32 %775 to i64
-  %777 = tail call i64 @llvm.umin.i64(i64 %773, i64 %776)
-  %778 = trunc nuw i64 %777 to i32
-  %779 = icmp eq i64 %777, 0
-  br i1 %779, label %812, label %780
+777:                                              ; preds = %760
+  %778 = getelementptr inbounds nuw i8, ptr %766, i64 24
+  %779 = load ptr, ptr %778, align 8, !tbaa !106
+  %780 = getelementptr inbounds nuw i8, ptr %768, i64 32
+  %781 = load ptr, ptr %780, align 8, !tbaa !58
+  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %779, ptr align 1 %781, i64 %774, i1 false)
+  %782 = load ptr, ptr %778, align 8, !tbaa !106
+  %783 = getelementptr inbounds nuw i8, ptr %782, i64 %774
+  store ptr %783, ptr %778, align 8, !tbaa !106
+  %784 = load ptr, ptr %780, align 8, !tbaa !58
+  %785 = getelementptr inbounds nuw i8, ptr %784, i64 %774
+  store ptr %785, ptr %780, align 8, !tbaa !58
+  %786 = getelementptr inbounds nuw i8, ptr %766, i64 40
+  %787 = load i64, ptr %786, align 8, !tbaa !108
+  %788 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %787, i64 %774), !nosanitize !45
+  %789 = extractvalue { i64, i1 } %788, 1, !nosanitize !45
+  br i1 %789, label %790, label %791, !prof !46, !nosanitize !45
 
-780:                                              ; preds = %763
-  %781 = getelementptr inbounds nuw i8, ptr %769, i64 24
-  %782 = load ptr, ptr %781, align 8, !tbaa !106
-  %783 = getelementptr inbounds nuw i8, ptr %771, i64 32
-  %784 = load ptr, ptr %783, align 8, !tbaa !58
-  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %782, ptr align 1 %784, i64 %777, i1 false)
-  %785 = load ptr, ptr %781, align 8, !tbaa !106
-  %786 = getelementptr inbounds nuw i8, ptr %785, i64 %777
-  store ptr %786, ptr %781, align 8, !tbaa !106
-  %787 = load ptr, ptr %783, align 8, !tbaa !58
-  %788 = getelementptr inbounds nuw i8, ptr %787, i64 %777
-  store ptr %788, ptr %783, align 8, !tbaa !58
-  %789 = getelementptr inbounds nuw i8, ptr %769, i64 40
-  %790 = load i64, ptr %789, align 8, !tbaa !108
-  %791 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %790, i64 %777), !nosanitize !45
-  %792 = extractvalue { i64, i1 } %791, 1, !nosanitize !45
-  br i1 %792, label %793, label %794, !prof !46, !nosanitize !45
-
-793:                                              ; preds = %780
+790:                                              ; preds = %777
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-794:                                              ; preds = %780
-  %795 = extractvalue { i64, i1 } %791, 0, !nosanitize !45
-  store i64 %795, ptr %789, align 8, !tbaa !108
-  %796 = load i32, ptr %774, align 8, !tbaa !107
-  %797 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %796, i32 %778), !nosanitize !45
-  %798 = extractvalue { i32, i1 } %797, 1, !nosanitize !45
-  br i1 %798, label %799, label %800, !prof !46, !nosanitize !45
+791:                                              ; preds = %777
+  %792 = extractvalue { i64, i1 } %788, 0, !nosanitize !45
+  store i64 %792, ptr %786, align 8, !tbaa !108
+  %793 = load i32, ptr %771, align 8, !tbaa !107
+  %794 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %793, i32 %775), !nosanitize !45
+  %795 = extractvalue { i32, i1 } %794, 1, !nosanitize !45
+  br i1 %795, label %796, label %797, !prof !46, !nosanitize !45
 
-799:                                              ; preds = %794
+796:                                              ; preds = %791
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-800:                                              ; preds = %794
-  %801 = extractvalue { i32, i1 } %797, 0, !nosanitize !45
-  store i32 %801, ptr %774, align 8, !tbaa !107
-  %802 = load i64, ptr %772, align 8, !tbaa !57
-  %803 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %802, i64 %777), !nosanitize !45
-  %804 = extractvalue { i64, i1 } %803, 1, !nosanitize !45
-  br i1 %804, label %805, label %806, !prof !46, !nosanitize !45
+797:                                              ; preds = %791
+  %798 = extractvalue { i32, i1 } %794, 0, !nosanitize !45
+  store i32 %798, ptr %771, align 8, !tbaa !107
+  %799 = load i64, ptr %769, align 8, !tbaa !57
+  %800 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %799, i64 %774), !nosanitize !45
+  %801 = extractvalue { i64, i1 } %800, 1, !nosanitize !45
+  br i1 %801, label %802, label %803, !prof !46, !nosanitize !45
 
-805:                                              ; preds = %800
+802:                                              ; preds = %797
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-806:                                              ; preds = %800
-  %807 = extractvalue { i64, i1 } %803, 0, !nosanitize !45
-  store i64 %807, ptr %772, align 8, !tbaa !57
-  %808 = icmp eq i64 %807, 0
-  br i1 %808, label %809, label %812
+803:                                              ; preds = %797
+  %804 = extractvalue { i64, i1 } %800, 0, !nosanitize !45
+  store i64 %804, ptr %769, align 8, !tbaa !57
+  %805 = icmp eq i64 %804, 0
+  br i1 %805, label %806, label %809
 
-809:                                              ; preds = %806
-  %810 = getelementptr inbounds nuw i8, ptr %771, i64 16
-  %811 = load ptr, ptr %810, align 8, !tbaa !40
-  store ptr %811, ptr %783, align 8, !tbaa !58
-  br label %812
+806:                                              ; preds = %803
+  %807 = getelementptr inbounds nuw i8, ptr %768, i64 16
+  %808 = load ptr, ptr %807, align 8, !tbaa !40
+  store ptr %808, ptr %780, align 8, !tbaa !58
+  br label %809
 
-812:                                              ; preds = %809, %806, %763
-  %813 = load ptr, ptr %0, align 8, !tbaa !20
-  %814 = getelementptr inbounds nuw i8, ptr %813, i64 32
-  %815 = load i32, ptr %814, align 8, !tbaa !107
+809:                                              ; preds = %806, %803, %760
+  %810 = load ptr, ptr %0, align 8, !tbaa !20
+  %811 = getelementptr inbounds nuw i8, ptr %810, i64 32
+  %812 = load i32, ptr %811, align 8, !tbaa !107
+  %813 = icmp eq i32 %812, 0
+  br i1 %813, label %1125, label %752
+
+814:                                              ; preds = %598
+  %815 = load i32, ptr %34, align 8, !tbaa !79
   %816 = icmp eq i32 %815, 0
-  br i1 %816, label %1128, label %755
+  br i1 %816, label %936, label %817
 
-817:                                              ; preds = %601
-  %818 = load i32, ptr %34, align 8, !tbaa !79
-  %819 = icmp eq i32 %818, 0
-  br i1 %819, label %939, label %820
+817:                                              ; preds = %814
+  %818 = load i32, ptr %6, align 4, !tbaa !73
+  %819 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %818, i32 1), !nosanitize !45
+  %820 = extractvalue { i32, i1 } %819, 1, !nosanitize !45
+  br i1 %820, label %821, label %822, !prof !46, !nosanitize !45
 
-820:                                              ; preds = %817
-  %821 = load i32, ptr %6, align 4, !tbaa !73
-  %822 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %821, i32 1), !nosanitize !45
-  %823 = extractvalue { i32, i1 } %822, 1, !nosanitize !45
-  br i1 %823, label %824, label %825, !prof !46, !nosanitize !45
-
-824:                                              ; preds = %820
+821:                                              ; preds = %817
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-825:                                              ; preds = %820
-  %826 = extractvalue { i32, i1 } %822, 0, !nosanitize !45
-  %827 = load ptr, ptr %7, align 8, !tbaa !34
-  %828 = zext i32 %826 to i64
-  %829 = getelementptr inbounds nuw i8, ptr %827, i64 %828
-  %830 = load i8, ptr %829, align 1, !tbaa !8
-  %831 = load i32, ptr %30, align 4, !tbaa !139
-  %832 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %831, i32 1), !nosanitize !45
-  %833 = extractvalue { i32, i1 } %832, 1, !nosanitize !45
-  br i1 %833, label %834, label %835, !prof !46, !nosanitize !45
+822:                                              ; preds = %817
+  %823 = extractvalue { i32, i1 } %819, 0, !nosanitize !45
+  %824 = load ptr, ptr %7, align 8, !tbaa !34
+  %825 = zext i32 %823 to i64
+  %826 = getelementptr inbounds nuw i8, ptr %824, i64 %825
+  %827 = load i8, ptr %826, align 1, !tbaa !8
+  %828 = load i32, ptr %30, align 4, !tbaa !139
+  %829 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %828, i32 1), !nosanitize !45
+  %830 = extractvalue { i32, i1 } %829, 1, !nosanitize !45
+  br i1 %830, label %831, label %832, !prof !46, !nosanitize !45
 
-834:                                              ; preds = %825
+831:                                              ; preds = %822
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-835:                                              ; preds = %825
-  %836 = extractvalue { i32, i1 } %832, 0, !nosanitize !45
-  %837 = load ptr, ptr %29, align 8, !tbaa !44
-  store i32 %836, ptr %30, align 4, !tbaa !139
-  %838 = zext i32 %831 to i64
-  %839 = getelementptr inbounds nuw i8, ptr %837, i64 %838
-  store i8 0, ptr %839, align 1, !tbaa !8
-  %840 = load i32, ptr %30, align 4, !tbaa !139
-  %841 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %840, i32 1), !nosanitize !45
-  %842 = extractvalue { i32, i1 } %841, 1, !nosanitize !45
-  br i1 %842, label %843, label %844, !prof !46, !nosanitize !45
+832:                                              ; preds = %822
+  %833 = extractvalue { i32, i1 } %829, 0, !nosanitize !45
+  %834 = load ptr, ptr %29, align 8, !tbaa !44
+  store i32 %833, ptr %30, align 4, !tbaa !139
+  %835 = zext i32 %828 to i64
+  %836 = getelementptr inbounds nuw i8, ptr %834, i64 %835
+  store i8 0, ptr %836, align 1, !tbaa !8
+  %837 = load i32, ptr %30, align 4, !tbaa !139
+  %838 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %837, i32 1), !nosanitize !45
+  %839 = extractvalue { i32, i1 } %838, 1, !nosanitize !45
+  br i1 %839, label %840, label %841, !prof !46, !nosanitize !45
 
-843:                                              ; preds = %835
+840:                                              ; preds = %832
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-844:                                              ; preds = %835
-  %845 = extractvalue { i32, i1 } %841, 0, !nosanitize !45
-  %846 = load ptr, ptr %29, align 8, !tbaa !44
-  store i32 %845, ptr %30, align 4, !tbaa !139
-  %847 = zext i32 %840 to i64
-  %848 = getelementptr inbounds nuw i8, ptr %846, i64 %847
-  store i8 0, ptr %848, align 1, !tbaa !8
-  %849 = load i32, ptr %30, align 4, !tbaa !139
-  %850 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %849, i32 1), !nosanitize !45
-  %851 = extractvalue { i32, i1 } %850, 1, !nosanitize !45
-  br i1 %851, label %852, label %853, !prof !46, !nosanitize !45
+841:                                              ; preds = %832
+  %842 = extractvalue { i32, i1 } %838, 0, !nosanitize !45
+  %843 = load ptr, ptr %29, align 8, !tbaa !44
+  store i32 %842, ptr %30, align 4, !tbaa !139
+  %844 = zext i32 %837 to i64
+  %845 = getelementptr inbounds nuw i8, ptr %843, i64 %844
+  store i8 0, ptr %845, align 1, !tbaa !8
+  %846 = load i32, ptr %30, align 4, !tbaa !139
+  %847 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %846, i32 1), !nosanitize !45
+  %848 = extractvalue { i32, i1 } %847, 1, !nosanitize !45
+  br i1 %848, label %849, label %850, !prof !46, !nosanitize !45
 
-852:                                              ; preds = %844
+849:                                              ; preds = %841
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-853:                                              ; preds = %844
-  %854 = extractvalue { i32, i1 } %850, 0, !nosanitize !45
-  %855 = load ptr, ptr %29, align 8, !tbaa !44
-  store i32 %854, ptr %30, align 4, !tbaa !139
-  %856 = zext i32 %849 to i64
-  %857 = getelementptr inbounds nuw i8, ptr %855, i64 %856
-  store i8 %830, ptr %857, align 1, !tbaa !8
-  %858 = zext i8 %830 to i64
-  %859 = getelementptr inbounds nuw [4 x i8], ptr %35, i64 %858
-  %860 = load i16, ptr %859, align 4, !tbaa !8
-  %861 = add i16 %860, 1
-  store i16 %861, ptr %859, align 4, !tbaa !8
-  %862 = load i32, ptr %30, align 4, !tbaa !139
-  %863 = load i32, ptr %33, align 8, !tbaa !47
-  %864 = icmp eq i32 %862, %863
-  br i1 %864, label %865, label %922
+850:                                              ; preds = %841
+  %851 = extractvalue { i32, i1 } %847, 0, !nosanitize !45
+  %852 = load ptr, ptr %29, align 8, !tbaa !44
+  store i32 %851, ptr %30, align 4, !tbaa !139
+  %853 = zext i32 %846 to i64
+  %854 = getelementptr inbounds nuw i8, ptr %852, i64 %853
+  store i8 %827, ptr %854, align 1, !tbaa !8
+  %855 = zext i8 %827 to i64
+  %856 = getelementptr inbounds nuw [4 x i8], ptr %35, i64 %855
+  %857 = load i16, ptr %856, align 4, !tbaa !8
+  %858 = add i16 %857, 1
+  store i16 %858, ptr %856, align 4, !tbaa !8
+  %859 = load i32, ptr %30, align 4, !tbaa !139
+  %860 = load i32, ptr %33, align 8, !tbaa !47
+  %861 = icmp eq i32 %859, %860
+  br i1 %861, label %862, label %919
 
-865:                                              ; preds = %853
-  %866 = load i64, ptr %9, align 8, !tbaa !74
-  %867 = icmp sgt i64 %866, -1
-  br i1 %867, label %868, label %872
+862:                                              ; preds = %850
+  %863 = load i64, ptr %9, align 8, !tbaa !74
+  %864 = icmp sgt i64 %863, -1
+  br i1 %864, label %865, label %869
 
-868:                                              ; preds = %865
-  %869 = load ptr, ptr %7, align 8, !tbaa !34
-  %870 = and i64 %866, 4294967295
-  %871 = getelementptr inbounds nuw i8, ptr %869, i64 %870
-  br label %872
+865:                                              ; preds = %862
+  %866 = load ptr, ptr %7, align 8, !tbaa !34
+  %867 = and i64 %863, 4294967295
+  %868 = getelementptr inbounds nuw i8, ptr %866, i64 %867
+  br label %869
 
-872:                                              ; preds = %868, %865
-  %873 = phi ptr [ %871, %868 ], [ null, %865 ]
+869:                                              ; preds = %865, %862
+  %870 = phi ptr [ %868, %865 ], [ null, %862 ]
+  %871 = load i32, ptr %6, align 4, !tbaa !73
+  %872 = zext i32 %871 to i64
+  %873 = sub nsw i64 %872, %863
+  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %870, i64 noundef %873, i32 noundef 0) #11
   %874 = load i32, ptr %6, align 4, !tbaa !73
   %875 = zext i32 %874 to i64
-  %876 = sub nsw i64 %875, %866
-  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %873, i64 noundef %876, i32 noundef 0) #11
-  %877 = load i32, ptr %6, align 4, !tbaa !73
-  %878 = zext i32 %877 to i64
-  store i64 %878, ptr %9, align 8, !tbaa !74
-  %879 = load ptr, ptr %0, align 8, !tbaa !20
-  %880 = getelementptr inbounds nuw i8, ptr %879, i64 56
-  %881 = load ptr, ptr %880, align 8, !tbaa !19
-  tail call void @_tr_flush_bits(ptr noundef %881) #11
-  %882 = getelementptr inbounds nuw i8, ptr %881, i64 40
-  %883 = load i64, ptr %882, align 8, !tbaa !57
-  %884 = getelementptr inbounds nuw i8, ptr %879, i64 32
-  %885 = load i32, ptr %884, align 8, !tbaa !107
-  %886 = zext i32 %885 to i64
-  %887 = tail call i64 @llvm.umin.i64(i64 %883, i64 %886)
-  %888 = trunc nuw i64 %887 to i32
-  %889 = icmp eq i64 %887, 0
-  br i1 %889, label %922, label %890
+  store i64 %875, ptr %9, align 8, !tbaa !74
+  %876 = load ptr, ptr %0, align 8, !tbaa !20
+  %877 = getelementptr inbounds nuw i8, ptr %876, i64 56
+  %878 = load ptr, ptr %877, align 8, !tbaa !19
+  tail call void @_tr_flush_bits(ptr noundef %878) #11
+  %879 = getelementptr inbounds nuw i8, ptr %878, i64 40
+  %880 = load i64, ptr %879, align 8, !tbaa !57
+  %881 = getelementptr inbounds nuw i8, ptr %876, i64 32
+  %882 = load i32, ptr %881, align 8, !tbaa !107
+  %883 = zext i32 %882 to i64
+  %884 = tail call i64 @llvm.umin.i64(i64 %880, i64 %883)
+  %885 = trunc nuw i64 %884 to i32
+  %886 = icmp eq i64 %884, 0
+  br i1 %886, label %919, label %887
 
-890:                                              ; preds = %872
-  %891 = getelementptr inbounds nuw i8, ptr %879, i64 24
-  %892 = load ptr, ptr %891, align 8, !tbaa !106
-  %893 = getelementptr inbounds nuw i8, ptr %881, i64 32
-  %894 = load ptr, ptr %893, align 8, !tbaa !58
-  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %892, ptr align 1 %894, i64 %887, i1 false)
-  %895 = load ptr, ptr %891, align 8, !tbaa !106
-  %896 = getelementptr inbounds nuw i8, ptr %895, i64 %887
-  store ptr %896, ptr %891, align 8, !tbaa !106
-  %897 = load ptr, ptr %893, align 8, !tbaa !58
-  %898 = getelementptr inbounds nuw i8, ptr %897, i64 %887
-  store ptr %898, ptr %893, align 8, !tbaa !58
-  %899 = getelementptr inbounds nuw i8, ptr %879, i64 40
-  %900 = load i64, ptr %899, align 8, !tbaa !108
-  %901 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %900, i64 %887), !nosanitize !45
-  %902 = extractvalue { i64, i1 } %901, 1, !nosanitize !45
-  br i1 %902, label %903, label %904, !prof !46, !nosanitize !45
+887:                                              ; preds = %869
+  %888 = getelementptr inbounds nuw i8, ptr %876, i64 24
+  %889 = load ptr, ptr %888, align 8, !tbaa !106
+  %890 = getelementptr inbounds nuw i8, ptr %878, i64 32
+  %891 = load ptr, ptr %890, align 8, !tbaa !58
+  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %889, ptr align 1 %891, i64 %884, i1 false)
+  %892 = load ptr, ptr %888, align 8, !tbaa !106
+  %893 = getelementptr inbounds nuw i8, ptr %892, i64 %884
+  store ptr %893, ptr %888, align 8, !tbaa !106
+  %894 = load ptr, ptr %890, align 8, !tbaa !58
+  %895 = getelementptr inbounds nuw i8, ptr %894, i64 %884
+  store ptr %895, ptr %890, align 8, !tbaa !58
+  %896 = getelementptr inbounds nuw i8, ptr %876, i64 40
+  %897 = load i64, ptr %896, align 8, !tbaa !108
+  %898 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %897, i64 %884), !nosanitize !45
+  %899 = extractvalue { i64, i1 } %898, 1, !nosanitize !45
+  br i1 %899, label %900, label %901, !prof !46, !nosanitize !45
 
-903:                                              ; preds = %890
+900:                                              ; preds = %887
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-904:                                              ; preds = %890
-  %905 = extractvalue { i64, i1 } %901, 0, !nosanitize !45
-  store i64 %905, ptr %899, align 8, !tbaa !108
-  %906 = load i32, ptr %884, align 8, !tbaa !107
-  %907 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %906, i32 %888), !nosanitize !45
-  %908 = extractvalue { i32, i1 } %907, 1, !nosanitize !45
-  br i1 %908, label %909, label %910, !prof !46, !nosanitize !45
+901:                                              ; preds = %887
+  %902 = extractvalue { i64, i1 } %898, 0, !nosanitize !45
+  store i64 %902, ptr %896, align 8, !tbaa !108
+  %903 = load i32, ptr %881, align 8, !tbaa !107
+  %904 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %903, i32 %885), !nosanitize !45
+  %905 = extractvalue { i32, i1 } %904, 1, !nosanitize !45
+  br i1 %905, label %906, label %907, !prof !46, !nosanitize !45
 
-909:                                              ; preds = %904
+906:                                              ; preds = %901
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-910:                                              ; preds = %904
-  %911 = extractvalue { i32, i1 } %907, 0, !nosanitize !45
-  store i32 %911, ptr %884, align 8, !tbaa !107
-  %912 = load i64, ptr %882, align 8, !tbaa !57
-  %913 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %912, i64 %887), !nosanitize !45
-  %914 = extractvalue { i64, i1 } %913, 1, !nosanitize !45
-  br i1 %914, label %915, label %916, !prof !46, !nosanitize !45
+907:                                              ; preds = %901
+  %908 = extractvalue { i32, i1 } %904, 0, !nosanitize !45
+  store i32 %908, ptr %881, align 8, !tbaa !107
+  %909 = load i64, ptr %879, align 8, !tbaa !57
+  %910 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %909, i64 %884), !nosanitize !45
+  %911 = extractvalue { i64, i1 } %910, 1, !nosanitize !45
+  br i1 %911, label %912, label %913, !prof !46, !nosanitize !45
 
-915:                                              ; preds = %910
+912:                                              ; preds = %907
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-916:                                              ; preds = %910
-  %917 = extractvalue { i64, i1 } %913, 0, !nosanitize !45
-  store i64 %917, ptr %882, align 8, !tbaa !57
-  %918 = icmp eq i64 %917, 0
-  br i1 %918, label %919, label %922
+913:                                              ; preds = %907
+  %914 = extractvalue { i64, i1 } %910, 0, !nosanitize !45
+  store i64 %914, ptr %879, align 8, !tbaa !57
+  %915 = icmp eq i64 %914, 0
+  br i1 %915, label %916, label %919
 
-919:                                              ; preds = %916
-  %920 = getelementptr inbounds nuw i8, ptr %881, i64 16
-  %921 = load ptr, ptr %920, align 8, !tbaa !40
-  store ptr %921, ptr %893, align 8, !tbaa !58
-  br label %922
+916:                                              ; preds = %913
+  %917 = getelementptr inbounds nuw i8, ptr %878, i64 16
+  %918 = load ptr, ptr %917, align 8, !tbaa !40
+  store ptr %918, ptr %890, align 8, !tbaa !58
+  br label %919
 
-922:                                              ; preds = %919, %916, %872, %853
-  %923 = load i32, ptr %6, align 4, !tbaa !73
-  %924 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %923, i32 1), !nosanitize !45
-  %925 = extractvalue { i32, i1 } %924, 1, !nosanitize !45
-  br i1 %925, label %926, label %927, !prof !46, !nosanitize !45
+919:                                              ; preds = %916, %913, %869, %850
+  %920 = load i32, ptr %6, align 4, !tbaa !73
+  %921 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %920, i32 1), !nosanitize !45
+  %922 = extractvalue { i32, i1 } %921, 1, !nosanitize !45
+  br i1 %922, label %923, label %924, !prof !46, !nosanitize !45
 
-926:                                              ; preds = %922
+923:                                              ; preds = %919
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-927:                                              ; preds = %922
-  %928 = extractvalue { i32, i1 } %924, 0, !nosanitize !45
-  store i32 %928, ptr %6, align 4, !tbaa !73
-  %929 = load i32, ptr %3, align 4, !tbaa !75
-  %930 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %929, i32 1), !nosanitize !45
-  %931 = extractvalue { i32, i1 } %930, 1, !nosanitize !45
-  br i1 %931, label %932, label %933, !prof !46, !nosanitize !45
+924:                                              ; preds = %919
+  %925 = extractvalue { i32, i1 } %921, 0, !nosanitize !45
+  store i32 %925, ptr %6, align 4, !tbaa !73
+  %926 = load i32, ptr %3, align 4, !tbaa !75
+  %927 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %926, i32 1), !nosanitize !45
+  %928 = extractvalue { i32, i1 } %927, 1, !nosanitize !45
+  br i1 %928, label %929, label %930, !prof !46, !nosanitize !45
 
-932:                                              ; preds = %927
+929:                                              ; preds = %924
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-933:                                              ; preds = %927
-  %934 = extractvalue { i32, i1 } %930, 0, !nosanitize !45
-  store i32 %934, ptr %3, align 4, !tbaa !75
-  %935 = load ptr, ptr %0, align 8, !tbaa !20
-  %936 = getelementptr inbounds nuw i8, ptr %935, i64 32
-  %937 = load i32, ptr %936, align 8, !tbaa !107
-  %938 = icmp eq i32 %937, 0
-  br i1 %938, label %1128, label %755
+930:                                              ; preds = %924
+  %931 = extractvalue { i32, i1 } %927, 0, !nosanitize !45
+  store i32 %931, ptr %3, align 4, !tbaa !75
+  %932 = load ptr, ptr %0, align 8, !tbaa !20
+  %933 = getelementptr inbounds nuw i8, ptr %932, i64 32
+  %934 = load i32, ptr %933, align 8, !tbaa !107
+  %935 = icmp eq i32 %934, 0
+  br i1 %935, label %1125, label %752
 
-939:                                              ; preds = %817
+936:                                              ; preds = %814
   store i32 1, ptr %34, align 8, !tbaa !79
-  %940 = load i32, ptr %6, align 4, !tbaa !73
-  %941 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %940, i32 1), !nosanitize !45
-  %942 = extractvalue { i32, i1 } %941, 1, !nosanitize !45
-  br i1 %942, label %943, label %944, !prof !46, !nosanitize !45
+  %937 = load i32, ptr %6, align 4, !tbaa !73
+  %938 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %937, i32 1), !nosanitize !45
+  %939 = extractvalue { i32, i1 } %938, 1, !nosanitize !45
+  br i1 %939, label %940, label %941, !prof !46, !nosanitize !45
 
-943:                                              ; preds = %939
+940:                                              ; preds = %936
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-944:                                              ; preds = %939
-  %945 = extractvalue { i32, i1 } %941, 0, !nosanitize !45
-  store i32 %945, ptr %6, align 4, !tbaa !73
-  %946 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %605, i32 1), !nosanitize !45
-  %947 = extractvalue { i32, i1 } %946, 1, !nosanitize !45
-  br i1 %947, label %948, label %949, !prof !46, !nosanitize !45
+941:                                              ; preds = %936
+  %942 = extractvalue { i32, i1 } %938, 0, !nosanitize !45
+  store i32 %942, ptr %6, align 4, !tbaa !73
+  %943 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %602, i32 1), !nosanitize !45
+  %944 = extractvalue { i32, i1 } %943, 1, !nosanitize !45
+  br i1 %944, label %945, label %946, !prof !46, !nosanitize !45
 
-948:                                              ; preds = %944
+945:                                              ; preds = %941
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-949:                                              ; preds = %944
-  %950 = extractvalue { i32, i1 } %946, 0, !nosanitize !45
-  store i32 %950, ptr %3, align 4, !tbaa !75
-  br label %755
+946:                                              ; preds = %941
+  %947 = extractvalue { i32, i1 } %943, 0, !nosanitize !45
+  store i32 %947, ptr %3, align 4, !tbaa !75
+  br label %752
 
-951:                                              ; preds = %371
-  %952 = load i32, ptr %34, align 8, !tbaa !79
-  %953 = icmp eq i32 %952, 0
-  %954 = load i32, ptr %6, align 4, !tbaa !73
-  br i1 %953, label %997, label %955
+948:                                              ; preds = %368
+  %949 = load i32, ptr %34, align 8, !tbaa !79
+  %950 = icmp eq i32 %949, 0
+  %951 = load i32, ptr %6, align 4, !tbaa !73
+  br i1 %950, label %994, label %952
 
-955:                                              ; preds = %951
-  %956 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %954, i32 1), !nosanitize !45
-  %957 = extractvalue { i32, i1 } %956, 1, !nosanitize !45
-  br i1 %957, label %958, label %959, !prof !46, !nosanitize !45
+952:                                              ; preds = %948
+  %953 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %951, i32 1), !nosanitize !45
+  %954 = extractvalue { i32, i1 } %953, 1, !nosanitize !45
+  br i1 %954, label %955, label %956, !prof !46, !nosanitize !45
 
-958:                                              ; preds = %955
+955:                                              ; preds = %952
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-959:                                              ; preds = %955
-  %960 = extractvalue { i32, i1 } %956, 0, !nosanitize !45
-  %961 = load ptr, ptr %7, align 8, !tbaa !34
-  %962 = zext i32 %960 to i64
-  %963 = getelementptr inbounds nuw i8, ptr %961, i64 %962
-  %964 = load i8, ptr %963, align 1, !tbaa !8
-  %965 = load i32, ptr %30, align 4, !tbaa !139
-  %966 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %965, i32 1), !nosanitize !45
-  %967 = extractvalue { i32, i1 } %966, 1, !nosanitize !45
-  br i1 %967, label %968, label %969, !prof !46, !nosanitize !45
+956:                                              ; preds = %952
+  %957 = extractvalue { i32, i1 } %953, 0, !nosanitize !45
+  %958 = load ptr, ptr %7, align 8, !tbaa !34
+  %959 = zext i32 %957 to i64
+  %960 = getelementptr inbounds nuw i8, ptr %958, i64 %959
+  %961 = load i8, ptr %960, align 1, !tbaa !8
+  %962 = load i32, ptr %30, align 4, !tbaa !139
+  %963 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %962, i32 1), !nosanitize !45
+  %964 = extractvalue { i32, i1 } %963, 1, !nosanitize !45
+  br i1 %964, label %965, label %966, !prof !46, !nosanitize !45
 
-968:                                              ; preds = %959
+965:                                              ; preds = %956
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-969:                                              ; preds = %959
-  %970 = extractvalue { i32, i1 } %966, 0, !nosanitize !45
-  %971 = load ptr, ptr %29, align 8, !tbaa !44
-  store i32 %970, ptr %30, align 4, !tbaa !139
-  %972 = zext i32 %965 to i64
-  %973 = getelementptr inbounds nuw i8, ptr %971, i64 %972
-  store i8 0, ptr %973, align 1, !tbaa !8
-  %974 = load i32, ptr %30, align 4, !tbaa !139
-  %975 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %974, i32 1), !nosanitize !45
-  %976 = extractvalue { i32, i1 } %975, 1, !nosanitize !45
-  br i1 %976, label %977, label %978, !prof !46, !nosanitize !45
+966:                                              ; preds = %956
+  %967 = extractvalue { i32, i1 } %963, 0, !nosanitize !45
+  %968 = load ptr, ptr %29, align 8, !tbaa !44
+  store i32 %967, ptr %30, align 4, !tbaa !139
+  %969 = zext i32 %962 to i64
+  %970 = getelementptr inbounds nuw i8, ptr %968, i64 %969
+  store i8 0, ptr %970, align 1, !tbaa !8
+  %971 = load i32, ptr %30, align 4, !tbaa !139
+  %972 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %971, i32 1), !nosanitize !45
+  %973 = extractvalue { i32, i1 } %972, 1, !nosanitize !45
+  br i1 %973, label %974, label %975, !prof !46, !nosanitize !45
 
-977:                                              ; preds = %969
+974:                                              ; preds = %966
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-978:                                              ; preds = %969
-  %979 = extractvalue { i32, i1 } %975, 0, !nosanitize !45
-  %980 = load ptr, ptr %29, align 8, !tbaa !44
-  store i32 %979, ptr %30, align 4, !tbaa !139
-  %981 = zext i32 %974 to i64
-  %982 = getelementptr inbounds nuw i8, ptr %980, i64 %981
-  store i8 0, ptr %982, align 1, !tbaa !8
-  %983 = load i32, ptr %30, align 4, !tbaa !139
-  %984 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %983, i32 1), !nosanitize !45
-  %985 = extractvalue { i32, i1 } %984, 1, !nosanitize !45
-  br i1 %985, label %986, label %987, !prof !46, !nosanitize !45
+975:                                              ; preds = %966
+  %976 = extractvalue { i32, i1 } %972, 0, !nosanitize !45
+  %977 = load ptr, ptr %29, align 8, !tbaa !44
+  store i32 %976, ptr %30, align 4, !tbaa !139
+  %978 = zext i32 %971 to i64
+  %979 = getelementptr inbounds nuw i8, ptr %977, i64 %978
+  store i8 0, ptr %979, align 1, !tbaa !8
+  %980 = load i32, ptr %30, align 4, !tbaa !139
+  %981 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %980, i32 1), !nosanitize !45
+  %982 = extractvalue { i32, i1 } %981, 1, !nosanitize !45
+  br i1 %982, label %983, label %984, !prof !46, !nosanitize !45
 
-986:                                              ; preds = %978
+983:                                              ; preds = %975
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-987:                                              ; preds = %978
-  %988 = extractvalue { i32, i1 } %984, 0, !nosanitize !45
-  %989 = load ptr, ptr %29, align 8, !tbaa !44
-  store i32 %988, ptr %30, align 4, !tbaa !139
-  %990 = zext i32 %983 to i64
-  %991 = getelementptr inbounds nuw i8, ptr %989, i64 %990
-  store i8 %964, ptr %991, align 1, !tbaa !8
-  %992 = zext i8 %964 to i64
-  %993 = getelementptr inbounds nuw [4 x i8], ptr %35, i64 %992
-  %994 = load i16, ptr %993, align 4, !tbaa !8
-  %995 = add i16 %994, 1
-  store i16 %995, ptr %993, align 4, !tbaa !8
+984:                                              ; preds = %975
+  %985 = extractvalue { i32, i1 } %981, 0, !nosanitize !45
+  %986 = load ptr, ptr %29, align 8, !tbaa !44
+  store i32 %985, ptr %30, align 4, !tbaa !139
+  %987 = zext i32 %980 to i64
+  %988 = getelementptr inbounds nuw i8, ptr %986, i64 %987
+  store i8 %961, ptr %988, align 1, !tbaa !8
+  %989 = zext i8 %961 to i64
+  %990 = getelementptr inbounds nuw [4 x i8], ptr %35, i64 %989
+  %991 = load i16, ptr %990, align 4, !tbaa !8
+  %992 = add i16 %991, 1
+  store i16 %992, ptr %990, align 4, !tbaa !8
   store i32 0, ptr %34, align 8, !tbaa !79
-  %996 = load i32, ptr %6, align 4, !tbaa !73
-  br label %997
+  %993 = load i32, ptr %6, align 4, !tbaa !73
+  br label %994
 
-997:                                              ; preds = %987, %951
-  %998 = phi i32 [ %996, %987 ], [ %954, %951 ]
-  %999 = tail call i32 @llvm.umin.i32(i32 %998, i32 2)
-  store i32 %999, ptr %10, align 4, !tbaa !76
-  %1000 = icmp eq i32 %1, 4
-  br i1 %1000, label %1001, label %1063
+994:                                              ; preds = %984, %948
+  %995 = phi i32 [ %993, %984 ], [ %951, %948 ]
+  %996 = tail call i32 @llvm.umin.i32(i32 %995, i32 2)
+  store i32 %996, ptr %10, align 4, !tbaa !76
+  %997 = icmp eq i32 %1, 4
+  br i1 %997, label %998, label %1060
 
-1001:                                             ; preds = %997
-  %1002 = load i64, ptr %9, align 8, !tbaa !74
-  %1003 = icmp sgt i64 %1002, -1
-  br i1 %1003, label %1004, label %1008
+998:                                              ; preds = %994
+  %999 = load i64, ptr %9, align 8, !tbaa !74
+  %1000 = icmp sgt i64 %999, -1
+  br i1 %1000, label %1001, label %1005
 
-1004:                                             ; preds = %1001
-  %1005 = load ptr, ptr %7, align 8, !tbaa !34
-  %1006 = and i64 %1002, 4294967295
-  %1007 = getelementptr inbounds nuw i8, ptr %1005, i64 %1006
-  br label %1008
+1001:                                             ; preds = %998
+  %1002 = load ptr, ptr %7, align 8, !tbaa !34
+  %1003 = and i64 %999, 4294967295
+  %1004 = getelementptr inbounds nuw i8, ptr %1002, i64 %1003
+  br label %1005
 
-1008:                                             ; preds = %1004, %1001
-  %1009 = phi ptr [ %1007, %1004 ], [ null, %1001 ]
-  %1010 = zext i32 %998 to i64
-  %1011 = sub nsw i64 %1010, %1002
-  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %1009, i64 noundef %1011, i32 noundef 1) #11
-  %1012 = load i32, ptr %6, align 4, !tbaa !73
-  %1013 = zext i32 %1012 to i64
-  store i64 %1013, ptr %9, align 8, !tbaa !74
-  %1014 = load ptr, ptr %0, align 8, !tbaa !20
-  %1015 = getelementptr inbounds nuw i8, ptr %1014, i64 56
-  %1016 = load ptr, ptr %1015, align 8, !tbaa !19
-  tail call void @_tr_flush_bits(ptr noundef %1016) #11
-  %1017 = getelementptr inbounds nuw i8, ptr %1016, i64 40
-  %1018 = load i64, ptr %1017, align 8, !tbaa !57
-  %1019 = getelementptr inbounds nuw i8, ptr %1014, i64 32
-  %1020 = load i32, ptr %1019, align 8, !tbaa !107
-  %1021 = zext i32 %1020 to i64
-  %1022 = tail call i64 @llvm.umin.i64(i64 %1018, i64 %1021)
-  %1023 = trunc nuw i64 %1022 to i32
-  %1024 = icmp eq i64 %1022, 0
-  br i1 %1024, label %1057, label %1025
+1005:                                             ; preds = %1001, %998
+  %1006 = phi ptr [ %1004, %1001 ], [ null, %998 ]
+  %1007 = zext i32 %995 to i64
+  %1008 = sub nsw i64 %1007, %999
+  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %1006, i64 noundef %1008, i32 noundef 1) #11
+  %1009 = load i32, ptr %6, align 4, !tbaa !73
+  %1010 = zext i32 %1009 to i64
+  store i64 %1010, ptr %9, align 8, !tbaa !74
+  %1011 = load ptr, ptr %0, align 8, !tbaa !20
+  %1012 = getelementptr inbounds nuw i8, ptr %1011, i64 56
+  %1013 = load ptr, ptr %1012, align 8, !tbaa !19
+  tail call void @_tr_flush_bits(ptr noundef %1013) #11
+  %1014 = getelementptr inbounds nuw i8, ptr %1013, i64 40
+  %1015 = load i64, ptr %1014, align 8, !tbaa !57
+  %1016 = getelementptr inbounds nuw i8, ptr %1011, i64 32
+  %1017 = load i32, ptr %1016, align 8, !tbaa !107
+  %1018 = zext i32 %1017 to i64
+  %1019 = tail call i64 @llvm.umin.i64(i64 %1015, i64 %1018)
+  %1020 = trunc nuw i64 %1019 to i32
+  %1021 = icmp eq i64 %1019, 0
+  br i1 %1021, label %1054, label %1022
 
-1025:                                             ; preds = %1008
-  %1026 = getelementptr inbounds nuw i8, ptr %1014, i64 24
-  %1027 = load ptr, ptr %1026, align 8, !tbaa !106
-  %1028 = getelementptr inbounds nuw i8, ptr %1016, i64 32
-  %1029 = load ptr, ptr %1028, align 8, !tbaa !58
-  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %1027, ptr align 1 %1029, i64 %1022, i1 false)
-  %1030 = load ptr, ptr %1026, align 8, !tbaa !106
-  %1031 = getelementptr inbounds nuw i8, ptr %1030, i64 %1022
-  store ptr %1031, ptr %1026, align 8, !tbaa !106
-  %1032 = load ptr, ptr %1028, align 8, !tbaa !58
-  %1033 = getelementptr inbounds nuw i8, ptr %1032, i64 %1022
-  store ptr %1033, ptr %1028, align 8, !tbaa !58
-  %1034 = getelementptr inbounds nuw i8, ptr %1014, i64 40
-  %1035 = load i64, ptr %1034, align 8, !tbaa !108
-  %1036 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %1035, i64 %1022), !nosanitize !45
-  %1037 = extractvalue { i64, i1 } %1036, 1, !nosanitize !45
-  br i1 %1037, label %1038, label %1039, !prof !46, !nosanitize !45
+1022:                                             ; preds = %1005
+  %1023 = getelementptr inbounds nuw i8, ptr %1011, i64 24
+  %1024 = load ptr, ptr %1023, align 8, !tbaa !106
+  %1025 = getelementptr inbounds nuw i8, ptr %1013, i64 32
+  %1026 = load ptr, ptr %1025, align 8, !tbaa !58
+  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %1024, ptr align 1 %1026, i64 %1019, i1 false)
+  %1027 = load ptr, ptr %1023, align 8, !tbaa !106
+  %1028 = getelementptr inbounds nuw i8, ptr %1027, i64 %1019
+  store ptr %1028, ptr %1023, align 8, !tbaa !106
+  %1029 = load ptr, ptr %1025, align 8, !tbaa !58
+  %1030 = getelementptr inbounds nuw i8, ptr %1029, i64 %1019
+  store ptr %1030, ptr %1025, align 8, !tbaa !58
+  %1031 = getelementptr inbounds nuw i8, ptr %1011, i64 40
+  %1032 = load i64, ptr %1031, align 8, !tbaa !108
+  %1033 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %1032, i64 %1019), !nosanitize !45
+  %1034 = extractvalue { i64, i1 } %1033, 1, !nosanitize !45
+  br i1 %1034, label %1035, label %1036, !prof !46, !nosanitize !45
 
-1038:                                             ; preds = %1025
+1035:                                             ; preds = %1022
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-1039:                                             ; preds = %1025
-  %1040 = extractvalue { i64, i1 } %1036, 0, !nosanitize !45
-  store i64 %1040, ptr %1034, align 8, !tbaa !108
-  %1041 = load i32, ptr %1019, align 8, !tbaa !107
-  %1042 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %1041, i32 %1023), !nosanitize !45
-  %1043 = extractvalue { i32, i1 } %1042, 1, !nosanitize !45
-  br i1 %1043, label %1044, label %1045, !prof !46, !nosanitize !45
+1036:                                             ; preds = %1022
+  %1037 = extractvalue { i64, i1 } %1033, 0, !nosanitize !45
+  store i64 %1037, ptr %1031, align 8, !tbaa !108
+  %1038 = load i32, ptr %1016, align 8, !tbaa !107
+  %1039 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %1038, i32 %1020), !nosanitize !45
+  %1040 = extractvalue { i32, i1 } %1039, 1, !nosanitize !45
+  br i1 %1040, label %1041, label %1042, !prof !46, !nosanitize !45
 
-1044:                                             ; preds = %1039
+1041:                                             ; preds = %1036
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-1045:                                             ; preds = %1039
-  %1046 = extractvalue { i32, i1 } %1042, 0, !nosanitize !45
-  store i32 %1046, ptr %1019, align 8, !tbaa !107
-  %1047 = load i64, ptr %1017, align 8, !tbaa !57
-  %1048 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %1047, i64 %1022), !nosanitize !45
-  %1049 = extractvalue { i64, i1 } %1048, 1, !nosanitize !45
-  br i1 %1049, label %1050, label %1051, !prof !46, !nosanitize !45
+1042:                                             ; preds = %1036
+  %1043 = extractvalue { i32, i1 } %1039, 0, !nosanitize !45
+  store i32 %1043, ptr %1016, align 8, !tbaa !107
+  %1044 = load i64, ptr %1014, align 8, !tbaa !57
+  %1045 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %1044, i64 %1019), !nosanitize !45
+  %1046 = extractvalue { i64, i1 } %1045, 1, !nosanitize !45
+  br i1 %1046, label %1047, label %1048, !prof !46, !nosanitize !45
 
-1050:                                             ; preds = %1045
+1047:                                             ; preds = %1042
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-1051:                                             ; preds = %1045
-  %1052 = extractvalue { i64, i1 } %1048, 0, !nosanitize !45
-  store i64 %1052, ptr %1017, align 8, !tbaa !57
-  %1053 = icmp eq i64 %1052, 0
-  br i1 %1053, label %1054, label %1057
+1048:                                             ; preds = %1042
+  %1049 = extractvalue { i64, i1 } %1045, 0, !nosanitize !45
+  store i64 %1049, ptr %1014, align 8, !tbaa !57
+  %1050 = icmp eq i64 %1049, 0
+  br i1 %1050, label %1051, label %1054
 
-1054:                                             ; preds = %1051
-  %1055 = getelementptr inbounds nuw i8, ptr %1016, i64 16
-  %1056 = load ptr, ptr %1055, align 8, !tbaa !40
-  store ptr %1056, ptr %1028, align 8, !tbaa !58
-  br label %1057
+1051:                                             ; preds = %1048
+  %1052 = getelementptr inbounds nuw i8, ptr %1013, i64 16
+  %1053 = load ptr, ptr %1052, align 8, !tbaa !40
+  store ptr %1053, ptr %1025, align 8, !tbaa !58
+  br label %1054
 
-1057:                                             ; preds = %1054, %1051, %1008
-  %1058 = load ptr, ptr %0, align 8, !tbaa !20
-  %1059 = getelementptr inbounds nuw i8, ptr %1058, i64 32
-  %1060 = load i32, ptr %1059, align 8, !tbaa !107
-  %1061 = icmp eq i32 %1060, 0
-  %1062 = select i1 %1061, i32 2, i32 3
-  br label %1128
+1054:                                             ; preds = %1051, %1048, %1005
+  %1055 = load ptr, ptr %0, align 8, !tbaa !20
+  %1056 = getelementptr inbounds nuw i8, ptr %1055, i64 32
+  %1057 = load i32, ptr %1056, align 8, !tbaa !107
+  %1058 = icmp eq i32 %1057, 0
+  %1059 = select i1 %1058, i32 2, i32 3
+  br label %1125
 
-1063:                                             ; preds = %997
-  %1064 = load i32, ptr %30, align 4, !tbaa !139
-  %1065 = icmp eq i32 %1064, 0
-  br i1 %1065, label %1127, label %1066
+1060:                                             ; preds = %994
+  %1061 = load i32, ptr %30, align 4, !tbaa !139
+  %1062 = icmp eq i32 %1061, 0
+  br i1 %1062, label %1124, label %1063
+
+1063:                                             ; preds = %1060
+  %1064 = load i64, ptr %9, align 8, !tbaa !74
+  %1065 = icmp sgt i64 %1064, -1
+  br i1 %1065, label %1066, label %1070
 
 1066:                                             ; preds = %1063
-  %1067 = load i64, ptr %9, align 8, !tbaa !74
-  %1068 = icmp sgt i64 %1067, -1
-  br i1 %1068, label %1069, label %1073
+  %1067 = load ptr, ptr %7, align 8, !tbaa !34
+  %1068 = and i64 %1064, 4294967295
+  %1069 = getelementptr inbounds nuw i8, ptr %1067, i64 %1068
+  br label %1070
 
-1069:                                             ; preds = %1066
-  %1070 = load ptr, ptr %7, align 8, !tbaa !34
-  %1071 = and i64 %1067, 4294967295
-  %1072 = getelementptr inbounds nuw i8, ptr %1070, i64 %1071
-  br label %1073
+1070:                                             ; preds = %1066, %1063
+  %1071 = phi ptr [ %1069, %1066 ], [ null, %1063 ]
+  %1072 = zext i32 %995 to i64
+  %1073 = sub nsw i64 %1072, %1064
+  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %1071, i64 noundef %1073, i32 noundef 0) #11
+  %1074 = load i32, ptr %6, align 4, !tbaa !73
+  %1075 = zext i32 %1074 to i64
+  store i64 %1075, ptr %9, align 8, !tbaa !74
+  %1076 = load ptr, ptr %0, align 8, !tbaa !20
+  %1077 = getelementptr inbounds nuw i8, ptr %1076, i64 56
+  %1078 = load ptr, ptr %1077, align 8, !tbaa !19
+  tail call void @_tr_flush_bits(ptr noundef %1078) #11
+  %1079 = getelementptr inbounds nuw i8, ptr %1078, i64 40
+  %1080 = load i64, ptr %1079, align 8, !tbaa !57
+  %1081 = getelementptr inbounds nuw i8, ptr %1076, i64 32
+  %1082 = load i32, ptr %1081, align 8, !tbaa !107
+  %1083 = zext i32 %1082 to i64
+  %1084 = tail call i64 @llvm.umin.i64(i64 %1080, i64 %1083)
+  %1085 = trunc nuw i64 %1084 to i32
+  %1086 = icmp eq i64 %1084, 0
+  br i1 %1086, label %1119, label %1087
 
-1073:                                             ; preds = %1069, %1066
-  %1074 = phi ptr [ %1072, %1069 ], [ null, %1066 ]
-  %1075 = zext i32 %998 to i64
-  %1076 = sub nsw i64 %1075, %1067
-  tail call void @_tr_flush_block(ptr noundef nonnull %0, ptr noundef %1074, i64 noundef %1076, i32 noundef 0) #11
-  %1077 = load i32, ptr %6, align 4, !tbaa !73
-  %1078 = zext i32 %1077 to i64
-  store i64 %1078, ptr %9, align 8, !tbaa !74
-  %1079 = load ptr, ptr %0, align 8, !tbaa !20
-  %1080 = getelementptr inbounds nuw i8, ptr %1079, i64 56
-  %1081 = load ptr, ptr %1080, align 8, !tbaa !19
-  tail call void @_tr_flush_bits(ptr noundef %1081) #11
-  %1082 = getelementptr inbounds nuw i8, ptr %1081, i64 40
-  %1083 = load i64, ptr %1082, align 8, !tbaa !57
-  %1084 = getelementptr inbounds nuw i8, ptr %1079, i64 32
-  %1085 = load i32, ptr %1084, align 8, !tbaa !107
-  %1086 = zext i32 %1085 to i64
-  %1087 = tail call i64 @llvm.umin.i64(i64 %1083, i64 %1086)
-  %1088 = trunc nuw i64 %1087 to i32
-  %1089 = icmp eq i64 %1087, 0
-  br i1 %1089, label %1122, label %1090
+1087:                                             ; preds = %1070
+  %1088 = getelementptr inbounds nuw i8, ptr %1076, i64 24
+  %1089 = load ptr, ptr %1088, align 8, !tbaa !106
+  %1090 = getelementptr inbounds nuw i8, ptr %1078, i64 32
+  %1091 = load ptr, ptr %1090, align 8, !tbaa !58
+  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %1089, ptr align 1 %1091, i64 %1084, i1 false)
+  %1092 = load ptr, ptr %1088, align 8, !tbaa !106
+  %1093 = getelementptr inbounds nuw i8, ptr %1092, i64 %1084
+  store ptr %1093, ptr %1088, align 8, !tbaa !106
+  %1094 = load ptr, ptr %1090, align 8, !tbaa !58
+  %1095 = getelementptr inbounds nuw i8, ptr %1094, i64 %1084
+  store ptr %1095, ptr %1090, align 8, !tbaa !58
+  %1096 = getelementptr inbounds nuw i8, ptr %1076, i64 40
+  %1097 = load i64, ptr %1096, align 8, !tbaa !108
+  %1098 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %1097, i64 %1084), !nosanitize !45
+  %1099 = extractvalue { i64, i1 } %1098, 1, !nosanitize !45
+  br i1 %1099, label %1100, label %1101, !prof !46, !nosanitize !45
 
-1090:                                             ; preds = %1073
-  %1091 = getelementptr inbounds nuw i8, ptr %1079, i64 24
-  %1092 = load ptr, ptr %1091, align 8, !tbaa !106
-  %1093 = getelementptr inbounds nuw i8, ptr %1081, i64 32
-  %1094 = load ptr, ptr %1093, align 8, !tbaa !58
-  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %1092, ptr align 1 %1094, i64 %1087, i1 false)
-  %1095 = load ptr, ptr %1091, align 8, !tbaa !106
-  %1096 = getelementptr inbounds nuw i8, ptr %1095, i64 %1087
-  store ptr %1096, ptr %1091, align 8, !tbaa !106
-  %1097 = load ptr, ptr %1093, align 8, !tbaa !58
-  %1098 = getelementptr inbounds nuw i8, ptr %1097, i64 %1087
-  store ptr %1098, ptr %1093, align 8, !tbaa !58
-  %1099 = getelementptr inbounds nuw i8, ptr %1079, i64 40
-  %1100 = load i64, ptr %1099, align 8, !tbaa !108
-  %1101 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %1100, i64 %1087), !nosanitize !45
-  %1102 = extractvalue { i64, i1 } %1101, 1, !nosanitize !45
-  br i1 %1102, label %1103, label %1104, !prof !46, !nosanitize !45
-
-1103:                                             ; preds = %1090
+1100:                                             ; preds = %1087
   tail call void @llvm.ubsantrap(i8 0) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-1104:                                             ; preds = %1090
-  %1105 = extractvalue { i64, i1 } %1101, 0, !nosanitize !45
-  store i64 %1105, ptr %1099, align 8, !tbaa !108
-  %1106 = load i32, ptr %1084, align 8, !tbaa !107
-  %1107 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %1106, i32 %1088), !nosanitize !45
-  %1108 = extractvalue { i32, i1 } %1107, 1, !nosanitize !45
-  br i1 %1108, label %1109, label %1110, !prof !46, !nosanitize !45
+1101:                                             ; preds = %1087
+  %1102 = extractvalue { i64, i1 } %1098, 0, !nosanitize !45
+  store i64 %1102, ptr %1096, align 8, !tbaa !108
+  %1103 = load i32, ptr %1081, align 8, !tbaa !107
+  %1104 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %1103, i32 %1085), !nosanitize !45
+  %1105 = extractvalue { i32, i1 } %1104, 1, !nosanitize !45
+  br i1 %1105, label %1106, label %1107, !prof !46, !nosanitize !45
 
-1109:                                             ; preds = %1104
+1106:                                             ; preds = %1101
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-1110:                                             ; preds = %1104
-  %1111 = extractvalue { i32, i1 } %1107, 0, !nosanitize !45
-  store i32 %1111, ptr %1084, align 8, !tbaa !107
-  %1112 = load i64, ptr %1082, align 8, !tbaa !57
-  %1113 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %1112, i64 %1087), !nosanitize !45
-  %1114 = extractvalue { i64, i1 } %1113, 1, !nosanitize !45
-  br i1 %1114, label %1115, label %1116, !prof !46, !nosanitize !45
+1107:                                             ; preds = %1101
+  %1108 = extractvalue { i32, i1 } %1104, 0, !nosanitize !45
+  store i32 %1108, ptr %1081, align 8, !tbaa !107
+  %1109 = load i64, ptr %1079, align 8, !tbaa !57
+  %1110 = tail call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %1109, i64 %1084), !nosanitize !45
+  %1111 = extractvalue { i64, i1 } %1110, 1, !nosanitize !45
+  br i1 %1111, label %1112, label %1113, !prof !46, !nosanitize !45
 
-1115:                                             ; preds = %1110
+1112:                                             ; preds = %1107
   tail call void @llvm.ubsantrap(i8 21) #12, !nosanitize !45
   unreachable, !nosanitize !45
 
-1116:                                             ; preds = %1110
-  %1117 = extractvalue { i64, i1 } %1113, 0, !nosanitize !45
-  store i64 %1117, ptr %1082, align 8, !tbaa !57
-  %1118 = icmp eq i64 %1117, 0
-  br i1 %1118, label %1119, label %1122
+1113:                                             ; preds = %1107
+  %1114 = extractvalue { i64, i1 } %1110, 0, !nosanitize !45
+  store i64 %1114, ptr %1079, align 8, !tbaa !57
+  %1115 = icmp eq i64 %1114, 0
+  br i1 %1115, label %1116, label %1119
 
-1119:                                             ; preds = %1116
-  %1120 = getelementptr inbounds nuw i8, ptr %1081, i64 16
-  %1121 = load ptr, ptr %1120, align 8, !tbaa !40
-  store ptr %1121, ptr %1093, align 8, !tbaa !58
-  br label %1122
+1116:                                             ; preds = %1113
+  %1117 = getelementptr inbounds nuw i8, ptr %1078, i64 16
+  %1118 = load ptr, ptr %1117, align 8, !tbaa !40
+  store ptr %1118, ptr %1090, align 8, !tbaa !58
+  br label %1119
 
-1122:                                             ; preds = %1119, %1116, %1073
-  %1123 = load ptr, ptr %0, align 8, !tbaa !20
-  %1124 = getelementptr inbounds nuw i8, ptr %1123, i64 32
-  %1125 = load i32, ptr %1124, align 8, !tbaa !107
-  %1126 = icmp eq i32 %1125, 0
-  br i1 %1126, label %1128, label %1127
+1119:                                             ; preds = %1116, %1113, %1070
+  %1120 = load ptr, ptr %0, align 8, !tbaa !20
+  %1121 = getelementptr inbounds nuw i8, ptr %1120, i64 32
+  %1122 = load i32, ptr %1121, align 8, !tbaa !107
+  %1123 = icmp eq i32 %1122, 0
+  br i1 %1123, label %1125, label %1124
 
-1127:                                             ; preds = %1122, %1063
-  br label %1128
+1124:                                             ; preds = %1119, %1060
+  br label %1125
 
-1128:                                             ; preds = %1127, %1122, %1057, %933, %812, %367
-  %1129 = phi i32 [ 0, %1122 ], [ %1062, %1057 ], [ 1, %1127 ], [ 0, %367 ], [ 0, %812 ], [ 0, %933 ]
-  ret i32 %1129
+1125:                                             ; preds = %1124, %1119, %1054, %930, %809, %364
+  %1126 = phi i32 [ 0, %1119 ], [ %1059, %1054 ], [ 1, %1124 ], [ 0, %364 ], [ 0, %809 ], [ 0, %930 ]
+  ret i32 %1126
 }
 
 declare void @_tr_flush_block(ptr noundef, ptr noundef, i64 noundef, i32 noundef) local_unnamed_addr #1

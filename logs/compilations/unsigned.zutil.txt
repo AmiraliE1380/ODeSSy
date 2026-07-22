@@ -5,7 +5,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 2.971810e-01 ms
+  => Total DFS & SMT Execution Time: 1.468100e-01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: zlibCompileFlags
@@ -14,7 +14,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.090690e-01 ms
+  => Total DFS & SMT Execution Time: 2.615300e-02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: zError
@@ -23,19 +23,19 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 3.013100e-02 ms
+  => Total DFS & SMT Execution Time: 1.054100e-02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: zcalloc
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 0 dominating context guard(s).
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.877945 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.144065 ms]
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 1
   => Total SMT Queries Executed: 1
-  => Total SMT Query Latency: 4.877945e+00 ms
-  => Average SMT Query Latency: 4.877945e+00 ms
-  => Total DFS & SMT Execution Time: 1.932897e+01 ms
+  => Total SMT Query Latency: 5.144065e+00 ms
+  => Average SMT Query Latency: 5.144065e+00 ms
+  => Total DFS & SMT Execution Time: 1.528593e+01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: zcfree
@@ -44,5 +44,5 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 7.546800e-02 ms
+  => Total DFS & SMT Execution Time: 6.192800e-02 ms
 --------------------------------------------------

@@ -5,5 +5,5 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 2.817400e-01 ms
+  => Total DFS & SMT Execution Time: 1.883600e-01 ms
 --------------------------------------------------

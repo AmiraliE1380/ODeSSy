@@ -815,43 +815,43 @@ define dso_local i32 @inflate(ptr noundef %0, i32 noundef %1) local_unnamed_addr
   %3 = alloca [4 x i8], align 4
   call void @llvm.lifetime.start.p0(ptr nonnull %3) #12
   %4 = icmp eq ptr %0, null
-  br i1 %4, label %2669, label %5
+  br i1 %4, label %2654, label %5
 
 5:                                                ; preds = %2
   %6 = getelementptr inbounds nuw i8, ptr %0, i64 64
   %7 = load ptr, ptr %6, align 8, !tbaa !8
   %8 = icmp eq ptr %7, null
-  br i1 %8, label %2669, label %9
+  br i1 %8, label %2654, label %9
 
 9:                                                ; preds = %5
   %10 = getelementptr inbounds nuw i8, ptr %0, i64 72
   %11 = load ptr, ptr %10, align 8, !tbaa !14
   %12 = icmp eq ptr %11, null
-  br i1 %12, label %2669, label %13
+  br i1 %12, label %2654, label %13
 
 13:                                               ; preds = %9
   %14 = getelementptr inbounds nuw i8, ptr %0, i64 56
   %15 = load ptr, ptr %14, align 8, !tbaa !15
   %16 = icmp eq ptr %15, null
-  br i1 %16, label %2669, label %17
+  br i1 %16, label %2654, label %17
 
 17:                                               ; preds = %13
   %18 = load ptr, ptr %15, align 8, !tbaa !16
   %19 = icmp eq ptr %18, %0
-  br i1 %19, label %20, label %2669
+  br i1 %19, label %20, label %2654
 
 20:                                               ; preds = %17
   %21 = getelementptr inbounds nuw i8, ptr %15, i64 8
   %22 = load i32, ptr %21, align 8, !tbaa !20
   %23 = add i32 %22, -16180
   %24 = icmp ult i32 %23, 32
-  br i1 %24, label %25, label %2669
+  br i1 %24, label %25, label %2654
 
 25:                                               ; preds = %20
   %26 = getelementptr inbounds nuw i8, ptr %0, i64 24
   %27 = load ptr, ptr %26, align 8, !tbaa !49
   %28 = icmp eq ptr %27, null
-  br i1 %28, label %2669, label %29
+  br i1 %28, label %2654, label %29
 
 29:                                               ; preds = %25
   %30 = load ptr, ptr %0, align 8, !tbaa !50
@@ -862,7 +862,7 @@ define dso_local i32 @inflate(ptr noundef %0, i32 noundef %1) local_unnamed_addr
   %33 = getelementptr inbounds nuw i8, ptr %0, i64 8
   %34 = load i32, ptr %33, align 8, !tbaa !51
   %35 = icmp eq i32 %34, 0
-  br i1 %35, label %36, label %2669
+  br i1 %35, label %36, label %2654
 
 36:                                               ; preds = %32, %29
   %37 = icmp eq i32 %22, 16191
@@ -923,80 +923,80 @@ define dso_local i32 @inflate(ptr noundef %0, i32 noundef %1) local_unnamed_addr
   %87 = getelementptr inbounds nuw i8, ptr %3, i64 1
   br label %88
 
-88:                                               ; preds = %2351, %39
-  %89 = phi i32 [ %40, %39 ], [ %2360, %2351 ]
-  %90 = phi ptr [ %30, %39 ], [ %2352, %2351 ]
-  %91 = phi ptr [ %27, %39 ], [ %2353, %2351 ]
-  %92 = phi i32 [ %44, %39 ], [ %2354, %2351 ]
-  %93 = phi i32 [ %42, %39 ], [ %2355, %2351 ]
-  %94 = phi i64 [ %46, %39 ], [ %2356, %2351 ]
-  %95 = phi i32 [ %48, %39 ], [ %2357, %2351 ]
-  %96 = phi i32 [ %42, %39 ], [ %2358, %2351 ]
-  %97 = phi i32 [ 0, %39 ], [ %2359, %2351 ]
+88:                                               ; preds = %2339, %39
+  %89 = phi i32 [ %40, %39 ], [ %2348, %2339 ]
+  %90 = phi ptr [ %30, %39 ], [ %2340, %2339 ]
+  %91 = phi ptr [ %27, %39 ], [ %2341, %2339 ]
+  %92 = phi i32 [ %44, %39 ], [ %2342, %2339 ]
+  %93 = phi i32 [ %42, %39 ], [ %2343, %2339 ]
+  %94 = phi i64 [ %46, %39 ], [ %2344, %2339 ]
+  %95 = phi i32 [ %48, %39 ], [ %2345, %2339 ]
+  %96 = phi i32 [ %42, %39 ], [ %2346, %2339 ]
+  %97 = phi i32 [ 0, %39 ], [ %2347, %2339 ]
   %98 = ptrtoaddr ptr %91 to i64
-  switch i32 %89, label %2669 [
+  switch i32 %89, label %2654 [
     i32 16180, label %120
     i32 16181, label %115
     i32 16182, label %281
     i32 16183, label %364
     i32 16184, label %423
     i32 16185, label %501
-    i32 16186, label %580
-    i32 16187, label %644
-    i32 16188, label %708
+    i32 16186, label %574
+    i32 16187, label %638
+    i32 16188, label %702
     i32 16189, label %110
-    i32 16190, label %840
-    i32 16191, label %850
-    i32 16192, label %855
-    i32 16193, label %906
-    i32 16194, label %989
-    i32 16195, label %994
+    i32 16190, label %834
+    i32 16191, label %844
+    i32 16192, label %849
+    i32 16193, label %900
+    i32 16194, label %983
+    i32 16195, label %988
     i32 16196, label %105
-    i32 16197, label %1079
-    i32 16198, label %1154
-    i32 16199, label %1469
-    i32 16200, label %1475
+    i32 16197, label %1070
+    i32 16198, label %1145
+    i32 16199, label %1460
+    i32 16200, label %1466
     i32 16201, label %101
-    i32 16202, label %1722
+    i32 16202, label %1713
     i32 16203, label %99
-    i32 16204, label %1948
-    i32 16205, label %2121
-    i32 16206, label %2128
+    i32 16204, label %1939
+    i32 16205, label %2109
+    i32 16206, label %2116
     i32 16207, label %103
-    i32 16208, label %2484
-    i32 16209, label %2485
-    i32 16210, label %2668
+    i32 16208, label %2472
+    i32 16209, label %2473
+    i32 16210, label %2653
   ]
 
 99:                                               ; preds = %88
   %100 = load i32, ptr %72, align 4, !tbaa !53
-  br label %1878
+  br label %1869
 
 101:                                              ; preds = %88
   %102 = load i32, ptr %72, align 4, !tbaa !53
-  br label %1651
+  br label %1642
 
 103:                                              ; preds = %88
   %104 = load i32, ptr %49, align 8, !tbaa !24
-  br label %2258
+  br label %2246
 
 105:                                              ; preds = %88
   %106 = icmp ult i32 %95, 14
-  br i1 %106, label %107, label %1058
+  br i1 %106, label %107, label %1049
 
 107:                                              ; preds = %105
   %108 = zext nneg i32 %95 to i64
   %109 = icmp eq i32 %92, 0
-  br i1 %109, label %2466, label %1026
+  br i1 %109, label %2454, label %1017
 
 110:                                              ; preds = %88
   %111 = icmp ult i32 %95, 32
-  br i1 %111, label %112, label %833
+  br i1 %111, label %112, label %827
 
 112:                                              ; preds = %110
   %113 = zext nneg i32 %95 to i64
   %114 = icmp eq i32 %92, 0
-  br i1 %114, label %2403, label %780
+  br i1 %114, label %2391, label %774
 
 115:                                              ; preds = %88
   %116 = icmp ult i32 %95, 16
@@ -1005,7 +1005,7 @@ define dso_local i32 @inflate(ptr noundef %0, i32 noundef %1) local_unnamed_addr
 117:                                              ; preds = %115
   %118 = zext nneg i32 %95 to i64
   %119 = icmp eq i32 %92, 0
-  br i1 %119, label %2397, label %218
+  br i1 %119, label %2385, label %218
 
 120:                                              ; preds = %88
   %121 = load i32, ptr %49, align 8, !tbaa !24
@@ -1019,11 +1019,11 @@ define dso_local i32 @inflate(ptr noundef %0, i32 noundef %1) local_unnamed_addr
 125:                                              ; preds = %123
   %126 = zext nneg i32 %95 to i64
   %127 = icmp eq i32 %92, 0
-  br i1 %127, label %2367, label %129
+  br i1 %127, label %2355, label %129
 
 128:                                              ; preds = %120
   store i32 16192, ptr %21, align 8, !tbaa !20
-  br label %2351
+  br label %2339
 
 129:                                              ; preds = %125
   %130 = load i8, ptr %90, align 1, !tbaa !44
@@ -1047,7 +1047,7 @@ define dso_local i32 @inflate(ptr noundef %0, i32 noundef %1) local_unnamed_addr
 
 142:                                              ; preds = %136
   %143 = icmp eq i32 %139, 0
-  br i1 %143, label %2367, label %144
+  br i1 %143, label %2355, label %144
 
 144:                                              ; preds = %142
   %145 = load i8, ptr %138, align 1, !tbaa !44
@@ -1100,7 +1100,7 @@ define dso_local i32 @inflate(ptr noundef %0, i32 noundef %1) local_unnamed_addr
   %176 = call i64 @crc32(i64 noundef %175, ptr noundef nonnull %3, i32 noundef 2) #12
   store i64 %176, ptr %53, align 8, !tbaa !54
   store i32 16181, ptr %21, align 8, !tbaa !20
-  br label %2351
+  br label %2339
 
 177:                                              ; preds = %161
   %178 = load ptr, ptr %84, align 8, !tbaa !30
@@ -1129,7 +1129,7 @@ define dso_local i32 @inflate(ptr noundef %0, i32 noundef %1) local_unnamed_addr
 192:                                              ; preds = %185, %182
   store ptr @.str.1, ptr %55, align 8, !tbaa !45
   store i32 16209, ptr %21, align 8, !tbaa !20
-  br label %2351
+  br label %2339
 
 193:                                              ; preds = %185
   %194 = and i64 %164, 15
@@ -1139,7 +1139,7 @@ define dso_local i32 @inflate(ptr noundef %0, i32 noundef %1) local_unnamed_addr
 196:                                              ; preds = %193
   store ptr @.str.2, ptr %55, align 8, !tbaa !45
   store i32 16209, ptr %21, align 8, !tbaa !20
-  br label %2351
+  br label %2339
 
 197:                                              ; preds = %193
   %198 = lshr i64 %164, 4
@@ -1165,7 +1165,7 @@ define dso_local i32 @inflate(ptr noundef %0, i32 noundef %1) local_unnamed_addr
 211:                                              ; preds = %206
   store ptr @.str.3, ptr %55, align 8, !tbaa !45
   store i32 16209, ptr %21, align 8, !tbaa !20
-  br label %2351
+  br label %2339
 
 212:                                              ; preds = %206
   %213 = shl nuw nsw i32 256, %201
@@ -1178,7 +1178,7 @@ define dso_local i32 @inflate(ptr noundef %0, i32 noundef %1) local_unnamed_addr
   %216 = icmp eq i64 %215, 0
   %217 = select i1 %216, i32 16191, i32 16189
   store i32 %217, ptr %21, align 8, !tbaa !20
-  br label %2351
+  br label %2339
 
 218:                                              ; preds = %117
   %219 = load i8, ptr %90, align 1, !tbaa !44
@@ -1202,7 +1202,7 @@ define dso_local i32 @inflate(ptr noundef %0, i32 noundef %1) local_unnamed_addr
 
 231:                                              ; preds = %225
   %232 = icmp eq i32 %228, 0
-  br i1 %232, label %2397, label %233
+  br i1 %232, label %2385, label %233
 
 233:                                              ; preds = %231
   %234 = load i8, ptr %227, align 1, !tbaa !44
@@ -1241,7 +1241,7 @@ define dso_local i32 @inflate(ptr noundef %0, i32 noundef %1) local_unnamed_addr
 258:                                              ; preds = %250
   store ptr @.str.2, ptr %55, align 8, !tbaa !45
   store i32 16209, ptr %21, align 8, !tbaa !20
-  br label %2351
+  br label %2339
 
 259:                                              ; preds = %250
   %260 = and i32 %255, 57344
@@ -1251,7 +1251,7 @@ define dso_local i32 @inflate(ptr noundef %0, i32 noundef %1) local_unnamed_addr
 262:                                              ; preds = %259
   store ptr @.str.4, ptr %55, align 8, !tbaa !45
   store i32 16209, ptr %21, align 8, !tbaa !20
-  br label %2351
+  br label %2339
 
 263:                                              ; preds = %259
   %264 = load ptr, ptr %84, align 8, !tbaa !30
@@ -1298,7 +1298,7 @@ define dso_local i32 @inflate(ptr noundef %0, i32 noundef %1) local_unnamed_addr
   %287 = phi ptr [ %251, %280 ], [ %90, %281 ]
   %288 = zext nneg i32 %284 to i64
   %289 = icmp eq i32 %286, 0
-  br i1 %289, label %2391, label %290
+  br i1 %289, label %2379, label %290
 
 290:                                              ; preds = %283
   %291 = load i8, ptr %287, align 1, !tbaa !44
@@ -1322,7 +1322,7 @@ define dso_local i32 @inflate(ptr noundef %0, i32 noundef %1) local_unnamed_addr
 
 303:                                              ; preds = %297
   %304 = icmp eq i32 %300, 0
-  br i1 %304, label %2391, label %305
+  br i1 %304, label %2379, label %305
 
 305:                                              ; preds = %303
   %306 = load i8, ptr %299, align 1, !tbaa !44
@@ -1342,7 +1342,7 @@ define dso_local i32 @inflate(ptr noundef %0, i32 noundef %1) local_unnamed_addr
 
 317:                                              ; preds = %311
   %318 = icmp eq i32 %314, 0
-  br i1 %318, label %2391, label %319
+  br i1 %318, label %2379, label %319
 
 319:                                              ; preds = %317
   %320 = load i8, ptr %313, align 1, !tbaa !44
@@ -1362,7 +1362,7 @@ define dso_local i32 @inflate(ptr noundef %0, i32 noundef %1) local_unnamed_addr
 
 331:                                              ; preds = %325
   %332 = icmp eq i32 %328, 0
-  br i1 %332, label %2391, label %333
+  br i1 %332, label %2379, label %333
 
 333:                                              ; preds = %331
   %334 = load i8, ptr %327, align 1, !tbaa !44
@@ -1426,7 +1426,7 @@ define dso_local i32 @inflate(ptr noundef %0, i32 noundef %1) local_unnamed_addr
   %370 = phi ptr [ %344, %363 ], [ %90, %364 ]
   %371 = zext nneg i32 %367 to i64
   %372 = icmp eq i32 %369, 0
-  br i1 %372, label %2385, label %373
+  br i1 %372, label %2373, label %373
 
 373:                                              ; preds = %366
   %374 = load i8, ptr %370, align 1, !tbaa !44
@@ -1450,7 +1450,7 @@ define dso_local i32 @inflate(ptr noundef %0, i32 noundef %1) local_unnamed_addr
 
 386:                                              ; preds = %380
   %387 = icmp eq i32 %383, 0
-  br i1 %387, label %2385, label %388
+  br i1 %387, label %2373, label %388
 
 388:                                              ; preds = %386
   %389 = load i8, ptr %382, align 1, !tbaa !44
@@ -1530,7 +1530,7 @@ define dso_local i32 @inflate(ptr noundef %0, i32 noundef %1) local_unnamed_addr
   %438 = phi i32 [ %424, %431 ], [ %428, %427 ]
   %439 = zext nneg i32 %437 to i64
   %440 = icmp eq i32 %435, 0
-  br i1 %440, label %2379, label %441
+  br i1 %440, label %2367, label %441
 
 441:                                              ; preds = %433
   %442 = load i8, ptr %434, align 1, !tbaa !44
@@ -1554,7 +1554,7 @@ define dso_local i32 @inflate(ptr noundef %0, i32 noundef %1) local_unnamed_addr
 
 454:                                              ; preds = %448
   %455 = icmp eq i32 %451, 0
-  br i1 %455, label %2379, label %456
+  br i1 %455, label %2367, label %456
 
 456:                                              ; preds = %454
   %457 = load i8, ptr %450, align 1, !tbaa !44
@@ -1635,24 +1635,24 @@ define dso_local i32 @inflate(ptr noundef %0, i32 noundef %1) local_unnamed_addr
   %506 = load i32, ptr %52, align 8, !tbaa !28
   %507 = and i32 %506, 1024
   %508 = icmp eq i32 %507, 0
-  br i1 %508, label %577, label %509
+  br i1 %508, label %571, label %509
 
 509:                                              ; preds = %501
   %510 = load i32, ptr %56, align 4, !tbaa !61
   %511 = call i32 @llvm.umin.i32(i32 %510, i32 %503)
   %512 = icmp eq i32 %511, 0
-  br i1 %512, label %572, label %513
+  br i1 %512, label %566, label %513
 
 513:                                              ; preds = %509
   %514 = load ptr, ptr %84, align 8, !tbaa !30
   %515 = icmp eq ptr %514, null
-  br i1 %515, label %547, label %516
+  br i1 %515, label %544, label %516
 
 516:                                              ; preds = %513
   %517 = getelementptr inbounds nuw i8, ptr %514, i64 24
   %518 = load ptr, ptr %517, align 8, !tbaa !63
   %519 = icmp eq ptr %518, null
-  br i1 %519, label %547, label %520
+  br i1 %519, label %544, label %520
 
 520:                                              ; preds = %516
   %521 = getelementptr inbounds nuw i8, ptr %514, i64 32
@@ -1670,3338 +1670,3298 @@ define dso_local i32 @inflate(ptr noundef %0, i32 noundef %1) local_unnamed_addr
   %528 = getelementptr inbounds nuw i8, ptr %514, i64 36
   %529 = load i32, ptr %528, align 4, !tbaa !64
   %530 = icmp ult i32 %524, %529
-  br i1 %530, label %531, label %547
+  br i1 %530, label %531, label %544
 
 531:                                              ; preds = %527
   %532 = zext i32 %524 to i64
   %533 = getelementptr inbounds nuw i8, ptr %518, i64 %532
   %534 = call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %524, i32 %511), !nosanitize !47
-  %535 = extractvalue { i32, i1 } %534, 1, !nosanitize !47
-  br i1 %535, label %536, label %537, !prof !48, !nosanitize !47
-
-536:                                              ; preds = %531
-  call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
-  unreachable, !nosanitize !47
+  %535 = extractvalue { i32, i1 } %534, 0, !nosanitize !47
+  %536 = icmp ugt i32 %535, %529
+  br i1 %536, label %537, label %540
 
 537:                                              ; preds = %531
-  %538 = extractvalue { i32, i1 } %534, 0, !nosanitize !47
-  %539 = icmp ugt i32 %538, %529
-  br i1 %539, label %540, label %543
+  %538 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %529, i32 %524), !nosanitize !47
+  %539 = extractvalue { i32, i1 } %538, 0, !nosanitize !47
+  br label %540
 
-540:                                              ; preds = %537
-  %541 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %529, i32 %524), !nosanitize !47
-  %542 = extractvalue { i32, i1 } %541, 0, !nosanitize !47
-  br label %543
+540:                                              ; preds = %537, %531
+  %541 = phi i32 [ %539, %537 ], [ %511, %531 ]
+  %542 = zext i32 %541 to i64
+  call void @llvm.memcpy.p0.p0.i64(ptr nonnull align 1 %533, ptr align 1 %502, i64 %542, i1 false)
+  %543 = load i32, ptr %52, align 8, !tbaa !28
+  br label %544
 
-543:                                              ; preds = %540, %537
-  %544 = phi i32 [ %542, %540 ], [ %511, %537 ]
-  %545 = zext i32 %544 to i64
-  call void @llvm.memcpy.p0.p0.i64(ptr nonnull align 1 %533, ptr align 1 %502, i64 %545, i1 false)
-  %546 = load i32, ptr %52, align 8, !tbaa !28
-  br label %547
+544:                                              ; preds = %540, %527, %516, %513
+  %545 = phi i32 [ %543, %540 ], [ %506, %527 ], [ %506, %516 ], [ %506, %513 ]
+  %546 = and i32 %545, 512
+  %547 = icmp eq i32 %546, 0
+  br i1 %547, label %555, label %548
 
-547:                                              ; preds = %543, %527, %516, %513
-  %548 = phi i32 [ %546, %543 ], [ %506, %527 ], [ %506, %516 ], [ %506, %513 ]
-  %549 = and i32 %548, 512
-  %550 = icmp eq i32 %549, 0
-  br i1 %550, label %558, label %551
+548:                                              ; preds = %544
+  %549 = load i32, ptr %49, align 8, !tbaa !24
+  %550 = and i32 %549, 4
+  %551 = icmp eq i32 %550, 0
+  br i1 %551, label %555, label %552
 
-551:                                              ; preds = %547
-  %552 = load i32, ptr %49, align 8, !tbaa !24
-  %553 = and i32 %552, 4
-  %554 = icmp eq i32 %553, 0
-  br i1 %554, label %558, label %555
+552:                                              ; preds = %548
+  %553 = load i64, ptr %53, align 8, !tbaa !54
+  %554 = call i64 @crc32(i64 noundef %553, ptr noundef %502, i32 noundef %511) #12
+  store i64 %554, ptr %53, align 8, !tbaa !54
+  br label %555
 
-555:                                              ; preds = %551
-  %556 = load i64, ptr %53, align 8, !tbaa !54
-  %557 = call i64 @crc32(i64 noundef %556, ptr noundef %502, i32 noundef %511) #12
-  store i64 %557, ptr %53, align 8, !tbaa !54
-  br label %558
+555:                                              ; preds = %552, %548, %544
+  %556 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %503, i32 %511), !nosanitize !47
+  %557 = extractvalue { i32, i1 } %556, 0, !nosanitize !47
+  %558 = load i32, ptr %56, align 4, !tbaa !61
+  %559 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %558, i32 %511), !nosanitize !47
+  %560 = extractvalue { i32, i1 } %559, 1, !nosanitize !47
+  br i1 %560, label %561, label %562, !prof !48, !nosanitize !47
 
-558:                                              ; preds = %555, %551, %547
-  %559 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %503, i32 %511), !nosanitize !47
-  %560 = extractvalue { i32, i1 } %559, 0, !nosanitize !47
-  %561 = extractvalue { i32, i1 } %559, 1, !nosanitize !47
-  br i1 %561, label %562, label %563, !prof !48, !nosanitize !47
-
-562:                                              ; preds = %558
+561:                                              ; preds = %555
   call void @llvm.ubsantrap(i8 21) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-563:                                              ; preds = %558
-  %564 = load i32, ptr %56, align 4, !tbaa !61
-  %565 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %564, i32 %511), !nosanitize !47
-  %566 = extractvalue { i32, i1 } %565, 1, !nosanitize !47
-  br i1 %566, label %567, label %568, !prof !48, !nosanitize !47
+562:                                              ; preds = %555
+  %563 = extractvalue { i32, i1 } %559, 0, !nosanitize !47
+  %564 = zext i32 %511 to i64
+  %565 = getelementptr inbounds nuw i8, ptr %502, i64 %564
+  store i32 %563, ptr %56, align 4, !tbaa !61
+  br label %566
 
-567:                                              ; preds = %563
-  call void @llvm.ubsantrap(i8 21) #13, !nosanitize !47
-  unreachable, !nosanitize !47
+566:                                              ; preds = %562, %509
+  %567 = phi i32 [ %563, %562 ], [ %510, %509 ]
+  %568 = phi ptr [ %565, %562 ], [ %502, %509 ]
+  %569 = phi i32 [ %557, %562 ], [ %503, %509 ]
+  %570 = icmp eq i32 %567, 0
+  br i1 %570, label %571, label %2473
 
-568:                                              ; preds = %563
-  %569 = extractvalue { i32, i1 } %565, 0, !nosanitize !47
-  %570 = zext i32 %511 to i64
-  %571 = getelementptr inbounds nuw i8, ptr %502, i64 %570
-  store i32 %569, ptr %56, align 4, !tbaa !61
-  br label %572
-
-572:                                              ; preds = %568, %509
-  %573 = phi i32 [ %569, %568 ], [ %510, %509 ]
-  %574 = phi ptr [ %571, %568 ], [ %502, %509 ]
-  %575 = phi i32 [ %560, %568 ], [ %503, %509 ]
-  %576 = icmp eq i32 %573, 0
-  br i1 %576, label %577, label %2485
-
-577:                                              ; preds = %572, %501
-  %578 = phi ptr [ %574, %572 ], [ %502, %501 ]
-  %579 = phi i32 [ %575, %572 ], [ %503, %501 ]
+571:                                              ; preds = %566, %501
+  %572 = phi ptr [ %568, %566 ], [ %502, %501 ]
+  %573 = phi i32 [ %569, %566 ], [ %503, %501 ]
   store i32 0, ptr %56, align 4, !tbaa !61
   store i32 16186, ptr %21, align 8, !tbaa !20
-  br label %580
+  br label %574
 
-580:                                              ; preds = %577, %88
-  %581 = phi ptr [ %578, %577 ], [ %90, %88 ]
-  %582 = phi i32 [ %579, %577 ], [ %92, %88 ]
-  %583 = phi i64 [ %504, %577 ], [ %94, %88 ]
-  %584 = phi i32 [ %505, %577 ], [ %95, %88 ]
-  %585 = load i32, ptr %52, align 8, !tbaa !28
-  %586 = and i32 %585, 2048
-  %587 = icmp eq i32 %586, 0
-  br i1 %587, label %636, label %588
+574:                                              ; preds = %571, %88
+  %575 = phi ptr [ %572, %571 ], [ %90, %88 ]
+  %576 = phi i32 [ %573, %571 ], [ %92, %88 ]
+  %577 = phi i64 [ %504, %571 ], [ %94, %88 ]
+  %578 = phi i32 [ %505, %571 ], [ %95, %88 ]
+  %579 = load i32, ptr %52, align 8, !tbaa !28
+  %580 = and i32 %579, 2048
+  %581 = icmp eq i32 %580, 0
+  br i1 %581, label %630, label %582
 
-588:                                              ; preds = %580
-  %589 = icmp eq i32 %582, 0
-  br i1 %589, label %2485, label %590
+582:                                              ; preds = %574
+  %583 = icmp eq i32 %576, 0
+  br i1 %583, label %2473, label %584
 
-590:                                              ; preds = %588
-  %591 = zext i32 %582 to i64
-  br label %592
+584:                                              ; preds = %582
+  %585 = zext i32 %576 to i64
+  br label %586
 
-592:                                              ; preds = %612, %590
-  %593 = phi i64 [ 0, %590 ], [ %594, %612 ]
-  %594 = add nuw nsw i64 %593, 1
-  %595 = getelementptr inbounds nuw i8, ptr %581, i64 %593
-  %596 = load i8, ptr %595, align 1, !tbaa !44
-  %597 = load ptr, ptr %84, align 8, !tbaa !30
-  %598 = icmp eq ptr %597, null
-  br i1 %598, label %612, label %599
+586:                                              ; preds = %606, %584
+  %587 = phi i64 [ 0, %584 ], [ %588, %606 ]
+  %588 = add nuw nsw i64 %587, 1
+  %589 = getelementptr inbounds nuw i8, ptr %575, i64 %587
+  %590 = load i8, ptr %589, align 1, !tbaa !44
+  %591 = load ptr, ptr %84, align 8, !tbaa !30
+  %592 = icmp eq ptr %591, null
+  br i1 %592, label %606, label %593
 
-599:                                              ; preds = %592
-  %600 = getelementptr inbounds nuw i8, ptr %597, i64 40
-  %601 = load ptr, ptr %600, align 8, !tbaa !65
-  %602 = icmp eq ptr %601, null
-  br i1 %602, label %612, label %603
+593:                                              ; preds = %586
+  %594 = getelementptr inbounds nuw i8, ptr %591, i64 40
+  %595 = load ptr, ptr %594, align 8, !tbaa !65
+  %596 = icmp eq ptr %595, null
+  br i1 %596, label %606, label %597
 
-603:                                              ; preds = %599
-  %604 = load i32, ptr %56, align 4, !tbaa !61
-  %605 = getelementptr inbounds nuw i8, ptr %597, i64 48
-  %606 = load i32, ptr %605, align 8, !tbaa !66
-  %607 = icmp ult i32 %604, %606
-  br i1 %607, label %608, label %612
+597:                                              ; preds = %593
+  %598 = load i32, ptr %56, align 4, !tbaa !61
+  %599 = getelementptr inbounds nuw i8, ptr %591, i64 48
+  %600 = load i32, ptr %599, align 8, !tbaa !66
+  %601 = icmp ult i32 %598, %600
+  br i1 %601, label %602, label %606
 
-608:                                              ; preds = %603
-  %609 = add nuw i32 %604, 1
-  store i32 %609, ptr %56, align 4, !tbaa !61
-  %610 = zext i32 %604 to i64
-  %611 = getelementptr inbounds nuw i8, ptr %601, i64 %610
-  store i8 %596, ptr %611, align 1, !tbaa !44
-  br label %612
+602:                                              ; preds = %597
+  %603 = add nuw i32 %598, 1
+  store i32 %603, ptr %56, align 4, !tbaa !61
+  %604 = zext i32 %598 to i64
+  %605 = getelementptr inbounds nuw i8, ptr %595, i64 %604
+  store i8 %590, ptr %605, align 1, !tbaa !44
+  br label %606
 
-612:                                              ; preds = %608, %603, %599, %592
-  %613 = icmp ne i8 %596, 0
-  %614 = icmp samesign ult i64 %594, %591
-  %615 = select i1 %613, i1 %614, i1 false
-  br i1 %615, label %592, label %616, !llvm.loop !67
+606:                                              ; preds = %602, %597, %593, %586
+  %607 = icmp ne i8 %590, 0
+  %608 = icmp samesign ult i64 %588, %585
+  %609 = select i1 %607, i1 %608, i1 false
+  br i1 %609, label %586, label %610, !llvm.loop !67
 
-616:                                              ; preds = %612
-  %617 = trunc nuw i64 %594 to i32
-  %618 = load i32, ptr %52, align 8, !tbaa !28
-  %619 = and i32 %618, 512
-  %620 = icmp eq i32 %619, 0
-  br i1 %620, label %628, label %621
+610:                                              ; preds = %606
+  %611 = trunc nuw i64 %588 to i32
+  %612 = load i32, ptr %52, align 8, !tbaa !28
+  %613 = and i32 %612, 512
+  %614 = icmp eq i32 %613, 0
+  br i1 %614, label %622, label %615
 
-621:                                              ; preds = %616
-  %622 = load i32, ptr %49, align 8, !tbaa !24
-  %623 = and i32 %622, 4
-  %624 = icmp eq i32 %623, 0
-  br i1 %624, label %628, label %625
+615:                                              ; preds = %610
+  %616 = load i32, ptr %49, align 8, !tbaa !24
+  %617 = and i32 %616, 4
+  %618 = icmp eq i32 %617, 0
+  br i1 %618, label %622, label %619
 
-625:                                              ; preds = %621
-  %626 = load i64, ptr %53, align 8, !tbaa !54
-  %627 = call i64 @crc32(i64 noundef %626, ptr noundef nonnull %581, i32 noundef %617) #12
-  store i64 %627, ptr %53, align 8, !tbaa !54
-  br label %628
+619:                                              ; preds = %615
+  %620 = load i64, ptr %53, align 8, !tbaa !54
+  %621 = call i64 @crc32(i64 noundef %620, ptr noundef nonnull %575, i32 noundef %611) #12
+  store i64 %621, ptr %53, align 8, !tbaa !54
+  br label %622
 
-628:                                              ; preds = %625, %621, %616
-  %629 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %582, i32 %617), !nosanitize !47
-  %630 = extractvalue { i32, i1 } %629, 1, !nosanitize !47
-  br i1 %630, label %631, label %632, !prof !48, !nosanitize !47
+622:                                              ; preds = %619, %615, %610
+  %623 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %576, i32 %611), !nosanitize !47
+  %624 = extractvalue { i32, i1 } %623, 1, !nosanitize !47
+  br i1 %624, label %625, label %626, !prof !48, !nosanitize !47
 
-631:                                              ; preds = %628
+625:                                              ; preds = %622
   call void @llvm.ubsantrap(i8 21) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-632:                                              ; preds = %628
-  %633 = extractvalue { i32, i1 } %629, 0, !nosanitize !47
-  %634 = and i64 %594, 4294967295
-  %635 = getelementptr inbounds nuw i8, ptr %581, i64 %634
-  br i1 %613, label %2485, label %641
+626:                                              ; preds = %622
+  %627 = extractvalue { i32, i1 } %623, 0, !nosanitize !47
+  %628 = and i64 %588, 4294967295
+  %629 = getelementptr inbounds nuw i8, ptr %575, i64 %628
+  br i1 %607, label %2473, label %635
 
-636:                                              ; preds = %580
-  %637 = load ptr, ptr %84, align 8, !tbaa !30
-  %638 = icmp eq ptr %637, null
-  br i1 %638, label %641, label %639
+630:                                              ; preds = %574
+  %631 = load ptr, ptr %84, align 8, !tbaa !30
+  %632 = icmp eq ptr %631, null
+  br i1 %632, label %635, label %633
 
-639:                                              ; preds = %636
-  %640 = getelementptr inbounds nuw i8, ptr %637, i64 40
-  store ptr null, ptr %640, align 8, !tbaa !65
-  br label %641
+633:                                              ; preds = %630
+  %634 = getelementptr inbounds nuw i8, ptr %631, i64 40
+  store ptr null, ptr %634, align 8, !tbaa !65
+  br label %635
 
-641:                                              ; preds = %639, %636, %632
-  %642 = phi ptr [ %635, %632 ], [ %581, %639 ], [ %581, %636 ]
-  %643 = phi i32 [ %633, %632 ], [ %582, %639 ], [ %582, %636 ]
+635:                                              ; preds = %633, %630, %626
+  %636 = phi ptr [ %629, %626 ], [ %575, %633 ], [ %575, %630 ]
+  %637 = phi i32 [ %627, %626 ], [ %576, %633 ], [ %576, %630 ]
   store i32 0, ptr %56, align 4, !tbaa !61
   store i32 16187, ptr %21, align 8, !tbaa !20
-  br label %644
+  br label %638
 
-644:                                              ; preds = %641, %88
-  %645 = phi ptr [ %642, %641 ], [ %90, %88 ]
-  %646 = phi i32 [ %643, %641 ], [ %92, %88 ]
-  %647 = phi i64 [ %583, %641 ], [ %94, %88 ]
-  %648 = phi i32 [ %584, %641 ], [ %95, %88 ]
-  %649 = load i32, ptr %52, align 8, !tbaa !28
-  %650 = and i32 %649, 4096
-  %651 = icmp eq i32 %650, 0
-  br i1 %651, label %700, label %652
+638:                                              ; preds = %635, %88
+  %639 = phi ptr [ %636, %635 ], [ %90, %88 ]
+  %640 = phi i32 [ %637, %635 ], [ %92, %88 ]
+  %641 = phi i64 [ %577, %635 ], [ %94, %88 ]
+  %642 = phi i32 [ %578, %635 ], [ %95, %88 ]
+  %643 = load i32, ptr %52, align 8, !tbaa !28
+  %644 = and i32 %643, 4096
+  %645 = icmp eq i32 %644, 0
+  br i1 %645, label %694, label %646
 
-652:                                              ; preds = %644
-  %653 = icmp eq i32 %646, 0
-  br i1 %653, label %2485, label %654
+646:                                              ; preds = %638
+  %647 = icmp eq i32 %640, 0
+  br i1 %647, label %2473, label %648
 
-654:                                              ; preds = %652
-  %655 = zext i32 %646 to i64
-  br label %656
+648:                                              ; preds = %646
+  %649 = zext i32 %640 to i64
+  br label %650
 
-656:                                              ; preds = %676, %654
-  %657 = phi i64 [ 0, %654 ], [ %658, %676 ]
-  %658 = add nuw nsw i64 %657, 1
-  %659 = getelementptr inbounds nuw i8, ptr %645, i64 %657
-  %660 = load i8, ptr %659, align 1, !tbaa !44
-  %661 = load ptr, ptr %84, align 8, !tbaa !30
-  %662 = icmp eq ptr %661, null
-  br i1 %662, label %676, label %663
+650:                                              ; preds = %670, %648
+  %651 = phi i64 [ 0, %648 ], [ %652, %670 ]
+  %652 = add nuw nsw i64 %651, 1
+  %653 = getelementptr inbounds nuw i8, ptr %639, i64 %651
+  %654 = load i8, ptr %653, align 1, !tbaa !44
+  %655 = load ptr, ptr %84, align 8, !tbaa !30
+  %656 = icmp eq ptr %655, null
+  br i1 %656, label %670, label %657
 
-663:                                              ; preds = %656
-  %664 = getelementptr inbounds nuw i8, ptr %661, i64 56
-  %665 = load ptr, ptr %664, align 8, !tbaa !69
-  %666 = icmp eq ptr %665, null
-  br i1 %666, label %676, label %667
+657:                                              ; preds = %650
+  %658 = getelementptr inbounds nuw i8, ptr %655, i64 56
+  %659 = load ptr, ptr %658, align 8, !tbaa !69
+  %660 = icmp eq ptr %659, null
+  br i1 %660, label %670, label %661
 
-667:                                              ; preds = %663
-  %668 = load i32, ptr %56, align 4, !tbaa !61
-  %669 = getelementptr inbounds nuw i8, ptr %661, i64 64
-  %670 = load i32, ptr %669, align 8, !tbaa !70
-  %671 = icmp ult i32 %668, %670
-  br i1 %671, label %672, label %676
+661:                                              ; preds = %657
+  %662 = load i32, ptr %56, align 4, !tbaa !61
+  %663 = getelementptr inbounds nuw i8, ptr %655, i64 64
+  %664 = load i32, ptr %663, align 8, !tbaa !70
+  %665 = icmp ult i32 %662, %664
+  br i1 %665, label %666, label %670
 
-672:                                              ; preds = %667
-  %673 = add nuw i32 %668, 1
-  store i32 %673, ptr %56, align 4, !tbaa !61
-  %674 = zext i32 %668 to i64
-  %675 = getelementptr inbounds nuw i8, ptr %665, i64 %674
-  store i8 %660, ptr %675, align 1, !tbaa !44
-  br label %676
+666:                                              ; preds = %661
+  %667 = add nuw i32 %662, 1
+  store i32 %667, ptr %56, align 4, !tbaa !61
+  %668 = zext i32 %662 to i64
+  %669 = getelementptr inbounds nuw i8, ptr %659, i64 %668
+  store i8 %654, ptr %669, align 1, !tbaa !44
+  br label %670
 
-676:                                              ; preds = %672, %667, %663, %656
-  %677 = icmp ne i8 %660, 0
-  %678 = icmp samesign ult i64 %658, %655
-  %679 = select i1 %677, i1 %678, i1 false
-  br i1 %679, label %656, label %680, !llvm.loop !71
+670:                                              ; preds = %666, %661, %657, %650
+  %671 = icmp ne i8 %654, 0
+  %672 = icmp samesign ult i64 %652, %649
+  %673 = select i1 %671, i1 %672, i1 false
+  br i1 %673, label %650, label %674, !llvm.loop !71
 
-680:                                              ; preds = %676
-  %681 = trunc nuw i64 %658 to i32
-  %682 = load i32, ptr %52, align 8, !tbaa !28
-  %683 = and i32 %682, 512
-  %684 = icmp eq i32 %683, 0
-  br i1 %684, label %692, label %685
+674:                                              ; preds = %670
+  %675 = trunc nuw i64 %652 to i32
+  %676 = load i32, ptr %52, align 8, !tbaa !28
+  %677 = and i32 %676, 512
+  %678 = icmp eq i32 %677, 0
+  br i1 %678, label %686, label %679
 
-685:                                              ; preds = %680
-  %686 = load i32, ptr %49, align 8, !tbaa !24
-  %687 = and i32 %686, 4
-  %688 = icmp eq i32 %687, 0
-  br i1 %688, label %692, label %689
+679:                                              ; preds = %674
+  %680 = load i32, ptr %49, align 8, !tbaa !24
+  %681 = and i32 %680, 4
+  %682 = icmp eq i32 %681, 0
+  br i1 %682, label %686, label %683
 
-689:                                              ; preds = %685
-  %690 = load i64, ptr %53, align 8, !tbaa !54
-  %691 = call i64 @crc32(i64 noundef %690, ptr noundef nonnull %645, i32 noundef %681) #12
-  store i64 %691, ptr %53, align 8, !tbaa !54
-  br label %692
+683:                                              ; preds = %679
+  %684 = load i64, ptr %53, align 8, !tbaa !54
+  %685 = call i64 @crc32(i64 noundef %684, ptr noundef nonnull %639, i32 noundef %675) #12
+  store i64 %685, ptr %53, align 8, !tbaa !54
+  br label %686
 
-692:                                              ; preds = %689, %685, %680
-  %693 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %646, i32 %681), !nosanitize !47
-  %694 = extractvalue { i32, i1 } %693, 1, !nosanitize !47
-  br i1 %694, label %695, label %696, !prof !48, !nosanitize !47
+686:                                              ; preds = %683, %679, %674
+  %687 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %640, i32 %675), !nosanitize !47
+  %688 = extractvalue { i32, i1 } %687, 1, !nosanitize !47
+  br i1 %688, label %689, label %690, !prof !48, !nosanitize !47
 
-695:                                              ; preds = %692
+689:                                              ; preds = %686
   call void @llvm.ubsantrap(i8 21) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-696:                                              ; preds = %692
-  %697 = extractvalue { i32, i1 } %693, 0, !nosanitize !47
-  %698 = and i64 %658, 4294967295
-  %699 = getelementptr inbounds nuw i8, ptr %645, i64 %698
-  br i1 %677, label %2485, label %705
+690:                                              ; preds = %686
+  %691 = extractvalue { i32, i1 } %687, 0, !nosanitize !47
+  %692 = and i64 %652, 4294967295
+  %693 = getelementptr inbounds nuw i8, ptr %639, i64 %692
+  br i1 %671, label %2473, label %699
 
-700:                                              ; preds = %644
-  %701 = load ptr, ptr %84, align 8, !tbaa !30
-  %702 = icmp eq ptr %701, null
-  br i1 %702, label %705, label %703
+694:                                              ; preds = %638
+  %695 = load ptr, ptr %84, align 8, !tbaa !30
+  %696 = icmp eq ptr %695, null
+  br i1 %696, label %699, label %697
 
-703:                                              ; preds = %700
-  %704 = getelementptr inbounds nuw i8, ptr %701, i64 56
-  store ptr null, ptr %704, align 8, !tbaa !69
-  br label %705
+697:                                              ; preds = %694
+  %698 = getelementptr inbounds nuw i8, ptr %695, i64 56
+  store ptr null, ptr %698, align 8, !tbaa !69
+  br label %699
 
-705:                                              ; preds = %703, %700, %696
-  %706 = phi ptr [ %699, %696 ], [ %645, %703 ], [ %645, %700 ]
-  %707 = phi i32 [ %697, %696 ], [ %646, %703 ], [ %646, %700 ]
+699:                                              ; preds = %697, %694, %690
+  %700 = phi ptr [ %693, %690 ], [ %639, %697 ], [ %639, %694 ]
+  %701 = phi i32 [ %691, %690 ], [ %640, %697 ], [ %640, %694 ]
   store i32 16188, ptr %21, align 8, !tbaa !20
-  br label %708
+  br label %702
 
-708:                                              ; preds = %705, %88
-  %709 = phi ptr [ %706, %705 ], [ %90, %88 ]
-  %710 = phi i32 [ %707, %705 ], [ %92, %88 ]
-  %711 = phi i64 [ %647, %705 ], [ %94, %88 ]
-  %712 = phi i32 [ %648, %705 ], [ %95, %88 ]
-  %713 = load i32, ptr %52, align 8, !tbaa !28
-  %714 = and i32 %713, 512
-  %715 = icmp eq i32 %714, 0
-  br i1 %715, label %766, label %716
+702:                                              ; preds = %699, %88
+  %703 = phi ptr [ %700, %699 ], [ %90, %88 ]
+  %704 = phi i32 [ %701, %699 ], [ %92, %88 ]
+  %705 = phi i64 [ %641, %699 ], [ %94, %88 ]
+  %706 = phi i32 [ %642, %699 ], [ %95, %88 ]
+  %707 = load i32, ptr %52, align 8, !tbaa !28
+  %708 = and i32 %707, 512
+  %709 = icmp eq i32 %708, 0
+  br i1 %709, label %760, label %710
 
-716:                                              ; preds = %708
-  %717 = icmp ult i32 %712, 16
-  br i1 %717, label %718, label %753
+710:                                              ; preds = %702
+  %711 = icmp ult i32 %706, 16
+  br i1 %711, label %712, label %747
 
-718:                                              ; preds = %716
-  %719 = zext nneg i32 %712 to i64
-  %720 = icmp eq i32 %710, 0
-  br i1 %720, label %2373, label %721
+712:                                              ; preds = %710
+  %713 = zext nneg i32 %706 to i64
+  %714 = icmp eq i32 %704, 0
+  br i1 %714, label %2361, label %715
 
-721:                                              ; preds = %718
-  %722 = load i8, ptr %709, align 1, !tbaa !44
-  %723 = zext i8 %722 to i64
-  %724 = shl nuw nsw i64 %723, %719
-  %725 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %711, i64 %724), !nosanitize !47
-  %726 = extractvalue { i64, i1 } %725, 1, !nosanitize !47
-  br i1 %726, label %727, label %728, !prof !48, !nosanitize !47
+715:                                              ; preds = %712
+  %716 = load i8, ptr %703, align 1, !tbaa !44
+  %717 = zext i8 %716 to i64
+  %718 = shl nuw nsw i64 %717, %713
+  %719 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %705, i64 %718), !nosanitize !47
+  %720 = extractvalue { i64, i1 } %719, 1, !nosanitize !47
+  br i1 %720, label %721, label %722, !prof !48, !nosanitize !47
 
-727:                                              ; preds = %736, %721
+721:                                              ; preds = %730, %715
   call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-728:                                              ; preds = %721
-  %729 = extractvalue { i64, i1 } %725, 0, !nosanitize !47
-  %730 = getelementptr inbounds nuw i8, ptr %709, i64 1
-  %731 = add i32 %710, -1
-  %732 = add nuw nsw i64 %719, 8
-  %733 = icmp ult i32 %712, 8
-  br i1 %733, label %734, label %747
+722:                                              ; preds = %715
+  %723 = extractvalue { i64, i1 } %719, 0, !nosanitize !47
+  %724 = getelementptr inbounds nuw i8, ptr %703, i64 1
+  %725 = add i32 %704, -1
+  %726 = add nuw nsw i64 %713, 8
+  %727 = icmp ult i32 %706, 8
+  br i1 %727, label %728, label %741
 
-734:                                              ; preds = %728
-  %735 = icmp eq i32 %731, 0
-  br i1 %735, label %2373, label %736
+728:                                              ; preds = %722
+  %729 = icmp eq i32 %725, 0
+  br i1 %729, label %2361, label %730
 
-736:                                              ; preds = %734
-  %737 = load i8, ptr %730, align 1, !tbaa !44
-  %738 = zext i8 %737 to i64
-  %739 = shl nuw nsw i64 %738, %732
-  %740 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %729, i64 %739), !nosanitize !47
-  %741 = extractvalue { i64, i1 } %740, 1, !nosanitize !47
-  br i1 %741, label %727, label %742, !prof !48, !nosanitize !47
+730:                                              ; preds = %728
+  %731 = load i8, ptr %724, align 1, !tbaa !44
+  %732 = zext i8 %731 to i64
+  %733 = shl nuw nsw i64 %732, %726
+  %734 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %723, i64 %733), !nosanitize !47
+  %735 = extractvalue { i64, i1 } %734, 1, !nosanitize !47
+  br i1 %735, label %721, label %736, !prof !48, !nosanitize !47
 
-742:                                              ; preds = %736
-  %743 = extractvalue { i64, i1 } %740, 0, !nosanitize !47
-  %744 = getelementptr inbounds nuw i8, ptr %709, i64 2
-  %745 = add i32 %710, -2
-  %746 = or disjoint i64 %719, 16
+736:                                              ; preds = %730
+  %737 = extractvalue { i64, i1 } %734, 0, !nosanitize !47
+  %738 = getelementptr inbounds nuw i8, ptr %703, i64 2
+  %739 = add i32 %704, -2
+  %740 = or disjoint i64 %713, 16
+  br label %741
+
+741:                                              ; preds = %736, %722
+  %742 = phi i64 [ %723, %722 ], [ %737, %736 ]
+  %743 = phi ptr [ %724, %722 ], [ %738, %736 ]
+  %744 = phi i32 [ %725, %722 ], [ %739, %736 ]
+  %745 = phi i64 [ %726, %722 ], [ %740, %736 ]
+  %746 = trunc nuw nsw i64 %745 to i32
   br label %747
 
-747:                                              ; preds = %742, %728
-  %748 = phi i64 [ %729, %728 ], [ %743, %742 ]
-  %749 = phi ptr [ %730, %728 ], [ %744, %742 ]
-  %750 = phi i32 [ %731, %728 ], [ %745, %742 ]
-  %751 = phi i64 [ %732, %728 ], [ %746, %742 ]
-  %752 = trunc nuw nsw i64 %751 to i32
-  br label %753
+747:                                              ; preds = %741, %710
+  %748 = phi ptr [ %703, %710 ], [ %743, %741 ]
+  %749 = phi i32 [ %704, %710 ], [ %744, %741 ]
+  %750 = phi i64 [ %705, %710 ], [ %742, %741 ]
+  %751 = phi i32 [ %706, %710 ], [ %746, %741 ]
+  %752 = load i32, ptr %49, align 8, !tbaa !24
+  %753 = and i32 %752, 4
+  %754 = icmp eq i32 %753, 0
+  br i1 %754, label %760, label %755
 
-753:                                              ; preds = %747, %716
-  %754 = phi ptr [ %709, %716 ], [ %749, %747 ]
-  %755 = phi i32 [ %710, %716 ], [ %750, %747 ]
-  %756 = phi i64 [ %711, %716 ], [ %748, %747 ]
-  %757 = phi i32 [ %712, %716 ], [ %752, %747 ]
-  %758 = load i32, ptr %49, align 8, !tbaa !24
-  %759 = and i32 %758, 4
-  %760 = icmp eq i32 %759, 0
-  br i1 %760, label %766, label %761
+755:                                              ; preds = %747
+  %756 = load i64, ptr %53, align 8, !tbaa !54
+  %757 = and i64 %756, 65535
+  %758 = icmp eq i64 %750, %757
+  br i1 %758, label %760, label %759
 
-761:                                              ; preds = %753
-  %762 = load i64, ptr %53, align 8, !tbaa !54
-  %763 = and i64 %762, 65535
-  %764 = icmp eq i64 %756, %763
-  br i1 %764, label %766, label %765
-
-765:                                              ; preds = %761
+759:                                              ; preds = %755
   store ptr @.str.5, ptr %55, align 8, !tbaa !45
   store i32 16209, ptr %21, align 8, !tbaa !20
-  br label %2351
+  br label %2339
 
-766:                                              ; preds = %761, %753, %708
-  %767 = phi ptr [ %709, %708 ], [ %754, %753 ], [ %754, %761 ]
-  %768 = phi i32 [ %710, %708 ], [ %755, %753 ], [ %755, %761 ]
-  %769 = phi i64 [ %711, %708 ], [ 0, %753 ], [ 0, %761 ]
-  %770 = phi i32 [ %712, %708 ], [ 0, %753 ], [ 0, %761 ]
-  %771 = load ptr, ptr %84, align 8, !tbaa !30
-  %772 = icmp eq ptr %771, null
-  br i1 %772, label %778, label %773
+760:                                              ; preds = %755, %747, %702
+  %761 = phi ptr [ %703, %702 ], [ %748, %747 ], [ %748, %755 ]
+  %762 = phi i32 [ %704, %702 ], [ %749, %747 ], [ %749, %755 ]
+  %763 = phi i64 [ %705, %702 ], [ 0, %747 ], [ 0, %755 ]
+  %764 = phi i32 [ %706, %702 ], [ 0, %747 ], [ 0, %755 ]
+  %765 = load ptr, ptr %84, align 8, !tbaa !30
+  %766 = icmp eq ptr %765, null
+  br i1 %766, label %772, label %767
 
-773:                                              ; preds = %766
-  %774 = lshr i32 %713, 9
-  %775 = and i32 %774, 1
-  %776 = getelementptr inbounds nuw i8, ptr %771, i64 68
-  store i32 %775, ptr %776, align 4, !tbaa !72
-  %777 = getelementptr inbounds nuw i8, ptr %771, i64 72
-  store i32 1, ptr %777, align 8, !tbaa !55
-  br label %778
+767:                                              ; preds = %760
+  %768 = lshr i32 %707, 9
+  %769 = and i32 %768, 1
+  %770 = getelementptr inbounds nuw i8, ptr %765, i64 68
+  store i32 %769, ptr %770, align 4, !tbaa !72
+  %771 = getelementptr inbounds nuw i8, ptr %765, i64 72
+  store i32 1, ptr %771, align 8, !tbaa !55
+  br label %772
 
-778:                                              ; preds = %773, %766
-  %779 = call i64 @crc32(i64 noundef 0, ptr noundef null, i32 noundef 0) #12
-  store i64 %779, ptr %53, align 8, !tbaa !54
-  store i64 %779, ptr %54, align 8, !tbaa !25
+772:                                              ; preds = %767, %760
+  %773 = call i64 @crc32(i64 noundef 0, ptr noundef null, i32 noundef 0) #12
+  store i64 %773, ptr %53, align 8, !tbaa !54
+  store i64 %773, ptr %54, align 8, !tbaa !25
   store i32 16191, ptr %21, align 8, !tbaa !20
-  br label %2351
+  br label %2339
 
-780:                                              ; preds = %112
-  %781 = load i8, ptr %90, align 1, !tbaa !44
-  %782 = zext i8 %781 to i64
-  %783 = shl nuw nsw i64 %782, %113
-  %784 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %94, i64 %783), !nosanitize !47
-  %785 = extractvalue { i64, i1 } %784, 1, !nosanitize !47
-  br i1 %785, label %786, label %787, !prof !48, !nosanitize !47
+774:                                              ; preds = %112
+  %775 = load i8, ptr %90, align 1, !tbaa !44
+  %776 = zext i8 %775 to i64
+  %777 = shl nuw nsw i64 %776, %113
+  %778 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %94, i64 %777), !nosanitize !47
+  %779 = extractvalue { i64, i1 } %778, 1, !nosanitize !47
+  br i1 %779, label %780, label %781, !prof !48, !nosanitize !47
 
-786:                                              ; preds = %823, %809, %795, %780
+780:                                              ; preds = %817, %803, %789, %774
   call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-787:                                              ; preds = %780
-  %788 = extractvalue { i64, i1 } %784, 0, !nosanitize !47
-  %789 = getelementptr inbounds nuw i8, ptr %90, i64 1
-  %790 = add i32 %92, -1
-  %791 = add nuw nsw i64 %113, 8
-  %792 = icmp ult i32 %95, 24
-  br i1 %792, label %793, label %833
+781:                                              ; preds = %774
+  %782 = extractvalue { i64, i1 } %778, 0, !nosanitize !47
+  %783 = getelementptr inbounds nuw i8, ptr %90, i64 1
+  %784 = add i32 %92, -1
+  %785 = add nuw nsw i64 %113, 8
+  %786 = icmp ult i32 %95, 24
+  br i1 %786, label %787, label %827
 
-793:                                              ; preds = %787
-  %794 = icmp eq i32 %790, 0
-  br i1 %794, label %2403, label %795
+787:                                              ; preds = %781
+  %788 = icmp eq i32 %784, 0
+  br i1 %788, label %2391, label %789
 
-795:                                              ; preds = %793
-  %796 = load i8, ptr %789, align 1, !tbaa !44
-  %797 = zext i8 %796 to i64
-  %798 = shl nuw nsw i64 %797, %791
-  %799 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %788, i64 %798), !nosanitize !47
-  %800 = extractvalue { i64, i1 } %799, 1, !nosanitize !47
-  br i1 %800, label %786, label %801, !prof !48, !nosanitize !47
+789:                                              ; preds = %787
+  %790 = load i8, ptr %783, align 1, !tbaa !44
+  %791 = zext i8 %790 to i64
+  %792 = shl nuw nsw i64 %791, %785
+  %793 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %782, i64 %792), !nosanitize !47
+  %794 = extractvalue { i64, i1 } %793, 1, !nosanitize !47
+  br i1 %794, label %780, label %795, !prof !48, !nosanitize !47
+
+795:                                              ; preds = %789
+  %796 = extractvalue { i64, i1 } %793, 0, !nosanitize !47
+  %797 = getelementptr inbounds nuw i8, ptr %90, i64 2
+  %798 = add i32 %92, -2
+  %799 = add nuw nsw i64 %113, 16
+  %800 = icmp ult i32 %95, 16
+  br i1 %800, label %801, label %827
 
 801:                                              ; preds = %795
-  %802 = extractvalue { i64, i1 } %799, 0, !nosanitize !47
-  %803 = getelementptr inbounds nuw i8, ptr %90, i64 2
-  %804 = add i32 %92, -2
-  %805 = add nuw nsw i64 %113, 16
-  %806 = icmp ult i32 %95, 16
-  br i1 %806, label %807, label %833
+  %802 = icmp eq i32 %798, 0
+  br i1 %802, label %2391, label %803
 
-807:                                              ; preds = %801
-  %808 = icmp eq i32 %804, 0
-  br i1 %808, label %2403, label %809
+803:                                              ; preds = %801
+  %804 = load i8, ptr %797, align 1, !tbaa !44
+  %805 = zext i8 %804 to i64
+  %806 = shl nuw nsw i64 %805, %799
+  %807 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %796, i64 %806), !nosanitize !47
+  %808 = extractvalue { i64, i1 } %807, 1, !nosanitize !47
+  br i1 %808, label %780, label %809, !prof !48, !nosanitize !47
 
-809:                                              ; preds = %807
-  %810 = load i8, ptr %803, align 1, !tbaa !44
-  %811 = zext i8 %810 to i64
-  %812 = shl nuw nsw i64 %811, %805
-  %813 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %802, i64 %812), !nosanitize !47
-  %814 = extractvalue { i64, i1 } %813, 1, !nosanitize !47
-  br i1 %814, label %786, label %815, !prof !48, !nosanitize !47
+809:                                              ; preds = %803
+  %810 = extractvalue { i64, i1 } %807, 0, !nosanitize !47
+  %811 = getelementptr inbounds nuw i8, ptr %90, i64 3
+  %812 = add i32 %92, -3
+  %813 = add nuw nsw i64 %113, 24
+  %814 = icmp ult i32 %95, 8
+  br i1 %814, label %815, label %827
 
 815:                                              ; preds = %809
-  %816 = extractvalue { i64, i1 } %813, 0, !nosanitize !47
-  %817 = getelementptr inbounds nuw i8, ptr %90, i64 3
-  %818 = add i32 %92, -3
-  %819 = add nuw nsw i64 %113, 24
-  %820 = icmp ult i32 %95, 8
-  br i1 %820, label %821, label %833
+  %816 = icmp eq i32 %812, 0
+  br i1 %816, label %2391, label %817
 
-821:                                              ; preds = %815
-  %822 = icmp eq i32 %818, 0
-  br i1 %822, label %2403, label %823
+817:                                              ; preds = %815
+  %818 = load i8, ptr %811, align 1, !tbaa !44
+  %819 = zext i8 %818 to i64
+  %820 = shl nuw nsw i64 %819, %813
+  %821 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %810, i64 %820), !nosanitize !47
+  %822 = extractvalue { i64, i1 } %821, 1, !nosanitize !47
+  br i1 %822, label %780, label %823, !prof !48, !nosanitize !47
 
-823:                                              ; preds = %821
-  %824 = load i8, ptr %817, align 1, !tbaa !44
-  %825 = zext i8 %824 to i64
-  %826 = shl nuw nsw i64 %825, %819
-  %827 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %816, i64 %826), !nosanitize !47
-  %828 = extractvalue { i64, i1 } %827, 1, !nosanitize !47
-  br i1 %828, label %786, label %829, !prof !48, !nosanitize !47
+823:                                              ; preds = %817
+  %824 = extractvalue { i64, i1 } %821, 0, !nosanitize !47
+  %825 = getelementptr inbounds nuw i8, ptr %90, i64 4
+  %826 = add i32 %92, -4
+  br label %827
 
-829:                                              ; preds = %823
-  %830 = extractvalue { i64, i1 } %827, 0, !nosanitize !47
-  %831 = getelementptr inbounds nuw i8, ptr %90, i64 4
-  %832 = add i32 %92, -4
-  br label %833
-
-833:                                              ; preds = %829, %815, %801, %787, %110
-  %834 = phi ptr [ %90, %110 ], [ %789, %787 ], [ %803, %801 ], [ %817, %815 ], [ %831, %829 ]
-  %835 = phi i32 [ %92, %110 ], [ %790, %787 ], [ %804, %801 ], [ %818, %815 ], [ %832, %829 ]
-  %836 = phi i64 [ %94, %110 ], [ %788, %787 ], [ %802, %801 ], [ %816, %815 ], [ %830, %829 ]
-  %837 = trunc i64 %836 to i32
-  %838 = call i32 @llvm.bswap.i32(i32 %837)
-  %839 = zext i32 %838 to i64
-  store i64 %839, ptr %53, align 8, !tbaa !54
-  store i64 %839, ptr %54, align 8, !tbaa !25
+827:                                              ; preds = %823, %809, %795, %781, %110
+  %828 = phi ptr [ %90, %110 ], [ %783, %781 ], [ %797, %795 ], [ %811, %809 ], [ %825, %823 ]
+  %829 = phi i32 [ %92, %110 ], [ %784, %781 ], [ %798, %795 ], [ %812, %809 ], [ %826, %823 ]
+  %830 = phi i64 [ %94, %110 ], [ %782, %781 ], [ %796, %795 ], [ %810, %809 ], [ %824, %823 ]
+  %831 = trunc i64 %830 to i32
+  %832 = call i32 @llvm.bswap.i32(i32 %831)
+  %833 = zext i32 %832 to i64
+  store i64 %833, ptr %53, align 8, !tbaa !54
+  store i64 %833, ptr %54, align 8, !tbaa !25
   store i32 16190, ptr %21, align 8, !tbaa !20
-  br label %840
+  br label %834
 
-840:                                              ; preds = %833, %88
-  %841 = phi ptr [ %834, %833 ], [ %90, %88 ]
-  %842 = phi i32 [ %835, %833 ], [ %92, %88 ]
-  %843 = phi i64 [ 0, %833 ], [ %94, %88 ]
-  %844 = phi i32 [ 0, %833 ], [ %95, %88 ]
-  %845 = load i32, ptr %80, align 4, !tbaa !27
-  %846 = icmp eq i32 %845, 0
-  br i1 %846, label %847, label %848
+834:                                              ; preds = %827, %88
+  %835 = phi ptr [ %828, %827 ], [ %90, %88 ]
+  %836 = phi i32 [ %829, %827 ], [ %92, %88 ]
+  %837 = phi i64 [ 0, %827 ], [ %94, %88 ]
+  %838 = phi i32 [ 0, %827 ], [ %95, %88 ]
+  %839 = load i32, ptr %80, align 4, !tbaa !27
+  %840 = icmp eq i32 %839, 0
+  br i1 %840, label %841, label %842
 
-847:                                              ; preds = %840
+841:                                              ; preds = %834
   store ptr %91, ptr %26, align 8, !tbaa !49
   store i32 %93, ptr %41, align 8, !tbaa !52
-  store ptr %841, ptr %0, align 8, !tbaa !50
-  store i32 %842, ptr %43, align 8, !tbaa !51
-  store i64 %843, ptr %45, align 8, !tbaa !31
-  store i32 %844, ptr %47, align 8, !tbaa !32
-  br label %2669
+  store ptr %835, ptr %0, align 8, !tbaa !50
+  store i32 %836, ptr %43, align 8, !tbaa !51
+  store i64 %837, ptr %45, align 8, !tbaa !31
+  store i32 %838, ptr %47, align 8, !tbaa !32
+  br label %2654
 
-848:                                              ; preds = %840
-  %849 = call i64 @adler32(i64 noundef 0, ptr noundef null, i32 noundef 0) #12
-  store i64 %849, ptr %53, align 8, !tbaa !54
-  store i64 %849, ptr %54, align 8, !tbaa !25
+842:                                              ; preds = %834
+  %843 = call i64 @adler32(i64 noundef 0, ptr noundef null, i32 noundef 0) #12
+  store i64 %843, ptr %53, align 8, !tbaa !54
+  store i64 %843, ptr %54, align 8, !tbaa !25
   store i32 16191, ptr %21, align 8, !tbaa !20
-  br label %850
+  br label %844
 
-850:                                              ; preds = %848, %88
-  %851 = phi ptr [ %841, %848 ], [ %90, %88 ]
-  %852 = phi i32 [ %842, %848 ], [ %92, %88 ]
-  %853 = phi i64 [ %843, %848 ], [ %94, %88 ]
-  %854 = phi i32 [ %844, %848 ], [ %95, %88 ]
-  br i1 %82, label %2485, label %855
+844:                                              ; preds = %842, %88
+  %845 = phi ptr [ %835, %842 ], [ %90, %88 ]
+  %846 = phi i32 [ %836, %842 ], [ %92, %88 ]
+  %847 = phi i64 [ %837, %842 ], [ %94, %88 ]
+  %848 = phi i32 [ %838, %842 ], [ %95, %88 ]
+  br i1 %82, label %2473, label %849
 
-855:                                              ; preds = %850, %88
-  %856 = phi ptr [ %851, %850 ], [ %90, %88 ]
-  %857 = phi i32 [ %852, %850 ], [ %92, %88 ]
-  %858 = phi i64 [ %853, %850 ], [ %94, %88 ]
-  %859 = phi i32 [ %854, %850 ], [ %95, %88 ]
-  %860 = load i32, ptr %83, align 4, !tbaa !26
-  %861 = icmp eq i32 %860, 0
-  br i1 %861, label %862, label %867
+849:                                              ; preds = %844, %88
+  %850 = phi ptr [ %845, %844 ], [ %90, %88 ]
+  %851 = phi i32 [ %846, %844 ], [ %92, %88 ]
+  %852 = phi i64 [ %847, %844 ], [ %94, %88 ]
+  %853 = phi i32 [ %848, %844 ], [ %95, %88 ]
+  %854 = load i32, ptr %83, align 4, !tbaa !26
+  %855 = icmp eq i32 %854, 0
+  br i1 %855, label %856, label %861
 
-862:                                              ; preds = %855
-  %863 = icmp ult i32 %859, 3
-  br i1 %863, label %864, label %885
+856:                                              ; preds = %849
+  %857 = icmp ult i32 %853, 3
+  br i1 %857, label %858, label %879
 
-864:                                              ; preds = %862
-  %865 = or disjoint i32 %859, 8
-  %866 = icmp eq i32 %857, 0
-  br i1 %866, label %2485, label %873
+858:                                              ; preds = %856
+  %859 = or disjoint i32 %853, 8
+  %860 = icmp eq i32 %851, 0
+  br i1 %860, label %2473, label %867
 
-867:                                              ; preds = %855
-  %868 = and i32 %859, 7
-  %869 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %859, i32 %868), !nosanitize !47
-  %870 = extractvalue { i32, i1 } %869, 0, !nosanitize !47
-  %871 = zext nneg i32 %868 to i64
-  %872 = lshr i64 %858, %871
+861:                                              ; preds = %849
+  %862 = and i32 %853, 7
+  %863 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %853, i32 %862), !nosanitize !47
+  %864 = extractvalue { i32, i1 } %863, 0, !nosanitize !47
+  %865 = zext nneg i32 %862 to i64
+  %866 = lshr i64 %852, %865
   store i32 16206, ptr %21, align 8, !tbaa !20
-  br label %2351
+  br label %2339
 
-873:                                              ; preds = %864
-  %874 = load i8, ptr %856, align 1, !tbaa !44
-  %875 = zext i8 %874 to i64
-  %876 = zext nneg i32 %859 to i64
-  %877 = shl nuw nsw i64 %875, %876
-  %878 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %858, i64 %877), !nosanitize !47
-  %879 = extractvalue { i64, i1 } %878, 1, !nosanitize !47
-  br i1 %879, label %880, label %881, !prof !48, !nosanitize !47
+867:                                              ; preds = %858
+  %868 = load i8, ptr %850, align 1, !tbaa !44
+  %869 = zext i8 %868 to i64
+  %870 = zext nneg i32 %853 to i64
+  %871 = shl nuw nsw i64 %869, %870
+  %872 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %852, i64 %871), !nosanitize !47
+  %873 = extractvalue { i64, i1 } %872, 1, !nosanitize !47
+  br i1 %873, label %874, label %875, !prof !48, !nosanitize !47
 
-880:                                              ; preds = %873
+874:                                              ; preds = %867
   call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-881:                                              ; preds = %873
-  %882 = extractvalue { i64, i1 } %878, 0, !nosanitize !47
-  %883 = getelementptr inbounds nuw i8, ptr %856, i64 1
-  %884 = add i32 %857, -1
-  br label %885
+875:                                              ; preds = %867
+  %876 = extractvalue { i64, i1 } %872, 0, !nosanitize !47
+  %877 = getelementptr inbounds nuw i8, ptr %850, i64 1
+  %878 = add i32 %851, -1
+  br label %879
 
-885:                                              ; preds = %881, %862
-  %886 = phi ptr [ %883, %881 ], [ %856, %862 ]
-  %887 = phi i32 [ %884, %881 ], [ %857, %862 ]
-  %888 = phi i64 [ %882, %881 ], [ %858, %862 ]
-  %889 = phi i32 [ %865, %881 ], [ %859, %862 ]
-  %890 = trunc i64 %888 to i32
-  %891 = and i32 %890, 1
-  store i32 %891, ptr %83, align 4, !tbaa !26
-  %892 = lshr i32 %890, 1
-  %893 = and i32 %892, 3
-  switch i32 %893, label %899 [
-    i32 0, label %901
-    i32 1, label %894
-    i32 2, label %898
-    i32 3, label %900
+879:                                              ; preds = %875, %856
+  %880 = phi ptr [ %877, %875 ], [ %850, %856 ]
+  %881 = phi i32 [ %878, %875 ], [ %851, %856 ]
+  %882 = phi i64 [ %876, %875 ], [ %852, %856 ]
+  %883 = phi i32 [ %859, %875 ], [ %853, %856 ]
+  %884 = trunc i64 %882 to i32
+  %885 = and i32 %884, 1
+  store i32 %885, ptr %83, align 4, !tbaa !26
+  %886 = lshr i32 %884, 1
+  %887 = and i32 %886, 3
+  switch i32 %887, label %893 [
+    i32 0, label %895
+    i32 1, label %888
+    i32 2, label %892
+    i32 3, label %894
   ]
 
-894:                                              ; preds = %885
+888:                                              ; preds = %879
   call void @inflate_fixed(ptr noundef nonnull %15) #12
   store i32 16199, ptr %21, align 8, !tbaa !20
-  br i1 %70, label %895, label %903
+  br i1 %70, label %889, label %897
 
-895:                                              ; preds = %894
-  %896 = add i32 %889, -3
-  %897 = lshr i64 %888, 3
-  br label %2485
+889:                                              ; preds = %888
+  %890 = add i32 %883, -3
+  %891 = lshr i64 %882, 3
+  br label %2473
 
-898:                                              ; preds = %885
-  br label %901
+892:                                              ; preds = %879
+  br label %895
 
-899:                                              ; preds = %885
+893:                                              ; preds = %879
   unreachable
 
-900:                                              ; preds = %885
+894:                                              ; preds = %879
   store ptr @.str.6, ptr %55, align 8, !tbaa !45
-  br label %901
+  br label %895
 
-901:                                              ; preds = %900, %898, %885
-  %902 = phi i32 [ 16209, %900 ], [ 16196, %898 ], [ 16193, %885 ]
-  store i32 %902, ptr %21, align 8, !tbaa !20
-  br label %903
+895:                                              ; preds = %894, %892, %879
+  %896 = phi i32 [ 16209, %894 ], [ 16196, %892 ], [ 16193, %879 ]
+  store i32 %896, ptr %21, align 8, !tbaa !20
+  br label %897
 
-903:                                              ; preds = %901, %894
-  %904 = add i32 %889, -3
-  %905 = lshr i64 %888, 3
-  br label %2351
+897:                                              ; preds = %895, %888
+  %898 = add i32 %883, -3
+  %899 = lshr i64 %882, 3
+  br label %2339
 
-906:                                              ; preds = %88
-  %907 = and i32 %95, 7
-  %908 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %95, i32 %907), !nosanitize !47
-  %909 = zext nneg i32 %907 to i64
-  %910 = lshr i64 %94, %909
-  %911 = extractvalue { i32, i1 } %908, 0
-  %912 = icmp ult i32 %911, 32
-  br i1 %912, label %913, label %976
+900:                                              ; preds = %88
+  %901 = and i32 %95, 7
+  %902 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %95, i32 %901), !nosanitize !47
+  %903 = zext nneg i32 %901 to i64
+  %904 = lshr i64 %94, %903
+  %905 = extractvalue { i32, i1 } %902, 0
+  %906 = icmp ult i32 %905, 32
+  br i1 %906, label %907, label %970
 
-913:                                              ; preds = %906
-  %914 = and i32 %95, -8
-  %915 = zext i32 %914 to i64
-  %916 = icmp eq i32 %92, 0
-  br i1 %916, label %2409, label %917
+907:                                              ; preds = %900
+  %908 = and i32 %95, -8
+  %909 = zext i32 %908 to i64
+  %910 = icmp eq i32 %92, 0
+  br i1 %910, label %2397, label %911
 
-917:                                              ; preds = %913
-  %918 = load i8, ptr %90, align 1, !tbaa !44
-  %919 = zext i8 %918 to i64
-  %920 = shl nuw nsw i64 %919, %915
-  %921 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %910, i64 %920), !nosanitize !47
-  %922 = extractvalue { i64, i1 } %921, 1, !nosanitize !47
-  br i1 %922, label %923, label %924, !prof !48, !nosanitize !47
+911:                                              ; preds = %907
+  %912 = load i8, ptr %90, align 1, !tbaa !44
+  %913 = zext i8 %912 to i64
+  %914 = shl nuw nsw i64 %913, %909
+  %915 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %904, i64 %914), !nosanitize !47
+  %916 = extractvalue { i64, i1 } %915, 1, !nosanitize !47
+  br i1 %916, label %917, label %918, !prof !48, !nosanitize !47
 
-923:                                              ; preds = %960, %946, %932, %917
+917:                                              ; preds = %954, %940, %926, %911
   call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-924:                                              ; preds = %917
-  %925 = extractvalue { i64, i1 } %921, 0, !nosanitize !47
-  %926 = getelementptr inbounds nuw i8, ptr %90, i64 1
-  %927 = add i32 %92, -1
-  %928 = add nuw nsw i64 %915, 8
-  %929 = icmp ult i32 %95, 24
-  br i1 %929, label %930, label %970
+918:                                              ; preds = %911
+  %919 = extractvalue { i64, i1 } %915, 0, !nosanitize !47
+  %920 = getelementptr inbounds nuw i8, ptr %90, i64 1
+  %921 = add i32 %92, -1
+  %922 = add nuw nsw i64 %909, 8
+  %923 = icmp ult i32 %95, 24
+  br i1 %923, label %924, label %964
 
-930:                                              ; preds = %924
-  %931 = icmp eq i32 %927, 0
-  br i1 %931, label %2409, label %932
+924:                                              ; preds = %918
+  %925 = icmp eq i32 %921, 0
+  br i1 %925, label %2397, label %926
 
-932:                                              ; preds = %930
-  %933 = load i8, ptr %926, align 1, !tbaa !44
-  %934 = zext i8 %933 to i64
-  %935 = shl nuw nsw i64 %934, %928
-  %936 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %925, i64 %935), !nosanitize !47
-  %937 = extractvalue { i64, i1 } %936, 1, !nosanitize !47
-  br i1 %937, label %923, label %938, !prof !48, !nosanitize !47
+926:                                              ; preds = %924
+  %927 = load i8, ptr %920, align 1, !tbaa !44
+  %928 = zext i8 %927 to i64
+  %929 = shl nuw nsw i64 %928, %922
+  %930 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %919, i64 %929), !nosanitize !47
+  %931 = extractvalue { i64, i1 } %930, 1, !nosanitize !47
+  br i1 %931, label %917, label %932, !prof !48, !nosanitize !47
+
+932:                                              ; preds = %926
+  %933 = extractvalue { i64, i1 } %930, 0, !nosanitize !47
+  %934 = getelementptr inbounds nuw i8, ptr %90, i64 2
+  %935 = add i32 %92, -2
+  %936 = add nuw nsw i64 %909, 16
+  %937 = icmp ult i32 %95, 16
+  br i1 %937, label %938, label %964
 
 938:                                              ; preds = %932
-  %939 = extractvalue { i64, i1 } %936, 0, !nosanitize !47
-  %940 = getelementptr inbounds nuw i8, ptr %90, i64 2
-  %941 = add i32 %92, -2
-  %942 = add nuw nsw i64 %915, 16
-  %943 = icmp ult i32 %95, 16
-  br i1 %943, label %944, label %970
+  %939 = icmp eq i32 %935, 0
+  br i1 %939, label %2397, label %940
 
-944:                                              ; preds = %938
-  %945 = icmp eq i32 %941, 0
-  br i1 %945, label %2409, label %946
+940:                                              ; preds = %938
+  %941 = load i8, ptr %934, align 1, !tbaa !44
+  %942 = zext i8 %941 to i64
+  %943 = shl nuw nsw i64 %942, %936
+  %944 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %933, i64 %943), !nosanitize !47
+  %945 = extractvalue { i64, i1 } %944, 1, !nosanitize !47
+  br i1 %945, label %917, label %946, !prof !48, !nosanitize !47
 
-946:                                              ; preds = %944
-  %947 = load i8, ptr %940, align 1, !tbaa !44
-  %948 = zext i8 %947 to i64
-  %949 = shl nuw nsw i64 %948, %942
-  %950 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %939, i64 %949), !nosanitize !47
-  %951 = extractvalue { i64, i1 } %950, 1, !nosanitize !47
-  br i1 %951, label %923, label %952, !prof !48, !nosanitize !47
+946:                                              ; preds = %940
+  %947 = extractvalue { i64, i1 } %944, 0, !nosanitize !47
+  %948 = getelementptr inbounds nuw i8, ptr %90, i64 3
+  %949 = add i32 %92, -3
+  %950 = add nuw nsw i64 %909, 24
+  %951 = icmp eq i32 %908, 0
+  br i1 %951, label %952, label %964
 
 952:                                              ; preds = %946
-  %953 = extractvalue { i64, i1 } %950, 0, !nosanitize !47
-  %954 = getelementptr inbounds nuw i8, ptr %90, i64 3
-  %955 = add i32 %92, -3
-  %956 = add nuw nsw i64 %915, 24
-  %957 = icmp eq i32 %914, 0
-  br i1 %957, label %958, label %970
+  %953 = icmp eq i32 %949, 0
+  br i1 %953, label %2397, label %954
 
-958:                                              ; preds = %952
-  %959 = icmp eq i32 %955, 0
-  br i1 %959, label %2409, label %960
+954:                                              ; preds = %952
+  %955 = load i8, ptr %948, align 1, !tbaa !44
+  %956 = zext i8 %955 to i64
+  %957 = shl nuw nsw i64 %956, %950
+  %958 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %947, i64 %957), !nosanitize !47
+  %959 = extractvalue { i64, i1 } %958, 1, !nosanitize !47
+  br i1 %959, label %917, label %960, !prof !48, !nosanitize !47
 
-960:                                              ; preds = %958
-  %961 = load i8, ptr %954, align 1, !tbaa !44
-  %962 = zext i8 %961 to i64
-  %963 = shl nuw nsw i64 %962, %956
-  %964 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %953, i64 %963), !nosanitize !47
-  %965 = extractvalue { i64, i1 } %964, 1, !nosanitize !47
-  br i1 %965, label %923, label %966, !prof !48, !nosanitize !47
+960:                                              ; preds = %954
+  %961 = extractvalue { i64, i1 } %958, 0, !nosanitize !47
+  %962 = getelementptr inbounds nuw i8, ptr %90, i64 4
+  %963 = add i32 %92, -4
+  br label %964
 
-966:                                              ; preds = %960
-  %967 = extractvalue { i64, i1 } %964, 0, !nosanitize !47
-  %968 = getelementptr inbounds nuw i8, ptr %90, i64 4
-  %969 = add i32 %92, -4
+964:                                              ; preds = %960, %946, %932, %918
+  %965 = phi i64 [ %919, %918 ], [ %933, %932 ], [ %947, %946 ], [ %961, %960 ]
+  %966 = phi ptr [ %920, %918 ], [ %934, %932 ], [ %948, %946 ], [ %962, %960 ]
+  %967 = phi i32 [ %921, %918 ], [ %935, %932 ], [ %949, %946 ], [ %963, %960 ]
+  %968 = phi i64 [ %922, %918 ], [ %936, %932 ], [ %950, %946 ], [ 32, %960 ]
+  %969 = trunc nuw nsw i64 %968 to i32
   br label %970
 
-970:                                              ; preds = %966, %952, %938, %924
-  %971 = phi i64 [ %925, %924 ], [ %939, %938 ], [ %953, %952 ], [ %967, %966 ]
-  %972 = phi ptr [ %926, %924 ], [ %940, %938 ], [ %954, %952 ], [ %968, %966 ]
-  %973 = phi i32 [ %927, %924 ], [ %941, %938 ], [ %955, %952 ], [ %969, %966 ]
-  %974 = phi i64 [ %928, %924 ], [ %942, %938 ], [ %956, %952 ], [ 32, %966 ]
-  %975 = trunc nuw nsw i64 %974 to i32
-  br label %976
+970:                                              ; preds = %964, %900
+  %971 = phi ptr [ %90, %900 ], [ %966, %964 ]
+  %972 = phi i32 [ %92, %900 ], [ %967, %964 ]
+  %973 = phi i64 [ %904, %900 ], [ %965, %964 ]
+  %974 = phi i32 [ %905, %900 ], [ %969, %964 ]
+  %975 = and i64 %973, 65535
+  %976 = lshr i64 %973, 16
+  %977 = xor i64 %976, %975
+  %978 = icmp eq i64 %977, 65535
+  br i1 %978, label %980, label %979
 
-976:                                              ; preds = %970, %906
-  %977 = phi ptr [ %90, %906 ], [ %972, %970 ]
-  %978 = phi i32 [ %92, %906 ], [ %973, %970 ]
-  %979 = phi i64 [ %910, %906 ], [ %971, %970 ]
-  %980 = phi i32 [ %911, %906 ], [ %975, %970 ]
-  %981 = and i64 %979, 65535
-  %982 = lshr i64 %979, 16
-  %983 = xor i64 %982, %981
-  %984 = icmp eq i64 %983, 65535
-  br i1 %984, label %986, label %985
-
-985:                                              ; preds = %976
+979:                                              ; preds = %970
   store ptr @.str.7, ptr %55, align 8, !tbaa !45
   store i32 16209, ptr %21, align 8, !tbaa !20
-  br label %2351
+  br label %2339
 
-986:                                              ; preds = %976
-  %987 = trunc i64 %979 to i32
-  %988 = and i32 %987, 65535
-  store i32 %988, ptr %56, align 4, !tbaa !61
+980:                                              ; preds = %970
+  %981 = trunc i64 %973 to i32
+  %982 = and i32 %981, 65535
+  store i32 %982, ptr %56, align 4, !tbaa !61
   store i32 16194, ptr %21, align 8, !tbaa !20
-  br i1 %70, label %2485, label %989
+  br i1 %70, label %2473, label %983
 
-989:                                              ; preds = %986, %88
-  %990 = phi ptr [ %977, %986 ], [ %90, %88 ]
-  %991 = phi i32 [ %978, %986 ], [ %92, %88 ]
-  %992 = phi i64 [ 0, %986 ], [ %94, %88 ]
-  %993 = phi i32 [ 0, %986 ], [ %95, %88 ]
+983:                                              ; preds = %980, %88
+  %984 = phi ptr [ %971, %980 ], [ %90, %88 ]
+  %985 = phi i32 [ %972, %980 ], [ %92, %88 ]
+  %986 = phi i64 [ 0, %980 ], [ %94, %88 ]
+  %987 = phi i32 [ 0, %980 ], [ %95, %88 ]
   store i32 16195, ptr %21, align 8, !tbaa !20
-  br label %994
+  br label %988
 
-994:                                              ; preds = %989, %88
-  %995 = phi ptr [ %990, %989 ], [ %90, %88 ]
-  %996 = phi i32 [ %991, %989 ], [ %92, %88 ]
-  %997 = phi i64 [ %992, %989 ], [ %94, %88 ]
-  %998 = phi i32 [ %993, %989 ], [ %95, %88 ]
-  %999 = load i32, ptr %56, align 4, !tbaa !61
-  %1000 = icmp eq i32 %999, 0
-  br i1 %1000, label %1025, label %1001
+988:                                              ; preds = %983, %88
+  %989 = phi ptr [ %984, %983 ], [ %90, %88 ]
+  %990 = phi i32 [ %985, %983 ], [ %92, %88 ]
+  %991 = phi i64 [ %986, %983 ], [ %94, %88 ]
+  %992 = phi i32 [ %987, %983 ], [ %95, %88 ]
+  %993 = load i32, ptr %56, align 4, !tbaa !61
+  %994 = icmp eq i32 %993, 0
+  br i1 %994, label %1016, label %995
 
-1001:                                             ; preds = %994
-  %1002 = call i32 @llvm.umin.i32(i32 %999, i32 %996)
-  %1003 = call i32 @llvm.umin.i32(i32 %1002, i32 %93)
-  %1004 = icmp eq i32 %1003, 0
-  br i1 %1004, label %2485, label %1005
+995:                                              ; preds = %988
+  %996 = call i32 @llvm.umin.i32(i32 %993, i32 %990)
+  %997 = call i32 @llvm.umin.i32(i32 %996, i32 %93)
+  %998 = icmp eq i32 %997, 0
+  br i1 %998, label %2473, label %999
 
-1005:                                             ; preds = %1001
-  %1006 = zext i32 %1003 to i64
-  call void @llvm.memcpy.p0.p0.i64(ptr align 1 %91, ptr align 1 %995, i64 %1006, i1 false)
-  %1007 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %996, i32 %1003), !nosanitize !47
+999:                                              ; preds = %995
+  %1000 = zext i32 %997 to i64
+  call void @llvm.memcpy.p0.p0.i64(ptr align 1 %91, ptr align 1 %989, i64 %1000, i1 false)
+  %1001 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %990, i32 %997), !nosanitize !47
+  %1002 = extractvalue { i32, i1 } %1001, 0, !nosanitize !47
+  %1003 = extractvalue { i32, i1 } %1001, 1, !nosanitize !47
+  br i1 %1003, label %1004, label %1005, !prof !48, !nosanitize !47
+
+1004:                                             ; preds = %999
+  call void @llvm.ubsantrap(i8 21) #13, !nosanitize !47
+  unreachable, !nosanitize !47
+
+1005:                                             ; preds = %999
+  %1006 = getelementptr inbounds nuw i8, ptr %989, i64 %1000
+  %1007 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %93, i32 %997), !nosanitize !47
   %1008 = extractvalue { i32, i1 } %1007, 0, !nosanitize !47
-  %1009 = extractvalue { i32, i1 } %1007, 1, !nosanitize !47
-  br i1 %1009, label %1010, label %1011, !prof !48, !nosanitize !47
+  %1009 = load i32, ptr %56, align 4, !tbaa !61
+  %1010 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %1009, i32 %997), !nosanitize !47
+  %1011 = extractvalue { i32, i1 } %1010, 1, !nosanitize !47
+  br i1 %1011, label %1012, label %1013, !prof !48, !nosanitize !47
 
-1010:                                             ; preds = %1005
+1012:                                             ; preds = %1005
   call void @llvm.ubsantrap(i8 21) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-1011:                                             ; preds = %1005
-  %1012 = getelementptr inbounds nuw i8, ptr %995, i64 %1006
-  %1013 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %93, i32 %1003), !nosanitize !47
-  %1014 = extractvalue { i32, i1 } %1013, 0, !nosanitize !47
-  %1015 = extractvalue { i32, i1 } %1013, 1, !nosanitize !47
-  br i1 %1015, label %1016, label %1017, !prof !48, !nosanitize !47
+1013:                                             ; preds = %1005
+  %1014 = extractvalue { i32, i1 } %1010, 0, !nosanitize !47
+  %1015 = getelementptr inbounds nuw i8, ptr %91, i64 %1000
+  store i32 %1014, ptr %56, align 4, !tbaa !61
+  br label %2339
 
-1016:                                             ; preds = %1011
-  call void @llvm.ubsantrap(i8 21) #13, !nosanitize !47
-  unreachable, !nosanitize !47
-
-1017:                                             ; preds = %1011
-  %1018 = load i32, ptr %56, align 4, !tbaa !61
-  %1019 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %1018, i32 %1003), !nosanitize !47
-  %1020 = extractvalue { i32, i1 } %1019, 1, !nosanitize !47
-  br i1 %1020, label %1021, label %1022, !prof !48, !nosanitize !47
-
-1021:                                             ; preds = %1017
-  call void @llvm.ubsantrap(i8 21) #13, !nosanitize !47
-  unreachable, !nosanitize !47
-
-1022:                                             ; preds = %1017
-  %1023 = extractvalue { i32, i1 } %1019, 0, !nosanitize !47
-  %1024 = getelementptr inbounds nuw i8, ptr %91, i64 %1006
-  store i32 %1023, ptr %56, align 4, !tbaa !61
-  br label %2351
-
-1025:                                             ; preds = %994
+1016:                                             ; preds = %988
   store i32 16191, ptr %21, align 8, !tbaa !20
-  br label %2351
+  br label %2339
 
-1026:                                             ; preds = %107
-  %1027 = load i8, ptr %90, align 1, !tbaa !44
-  %1028 = zext i8 %1027 to i64
-  %1029 = shl nuw nsw i64 %1028, %108
-  %1030 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %94, i64 %1029), !nosanitize !47
-  %1031 = extractvalue { i64, i1 } %1030, 1, !nosanitize !47
-  br i1 %1031, label %1032, label %1033, !prof !48, !nosanitize !47
+1017:                                             ; preds = %107
+  %1018 = load i8, ptr %90, align 1, !tbaa !44
+  %1019 = zext i8 %1018 to i64
+  %1020 = shl nuw nsw i64 %1019, %108
+  %1021 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %94, i64 %1020), !nosanitize !47
+  %1022 = extractvalue { i64, i1 } %1021, 1, !nosanitize !47
+  br i1 %1022, label %1023, label %1024, !prof !48, !nosanitize !47
 
-1032:                                             ; preds = %1041, %1026
+1023:                                             ; preds = %1032, %1017
   call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-1033:                                             ; preds = %1026
-  %1034 = extractvalue { i64, i1 } %1030, 0, !nosanitize !47
-  %1035 = getelementptr inbounds nuw i8, ptr %90, i64 1
-  %1036 = add i32 %92, -1
-  %1037 = add nuw nsw i64 %108, 8
-  %1038 = icmp ult i32 %95, 6
-  br i1 %1038, label %1039, label %1052
+1024:                                             ; preds = %1017
+  %1025 = extractvalue { i64, i1 } %1021, 0, !nosanitize !47
+  %1026 = getelementptr inbounds nuw i8, ptr %90, i64 1
+  %1027 = add i32 %92, -1
+  %1028 = add nuw nsw i64 %108, 8
+  %1029 = icmp ult i32 %95, 6
+  br i1 %1029, label %1030, label %1043
 
-1039:                                             ; preds = %1033
-  %1040 = icmp eq i32 %1036, 0
-  br i1 %1040, label %2466, label %1041
+1030:                                             ; preds = %1024
+  %1031 = icmp eq i32 %1027, 0
+  br i1 %1031, label %2454, label %1032
 
-1041:                                             ; preds = %1039
-  %1042 = load i8, ptr %1035, align 1, !tbaa !44
-  %1043 = zext i8 %1042 to i64
-  %1044 = shl nuw nsw i64 %1043, %1037
-  %1045 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %1034, i64 %1044), !nosanitize !47
-  %1046 = extractvalue { i64, i1 } %1045, 1, !nosanitize !47
-  br i1 %1046, label %1032, label %1047, !prof !48, !nosanitize !47
+1032:                                             ; preds = %1030
+  %1033 = load i8, ptr %1026, align 1, !tbaa !44
+  %1034 = zext i8 %1033 to i64
+  %1035 = shl nuw nsw i64 %1034, %1028
+  %1036 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %1025, i64 %1035), !nosanitize !47
+  %1037 = extractvalue { i64, i1 } %1036, 1, !nosanitize !47
+  br i1 %1037, label %1023, label %1038, !prof !48, !nosanitize !47
 
-1047:                                             ; preds = %1041
-  %1048 = extractvalue { i64, i1 } %1045, 0, !nosanitize !47
-  %1049 = getelementptr inbounds nuw i8, ptr %90, i64 2
-  %1050 = add i32 %92, -2
-  %1051 = or disjoint i64 %108, 16
-  br label %1052
+1038:                                             ; preds = %1032
+  %1039 = extractvalue { i64, i1 } %1036, 0, !nosanitize !47
+  %1040 = getelementptr inbounds nuw i8, ptr %90, i64 2
+  %1041 = add i32 %92, -2
+  %1042 = or disjoint i64 %108, 16
+  br label %1043
 
-1052:                                             ; preds = %1047, %1033
-  %1053 = phi i64 [ %1034, %1033 ], [ %1048, %1047 ]
-  %1054 = phi ptr [ %1035, %1033 ], [ %1049, %1047 ]
-  %1055 = phi i32 [ %1036, %1033 ], [ %1050, %1047 ]
-  %1056 = phi i64 [ %1037, %1033 ], [ %1051, %1047 ]
-  %1057 = trunc nuw nsw i64 %1056 to i32
-  br label %1058
+1043:                                             ; preds = %1038, %1024
+  %1044 = phi i64 [ %1025, %1024 ], [ %1039, %1038 ]
+  %1045 = phi ptr [ %1026, %1024 ], [ %1040, %1038 ]
+  %1046 = phi i32 [ %1027, %1024 ], [ %1041, %1038 ]
+  %1047 = phi i64 [ %1028, %1024 ], [ %1042, %1038 ]
+  %1048 = trunc nuw nsw i64 %1047 to i32
+  br label %1049
 
-1058:                                             ; preds = %1052, %105
-  %1059 = phi ptr [ %90, %105 ], [ %1054, %1052 ]
-  %1060 = phi i32 [ %92, %105 ], [ %1055, %1052 ]
-  %1061 = phi i64 [ %94, %105 ], [ %1053, %1052 ]
-  %1062 = phi i32 [ %95, %105 ], [ %1057, %1052 ]
-  %1063 = trunc i64 %1061 to i32
-  %1064 = and i32 %1063, 31
-  %1065 = add nuw nsw i32 %1064, 257
-  store i32 %1065, ptr %57, align 4, !tbaa !73
-  %1066 = lshr i32 %1063, 5
-  %1067 = and i32 %1066, 31
-  %1068 = add nuw nsw i32 %1067, 1
-  store i32 %1068, ptr %58, align 8, !tbaa !74
-  %1069 = lshr i32 %1063, 10
-  %1070 = and i32 %1069, 15
-  %1071 = add nuw nsw i32 %1070, 4
-  store i32 %1071, ptr %59, align 8, !tbaa !75
-  %1072 = lshr i64 %1061, 14
-  %1073 = add i32 %1062, -14
-  %1074 = icmp samesign ugt i32 %1064, 29
-  %1075 = icmp samesign ugt i32 %1067, 29
-  %1076 = select i1 %1074, i1 true, i1 %1075
-  br i1 %1076, label %1077, label %1078
+1049:                                             ; preds = %1043, %105
+  %1050 = phi ptr [ %90, %105 ], [ %1045, %1043 ]
+  %1051 = phi i32 [ %92, %105 ], [ %1046, %1043 ]
+  %1052 = phi i64 [ %94, %105 ], [ %1044, %1043 ]
+  %1053 = phi i32 [ %95, %105 ], [ %1048, %1043 ]
+  %1054 = trunc i64 %1052 to i32
+  %1055 = and i32 %1054, 31
+  %1056 = add nuw nsw i32 %1055, 257
+  store i32 %1056, ptr %57, align 4, !tbaa !73
+  %1057 = lshr i32 %1054, 5
+  %1058 = and i32 %1057, 31
+  %1059 = add nuw nsw i32 %1058, 1
+  store i32 %1059, ptr %58, align 8, !tbaa !74
+  %1060 = lshr i32 %1054, 10
+  %1061 = and i32 %1060, 15
+  %1062 = add nuw nsw i32 %1061, 4
+  store i32 %1062, ptr %59, align 8, !tbaa !75
+  %1063 = lshr i64 %1052, 14
+  %1064 = add i32 %1053, -14
+  %1065 = icmp samesign ugt i32 %1055, 29
+  %1066 = icmp samesign ugt i32 %1058, 29
+  %1067 = select i1 %1065, i1 true, i1 %1066
+  br i1 %1067, label %1068, label %1069
 
-1077:                                             ; preds = %1058
+1068:                                             ; preds = %1049
   store ptr @.str.8, ptr %55, align 8, !tbaa !45
   store i32 16209, ptr %21, align 8, !tbaa !20
-  br label %2351
+  br label %2339
 
-1078:                                             ; preds = %1058
+1069:                                             ; preds = %1049
   store i32 0, ptr %60, align 4, !tbaa !76
   store i32 16197, ptr %21, align 8, !tbaa !20
-  br label %1083
+  br label %1074
 
-1079:                                             ; preds = %88
-  %1080 = load i32, ptr %59, align 8, !tbaa !75
-  %1081 = load i32, ptr %60, align 4, !tbaa !76
-  %1082 = icmp ult i32 %1081, %1080
-  br i1 %1082, label %1083, label %1092
+1070:                                             ; preds = %88
+  %1071 = load i32, ptr %59, align 8, !tbaa !75
+  %1072 = load i32, ptr %60, align 4, !tbaa !76
+  %1073 = icmp ult i32 %1072, %1071
+  br i1 %1073, label %1074, label %1083
 
-1083:                                             ; preds = %1079, %1078
-  %1084 = phi i32 [ %1073, %1078 ], [ %95, %1079 ]
-  %1085 = phi i64 [ %1072, %1078 ], [ %94, %1079 ]
-  %1086 = phi i32 [ %1060, %1078 ], [ %92, %1079 ]
-  %1087 = phi ptr [ %1059, %1078 ], [ %90, %1079 ]
-  %1088 = phi i32 [ %1071, %1078 ], [ %1080, %1079 ]
-  %1089 = phi i32 [ 0, %1078 ], [ %1081, %1079 ]
-  %1090 = zext i32 %1089 to i64
-  %1091 = zext i32 %1088 to i64
-  br label %1101
+1074:                                             ; preds = %1070, %1069
+  %1075 = phi i32 [ %1064, %1069 ], [ %95, %1070 ]
+  %1076 = phi i64 [ %1063, %1069 ], [ %94, %1070 ]
+  %1077 = phi i32 [ %1051, %1069 ], [ %92, %1070 ]
+  %1078 = phi ptr [ %1050, %1069 ], [ %90, %1070 ]
+  %1079 = phi i32 [ %1062, %1069 ], [ %1071, %1070 ]
+  %1080 = phi i32 [ 0, %1069 ], [ %1072, %1070 ]
+  %1081 = zext i32 %1080 to i64
+  %1082 = zext i32 %1079 to i64
+  br label %1092
 
-1092:                                             ; preds = %1123, %1079
-  %1093 = phi ptr [ %90, %1079 ], [ %1124, %1123 ]
-  %1094 = phi i32 [ %92, %1079 ], [ %1125, %1123 ]
-  %1095 = phi i64 [ %94, %1079 ], [ %1137, %1123 ]
-  %1096 = phi i32 [ %95, %1079 ], [ %1136, %1123 ]
-  %1097 = phi i32 [ %1081, %1079 ], [ %1088, %1123 ]
-  %1098 = icmp ult i32 %1097, 19
-  br i1 %1098, label %1099, label %1149
+1083:                                             ; preds = %1114, %1070
+  %1084 = phi ptr [ %90, %1070 ], [ %1115, %1114 ]
+  %1085 = phi i32 [ %92, %1070 ], [ %1116, %1114 ]
+  %1086 = phi i64 [ %94, %1070 ], [ %1128, %1114 ]
+  %1087 = phi i32 [ %95, %1070 ], [ %1127, %1114 ]
+  %1088 = phi i32 [ %1072, %1070 ], [ %1079, %1114 ]
+  %1089 = icmp ult i32 %1088, 19
+  br i1 %1089, label %1090, label %1140
+
+1090:                                             ; preds = %1083
+  %1091 = zext nneg i32 %1088 to i64
+  br label %1130
+
+1092:                                             ; preds = %1114, %1074
+  %1093 = phi i64 [ %1081, %1074 ], [ %1119, %1114 ]
+  %1094 = phi i32 [ %1075, %1074 ], [ %1127, %1114 ]
+  %1095 = phi i64 [ %1076, %1074 ], [ %1128, %1114 ]
+  %1096 = phi i32 [ %1077, %1074 ], [ %1116, %1114 ]
+  %1097 = phi ptr [ %1078, %1074 ], [ %1115, %1114 ]
+  %1098 = icmp ult i32 %1094, 3
+  br i1 %1098, label %1099, label %1114
 
 1099:                                             ; preds = %1092
-  %1100 = zext nneg i32 %1097 to i64
-  br label %1139
+  %1100 = or disjoint i32 %1094, 8
+  %1101 = icmp eq i32 %1096, 0
+  br i1 %1101, label %2473, label %1102
 
-1101:                                             ; preds = %1123, %1083
-  %1102 = phi i64 [ %1090, %1083 ], [ %1128, %1123 ]
-  %1103 = phi i32 [ %1084, %1083 ], [ %1136, %1123 ]
-  %1104 = phi i64 [ %1085, %1083 ], [ %1137, %1123 ]
-  %1105 = phi i32 [ %1086, %1083 ], [ %1125, %1123 ]
-  %1106 = phi ptr [ %1087, %1083 ], [ %1124, %1123 ]
-  %1107 = icmp ult i32 %1103, 3
-  br i1 %1107, label %1108, label %1123
+1102:                                             ; preds = %1099
+  %1103 = load i8, ptr %1097, align 1, !tbaa !44
+  %1104 = zext i8 %1103 to i64
+  %1105 = zext nneg i32 %1094 to i64
+  %1106 = shl nuw nsw i64 %1104, %1105
+  %1107 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %1095, i64 %1106), !nosanitize !47
+  %1108 = extractvalue { i64, i1 } %1107, 1, !nosanitize !47
+  br i1 %1108, label %1109, label %1110, !prof !48, !nosanitize !47
 
-1108:                                             ; preds = %1101
-  %1109 = or disjoint i32 %1103, 8
-  %1110 = icmp eq i32 %1105, 0
-  br i1 %1110, label %2485, label %1111
-
-1111:                                             ; preds = %1108
-  %1112 = load i8, ptr %1106, align 1, !tbaa !44
-  %1113 = zext i8 %1112 to i64
-  %1114 = zext nneg i32 %1103 to i64
-  %1115 = shl nuw nsw i64 %1113, %1114
-  %1116 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %1104, i64 %1115), !nosanitize !47
-  %1117 = extractvalue { i64, i1 } %1116, 1, !nosanitize !47
-  br i1 %1117, label %1118, label %1119, !prof !48, !nosanitize !47
-
-1118:                                             ; preds = %1111
+1109:                                             ; preds = %1102
   call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-1119:                                             ; preds = %1111
-  %1120 = extractvalue { i64, i1 } %1116, 0, !nosanitize !47
-  %1121 = getelementptr inbounds nuw i8, ptr %1106, i64 1
-  %1122 = add i32 %1105, -1
-  br label %1123
+1110:                                             ; preds = %1102
+  %1111 = extractvalue { i64, i1 } %1107, 0, !nosanitize !47
+  %1112 = getelementptr inbounds nuw i8, ptr %1097, i64 1
+  %1113 = add i32 %1096, -1
+  br label %1114
 
-1123:                                             ; preds = %1119, %1101
-  %1124 = phi ptr [ %1121, %1119 ], [ %1106, %1101 ]
-  %1125 = phi i32 [ %1122, %1119 ], [ %1105, %1101 ]
-  %1126 = phi i64 [ %1120, %1119 ], [ %1104, %1101 ]
-  %1127 = phi i32 [ %1109, %1119 ], [ %1103, %1101 ]
-  %1128 = add nuw nsw i64 %1102, 1
-  %1129 = trunc i64 %1126 to i16
-  %1130 = and i16 %1129, 7
-  %1131 = trunc nuw i64 %1128 to i32
-  store i32 %1131, ptr %60, align 4, !tbaa !76
-  %1132 = getelementptr inbounds nuw [2 x i8], ptr @inflate.order, i64 %1102
-  %1133 = load i16, ptr %1132, align 2, !tbaa !77
-  %1134 = zext i16 %1133 to i64
-  %1135 = getelementptr inbounds nuw [2 x i8], ptr %61, i64 %1134
-  store i16 %1130, ptr %1135, align 2, !tbaa !77
-  %1136 = add i32 %1127, -3
-  %1137 = lshr i64 %1126, 3
-  %1138 = icmp eq i64 %1128, %1091
-  br i1 %1138, label %1092, label %1101, !llvm.loop !79
+1114:                                             ; preds = %1110, %1092
+  %1115 = phi ptr [ %1112, %1110 ], [ %1097, %1092 ]
+  %1116 = phi i32 [ %1113, %1110 ], [ %1096, %1092 ]
+  %1117 = phi i64 [ %1111, %1110 ], [ %1095, %1092 ]
+  %1118 = phi i32 [ %1100, %1110 ], [ %1094, %1092 ]
+  %1119 = add nuw nsw i64 %1093, 1
+  %1120 = trunc i64 %1117 to i16
+  %1121 = and i16 %1120, 7
+  %1122 = trunc nuw i64 %1119 to i32
+  store i32 %1122, ptr %60, align 4, !tbaa !76
+  %1123 = getelementptr inbounds nuw [2 x i8], ptr @inflate.order, i64 %1093
+  %1124 = load i16, ptr %1123, align 2, !tbaa !77
+  %1125 = zext i16 %1124 to i64
+  %1126 = getelementptr inbounds nuw [2 x i8], ptr %61, i64 %1125
+  store i16 %1121, ptr %1126, align 2, !tbaa !77
+  %1127 = add i32 %1118, -3
+  %1128 = lshr i64 %1117, 3
+  %1129 = icmp eq i64 %1119, %1082
+  br i1 %1129, label %1083, label %1092, !llvm.loop !79
 
-1139:                                             ; preds = %1139, %1099
-  %1140 = phi i64 [ %1100, %1099 ], [ %1141, %1139 ]
-  %1141 = add nuw nsw i64 %1140, 1
-  %1142 = getelementptr inbounds nuw [2 x i8], ptr @inflate.order, i64 %1140
-  %1143 = load i16, ptr %1142, align 2, !tbaa !77
-  %1144 = zext i16 %1143 to i64
-  %1145 = getelementptr inbounds nuw [2 x i8], ptr %61, i64 %1144
-  store i16 0, ptr %1145, align 2, !tbaa !77
-  %1146 = and i64 %1141, 4294967295
-  %1147 = icmp eq i64 %1146, 19
-  br i1 %1147, label %1148, label %1139, !llvm.loop !80
+1130:                                             ; preds = %1130, %1090
+  %1131 = phi i64 [ %1091, %1090 ], [ %1132, %1130 ]
+  %1132 = add nuw nsw i64 %1131, 1
+  %1133 = getelementptr inbounds nuw [2 x i8], ptr @inflate.order, i64 %1131
+  %1134 = load i16, ptr %1133, align 2, !tbaa !77
+  %1135 = zext i16 %1134 to i64
+  %1136 = getelementptr inbounds nuw [2 x i8], ptr %61, i64 %1135
+  store i16 0, ptr %1136, align 2, !tbaa !77
+  %1137 = and i64 %1132, 4294967295
+  %1138 = icmp eq i64 %1137, 19
+  br i1 %1138, label %1139, label %1130, !llvm.loop !80
 
-1148:                                             ; preds = %1139
+1139:                                             ; preds = %1130
   store i32 19, ptr %60, align 4, !tbaa !76
-  br label %1149
+  br label %1140
 
-1149:                                             ; preds = %1148, %1092
+1140:                                             ; preds = %1139, %1083
   store ptr %62, ptr %63, align 8, !tbaa !33
   store ptr %62, ptr %64, align 8, !tbaa !34
   store ptr %62, ptr %65, align 8, !tbaa !35
   store i32 7, ptr %66, align 8, !tbaa !81
-  %1150 = call i32 @inflate_table(i32 noundef 0, ptr noundef nonnull %61, i32 noundef 19, ptr noundef nonnull %63, ptr noundef nonnull %66, ptr noundef nonnull %67) #12
-  %1151 = icmp eq i32 %1150, 0
-  br i1 %1151, label %1153, label %1152
+  %1141 = call i32 @inflate_table(i32 noundef 0, ptr noundef nonnull %61, i32 noundef 19, ptr noundef nonnull %63, ptr noundef nonnull %66, ptr noundef nonnull %67) #12
+  %1142 = icmp eq i32 %1141, 0
+  br i1 %1142, label %1144, label %1143
 
-1152:                                             ; preds = %1149
+1143:                                             ; preds = %1140
   store ptr @.str.9, ptr %55, align 8, !tbaa !45
   store i32 16209, ptr %21, align 8, !tbaa !20
-  br label %2351
+  br label %2339
 
-1153:                                             ; preds = %1149
+1144:                                             ; preds = %1140
   store i32 0, ptr %60, align 4, !tbaa !76
   store i32 16198, ptr %21, align 8, !tbaa !20
-  br label %1154
+  br label %1145
 
-1154:                                             ; preds = %1153, %88
-  %1155 = phi ptr [ %1093, %1153 ], [ %90, %88 ]
-  %1156 = phi i32 [ %1094, %1153 ], [ %92, %88 ]
-  %1157 = phi i64 [ %1095, %1153 ], [ %94, %88 ]
-  %1158 = phi i32 [ %1096, %1153 ], [ %95, %88 ]
-  %1159 = phi i32 [ 0, %1153 ], [ %97, %88 ]
-  %1160 = load i32, ptr %57, align 4, !tbaa !73
-  %1161 = load i32, ptr %58, align 8, !tbaa !74
-  %1162 = call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %1160, i32 %1161), !nosanitize !47
-  %1163 = extractvalue { i32, i1 } %1162, 1, !nosanitize !47
-  br i1 %1163, label %1176, label %1164, !prof !82, !nosanitize !47
+1145:                                             ; preds = %1144, %88
+  %1146 = phi ptr [ %1084, %1144 ], [ %90, %88 ]
+  %1147 = phi i32 [ %1085, %1144 ], [ %92, %88 ]
+  %1148 = phi i64 [ %1086, %1144 ], [ %94, %88 ]
+  %1149 = phi i32 [ %1087, %1144 ], [ %95, %88 ]
+  %1150 = phi i32 [ 0, %1144 ], [ %97, %88 ]
+  %1151 = load i32, ptr %57, align 4, !tbaa !73
+  %1152 = load i32, ptr %58, align 8, !tbaa !74
+  %1153 = call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %1151, i32 %1152), !nosanitize !47
+  %1154 = extractvalue { i32, i1 } %1153, 1, !nosanitize !47
+  br i1 %1154, label %1167, label %1155, !prof !82, !nosanitize !47
 
-1164:                                             ; preds = %1154
-  %1165 = extractvalue { i32, i1 } %1162, 0, !nosanitize !47
-  %1166 = load i32, ptr %60, align 4, !tbaa !76
-  %1167 = call i32 @llvm.umax.i32(i32 %1166, i32 %1165)
-  %1168 = zext i32 %1167 to i64
-  %1169 = icmp ult i32 %1166, %1165
-  br i1 %1169, label %1170, label %1447
+1155:                                             ; preds = %1145
+  %1156 = extractvalue { i32, i1 } %1153, 0, !nosanitize !47
+  %1157 = load i32, ptr %60, align 4, !tbaa !76
+  %1158 = call i32 @llvm.umax.i32(i32 %1157, i32 %1156)
+  %1159 = zext i32 %1158 to i64
+  %1160 = icmp ult i32 %1157, %1156
+  br i1 %1160, label %1161, label %1438
 
-1170:                                             ; preds = %1164
-  %1171 = zext i32 %1166 to i64
-  %1172 = load i32, ptr %66, align 8, !tbaa !81
-  %1173 = shl nsw i32 -1, %1172
-  %1174 = xor i32 %1173, -1
-  %1175 = load ptr, ptr %65, align 8, !tbaa !35
-  br label %1177
+1161:                                             ; preds = %1155
+  %1162 = zext i32 %1157 to i64
+  %1163 = load i32, ptr %66, align 8, !tbaa !81
+  %1164 = shl nsw i32 -1, %1163
+  %1165 = xor i32 %1164, -1
+  %1166 = load ptr, ptr %65, align 8, !tbaa !35
+  br label %1168
 
-1176:                                             ; preds = %1154
+1167:                                             ; preds = %1145
   call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-1177:                                             ; preds = %1442, %1170
-  %1178 = phi ptr [ %1155, %1170 ], [ %1227, %1442 ]
-  %1179 = phi i32 [ %1156, %1170 ], [ %1228, %1442 ]
-  %1180 = phi i64 [ %1157, %1170 ], [ %1239, %1442 ]
-  %1181 = phi i32 [ %1158, %1170 ], [ %1241, %1442 ]
-  %1182 = phi i64 [ %1171, %1170 ], [ %1443, %1442 ]
-  %1183 = phi i32 [ %1166, %1170 ], [ %1444, %1442 ]
-  %1184 = trunc i64 %1180 to i32
-  %1185 = and i32 %1174, %1184
-  %1186 = zext nneg i32 %1185 to i64
-  %1187 = getelementptr inbounds nuw [4 x i8], ptr %1175, i64 %1186
-  %1188 = getelementptr inbounds nuw i8, ptr %1187, i64 1
-  %1189 = load i8, ptr %1188, align 1, !tbaa !44
-  %1190 = zext i8 %1189 to i32
-  %1191 = icmp ult i32 %1181, %1190
-  br i1 %1191, label %1192, label %1225
+1168:                                             ; preds = %1433, %1161
+  %1169 = phi ptr [ %1146, %1161 ], [ %1218, %1433 ]
+  %1170 = phi i32 [ %1147, %1161 ], [ %1219, %1433 ]
+  %1171 = phi i64 [ %1148, %1161 ], [ %1230, %1433 ]
+  %1172 = phi i32 [ %1149, %1161 ], [ %1232, %1433 ]
+  %1173 = phi i64 [ %1162, %1161 ], [ %1434, %1433 ]
+  %1174 = phi i32 [ %1157, %1161 ], [ %1435, %1433 ]
+  %1175 = trunc i64 %1171 to i32
+  %1176 = and i32 %1165, %1175
+  %1177 = zext nneg i32 %1176 to i64
+  %1178 = getelementptr inbounds nuw [4 x i8], ptr %1166, i64 %1177
+  %1179 = getelementptr inbounds nuw i8, ptr %1178, i64 1
+  %1180 = load i8, ptr %1179, align 1, !tbaa !44
+  %1181 = zext i8 %1180 to i32
+  %1182 = icmp ult i32 %1172, %1181
+  br i1 %1182, label %1183, label %1216
 
-1192:                                             ; preds = %1177
-  %1193 = icmp eq i32 %1179, 0
-  br i1 %1193, label %2361, label %1194
+1183:                                             ; preds = %1168
+  %1184 = icmp eq i32 %1170, 0
+  br i1 %1184, label %2349, label %1185
 
-1194:                                             ; preds = %1192
-  %1195 = zext nneg i32 %1181 to i64
-  br label %1198
+1185:                                             ; preds = %1183
+  %1186 = zext nneg i32 %1172 to i64
+  br label %1189
 
-1196:                                             ; preds = %1209
-  %1197 = icmp eq i32 %1212, 0
-  br i1 %1197, label %2361, label %1198
+1187:                                             ; preds = %1200
+  %1188 = icmp eq i32 %1203, 0
+  br i1 %1188, label %2349, label %1189
 
-1198:                                             ; preds = %1196, %1194
-  %1199 = phi ptr [ %1178, %1194 ], [ %1211, %1196 ]
-  %1200 = phi i32 [ %1179, %1194 ], [ %1212, %1196 ]
-  %1201 = phi i64 [ %1180, %1194 ], [ %1210, %1196 ]
-  %1202 = phi i64 [ %1195, %1194 ], [ %1213, %1196 ]
-  %1203 = load i8, ptr %1199, align 1, !tbaa !44
-  %1204 = zext i8 %1203 to i64
-  %1205 = shl i64 %1204, %1202
-  %1206 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %1201, i64 %1205), !nosanitize !47
-  %1207 = extractvalue { i64, i1 } %1206, 1, !nosanitize !47
-  br i1 %1207, label %1208, label %1209, !prof !48, !nosanitize !47
+1189:                                             ; preds = %1187, %1185
+  %1190 = phi ptr [ %1169, %1185 ], [ %1202, %1187 ]
+  %1191 = phi i32 [ %1170, %1185 ], [ %1203, %1187 ]
+  %1192 = phi i64 [ %1171, %1185 ], [ %1201, %1187 ]
+  %1193 = phi i64 [ %1186, %1185 ], [ %1204, %1187 ]
+  %1194 = load i8, ptr %1190, align 1, !tbaa !44
+  %1195 = zext i8 %1194 to i64
+  %1196 = shl i64 %1195, %1193
+  %1197 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %1192, i64 %1196), !nosanitize !47
+  %1198 = extractvalue { i64, i1 } %1197, 1, !nosanitize !47
+  br i1 %1198, label %1199, label %1200, !prof !48, !nosanitize !47
 
-1208:                                             ; preds = %1198
+1199:                                             ; preds = %1189
   call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-1209:                                             ; preds = %1198
-  %1210 = extractvalue { i64, i1 } %1206, 0, !nosanitize !47
-  %1211 = getelementptr inbounds nuw i8, ptr %1199, i64 1
-  %1212 = add i32 %1200, -1
-  %1213 = add nuw nsw i64 %1202, 8
-  %1214 = trunc i64 %1210 to i32
-  %1215 = and i32 %1174, %1214
-  %1216 = zext nneg i32 %1215 to i64
-  %1217 = getelementptr inbounds nuw [4 x i8], ptr %1175, i64 %1216
-  %1218 = getelementptr inbounds nuw i8, ptr %1217, i64 1
-  %1219 = load i8, ptr %1218, align 1, !tbaa !44
-  %1220 = zext i8 %1219 to i64
-  %1221 = icmp samesign ult i64 %1213, %1220
-  br i1 %1221, label %1196, label %1222
+1200:                                             ; preds = %1189
+  %1201 = extractvalue { i64, i1 } %1197, 0, !nosanitize !47
+  %1202 = getelementptr inbounds nuw i8, ptr %1190, i64 1
+  %1203 = add i32 %1191, -1
+  %1204 = add nuw nsw i64 %1193, 8
+  %1205 = trunc i64 %1201 to i32
+  %1206 = and i32 %1165, %1205
+  %1207 = zext nneg i32 %1206 to i64
+  %1208 = getelementptr inbounds nuw [4 x i8], ptr %1166, i64 %1207
+  %1209 = getelementptr inbounds nuw i8, ptr %1208, i64 1
+  %1210 = load i8, ptr %1209, align 1, !tbaa !44
+  %1211 = zext i8 %1210 to i64
+  %1212 = icmp samesign ult i64 %1204, %1211
+  br i1 %1212, label %1187, label %1213
 
-1222:                                             ; preds = %1209
-  %1223 = zext i8 %1219 to i32
-  %1224 = trunc nuw nsw i64 %1213 to i32
-  br label %1225
+1213:                                             ; preds = %1200
+  %1214 = zext i8 %1210 to i32
+  %1215 = trunc nuw nsw i64 %1204 to i32
+  br label %1216
 
-1225:                                             ; preds = %1222, %1177
-  %1226 = phi i64 [ %1186, %1177 ], [ %1216, %1222 ]
-  %1227 = phi ptr [ %1178, %1177 ], [ %1211, %1222 ]
-  %1228 = phi i32 [ %1179, %1177 ], [ %1212, %1222 ]
-  %1229 = phi i64 [ %1180, %1177 ], [ %1210, %1222 ]
-  %1230 = phi i32 [ %1181, %1177 ], [ %1224, %1222 ]
-  %1231 = phi i8 [ %1189, %1177 ], [ %1219, %1222 ]
-  %1232 = phi i32 [ %1190, %1177 ], [ %1223, %1222 ]
-  %1233 = getelementptr inbounds nuw [4 x i8], ptr %1175, i64 %1226
-  %1234 = getelementptr inbounds nuw i8, ptr %1233, i64 2
-  %1235 = load i16, ptr %1234, align 2, !tbaa !77
-  %1236 = icmp ult i16 %1235, 16
-  br i1 %1236, label %1237, label %1247
+1216:                                             ; preds = %1213, %1168
+  %1217 = phi i64 [ %1177, %1168 ], [ %1207, %1213 ]
+  %1218 = phi ptr [ %1169, %1168 ], [ %1202, %1213 ]
+  %1219 = phi i32 [ %1170, %1168 ], [ %1203, %1213 ]
+  %1220 = phi i64 [ %1171, %1168 ], [ %1201, %1213 ]
+  %1221 = phi i32 [ %1172, %1168 ], [ %1215, %1213 ]
+  %1222 = phi i8 [ %1180, %1168 ], [ %1210, %1213 ]
+  %1223 = phi i32 [ %1181, %1168 ], [ %1214, %1213 ]
+  %1224 = getelementptr inbounds nuw [4 x i8], ptr %1166, i64 %1217
+  %1225 = getelementptr inbounds nuw i8, ptr %1224, i64 2
+  %1226 = load i16, ptr %1225, align 2, !tbaa !77
+  %1227 = icmp ult i16 %1226, 16
+  br i1 %1227, label %1228, label %1238
 
-1237:                                             ; preds = %1225
-  %1238 = zext nneg i8 %1231 to i64
-  %1239 = lshr i64 %1229, %1238
-  %1240 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %1230, i32 %1232), !nosanitize !47
-  %1241 = extractvalue { i32, i1 } %1240, 0, !nosanitize !47
-  %1242 = extractvalue { i32, i1 } %1240, 1, !nosanitize !47
-  br i1 %1242, label %1243, label %1244, !prof !48, !nosanitize !47
+1228:                                             ; preds = %1216
+  %1229 = zext nneg i8 %1222 to i64
+  %1230 = lshr i64 %1220, %1229
+  %1231 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %1221, i32 %1223), !nosanitize !47
+  %1232 = extractvalue { i32, i1 } %1231, 0, !nosanitize !47
+  %1233 = extractvalue { i32, i1 } %1231, 1, !nosanitize !47
+  br i1 %1233, label %1234, label %1235, !prof !48, !nosanitize !47
 
-1243:                                             ; preds = %1237
+1234:                                             ; preds = %1228
   call void @llvm.ubsantrap(i8 21) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-1244:                                             ; preds = %1237
-  %1245 = icmp eq i64 %1182, 4294967295
-  br i1 %1245, label %1246, label %1442, !prof !48, !nosanitize !47
+1235:                                             ; preds = %1228
+  %1236 = icmp eq i64 %1173, 4294967295
+  br i1 %1236, label %1237, label %1433, !prof !48, !nosanitize !47
 
-1246:                                             ; preds = %1244
+1237:                                             ; preds = %1235
   call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-1247:                                             ; preds = %1225
-  %1248 = trunc nuw i64 %1182 to i32
-  switch i16 %1235, label %1261 [
-    i16 16, label %1255
-    i16 17, label %1249
+1238:                                             ; preds = %1216
+  %1239 = trunc nuw i64 %1173 to i32
+  switch i16 %1226, label %1252 [
+    i16 16, label %1246
+    i16 17, label %1240
   ]
 
-1249:                                             ; preds = %1247
-  %1250 = add nuw nsw i32 %1232, 3
-  %1251 = icmp ult i32 %1230, %1250
-  br i1 %1251, label %1252, label %1332
+1240:                                             ; preds = %1238
+  %1241 = add nuw nsw i32 %1223, 3
+  %1242 = icmp ult i32 %1221, %1241
+  br i1 %1242, label %1243, label %1323
 
-1252:                                             ; preds = %1249
-  %1253 = zext nneg i32 %1230 to i64
-  %1254 = zext nneg i32 %1250 to i64
-  br label %1311
+1243:                                             ; preds = %1240
+  %1244 = zext nneg i32 %1221 to i64
+  %1245 = zext nneg i32 %1241 to i64
+  br label %1302
 
-1255:                                             ; preds = %1247
-  %1256 = add nuw nsw i32 %1232, 2
-  %1257 = icmp ult i32 %1230, %1256
-  br i1 %1257, label %1258, label %1288
+1246:                                             ; preds = %1238
+  %1247 = add nuw nsw i32 %1223, 2
+  %1248 = icmp ult i32 %1221, %1247
+  br i1 %1248, label %1249, label %1279
 
-1258:                                             ; preds = %1255
-  %1259 = zext nneg i32 %1230 to i64
-  %1260 = zext nneg i32 %1256 to i64
-  br label %1267
+1249:                                             ; preds = %1246
+  %1250 = zext nneg i32 %1221 to i64
+  %1251 = zext nneg i32 %1247 to i64
+  br label %1258
 
-1261:                                             ; preds = %1247
-  %1262 = add nuw nsw i32 %1232, 7
-  %1263 = icmp ult i32 %1230, %1262
-  br i1 %1263, label %1264, label %1369
+1252:                                             ; preds = %1238
+  %1253 = add nuw nsw i32 %1223, 7
+  %1254 = icmp ult i32 %1221, %1253
+  br i1 %1254, label %1255, label %1360
 
-1264:                                             ; preds = %1261
-  %1265 = zext nneg i32 %1230 to i64
-  %1266 = zext nneg i32 %1262 to i64
-  br label %1348
+1255:                                             ; preds = %1252
+  %1256 = zext nneg i32 %1221 to i64
+  %1257 = zext nneg i32 %1253 to i64
+  br label %1339
 
-1267:                                             ; preds = %1280, %1258
-  %1268 = phi i64 [ %1259, %1258 ], [ %1284, %1280 ]
-  %1269 = phi i64 [ %1229, %1258 ], [ %1281, %1280 ]
-  %1270 = phi i32 [ %1228, %1258 ], [ %1283, %1280 ]
-  %1271 = phi ptr [ %1227, %1258 ], [ %1282, %1280 ]
-  %1272 = icmp eq i32 %1270, 0
-  br i1 %1272, label %2456, label %1273
+1258:                                             ; preds = %1271, %1249
+  %1259 = phi i64 [ %1250, %1249 ], [ %1275, %1271 ]
+  %1260 = phi i64 [ %1220, %1249 ], [ %1272, %1271 ]
+  %1261 = phi i32 [ %1219, %1249 ], [ %1274, %1271 ]
+  %1262 = phi ptr [ %1218, %1249 ], [ %1273, %1271 ]
+  %1263 = icmp eq i32 %1261, 0
+  br i1 %1263, label %2444, label %1264
 
-1273:                                             ; preds = %1267
-  %1274 = load i8, ptr %1271, align 1, !tbaa !44
-  %1275 = zext i8 %1274 to i64
-  %1276 = shl i64 %1275, %1268
-  %1277 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %1269, i64 %1276), !nosanitize !47
-  %1278 = extractvalue { i64, i1 } %1277, 1, !nosanitize !47
-  br i1 %1278, label %1279, label %1280, !prof !48, !nosanitize !47
+1264:                                             ; preds = %1258
+  %1265 = load i8, ptr %1262, align 1, !tbaa !44
+  %1266 = zext i8 %1265 to i64
+  %1267 = shl i64 %1266, %1259
+  %1268 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %1260, i64 %1267), !nosanitize !47
+  %1269 = extractvalue { i64, i1 } %1268, 1, !nosanitize !47
+  br i1 %1269, label %1270, label %1271, !prof !48, !nosanitize !47
 
-1279:                                             ; preds = %1273
+1270:                                             ; preds = %1264
   call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-1280:                                             ; preds = %1273
-  %1281 = extractvalue { i64, i1 } %1277, 0, !nosanitize !47
-  %1282 = getelementptr inbounds nuw i8, ptr %1271, i64 1
-  %1283 = add i32 %1270, -1
-  %1284 = add nuw nsw i64 %1268, 8
-  %1285 = icmp samesign ult i64 %1284, %1260
-  br i1 %1285, label %1267, label %1286, !llvm.loop !83
+1271:                                             ; preds = %1264
+  %1272 = extractvalue { i64, i1 } %1268, 0, !nosanitize !47
+  %1273 = getelementptr inbounds nuw i8, ptr %1262, i64 1
+  %1274 = add i32 %1261, -1
+  %1275 = add nuw nsw i64 %1259, 8
+  %1276 = icmp samesign ult i64 %1275, %1251
+  br i1 %1276, label %1258, label %1277, !llvm.loop !83
 
-1286:                                             ; preds = %1280
-  %1287 = trunc nuw nsw i64 %1284 to i32
-  br label %1288
+1277:                                             ; preds = %1271
+  %1278 = trunc nuw nsw i64 %1275 to i32
+  br label %1279
 
-1288:                                             ; preds = %1286, %1255
-  %1289 = phi ptr [ %1227, %1255 ], [ %1282, %1286 ]
-  %1290 = phi i32 [ %1228, %1255 ], [ %1283, %1286 ]
-  %1291 = phi i64 [ %1229, %1255 ], [ %1281, %1286 ]
-  %1292 = phi i32 [ %1230, %1255 ], [ %1287, %1286 ]
-  %1293 = zext nneg i8 %1231 to i64
-  %1294 = lshr i64 %1291, %1293
-  %1295 = sub nuw i32 %1292, %1232
-  %1296 = icmp eq i64 %1182, 0
-  br i1 %1296, label %1297, label %1298
+1279:                                             ; preds = %1277, %1246
+  %1280 = phi ptr [ %1218, %1246 ], [ %1273, %1277 ]
+  %1281 = phi i32 [ %1219, %1246 ], [ %1274, %1277 ]
+  %1282 = phi i64 [ %1220, %1246 ], [ %1272, %1277 ]
+  %1283 = phi i32 [ %1221, %1246 ], [ %1278, %1277 ]
+  %1284 = zext nneg i8 %1222 to i64
+  %1285 = lshr i64 %1282, %1284
+  %1286 = sub nuw i32 %1283, %1223
+  %1287 = icmp eq i64 %1173, 0
+  br i1 %1287, label %1288, label %1289
 
-1297:                                             ; preds = %1288
+1288:                                             ; preds = %1279
   store ptr @.str.10, ptr %55, align 8, !tbaa !45
   store i32 16209, ptr %21, align 8, !tbaa !20
-  br label %2351
+  br label %2339
 
-1298:                                             ; preds = %1288
-  %1299 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %1295, i32 2), !nosanitize !47
-  %1300 = extractvalue { i32, i1 } %1299, 1, !nosanitize !47
-  br i1 %1300, label %1301, label %1302, !prof !48, !nosanitize !47
+1289:                                             ; preds = %1279
+  %1290 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %1286, i32 2), !nosanitize !47
+  %1291 = extractvalue { i32, i1 } %1290, 1, !nosanitize !47
+  br i1 %1291, label %1292, label %1293, !prof !48, !nosanitize !47
 
-1301:                                             ; preds = %1298
+1292:                                             ; preds = %1289
   call void @llvm.ubsantrap(i8 21) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-1302:                                             ; preds = %1298
-  %1303 = trunc i64 %1294 to i32
-  %1304 = and i32 %1303, 3
-  %1305 = add nuw nsw i32 %1304, 3
-  %1306 = add nuw i64 %1182, 4294967295
-  %1307 = and i64 %1306, 4294967295
-  %1308 = getelementptr inbounds nuw [2 x i8], ptr %61, i64 %1307
-  %1309 = load i16, ptr %1308, align 2, !tbaa !77
-  %1310 = lshr i64 %1294, 2
-  br label %1385
+1293:                                             ; preds = %1289
+  %1294 = trunc i64 %1285 to i32
+  %1295 = and i32 %1294, 3
+  %1296 = add nuw nsw i32 %1295, 3
+  %1297 = add nuw i64 %1173, 4294967295
+  %1298 = and i64 %1297, 4294967295
+  %1299 = getelementptr inbounds nuw [2 x i8], ptr %61, i64 %1298
+  %1300 = load i16, ptr %1299, align 2, !tbaa !77
+  %1301 = lshr i64 %1285, 2
+  br label %1376
 
-1311:                                             ; preds = %1324, %1252
-  %1312 = phi i64 [ %1253, %1252 ], [ %1328, %1324 ]
-  %1313 = phi i64 [ %1229, %1252 ], [ %1325, %1324 ]
-  %1314 = phi i32 [ %1228, %1252 ], [ %1327, %1324 ]
-  %1315 = phi ptr [ %1227, %1252 ], [ %1326, %1324 ]
-  %1316 = icmp eq i32 %1314, 0
-  br i1 %1316, label %2461, label %1317
+1302:                                             ; preds = %1315, %1243
+  %1303 = phi i64 [ %1244, %1243 ], [ %1319, %1315 ]
+  %1304 = phi i64 [ %1220, %1243 ], [ %1316, %1315 ]
+  %1305 = phi i32 [ %1219, %1243 ], [ %1318, %1315 ]
+  %1306 = phi ptr [ %1218, %1243 ], [ %1317, %1315 ]
+  %1307 = icmp eq i32 %1305, 0
+  br i1 %1307, label %2449, label %1308
 
-1317:                                             ; preds = %1311
-  %1318 = load i8, ptr %1315, align 1, !tbaa !44
-  %1319 = zext i8 %1318 to i64
-  %1320 = shl i64 %1319, %1312
-  %1321 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %1313, i64 %1320), !nosanitize !47
-  %1322 = extractvalue { i64, i1 } %1321, 1, !nosanitize !47
-  br i1 %1322, label %1323, label %1324, !prof !48, !nosanitize !47
+1308:                                             ; preds = %1302
+  %1309 = load i8, ptr %1306, align 1, !tbaa !44
+  %1310 = zext i8 %1309 to i64
+  %1311 = shl i64 %1310, %1303
+  %1312 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %1304, i64 %1311), !nosanitize !47
+  %1313 = extractvalue { i64, i1 } %1312, 1, !nosanitize !47
+  br i1 %1313, label %1314, label %1315, !prof !48, !nosanitize !47
 
-1323:                                             ; preds = %1317
+1314:                                             ; preds = %1308
   call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-1324:                                             ; preds = %1317
-  %1325 = extractvalue { i64, i1 } %1321, 0, !nosanitize !47
-  %1326 = getelementptr inbounds nuw i8, ptr %1315, i64 1
-  %1327 = add i32 %1314, -1
-  %1328 = add nuw nsw i64 %1312, 8
-  %1329 = icmp samesign ult i64 %1328, %1254
-  br i1 %1329, label %1311, label %1330, !llvm.loop !84
+1315:                                             ; preds = %1308
+  %1316 = extractvalue { i64, i1 } %1312, 0, !nosanitize !47
+  %1317 = getelementptr inbounds nuw i8, ptr %1306, i64 1
+  %1318 = add i32 %1305, -1
+  %1319 = add nuw nsw i64 %1303, 8
+  %1320 = icmp samesign ult i64 %1319, %1245
+  br i1 %1320, label %1302, label %1321, !llvm.loop !84
 
-1330:                                             ; preds = %1324
-  %1331 = trunc nuw nsw i64 %1328 to i32
-  br label %1332
+1321:                                             ; preds = %1315
+  %1322 = trunc nuw nsw i64 %1319 to i32
+  br label %1323
 
-1332:                                             ; preds = %1330, %1249
-  %1333 = phi ptr [ %1227, %1249 ], [ %1326, %1330 ]
-  %1334 = phi i32 [ %1228, %1249 ], [ %1327, %1330 ]
-  %1335 = phi i64 [ %1229, %1249 ], [ %1325, %1330 ]
-  %1336 = phi i32 [ %1230, %1249 ], [ %1331, %1330 ]
-  %1337 = sub nuw i32 %1336, %1232
-  %1338 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %1337, i32 3), !nosanitize !47
-  %1339 = extractvalue { i32, i1 } %1338, 1, !nosanitize !47
-  br i1 %1339, label %1340, label %1341, !prof !48, !nosanitize !47
+1323:                                             ; preds = %1321, %1240
+  %1324 = phi ptr [ %1218, %1240 ], [ %1317, %1321 ]
+  %1325 = phi i32 [ %1219, %1240 ], [ %1318, %1321 ]
+  %1326 = phi i64 [ %1220, %1240 ], [ %1316, %1321 ]
+  %1327 = phi i32 [ %1221, %1240 ], [ %1322, %1321 ]
+  %1328 = sub nuw i32 %1327, %1223
+  %1329 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %1328, i32 3), !nosanitize !47
+  %1330 = extractvalue { i32, i1 } %1329, 1, !nosanitize !47
+  br i1 %1330, label %1331, label %1332, !prof !48, !nosanitize !47
 
-1340:                                             ; preds = %1332
+1331:                                             ; preds = %1323
   call void @llvm.ubsantrap(i8 21) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-1341:                                             ; preds = %1332
-  %1342 = zext nneg i8 %1231 to i64
-  %1343 = lshr i64 %1335, %1342
-  %1344 = trunc i64 %1343 to i32
-  %1345 = and i32 %1344, 7
-  %1346 = add nuw nsw i32 %1345, 3
-  %1347 = lshr i64 %1343, 3
-  br label %1385
+1332:                                             ; preds = %1323
+  %1333 = zext nneg i8 %1222 to i64
+  %1334 = lshr i64 %1326, %1333
+  %1335 = trunc i64 %1334 to i32
+  %1336 = and i32 %1335, 7
+  %1337 = add nuw nsw i32 %1336, 3
+  %1338 = lshr i64 %1334, 3
+  br label %1376
 
-1348:                                             ; preds = %1361, %1264
-  %1349 = phi i64 [ %1265, %1264 ], [ %1365, %1361 ]
-  %1350 = phi i64 [ %1229, %1264 ], [ %1362, %1361 ]
-  %1351 = phi i32 [ %1228, %1264 ], [ %1364, %1361 ]
-  %1352 = phi ptr [ %1227, %1264 ], [ %1363, %1361 ]
-  %1353 = icmp eq i32 %1351, 0
-  br i1 %1353, label %2451, label %1354
+1339:                                             ; preds = %1352, %1255
+  %1340 = phi i64 [ %1256, %1255 ], [ %1356, %1352 ]
+  %1341 = phi i64 [ %1220, %1255 ], [ %1353, %1352 ]
+  %1342 = phi i32 [ %1219, %1255 ], [ %1355, %1352 ]
+  %1343 = phi ptr [ %1218, %1255 ], [ %1354, %1352 ]
+  %1344 = icmp eq i32 %1342, 0
+  br i1 %1344, label %2439, label %1345
 
-1354:                                             ; preds = %1348
-  %1355 = load i8, ptr %1352, align 1, !tbaa !44
-  %1356 = zext i8 %1355 to i64
-  %1357 = shl i64 %1356, %1349
-  %1358 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %1350, i64 %1357), !nosanitize !47
-  %1359 = extractvalue { i64, i1 } %1358, 1, !nosanitize !47
-  br i1 %1359, label %1360, label %1361, !prof !48, !nosanitize !47
+1345:                                             ; preds = %1339
+  %1346 = load i8, ptr %1343, align 1, !tbaa !44
+  %1347 = zext i8 %1346 to i64
+  %1348 = shl i64 %1347, %1340
+  %1349 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %1341, i64 %1348), !nosanitize !47
+  %1350 = extractvalue { i64, i1 } %1349, 1, !nosanitize !47
+  br i1 %1350, label %1351, label %1352, !prof !48, !nosanitize !47
 
-1360:                                             ; preds = %1354
+1351:                                             ; preds = %1345
   call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-1361:                                             ; preds = %1354
-  %1362 = extractvalue { i64, i1 } %1358, 0, !nosanitize !47
-  %1363 = getelementptr inbounds nuw i8, ptr %1352, i64 1
-  %1364 = add i32 %1351, -1
-  %1365 = add nuw nsw i64 %1349, 8
-  %1366 = icmp samesign ult i64 %1365, %1266
-  br i1 %1366, label %1348, label %1367, !llvm.loop !85
+1352:                                             ; preds = %1345
+  %1353 = extractvalue { i64, i1 } %1349, 0, !nosanitize !47
+  %1354 = getelementptr inbounds nuw i8, ptr %1343, i64 1
+  %1355 = add i32 %1342, -1
+  %1356 = add nuw nsw i64 %1340, 8
+  %1357 = icmp samesign ult i64 %1356, %1257
+  br i1 %1357, label %1339, label %1358, !llvm.loop !85
 
-1367:                                             ; preds = %1361
-  %1368 = trunc nuw nsw i64 %1365 to i32
-  br label %1369
+1358:                                             ; preds = %1352
+  %1359 = trunc nuw nsw i64 %1356 to i32
+  br label %1360
 
-1369:                                             ; preds = %1367, %1261
-  %1370 = phi ptr [ %1227, %1261 ], [ %1363, %1367 ]
-  %1371 = phi i32 [ %1228, %1261 ], [ %1364, %1367 ]
-  %1372 = phi i64 [ %1229, %1261 ], [ %1362, %1367 ]
-  %1373 = phi i32 [ %1230, %1261 ], [ %1368, %1367 ]
-  %1374 = sub nuw i32 %1373, %1232
-  %1375 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %1374, i32 7), !nosanitize !47
-  %1376 = extractvalue { i32, i1 } %1375, 1, !nosanitize !47
-  br i1 %1376, label %1377, label %1378, !prof !48, !nosanitize !47
+1360:                                             ; preds = %1358, %1252
+  %1361 = phi ptr [ %1218, %1252 ], [ %1354, %1358 ]
+  %1362 = phi i32 [ %1219, %1252 ], [ %1355, %1358 ]
+  %1363 = phi i64 [ %1220, %1252 ], [ %1353, %1358 ]
+  %1364 = phi i32 [ %1221, %1252 ], [ %1359, %1358 ]
+  %1365 = sub nuw i32 %1364, %1223
+  %1366 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %1365, i32 7), !nosanitize !47
+  %1367 = extractvalue { i32, i1 } %1366, 1, !nosanitize !47
+  br i1 %1367, label %1368, label %1369, !prof !48, !nosanitize !47
 
-1377:                                             ; preds = %1369
+1368:                                             ; preds = %1360
   call void @llvm.ubsantrap(i8 21) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-1378:                                             ; preds = %1369
-  %1379 = zext nneg i8 %1231 to i64
-  %1380 = lshr i64 %1372, %1379
-  %1381 = trunc i64 %1380 to i32
-  %1382 = and i32 %1381, 127
-  %1383 = add nuw nsw i32 %1382, 11
-  %1384 = lshr i64 %1380, 7
-  br label %1385
+1369:                                             ; preds = %1360
+  %1370 = zext nneg i8 %1222 to i64
+  %1371 = lshr i64 %1363, %1370
+  %1372 = trunc i64 %1371 to i32
+  %1373 = and i32 %1372, 127
+  %1374 = add nuw nsw i32 %1373, 11
+  %1375 = lshr i64 %1371, 7
+  br label %1376
 
-1385:                                             ; preds = %1378, %1341, %1302
-  %1386 = phi ptr [ %1289, %1302 ], [ %1333, %1341 ], [ %1370, %1378 ]
-  %1387 = phi i32 [ %1290, %1302 ], [ %1334, %1341 ], [ %1371, %1378 ]
-  %1388 = phi i64 [ %1310, %1302 ], [ %1347, %1341 ], [ %1384, %1378 ]
-  %1389 = phi { i32, i1 } [ %1299, %1302 ], [ %1338, %1341 ], [ %1375, %1378 ]
-  %1390 = phi i32 [ %1305, %1302 ], [ %1346, %1341 ], [ %1383, %1378 ]
-  %1391 = phi i16 [ %1309, %1302 ], [ 0, %1341 ], [ 0, %1378 ]
-  %1392 = extractvalue { i32, i1 } %1389, 0
-  %1393 = call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %1248, i32 %1390), !nosanitize !47
-  %1394 = extractvalue { i32, i1 } %1393, 1, !nosanitize !47
-  br i1 %1394, label %1395, label %1396, !prof !48, !nosanitize !47
+1376:                                             ; preds = %1369, %1332, %1293
+  %1377 = phi ptr [ %1280, %1293 ], [ %1324, %1332 ], [ %1361, %1369 ]
+  %1378 = phi i32 [ %1281, %1293 ], [ %1325, %1332 ], [ %1362, %1369 ]
+  %1379 = phi i64 [ %1301, %1293 ], [ %1338, %1332 ], [ %1375, %1369 ]
+  %1380 = phi { i32, i1 } [ %1290, %1293 ], [ %1329, %1332 ], [ %1366, %1369 ]
+  %1381 = phi i32 [ %1296, %1293 ], [ %1337, %1332 ], [ %1374, %1369 ]
+  %1382 = phi i16 [ %1300, %1293 ], [ 0, %1332 ], [ 0, %1369 ]
+  %1383 = extractvalue { i32, i1 } %1380, 0
+  %1384 = call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %1239, i32 %1381), !nosanitize !47
+  %1385 = extractvalue { i32, i1 } %1384, 1, !nosanitize !47
+  br i1 %1385, label %1386, label %1387, !prof !48, !nosanitize !47
 
-1395:                                             ; preds = %1385
+1386:                                             ; preds = %1376
   call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-1396:                                             ; preds = %1385
-  %1397 = extractvalue { i32, i1 } %1393, 0, !nosanitize !47
-  %1398 = icmp ugt i32 %1397, %1165
-  br i1 %1398, label %1418, label %1399
+1387:                                             ; preds = %1376
+  %1388 = extractvalue { i32, i1 } %1384, 0, !nosanitize !47
+  %1389 = icmp ugt i32 %1388, %1156
+  br i1 %1389, label %1409, label %1390
 
-1399:                                             ; preds = %1396
-  %1400 = freeze i32 %1183
-  %1401 = icmp eq i32 %1400, -1
-  br i1 %1401, label %1432, label %1402, !prof !82, !nosanitize !47
+1390:                                             ; preds = %1387
+  %1391 = freeze i32 %1174
+  %1392 = icmp eq i32 %1391, -1
+  br i1 %1392, label %1423, label %1393, !prof !82, !nosanitize !47
 
-1402:                                             ; preds = %1399
-  %1403 = zext i32 %1400 to i64
-  %1404 = add nsw i32 %1390, -1
-  %1405 = insertvalue { i32, i1 } { i32 poison, i1 false }, i32 %1404, 0
-  %1406 = and i64 %1403, 1
-  %1407 = icmp eq i64 %1406, 0
-  br i1 %1407, label %1408, label %1414, !prof !82
+1393:                                             ; preds = %1390
+  %1394 = zext i32 %1391 to i64
+  %1395 = add nsw i32 %1381, -1
+  %1396 = insertvalue { i32, i1 } { i32 poison, i1 false }, i32 %1395, 0
+  %1397 = and i64 %1394, 1
+  %1398 = icmp eq i64 %1397, 0
+  br i1 %1398, label %1399, label %1405, !prof !82
 
-1408:                                             ; preds = %1402
-  %1409 = or disjoint i64 %1403, 1
-  %1410 = trunc nuw i64 %1409 to i32
-  store i32 %1410, ptr %60, align 4, !tbaa !76
-  %1411 = getelementptr inbounds nuw [2 x i8], ptr %61, i64 %1403
-  store i16 %1391, ptr %1411, align 2, !tbaa !77
-  %1412 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %1404, i32 1), !nosanitize !47
-  %1413 = extractvalue { i32, i1 } %1412, 1, !nosanitize !47
-  br i1 %1413, label %1421, label %1414, !prof !86, !llvm.loop !87, !nosanitize !47
+1399:                                             ; preds = %1393
+  %1400 = or disjoint i64 %1394, 1
+  %1401 = trunc nuw i64 %1400 to i32
+  store i32 %1401, ptr %60, align 4, !tbaa !76
+  %1402 = getelementptr inbounds nuw [2 x i8], ptr %61, i64 %1394
+  store i16 %1382, ptr %1402, align 2, !tbaa !77
+  %1403 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %1395, i32 1), !nosanitize !47
+  %1404 = extractvalue { i32, i1 } %1403, 1, !nosanitize !47
+  br i1 %1404, label %1412, label %1405, !prof !86, !llvm.loop !87, !nosanitize !47
 
-1414:                                             ; preds = %1408, %1402
-  %1415 = phi { i32, i1 } [ %1405, %1402 ], [ %1412, %1408 ]
-  %1416 = phi i64 [ %1403, %1402 ], [ %1409, %1408 ]
-  %1417 = icmp eq i32 %1400, -2
-  br i1 %1417, label %1432, label %1433, !prof !82
+1405:                                             ; preds = %1399, %1393
+  %1406 = phi { i32, i1 } [ %1396, %1393 ], [ %1403, %1399 ]
+  %1407 = phi i64 [ %1394, %1393 ], [ %1400, %1399 ]
+  %1408 = icmp eq i32 %1391, -2
+  br i1 %1408, label %1423, label %1424, !prof !82
 
-1418:                                             ; preds = %1396
+1409:                                             ; preds = %1387
   store ptr @.str.10, ptr %55, align 8, !tbaa !45
   store i32 16209, ptr %21, align 8, !tbaa !20
-  br label %2351
+  br label %2339
 
-1419:                                             ; preds = %1433, %1422
-  %1420 = phi i32 [ %1425, %1422 ], [ %1438, %1433 ]
-  store i32 %1420, ptr %60, align 4, !tbaa !76
-  br label %1421
+1410:                                             ; preds = %1424, %1413
+  %1411 = phi i32 [ %1416, %1413 ], [ %1429, %1424 ]
+  store i32 %1411, ptr %60, align 4, !tbaa !76
+  br label %1412
 
-1421:                                             ; preds = %1419, %1408
+1412:                                             ; preds = %1410, %1399
   call void @llvm.ubsantrap(i8 21) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-1422:                                             ; preds = %1433
-  %1423 = extractvalue { i32, i1 } %1440, 0
-  %1424 = add nuw nsw i64 %1435, 2
-  %1425 = trunc i64 %1424 to i32
-  %1426 = getelementptr inbounds nuw [2 x i8], ptr %61, i64 %1437
-  store i16 %1391, ptr %1426, align 2, !tbaa !77
-  %1427 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %1423, i32 1), !nosanitize !47
-  %1428 = extractvalue { i32, i1 } %1427, 1, !nosanitize !47
-  br i1 %1428, label %1419, label %1429, !prof !86, !llvm.loop !87, !nosanitize !47
+1413:                                             ; preds = %1424
+  %1414 = extractvalue { i32, i1 } %1431, 0
+  %1415 = add nuw nsw i64 %1426, 2
+  %1416 = trunc i64 %1415 to i32
+  %1417 = getelementptr inbounds nuw [2 x i8], ptr %61, i64 %1428
+  store i16 %1382, ptr %1417, align 2, !tbaa !77
+  %1418 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %1414, i32 1), !nosanitize !47
+  %1419 = extractvalue { i32, i1 } %1418, 1, !nosanitize !47
+  br i1 %1419, label %1410, label %1420, !prof !86, !llvm.loop !87, !nosanitize !47
 
-1429:                                             ; preds = %1422
-  %1430 = icmp eq i64 %1424, 4294967295
-  br i1 %1430, label %1431, label %1433, !prof !86, !llvm.loop !88, !nosanitize !47
+1420:                                             ; preds = %1413
+  %1421 = icmp eq i64 %1415, 4294967295
+  br i1 %1421, label %1422, label %1424, !prof !86, !llvm.loop !88, !nosanitize !47
 
-1431:                                             ; preds = %1429
-  store i32 %1425, ptr %60, align 4, !tbaa !76
-  br label %1432
+1422:                                             ; preds = %1420
+  store i32 %1416, ptr %60, align 4, !tbaa !76
+  br label %1423
 
-1432:                                             ; preds = %1431, %1414, %1399
+1423:                                             ; preds = %1422, %1405, %1390
   call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-1433:                                             ; preds = %1429, %1414
-  %1434 = phi { i32, i1 } [ %1427, %1429 ], [ %1415, %1414 ]
-  %1435 = phi i64 [ %1424, %1429 ], [ %1416, %1414 ]
-  %1436 = extractvalue { i32, i1 } %1434, 0
-  %1437 = add nuw nsw i64 %1435, 1
-  %1438 = trunc i64 %1437 to i32
-  %1439 = getelementptr inbounds nuw [2 x i8], ptr %61, i64 %1435
-  store i16 %1391, ptr %1439, align 2, !tbaa !77
-  %1440 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %1436, i32 1), !nosanitize !47
-  %1441 = extractvalue { i32, i1 } %1440, 1, !nosanitize !47
-  br i1 %1441, label %1419, label %1422, !prof !86, !llvm.loop !87, !nosanitize !47
+1424:                                             ; preds = %1420, %1405
+  %1425 = phi { i32, i1 } [ %1418, %1420 ], [ %1406, %1405 ]
+  %1426 = phi i64 [ %1415, %1420 ], [ %1407, %1405 ]
+  %1427 = extractvalue { i32, i1 } %1425, 0
+  %1428 = add nuw nsw i64 %1426, 1
+  %1429 = trunc i64 %1428 to i32
+  %1430 = getelementptr inbounds nuw [2 x i8], ptr %61, i64 %1426
+  store i16 %1382, ptr %1430, align 2, !tbaa !77
+  %1431 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %1427, i32 1), !nosanitize !47
+  %1432 = extractvalue { i32, i1 } %1431, 1, !nosanitize !47
+  br i1 %1432, label %1410, label %1413, !prof !86, !llvm.loop !87, !nosanitize !47
 
-1442:                                             ; preds = %1244
-  %1443 = add nuw nsw i64 %1182, 1
-  %1444 = trunc i64 %1443 to i32
-  store i32 %1444, ptr %60, align 4, !tbaa !76
-  %1445 = getelementptr inbounds nuw [2 x i8], ptr %61, i64 %1182
-  store i16 %1235, ptr %1445, align 2, !tbaa !77
-  %1446 = icmp eq i64 %1443, %1168
-  br i1 %1446, label %1447, label %1177
+1433:                                             ; preds = %1235
+  %1434 = add nuw nsw i64 %1173, 1
+  %1435 = trunc i64 %1434 to i32
+  store i32 %1435, ptr %60, align 4, !tbaa !76
+  %1436 = getelementptr inbounds nuw [2 x i8], ptr %61, i64 %1173
+  store i16 %1226, ptr %1436, align 2, !tbaa !77
+  %1437 = icmp eq i64 %1434, %1159
+  br i1 %1437, label %1438, label %1168
 
-1447:                                             ; preds = %1442, %1164
-  %1448 = phi i32 [ %1158, %1164 ], [ %1241, %1442 ]
-  %1449 = phi i64 [ %1157, %1164 ], [ %1239, %1442 ]
-  %1450 = phi i32 [ %1156, %1164 ], [ %1228, %1442 ]
-  %1451 = phi ptr [ %1155, %1164 ], [ %1227, %1442 ]
-  %1452 = load i16, ptr %68, align 8, !tbaa !77
-  %1453 = icmp eq i16 %1452, 0
-  br i1 %1453, label %1454, label %1455
+1438:                                             ; preds = %1433, %1155
+  %1439 = phi i32 [ %1149, %1155 ], [ %1232, %1433 ]
+  %1440 = phi i64 [ %1148, %1155 ], [ %1230, %1433 ]
+  %1441 = phi i32 [ %1147, %1155 ], [ %1219, %1433 ]
+  %1442 = phi ptr [ %1146, %1155 ], [ %1218, %1433 ]
+  %1443 = load i16, ptr %68, align 8, !tbaa !77
+  %1444 = icmp eq i16 %1443, 0
+  br i1 %1444, label %1445, label %1446
 
-1454:                                             ; preds = %1447
+1445:                                             ; preds = %1438
   store ptr @.str.11, ptr %55, align 8, !tbaa !45
   store i32 16209, ptr %21, align 8, !tbaa !20
-  br label %2351
+  br label %2339
 
-1455:                                             ; preds = %1447
+1446:                                             ; preds = %1438
   store ptr %62, ptr %63, align 8, !tbaa !33
   store ptr %62, ptr %65, align 8, !tbaa !35
   store i32 9, ptr %66, align 8, !tbaa !81
-  %1456 = call i32 @inflate_table(i32 noundef 1, ptr noundef nonnull %61, i32 noundef %1160, ptr noundef nonnull %63, ptr noundef nonnull %66, ptr noundef nonnull %67) #12
+  %1447 = call i32 @inflate_table(i32 noundef 1, ptr noundef nonnull %61, i32 noundef %1151, ptr noundef nonnull %63, ptr noundef nonnull %66, ptr noundef nonnull %67) #12
+  %1448 = icmp eq i32 %1447, 0
+  br i1 %1448, label %1450, label %1449
+
+1449:                                             ; preds = %1446
+  store ptr @.str.12, ptr %55, align 8, !tbaa !45
+  store i32 16209, ptr %21, align 8, !tbaa !20
+  br label %2339
+
+1450:                                             ; preds = %1446
+  %1451 = load ptr, ptr %63, align 8, !tbaa !33
+  store ptr %1451, ptr %64, align 8, !tbaa !34
+  store i32 6, ptr %69, align 4, !tbaa !90
+  %1452 = load i32, ptr %57, align 4, !tbaa !73
+  %1453 = zext i32 %1452 to i64
+  %1454 = getelementptr inbounds nuw [2 x i8], ptr %61, i64 %1453
+  %1455 = load i32, ptr %58, align 8, !tbaa !74
+  %1456 = call i32 @inflate_table(i32 noundef 2, ptr noundef nonnull %1454, i32 noundef %1455, ptr noundef nonnull %63, ptr noundef nonnull %69, ptr noundef nonnull %67) #12
   %1457 = icmp eq i32 %1456, 0
   br i1 %1457, label %1459, label %1458
 
-1458:                                             ; preds = %1455
-  store ptr @.str.12, ptr %55, align 8, !tbaa !45
-  store i32 16209, ptr %21, align 8, !tbaa !20
-  br label %2351
-
-1459:                                             ; preds = %1455
-  %1460 = load ptr, ptr %63, align 8, !tbaa !33
-  store ptr %1460, ptr %64, align 8, !tbaa !34
-  store i32 6, ptr %69, align 4, !tbaa !90
-  %1461 = load i32, ptr %57, align 4, !tbaa !73
-  %1462 = zext i32 %1461 to i64
-  %1463 = getelementptr inbounds nuw [2 x i8], ptr %61, i64 %1462
-  %1464 = load i32, ptr %58, align 8, !tbaa !74
-  %1465 = call i32 @inflate_table(i32 noundef 2, ptr noundef nonnull %1463, i32 noundef %1464, ptr noundef nonnull %63, ptr noundef nonnull %69, ptr noundef nonnull %67) #12
-  %1466 = icmp eq i32 %1465, 0
-  br i1 %1466, label %1468, label %1467
-
-1467:                                             ; preds = %1459
+1458:                                             ; preds = %1450
   store ptr @.str.13, ptr %55, align 8, !tbaa !45
   store i32 16209, ptr %21, align 8, !tbaa !20
-  br label %2351
+  br label %2339
 
-1468:                                             ; preds = %1459
+1459:                                             ; preds = %1450
   store i32 16199, ptr %21, align 8, !tbaa !20
-  br i1 %70, label %2485, label %1469
+  br i1 %70, label %2473, label %1460
 
-1469:                                             ; preds = %1468, %88
-  %1470 = phi ptr [ %1451, %1468 ], [ %90, %88 ]
-  %1471 = phi i32 [ %1450, %1468 ], [ %92, %88 ]
-  %1472 = phi i64 [ %1449, %1468 ], [ %94, %88 ]
-  %1473 = phi i32 [ %1448, %1468 ], [ %95, %88 ]
-  %1474 = phi i32 [ 0, %1468 ], [ %97, %88 ]
+1460:                                             ; preds = %1459, %88
+  %1461 = phi ptr [ %1442, %1459 ], [ %90, %88 ]
+  %1462 = phi i32 [ %1441, %1459 ], [ %92, %88 ]
+  %1463 = phi i64 [ %1440, %1459 ], [ %94, %88 ]
+  %1464 = phi i32 [ %1439, %1459 ], [ %95, %88 ]
+  %1465 = phi i32 [ 0, %1459 ], [ %97, %88 ]
   store i32 16200, ptr %21, align 8, !tbaa !20
-  br label %1475
+  br label %1466
 
-1475:                                             ; preds = %1469, %88
-  %1476 = phi ptr [ %1470, %1469 ], [ %90, %88 ]
-  %1477 = phi i32 [ %1471, %1469 ], [ %92, %88 ]
-  %1478 = phi i64 [ %1472, %1469 ], [ %94, %88 ]
-  %1479 = phi i32 [ %1473, %1469 ], [ %95, %88 ]
-  %1480 = phi i32 [ %1474, %1469 ], [ %97, %88 ]
-  %1481 = icmp ugt i32 %1477, 5
-  %1482 = icmp ugt i32 %93, 257
-  %1483 = select i1 %1481, i1 %1482, i1 false
-  br i1 %1483, label %1484, label %1494
+1466:                                             ; preds = %1460, %88
+  %1467 = phi ptr [ %1461, %1460 ], [ %90, %88 ]
+  %1468 = phi i32 [ %1462, %1460 ], [ %92, %88 ]
+  %1469 = phi i64 [ %1463, %1460 ], [ %94, %88 ]
+  %1470 = phi i32 [ %1464, %1460 ], [ %95, %88 ]
+  %1471 = phi i32 [ %1465, %1460 ], [ %97, %88 ]
+  %1472 = icmp ugt i32 %1468, 5
+  %1473 = icmp ugt i32 %93, 257
+  %1474 = select i1 %1472, i1 %1473, i1 false
+  br i1 %1474, label %1475, label %1485
 
-1484:                                             ; preds = %1475
+1475:                                             ; preds = %1466
   store ptr %91, ptr %26, align 8, !tbaa !49
   store i32 %93, ptr %41, align 8, !tbaa !52
-  store ptr %1476, ptr %0, align 8, !tbaa !50
-  store i32 %1477, ptr %43, align 8, !tbaa !51
-  store i64 %1478, ptr %45, align 8, !tbaa !31
-  store i32 %1479, ptr %47, align 8, !tbaa !32
+  store ptr %1467, ptr %0, align 8, !tbaa !50
+  store i32 %1468, ptr %43, align 8, !tbaa !51
+  store i64 %1469, ptr %45, align 8, !tbaa !31
+  store i32 %1470, ptr %47, align 8, !tbaa !32
   call void @inflate_fast(ptr noundef nonnull %0, i32 noundef %96) #12
-  %1485 = load ptr, ptr %26, align 8, !tbaa !49
-  %1486 = load i32, ptr %41, align 8, !tbaa !52
-  %1487 = load ptr, ptr %0, align 8, !tbaa !50
-  %1488 = load i32, ptr %43, align 8, !tbaa !51
-  %1489 = load i64, ptr %45, align 8, !tbaa !31
-  %1490 = load i32, ptr %47, align 8, !tbaa !32
-  %1491 = load i32, ptr %21, align 8, !tbaa !20
-  %1492 = icmp eq i32 %1491, 16191
-  br i1 %1492, label %1493, label %2351
+  %1476 = load ptr, ptr %26, align 8, !tbaa !49
+  %1477 = load i32, ptr %41, align 8, !tbaa !52
+  %1478 = load ptr, ptr %0, align 8, !tbaa !50
+  %1479 = load i32, ptr %43, align 8, !tbaa !51
+  %1480 = load i64, ptr %45, align 8, !tbaa !31
+  %1481 = load i32, ptr %47, align 8, !tbaa !32
+  %1482 = load i32, ptr %21, align 8, !tbaa !20
+  %1483 = icmp eq i32 %1482, 16191
+  br i1 %1483, label %1484, label %2339
 
-1493:                                             ; preds = %1484
+1484:                                             ; preds = %1475
   store i32 -1, ptr %71, align 4, !tbaa !37
-  br label %2351
+  br label %2339
 
-1494:                                             ; preds = %1475
+1485:                                             ; preds = %1466
   store i32 0, ptr %71, align 4, !tbaa !37
-  %1495 = load i32, ptr %66, align 8, !tbaa !81
-  %1496 = shl nsw i32 -1, %1495
-  %1497 = xor i32 %1496, -1
-  %1498 = load ptr, ptr %65, align 8, !tbaa !35
-  %1499 = trunc i64 %1478 to i32
-  %1500 = and i32 %1497, %1499
-  %1501 = zext nneg i32 %1500 to i64
-  %1502 = getelementptr inbounds nuw [4 x i8], ptr %1498, i64 %1501
-  %1503 = getelementptr inbounds nuw i8, ptr %1502, i64 1
-  %1504 = load i8, ptr %1503, align 1, !tbaa !44
-  %1505 = zext i8 %1504 to i32
-  %1506 = icmp ult i32 %1479, %1505
-  br i1 %1506, label %1507, label %1540
+  %1486 = load i32, ptr %66, align 8, !tbaa !81
+  %1487 = shl nsw i32 -1, %1486
+  %1488 = xor i32 %1487, -1
+  %1489 = load ptr, ptr %65, align 8, !tbaa !35
+  %1490 = trunc i64 %1469 to i32
+  %1491 = and i32 %1488, %1490
+  %1492 = zext nneg i32 %1491 to i64
+  %1493 = getelementptr inbounds nuw [4 x i8], ptr %1489, i64 %1492
+  %1494 = getelementptr inbounds nuw i8, ptr %1493, i64 1
+  %1495 = load i8, ptr %1494, align 1, !tbaa !44
+  %1496 = zext i8 %1495 to i32
+  %1497 = icmp ult i32 %1470, %1496
+  br i1 %1497, label %1498, label %1531
 
-1507:                                             ; preds = %1494
-  %1508 = icmp eq i32 %1477, 0
-  br i1 %1508, label %2445, label %1509
+1498:                                             ; preds = %1485
+  %1499 = icmp eq i32 %1468, 0
+  br i1 %1499, label %2433, label %1500
 
-1509:                                             ; preds = %1507
-  %1510 = zext nneg i32 %1479 to i64
-  br label %1513
+1500:                                             ; preds = %1498
+  %1501 = zext nneg i32 %1470 to i64
+  br label %1504
 
-1511:                                             ; preds = %1524
-  %1512 = icmp eq i32 %1527, 0
-  br i1 %1512, label %2445, label %1513
+1502:                                             ; preds = %1515
+  %1503 = icmp eq i32 %1518, 0
+  br i1 %1503, label %2433, label %1504
 
-1513:                                             ; preds = %1511, %1509
-  %1514 = phi ptr [ %1476, %1509 ], [ %1526, %1511 ]
-  %1515 = phi i32 [ %1477, %1509 ], [ %1527, %1511 ]
-  %1516 = phi i64 [ %1478, %1509 ], [ %1525, %1511 ]
-  %1517 = phi i64 [ %1510, %1509 ], [ %1528, %1511 ]
-  %1518 = load i8, ptr %1514, align 1, !tbaa !44
-  %1519 = zext i8 %1518 to i64
-  %1520 = shl i64 %1519, %1517
-  %1521 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %1516, i64 %1520), !nosanitize !47
-  %1522 = extractvalue { i64, i1 } %1521, 1, !nosanitize !47
-  br i1 %1522, label %1523, label %1524, !prof !48, !nosanitize !47
+1504:                                             ; preds = %1502, %1500
+  %1505 = phi ptr [ %1467, %1500 ], [ %1517, %1502 ]
+  %1506 = phi i32 [ %1468, %1500 ], [ %1518, %1502 ]
+  %1507 = phi i64 [ %1469, %1500 ], [ %1516, %1502 ]
+  %1508 = phi i64 [ %1501, %1500 ], [ %1519, %1502 ]
+  %1509 = load i8, ptr %1505, align 1, !tbaa !44
+  %1510 = zext i8 %1509 to i64
+  %1511 = shl i64 %1510, %1508
+  %1512 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %1507, i64 %1511), !nosanitize !47
+  %1513 = extractvalue { i64, i1 } %1512, 1, !nosanitize !47
+  br i1 %1513, label %1514, label %1515, !prof !48, !nosanitize !47
 
-1523:                                             ; preds = %1513
+1514:                                             ; preds = %1504
   call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-1524:                                             ; preds = %1513
-  %1525 = extractvalue { i64, i1 } %1521, 0, !nosanitize !47
-  %1526 = getelementptr inbounds nuw i8, ptr %1514, i64 1
-  %1527 = add i32 %1515, -1
-  %1528 = add nuw nsw i64 %1517, 8
-  %1529 = trunc i64 %1525 to i32
-  %1530 = and i32 %1497, %1529
-  %1531 = zext nneg i32 %1530 to i64
-  %1532 = getelementptr inbounds nuw [4 x i8], ptr %1498, i64 %1531
-  %1533 = getelementptr inbounds nuw i8, ptr %1532, i64 1
-  %1534 = load i8, ptr %1533, align 1, !tbaa !44
-  %1535 = zext i8 %1534 to i64
-  %1536 = icmp samesign ult i64 %1528, %1535
-  br i1 %1536, label %1511, label %1537
+1515:                                             ; preds = %1504
+  %1516 = extractvalue { i64, i1 } %1512, 0, !nosanitize !47
+  %1517 = getelementptr inbounds nuw i8, ptr %1505, i64 1
+  %1518 = add i32 %1506, -1
+  %1519 = add nuw nsw i64 %1508, 8
+  %1520 = trunc i64 %1516 to i32
+  %1521 = and i32 %1488, %1520
+  %1522 = zext nneg i32 %1521 to i64
+  %1523 = getelementptr inbounds nuw [4 x i8], ptr %1489, i64 %1522
+  %1524 = getelementptr inbounds nuw i8, ptr %1523, i64 1
+  %1525 = load i8, ptr %1524, align 1, !tbaa !44
+  %1526 = zext i8 %1525 to i64
+  %1527 = icmp samesign ult i64 %1519, %1526
+  br i1 %1527, label %1502, label %1528
 
-1537:                                             ; preds = %1524
-  %1538 = zext i8 %1534 to i32
-  %1539 = trunc nuw nsw i64 %1528 to i32
-  br label %1540
+1528:                                             ; preds = %1515
+  %1529 = zext i8 %1525 to i32
+  %1530 = trunc nuw nsw i64 %1519 to i32
+  br label %1531
 
-1540:                                             ; preds = %1537, %1494
-  %1541 = phi ptr [ %1502, %1494 ], [ %1532, %1537 ]
-  %1542 = phi ptr [ %1476, %1494 ], [ %1526, %1537 ]
-  %1543 = phi i32 [ %1477, %1494 ], [ %1527, %1537 ]
-  %1544 = phi i64 [ %1478, %1494 ], [ %1525, %1537 ]
-  %1545 = phi i32 [ %1479, %1494 ], [ %1539, %1537 ]
-  %1546 = phi i8 [ %1504, %1494 ], [ %1534, %1537 ]
-  %1547 = phi i32 [ %1505, %1494 ], [ %1538, %1537 ]
-  %1548 = getelementptr inbounds nuw i8, ptr %1541, i64 2
-  %1549 = load i16, ptr %1548, align 2, !tbaa !77
-  %1550 = load i8, ptr %1541, align 2, !tbaa !44
-  %1551 = add i8 %1550, -1
-  %1552 = icmp ult i8 %1551, 15
-  br i1 %1552, label %1553, label %1619
+1531:                                             ; preds = %1528, %1485
+  %1532 = phi ptr [ %1493, %1485 ], [ %1523, %1528 ]
+  %1533 = phi ptr [ %1467, %1485 ], [ %1517, %1528 ]
+  %1534 = phi i32 [ %1468, %1485 ], [ %1518, %1528 ]
+  %1535 = phi i64 [ %1469, %1485 ], [ %1516, %1528 ]
+  %1536 = phi i32 [ %1470, %1485 ], [ %1530, %1528 ]
+  %1537 = phi i8 [ %1495, %1485 ], [ %1525, %1528 ]
+  %1538 = phi i32 [ %1496, %1485 ], [ %1529, %1528 ]
+  %1539 = getelementptr inbounds nuw i8, ptr %1532, i64 2
+  %1540 = load i16, ptr %1539, align 2, !tbaa !77
+  %1541 = load i8, ptr %1532, align 2, !tbaa !44
+  %1542 = add i8 %1541, -1
+  %1543 = icmp ult i8 %1542, 15
+  br i1 %1543, label %1544, label %1610
 
-1553:                                             ; preds = %1540
-  %1554 = zext nneg i8 %1550 to i32
-  %1555 = add nuw nsw i32 %1547, %1554
-  %1556 = shl nsw i32 -1, %1555
-  %1557 = xor i32 %1556, -1
-  %1558 = zext i16 %1549 to i32
-  %1559 = trunc i64 %1544 to i32
-  %1560 = and i32 %1559, %1557
-  %1561 = lshr i32 %1560, %1547
-  %1562 = add nuw i32 %1561, %1558
-  %1563 = zext i32 %1562 to i64
-  %1564 = getelementptr inbounds nuw [4 x i8], ptr %1498, i64 %1563
-  %1565 = getelementptr inbounds nuw i8, ptr %1564, i64 1
-  %1566 = load i8, ptr %1565, align 1, !tbaa !44
-  %1567 = zext i8 %1566 to i32
-  %1568 = add nuw nsw i32 %1547, %1567
-  %1569 = icmp ugt i32 %1568, %1545
-  br i1 %1569, label %1570, label %1606
+1544:                                             ; preds = %1531
+  %1545 = zext nneg i8 %1541 to i32
+  %1546 = add nuw nsw i32 %1538, %1545
+  %1547 = shl nsw i32 -1, %1546
+  %1548 = xor i32 %1547, -1
+  %1549 = zext i16 %1540 to i32
+  %1550 = trunc i64 %1535 to i32
+  %1551 = and i32 %1550, %1548
+  %1552 = lshr i32 %1551, %1538
+  %1553 = add nuw i32 %1552, %1549
+  %1554 = zext i32 %1553 to i64
+  %1555 = getelementptr inbounds nuw [4 x i8], ptr %1489, i64 %1554
+  %1556 = getelementptr inbounds nuw i8, ptr %1555, i64 1
+  %1557 = load i8, ptr %1556, align 1, !tbaa !44
+  %1558 = zext i8 %1557 to i32
+  %1559 = add nuw nsw i32 %1538, %1558
+  %1560 = icmp ugt i32 %1559, %1536
+  br i1 %1560, label %1561, label %1597
 
-1570:                                             ; preds = %1553
-  %1571 = icmp eq i32 %1543, 0
-  br i1 %1571, label %2439, label %1572
+1561:                                             ; preds = %1544
+  %1562 = icmp eq i32 %1534, 0
+  br i1 %1562, label %2427, label %1563
 
-1572:                                             ; preds = %1570
-  %1573 = zext nneg i32 %1545 to i64
-  br label %1576
+1563:                                             ; preds = %1561
+  %1564 = zext nneg i32 %1536 to i64
+  br label %1567
 
-1574:                                             ; preds = %1587
-  %1575 = icmp eq i32 %1590, 0
-  br i1 %1575, label %2439, label %1576
+1565:                                             ; preds = %1578
+  %1566 = icmp eq i32 %1581, 0
+  br i1 %1566, label %2427, label %1567
 
-1576:                                             ; preds = %1574, %1572
-  %1577 = phi ptr [ %1542, %1572 ], [ %1589, %1574 ]
-  %1578 = phi i32 [ %1543, %1572 ], [ %1590, %1574 ]
-  %1579 = phi i64 [ %1544, %1572 ], [ %1588, %1574 ]
-  %1580 = phi i64 [ %1573, %1572 ], [ %1591, %1574 ]
-  %1581 = load i8, ptr %1577, align 1, !tbaa !44
-  %1582 = zext i8 %1581 to i64
-  %1583 = shl i64 %1582, %1580
-  %1584 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %1579, i64 %1583), !nosanitize !47
-  %1585 = extractvalue { i64, i1 } %1584, 1, !nosanitize !47
-  br i1 %1585, label %1586, label %1587, !prof !48, !nosanitize !47
+1567:                                             ; preds = %1565, %1563
+  %1568 = phi ptr [ %1533, %1563 ], [ %1580, %1565 ]
+  %1569 = phi i32 [ %1534, %1563 ], [ %1581, %1565 ]
+  %1570 = phi i64 [ %1535, %1563 ], [ %1579, %1565 ]
+  %1571 = phi i64 [ %1564, %1563 ], [ %1582, %1565 ]
+  %1572 = load i8, ptr %1568, align 1, !tbaa !44
+  %1573 = zext i8 %1572 to i64
+  %1574 = shl i64 %1573, %1571
+  %1575 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %1570, i64 %1574), !nosanitize !47
+  %1576 = extractvalue { i64, i1 } %1575, 1, !nosanitize !47
+  br i1 %1576, label %1577, label %1578, !prof !48, !nosanitize !47
 
-1586:                                             ; preds = %1576
+1577:                                             ; preds = %1567
   call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-1587:                                             ; preds = %1576
-  %1588 = extractvalue { i64, i1 } %1584, 0, !nosanitize !47
-  %1589 = getelementptr inbounds nuw i8, ptr %1577, i64 1
-  %1590 = add i32 %1578, -1
-  %1591 = add nuw nsw i64 %1580, 8
-  %1592 = trunc i64 %1588 to i32
-  %1593 = and i32 %1592, %1557
-  %1594 = lshr i32 %1593, %1547
-  %1595 = add nuw i32 %1594, %1558
-  %1596 = zext i32 %1595 to i64
-  %1597 = getelementptr inbounds nuw [4 x i8], ptr %1498, i64 %1596
-  %1598 = getelementptr inbounds nuw i8, ptr %1597, i64 1
-  %1599 = load i8, ptr %1598, align 1, !tbaa !44
-  %1600 = zext i8 %1599 to i32
-  %1601 = add nuw nsw i32 %1547, %1600
-  %1602 = zext nneg i32 %1601 to i64
-  %1603 = icmp samesign ult i64 %1591, %1602
-  br i1 %1603, label %1574, label %1604
+1578:                                             ; preds = %1567
+  %1579 = extractvalue { i64, i1 } %1575, 0, !nosanitize !47
+  %1580 = getelementptr inbounds nuw i8, ptr %1568, i64 1
+  %1581 = add i32 %1569, -1
+  %1582 = add nuw nsw i64 %1571, 8
+  %1583 = trunc i64 %1579 to i32
+  %1584 = and i32 %1583, %1548
+  %1585 = lshr i32 %1584, %1538
+  %1586 = add nuw i32 %1585, %1549
+  %1587 = zext i32 %1586 to i64
+  %1588 = getelementptr inbounds nuw [4 x i8], ptr %1489, i64 %1587
+  %1589 = getelementptr inbounds nuw i8, ptr %1588, i64 1
+  %1590 = load i8, ptr %1589, align 1, !tbaa !44
+  %1591 = zext i8 %1590 to i32
+  %1592 = add nuw nsw i32 %1538, %1591
+  %1593 = zext nneg i32 %1592 to i64
+  %1594 = icmp samesign ult i64 %1582, %1593
+  br i1 %1594, label %1565, label %1595
 
-1604:                                             ; preds = %1587
-  %1605 = trunc nuw nsw i64 %1591 to i32
-  br label %1606
+1595:                                             ; preds = %1578
+  %1596 = trunc nuw nsw i64 %1582 to i32
+  br label %1597
 
-1606:                                             ; preds = %1604, %1553
-  %1607 = phi ptr [ %1542, %1553 ], [ %1589, %1604 ]
-  %1608 = phi i32 [ %1543, %1553 ], [ %1590, %1604 ]
-  %1609 = phi i64 [ %1544, %1553 ], [ %1588, %1604 ]
-  %1610 = phi i32 [ %1545, %1553 ], [ %1605, %1604 ]
-  %1611 = phi ptr [ %1564, %1553 ], [ %1597, %1604 ]
-  %1612 = phi i8 [ %1566, %1553 ], [ %1599, %1604 ]
-  %1613 = getelementptr inbounds nuw i8, ptr %1611, i64 2
-  %1614 = load i16, ptr %1613, align 2, !tbaa !77
-  %1615 = load i8, ptr %1611, align 2, !tbaa !44
-  %1616 = sub nuw i32 %1610, %1547
-  %1617 = zext nneg i8 %1546 to i64
-  %1618 = lshr i64 %1609, %1617
-  store i32 %1547, ptr %71, align 4, !tbaa !37
-  br label %1619
+1597:                                             ; preds = %1595, %1544
+  %1598 = phi ptr [ %1533, %1544 ], [ %1580, %1595 ]
+  %1599 = phi i32 [ %1534, %1544 ], [ %1581, %1595 ]
+  %1600 = phi i64 [ %1535, %1544 ], [ %1579, %1595 ]
+  %1601 = phi i32 [ %1536, %1544 ], [ %1596, %1595 ]
+  %1602 = phi ptr [ %1555, %1544 ], [ %1588, %1595 ]
+  %1603 = phi i8 [ %1557, %1544 ], [ %1590, %1595 ]
+  %1604 = getelementptr inbounds nuw i8, ptr %1602, i64 2
+  %1605 = load i16, ptr %1604, align 2, !tbaa !77
+  %1606 = load i8, ptr %1602, align 2, !tbaa !44
+  %1607 = sub nuw i32 %1601, %1538
+  %1608 = zext nneg i8 %1537 to i64
+  %1609 = lshr i64 %1600, %1608
+  store i32 %1538, ptr %71, align 4, !tbaa !37
+  br label %1610
 
-1619:                                             ; preds = %1606, %1540
-  %1620 = phi i32 [ %1547, %1606 ], [ 0, %1540 ]
-  %1621 = phi ptr [ %1607, %1606 ], [ %1542, %1540 ]
-  %1622 = phi i32 [ %1608, %1606 ], [ %1543, %1540 ]
-  %1623 = phi i64 [ %1618, %1606 ], [ %1544, %1540 ]
-  %1624 = phi i32 [ %1616, %1606 ], [ %1545, %1540 ]
-  %1625 = phi i16 [ %1614, %1606 ], [ %1549, %1540 ]
-  %1626 = phi i8 [ %1612, %1606 ], [ %1546, %1540 ]
-  %1627 = phi i8 [ %1615, %1606 ], [ %1550, %1540 ]
-  %1628 = zext i8 %1626 to i32
-  %1629 = zext nneg i8 %1626 to i64
-  %1630 = lshr i64 %1623, %1629
-  %1631 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %1624, i32 %1628), !nosanitize !47
-  %1632 = extractvalue { i32, i1 } %1631, 0, !nosanitize !47
-  %1633 = extractvalue { i32, i1 } %1631, 1, !nosanitize !47
-  br i1 %1633, label %1634, label %1635, !prof !48, !nosanitize !47
+1610:                                             ; preds = %1597, %1531
+  %1611 = phi i32 [ %1538, %1597 ], [ 0, %1531 ]
+  %1612 = phi ptr [ %1598, %1597 ], [ %1533, %1531 ]
+  %1613 = phi i32 [ %1599, %1597 ], [ %1534, %1531 ]
+  %1614 = phi i64 [ %1609, %1597 ], [ %1535, %1531 ]
+  %1615 = phi i32 [ %1607, %1597 ], [ %1536, %1531 ]
+  %1616 = phi i16 [ %1605, %1597 ], [ %1540, %1531 ]
+  %1617 = phi i8 [ %1603, %1597 ], [ %1537, %1531 ]
+  %1618 = phi i8 [ %1606, %1597 ], [ %1541, %1531 ]
+  %1619 = zext i8 %1617 to i32
+  %1620 = zext nneg i8 %1617 to i64
+  %1621 = lshr i64 %1614, %1620
+  %1622 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %1615, i32 %1619), !nosanitize !47
+  %1623 = extractvalue { i32, i1 } %1622, 0, !nosanitize !47
+  %1624 = extractvalue { i32, i1 } %1622, 1, !nosanitize !47
+  br i1 %1624, label %1625, label %1626, !prof !48, !nosanitize !47
 
-1634:                                             ; preds = %1619
+1625:                                             ; preds = %1610
   call void @llvm.ubsantrap(i8 21) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-1635:                                             ; preds = %1619
-  %1636 = add nuw nsw i32 %1620, %1628
-  store i32 %1636, ptr %71, align 4, !tbaa !37
-  %1637 = zext i16 %1625 to i32
-  store i32 %1637, ptr %56, align 4, !tbaa !61
-  %1638 = zext i8 %1627 to i32
-  %1639 = icmp eq i8 %1627, 0
-  br i1 %1639, label %1640, label %1641
+1626:                                             ; preds = %1610
+  %1627 = add nuw nsw i32 %1611, %1619
+  store i32 %1627, ptr %71, align 4, !tbaa !37
+  %1628 = zext i16 %1616 to i32
+  store i32 %1628, ptr %56, align 4, !tbaa !61
+  %1629 = zext i8 %1618 to i32
+  %1630 = icmp eq i8 %1618, 0
+  br i1 %1630, label %1631, label %1632
 
-1640:                                             ; preds = %1635
+1631:                                             ; preds = %1626
   store i32 16205, ptr %21, align 8, !tbaa !20
-  br label %2351
+  br label %2339
 
-1641:                                             ; preds = %1635
-  %1642 = and i32 %1638, 32
-  %1643 = icmp eq i32 %1642, 0
-  br i1 %1643, label %1645, label %1644
+1632:                                             ; preds = %1626
+  %1633 = and i32 %1629, 32
+  %1634 = icmp eq i32 %1633, 0
+  br i1 %1634, label %1636, label %1635
 
-1644:                                             ; preds = %1641
+1635:                                             ; preds = %1632
   store i32 -1, ptr %71, align 4, !tbaa !37
   store i32 16191, ptr %21, align 8, !tbaa !20
-  br label %2351
+  br label %2339
 
-1645:                                             ; preds = %1641
-  %1646 = and i32 %1638, 64
-  %1647 = icmp eq i32 %1646, 0
-  br i1 %1647, label %1649, label %1648
+1636:                                             ; preds = %1632
+  %1637 = and i32 %1629, 64
+  %1638 = icmp eq i32 %1637, 0
+  br i1 %1638, label %1640, label %1639
 
-1648:                                             ; preds = %1645
+1639:                                             ; preds = %1636
   store ptr @.str.14, ptr %55, align 8, !tbaa !45
   store i32 16209, ptr %21, align 8, !tbaa !20
-  br label %2351
+  br label %2339
 
-1649:                                             ; preds = %1645
-  %1650 = and i32 %1638, 15
-  store i32 %1650, ptr %72, align 4, !tbaa !53
+1640:                                             ; preds = %1636
+  %1641 = and i32 %1629, 15
+  store i32 %1641, ptr %72, align 4, !tbaa !53
   store i32 16201, ptr %21, align 8, !tbaa !20
-  br label %1651
+  br label %1642
 
-1651:                                             ; preds = %1649, %101
-  %1652 = phi i32 [ %1650, %1649 ], [ %102, %101 ]
-  %1653 = phi ptr [ %1621, %1649 ], [ %90, %101 ]
-  %1654 = phi i32 [ %1622, %1649 ], [ %92, %101 ]
-  %1655 = phi i64 [ %1630, %1649 ], [ %94, %101 ]
-  %1656 = phi i32 [ %1632, %1649 ], [ %95, %101 ]
-  %1657 = phi i32 [ %1480, %1649 ], [ %97, %101 ]
-  %1658 = icmp eq i32 %1652, 0
-  br i1 %1658, label %1716, label %1659
+1642:                                             ; preds = %1640, %101
+  %1643 = phi i32 [ %1641, %1640 ], [ %102, %101 ]
+  %1644 = phi ptr [ %1612, %1640 ], [ %90, %101 ]
+  %1645 = phi i32 [ %1613, %1640 ], [ %92, %101 ]
+  %1646 = phi i64 [ %1621, %1640 ], [ %94, %101 ]
+  %1647 = phi i32 [ %1623, %1640 ], [ %95, %101 ]
+  %1648 = phi i32 [ %1471, %1640 ], [ %97, %101 ]
+  %1649 = icmp eq i32 %1643, 0
+  br i1 %1649, label %1707, label %1650
 
-1659:                                             ; preds = %1651
-  %1660 = icmp ult i32 %1656, %1652
-  br i1 %1660, label %1661, label %1688
+1650:                                             ; preds = %1642
+  %1651 = icmp ult i32 %1647, %1643
+  br i1 %1651, label %1652, label %1679
 
-1661:                                             ; preds = %1659
-  %1662 = icmp eq i32 %1654, 0
-  br i1 %1662, label %2433, label %1663
+1652:                                             ; preds = %1650
+  %1653 = icmp eq i32 %1645, 0
+  br i1 %1653, label %2421, label %1654
 
-1663:                                             ; preds = %1661
-  %1664 = zext i32 %1656 to i64
-  br label %1667
+1654:                                             ; preds = %1652
+  %1655 = zext i32 %1647 to i64
+  br label %1658
 
-1665:                                             ; preds = %1684
-  %1666 = icmp eq i32 %1672, 0
-  br i1 %1666, label %2433, label %1667, !llvm.loop !91
+1656:                                             ; preds = %1675
+  %1657 = icmp eq i32 %1663, 0
+  br i1 %1657, label %2421, label %1658, !llvm.loop !91
 
-1667:                                             ; preds = %1665, %1663
-  %1668 = phi ptr [ %1653, %1663 ], [ %1673, %1665 ]
-  %1669 = phi i32 [ %1654, %1663 ], [ %1672, %1665 ]
-  %1670 = phi i64 [ %1655, %1663 ], [ %1678, %1665 ]
-  %1671 = phi i64 [ %1664, %1663 ], [ %1685, %1665 ]
-  %1672 = add i32 %1669, -1
-  %1673 = getelementptr inbounds nuw i8, ptr %1668, i64 1
-  %1674 = load i8, ptr %1668, align 1, !tbaa !44
-  %1675 = zext i8 %1674 to i64
-  %1676 = shl i64 %1675, %1671
-  %1677 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %1670, i64 %1676), !nosanitize !47
-  %1678 = extractvalue { i64, i1 } %1677, 0, !nosanitize !47
-  %1679 = extractvalue { i64, i1 } %1677, 1, !nosanitize !47
-  br i1 %1679, label %1680, label %1681, !prof !48, !nosanitize !47
+1658:                                             ; preds = %1656, %1654
+  %1659 = phi ptr [ %1644, %1654 ], [ %1664, %1656 ]
+  %1660 = phi i32 [ %1645, %1654 ], [ %1663, %1656 ]
+  %1661 = phi i64 [ %1646, %1654 ], [ %1669, %1656 ]
+  %1662 = phi i64 [ %1655, %1654 ], [ %1676, %1656 ]
+  %1663 = add i32 %1660, -1
+  %1664 = getelementptr inbounds nuw i8, ptr %1659, i64 1
+  %1665 = load i8, ptr %1659, align 1, !tbaa !44
+  %1666 = zext i8 %1665 to i64
+  %1667 = shl i64 %1666, %1662
+  %1668 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %1661, i64 %1667), !nosanitize !47
+  %1669 = extractvalue { i64, i1 } %1668, 0, !nosanitize !47
+  %1670 = extractvalue { i64, i1 } %1668, 1, !nosanitize !47
+  br i1 %1670, label %1671, label %1672, !prof !48, !nosanitize !47
 
-1680:                                             ; preds = %1667
+1671:                                             ; preds = %1658
   call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-1681:                                             ; preds = %1667
-  %1682 = icmp samesign ugt i64 %1671, 4294967287
-  br i1 %1682, label %1683, label %1684, !prof !48, !nosanitize !47
+1672:                                             ; preds = %1658
+  %1673 = icmp samesign ugt i64 %1662, 4294967287
+  br i1 %1673, label %1674, label %1675, !prof !48, !nosanitize !47
 
-1683:                                             ; preds = %1681
+1674:                                             ; preds = %1672
   call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-1684:                                             ; preds = %1681
-  %1685 = add nuw nsw i64 %1671, 8
-  %1686 = trunc nuw i64 %1685 to i32
-  %1687 = icmp ugt i32 %1652, %1686
-  br i1 %1687, label %1665, label %1688, !llvm.loop !91
+1675:                                             ; preds = %1672
+  %1676 = add nuw nsw i64 %1662, 8
+  %1677 = trunc nuw i64 %1676 to i32
+  %1678 = icmp ugt i32 %1643, %1677
+  br i1 %1678, label %1656, label %1679, !llvm.loop !91
 
-1688:                                             ; preds = %1684, %1659
-  %1689 = phi ptr [ %1653, %1659 ], [ %1673, %1684 ]
-  %1690 = phi i32 [ %1654, %1659 ], [ %1672, %1684 ]
-  %1691 = phi i64 [ %1655, %1659 ], [ %1678, %1684 ]
-  %1692 = phi i32 [ %1656, %1659 ], [ %1686, %1684 ]
-  %1693 = shl nsw i32 -1, %1652
-  %1694 = xor i32 %1693, -1
-  %1695 = trunc i64 %1691 to i32
-  %1696 = and i32 %1695, %1694
-  %1697 = load i32, ptr %56, align 4, !tbaa !61
-  %1698 = call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %1697, i32 %1696), !nosanitize !47
-  %1699 = extractvalue { i32, i1 } %1698, 1, !nosanitize !47
-  br i1 %1699, label %1700, label %1701, !prof !48, !nosanitize !47
+1679:                                             ; preds = %1675, %1650
+  %1680 = phi ptr [ %1644, %1650 ], [ %1664, %1675 ]
+  %1681 = phi i32 [ %1645, %1650 ], [ %1663, %1675 ]
+  %1682 = phi i64 [ %1646, %1650 ], [ %1669, %1675 ]
+  %1683 = phi i32 [ %1647, %1650 ], [ %1677, %1675 ]
+  %1684 = shl nsw i32 -1, %1643
+  %1685 = xor i32 %1684, -1
+  %1686 = trunc i64 %1682 to i32
+  %1687 = and i32 %1686, %1685
+  %1688 = load i32, ptr %56, align 4, !tbaa !61
+  %1689 = call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %1688, i32 %1687), !nosanitize !47
+  %1690 = extractvalue { i32, i1 } %1689, 1, !nosanitize !47
+  br i1 %1690, label %1691, label %1692, !prof !48, !nosanitize !47
 
-1700:                                             ; preds = %1688
+1691:                                             ; preds = %1679
   call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-1701:                                             ; preds = %1688
-  %1702 = extractvalue { i32, i1 } %1698, 0, !nosanitize !47
-  store i32 %1702, ptr %56, align 4, !tbaa !61
-  %1703 = zext nneg i32 %1652 to i64
-  %1704 = lshr i64 %1691, %1703
-  %1705 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %1692, i32 %1652), !nosanitize !47
-  %1706 = extractvalue { i32, i1 } %1705, 0, !nosanitize !47
-  %1707 = extractvalue { i32, i1 } %1705, 1, !nosanitize !47
-  br i1 %1707, label %1708, label %1709, !prof !48, !nosanitize !47
+1692:                                             ; preds = %1679
+  %1693 = extractvalue { i32, i1 } %1689, 0, !nosanitize !47
+  store i32 %1693, ptr %56, align 4, !tbaa !61
+  %1694 = zext nneg i32 %1643 to i64
+  %1695 = lshr i64 %1682, %1694
+  %1696 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %1683, i32 %1643), !nosanitize !47
+  %1697 = extractvalue { i32, i1 } %1696, 0, !nosanitize !47
+  %1698 = extractvalue { i32, i1 } %1696, 1, !nosanitize !47
+  br i1 %1698, label %1699, label %1700, !prof !48, !nosanitize !47
 
-1708:                                             ; preds = %1701
+1699:                                             ; preds = %1692
   call void @llvm.ubsantrap(i8 21) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-1709:                                             ; preds = %1701
-  %1710 = load i32, ptr %71, align 4, !tbaa !37
-  %1711 = call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %1710, i32 %1652), !nosanitize !47
-  %1712 = extractvalue { i32, i1 } %1711, 1, !nosanitize !47
-  br i1 %1712, label %1713, label %1714, !prof !48, !nosanitize !47
+1700:                                             ; preds = %1692
+  %1701 = load i32, ptr %71, align 4, !tbaa !37
+  %1702 = call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %1701, i32 %1643), !nosanitize !47
+  %1703 = extractvalue { i32, i1 } %1702, 1, !nosanitize !47
+  br i1 %1703, label %1704, label %1705, !prof !48, !nosanitize !47
 
-1713:                                             ; preds = %1709
+1704:                                             ; preds = %1700
   call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-1714:                                             ; preds = %1709
-  %1715 = extractvalue { i32, i1 } %1711, 0, !nosanitize !47
-  store i32 %1715, ptr %71, align 4, !tbaa !37
-  br label %1716
+1705:                                             ; preds = %1700
+  %1706 = extractvalue { i32, i1 } %1702, 0, !nosanitize !47
+  store i32 %1706, ptr %71, align 4, !tbaa !37
+  br label %1707
 
-1716:                                             ; preds = %1714, %1651
-  %1717 = phi ptr [ %1689, %1714 ], [ %1653, %1651 ]
-  %1718 = phi i32 [ %1690, %1714 ], [ %1654, %1651 ]
-  %1719 = phi i64 [ %1704, %1714 ], [ %1655, %1651 ]
-  %1720 = phi i32 [ %1706, %1714 ], [ %1656, %1651 ]
-  %1721 = load i32, ptr %56, align 4, !tbaa !61
-  store i32 %1721, ptr %73, align 8, !tbaa !92
+1707:                                             ; preds = %1705, %1642
+  %1708 = phi ptr [ %1680, %1705 ], [ %1644, %1642 ]
+  %1709 = phi i32 [ %1681, %1705 ], [ %1645, %1642 ]
+  %1710 = phi i64 [ %1695, %1705 ], [ %1646, %1642 ]
+  %1711 = phi i32 [ %1697, %1705 ], [ %1647, %1642 ]
+  %1712 = load i32, ptr %56, align 4, !tbaa !61
+  store i32 %1712, ptr %73, align 8, !tbaa !92
   store i32 16202, ptr %21, align 8, !tbaa !20
-  br label %1722
+  br label %1713
 
-1722:                                             ; preds = %1716, %88
-  %1723 = phi ptr [ %1717, %1716 ], [ %90, %88 ]
-  %1724 = phi i32 [ %1718, %1716 ], [ %92, %88 ]
-  %1725 = phi i64 [ %1719, %1716 ], [ %94, %88 ]
-  %1726 = phi i32 [ %1720, %1716 ], [ %95, %88 ]
-  %1727 = phi i32 [ %1657, %1716 ], [ %97, %88 ]
-  %1728 = load i32, ptr %69, align 4, !tbaa !90
-  %1729 = shl nsw i32 -1, %1728
-  %1730 = xor i32 %1729, -1
-  %1731 = load ptr, ptr %64, align 8, !tbaa !34
-  %1732 = trunc i64 %1725 to i32
-  %1733 = and i32 %1730, %1732
-  %1734 = zext nneg i32 %1733 to i64
-  %1735 = getelementptr inbounds nuw [4 x i8], ptr %1731, i64 %1734
-  %1736 = getelementptr inbounds nuw i8, ptr %1735, i64 1
-  %1737 = load i8, ptr %1736, align 1, !tbaa !44
-  %1738 = zext i8 %1737 to i32
-  %1739 = icmp ult i32 %1726, %1738
-  br i1 %1739, label %1740, label %1773
+1713:                                             ; preds = %1707, %88
+  %1714 = phi ptr [ %1708, %1707 ], [ %90, %88 ]
+  %1715 = phi i32 [ %1709, %1707 ], [ %92, %88 ]
+  %1716 = phi i64 [ %1710, %1707 ], [ %94, %88 ]
+  %1717 = phi i32 [ %1711, %1707 ], [ %95, %88 ]
+  %1718 = phi i32 [ %1648, %1707 ], [ %97, %88 ]
+  %1719 = load i32, ptr %69, align 4, !tbaa !90
+  %1720 = shl nsw i32 -1, %1719
+  %1721 = xor i32 %1720, -1
+  %1722 = load ptr, ptr %64, align 8, !tbaa !34
+  %1723 = trunc i64 %1716 to i32
+  %1724 = and i32 %1721, %1723
+  %1725 = zext nneg i32 %1724 to i64
+  %1726 = getelementptr inbounds nuw [4 x i8], ptr %1722, i64 %1725
+  %1727 = getelementptr inbounds nuw i8, ptr %1726, i64 1
+  %1728 = load i8, ptr %1727, align 1, !tbaa !44
+  %1729 = zext i8 %1728 to i32
+  %1730 = icmp ult i32 %1717, %1729
+  br i1 %1730, label %1731, label %1764
 
-1740:                                             ; preds = %1722
-  %1741 = icmp eq i32 %1724, 0
-  br i1 %1741, label %2427, label %1742
+1731:                                             ; preds = %1713
+  %1732 = icmp eq i32 %1715, 0
+  br i1 %1732, label %2415, label %1733
 
-1742:                                             ; preds = %1740
-  %1743 = zext nneg i32 %1726 to i64
-  br label %1746
+1733:                                             ; preds = %1731
+  %1734 = zext nneg i32 %1717 to i64
+  br label %1737
 
-1744:                                             ; preds = %1757
-  %1745 = icmp eq i32 %1760, 0
-  br i1 %1745, label %2427, label %1746
+1735:                                             ; preds = %1748
+  %1736 = icmp eq i32 %1751, 0
+  br i1 %1736, label %2415, label %1737
 
-1746:                                             ; preds = %1744, %1742
-  %1747 = phi ptr [ %1723, %1742 ], [ %1759, %1744 ]
-  %1748 = phi i32 [ %1724, %1742 ], [ %1760, %1744 ]
-  %1749 = phi i64 [ %1725, %1742 ], [ %1758, %1744 ]
-  %1750 = phi i64 [ %1743, %1742 ], [ %1761, %1744 ]
-  %1751 = load i8, ptr %1747, align 1, !tbaa !44
-  %1752 = zext i8 %1751 to i64
-  %1753 = shl i64 %1752, %1750
-  %1754 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %1749, i64 %1753), !nosanitize !47
-  %1755 = extractvalue { i64, i1 } %1754, 1, !nosanitize !47
-  br i1 %1755, label %1756, label %1757, !prof !48, !nosanitize !47
+1737:                                             ; preds = %1735, %1733
+  %1738 = phi ptr [ %1714, %1733 ], [ %1750, %1735 ]
+  %1739 = phi i32 [ %1715, %1733 ], [ %1751, %1735 ]
+  %1740 = phi i64 [ %1716, %1733 ], [ %1749, %1735 ]
+  %1741 = phi i64 [ %1734, %1733 ], [ %1752, %1735 ]
+  %1742 = load i8, ptr %1738, align 1, !tbaa !44
+  %1743 = zext i8 %1742 to i64
+  %1744 = shl i64 %1743, %1741
+  %1745 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %1740, i64 %1744), !nosanitize !47
+  %1746 = extractvalue { i64, i1 } %1745, 1, !nosanitize !47
+  br i1 %1746, label %1747, label %1748, !prof !48, !nosanitize !47
 
-1756:                                             ; preds = %1746
+1747:                                             ; preds = %1737
   call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-1757:                                             ; preds = %1746
-  %1758 = extractvalue { i64, i1 } %1754, 0, !nosanitize !47
-  %1759 = getelementptr inbounds nuw i8, ptr %1747, i64 1
-  %1760 = add i32 %1748, -1
-  %1761 = add nuw nsw i64 %1750, 8
-  %1762 = trunc i64 %1758 to i32
-  %1763 = and i32 %1730, %1762
-  %1764 = zext nneg i32 %1763 to i64
-  %1765 = getelementptr inbounds nuw [4 x i8], ptr %1731, i64 %1764
-  %1766 = getelementptr inbounds nuw i8, ptr %1765, i64 1
-  %1767 = load i8, ptr %1766, align 1, !tbaa !44
-  %1768 = zext i8 %1767 to i64
-  %1769 = icmp samesign ult i64 %1761, %1768
-  br i1 %1769, label %1744, label %1770
+1748:                                             ; preds = %1737
+  %1749 = extractvalue { i64, i1 } %1745, 0, !nosanitize !47
+  %1750 = getelementptr inbounds nuw i8, ptr %1738, i64 1
+  %1751 = add i32 %1739, -1
+  %1752 = add nuw nsw i64 %1741, 8
+  %1753 = trunc i64 %1749 to i32
+  %1754 = and i32 %1721, %1753
+  %1755 = zext nneg i32 %1754 to i64
+  %1756 = getelementptr inbounds nuw [4 x i8], ptr %1722, i64 %1755
+  %1757 = getelementptr inbounds nuw i8, ptr %1756, i64 1
+  %1758 = load i8, ptr %1757, align 1, !tbaa !44
+  %1759 = zext i8 %1758 to i64
+  %1760 = icmp samesign ult i64 %1752, %1759
+  br i1 %1760, label %1735, label %1761
 
-1770:                                             ; preds = %1757
-  %1771 = zext i8 %1767 to i32
-  %1772 = trunc nuw nsw i64 %1761 to i32
-  br label %1773
+1761:                                             ; preds = %1748
+  %1762 = zext i8 %1758 to i32
+  %1763 = trunc nuw nsw i64 %1752 to i32
+  br label %1764
 
-1773:                                             ; preds = %1770, %1722
-  %1774 = phi ptr [ %1735, %1722 ], [ %1765, %1770 ]
-  %1775 = phi ptr [ %1723, %1722 ], [ %1759, %1770 ]
-  %1776 = phi i32 [ %1724, %1722 ], [ %1760, %1770 ]
-  %1777 = phi i64 [ %1725, %1722 ], [ %1758, %1770 ]
-  %1778 = phi i32 [ %1726, %1722 ], [ %1772, %1770 ]
-  %1779 = phi i8 [ %1737, %1722 ], [ %1767, %1770 ]
-  %1780 = phi i32 [ %1738, %1722 ], [ %1771, %1770 ]
-  %1781 = getelementptr inbounds nuw i8, ptr %1774, i64 2
-  %1782 = load i16, ptr %1781, align 2, !tbaa !77
-  %1783 = load i8, ptr %1774, align 2, !tbaa !44
-  %1784 = icmp ult i8 %1783, 16
-  br i1 %1784, label %1785, label %1853
+1764:                                             ; preds = %1761, %1713
+  %1765 = phi ptr [ %1726, %1713 ], [ %1756, %1761 ]
+  %1766 = phi ptr [ %1714, %1713 ], [ %1750, %1761 ]
+  %1767 = phi i32 [ %1715, %1713 ], [ %1751, %1761 ]
+  %1768 = phi i64 [ %1716, %1713 ], [ %1749, %1761 ]
+  %1769 = phi i32 [ %1717, %1713 ], [ %1763, %1761 ]
+  %1770 = phi i8 [ %1728, %1713 ], [ %1758, %1761 ]
+  %1771 = phi i32 [ %1729, %1713 ], [ %1762, %1761 ]
+  %1772 = getelementptr inbounds nuw i8, ptr %1765, i64 2
+  %1773 = load i16, ptr %1772, align 2, !tbaa !77
+  %1774 = load i8, ptr %1765, align 2, !tbaa !44
+  %1775 = icmp ult i8 %1774, 16
+  br i1 %1775, label %1776, label %1844
 
-1785:                                             ; preds = %1773
-  %1786 = zext nneg i8 %1783 to i32
-  %1787 = add nuw nsw i32 %1780, %1786
-  %1788 = shl nsw i32 -1, %1787
-  %1789 = xor i32 %1788, -1
-  %1790 = zext i16 %1782 to i32
-  %1791 = trunc i64 %1777 to i32
-  %1792 = and i32 %1791, %1789
-  %1793 = lshr i32 %1792, %1780
-  %1794 = add nuw i32 %1793, %1790
-  %1795 = zext i32 %1794 to i64
-  %1796 = getelementptr inbounds nuw [4 x i8], ptr %1731, i64 %1795
-  %1797 = getelementptr inbounds nuw i8, ptr %1796, i64 1
-  %1798 = load i8, ptr %1797, align 1, !tbaa !44
-  %1799 = zext i8 %1798 to i32
-  %1800 = add nuw nsw i32 %1780, %1799
-  %1801 = icmp ugt i32 %1800, %1778
-  br i1 %1801, label %1802, label %1838
+1776:                                             ; preds = %1764
+  %1777 = zext nneg i8 %1774 to i32
+  %1778 = add nuw nsw i32 %1771, %1777
+  %1779 = shl nsw i32 -1, %1778
+  %1780 = xor i32 %1779, -1
+  %1781 = zext i16 %1773 to i32
+  %1782 = trunc i64 %1768 to i32
+  %1783 = and i32 %1782, %1780
+  %1784 = lshr i32 %1783, %1771
+  %1785 = add nuw i32 %1784, %1781
+  %1786 = zext i32 %1785 to i64
+  %1787 = getelementptr inbounds nuw [4 x i8], ptr %1722, i64 %1786
+  %1788 = getelementptr inbounds nuw i8, ptr %1787, i64 1
+  %1789 = load i8, ptr %1788, align 1, !tbaa !44
+  %1790 = zext i8 %1789 to i32
+  %1791 = add nuw nsw i32 %1771, %1790
+  %1792 = icmp ugt i32 %1791, %1769
+  br i1 %1792, label %1793, label %1829
 
-1802:                                             ; preds = %1785
-  %1803 = icmp eq i32 %1776, 0
-  br i1 %1803, label %2421, label %1804
+1793:                                             ; preds = %1776
+  %1794 = icmp eq i32 %1767, 0
+  br i1 %1794, label %2409, label %1795
 
-1804:                                             ; preds = %1802
-  %1805 = zext nneg i32 %1778 to i64
-  br label %1808
+1795:                                             ; preds = %1793
+  %1796 = zext nneg i32 %1769 to i64
+  br label %1799
 
-1806:                                             ; preds = %1819
-  %1807 = icmp eq i32 %1822, 0
-  br i1 %1807, label %2421, label %1808
+1797:                                             ; preds = %1810
+  %1798 = icmp eq i32 %1813, 0
+  br i1 %1798, label %2409, label %1799
 
-1808:                                             ; preds = %1806, %1804
-  %1809 = phi ptr [ %1775, %1804 ], [ %1821, %1806 ]
-  %1810 = phi i32 [ %1776, %1804 ], [ %1822, %1806 ]
-  %1811 = phi i64 [ %1777, %1804 ], [ %1820, %1806 ]
-  %1812 = phi i64 [ %1805, %1804 ], [ %1823, %1806 ]
-  %1813 = load i8, ptr %1809, align 1, !tbaa !44
-  %1814 = zext i8 %1813 to i64
-  %1815 = shl i64 %1814, %1812
-  %1816 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %1811, i64 %1815), !nosanitize !47
-  %1817 = extractvalue { i64, i1 } %1816, 1, !nosanitize !47
-  br i1 %1817, label %1818, label %1819, !prof !48, !nosanitize !47
+1799:                                             ; preds = %1797, %1795
+  %1800 = phi ptr [ %1766, %1795 ], [ %1812, %1797 ]
+  %1801 = phi i32 [ %1767, %1795 ], [ %1813, %1797 ]
+  %1802 = phi i64 [ %1768, %1795 ], [ %1811, %1797 ]
+  %1803 = phi i64 [ %1796, %1795 ], [ %1814, %1797 ]
+  %1804 = load i8, ptr %1800, align 1, !tbaa !44
+  %1805 = zext i8 %1804 to i64
+  %1806 = shl i64 %1805, %1803
+  %1807 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %1802, i64 %1806), !nosanitize !47
+  %1808 = extractvalue { i64, i1 } %1807, 1, !nosanitize !47
+  br i1 %1808, label %1809, label %1810, !prof !48, !nosanitize !47
 
-1818:                                             ; preds = %1808
+1809:                                             ; preds = %1799
   call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-1819:                                             ; preds = %1808
-  %1820 = extractvalue { i64, i1 } %1816, 0, !nosanitize !47
-  %1821 = getelementptr inbounds nuw i8, ptr %1809, i64 1
-  %1822 = add i32 %1810, -1
-  %1823 = add nuw nsw i64 %1812, 8
-  %1824 = trunc i64 %1820 to i32
-  %1825 = and i32 %1824, %1789
-  %1826 = lshr i32 %1825, %1780
-  %1827 = add nuw i32 %1826, %1790
-  %1828 = zext i32 %1827 to i64
-  %1829 = getelementptr inbounds nuw [4 x i8], ptr %1731, i64 %1828
-  %1830 = getelementptr inbounds nuw i8, ptr %1829, i64 1
-  %1831 = load i8, ptr %1830, align 1, !tbaa !44
-  %1832 = zext i8 %1831 to i32
-  %1833 = add nuw nsw i32 %1780, %1832
-  %1834 = zext nneg i32 %1833 to i64
-  %1835 = icmp samesign ult i64 %1823, %1834
-  br i1 %1835, label %1806, label %1836
+1810:                                             ; preds = %1799
+  %1811 = extractvalue { i64, i1 } %1807, 0, !nosanitize !47
+  %1812 = getelementptr inbounds nuw i8, ptr %1800, i64 1
+  %1813 = add i32 %1801, -1
+  %1814 = add nuw nsw i64 %1803, 8
+  %1815 = trunc i64 %1811 to i32
+  %1816 = and i32 %1815, %1780
+  %1817 = lshr i32 %1816, %1771
+  %1818 = add nuw i32 %1817, %1781
+  %1819 = zext i32 %1818 to i64
+  %1820 = getelementptr inbounds nuw [4 x i8], ptr %1722, i64 %1819
+  %1821 = getelementptr inbounds nuw i8, ptr %1820, i64 1
+  %1822 = load i8, ptr %1821, align 1, !tbaa !44
+  %1823 = zext i8 %1822 to i32
+  %1824 = add nuw nsw i32 %1771, %1823
+  %1825 = zext nneg i32 %1824 to i64
+  %1826 = icmp samesign ult i64 %1814, %1825
+  br i1 %1826, label %1797, label %1827
 
-1836:                                             ; preds = %1819
-  %1837 = trunc nuw nsw i64 %1823 to i32
-  br label %1838
+1827:                                             ; preds = %1810
+  %1828 = trunc nuw nsw i64 %1814 to i32
+  br label %1829
 
-1838:                                             ; preds = %1836, %1785
-  %1839 = phi ptr [ %1775, %1785 ], [ %1821, %1836 ]
-  %1840 = phi i32 [ %1776, %1785 ], [ %1822, %1836 ]
-  %1841 = phi i64 [ %1777, %1785 ], [ %1820, %1836 ]
-  %1842 = phi i32 [ %1778, %1785 ], [ %1837, %1836 ]
-  %1843 = phi ptr [ %1796, %1785 ], [ %1829, %1836 ]
-  %1844 = phi i8 [ %1798, %1785 ], [ %1831, %1836 ]
-  %1845 = getelementptr inbounds nuw i8, ptr %1843, i64 2
-  %1846 = load i16, ptr %1845, align 2, !tbaa !77
-  %1847 = load i8, ptr %1843, align 2, !tbaa !44
-  %1848 = sub nuw i32 %1842, %1780
-  %1849 = zext nneg i8 %1779 to i64
-  %1850 = lshr i64 %1841, %1849
-  %1851 = load i32, ptr %71, align 4, !tbaa !37
-  %1852 = add nsw i32 %1851, %1780
-  store i32 %1852, ptr %71, align 4, !tbaa !37
-  br label %1853
+1829:                                             ; preds = %1827, %1776
+  %1830 = phi ptr [ %1766, %1776 ], [ %1812, %1827 ]
+  %1831 = phi i32 [ %1767, %1776 ], [ %1813, %1827 ]
+  %1832 = phi i64 [ %1768, %1776 ], [ %1811, %1827 ]
+  %1833 = phi i32 [ %1769, %1776 ], [ %1828, %1827 ]
+  %1834 = phi ptr [ %1787, %1776 ], [ %1820, %1827 ]
+  %1835 = phi i8 [ %1789, %1776 ], [ %1822, %1827 ]
+  %1836 = getelementptr inbounds nuw i8, ptr %1834, i64 2
+  %1837 = load i16, ptr %1836, align 2, !tbaa !77
+  %1838 = load i8, ptr %1834, align 2, !tbaa !44
+  %1839 = sub nuw i32 %1833, %1771
+  %1840 = zext nneg i8 %1770 to i64
+  %1841 = lshr i64 %1832, %1840
+  %1842 = load i32, ptr %71, align 4, !tbaa !37
+  %1843 = add nsw i32 %1842, %1771
+  store i32 %1843, ptr %71, align 4, !tbaa !37
+  br label %1844
 
-1853:                                             ; preds = %1838, %1773
-  %1854 = phi ptr [ %1839, %1838 ], [ %1775, %1773 ]
-  %1855 = phi i32 [ %1840, %1838 ], [ %1776, %1773 ]
-  %1856 = phi i64 [ %1850, %1838 ], [ %1777, %1773 ]
-  %1857 = phi i32 [ %1848, %1838 ], [ %1778, %1773 ]
-  %1858 = phi i16 [ %1846, %1838 ], [ %1782, %1773 ]
-  %1859 = phi i8 [ %1844, %1838 ], [ %1779, %1773 ]
-  %1860 = phi i8 [ %1847, %1838 ], [ %1783, %1773 ]
-  %1861 = zext i8 %1859 to i32
-  %1862 = zext nneg i8 %1859 to i64
-  %1863 = lshr i64 %1856, %1862
-  %1864 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %1857, i32 %1861), !nosanitize !47
-  %1865 = extractvalue { i32, i1 } %1864, 0, !nosanitize !47
-  %1866 = extractvalue { i32, i1 } %1864, 1, !nosanitize !47
-  br i1 %1866, label %1867, label %1868, !prof !48, !nosanitize !47
+1844:                                             ; preds = %1829, %1764
+  %1845 = phi ptr [ %1830, %1829 ], [ %1766, %1764 ]
+  %1846 = phi i32 [ %1831, %1829 ], [ %1767, %1764 ]
+  %1847 = phi i64 [ %1841, %1829 ], [ %1768, %1764 ]
+  %1848 = phi i32 [ %1839, %1829 ], [ %1769, %1764 ]
+  %1849 = phi i16 [ %1837, %1829 ], [ %1773, %1764 ]
+  %1850 = phi i8 [ %1835, %1829 ], [ %1770, %1764 ]
+  %1851 = phi i8 [ %1838, %1829 ], [ %1774, %1764 ]
+  %1852 = zext i8 %1850 to i32
+  %1853 = zext nneg i8 %1850 to i64
+  %1854 = lshr i64 %1847, %1853
+  %1855 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %1848, i32 %1852), !nosanitize !47
+  %1856 = extractvalue { i32, i1 } %1855, 0, !nosanitize !47
+  %1857 = extractvalue { i32, i1 } %1855, 1, !nosanitize !47
+  br i1 %1857, label %1858, label %1859, !prof !48, !nosanitize !47
 
-1867:                                             ; preds = %1853
+1858:                                             ; preds = %1844
   call void @llvm.ubsantrap(i8 21) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-1868:                                             ; preds = %1853
-  %1869 = load i32, ptr %71, align 4, !tbaa !37
-  %1870 = add nsw i32 %1869, %1861
-  store i32 %1870, ptr %71, align 4, !tbaa !37
-  %1871 = zext i8 %1860 to i32
-  %1872 = and i32 %1871, 64
-  %1873 = icmp eq i32 %1872, 0
-  br i1 %1873, label %1875, label %1874
+1859:                                             ; preds = %1844
+  %1860 = load i32, ptr %71, align 4, !tbaa !37
+  %1861 = add nsw i32 %1860, %1852
+  store i32 %1861, ptr %71, align 4, !tbaa !37
+  %1862 = zext i8 %1851 to i32
+  %1863 = and i32 %1862, 64
+  %1864 = icmp eq i32 %1863, 0
+  br i1 %1864, label %1866, label %1865
 
-1874:                                             ; preds = %1868
+1865:                                             ; preds = %1859
   store ptr @.str.15, ptr %55, align 8, !tbaa !45
   store i32 16209, ptr %21, align 8, !tbaa !20
-  br label %2351
+  br label %2339
 
-1875:                                             ; preds = %1868
-  %1876 = zext i16 %1858 to i32
-  store i32 %1876, ptr %74, align 8, !tbaa !93
-  %1877 = and i32 %1871, 15
-  store i32 %1877, ptr %72, align 4, !tbaa !53
+1866:                                             ; preds = %1859
+  %1867 = zext i16 %1849 to i32
+  store i32 %1867, ptr %74, align 8, !tbaa !93
+  %1868 = and i32 %1862, 15
+  store i32 %1868, ptr %72, align 4, !tbaa !53
   store i32 16203, ptr %21, align 8, !tbaa !20
-  br label %1878
+  br label %1869
 
-1878:                                             ; preds = %1875, %99
-  %1879 = phi i32 [ %1877, %1875 ], [ %100, %99 ]
-  %1880 = phi ptr [ %1854, %1875 ], [ %90, %99 ]
-  %1881 = phi i32 [ %1855, %1875 ], [ %92, %99 ]
-  %1882 = phi i64 [ %1863, %1875 ], [ %94, %99 ]
-  %1883 = phi i32 [ %1865, %1875 ], [ %95, %99 ]
-  %1884 = phi i32 [ %1727, %1875 ], [ %97, %99 ]
-  %1885 = icmp eq i32 %1879, 0
-  br i1 %1885, label %1943, label %1886
+1869:                                             ; preds = %1866, %99
+  %1870 = phi i32 [ %1868, %1866 ], [ %100, %99 ]
+  %1871 = phi ptr [ %1845, %1866 ], [ %90, %99 ]
+  %1872 = phi i32 [ %1846, %1866 ], [ %92, %99 ]
+  %1873 = phi i64 [ %1854, %1866 ], [ %94, %99 ]
+  %1874 = phi i32 [ %1856, %1866 ], [ %95, %99 ]
+  %1875 = phi i32 [ %1718, %1866 ], [ %97, %99 ]
+  %1876 = icmp eq i32 %1870, 0
+  br i1 %1876, label %1934, label %1877
 
-1886:                                             ; preds = %1878
-  %1887 = icmp ult i32 %1883, %1879
-  br i1 %1887, label %1888, label %1915
+1877:                                             ; preds = %1869
+  %1878 = icmp ult i32 %1874, %1870
+  br i1 %1878, label %1879, label %1906
 
-1888:                                             ; preds = %1886
-  %1889 = icmp eq i32 %1881, 0
-  br i1 %1889, label %2415, label %1890
+1879:                                             ; preds = %1877
+  %1880 = icmp eq i32 %1872, 0
+  br i1 %1880, label %2403, label %1881
 
-1890:                                             ; preds = %1888
-  %1891 = zext i32 %1883 to i64
-  br label %1894
+1881:                                             ; preds = %1879
+  %1882 = zext i32 %1874 to i64
+  br label %1885
 
-1892:                                             ; preds = %1911
-  %1893 = icmp eq i32 %1899, 0
-  br i1 %1893, label %2415, label %1894, !llvm.loop !94
+1883:                                             ; preds = %1902
+  %1884 = icmp eq i32 %1890, 0
+  br i1 %1884, label %2403, label %1885, !llvm.loop !94
 
-1894:                                             ; preds = %1892, %1890
-  %1895 = phi ptr [ %1880, %1890 ], [ %1900, %1892 ]
-  %1896 = phi i32 [ %1881, %1890 ], [ %1899, %1892 ]
-  %1897 = phi i64 [ %1882, %1890 ], [ %1905, %1892 ]
-  %1898 = phi i64 [ %1891, %1890 ], [ %1912, %1892 ]
-  %1899 = add i32 %1896, -1
-  %1900 = getelementptr inbounds nuw i8, ptr %1895, i64 1
-  %1901 = load i8, ptr %1895, align 1, !tbaa !44
-  %1902 = zext i8 %1901 to i64
-  %1903 = shl i64 %1902, %1898
-  %1904 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %1897, i64 %1903), !nosanitize !47
-  %1905 = extractvalue { i64, i1 } %1904, 0, !nosanitize !47
-  %1906 = extractvalue { i64, i1 } %1904, 1, !nosanitize !47
-  br i1 %1906, label %1907, label %1908, !prof !48, !nosanitize !47
+1885:                                             ; preds = %1883, %1881
+  %1886 = phi ptr [ %1871, %1881 ], [ %1891, %1883 ]
+  %1887 = phi i32 [ %1872, %1881 ], [ %1890, %1883 ]
+  %1888 = phi i64 [ %1873, %1881 ], [ %1896, %1883 ]
+  %1889 = phi i64 [ %1882, %1881 ], [ %1903, %1883 ]
+  %1890 = add i32 %1887, -1
+  %1891 = getelementptr inbounds nuw i8, ptr %1886, i64 1
+  %1892 = load i8, ptr %1886, align 1, !tbaa !44
+  %1893 = zext i8 %1892 to i64
+  %1894 = shl i64 %1893, %1889
+  %1895 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %1888, i64 %1894), !nosanitize !47
+  %1896 = extractvalue { i64, i1 } %1895, 0, !nosanitize !47
+  %1897 = extractvalue { i64, i1 } %1895, 1, !nosanitize !47
+  br i1 %1897, label %1898, label %1899, !prof !48, !nosanitize !47
 
-1907:                                             ; preds = %1894
+1898:                                             ; preds = %1885
   call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-1908:                                             ; preds = %1894
-  %1909 = icmp samesign ugt i64 %1898, 4294967287
-  br i1 %1909, label %1910, label %1911, !prof !48, !nosanitize !47
+1899:                                             ; preds = %1885
+  %1900 = icmp samesign ugt i64 %1889, 4294967287
+  br i1 %1900, label %1901, label %1902, !prof !48, !nosanitize !47
 
-1910:                                             ; preds = %1908
+1901:                                             ; preds = %1899
   call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-1911:                                             ; preds = %1908
-  %1912 = add nuw nsw i64 %1898, 8
-  %1913 = trunc nuw i64 %1912 to i32
-  %1914 = icmp ugt i32 %1879, %1913
-  br i1 %1914, label %1892, label %1915, !llvm.loop !94
+1902:                                             ; preds = %1899
+  %1903 = add nuw nsw i64 %1889, 8
+  %1904 = trunc nuw i64 %1903 to i32
+  %1905 = icmp ugt i32 %1870, %1904
+  br i1 %1905, label %1883, label %1906, !llvm.loop !94
 
-1915:                                             ; preds = %1911, %1886
-  %1916 = phi ptr [ %1880, %1886 ], [ %1900, %1911 ]
-  %1917 = phi i32 [ %1881, %1886 ], [ %1899, %1911 ]
-  %1918 = phi i64 [ %1882, %1886 ], [ %1905, %1911 ]
-  %1919 = phi i32 [ %1883, %1886 ], [ %1913, %1911 ]
-  %1920 = shl nsw i32 -1, %1879
-  %1921 = xor i32 %1920, -1
-  %1922 = trunc i64 %1918 to i32
-  %1923 = and i32 %1922, %1921
-  %1924 = load i32, ptr %74, align 8, !tbaa !93
-  %1925 = call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %1924, i32 %1923), !nosanitize !47
-  %1926 = extractvalue { i32, i1 } %1925, 1, !nosanitize !47
-  br i1 %1926, label %1927, label %1928, !prof !48, !nosanitize !47
+1906:                                             ; preds = %1902, %1877
+  %1907 = phi ptr [ %1871, %1877 ], [ %1891, %1902 ]
+  %1908 = phi i32 [ %1872, %1877 ], [ %1890, %1902 ]
+  %1909 = phi i64 [ %1873, %1877 ], [ %1896, %1902 ]
+  %1910 = phi i32 [ %1874, %1877 ], [ %1904, %1902 ]
+  %1911 = shl nsw i32 -1, %1870
+  %1912 = xor i32 %1911, -1
+  %1913 = trunc i64 %1909 to i32
+  %1914 = and i32 %1913, %1912
+  %1915 = load i32, ptr %74, align 8, !tbaa !93
+  %1916 = call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %1915, i32 %1914), !nosanitize !47
+  %1917 = extractvalue { i32, i1 } %1916, 1, !nosanitize !47
+  br i1 %1917, label %1918, label %1919, !prof !48, !nosanitize !47
 
-1927:                                             ; preds = %1915
+1918:                                             ; preds = %1906
   call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-1928:                                             ; preds = %1915
-  %1929 = extractvalue { i32, i1 } %1925, 0, !nosanitize !47
-  store i32 %1929, ptr %74, align 8, !tbaa !93
-  %1930 = zext nneg i32 %1879 to i64
-  %1931 = lshr i64 %1918, %1930
-  %1932 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %1919, i32 %1879), !nosanitize !47
-  %1933 = extractvalue { i32, i1 } %1932, 0, !nosanitize !47
-  %1934 = extractvalue { i32, i1 } %1932, 1, !nosanitize !47
-  br i1 %1934, label %1935, label %1936, !prof !48, !nosanitize !47
+1919:                                             ; preds = %1906
+  %1920 = extractvalue { i32, i1 } %1916, 0, !nosanitize !47
+  store i32 %1920, ptr %74, align 8, !tbaa !93
+  %1921 = zext nneg i32 %1870 to i64
+  %1922 = lshr i64 %1909, %1921
+  %1923 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %1910, i32 %1870), !nosanitize !47
+  %1924 = extractvalue { i32, i1 } %1923, 0, !nosanitize !47
+  %1925 = extractvalue { i32, i1 } %1923, 1, !nosanitize !47
+  br i1 %1925, label %1926, label %1927, !prof !48, !nosanitize !47
 
-1935:                                             ; preds = %1928
+1926:                                             ; preds = %1919
   call void @llvm.ubsantrap(i8 21) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-1936:                                             ; preds = %1928
-  %1937 = load i32, ptr %71, align 4, !tbaa !37
-  %1938 = call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %1937, i32 %1879), !nosanitize !47
-  %1939 = extractvalue { i32, i1 } %1938, 1, !nosanitize !47
-  br i1 %1939, label %1940, label %1941, !prof !48, !nosanitize !47
+1927:                                             ; preds = %1919
+  %1928 = load i32, ptr %71, align 4, !tbaa !37
+  %1929 = call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %1928, i32 %1870), !nosanitize !47
+  %1930 = extractvalue { i32, i1 } %1929, 1, !nosanitize !47
+  br i1 %1930, label %1931, label %1932, !prof !48, !nosanitize !47
 
-1940:                                             ; preds = %1936
+1931:                                             ; preds = %1927
   call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-1941:                                             ; preds = %1936
-  %1942 = extractvalue { i32, i1 } %1938, 0, !nosanitize !47
-  store i32 %1942, ptr %71, align 4, !tbaa !37
-  br label %1943
+1932:                                             ; preds = %1927
+  %1933 = extractvalue { i32, i1 } %1929, 0, !nosanitize !47
+  store i32 %1933, ptr %71, align 4, !tbaa !37
+  br label %1934
 
-1943:                                             ; preds = %1941, %1878
-  %1944 = phi ptr [ %1916, %1941 ], [ %1880, %1878 ]
-  %1945 = phi i32 [ %1917, %1941 ], [ %1881, %1878 ]
-  %1946 = phi i64 [ %1931, %1941 ], [ %1882, %1878 ]
-  %1947 = phi i32 [ %1933, %1941 ], [ %1883, %1878 ]
+1934:                                             ; preds = %1932, %1869
+  %1935 = phi ptr [ %1907, %1932 ], [ %1871, %1869 ]
+  %1936 = phi i32 [ %1908, %1932 ], [ %1872, %1869 ]
+  %1937 = phi i64 [ %1922, %1932 ], [ %1873, %1869 ]
+  %1938 = phi i32 [ %1924, %1932 ], [ %1874, %1869 ]
   store i32 16204, ptr %21, align 8, !tbaa !20
-  br label %1948
+  br label %1939
 
-1948:                                             ; preds = %1943, %88
-  %1949 = phi ptr [ %1944, %1943 ], [ %90, %88 ]
-  %1950 = phi i32 [ %1945, %1943 ], [ %92, %88 ]
-  %1951 = phi i64 [ %1946, %1943 ], [ %94, %88 ]
-  %1952 = phi i32 [ %1947, %1943 ], [ %95, %88 ]
-  %1953 = phi i32 [ %1884, %1943 ], [ %97, %88 ]
-  %1954 = icmp eq i32 %93, 0
-  br i1 %1954, label %2485, label %1955
+1939:                                             ; preds = %1934, %88
+  %1940 = phi ptr [ %1935, %1934 ], [ %90, %88 ]
+  %1941 = phi i32 [ %1936, %1934 ], [ %92, %88 ]
+  %1942 = phi i64 [ %1937, %1934 ], [ %94, %88 ]
+  %1943 = phi i32 [ %1938, %1934 ], [ %95, %88 ]
+  %1944 = phi i32 [ %1875, %1934 ], [ %97, %88 ]
+  %1945 = icmp eq i32 %93, 0
+  br i1 %1945, label %2473, label %1946
 
-1955:                                             ; preds = %1948
-  %1956 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %96, i32 %93), !nosanitize !47
-  %1957 = extractvalue { i32, i1 } %1956, 0, !nosanitize !47
-  %1958 = extractvalue { i32, i1 } %1956, 1, !nosanitize !47
-  br i1 %1958, label %1959, label %1960, !prof !48, !nosanitize !47
+1946:                                             ; preds = %1939
+  %1947 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %96, i32 %93), !nosanitize !47
+  %1948 = extractvalue { i32, i1 } %1947, 0, !nosanitize !47
+  %1949 = extractvalue { i32, i1 } %1947, 1, !nosanitize !47
+  br i1 %1949, label %1950, label %1951, !prof !48, !nosanitize !47
 
-1959:                                             ; preds = %1955
+1950:                                             ; preds = %1946
   call void @llvm.ubsantrap(i8 21) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-1960:                                             ; preds = %1955
-  %1961 = load i32, ptr %74, align 8, !tbaa !93
-  %1962 = icmp ugt i32 %1961, %1957
-  br i1 %1962, label %1963, label %1992
+1951:                                             ; preds = %1946
+  %1952 = load i32, ptr %74, align 8, !tbaa !93
+  %1953 = icmp ugt i32 %1952, %1948
+  br i1 %1953, label %1954, label %1983
 
-1963:                                             ; preds = %1960
-  %1964 = sub nuw i32 %1961, %1957
-  %1965 = load i32, ptr %75, align 8, !tbaa !39
-  %1966 = icmp ugt i32 %1964, %1965
-  br i1 %1966, label %1967, label %1971
+1954:                                             ; preds = %1951
+  %1955 = sub nuw i32 %1952, %1948
+  %1956 = load i32, ptr %75, align 8, !tbaa !39
+  %1957 = icmp ugt i32 %1955, %1956
+  br i1 %1957, label %1958, label %1962
 
-1967:                                             ; preds = %1963
-  %1968 = load i32, ptr %76, align 8, !tbaa !36
-  %1969 = icmp eq i32 %1968, 0
-  br i1 %1969, label %1971, label %1970
+1958:                                             ; preds = %1954
+  %1959 = load i32, ptr %76, align 8, !tbaa !36
+  %1960 = icmp eq i32 %1959, 0
+  br i1 %1960, label %1962, label %1961
 
-1970:                                             ; preds = %1967
+1961:                                             ; preds = %1958
   store ptr @.str.16, ptr %55, align 8, !tbaa !45
   store i32 16209, ptr %21, align 8, !tbaa !20
-  br label %2351
+  br label %2339
 
-1971:                                             ; preds = %1967, %1963
-  %1972 = load i32, ptr %77, align 4, !tbaa !40
-  %1973 = icmp ugt i32 %1964, %1972
-  br i1 %1973, label %1974, label %1982
+1962:                                             ; preds = %1958, %1954
+  %1963 = load i32, ptr %77, align 4, !tbaa !40
+  %1964 = icmp ugt i32 %1955, %1963
+  br i1 %1964, label %1965, label %1973
 
-1974:                                             ; preds = %1971
-  %1975 = sub nuw i32 %1964, %1972
-  %1976 = load i32, ptr %79, align 4, !tbaa !38
-  %1977 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %1976, i32 %1975), !nosanitize !47
-  %1978 = extractvalue { i32, i1 } %1977, 1, !nosanitize !47
-  br i1 %1978, label %1979, label %1980, !prof !48, !nosanitize !47
+1965:                                             ; preds = %1962
+  %1966 = sub nuw i32 %1955, %1963
+  %1967 = load i32, ptr %79, align 4, !tbaa !38
+  %1968 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %1967, i32 %1966), !nosanitize !47
+  %1969 = extractvalue { i32, i1 } %1968, 1, !nosanitize !47
+  br i1 %1969, label %1970, label %1971, !prof !48, !nosanitize !47
 
-1979:                                             ; preds = %1974
+1970:                                             ; preds = %1965
   call void @llvm.ubsantrap(i8 21) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-1980:                                             ; preds = %1974
-  %1981 = extractvalue { i32, i1 } %1977, 0, !nosanitize !47
-  br label %1984
+1971:                                             ; preds = %1965
+  %1972 = extractvalue { i32, i1 } %1968, 0, !nosanitize !47
+  br label %1975
 
-1982:                                             ; preds = %1971
-  %1983 = sub nuw i32 %1972, %1964
-  br label %1984
+1973:                                             ; preds = %1962
+  %1974 = sub nuw i32 %1963, %1955
+  br label %1975
 
-1984:                                             ; preds = %1982, %1980
-  %1985 = phi i32 [ %1983, %1982 ], [ %1981, %1980 ]
-  %1986 = phi i32 [ %1964, %1982 ], [ %1975, %1980 ]
-  %1987 = load ptr, ptr %78, align 8, !tbaa !41
-  %1988 = zext i32 %1985 to i64
-  %1989 = getelementptr inbounds nuw i8, ptr %1987, i64 %1988
-  %1990 = load i32, ptr %56, align 4, !tbaa !61
-  %1991 = call i32 @llvm.umin.i32(i32 %1986, i32 %1990)
-  br label %1997
+1975:                                             ; preds = %1973, %1971
+  %1976 = phi i32 [ %1974, %1973 ], [ %1972, %1971 ]
+  %1977 = phi i32 [ %1955, %1973 ], [ %1966, %1971 ]
+  %1978 = load ptr, ptr %78, align 8, !tbaa !41
+  %1979 = zext i32 %1976 to i64
+  %1980 = getelementptr inbounds nuw i8, ptr %1978, i64 %1979
+  %1981 = load i32, ptr %56, align 4, !tbaa !61
+  %1982 = call i32 @llvm.umin.i32(i32 %1977, i32 %1981)
+  br label %1988
 
-1992:                                             ; preds = %1960
-  %1993 = zext i32 %1961 to i64
-  %1994 = sub nsw i64 0, %1993
-  %1995 = getelementptr inbounds i8, ptr %91, i64 %1994
-  %1996 = load i32, ptr %56, align 4, !tbaa !61
-  br label %1997
+1983:                                             ; preds = %1951
+  %1984 = zext i32 %1952 to i64
+  %1985 = sub nsw i64 0, %1984
+  %1986 = getelementptr inbounds i8, ptr %91, i64 %1985
+  %1987 = load i32, ptr %56, align 4, !tbaa !61
+  br label %1988
 
-1997:                                             ; preds = %1992, %1984
-  %1998 = phi i32 [ %1996, %1992 ], [ %1990, %1984 ]
-  %1999 = phi i32 [ %1996, %1992 ], [ %1991, %1984 ]
-  %2000 = phi ptr [ %1995, %1992 ], [ %1989, %1984 ]
-  %2001 = ptrtoaddr ptr %2000 to i64
-  %2002 = call i32 @llvm.umin.i32(i32 %1999, i32 %93)
-  %2003 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %93, i32 %2002), !nosanitize !47
-  %2004 = extractvalue { i32, i1 } %2003, 0, !nosanitize !47
-  %2005 = extractvalue { i32, i1 } %2003, 1, !nosanitize !47
-  br i1 %2005, label %2006, label %2007, !prof !48, !nosanitize !47
+1988:                                             ; preds = %1983, %1975
+  %1989 = phi i32 [ %1987, %1983 ], [ %1981, %1975 ]
+  %1990 = phi i32 [ %1987, %1983 ], [ %1982, %1975 ]
+  %1991 = phi ptr [ %1986, %1983 ], [ %1980, %1975 ]
+  %1992 = ptrtoaddr ptr %1991 to i64
+  %1993 = call i32 @llvm.umin.i32(i32 %1990, i32 %93)
+  %1994 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %93, i32 %1993), !nosanitize !47
+  %1995 = extractvalue { i32, i1 } %1994, 0, !nosanitize !47
+  %1996 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %1989, i32 %1993), !nosanitize !47
+  %1997 = extractvalue { i32, i1 } %1996, 1, !nosanitize !47
+  br i1 %1997, label %1998, label %1999, !prof !48, !nosanitize !47
 
-2006:                                             ; preds = %1997
+1998:                                             ; preds = %1988
   call void @llvm.ubsantrap(i8 21) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-2007:                                             ; preds = %1997
-  %2008 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %1998, i32 %2002), !nosanitize !47
-  %2009 = extractvalue { i32, i1 } %2008, 1, !nosanitize !47
-  br i1 %2009, label %2010, label %2011, !prof !48, !nosanitize !47
+1999:                                             ; preds = %1988
+  %2000 = extractvalue { i32, i1 } %1996, 0, !nosanitize !47
+  store i32 %2000, ptr %56, align 4, !tbaa !61
+  %2001 = icmp eq i32 %1993, 0
+  br i1 %2001, label %2072, label %2002, !prof !48, !nosanitize !47
 
-2010:                                             ; preds = %2007
+2002:                                             ; preds = %1999
+  %2003 = call i32 @llvm.umin.i32(i32 %1990, i32 %93)
+  %2004 = zext i32 %2003 to i64
+  %2005 = icmp ult i32 %2003, 4
+  %2006 = sub i64 %98, %1992
+  %2007 = icmp ult i64 %2006, 32
+  %2008 = select i1 %2005, i1 true, i1 %2007
+  br i1 %2008, label %2048, label %2009
+
+2009:                                             ; preds = %2002
+  %2010 = icmp ult i32 %2003, 32
+  br i1 %2010, label %2032, label %2011
+
+2011:                                             ; preds = %2009
+  %2012 = and i64 %2004, 28
+  %2013 = and i64 %2004, 4294967264
+  %2014 = getelementptr i8, ptr %91, i64 %2013
+  %2015 = trunc nuw i64 %2013 to i32
+  %2016 = sub i32 %1993, %2015
+  %2017 = getelementptr i8, ptr %1991, i64 %2013
+  br label %2018
+
+2018:                                             ; preds = %2018, %2011
+  %2019 = phi i64 [ 0, %2011 ], [ %2026, %2018 ]
+  %2020 = getelementptr i8, ptr %91, i64 %2019
+  %2021 = getelementptr i8, ptr %1991, i64 %2019
+  %2022 = getelementptr i8, ptr %2021, i64 16
+  %2023 = load <16 x i8>, ptr %2021, align 1, !tbaa !44
+  %2024 = load <16 x i8>, ptr %2022, align 1, !tbaa !44
+  %2025 = getelementptr i8, ptr %2020, i64 16
+  store <16 x i8> %2023, ptr %2020, align 1, !tbaa !44
+  store <16 x i8> %2024, ptr %2025, align 1, !tbaa !44
+  %2026 = add nuw i64 %2019, 32
+  %2027 = icmp eq i64 %2026, %2013
+  br i1 %2027, label %2028, label %2018, !llvm.loop !95
+
+2028:                                             ; preds = %2018
+  %2029 = icmp eq i64 %2013, %2004
+  br i1 %2029, label %2104, label %2030
+
+2030:                                             ; preds = %2028
+  %2031 = icmp eq i64 %2012, 0
+  br i1 %2031, label %2048, label %2032, !prof !98
+
+2032:                                             ; preds = %2030, %2009
+  %2033 = phi i64 [ %2013, %2030 ], [ 0, %2009 ]
+  %2034 = and i64 %2004, 4294967292
+  %2035 = getelementptr i8, ptr %91, i64 %2034
+  %2036 = trunc nuw i64 %2034 to i32
+  %2037 = sub i32 %1993, %2036
+  %2038 = getelementptr i8, ptr %1991, i64 %2034
+  br label %2039
+
+2039:                                             ; preds = %2039, %2032
+  %2040 = phi i64 [ %2033, %2032 ], [ %2044, %2039 ]
+  %2041 = getelementptr i8, ptr %91, i64 %2040
+  %2042 = getelementptr i8, ptr %1991, i64 %2040
+  %2043 = load <4 x i8>, ptr %2042, align 1, !tbaa !44
+  store <4 x i8> %2043, ptr %2041, align 1, !tbaa !44
+  %2044 = add nuw i64 %2040, 4
+  %2045 = icmp eq i64 %2044, %2034
+  br i1 %2045, label %2046, label %2039, !llvm.loop !99
+
+2046:                                             ; preds = %2039
+  %2047 = icmp eq i64 %2034, %2004
+  br i1 %2047, label %2104, label %2048
+
+2048:                                             ; preds = %2046, %2030, %2002
+  %2049 = phi ptr [ %91, %2002 ], [ %2014, %2030 ], [ %2035, %2046 ]
+  %2050 = phi i32 [ %1993, %2002 ], [ %2016, %2030 ], [ %2037, %2046 ]
+  %2051 = phi ptr [ %1991, %2002 ], [ %2017, %2030 ], [ %2038, %2046 ]
+  %2052 = add i32 %2050, -1
+  %2053 = and i32 %2050, 7
+  %2054 = icmp eq i32 %2053, 0
+  br i1 %2054, label %2066, label %2055
+
+2055:                                             ; preds = %2055, %2048
+  %2056 = phi ptr [ %2061, %2055 ], [ %2049, %2048 ]
+  %2057 = phi i32 [ %2062, %2055 ], [ %2050, %2048 ]
+  %2058 = phi ptr [ %2063, %2055 ], [ %2051, %2048 ]
+  %2059 = phi i32 [ %2064, %2055 ], [ 0, %2048 ]
+  %2060 = load i8, ptr %2058, align 1, !tbaa !44
+  store i8 %2060, ptr %2056, align 1, !tbaa !44
+  %2061 = getelementptr inbounds nuw i8, ptr %2056, i64 1
+  %2062 = add i32 %2057, -1
+  %2063 = getelementptr inbounds nuw i8, ptr %2058, i64 1
+  %2064 = add i32 %2059, 1
+  %2065 = icmp eq i32 %2064, %2053
+  br i1 %2065, label %2066, label %2055, !llvm.loop !100
+
+2066:                                             ; preds = %2055, %2048
+  %2067 = phi ptr [ poison, %2048 ], [ %2061, %2055 ]
+  %2068 = phi ptr [ %2049, %2048 ], [ %2061, %2055 ]
+  %2069 = phi i32 [ %2050, %2048 ], [ %2062, %2055 ]
+  %2070 = phi ptr [ %2051, %2048 ], [ %2063, %2055 ]
+  %2071 = icmp ult i32 %2052, 7
+  br i1 %2071, label %2104, label %2074
+
+2072:                                             ; preds = %1999
+  %2073 = load i8, ptr %1991, align 1, !tbaa !44
+  store i8 %2073, ptr %91, align 1, !tbaa !44
   call void @llvm.ubsantrap(i8 21) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-2011:                                             ; preds = %2007
-  %2012 = extractvalue { i32, i1 } %2008, 0, !nosanitize !47
-  store i32 %2012, ptr %56, align 4, !tbaa !61
-  %2013 = icmp eq i32 %2002, 0
-  br i1 %2013, label %2084, label %2014, !prof !48, !nosanitize !47
-
-2014:                                             ; preds = %2011
-  %2015 = call i32 @llvm.umin.i32(i32 %1999, i32 %93)
-  %2016 = zext i32 %2015 to i64
-  %2017 = icmp ult i32 %2015, 4
-  %2018 = sub i64 %98, %2001
-  %2019 = icmp ult i64 %2018, 32
-  %2020 = select i1 %2017, i1 true, i1 %2019
-  br i1 %2020, label %2060, label %2021
-
-2021:                                             ; preds = %2014
-  %2022 = icmp ult i32 %2015, 32
-  br i1 %2022, label %2044, label %2023
-
-2023:                                             ; preds = %2021
-  %2024 = and i64 %2016, 28
-  %2025 = and i64 %2016, 4294967264
-  %2026 = getelementptr i8, ptr %91, i64 %2025
-  %2027 = trunc nuw i64 %2025 to i32
-  %2028 = sub i32 %2002, %2027
-  %2029 = getelementptr i8, ptr %2000, i64 %2025
-  br label %2030
-
-2030:                                             ; preds = %2030, %2023
-  %2031 = phi i64 [ 0, %2023 ], [ %2038, %2030 ]
-  %2032 = getelementptr i8, ptr %91, i64 %2031
-  %2033 = getelementptr i8, ptr %2000, i64 %2031
-  %2034 = getelementptr i8, ptr %2033, i64 16
-  %2035 = load <16 x i8>, ptr %2033, align 1, !tbaa !44
-  %2036 = load <16 x i8>, ptr %2034, align 1, !tbaa !44
-  %2037 = getelementptr i8, ptr %2032, i64 16
-  store <16 x i8> %2035, ptr %2032, align 1, !tbaa !44
-  store <16 x i8> %2036, ptr %2037, align 1, !tbaa !44
-  %2038 = add nuw i64 %2031, 32
-  %2039 = icmp eq i64 %2038, %2025
-  br i1 %2039, label %2040, label %2030, !llvm.loop !95
-
-2040:                                             ; preds = %2030
-  %2041 = icmp eq i64 %2025, %2016
-  br i1 %2041, label %2116, label %2042
-
-2042:                                             ; preds = %2040
-  %2043 = icmp eq i64 %2024, 0
-  br i1 %2043, label %2060, label %2044, !prof !98
-
-2044:                                             ; preds = %2042, %2021
-  %2045 = phi i64 [ %2025, %2042 ], [ 0, %2021 ]
-  %2046 = and i64 %2016, 4294967292
-  %2047 = getelementptr i8, ptr %91, i64 %2046
-  %2048 = trunc nuw i64 %2046 to i32
-  %2049 = sub i32 %2002, %2048
-  %2050 = getelementptr i8, ptr %2000, i64 %2046
-  br label %2051
-
-2051:                                             ; preds = %2051, %2044
-  %2052 = phi i64 [ %2045, %2044 ], [ %2056, %2051 ]
-  %2053 = getelementptr i8, ptr %91, i64 %2052
-  %2054 = getelementptr i8, ptr %2000, i64 %2052
-  %2055 = load <4 x i8>, ptr %2054, align 1, !tbaa !44
-  store <4 x i8> %2055, ptr %2053, align 1, !tbaa !44
-  %2056 = add nuw i64 %2052, 4
-  %2057 = icmp eq i64 %2056, %2046
-  br i1 %2057, label %2058, label %2051, !llvm.loop !99
-
-2058:                                             ; preds = %2051
-  %2059 = icmp eq i64 %2046, %2016
-  br i1 %2059, label %2116, label %2060
-
-2060:                                             ; preds = %2058, %2042, %2014
-  %2061 = phi ptr [ %91, %2014 ], [ %2026, %2042 ], [ %2047, %2058 ]
-  %2062 = phi i32 [ %2002, %2014 ], [ %2028, %2042 ], [ %2049, %2058 ]
-  %2063 = phi ptr [ %2000, %2014 ], [ %2029, %2042 ], [ %2050, %2058 ]
-  %2064 = add i32 %2062, -1
-  %2065 = and i32 %2062, 7
-  %2066 = icmp eq i32 %2065, 0
-  br i1 %2066, label %2078, label %2067
-
-2067:                                             ; preds = %2067, %2060
-  %2068 = phi ptr [ %2073, %2067 ], [ %2061, %2060 ]
-  %2069 = phi i32 [ %2074, %2067 ], [ %2062, %2060 ]
-  %2070 = phi ptr [ %2075, %2067 ], [ %2063, %2060 ]
-  %2071 = phi i32 [ %2076, %2067 ], [ 0, %2060 ]
-  %2072 = load i8, ptr %2070, align 1, !tbaa !44
-  store i8 %2072, ptr %2068, align 1, !tbaa !44
-  %2073 = getelementptr inbounds nuw i8, ptr %2068, i64 1
-  %2074 = add i32 %2069, -1
-  %2075 = getelementptr inbounds nuw i8, ptr %2070, i64 1
-  %2076 = add i32 %2071, 1
-  %2077 = icmp eq i32 %2076, %2065
-  br i1 %2077, label %2078, label %2067, !llvm.loop !100
-
-2078:                                             ; preds = %2067, %2060
-  %2079 = phi ptr [ poison, %2060 ], [ %2073, %2067 ]
-  %2080 = phi ptr [ %2061, %2060 ], [ %2073, %2067 ]
-  %2081 = phi i32 [ %2062, %2060 ], [ %2074, %2067 ]
-  %2082 = phi ptr [ %2063, %2060 ], [ %2075, %2067 ]
-  %2083 = icmp ult i32 %2064, 7
-  br i1 %2083, label %2116, label %2086
-
-2084:                                             ; preds = %2011
-  %2085 = load i8, ptr %2000, align 1, !tbaa !44
-  store i8 %2085, ptr %91, align 1, !tbaa !44
-  call void @llvm.ubsantrap(i8 21) #13, !nosanitize !47
-  unreachable, !nosanitize !47
-
-2086:                                             ; preds = %2086, %2078
-  %2087 = phi ptr [ %2112, %2086 ], [ %2080, %2078 ]
-  %2088 = phi i32 [ %2113, %2086 ], [ %2081, %2078 ]
-  %2089 = phi ptr [ %2114, %2086 ], [ %2082, %2078 ]
+2074:                                             ; preds = %2074, %2066
+  %2075 = phi ptr [ %2100, %2074 ], [ %2068, %2066 ]
+  %2076 = phi i32 [ %2101, %2074 ], [ %2069, %2066 ]
+  %2077 = phi ptr [ %2102, %2074 ], [ %2070, %2066 ]
+  %2078 = load i8, ptr %2077, align 1, !tbaa !44
+  store i8 %2078, ptr %2075, align 1, !tbaa !44
+  %2079 = getelementptr inbounds nuw i8, ptr %2075, i64 1
+  %2080 = getelementptr inbounds nuw i8, ptr %2077, i64 1
+  %2081 = load i8, ptr %2080, align 1, !tbaa !44
+  store i8 %2081, ptr %2079, align 1, !tbaa !44
+  %2082 = getelementptr inbounds nuw i8, ptr %2075, i64 2
+  %2083 = getelementptr inbounds nuw i8, ptr %2077, i64 2
+  %2084 = load i8, ptr %2083, align 1, !tbaa !44
+  store i8 %2084, ptr %2082, align 1, !tbaa !44
+  %2085 = getelementptr inbounds nuw i8, ptr %2075, i64 3
+  %2086 = getelementptr inbounds nuw i8, ptr %2077, i64 3
+  %2087 = load i8, ptr %2086, align 1, !tbaa !44
+  store i8 %2087, ptr %2085, align 1, !tbaa !44
+  %2088 = getelementptr inbounds nuw i8, ptr %2075, i64 4
+  %2089 = getelementptr inbounds nuw i8, ptr %2077, i64 4
   %2090 = load i8, ptr %2089, align 1, !tbaa !44
-  store i8 %2090, ptr %2087, align 1, !tbaa !44
-  %2091 = getelementptr inbounds nuw i8, ptr %2087, i64 1
-  %2092 = getelementptr inbounds nuw i8, ptr %2089, i64 1
+  store i8 %2090, ptr %2088, align 1, !tbaa !44
+  %2091 = getelementptr inbounds nuw i8, ptr %2075, i64 5
+  %2092 = getelementptr inbounds nuw i8, ptr %2077, i64 5
   %2093 = load i8, ptr %2092, align 1, !tbaa !44
   store i8 %2093, ptr %2091, align 1, !tbaa !44
-  %2094 = getelementptr inbounds nuw i8, ptr %2087, i64 2
-  %2095 = getelementptr inbounds nuw i8, ptr %2089, i64 2
+  %2094 = getelementptr inbounds nuw i8, ptr %2075, i64 6
+  %2095 = getelementptr inbounds nuw i8, ptr %2077, i64 6
   %2096 = load i8, ptr %2095, align 1, !tbaa !44
   store i8 %2096, ptr %2094, align 1, !tbaa !44
-  %2097 = getelementptr inbounds nuw i8, ptr %2087, i64 3
-  %2098 = getelementptr inbounds nuw i8, ptr %2089, i64 3
+  %2097 = getelementptr inbounds nuw i8, ptr %2075, i64 7
+  %2098 = getelementptr inbounds nuw i8, ptr %2077, i64 7
   %2099 = load i8, ptr %2098, align 1, !tbaa !44
   store i8 %2099, ptr %2097, align 1, !tbaa !44
-  %2100 = getelementptr inbounds nuw i8, ptr %2087, i64 4
-  %2101 = getelementptr inbounds nuw i8, ptr %2089, i64 4
-  %2102 = load i8, ptr %2101, align 1, !tbaa !44
-  store i8 %2102, ptr %2100, align 1, !tbaa !44
-  %2103 = getelementptr inbounds nuw i8, ptr %2087, i64 5
-  %2104 = getelementptr inbounds nuw i8, ptr %2089, i64 5
-  %2105 = load i8, ptr %2104, align 1, !tbaa !44
-  store i8 %2105, ptr %2103, align 1, !tbaa !44
-  %2106 = getelementptr inbounds nuw i8, ptr %2087, i64 6
-  %2107 = getelementptr inbounds nuw i8, ptr %2089, i64 6
-  %2108 = load i8, ptr %2107, align 1, !tbaa !44
-  store i8 %2108, ptr %2106, align 1, !tbaa !44
-  %2109 = getelementptr inbounds nuw i8, ptr %2087, i64 7
-  %2110 = getelementptr inbounds nuw i8, ptr %2089, i64 7
-  %2111 = load i8, ptr %2110, align 1, !tbaa !44
-  store i8 %2111, ptr %2109, align 1, !tbaa !44
-  %2112 = getelementptr inbounds nuw i8, ptr %2087, i64 8
-  %2113 = add i32 %2088, -8
-  %2114 = getelementptr inbounds nuw i8, ptr %2089, i64 8
-  %2115 = icmp eq i32 %2113, 0
-  br i1 %2115, label %2116, label %2086, !llvm.loop !102
+  %2100 = getelementptr inbounds nuw i8, ptr %2075, i64 8
+  %2101 = add i32 %2076, -8
+  %2102 = getelementptr inbounds nuw i8, ptr %2077, i64 8
+  %2103 = icmp eq i32 %2101, 0
+  br i1 %2103, label %2104, label %2074, !llvm.loop !102
 
-2116:                                             ; preds = %2086, %2078, %2058, %2040
-  %2117 = phi ptr [ %2047, %2058 ], [ %2026, %2040 ], [ %2079, %2078 ], [ %2112, %2086 ]
-  %2118 = load i32, ptr %56, align 4, !tbaa !61
-  %2119 = icmp eq i32 %2118, 0
-  br i1 %2119, label %2120, label %2351
+2104:                                             ; preds = %2074, %2066, %2046, %2028
+  %2105 = phi ptr [ %2035, %2046 ], [ %2014, %2028 ], [ %2067, %2066 ], [ %2100, %2074 ]
+  %2106 = load i32, ptr %56, align 4, !tbaa !61
+  %2107 = icmp eq i32 %2106, 0
+  br i1 %2107, label %2108, label %2339
 
-2120:                                             ; preds = %2116
+2108:                                             ; preds = %2104
   store i32 16200, ptr %21, align 8, !tbaa !20
-  br label %2351
+  br label %2339
 
-2121:                                             ; preds = %88
-  %2122 = icmp eq i32 %93, 0
-  br i1 %2122, label %2485, label %2123
+2109:                                             ; preds = %88
+  %2110 = icmp eq i32 %93, 0
+  br i1 %2110, label %2473, label %2111
 
-2123:                                             ; preds = %2121
-  %2124 = load i32, ptr %56, align 4, !tbaa !61
-  %2125 = trunc i32 %2124 to i8
-  store i8 %2125, ptr %91, align 1, !tbaa !44
-  %2126 = add i32 %93, -1
-  %2127 = getelementptr inbounds nuw i8, ptr %91, i64 1
+2111:                                             ; preds = %2109
+  %2112 = load i32, ptr %56, align 4, !tbaa !61
+  %2113 = trunc i32 %2112 to i8
+  store i8 %2113, ptr %91, align 1, !tbaa !44
+  %2114 = add i32 %93, -1
+  %2115 = getelementptr inbounds nuw i8, ptr %91, i64 1
   store i32 16200, ptr %21, align 8, !tbaa !20
-  br label %2351
+  br label %2339
 
-2128:                                             ; preds = %88
-  %2129 = load i32, ptr %49, align 8, !tbaa !24
-  %2130 = icmp eq i32 %2129, 0
-  br i1 %2130, label %2251, label %2131
+2116:                                             ; preds = %88
+  %2117 = load i32, ptr %49, align 8, !tbaa !24
+  %2118 = icmp eq i32 %2117, 0
+  br i1 %2118, label %2239, label %2119
 
-2131:                                             ; preds = %2128
-  %2132 = icmp ult i32 %95, 32
-  br i1 %2132, label %2133, label %2196
+2119:                                             ; preds = %2116
+  %2120 = icmp ult i32 %95, 32
+  br i1 %2120, label %2121, label %2184
 
-2133:                                             ; preds = %2131
-  %2134 = zext nneg i32 %95 to i64
-  %2135 = icmp eq i32 %92, 0
-  br i1 %2135, label %2478, label %2136
+2121:                                             ; preds = %2119
+  %2122 = zext nneg i32 %95 to i64
+  %2123 = icmp eq i32 %92, 0
+  br i1 %2123, label %2466, label %2124
 
-2136:                                             ; preds = %2133
-  %2137 = load i8, ptr %90, align 1, !tbaa !44
-  %2138 = zext i8 %2137 to i64
-  %2139 = shl nuw nsw i64 %2138, %2134
-  %2140 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %94, i64 %2139), !nosanitize !47
-  %2141 = extractvalue { i64, i1 } %2140, 1, !nosanitize !47
-  br i1 %2141, label %2142, label %2143, !prof !48, !nosanitize !47
+2124:                                             ; preds = %2121
+  %2125 = load i8, ptr %90, align 1, !tbaa !44
+  %2126 = zext i8 %2125 to i64
+  %2127 = shl nuw nsw i64 %2126, %2122
+  %2128 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %94, i64 %2127), !nosanitize !47
+  %2129 = extractvalue { i64, i1 } %2128, 1, !nosanitize !47
+  br i1 %2129, label %2130, label %2131, !prof !48, !nosanitize !47
 
-2142:                                             ; preds = %2179, %2165, %2151, %2136
+2130:                                             ; preds = %2167, %2153, %2139, %2124
   call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-2143:                                             ; preds = %2136
-  %2144 = extractvalue { i64, i1 } %2140, 0, !nosanitize !47
-  %2145 = getelementptr inbounds nuw i8, ptr %90, i64 1
-  %2146 = add i32 %92, -1
-  %2147 = add nuw nsw i64 %2134, 8
-  %2148 = icmp ult i32 %95, 24
-  br i1 %2148, label %2149, label %2190
+2131:                                             ; preds = %2124
+  %2132 = extractvalue { i64, i1 } %2128, 0, !nosanitize !47
+  %2133 = getelementptr inbounds nuw i8, ptr %90, i64 1
+  %2134 = add i32 %92, -1
+  %2135 = add nuw nsw i64 %2122, 8
+  %2136 = icmp ult i32 %95, 24
+  br i1 %2136, label %2137, label %2178
 
-2149:                                             ; preds = %2143
-  %2150 = icmp eq i32 %2146, 0
-  br i1 %2150, label %2478, label %2151
+2137:                                             ; preds = %2131
+  %2138 = icmp eq i32 %2134, 0
+  br i1 %2138, label %2466, label %2139
 
-2151:                                             ; preds = %2149
-  %2152 = load i8, ptr %2145, align 1, !tbaa !44
-  %2153 = zext i8 %2152 to i64
-  %2154 = shl nuw nsw i64 %2153, %2147
-  %2155 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %2144, i64 %2154), !nosanitize !47
-  %2156 = extractvalue { i64, i1 } %2155, 1, !nosanitize !47
-  br i1 %2156, label %2142, label %2157, !prof !48, !nosanitize !47
+2139:                                             ; preds = %2137
+  %2140 = load i8, ptr %2133, align 1, !tbaa !44
+  %2141 = zext i8 %2140 to i64
+  %2142 = shl nuw nsw i64 %2141, %2135
+  %2143 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %2132, i64 %2142), !nosanitize !47
+  %2144 = extractvalue { i64, i1 } %2143, 1, !nosanitize !47
+  br i1 %2144, label %2130, label %2145, !prof !48, !nosanitize !47
 
-2157:                                             ; preds = %2151
-  %2158 = extractvalue { i64, i1 } %2155, 0, !nosanitize !47
-  %2159 = getelementptr inbounds nuw i8, ptr %90, i64 2
-  %2160 = add i32 %92, -2
-  %2161 = add nuw nsw i64 %2134, 16
-  %2162 = icmp ult i32 %95, 16
-  br i1 %2162, label %2163, label %2190
+2145:                                             ; preds = %2139
+  %2146 = extractvalue { i64, i1 } %2143, 0, !nosanitize !47
+  %2147 = getelementptr inbounds nuw i8, ptr %90, i64 2
+  %2148 = add i32 %92, -2
+  %2149 = add nuw nsw i64 %2122, 16
+  %2150 = icmp ult i32 %95, 16
+  br i1 %2150, label %2151, label %2178
 
-2163:                                             ; preds = %2157
-  %2164 = icmp eq i32 %2160, 0
-  br i1 %2164, label %2478, label %2165
+2151:                                             ; preds = %2145
+  %2152 = icmp eq i32 %2148, 0
+  br i1 %2152, label %2466, label %2153
 
-2165:                                             ; preds = %2163
-  %2166 = load i8, ptr %2159, align 1, !tbaa !44
-  %2167 = zext i8 %2166 to i64
-  %2168 = shl nuw nsw i64 %2167, %2161
-  %2169 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %2158, i64 %2168), !nosanitize !47
-  %2170 = extractvalue { i64, i1 } %2169, 1, !nosanitize !47
-  br i1 %2170, label %2142, label %2171, !prof !48, !nosanitize !47
+2153:                                             ; preds = %2151
+  %2154 = load i8, ptr %2147, align 1, !tbaa !44
+  %2155 = zext i8 %2154 to i64
+  %2156 = shl nuw nsw i64 %2155, %2149
+  %2157 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %2146, i64 %2156), !nosanitize !47
+  %2158 = extractvalue { i64, i1 } %2157, 1, !nosanitize !47
+  br i1 %2158, label %2130, label %2159, !prof !48, !nosanitize !47
 
-2171:                                             ; preds = %2165
-  %2172 = extractvalue { i64, i1 } %2169, 0, !nosanitize !47
-  %2173 = getelementptr inbounds nuw i8, ptr %90, i64 3
-  %2174 = add i32 %92, -3
-  %2175 = add nuw nsw i64 %2134, 24
-  %2176 = icmp ult i32 %95, 8
-  br i1 %2176, label %2177, label %2190
+2159:                                             ; preds = %2153
+  %2160 = extractvalue { i64, i1 } %2157, 0, !nosanitize !47
+  %2161 = getelementptr inbounds nuw i8, ptr %90, i64 3
+  %2162 = add i32 %92, -3
+  %2163 = add nuw nsw i64 %2122, 24
+  %2164 = icmp ult i32 %95, 8
+  br i1 %2164, label %2165, label %2178
 
-2177:                                             ; preds = %2171
-  %2178 = icmp eq i32 %2174, 0
-  br i1 %2178, label %2478, label %2179
+2165:                                             ; preds = %2159
+  %2166 = icmp eq i32 %2162, 0
+  br i1 %2166, label %2466, label %2167
 
-2179:                                             ; preds = %2177
-  %2180 = load i8, ptr %2173, align 1, !tbaa !44
-  %2181 = zext i8 %2180 to i64
-  %2182 = shl nuw nsw i64 %2181, %2175
-  %2183 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %2172, i64 %2182), !nosanitize !47
-  %2184 = extractvalue { i64, i1 } %2183, 1, !nosanitize !47
-  br i1 %2184, label %2142, label %2185, !prof !48, !nosanitize !47
+2167:                                             ; preds = %2165
+  %2168 = load i8, ptr %2161, align 1, !tbaa !44
+  %2169 = zext i8 %2168 to i64
+  %2170 = shl nuw nsw i64 %2169, %2163
+  %2171 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %2160, i64 %2170), !nosanitize !47
+  %2172 = extractvalue { i64, i1 } %2171, 1, !nosanitize !47
+  br i1 %2172, label %2130, label %2173, !prof !48, !nosanitize !47
 
-2185:                                             ; preds = %2179
-  %2186 = extractvalue { i64, i1 } %2183, 0, !nosanitize !47
-  %2187 = getelementptr inbounds nuw i8, ptr %90, i64 4
-  %2188 = add i32 %92, -4
-  %2189 = or disjoint i64 %2134, 32
-  br label %2190
+2173:                                             ; preds = %2167
+  %2174 = extractvalue { i64, i1 } %2171, 0, !nosanitize !47
+  %2175 = getelementptr inbounds nuw i8, ptr %90, i64 4
+  %2176 = add i32 %92, -4
+  %2177 = or disjoint i64 %2122, 32
+  br label %2178
 
-2190:                                             ; preds = %2185, %2171, %2157, %2143
-  %2191 = phi i64 [ %2144, %2143 ], [ %2158, %2157 ], [ %2172, %2171 ], [ %2186, %2185 ]
-  %2192 = phi ptr [ %2145, %2143 ], [ %2159, %2157 ], [ %2173, %2171 ], [ %2187, %2185 ]
-  %2193 = phi i32 [ %2146, %2143 ], [ %2160, %2157 ], [ %2174, %2171 ], [ %2188, %2185 ]
-  %2194 = phi i64 [ %2147, %2143 ], [ %2161, %2157 ], [ %2175, %2171 ], [ %2189, %2185 ]
-  %2195 = trunc nuw nsw i64 %2194 to i32
-  br label %2196
+2178:                                             ; preds = %2173, %2159, %2145, %2131
+  %2179 = phi i64 [ %2132, %2131 ], [ %2146, %2145 ], [ %2160, %2159 ], [ %2174, %2173 ]
+  %2180 = phi ptr [ %2133, %2131 ], [ %2147, %2145 ], [ %2161, %2159 ], [ %2175, %2173 ]
+  %2181 = phi i32 [ %2134, %2131 ], [ %2148, %2145 ], [ %2162, %2159 ], [ %2176, %2173 ]
+  %2182 = phi i64 [ %2135, %2131 ], [ %2149, %2145 ], [ %2163, %2159 ], [ %2177, %2173 ]
+  %2183 = trunc nuw nsw i64 %2182 to i32
+  br label %2184
 
-2196:                                             ; preds = %2190, %2131
-  %2197 = phi ptr [ %90, %2131 ], [ %2192, %2190 ]
-  %2198 = phi i32 [ %92, %2131 ], [ %2193, %2190 ]
-  %2199 = phi i64 [ %94, %2131 ], [ %2191, %2190 ]
-  %2200 = phi i32 [ %95, %2131 ], [ %2195, %2190 ]
-  %2201 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %96, i32 %93), !nosanitize !47
-  %2202 = extractvalue { i32, i1 } %2201, 0, !nosanitize !47
-  %2203 = extractvalue { i32, i1 } %2201, 1, !nosanitize !47
-  br i1 %2203, label %2204, label %2205, !prof !48, !nosanitize !47
+2184:                                             ; preds = %2178, %2119
+  %2185 = phi ptr [ %90, %2119 ], [ %2180, %2178 ]
+  %2186 = phi i32 [ %92, %2119 ], [ %2181, %2178 ]
+  %2187 = phi i64 [ %94, %2119 ], [ %2179, %2178 ]
+  %2188 = phi i32 [ %95, %2119 ], [ %2183, %2178 ]
+  %2189 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %96, i32 %93), !nosanitize !47
+  %2190 = extractvalue { i32, i1 } %2189, 0, !nosanitize !47
+  %2191 = extractvalue { i32, i1 } %2189, 1, !nosanitize !47
+  br i1 %2191, label %2192, label %2193, !prof !48, !nosanitize !47
 
-2204:                                             ; preds = %2196
+2192:                                             ; preds = %2184
   call void @llvm.ubsantrap(i8 21) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-2205:                                             ; preds = %2196
-  %2206 = zext i32 %2202 to i64
-  %2207 = load i64, ptr %50, align 8, !tbaa !103
-  %2208 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %2207, i64 %2206), !nosanitize !47
-  %2209 = extractvalue { i64, i1 } %2208, 1, !nosanitize !47
-  br i1 %2209, label %2210, label %2211, !prof !48, !nosanitize !47
+2193:                                             ; preds = %2184
+  %2194 = zext i32 %2190 to i64
+  %2195 = load i64, ptr %50, align 8, !tbaa !103
+  %2196 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %2195, i64 %2194), !nosanitize !47
+  %2197 = extractvalue { i64, i1 } %2196, 1, !nosanitize !47
+  br i1 %2197, label %2198, label %2199, !prof !48, !nosanitize !47
 
-2210:                                             ; preds = %2205
+2198:                                             ; preds = %2193
   call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
   unreachable, !nosanitize !47
+
+2199:                                             ; preds = %2193
+  %2200 = extractvalue { i64, i1 } %2196, 0, !nosanitize !47
+  store i64 %2200, ptr %50, align 8, !tbaa !103
+  %2201 = load i64, ptr %51, align 8, !tbaa !21
+  %2202 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %2201, i64 %2194), !nosanitize !47
+  %2203 = extractvalue { i64, i1 } %2202, 1, !nosanitize !47
+  br i1 %2203, label %2204, label %2205, !prof !48, !nosanitize !47
+
+2204:                                             ; preds = %2199
+  call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
+  unreachable, !nosanitize !47
+
+2205:                                             ; preds = %2199
+  %2206 = extractvalue { i64, i1 } %2202, 0, !nosanitize !47
+  store i64 %2206, ptr %51, align 8, !tbaa !21
+  %2207 = and i32 %2117, 4
+  %2208 = icmp ne i32 %2207, 0
+  %2209 = icmp ne i32 %2190, 0
+  %2210 = select i1 %2208, i1 %2209, i1 false
+  br i1 %2210, label %2211, label %2225
 
 2211:                                             ; preds = %2205
-  %2212 = extractvalue { i64, i1 } %2208, 0, !nosanitize !47
-  store i64 %2212, ptr %50, align 8, !tbaa !103
-  %2213 = load i64, ptr %51, align 8, !tbaa !21
-  %2214 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %2213, i64 %2206), !nosanitize !47
-  %2215 = extractvalue { i64, i1 } %2214, 1, !nosanitize !47
-  br i1 %2215, label %2216, label %2217, !prof !48, !nosanitize !47
-
-2216:                                             ; preds = %2211
-  call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
-  unreachable, !nosanitize !47
+  %2212 = load i32, ptr %52, align 8, !tbaa !28
+  %2213 = icmp eq i32 %2212, 0
+  %2214 = load i64, ptr %53, align 8, !tbaa !54
+  %2215 = sub nsw i64 0, %2194
+  %2216 = getelementptr inbounds i8, ptr %91, i64 %2215
+  br i1 %2213, label %2219, label %2217
 
 2217:                                             ; preds = %2211
-  %2218 = extractvalue { i64, i1 } %2214, 0, !nosanitize !47
-  store i64 %2218, ptr %51, align 8, !tbaa !21
-  %2219 = and i32 %2129, 4
-  %2220 = icmp ne i32 %2219, 0
-  %2221 = icmp ne i32 %2202, 0
-  %2222 = select i1 %2220, i1 %2221, i1 false
-  br i1 %2222, label %2223, label %2237
+  %2218 = call i64 @crc32(i64 noundef %2214, ptr noundef nonnull %2216, i32 noundef %2190) #12
+  br label %2221
 
-2223:                                             ; preds = %2217
-  %2224 = load i32, ptr %52, align 8, !tbaa !28
-  %2225 = icmp eq i32 %2224, 0
-  %2226 = load i64, ptr %53, align 8, !tbaa !54
-  %2227 = sub nsw i64 0, %2206
-  %2228 = getelementptr inbounds i8, ptr %91, i64 %2227
-  br i1 %2225, label %2231, label %2229
+2219:                                             ; preds = %2211
+  %2220 = call i64 @adler32(i64 noundef %2214, ptr noundef nonnull %2216, i32 noundef %2190) #12
+  br label %2221
 
-2229:                                             ; preds = %2223
-  %2230 = call i64 @crc32(i64 noundef %2226, ptr noundef nonnull %2228, i32 noundef %2202) #12
-  br label %2233
+2221:                                             ; preds = %2219, %2217
+  %2222 = phi i64 [ %2218, %2217 ], [ %2220, %2219 ]
+  store i64 %2222, ptr %53, align 8, !tbaa !54
+  store i64 %2222, ptr %54, align 8, !tbaa !25
+  %2223 = load i32, ptr %49, align 8, !tbaa !24
+  %2224 = and i32 %2223, 4
+  br label %2225
 
-2231:                                             ; preds = %2223
-  %2232 = call i64 @adler32(i64 noundef %2226, ptr noundef nonnull %2228, i32 noundef %2202) #12
-  br label %2233
+2225:                                             ; preds = %2221, %2205
+  %2226 = phi i32 [ %2224, %2221 ], [ %2207, %2205 ]
+  %2227 = phi i32 [ %2223, %2221 ], [ %2117, %2205 ]
+  %2228 = icmp eq i32 %2226, 0
+  br i1 %2228, label %2239, label %2229
 
-2233:                                             ; preds = %2231, %2229
-  %2234 = phi i64 [ %2230, %2229 ], [ %2232, %2231 ]
-  store i64 %2234, ptr %53, align 8, !tbaa !54
-  store i64 %2234, ptr %54, align 8, !tbaa !25
-  %2235 = load i32, ptr %49, align 8, !tbaa !24
-  %2236 = and i32 %2235, 4
-  br label %2237
+2229:                                             ; preds = %2225
+  %2230 = load i32, ptr %52, align 8, !tbaa !28
+  %2231 = icmp eq i32 %2230, 0
+  %2232 = trunc i64 %2187 to i32
+  %2233 = call i32 @llvm.bswap.i32(i32 %2232)
+  %2234 = zext i32 %2233 to i64
+  %2235 = select i1 %2231, i64 %2234, i64 %2187
+  %2236 = load i64, ptr %53, align 8, !tbaa !54
+  %2237 = icmp eq i64 %2235, %2236
+  br i1 %2237, label %2239, label %2238
 
-2237:                                             ; preds = %2233, %2217
-  %2238 = phi i32 [ %2236, %2233 ], [ %2219, %2217 ]
-  %2239 = phi i32 [ %2235, %2233 ], [ %2129, %2217 ]
-  %2240 = icmp eq i32 %2238, 0
-  br i1 %2240, label %2251, label %2241
-
-2241:                                             ; preds = %2237
-  %2242 = load i32, ptr %52, align 8, !tbaa !28
-  %2243 = icmp eq i32 %2242, 0
-  %2244 = trunc i64 %2199 to i32
-  %2245 = call i32 @llvm.bswap.i32(i32 %2244)
-  %2246 = zext i32 %2245 to i64
-  %2247 = select i1 %2243, i64 %2246, i64 %2199
-  %2248 = load i64, ptr %53, align 8, !tbaa !54
-  %2249 = icmp eq i64 %2247, %2248
-  br i1 %2249, label %2251, label %2250
-
-2250:                                             ; preds = %2241
+2238:                                             ; preds = %2229
   store ptr @.str.17, ptr %55, align 8, !tbaa !45
   store i32 16209, ptr %21, align 8, !tbaa !20
-  br label %2351
+  br label %2339
 
-2251:                                             ; preds = %2241, %2237, %2128
-  %2252 = phi i32 [ 0, %2128 ], [ %2239, %2237 ], [ %2239, %2241 ]
-  %2253 = phi ptr [ %90, %2128 ], [ %2197, %2237 ], [ %2197, %2241 ]
-  %2254 = phi i32 [ %92, %2128 ], [ %2198, %2237 ], [ %2198, %2241 ]
-  %2255 = phi i64 [ %94, %2128 ], [ 0, %2237 ], [ 0, %2241 ]
-  %2256 = phi i32 [ %95, %2128 ], [ 0, %2237 ], [ 0, %2241 ]
-  %2257 = phi i32 [ %96, %2128 ], [ %93, %2237 ], [ %93, %2241 ]
+2239:                                             ; preds = %2229, %2225, %2116
+  %2240 = phi i32 [ 0, %2116 ], [ %2227, %2225 ], [ %2227, %2229 ]
+  %2241 = phi ptr [ %90, %2116 ], [ %2185, %2225 ], [ %2185, %2229 ]
+  %2242 = phi i32 [ %92, %2116 ], [ %2186, %2225 ], [ %2186, %2229 ]
+  %2243 = phi i64 [ %94, %2116 ], [ 0, %2225 ], [ 0, %2229 ]
+  %2244 = phi i32 [ %95, %2116 ], [ 0, %2225 ], [ 0, %2229 ]
+  %2245 = phi i32 [ %96, %2116 ], [ %93, %2225 ], [ %93, %2229 ]
   store i32 16207, ptr %21, align 8, !tbaa !20
-  br label %2258
+  br label %2246
 
-2258:                                             ; preds = %2251, %103
-  %2259 = phi i32 [ %2252, %2251 ], [ %104, %103 ]
-  %2260 = phi ptr [ %2253, %2251 ], [ %90, %103 ]
-  %2261 = phi i32 [ %2254, %2251 ], [ %92, %103 ]
-  %2262 = phi i64 [ %2255, %2251 ], [ %94, %103 ]
-  %2263 = phi i32 [ %2256, %2251 ], [ %95, %103 ]
-  %2264 = phi i32 [ %2257, %2251 ], [ %96, %103 ]
-  %2265 = icmp eq i32 %2259, 0
-  br i1 %2265, label %2346, label %2266
+2246:                                             ; preds = %2239, %103
+  %2247 = phi i32 [ %2240, %2239 ], [ %104, %103 ]
+  %2248 = phi ptr [ %2241, %2239 ], [ %90, %103 ]
+  %2249 = phi i32 [ %2242, %2239 ], [ %92, %103 ]
+  %2250 = phi i64 [ %2243, %2239 ], [ %94, %103 ]
+  %2251 = phi i32 [ %2244, %2239 ], [ %95, %103 ]
+  %2252 = phi i32 [ %2245, %2239 ], [ %96, %103 ]
+  %2253 = icmp eq i32 %2247, 0
+  br i1 %2253, label %2334, label %2254
 
-2266:                                             ; preds = %2258
-  %2267 = load i32, ptr %52, align 8, !tbaa !28
-  %2268 = icmp eq i32 %2267, 0
-  br i1 %2268, label %2346, label %2269
+2254:                                             ; preds = %2246
+  %2255 = load i32, ptr %52, align 8, !tbaa !28
+  %2256 = icmp eq i32 %2255, 0
+  br i1 %2256, label %2334, label %2257
 
-2269:                                             ; preds = %2266
-  %2270 = icmp ult i32 %2263, 32
-  br i1 %2270, label %2271, label %2334
+2257:                                             ; preds = %2254
+  %2258 = icmp ult i32 %2251, 32
+  br i1 %2258, label %2259, label %2322
 
-2271:                                             ; preds = %2269
-  %2272 = zext nneg i32 %2263 to i64
-  %2273 = icmp eq i32 %2261, 0
-  br i1 %2273, label %2472, label %2274
+2259:                                             ; preds = %2257
+  %2260 = zext nneg i32 %2251 to i64
+  %2261 = icmp eq i32 %2249, 0
+  br i1 %2261, label %2460, label %2262
 
-2274:                                             ; preds = %2271
-  %2275 = load i8, ptr %2260, align 1, !tbaa !44
-  %2276 = zext i8 %2275 to i64
-  %2277 = shl nuw nsw i64 %2276, %2272
-  %2278 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %2262, i64 %2277), !nosanitize !47
-  %2279 = extractvalue { i64, i1 } %2278, 1, !nosanitize !47
-  br i1 %2279, label %2280, label %2281, !prof !48, !nosanitize !47
+2262:                                             ; preds = %2259
+  %2263 = load i8, ptr %2248, align 1, !tbaa !44
+  %2264 = zext i8 %2263 to i64
+  %2265 = shl nuw nsw i64 %2264, %2260
+  %2266 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %2250, i64 %2265), !nosanitize !47
+  %2267 = extractvalue { i64, i1 } %2266, 1, !nosanitize !47
+  br i1 %2267, label %2268, label %2269, !prof !48, !nosanitize !47
 
-2280:                                             ; preds = %2317, %2303, %2289, %2274
+2268:                                             ; preds = %2305, %2291, %2277, %2262
   call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-2281:                                             ; preds = %2274
-  %2282 = extractvalue { i64, i1 } %2278, 0, !nosanitize !47
-  %2283 = getelementptr inbounds nuw i8, ptr %2260, i64 1
-  %2284 = add i32 %2261, -1
-  %2285 = add nuw nsw i64 %2272, 8
-  %2286 = icmp ult i32 %2263, 24
-  br i1 %2286, label %2287, label %2328
+2269:                                             ; preds = %2262
+  %2270 = extractvalue { i64, i1 } %2266, 0, !nosanitize !47
+  %2271 = getelementptr inbounds nuw i8, ptr %2248, i64 1
+  %2272 = add i32 %2249, -1
+  %2273 = add nuw nsw i64 %2260, 8
+  %2274 = icmp ult i32 %2251, 24
+  br i1 %2274, label %2275, label %2316
 
-2287:                                             ; preds = %2281
-  %2288 = icmp eq i32 %2284, 0
-  br i1 %2288, label %2472, label %2289
+2275:                                             ; preds = %2269
+  %2276 = icmp eq i32 %2272, 0
+  br i1 %2276, label %2460, label %2277
 
-2289:                                             ; preds = %2287
-  %2290 = load i8, ptr %2283, align 1, !tbaa !44
-  %2291 = zext i8 %2290 to i64
-  %2292 = shl nuw nsw i64 %2291, %2285
-  %2293 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %2282, i64 %2292), !nosanitize !47
-  %2294 = extractvalue { i64, i1 } %2293, 1, !nosanitize !47
-  br i1 %2294, label %2280, label %2295, !prof !48, !nosanitize !47
+2277:                                             ; preds = %2275
+  %2278 = load i8, ptr %2271, align 1, !tbaa !44
+  %2279 = zext i8 %2278 to i64
+  %2280 = shl nuw nsw i64 %2279, %2273
+  %2281 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %2270, i64 %2280), !nosanitize !47
+  %2282 = extractvalue { i64, i1 } %2281, 1, !nosanitize !47
+  br i1 %2282, label %2268, label %2283, !prof !48, !nosanitize !47
 
-2295:                                             ; preds = %2289
-  %2296 = extractvalue { i64, i1 } %2293, 0, !nosanitize !47
-  %2297 = getelementptr inbounds nuw i8, ptr %2260, i64 2
-  %2298 = add i32 %2261, -2
-  %2299 = add nuw nsw i64 %2272, 16
-  %2300 = icmp ult i32 %2263, 16
-  br i1 %2300, label %2301, label %2328
+2283:                                             ; preds = %2277
+  %2284 = extractvalue { i64, i1 } %2281, 0, !nosanitize !47
+  %2285 = getelementptr inbounds nuw i8, ptr %2248, i64 2
+  %2286 = add i32 %2249, -2
+  %2287 = add nuw nsw i64 %2260, 16
+  %2288 = icmp ult i32 %2251, 16
+  br i1 %2288, label %2289, label %2316
 
-2301:                                             ; preds = %2295
-  %2302 = icmp eq i32 %2298, 0
-  br i1 %2302, label %2472, label %2303
+2289:                                             ; preds = %2283
+  %2290 = icmp eq i32 %2286, 0
+  br i1 %2290, label %2460, label %2291
 
-2303:                                             ; preds = %2301
-  %2304 = load i8, ptr %2297, align 1, !tbaa !44
-  %2305 = zext i8 %2304 to i64
-  %2306 = shl nuw nsw i64 %2305, %2299
-  %2307 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %2296, i64 %2306), !nosanitize !47
-  %2308 = extractvalue { i64, i1 } %2307, 1, !nosanitize !47
-  br i1 %2308, label %2280, label %2309, !prof !48, !nosanitize !47
+2291:                                             ; preds = %2289
+  %2292 = load i8, ptr %2285, align 1, !tbaa !44
+  %2293 = zext i8 %2292 to i64
+  %2294 = shl nuw nsw i64 %2293, %2287
+  %2295 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %2284, i64 %2294), !nosanitize !47
+  %2296 = extractvalue { i64, i1 } %2295, 1, !nosanitize !47
+  br i1 %2296, label %2268, label %2297, !prof !48, !nosanitize !47
 
-2309:                                             ; preds = %2303
-  %2310 = extractvalue { i64, i1 } %2307, 0, !nosanitize !47
-  %2311 = getelementptr inbounds nuw i8, ptr %2260, i64 3
-  %2312 = add i32 %2261, -3
-  %2313 = add nuw nsw i64 %2272, 24
-  %2314 = icmp ult i32 %2263, 8
-  br i1 %2314, label %2315, label %2328
+2297:                                             ; preds = %2291
+  %2298 = extractvalue { i64, i1 } %2295, 0, !nosanitize !47
+  %2299 = getelementptr inbounds nuw i8, ptr %2248, i64 3
+  %2300 = add i32 %2249, -3
+  %2301 = add nuw nsw i64 %2260, 24
+  %2302 = icmp ult i32 %2251, 8
+  br i1 %2302, label %2303, label %2316
 
-2315:                                             ; preds = %2309
-  %2316 = icmp eq i32 %2312, 0
-  br i1 %2316, label %2472, label %2317
+2303:                                             ; preds = %2297
+  %2304 = icmp eq i32 %2300, 0
+  br i1 %2304, label %2460, label %2305
 
-2317:                                             ; preds = %2315
-  %2318 = load i8, ptr %2311, align 1, !tbaa !44
-  %2319 = zext i8 %2318 to i64
-  %2320 = shl nuw nsw i64 %2319, %2313
-  %2321 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %2310, i64 %2320), !nosanitize !47
-  %2322 = extractvalue { i64, i1 } %2321, 1, !nosanitize !47
-  br i1 %2322, label %2280, label %2323, !prof !48, !nosanitize !47
+2305:                                             ; preds = %2303
+  %2306 = load i8, ptr %2299, align 1, !tbaa !44
+  %2307 = zext i8 %2306 to i64
+  %2308 = shl nuw nsw i64 %2307, %2301
+  %2309 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %2298, i64 %2308), !nosanitize !47
+  %2310 = extractvalue { i64, i1 } %2309, 1, !nosanitize !47
+  br i1 %2310, label %2268, label %2311, !prof !48, !nosanitize !47
 
-2323:                                             ; preds = %2317
-  %2324 = extractvalue { i64, i1 } %2321, 0, !nosanitize !47
-  %2325 = getelementptr inbounds nuw i8, ptr %2260, i64 4
-  %2326 = add i32 %2261, -4
-  %2327 = or disjoint i64 %2272, 32
-  br label %2328
+2311:                                             ; preds = %2305
+  %2312 = extractvalue { i64, i1 } %2309, 0, !nosanitize !47
+  %2313 = getelementptr inbounds nuw i8, ptr %2248, i64 4
+  %2314 = add i32 %2249, -4
+  %2315 = or disjoint i64 %2260, 32
+  br label %2316
 
-2328:                                             ; preds = %2323, %2309, %2295, %2281
-  %2329 = phi i64 [ %2282, %2281 ], [ %2296, %2295 ], [ %2310, %2309 ], [ %2324, %2323 ]
-  %2330 = phi ptr [ %2283, %2281 ], [ %2297, %2295 ], [ %2311, %2309 ], [ %2325, %2323 ]
-  %2331 = phi i32 [ %2284, %2281 ], [ %2298, %2295 ], [ %2312, %2309 ], [ %2326, %2323 ]
-  %2332 = phi i64 [ %2285, %2281 ], [ %2299, %2295 ], [ %2313, %2309 ], [ %2327, %2323 ]
-  %2333 = trunc nuw nsw i64 %2332 to i32
-  br label %2334
+2316:                                             ; preds = %2311, %2297, %2283, %2269
+  %2317 = phi i64 [ %2270, %2269 ], [ %2284, %2283 ], [ %2298, %2297 ], [ %2312, %2311 ]
+  %2318 = phi ptr [ %2271, %2269 ], [ %2285, %2283 ], [ %2299, %2297 ], [ %2313, %2311 ]
+  %2319 = phi i32 [ %2272, %2269 ], [ %2286, %2283 ], [ %2300, %2297 ], [ %2314, %2311 ]
+  %2320 = phi i64 [ %2273, %2269 ], [ %2287, %2283 ], [ %2301, %2297 ], [ %2315, %2311 ]
+  %2321 = trunc nuw nsw i64 %2320 to i32
+  br label %2322
 
-2334:                                             ; preds = %2328, %2269
-  %2335 = phi ptr [ %2260, %2269 ], [ %2330, %2328 ]
-  %2336 = phi i32 [ %2261, %2269 ], [ %2331, %2328 ]
-  %2337 = phi i64 [ %2262, %2269 ], [ %2329, %2328 ]
-  %2338 = phi i32 [ %2263, %2269 ], [ %2333, %2328 ]
-  %2339 = and i32 %2259, 4
-  %2340 = icmp eq i32 %2339, 0
-  br i1 %2340, label %2346, label %2341
+2322:                                             ; preds = %2316, %2257
+  %2323 = phi ptr [ %2248, %2257 ], [ %2318, %2316 ]
+  %2324 = phi i32 [ %2249, %2257 ], [ %2319, %2316 ]
+  %2325 = phi i64 [ %2250, %2257 ], [ %2317, %2316 ]
+  %2326 = phi i32 [ %2251, %2257 ], [ %2321, %2316 ]
+  %2327 = and i32 %2247, 4
+  %2328 = icmp eq i32 %2327, 0
+  br i1 %2328, label %2334, label %2329
 
-2341:                                             ; preds = %2334
-  %2342 = load i64, ptr %51, align 8, !tbaa !21
-  %2343 = and i64 %2342, 4294967295
-  %2344 = icmp eq i64 %2337, %2343
-  br i1 %2344, label %2346, label %2345
+2329:                                             ; preds = %2322
+  %2330 = load i64, ptr %51, align 8, !tbaa !21
+  %2331 = and i64 %2330, 4294967295
+  %2332 = icmp eq i64 %2325, %2331
+  br i1 %2332, label %2334, label %2333
 
-2345:                                             ; preds = %2341
+2333:                                             ; preds = %2329
   store ptr @.str.18, ptr %55, align 8, !tbaa !45
   store i32 16209, ptr %21, align 8, !tbaa !20
-  br label %2351
+  br label %2339
 
-2346:                                             ; preds = %2341, %2334, %2266, %2258
-  %2347 = phi ptr [ %2260, %2258 ], [ %2260, %2266 ], [ %2335, %2334 ], [ %2335, %2341 ]
-  %2348 = phi i32 [ %2261, %2258 ], [ %2261, %2266 ], [ %2336, %2334 ], [ %2336, %2341 ]
-  %2349 = phi i64 [ %2262, %2258 ], [ %2262, %2266 ], [ 0, %2334 ], [ 0, %2341 ]
-  %2350 = phi i32 [ %2263, %2258 ], [ %2263, %2266 ], [ 0, %2334 ], [ 0, %2341 ]
+2334:                                             ; preds = %2329, %2322, %2254, %2246
+  %2335 = phi ptr [ %2248, %2246 ], [ %2248, %2254 ], [ %2323, %2322 ], [ %2323, %2329 ]
+  %2336 = phi i32 [ %2249, %2246 ], [ %2249, %2254 ], [ %2324, %2322 ], [ %2324, %2329 ]
+  %2337 = phi i64 [ %2250, %2246 ], [ %2250, %2254 ], [ 0, %2322 ], [ 0, %2329 ]
+  %2338 = phi i32 [ %2251, %2246 ], [ %2251, %2254 ], [ 0, %2322 ], [ 0, %2329 ]
   store i32 16208, ptr %21, align 8, !tbaa !20
-  br label %2485
+  br label %2473
 
-2351:                                             ; preds = %2345, %2250, %2123, %2120, %2116, %1970, %1874, %1648, %1644, %1640, %1493, %1484, %1467, %1458, %1454, %1418, %1297, %1152, %1077, %1025, %1022, %985, %903, %867, %778, %765, %262, %258, %212, %211, %196, %192, %174, %128
-  %2352 = phi ptr [ %90, %128 ], [ %162, %174 ], [ %162, %192 ], [ %162, %196 ], [ %162, %211 ], [ %162, %212 ], [ %251, %258 ], [ %251, %262 ], [ %754, %765 ], [ %767, %778 ], [ %856, %867 ], [ %886, %903 ], [ %977, %985 ], [ %1012, %1022 ], [ %995, %1025 ], [ %1059, %1077 ], [ %1093, %1152 ], [ %1289, %1297 ], [ %1451, %1454 ], [ %1451, %1458 ], [ %1451, %1467 ], [ %1487, %1493 ], [ %1487, %1484 ], [ %1621, %1640 ], [ %1621, %1644 ], [ %1621, %1648 ], [ %1854, %1874 ], [ %1949, %1970 ], [ %1949, %2120 ], [ %1949, %2116 ], [ %90, %2123 ], [ %2197, %2250 ], [ %2335, %2345 ], [ %1386, %1418 ]
-  %2353 = phi ptr [ %91, %128 ], [ %91, %174 ], [ %91, %192 ], [ %91, %196 ], [ %91, %211 ], [ %91, %212 ], [ %91, %258 ], [ %91, %262 ], [ %91, %765 ], [ %91, %778 ], [ %91, %867 ], [ %91, %903 ], [ %91, %985 ], [ %1024, %1022 ], [ %91, %1025 ], [ %91, %1077 ], [ %91, %1152 ], [ %91, %1297 ], [ %91, %1454 ], [ %91, %1458 ], [ %91, %1467 ], [ %1485, %1493 ], [ %1485, %1484 ], [ %91, %1640 ], [ %91, %1644 ], [ %91, %1648 ], [ %91, %1874 ], [ %91, %1970 ], [ %2117, %2120 ], [ %2117, %2116 ], [ %2127, %2123 ], [ %91, %2250 ], [ %91, %2345 ], [ %91, %1418 ]
-  %2354 = phi i32 [ %92, %128 ], [ %163, %174 ], [ %163, %192 ], [ %163, %196 ], [ %163, %211 ], [ %163, %212 ], [ %252, %258 ], [ %252, %262 ], [ %755, %765 ], [ %768, %778 ], [ %857, %867 ], [ %887, %903 ], [ %978, %985 ], [ %1008, %1022 ], [ %996, %1025 ], [ %1060, %1077 ], [ %1094, %1152 ], [ %1290, %1297 ], [ %1450, %1454 ], [ %1450, %1458 ], [ %1450, %1467 ], [ %1488, %1493 ], [ %1488, %1484 ], [ %1622, %1640 ], [ %1622, %1644 ], [ %1622, %1648 ], [ %1855, %1874 ], [ %1950, %1970 ], [ %1950, %2120 ], [ %1950, %2116 ], [ %92, %2123 ], [ %2198, %2250 ], [ %2336, %2345 ], [ %1387, %1418 ]
-  %2355 = phi i32 [ %93, %128 ], [ %93, %174 ], [ %93, %192 ], [ %93, %196 ], [ %93, %211 ], [ %93, %212 ], [ %93, %258 ], [ %93, %262 ], [ %93, %765 ], [ %93, %778 ], [ %93, %867 ], [ %93, %903 ], [ %93, %985 ], [ %1014, %1022 ], [ %93, %1025 ], [ %93, %1077 ], [ %93, %1152 ], [ %93, %1297 ], [ %93, %1454 ], [ %93, %1458 ], [ %93, %1467 ], [ %1486, %1493 ], [ %1486, %1484 ], [ %93, %1640 ], [ %93, %1644 ], [ %93, %1648 ], [ %93, %1874 ], [ %93, %1970 ], [ %2004, %2120 ], [ %2004, %2116 ], [ %2126, %2123 ], [ %93, %2250 ], [ %93, %2345 ], [ %93, %1418 ]
-  %2356 = phi i64 [ %94, %128 ], [ 0, %174 ], [ %164, %192 ], [ %164, %196 ], [ %198, %211 ], [ 0, %212 ], [ %253, %258 ], [ %253, %262 ], [ %756, %765 ], [ %769, %778 ], [ %872, %867 ], [ %905, %903 ], [ %979, %985 ], [ %997, %1022 ], [ %997, %1025 ], [ %1072, %1077 ], [ %1095, %1152 ], [ %1294, %1297 ], [ %1449, %1454 ], [ %1449, %1458 ], [ %1449, %1467 ], [ %1489, %1493 ], [ %1489, %1484 ], [ %1630, %1640 ], [ %1630, %1644 ], [ %1630, %1648 ], [ %1863, %1874 ], [ %1951, %1970 ], [ %1951, %2120 ], [ %1951, %2116 ], [ %94, %2123 ], [ %2199, %2250 ], [ %2337, %2345 ], [ %1388, %1418 ]
-  %2357 = phi i32 [ %95, %128 ], [ 0, %174 ], [ %165, %192 ], [ %165, %196 ], [ %199, %211 ], [ 0, %212 ], [ %254, %258 ], [ %254, %262 ], [ %757, %765 ], [ %770, %778 ], [ %870, %867 ], [ %904, %903 ], [ %980, %985 ], [ %998, %1022 ], [ %998, %1025 ], [ %1073, %1077 ], [ %1096, %1152 ], [ %1295, %1297 ], [ %1448, %1454 ], [ %1448, %1458 ], [ %1448, %1467 ], [ %1490, %1493 ], [ %1490, %1484 ], [ %1632, %1640 ], [ %1632, %1644 ], [ %1632, %1648 ], [ %1865, %1874 ], [ %1952, %1970 ], [ %1952, %2120 ], [ %1952, %2116 ], [ %95, %2123 ], [ %2200, %2250 ], [ %2338, %2345 ], [ %1392, %1418 ]
-  %2358 = phi i32 [ %96, %128 ], [ %96, %174 ], [ %96, %192 ], [ %96, %196 ], [ %96, %211 ], [ %96, %212 ], [ %96, %258 ], [ %96, %262 ], [ %96, %765 ], [ %96, %778 ], [ %96, %867 ], [ %96, %903 ], [ %96, %985 ], [ %96, %1022 ], [ %96, %1025 ], [ %96, %1077 ], [ %96, %1152 ], [ %96, %1297 ], [ %96, %1454 ], [ %96, %1458 ], [ %96, %1467 ], [ %96, %1493 ], [ %96, %1484 ], [ %96, %1640 ], [ %96, %1644 ], [ %96, %1648 ], [ %96, %1874 ], [ %96, %1970 ], [ %96, %2120 ], [ %96, %2116 ], [ %96, %2123 ], [ %93, %2250 ], [ %2264, %2345 ], [ %96, %1418 ]
-  %2359 = phi i32 [ %97, %128 ], [ %97, %174 ], [ %97, %192 ], [ %97, %196 ], [ %97, %211 ], [ %97, %212 ], [ %97, %258 ], [ %97, %262 ], [ %97, %765 ], [ %97, %778 ], [ %97, %867 ], [ %97, %903 ], [ %97, %985 ], [ %97, %1022 ], [ %97, %1025 ], [ %97, %1077 ], [ %1150, %1152 ], [ %1159, %1297 ], [ %1159, %1454 ], [ %1456, %1458 ], [ %1465, %1467 ], [ %1480, %1493 ], [ %1480, %1484 ], [ %1480, %1640 ], [ %1480, %1644 ], [ %1480, %1648 ], [ %1727, %1874 ], [ %1953, %1970 ], [ %1953, %2120 ], [ %1953, %2116 ], [ %97, %2123 ], [ %97, %2250 ], [ %97, %2345 ], [ %1159, %1418 ]
-  %2360 = load i32, ptr %21, align 8, !tbaa !20
+2339:                                             ; preds = %2333, %2238, %2111, %2108, %2104, %1961, %1865, %1639, %1635, %1631, %1484, %1475, %1458, %1449, %1445, %1409, %1288, %1143, %1068, %1016, %1013, %979, %897, %861, %772, %759, %262, %258, %212, %211, %196, %192, %174, %128
+  %2340 = phi ptr [ %90, %128 ], [ %162, %174 ], [ %162, %192 ], [ %162, %196 ], [ %162, %211 ], [ %162, %212 ], [ %251, %258 ], [ %251, %262 ], [ %748, %759 ], [ %761, %772 ], [ %850, %861 ], [ %880, %897 ], [ %971, %979 ], [ %1006, %1013 ], [ %989, %1016 ], [ %1050, %1068 ], [ %1084, %1143 ], [ %1280, %1288 ], [ %1442, %1445 ], [ %1442, %1449 ], [ %1442, %1458 ], [ %1478, %1484 ], [ %1478, %1475 ], [ %1612, %1631 ], [ %1612, %1635 ], [ %1612, %1639 ], [ %1845, %1865 ], [ %1940, %1961 ], [ %1940, %2108 ], [ %1940, %2104 ], [ %90, %2111 ], [ %2185, %2238 ], [ %2323, %2333 ], [ %1377, %1409 ]
+  %2341 = phi ptr [ %91, %128 ], [ %91, %174 ], [ %91, %192 ], [ %91, %196 ], [ %91, %211 ], [ %91, %212 ], [ %91, %258 ], [ %91, %262 ], [ %91, %759 ], [ %91, %772 ], [ %91, %861 ], [ %91, %897 ], [ %91, %979 ], [ %1015, %1013 ], [ %91, %1016 ], [ %91, %1068 ], [ %91, %1143 ], [ %91, %1288 ], [ %91, %1445 ], [ %91, %1449 ], [ %91, %1458 ], [ %1476, %1484 ], [ %1476, %1475 ], [ %91, %1631 ], [ %91, %1635 ], [ %91, %1639 ], [ %91, %1865 ], [ %91, %1961 ], [ %2105, %2108 ], [ %2105, %2104 ], [ %2115, %2111 ], [ %91, %2238 ], [ %91, %2333 ], [ %91, %1409 ]
+  %2342 = phi i32 [ %92, %128 ], [ %163, %174 ], [ %163, %192 ], [ %163, %196 ], [ %163, %211 ], [ %163, %212 ], [ %252, %258 ], [ %252, %262 ], [ %749, %759 ], [ %762, %772 ], [ %851, %861 ], [ %881, %897 ], [ %972, %979 ], [ %1002, %1013 ], [ %990, %1016 ], [ %1051, %1068 ], [ %1085, %1143 ], [ %1281, %1288 ], [ %1441, %1445 ], [ %1441, %1449 ], [ %1441, %1458 ], [ %1479, %1484 ], [ %1479, %1475 ], [ %1613, %1631 ], [ %1613, %1635 ], [ %1613, %1639 ], [ %1846, %1865 ], [ %1941, %1961 ], [ %1941, %2108 ], [ %1941, %2104 ], [ %92, %2111 ], [ %2186, %2238 ], [ %2324, %2333 ], [ %1378, %1409 ]
+  %2343 = phi i32 [ %93, %128 ], [ %93, %174 ], [ %93, %192 ], [ %93, %196 ], [ %93, %211 ], [ %93, %212 ], [ %93, %258 ], [ %93, %262 ], [ %93, %759 ], [ %93, %772 ], [ %93, %861 ], [ %93, %897 ], [ %93, %979 ], [ %1008, %1013 ], [ %93, %1016 ], [ %93, %1068 ], [ %93, %1143 ], [ %93, %1288 ], [ %93, %1445 ], [ %93, %1449 ], [ %93, %1458 ], [ %1477, %1484 ], [ %1477, %1475 ], [ %93, %1631 ], [ %93, %1635 ], [ %93, %1639 ], [ %93, %1865 ], [ %93, %1961 ], [ %1995, %2108 ], [ %1995, %2104 ], [ %2114, %2111 ], [ %93, %2238 ], [ %93, %2333 ], [ %93, %1409 ]
+  %2344 = phi i64 [ %94, %128 ], [ 0, %174 ], [ %164, %192 ], [ %164, %196 ], [ %198, %211 ], [ 0, %212 ], [ %253, %258 ], [ %253, %262 ], [ %750, %759 ], [ %763, %772 ], [ %866, %861 ], [ %899, %897 ], [ %973, %979 ], [ %991, %1013 ], [ %991, %1016 ], [ %1063, %1068 ], [ %1086, %1143 ], [ %1285, %1288 ], [ %1440, %1445 ], [ %1440, %1449 ], [ %1440, %1458 ], [ %1480, %1484 ], [ %1480, %1475 ], [ %1621, %1631 ], [ %1621, %1635 ], [ %1621, %1639 ], [ %1854, %1865 ], [ %1942, %1961 ], [ %1942, %2108 ], [ %1942, %2104 ], [ %94, %2111 ], [ %2187, %2238 ], [ %2325, %2333 ], [ %1379, %1409 ]
+  %2345 = phi i32 [ %95, %128 ], [ 0, %174 ], [ %165, %192 ], [ %165, %196 ], [ %199, %211 ], [ 0, %212 ], [ %254, %258 ], [ %254, %262 ], [ %751, %759 ], [ %764, %772 ], [ %864, %861 ], [ %898, %897 ], [ %974, %979 ], [ %992, %1013 ], [ %992, %1016 ], [ %1064, %1068 ], [ %1087, %1143 ], [ %1286, %1288 ], [ %1439, %1445 ], [ %1439, %1449 ], [ %1439, %1458 ], [ %1481, %1484 ], [ %1481, %1475 ], [ %1623, %1631 ], [ %1623, %1635 ], [ %1623, %1639 ], [ %1856, %1865 ], [ %1943, %1961 ], [ %1943, %2108 ], [ %1943, %2104 ], [ %95, %2111 ], [ %2188, %2238 ], [ %2326, %2333 ], [ %1383, %1409 ]
+  %2346 = phi i32 [ %96, %128 ], [ %96, %174 ], [ %96, %192 ], [ %96, %196 ], [ %96, %211 ], [ %96, %212 ], [ %96, %258 ], [ %96, %262 ], [ %96, %759 ], [ %96, %772 ], [ %96, %861 ], [ %96, %897 ], [ %96, %979 ], [ %96, %1013 ], [ %96, %1016 ], [ %96, %1068 ], [ %96, %1143 ], [ %96, %1288 ], [ %96, %1445 ], [ %96, %1449 ], [ %96, %1458 ], [ %96, %1484 ], [ %96, %1475 ], [ %96, %1631 ], [ %96, %1635 ], [ %96, %1639 ], [ %96, %1865 ], [ %96, %1961 ], [ %96, %2108 ], [ %96, %2104 ], [ %96, %2111 ], [ %93, %2238 ], [ %2252, %2333 ], [ %96, %1409 ]
+  %2347 = phi i32 [ %97, %128 ], [ %97, %174 ], [ %97, %192 ], [ %97, %196 ], [ %97, %211 ], [ %97, %212 ], [ %97, %258 ], [ %97, %262 ], [ %97, %759 ], [ %97, %772 ], [ %97, %861 ], [ %97, %897 ], [ %97, %979 ], [ %97, %1013 ], [ %97, %1016 ], [ %97, %1068 ], [ %1141, %1143 ], [ %1150, %1288 ], [ %1150, %1445 ], [ %1447, %1449 ], [ %1456, %1458 ], [ %1471, %1484 ], [ %1471, %1475 ], [ %1471, %1631 ], [ %1471, %1635 ], [ %1471, %1639 ], [ %1718, %1865 ], [ %1944, %1961 ], [ %1944, %2108 ], [ %1944, %2104 ], [ %97, %2111 ], [ %97, %2238 ], [ %97, %2333 ], [ %1150, %1409 ]
+  %2348 = load i32, ptr %21, align 8, !tbaa !20
   br label %88
 
-2361:                                             ; preds = %1196, %1192
-  %2362 = phi i64 [ %1210, %1196 ], [ %1180, %1192 ]
-  %2363 = zext i32 %1179 to i64
-  %2364 = shl i32 %1179, 3
-  %2365 = add i32 %2364, %1181
-  %2366 = getelementptr i8, ptr %1178, i64 %2363
-  br label %2485
+2349:                                             ; preds = %1187, %1183
+  %2350 = phi i64 [ %1201, %1187 ], [ %1171, %1183 ]
+  %2351 = zext i32 %1170 to i64
+  %2352 = shl i32 %1170, 3
+  %2353 = add i32 %2352, %1172
+  %2354 = getelementptr i8, ptr %1169, i64 %2351
+  br label %2473
 
-2367:                                             ; preds = %142, %125
-  %2368 = phi i64 [ %94, %125 ], [ %137, %142 ]
-  %2369 = zext i32 %92 to i64
-  %2370 = shl i32 %92, 3
-  %2371 = add i32 %2370, %95
-  %2372 = getelementptr i8, ptr %90, i64 %2369
-  br label %2485
+2355:                                             ; preds = %142, %125
+  %2356 = phi i64 [ %94, %125 ], [ %137, %142 ]
+  %2357 = zext i32 %92 to i64
+  %2358 = shl i32 %92, 3
+  %2359 = add i32 %2358, %95
+  %2360 = getelementptr i8, ptr %90, i64 %2357
+  br label %2473
 
-2373:                                             ; preds = %734, %718
-  %2374 = phi i64 [ %711, %718 ], [ %729, %734 ]
-  %2375 = zext i32 %710 to i64
-  %2376 = shl i32 %710, 3
-  %2377 = add i32 %2376, %712
-  %2378 = getelementptr i8, ptr %709, i64 %2375
-  br label %2485
+2361:                                             ; preds = %728, %712
+  %2362 = phi i64 [ %705, %712 ], [ %723, %728 ]
+  %2363 = zext i32 %704 to i64
+  %2364 = shl i32 %704, 3
+  %2365 = add i32 %2364, %706
+  %2366 = getelementptr i8, ptr %703, i64 %2363
+  br label %2473
 
-2379:                                             ; preds = %454, %433
-  %2380 = phi i64 [ %436, %433 ], [ %449, %454 ]
-  %2381 = zext i32 %435 to i64
-  %2382 = shl i32 %435, 3
-  %2383 = add i32 %2382, %437
-  %2384 = getelementptr i8, ptr %434, i64 %2381
-  br label %2485
+2367:                                             ; preds = %454, %433
+  %2368 = phi i64 [ %436, %433 ], [ %449, %454 ]
+  %2369 = zext i32 %435 to i64
+  %2370 = shl i32 %435, 3
+  %2371 = add i32 %2370, %437
+  %2372 = getelementptr i8, ptr %434, i64 %2369
+  br label %2473
 
-2385:                                             ; preds = %386, %366
-  %2386 = phi i64 [ %368, %366 ], [ %381, %386 ]
-  %2387 = zext i32 %369 to i64
-  %2388 = shl i32 %369, 3
-  %2389 = add i32 %2388, %367
-  %2390 = getelementptr i8, ptr %370, i64 %2387
-  br label %2485
+2373:                                             ; preds = %386, %366
+  %2374 = phi i64 [ %368, %366 ], [ %381, %386 ]
+  %2375 = zext i32 %369 to i64
+  %2376 = shl i32 %369, 3
+  %2377 = add i32 %2376, %367
+  %2378 = getelementptr i8, ptr %370, i64 %2375
+  br label %2473
 
-2391:                                             ; preds = %331, %317, %303, %283
-  %2392 = phi i64 [ %285, %283 ], [ %298, %303 ], [ %312, %317 ], [ %326, %331 ]
-  %2393 = zext i32 %286 to i64
-  %2394 = shl i32 %286, 3
-  %2395 = add i32 %2394, %284
-  %2396 = getelementptr i8, ptr %287, i64 %2393
-  br label %2485
+2379:                                             ; preds = %331, %317, %303, %283
+  %2380 = phi i64 [ %285, %283 ], [ %298, %303 ], [ %312, %317 ], [ %326, %331 ]
+  %2381 = zext i32 %286 to i64
+  %2382 = shl i32 %286, 3
+  %2383 = add i32 %2382, %284
+  %2384 = getelementptr i8, ptr %287, i64 %2381
+  br label %2473
 
-2397:                                             ; preds = %231, %117
-  %2398 = phi i64 [ %94, %117 ], [ %226, %231 ]
+2385:                                             ; preds = %231, %117
+  %2386 = phi i64 [ %94, %117 ], [ %226, %231 ]
+  %2387 = zext i32 %92 to i64
+  %2388 = shl i32 %92, 3
+  %2389 = add i32 %2388, %95
+  %2390 = getelementptr i8, ptr %90, i64 %2387
+  br label %2473
+
+2391:                                             ; preds = %815, %801, %787, %112
+  %2392 = phi i64 [ %94, %112 ], [ %782, %787 ], [ %796, %801 ], [ %810, %815 ]
+  %2393 = zext i32 %92 to i64
+  %2394 = shl i32 %92, 3
+  %2395 = add i32 %2394, %95
+  %2396 = getelementptr i8, ptr %90, i64 %2393
+  br label %2473
+
+2397:                                             ; preds = %952, %938, %924, %907
+  %2398 = phi i64 [ %904, %907 ], [ %919, %924 ], [ %933, %938 ], [ %947, %952 ]
   %2399 = zext i32 %92 to i64
   %2400 = shl i32 %92, 3
-  %2401 = add i32 %2400, %95
+  %2401 = add i32 %2400, %908
   %2402 = getelementptr i8, ptr %90, i64 %2399
-  br label %2485
+  br label %2473
 
-2403:                                             ; preds = %821, %807, %793, %112
-  %2404 = phi i64 [ %94, %112 ], [ %788, %793 ], [ %802, %807 ], [ %816, %821 ]
-  %2405 = zext i32 %92 to i64
-  %2406 = shl i32 %92, 3
-  %2407 = add i32 %2406, %95
-  %2408 = getelementptr i8, ptr %90, i64 %2405
-  br label %2485
+2403:                                             ; preds = %1883, %1879
+  %2404 = phi i64 [ %1896, %1883 ], [ %1873, %1879 ]
+  %2405 = zext i32 %1872 to i64
+  %2406 = shl i32 %1872, 3
+  %2407 = add i32 %2406, %1874
+  %2408 = getelementptr i8, ptr %1871, i64 %2405
+  br label %2473
 
-2409:                                             ; preds = %958, %944, %930, %913
-  %2410 = phi i64 [ %910, %913 ], [ %925, %930 ], [ %939, %944 ], [ %953, %958 ]
-  %2411 = zext i32 %92 to i64
-  %2412 = shl i32 %92, 3
-  %2413 = add i32 %2412, %914
-  %2414 = getelementptr i8, ptr %90, i64 %2411
-  br label %2485
+2409:                                             ; preds = %1797, %1793
+  %2410 = phi i64 [ %1811, %1797 ], [ %1768, %1793 ]
+  %2411 = zext i32 %1767 to i64
+  %2412 = shl i32 %1767, 3
+  %2413 = add i32 %2412, %1769
+  %2414 = getelementptr i8, ptr %1766, i64 %2411
+  br label %2473
 
-2415:                                             ; preds = %1892, %1888
-  %2416 = phi i64 [ %1905, %1892 ], [ %1882, %1888 ]
-  %2417 = zext i32 %1881 to i64
-  %2418 = shl i32 %1881, 3
-  %2419 = add i32 %2418, %1883
-  %2420 = getelementptr i8, ptr %1880, i64 %2417
-  br label %2485
+2415:                                             ; preds = %1735, %1731
+  %2416 = phi i64 [ %1749, %1735 ], [ %1716, %1731 ]
+  %2417 = zext i32 %1715 to i64
+  %2418 = shl i32 %1715, 3
+  %2419 = add i32 %2418, %1717
+  %2420 = getelementptr i8, ptr %1714, i64 %2417
+  br label %2473
 
-2421:                                             ; preds = %1806, %1802
-  %2422 = phi i64 [ %1820, %1806 ], [ %1777, %1802 ]
-  %2423 = zext i32 %1776 to i64
-  %2424 = shl i32 %1776, 3
-  %2425 = add i32 %2424, %1778
-  %2426 = getelementptr i8, ptr %1775, i64 %2423
-  br label %2485
+2421:                                             ; preds = %1656, %1652
+  %2422 = phi i64 [ %1669, %1656 ], [ %1646, %1652 ]
+  %2423 = zext i32 %1645 to i64
+  %2424 = shl i32 %1645, 3
+  %2425 = add i32 %2424, %1647
+  %2426 = getelementptr i8, ptr %1644, i64 %2423
+  br label %2473
 
-2427:                                             ; preds = %1744, %1740
-  %2428 = phi i64 [ %1758, %1744 ], [ %1725, %1740 ]
-  %2429 = zext i32 %1724 to i64
-  %2430 = shl i32 %1724, 3
-  %2431 = add i32 %2430, %1726
-  %2432 = getelementptr i8, ptr %1723, i64 %2429
-  br label %2485
+2427:                                             ; preds = %1565, %1561
+  %2428 = phi i64 [ %1579, %1565 ], [ %1535, %1561 ]
+  %2429 = zext i32 %1534 to i64
+  %2430 = shl i32 %1534, 3
+  %2431 = add i32 %2430, %1536
+  %2432 = getelementptr i8, ptr %1533, i64 %2429
+  br label %2473
 
-2433:                                             ; preds = %1665, %1661
-  %2434 = phi i64 [ %1678, %1665 ], [ %1655, %1661 ]
-  %2435 = zext i32 %1654 to i64
-  %2436 = shl i32 %1654, 3
-  %2437 = add i32 %2436, %1656
-  %2438 = getelementptr i8, ptr %1653, i64 %2435
-  br label %2485
+2433:                                             ; preds = %1502, %1498
+  %2434 = phi i64 [ %1516, %1502 ], [ %1469, %1498 ]
+  %2435 = zext i32 %1468 to i64
+  %2436 = shl i32 %1468, 3
+  %2437 = add i32 %2436, %1470
+  %2438 = getelementptr i8, ptr %1467, i64 %2435
+  br label %2473
 
-2439:                                             ; preds = %1574, %1570
-  %2440 = phi i64 [ %1588, %1574 ], [ %1544, %1570 ]
-  %2441 = zext i32 %1543 to i64
-  %2442 = shl i32 %1543, 3
-  %2443 = add i32 %2442, %1545
-  %2444 = getelementptr i8, ptr %1542, i64 %2441
-  br label %2485
+2439:                                             ; preds = %1339
+  %2440 = zext i32 %1219 to i64
+  %2441 = shl i32 %1219, 3
+  %2442 = add i32 %2441, %1221
+  %2443 = getelementptr i8, ptr %1218, i64 %2440
+  br label %2473
 
-2445:                                             ; preds = %1511, %1507
-  %2446 = phi i64 [ %1525, %1511 ], [ %1478, %1507 ]
-  %2447 = zext i32 %1477 to i64
-  %2448 = shl i32 %1477, 3
-  %2449 = add i32 %2448, %1479
-  %2450 = getelementptr i8, ptr %1476, i64 %2447
-  br label %2485
+2444:                                             ; preds = %1258
+  %2445 = zext i32 %1219 to i64
+  %2446 = shl i32 %1219, 3
+  %2447 = add i32 %2446, %1221
+  %2448 = getelementptr i8, ptr %1218, i64 %2445
+  br label %2473
 
-2451:                                             ; preds = %1348
-  %2452 = zext i32 %1228 to i64
-  %2453 = shl i32 %1228, 3
-  %2454 = add i32 %2453, %1230
-  %2455 = getelementptr i8, ptr %1227, i64 %2452
-  br label %2485
+2449:                                             ; preds = %1302
+  %2450 = zext i32 %1219 to i64
+  %2451 = shl i32 %1219, 3
+  %2452 = add i32 %2451, %1221
+  %2453 = getelementptr i8, ptr %1218, i64 %2450
+  br label %2473
 
-2456:                                             ; preds = %1267
-  %2457 = zext i32 %1228 to i64
-  %2458 = shl i32 %1228, 3
-  %2459 = add i32 %2458, %1230
-  %2460 = getelementptr i8, ptr %1227, i64 %2457
-  br label %2485
+2454:                                             ; preds = %1030, %107
+  %2455 = phi i64 [ %94, %107 ], [ %1025, %1030 ]
+  %2456 = zext i32 %92 to i64
+  %2457 = shl i32 %92, 3
+  %2458 = add i32 %2457, %95
+  %2459 = getelementptr i8, ptr %90, i64 %2456
+  br label %2473
 
-2461:                                             ; preds = %1311
-  %2462 = zext i32 %1228 to i64
-  %2463 = shl i32 %1228, 3
-  %2464 = add i32 %2463, %1230
-  %2465 = getelementptr i8, ptr %1227, i64 %2462
-  br label %2485
+2460:                                             ; preds = %2303, %2289, %2275, %2259
+  %2461 = phi i64 [ %2250, %2259 ], [ %2270, %2275 ], [ %2284, %2289 ], [ %2298, %2303 ]
+  %2462 = zext i32 %2249 to i64
+  %2463 = shl i32 %2249, 3
+  %2464 = add i32 %2463, %2251
+  %2465 = getelementptr i8, ptr %2248, i64 %2462
+  br label %2473
 
-2466:                                             ; preds = %1039, %107
-  %2467 = phi i64 [ %94, %107 ], [ %1034, %1039 ]
+2466:                                             ; preds = %2165, %2151, %2137, %2121
+  %2467 = phi i64 [ %94, %2121 ], [ %2132, %2137 ], [ %2146, %2151 ], [ %2160, %2165 ]
   %2468 = zext i32 %92 to i64
   %2469 = shl i32 %92, 3
   %2470 = add i32 %2469, %95
   %2471 = getelementptr i8, ptr %90, i64 %2468
-  br label %2485
+  br label %2473
 
-2472:                                             ; preds = %2315, %2301, %2287, %2271
-  %2473 = phi i64 [ %2262, %2271 ], [ %2282, %2287 ], [ %2296, %2301 ], [ %2310, %2315 ]
-  %2474 = zext i32 %2261 to i64
-  %2475 = shl i32 %2261, 3
-  %2476 = add i32 %2475, %2263
-  %2477 = getelementptr i8, ptr %2260, i64 %2474
-  br label %2485
+2472:                                             ; preds = %88
+  br label %2473
 
-2478:                                             ; preds = %2177, %2163, %2149, %2133
-  %2479 = phi i64 [ %94, %2133 ], [ %2144, %2149 ], [ %2158, %2163 ], [ %2172, %2177 ]
-  %2480 = zext i32 %92 to i64
-  %2481 = shl i32 %92, 3
-  %2482 = add i32 %2481, %95
-  %2483 = getelementptr i8, ptr %90, i64 %2480
-  br label %2485
-
-2484:                                             ; preds = %88
-  br label %2485
-
-2485:                                             ; preds = %2484, %2478, %2472, %2466, %2461, %2456, %2451, %2445, %2439, %2433, %2427, %2421, %2415, %2409, %2403, %2397, %2391, %2385, %2379, %2373, %2367, %2361, %2346, %2121, %1948, %1468, %1108, %1001, %986, %895, %864, %850, %696, %652, %632, %588, %572, %88
-  %2486 = phi i32 [ %93, %2472 ], [ %93, %2367 ], [ %93, %2361 ], [ %93, %1108 ], [ %93, %2478 ], [ %93, %2451 ], [ %93, %2409 ], [ %93, %2415 ], [ %93, %2397 ], [ %93, %2385 ], [ %93, %2433 ], [ %93, %2379 ], [ %93, %2346 ], [ %93, %2373 ], [ %93, %895 ], [ %93, %2445 ], [ %93, %2461 ], [ %93, %2439 ], [ %93, %2421 ], [ %93, %2466 ], [ %93, %2391 ], [ %93, %2427 ], [ %93, %2456 ], [ %93, %2403 ], [ %93, %88 ], [ %93, %572 ], [ %93, %588 ], [ %93, %632 ], [ %93, %652 ], [ %93, %696 ], [ %93, %850 ], [ %93, %986 ], [ %93, %1001 ], [ %93, %1468 ], [ 0, %1948 ], [ 0, %2121 ], [ %93, %864 ], [ %93, %2484 ]
-  %2487 = phi ptr [ %2477, %2472 ], [ %2372, %2367 ], [ %2366, %2361 ], [ %1106, %1108 ], [ %2483, %2478 ], [ %2455, %2451 ], [ %2414, %2409 ], [ %2420, %2415 ], [ %2402, %2397 ], [ %2390, %2385 ], [ %2438, %2433 ], [ %2384, %2379 ], [ %2347, %2346 ], [ %2378, %2373 ], [ %886, %895 ], [ %2450, %2445 ], [ %2465, %2461 ], [ %2444, %2439 ], [ %2426, %2421 ], [ %2471, %2466 ], [ %2396, %2391 ], [ %2432, %2427 ], [ %2460, %2456 ], [ %2408, %2403 ], [ %90, %88 ], [ %574, %572 ], [ %581, %588 ], [ %635, %632 ], [ %645, %652 ], [ %699, %696 ], [ %851, %850 ], [ %977, %986 ], [ %995, %1001 ], [ %1451, %1468 ], [ %1949, %1948 ], [ %90, %2121 ], [ %856, %864 ], [ %90, %2484 ]
-  %2488 = phi i32 [ 0, %2472 ], [ 0, %2367 ], [ 0, %2361 ], [ 0, %1108 ], [ 0, %2478 ], [ 0, %2451 ], [ 0, %2409 ], [ 0, %2415 ], [ 0, %2397 ], [ 0, %2385 ], [ 0, %2433 ], [ 0, %2379 ], [ %2348, %2346 ], [ 0, %2373 ], [ %887, %895 ], [ 0, %2445 ], [ 0, %2461 ], [ 0, %2439 ], [ 0, %2421 ], [ 0, %2466 ], [ 0, %2391 ], [ 0, %2427 ], [ 0, %2456 ], [ 0, %2403 ], [ %92, %88 ], [ %575, %572 ], [ 0, %588 ], [ %633, %632 ], [ 0, %652 ], [ %697, %696 ], [ %852, %850 ], [ %978, %986 ], [ %996, %1001 ], [ %1450, %1468 ], [ %1950, %1948 ], [ %92, %2121 ], [ 0, %864 ], [ %92, %2484 ]
-  %2489 = phi i64 [ %2473, %2472 ], [ %2368, %2367 ], [ %2362, %2361 ], [ %1104, %1108 ], [ %2479, %2478 ], [ %1350, %2451 ], [ %2410, %2409 ], [ %2416, %2415 ], [ %2398, %2397 ], [ %2386, %2385 ], [ %2434, %2433 ], [ %2380, %2379 ], [ %2349, %2346 ], [ %2374, %2373 ], [ %897, %895 ], [ %2446, %2445 ], [ %1313, %2461 ], [ %2440, %2439 ], [ %2422, %2421 ], [ %2467, %2466 ], [ %2392, %2391 ], [ %2428, %2427 ], [ %1269, %2456 ], [ %2404, %2403 ], [ %94, %88 ], [ %504, %572 ], [ %583, %588 ], [ %583, %632 ], [ %647, %652 ], [ %647, %696 ], [ %853, %850 ], [ 0, %986 ], [ %997, %1001 ], [ %1449, %1468 ], [ %1951, %1948 ], [ %94, %2121 ], [ %858, %864 ], [ %94, %2484 ]
-  %2490 = phi i32 [ %2476, %2472 ], [ %2371, %2367 ], [ %2365, %2361 ], [ %1103, %1108 ], [ %2482, %2478 ], [ %2454, %2451 ], [ %2413, %2409 ], [ %2419, %2415 ], [ %2401, %2397 ], [ %2389, %2385 ], [ %2437, %2433 ], [ %2383, %2379 ], [ %2350, %2346 ], [ %2377, %2373 ], [ %896, %895 ], [ %2449, %2445 ], [ %2464, %2461 ], [ %2443, %2439 ], [ %2425, %2421 ], [ %2470, %2466 ], [ %2395, %2391 ], [ %2431, %2427 ], [ %2459, %2456 ], [ %2407, %2403 ], [ %95, %88 ], [ %505, %572 ], [ %584, %588 ], [ %584, %632 ], [ %648, %652 ], [ %648, %696 ], [ %854, %850 ], [ 0, %986 ], [ %998, %1001 ], [ %1448, %1468 ], [ %1952, %1948 ], [ %95, %2121 ], [ %859, %864 ], [ %95, %2484 ]
-  %2491 = phi i32 [ %2264, %2472 ], [ %96, %2367 ], [ %96, %2361 ], [ %96, %1108 ], [ %96, %2478 ], [ %96, %2451 ], [ %96, %2409 ], [ %96, %2415 ], [ %96, %2397 ], [ %96, %2385 ], [ %96, %2433 ], [ %96, %2379 ], [ %2264, %2346 ], [ %96, %2373 ], [ %96, %895 ], [ %96, %2445 ], [ %96, %2461 ], [ %96, %2439 ], [ %96, %2421 ], [ %96, %2466 ], [ %96, %2391 ], [ %96, %2427 ], [ %96, %2456 ], [ %96, %2403 ], [ %96, %88 ], [ %96, %864 ], [ %96, %2121 ], [ %96, %1948 ], [ %96, %1468 ], [ %96, %1001 ], [ %96, %986 ], [ %96, %850 ], [ %96, %696 ], [ %96, %652 ], [ %96, %632 ], [ %96, %588 ], [ %96, %572 ], [ %96, %2484 ]
-  %2492 = phi i32 [ %97, %2472 ], [ %97, %2367 ], [ %1159, %2361 ], [ %97, %1108 ], [ %97, %2478 ], [ %1159, %2451 ], [ %97, %2409 ], [ %1884, %2415 ], [ %97, %2397 ], [ %97, %2385 ], [ %1657, %2433 ], [ %97, %2379 ], [ 1, %2346 ], [ %97, %2373 ], [ %97, %895 ], [ %1480, %2445 ], [ %1159, %2461 ], [ %1480, %2439 ], [ %1727, %2421 ], [ %97, %2466 ], [ %97, %2391 ], [ %1727, %2427 ], [ %1159, %2456 ], [ %97, %2403 ], [ -3, %88 ], [ %97, %572 ], [ %97, %588 ], [ %97, %632 ], [ %97, %652 ], [ %97, %696 ], [ %97, %850 ], [ %97, %986 ], [ %97, %1001 ], [ 0, %1468 ], [ %1953, %1948 ], [ %97, %2121 ], [ %97, %864 ], [ 1, %2484 ]
+2473:                                             ; preds = %2472, %2466, %2460, %2454, %2449, %2444, %2439, %2433, %2427, %2421, %2415, %2409, %2403, %2397, %2391, %2385, %2379, %2373, %2367, %2361, %2355, %2349, %2334, %2109, %1939, %1459, %1099, %995, %980, %889, %858, %844, %690, %646, %626, %582, %566, %88
+  %2474 = phi i32 [ %93, %2460 ], [ %93, %2355 ], [ %93, %2349 ], [ %93, %1099 ], [ %93, %2466 ], [ %93, %2439 ], [ %93, %2397 ], [ %93, %2403 ], [ %93, %2385 ], [ %93, %2373 ], [ %93, %2421 ], [ %93, %2367 ], [ %93, %2334 ], [ %93, %2361 ], [ %93, %889 ], [ %93, %2433 ], [ %93, %2449 ], [ %93, %2427 ], [ %93, %2409 ], [ %93, %2454 ], [ %93, %2379 ], [ %93, %2415 ], [ %93, %2444 ], [ %93, %2391 ], [ %93, %88 ], [ %93, %566 ], [ %93, %582 ], [ %93, %626 ], [ %93, %646 ], [ %93, %690 ], [ %93, %844 ], [ %93, %980 ], [ %93, %995 ], [ %93, %1459 ], [ 0, %1939 ], [ 0, %2109 ], [ %93, %858 ], [ %93, %2472 ]
+  %2475 = phi ptr [ %2465, %2460 ], [ %2360, %2355 ], [ %2354, %2349 ], [ %1097, %1099 ], [ %2471, %2466 ], [ %2443, %2439 ], [ %2402, %2397 ], [ %2408, %2403 ], [ %2390, %2385 ], [ %2378, %2373 ], [ %2426, %2421 ], [ %2372, %2367 ], [ %2335, %2334 ], [ %2366, %2361 ], [ %880, %889 ], [ %2438, %2433 ], [ %2453, %2449 ], [ %2432, %2427 ], [ %2414, %2409 ], [ %2459, %2454 ], [ %2384, %2379 ], [ %2420, %2415 ], [ %2448, %2444 ], [ %2396, %2391 ], [ %90, %88 ], [ %568, %566 ], [ %575, %582 ], [ %629, %626 ], [ %639, %646 ], [ %693, %690 ], [ %845, %844 ], [ %971, %980 ], [ %989, %995 ], [ %1442, %1459 ], [ %1940, %1939 ], [ %90, %2109 ], [ %850, %858 ], [ %90, %2472 ]
+  %2476 = phi i32 [ 0, %2460 ], [ 0, %2355 ], [ 0, %2349 ], [ 0, %1099 ], [ 0, %2466 ], [ 0, %2439 ], [ 0, %2397 ], [ 0, %2403 ], [ 0, %2385 ], [ 0, %2373 ], [ 0, %2421 ], [ 0, %2367 ], [ %2336, %2334 ], [ 0, %2361 ], [ %881, %889 ], [ 0, %2433 ], [ 0, %2449 ], [ 0, %2427 ], [ 0, %2409 ], [ 0, %2454 ], [ 0, %2379 ], [ 0, %2415 ], [ 0, %2444 ], [ 0, %2391 ], [ %92, %88 ], [ %569, %566 ], [ 0, %582 ], [ %627, %626 ], [ 0, %646 ], [ %691, %690 ], [ %846, %844 ], [ %972, %980 ], [ %990, %995 ], [ %1441, %1459 ], [ %1941, %1939 ], [ %92, %2109 ], [ 0, %858 ], [ %92, %2472 ]
+  %2477 = phi i64 [ %2461, %2460 ], [ %2356, %2355 ], [ %2350, %2349 ], [ %1095, %1099 ], [ %2467, %2466 ], [ %1341, %2439 ], [ %2398, %2397 ], [ %2404, %2403 ], [ %2386, %2385 ], [ %2374, %2373 ], [ %2422, %2421 ], [ %2368, %2367 ], [ %2337, %2334 ], [ %2362, %2361 ], [ %891, %889 ], [ %2434, %2433 ], [ %1304, %2449 ], [ %2428, %2427 ], [ %2410, %2409 ], [ %2455, %2454 ], [ %2380, %2379 ], [ %2416, %2415 ], [ %1260, %2444 ], [ %2392, %2391 ], [ %94, %88 ], [ %504, %566 ], [ %577, %582 ], [ %577, %626 ], [ %641, %646 ], [ %641, %690 ], [ %847, %844 ], [ 0, %980 ], [ %991, %995 ], [ %1440, %1459 ], [ %1942, %1939 ], [ %94, %2109 ], [ %852, %858 ], [ %94, %2472 ]
+  %2478 = phi i32 [ %2464, %2460 ], [ %2359, %2355 ], [ %2353, %2349 ], [ %1094, %1099 ], [ %2470, %2466 ], [ %2442, %2439 ], [ %2401, %2397 ], [ %2407, %2403 ], [ %2389, %2385 ], [ %2377, %2373 ], [ %2425, %2421 ], [ %2371, %2367 ], [ %2338, %2334 ], [ %2365, %2361 ], [ %890, %889 ], [ %2437, %2433 ], [ %2452, %2449 ], [ %2431, %2427 ], [ %2413, %2409 ], [ %2458, %2454 ], [ %2383, %2379 ], [ %2419, %2415 ], [ %2447, %2444 ], [ %2395, %2391 ], [ %95, %88 ], [ %505, %566 ], [ %578, %582 ], [ %578, %626 ], [ %642, %646 ], [ %642, %690 ], [ %848, %844 ], [ 0, %980 ], [ %992, %995 ], [ %1439, %1459 ], [ %1943, %1939 ], [ %95, %2109 ], [ %853, %858 ], [ %95, %2472 ]
+  %2479 = phi i32 [ %2252, %2460 ], [ %96, %2355 ], [ %96, %2349 ], [ %96, %1099 ], [ %96, %2466 ], [ %96, %2439 ], [ %96, %2397 ], [ %96, %2403 ], [ %96, %2385 ], [ %96, %2373 ], [ %96, %2421 ], [ %96, %2367 ], [ %2252, %2334 ], [ %96, %2361 ], [ %96, %889 ], [ %96, %2433 ], [ %96, %2449 ], [ %96, %2427 ], [ %96, %2409 ], [ %96, %2454 ], [ %96, %2379 ], [ %96, %2415 ], [ %96, %2444 ], [ %96, %2391 ], [ %96, %88 ], [ %96, %858 ], [ %96, %2109 ], [ %96, %1939 ], [ %96, %1459 ], [ %96, %995 ], [ %96, %980 ], [ %96, %844 ], [ %96, %690 ], [ %96, %646 ], [ %96, %626 ], [ %96, %582 ], [ %96, %566 ], [ %96, %2472 ]
+  %2480 = phi i32 [ %97, %2460 ], [ %97, %2355 ], [ %1150, %2349 ], [ %97, %1099 ], [ %97, %2466 ], [ %1150, %2439 ], [ %97, %2397 ], [ %1875, %2403 ], [ %97, %2385 ], [ %97, %2373 ], [ %1648, %2421 ], [ %97, %2367 ], [ 1, %2334 ], [ %97, %2361 ], [ %97, %889 ], [ %1471, %2433 ], [ %1150, %2449 ], [ %1471, %2427 ], [ %1718, %2409 ], [ %97, %2454 ], [ %97, %2379 ], [ %1718, %2415 ], [ %1150, %2444 ], [ %97, %2391 ], [ -3, %88 ], [ %97, %566 ], [ %97, %582 ], [ %97, %626 ], [ %97, %646 ], [ %97, %690 ], [ %97, %844 ], [ %97, %980 ], [ %97, %995 ], [ 0, %1459 ], [ %1944, %1939 ], [ %97, %2109 ], [ %97, %858 ], [ 1, %2472 ]
   store ptr %91, ptr %26, align 8, !tbaa !49
-  store i32 %2486, ptr %41, align 8, !tbaa !52
-  store ptr %2487, ptr %0, align 8, !tbaa !50
-  store i32 %2488, ptr %43, align 8, !tbaa !51
-  store i64 %2489, ptr %45, align 8, !tbaa !31
-  store i32 %2490, ptr %47, align 8, !tbaa !32
-  %2493 = load i32, ptr %79, align 4, !tbaa !38
-  %2494 = icmp eq i32 %2493, 0
-  br i1 %2494, label %2495, label %2504
+  store i32 %2474, ptr %41, align 8, !tbaa !52
+  store ptr %2475, ptr %0, align 8, !tbaa !50
+  store i32 %2476, ptr %43, align 8, !tbaa !51
+  store i64 %2477, ptr %45, align 8, !tbaa !31
+  store i32 %2478, ptr %47, align 8, !tbaa !32
+  %2481 = load i32, ptr %79, align 4, !tbaa !38
+  %2482 = icmp eq i32 %2481, 0
+  br i1 %2482, label %2483, label %2492
 
-2495:                                             ; preds = %2485
-  %2496 = icmp eq i32 %2491, %2486
-  br i1 %2496, label %2592, label %2497
+2483:                                             ; preds = %2473
+  %2484 = icmp eq i32 %2479, %2474
+  br i1 %2484, label %2577, label %2485
 
-2497:                                             ; preds = %2495
-  %2498 = load i32, ptr %21, align 8, !tbaa !20
-  %2499 = icmp ult i32 %2498, 16209
-  br i1 %2499, label %2500, label %2592
+2485:                                             ; preds = %2483
+  %2486 = load i32, ptr %21, align 8, !tbaa !20
+  %2487 = icmp ult i32 %2486, 16209
+  br i1 %2487, label %2488, label %2577
 
-2500:                                             ; preds = %2497
-  %2501 = icmp samesign ult i32 %2498, 16206
-  %2502 = icmp ne i32 %1, 4
-  %2503 = or i1 %2502, %2501
-  br i1 %2503, label %2504, label %2592
+2488:                                             ; preds = %2485
+  %2489 = icmp samesign ult i32 %2486, 16206
+  %2490 = icmp ne i32 %1, 4
+  %2491 = or i1 %2490, %2489
+  br i1 %2491, label %2492, label %2577
 
-2504:                                             ; preds = %2500, %2485
-  %2505 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %2491, i32 %2486), !nosanitize !47
-  %2506 = extractvalue { i32, i1 } %2505, 1, !nosanitize !47
-  br i1 %2506, label %2507, label %2508, !prof !48, !nosanitize !47
+2492:                                             ; preds = %2488, %2473
+  %2493 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %2479, i32 %2474), !nosanitize !47
+  %2494 = extractvalue { i32, i1 } %2493, 1, !nosanitize !47
+  br i1 %2494, label %2495, label %2496, !prof !48, !nosanitize !47
 
-2507:                                             ; preds = %2504
+2495:                                             ; preds = %2492
   call void @llvm.ubsantrap(i8 21) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-2508:                                             ; preds = %2504
-  %2509 = extractvalue { i32, i1 } %2505, 0, !nosanitize !47
-  %2510 = load ptr, ptr %14, align 8, !tbaa !15
-  %2511 = getelementptr inbounds nuw i8, ptr %2510, i64 72
-  %2512 = load ptr, ptr %2511, align 8, !tbaa !41
-  %2513 = icmp eq ptr %2512, null
-  br i1 %2513, label %2514, label %2523
+2496:                                             ; preds = %2492
+  %2497 = extractvalue { i32, i1 } %2493, 0, !nosanitize !47
+  %2498 = load ptr, ptr %14, align 8, !tbaa !15
+  %2499 = getelementptr inbounds nuw i8, ptr %2498, i64 72
+  %2500 = load ptr, ptr %2499, align 8, !tbaa !41
+  %2501 = icmp eq ptr %2500, null
+  br i1 %2501, label %2502, label %2511
 
-2514:                                             ; preds = %2508
-  %2515 = load ptr, ptr %6, align 8, !tbaa !8
-  %2516 = getelementptr inbounds nuw i8, ptr %0, i64 80
-  %2517 = load ptr, ptr %2516, align 8, !tbaa !43
-  %2518 = getelementptr inbounds nuw i8, ptr %2510, i64 56
-  %2519 = load i32, ptr %2518, align 8, !tbaa !42
-  %2520 = shl nuw i32 1, %2519
-  %2521 = call ptr %2515(ptr noundef %2517, i32 noundef %2520, i32 noundef 1) #12, !inline_history !104
-  store ptr %2521, ptr %2511, align 8, !tbaa !41
-  %2522 = icmp eq ptr %2521, null
-  br i1 %2522, label %2591, label %2523
+2502:                                             ; preds = %2496
+  %2503 = load ptr, ptr %6, align 8, !tbaa !8
+  %2504 = getelementptr inbounds nuw i8, ptr %0, i64 80
+  %2505 = load ptr, ptr %2504, align 8, !tbaa !43
+  %2506 = getelementptr inbounds nuw i8, ptr %2498, i64 56
+  %2507 = load i32, ptr %2506, align 8, !tbaa !42
+  %2508 = shl nuw i32 1, %2507
+  %2509 = call ptr %2503(ptr noundef %2505, i32 noundef %2508, i32 noundef 1) #12, !inline_history !104
+  store ptr %2509, ptr %2499, align 8, !tbaa !41
+  %2510 = icmp eq ptr %2509, null
+  br i1 %2510, label %2576, label %2511
 
-2523:                                             ; preds = %2514, %2508
-  %2524 = phi ptr [ %2521, %2514 ], [ %2512, %2508 ]
-  %2525 = getelementptr inbounds nuw i8, ptr %2510, i64 60
-  %2526 = load i32, ptr %2525, align 4, !tbaa !38
-  %2527 = icmp eq i32 %2526, 0
-  br i1 %2527, label %2528, label %2534
+2511:                                             ; preds = %2502, %2496
+  %2512 = phi ptr [ %2509, %2502 ], [ %2500, %2496 ]
+  %2513 = getelementptr inbounds nuw i8, ptr %2498, i64 60
+  %2514 = load i32, ptr %2513, align 4, !tbaa !38
+  %2515 = icmp eq i32 %2514, 0
+  br i1 %2515, label %2516, label %2522
 
-2528:                                             ; preds = %2523
-  %2529 = getelementptr inbounds nuw i8, ptr %2510, i64 56
-  %2530 = load i32, ptr %2529, align 8, !tbaa !42
-  %2531 = shl nuw i32 1, %2530
-  store i32 %2531, ptr %2525, align 4, !tbaa !38
-  %2532 = getelementptr inbounds nuw i8, ptr %2510, i64 68
-  store i32 0, ptr %2532, align 4, !tbaa !40
-  %2533 = getelementptr inbounds nuw i8, ptr %2510, i64 64
-  store i32 0, ptr %2533, align 8, !tbaa !39
-  br label %2534
+2516:                                             ; preds = %2511
+  %2517 = getelementptr inbounds nuw i8, ptr %2498, i64 56
+  %2518 = load i32, ptr %2517, align 8, !tbaa !42
+  %2519 = shl nuw i32 1, %2518
+  store i32 %2519, ptr %2513, align 4, !tbaa !38
+  %2520 = getelementptr inbounds nuw i8, ptr %2498, i64 68
+  store i32 0, ptr %2520, align 4, !tbaa !40
+  %2521 = getelementptr inbounds nuw i8, ptr %2498, i64 64
+  store i32 0, ptr %2521, align 8, !tbaa !39
+  br label %2522
 
-2534:                                             ; preds = %2528, %2523
-  %2535 = phi i32 [ %2531, %2528 ], [ %2526, %2523 ]
-  %2536 = icmp ult i32 %2509, %2535
-  br i1 %2536, label %2544, label %2537
+2522:                                             ; preds = %2516, %2511
+  %2523 = phi i32 [ %2519, %2516 ], [ %2514, %2511 ]
+  %2524 = icmp ult i32 %2497, %2523
+  br i1 %2524, label %2532, label %2525
 
-2537:                                             ; preds = %2534
-  %2538 = zext i32 %2535 to i64
-  %2539 = sub nsw i64 0, %2538
-  %2540 = getelementptr inbounds i8, ptr %91, i64 %2539
-  call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 1 dereferenceable(1) %2524, ptr noundef nonnull readonly align 1 dereferenceable(1) %2540, i64 %2538, i1 false)
-  %2541 = getelementptr inbounds nuw i8, ptr %2510, i64 68
-  store i32 0, ptr %2541, align 4, !tbaa !40
-  %2542 = load i32, ptr %2525, align 4, !tbaa !38
-  %2543 = getelementptr inbounds nuw i8, ptr %2510, i64 64
-  store i32 %2542, ptr %2543, align 8, !tbaa !39
-  br label %2592
+2525:                                             ; preds = %2522
+  %2526 = zext i32 %2523 to i64
+  %2527 = sub nsw i64 0, %2526
+  %2528 = getelementptr inbounds i8, ptr %91, i64 %2527
+  call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 1 dereferenceable(1) %2512, ptr noundef nonnull readonly align 1 dereferenceable(1) %2528, i64 %2526, i1 false)
+  %2529 = getelementptr inbounds nuw i8, ptr %2498, i64 68
+  store i32 0, ptr %2529, align 4, !tbaa !40
+  %2530 = load i32, ptr %2513, align 4, !tbaa !38
+  %2531 = getelementptr inbounds nuw i8, ptr %2498, i64 64
+  store i32 %2530, ptr %2531, align 8, !tbaa !39
+  br label %2577
 
-2544:                                             ; preds = %2534
-  %2545 = getelementptr inbounds nuw i8, ptr %2510, i64 68
-  %2546 = load i32, ptr %2545, align 4, !tbaa !40
-  %2547 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %2535, i32 %2546), !nosanitize !47
-  %2548 = extractvalue { i32, i1 } %2547, 1, !nosanitize !47
-  br i1 %2548, label %2549, label %2550, !prof !48, !nosanitize !47
+2532:                                             ; preds = %2522
+  %2533 = getelementptr inbounds nuw i8, ptr %2498, i64 68
+  %2534 = load i32, ptr %2533, align 4, !tbaa !40
+  %2535 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %2523, i32 %2534), !nosanitize !47
+  %2536 = extractvalue { i32, i1 } %2535, 1, !nosanitize !47
+  br i1 %2536, label %2537, label %2538, !prof !48, !nosanitize !47
 
-2549:                                             ; preds = %2544
+2537:                                             ; preds = %2532
   call void @llvm.ubsantrap(i8 21) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-2550:                                             ; preds = %2544
-  %2551 = extractvalue { i32, i1 } %2547, 0, !nosanitize !47
-  %2552 = call i32 @llvm.umin.i32(i32 %2551, i32 %2509)
-  %2553 = zext i32 %2546 to i64
-  %2554 = getelementptr inbounds nuw i8, ptr %2524, i64 %2553
-  %2555 = zext i32 %2509 to i64
-  %2556 = sub nsw i64 0, %2555
-  %2557 = getelementptr inbounds i8, ptr %91, i64 %2556
-  %2558 = zext i32 %2552 to i64
-  call void @llvm.memcpy.p0.p0.i64(ptr nonnull align 1 %2554, ptr readonly align 1 %2557, i64 %2558, i1 false)
-  %2559 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %2509, i32 %2552), !nosanitize !47
-  %2560 = extractvalue { i32, i1 } %2559, 0, !nosanitize !47
-  %2561 = extractvalue { i32, i1 } %2559, 1, !nosanitize !47
-  br i1 %2561, label %2562, label %2563, !prof !48, !nosanitize !47
+2538:                                             ; preds = %2532
+  %2539 = extractvalue { i32, i1 } %2535, 0, !nosanitize !47
+  %2540 = call i32 @llvm.umin.i32(i32 %2539, i32 %2497)
+  %2541 = zext i32 %2534 to i64
+  %2542 = getelementptr inbounds nuw i8, ptr %2512, i64 %2541
+  %2543 = zext i32 %2497 to i64
+  %2544 = sub nsw i64 0, %2543
+  %2545 = getelementptr inbounds i8, ptr %91, i64 %2544
+  %2546 = zext i32 %2540 to i64
+  call void @llvm.memcpy.p0.p0.i64(ptr nonnull align 1 %2542, ptr readonly align 1 %2545, i64 %2546, i1 false)
+  %2547 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %2497, i32 %2540), !nosanitize !47
+  %2548 = extractvalue { i32, i1 } %2547, 0, !nosanitize !47
+  %2549 = icmp eq i32 %2548, 0
+  br i1 %2549, label %2557, label %2550
 
-2562:                                             ; preds = %2550
-  call void @llvm.ubsantrap(i8 21) #13, !nosanitize !47
-  unreachable, !nosanitize !47
+2550:                                             ; preds = %2538
+  %2551 = load ptr, ptr %2499, align 8, !tbaa !41
+  %2552 = zext i32 %2548 to i64
+  %2553 = sub nsw i64 0, %2552
+  %2554 = getelementptr inbounds i8, ptr %91, i64 %2553
+  call void @llvm.memcpy.p0.p0.i64(ptr align 1 %2551, ptr nonnull readonly align 1 %2554, i64 %2552, i1 false)
+  store i32 %2548, ptr %2533, align 4, !tbaa !40
+  %2555 = load i32, ptr %2513, align 4, !tbaa !38
+  %2556 = getelementptr inbounds nuw i8, ptr %2498, i64 64
+  store i32 %2555, ptr %2556, align 8, !tbaa !39
+  br label %2577
 
-2563:                                             ; preds = %2550
-  %2564 = icmp eq i32 %2560, 0
-  br i1 %2564, label %2572, label %2565
+2557:                                             ; preds = %2538
+  %2558 = load i32, ptr %2533, align 4, !tbaa !40
+  %2559 = call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %2558, i32 %2540), !nosanitize !47
+  %2560 = extractvalue { i32, i1 } %2559, 1, !nosanitize !47
+  br i1 %2560, label %2561, label %2562, !prof !48, !nosanitize !47
 
-2565:                                             ; preds = %2563
-  %2566 = load ptr, ptr %2511, align 8, !tbaa !41
-  %2567 = zext i32 %2560 to i64
-  %2568 = sub nsw i64 0, %2567
-  %2569 = getelementptr inbounds i8, ptr %91, i64 %2568
-  call void @llvm.memcpy.p0.p0.i64(ptr align 1 %2566, ptr nonnull readonly align 1 %2569, i64 %2567, i1 false)
-  store i32 %2560, ptr %2545, align 4, !tbaa !40
-  %2570 = load i32, ptr %2525, align 4, !tbaa !38
-  %2571 = getelementptr inbounds nuw i8, ptr %2510, i64 64
-  store i32 %2570, ptr %2571, align 8, !tbaa !39
-  br label %2592
-
-2572:                                             ; preds = %2563
-  %2573 = load i32, ptr %2545, align 4, !tbaa !40
-  %2574 = call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %2573, i32 %2552), !nosanitize !47
-  %2575 = extractvalue { i32, i1 } %2574, 1, !nosanitize !47
-  br i1 %2575, label %2576, label %2577, !prof !48, !nosanitize !47
-
-2576:                                             ; preds = %2572
+2561:                                             ; preds = %2557
   call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-2577:                                             ; preds = %2572
-  %2578 = extractvalue { i32, i1 } %2574, 0, !nosanitize !47
-  %2579 = load i32, ptr %2525, align 4, !tbaa !38
-  %2580 = icmp eq i32 %2578, %2579
-  %2581 = select i1 %2580, i32 0, i32 %2578
-  store i32 %2581, ptr %2545, align 4
-  %2582 = getelementptr inbounds nuw i8, ptr %2510, i64 64
-  %2583 = load i32, ptr %2582, align 8, !tbaa !39
-  %2584 = icmp ult i32 %2583, %2579
-  br i1 %2584, label %2585, label %2592
+2562:                                             ; preds = %2557
+  %2563 = extractvalue { i32, i1 } %2559, 0, !nosanitize !47
+  %2564 = load i32, ptr %2513, align 4, !tbaa !38
+  %2565 = icmp eq i32 %2563, %2564
+  %2566 = select i1 %2565, i32 0, i32 %2563
+  store i32 %2566, ptr %2533, align 4
+  %2567 = getelementptr inbounds nuw i8, ptr %2498, i64 64
+  %2568 = load i32, ptr %2567, align 8, !tbaa !39
+  %2569 = icmp ult i32 %2568, %2564
+  br i1 %2569, label %2570, label %2577
 
-2585:                                             ; preds = %2577
-  %2586 = call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %2583, i32 %2552), !nosanitize !47
-  %2587 = extractvalue { i32, i1 } %2586, 1, !nosanitize !47
+2570:                                             ; preds = %2562
+  %2571 = call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %2568, i32 %2540), !nosanitize !47
+  %2572 = extractvalue { i32, i1 } %2571, 1, !nosanitize !47
+  br i1 %2572, label %2573, label %2574, !prof !48, !nosanitize !47
+
+2573:                                             ; preds = %2570
+  call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
+  unreachable, !nosanitize !47
+
+2574:                                             ; preds = %2570
+  %2575 = extractvalue { i32, i1 } %2571, 0, !nosanitize !47
+  store i32 %2575, ptr %2567, align 8, !tbaa !39
+  br label %2577
+
+2576:                                             ; preds = %2502
+  store i32 16210, ptr %21, align 8, !tbaa !20
+  br label %2654
+
+2577:                                             ; preds = %2574, %2562, %2550, %2525, %2488, %2485, %2483
+  %2578 = load i32, ptr %43, align 8, !tbaa !51
+  %2579 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %44, i32 %2578), !nosanitize !47
+  %2580 = extractvalue { i32, i1 } %2579, 0, !nosanitize !47
+  %2581 = extractvalue { i32, i1 } %2579, 1, !nosanitize !47
+  br i1 %2581, label %2582, label %2583, !prof !48, !nosanitize !47
+
+2582:                                             ; preds = %2577
+  call void @llvm.ubsantrap(i8 21) #13, !nosanitize !47
+  unreachable, !nosanitize !47
+
+2583:                                             ; preds = %2577
+  %2584 = load i32, ptr %41, align 8, !tbaa !52
+  %2585 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %2479, i32 %2584), !nosanitize !47
+  %2586 = extractvalue { i32, i1 } %2585, 0, !nosanitize !47
+  %2587 = extractvalue { i32, i1 } %2585, 1, !nosanitize !47
   br i1 %2587, label %2588, label %2589, !prof !48, !nosanitize !47
 
-2588:                                             ; preds = %2585
-  call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
-  unreachable, !nosanitize !47
-
-2589:                                             ; preds = %2585
-  %2590 = extractvalue { i32, i1 } %2586, 0, !nosanitize !47
-  store i32 %2590, ptr %2582, align 8, !tbaa !39
-  br label %2592
-
-2591:                                             ; preds = %2514
-  store i32 16210, ptr %21, align 8, !tbaa !20
-  br label %2669
-
-2592:                                             ; preds = %2589, %2577, %2565, %2537, %2500, %2497, %2495
-  %2593 = load i32, ptr %43, align 8, !tbaa !51
-  %2594 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %44, i32 %2593), !nosanitize !47
-  %2595 = extractvalue { i32, i1 } %2594, 0, !nosanitize !47
-  %2596 = extractvalue { i32, i1 } %2594, 1, !nosanitize !47
-  br i1 %2596, label %2597, label %2598, !prof !48, !nosanitize !47
-
-2597:                                             ; preds = %2592
+2588:                                             ; preds = %2583
   call void @llvm.ubsantrap(i8 21) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-2598:                                             ; preds = %2592
-  %2599 = load i32, ptr %41, align 8, !tbaa !52
-  %2600 = call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %2491, i32 %2599), !nosanitize !47
-  %2601 = extractvalue { i32, i1 } %2600, 0, !nosanitize !47
-  %2602 = extractvalue { i32, i1 } %2600, 1, !nosanitize !47
-  br i1 %2602, label %2603, label %2604, !prof !48, !nosanitize !47
+2589:                                             ; preds = %2583
+  %2590 = zext i32 %2580 to i64
+  %2591 = getelementptr inbounds nuw i8, ptr %0, i64 16
+  %2592 = load i64, ptr %2591, align 8, !tbaa !22
+  %2593 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %2592, i64 %2590), !nosanitize !47
+  %2594 = extractvalue { i64, i1 } %2593, 1, !nosanitize !47
+  br i1 %2594, label %2595, label %2596, !prof !48, !nosanitize !47
 
-2603:                                             ; preds = %2598
-  call void @llvm.ubsantrap(i8 21) #13, !nosanitize !47
-  unreachable, !nosanitize !47
-
-2604:                                             ; preds = %2598
-  %2605 = zext i32 %2595 to i64
-  %2606 = getelementptr inbounds nuw i8, ptr %0, i64 16
-  %2607 = load i64, ptr %2606, align 8, !tbaa !22
-  %2608 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %2607, i64 %2605), !nosanitize !47
-  %2609 = extractvalue { i64, i1 } %2608, 1, !nosanitize !47
-  br i1 %2609, label %2610, label %2611, !prof !48, !nosanitize !47
-
-2610:                                             ; preds = %2604
+2595:                                             ; preds = %2589
   call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-2611:                                             ; preds = %2604
-  %2612 = extractvalue { i64, i1 } %2608, 0, !nosanitize !47
-  store i64 %2612, ptr %2606, align 8, !tbaa !22
-  %2613 = zext i32 %2601 to i64
-  %2614 = load i64, ptr %50, align 8, !tbaa !103
-  %2615 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %2614, i64 %2613), !nosanitize !47
-  %2616 = extractvalue { i64, i1 } %2615, 1, !nosanitize !47
-  br i1 %2616, label %2617, label %2618, !prof !48, !nosanitize !47
+2596:                                             ; preds = %2589
+  %2597 = extractvalue { i64, i1 } %2593, 0, !nosanitize !47
+  store i64 %2597, ptr %2591, align 8, !tbaa !22
+  %2598 = zext i32 %2586 to i64
+  %2599 = load i64, ptr %50, align 8, !tbaa !103
+  %2600 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %2599, i64 %2598), !nosanitize !47
+  %2601 = extractvalue { i64, i1 } %2600, 1, !nosanitize !47
+  br i1 %2601, label %2602, label %2603, !prof !48, !nosanitize !47
 
-2617:                                             ; preds = %2611
+2602:                                             ; preds = %2596
   call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-2618:                                             ; preds = %2611
-  %2619 = extractvalue { i64, i1 } %2615, 0, !nosanitize !47
-  store i64 %2619, ptr %50, align 8, !tbaa !103
-  %2620 = load i64, ptr %51, align 8, !tbaa !21
-  %2621 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %2620, i64 %2613), !nosanitize !47
-  %2622 = extractvalue { i64, i1 } %2621, 1, !nosanitize !47
-  br i1 %2622, label %2623, label %2624, !prof !48, !nosanitize !47
+2603:                                             ; preds = %2596
+  %2604 = extractvalue { i64, i1 } %2600, 0, !nosanitize !47
+  store i64 %2604, ptr %50, align 8, !tbaa !103
+  %2605 = load i64, ptr %51, align 8, !tbaa !21
+  %2606 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %2605, i64 %2598), !nosanitize !47
+  %2607 = extractvalue { i64, i1 } %2606, 1, !nosanitize !47
+  br i1 %2607, label %2608, label %2609, !prof !48, !nosanitize !47
 
-2623:                                             ; preds = %2618
+2608:                                             ; preds = %2603
   call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-2624:                                             ; preds = %2618
-  %2625 = extractvalue { i64, i1 } %2621, 0, !nosanitize !47
-  store i64 %2625, ptr %51, align 8, !tbaa !21
-  %2626 = load i32, ptr %49, align 8, !tbaa !24
-  %2627 = and i32 %2626, 4
-  %2628 = icmp ne i32 %2627, 0
-  %2629 = icmp ne i32 %2601, 0
-  %2630 = select i1 %2628, i1 %2629, i1 false
-  br i1 %2630, label %2631, label %2644
+2609:                                             ; preds = %2603
+  %2610 = extractvalue { i64, i1 } %2606, 0, !nosanitize !47
+  store i64 %2610, ptr %51, align 8, !tbaa !21
+  %2611 = load i32, ptr %49, align 8, !tbaa !24
+  %2612 = and i32 %2611, 4
+  %2613 = icmp ne i32 %2612, 0
+  %2614 = icmp ne i32 %2586, 0
+  %2615 = select i1 %2613, i1 %2614, i1 false
+  br i1 %2615, label %2616, label %2629
 
-2631:                                             ; preds = %2624
-  %2632 = load i32, ptr %52, align 8, !tbaa !28
-  %2633 = icmp eq i32 %2632, 0
-  %2634 = load i64, ptr %53, align 8, !tbaa !54
-  %2635 = load ptr, ptr %26, align 8, !tbaa !49
-  %2636 = sub nsw i64 0, %2613
-  %2637 = getelementptr inbounds i8, ptr %2635, i64 %2636
-  br i1 %2633, label %2640, label %2638
+2616:                                             ; preds = %2609
+  %2617 = load i32, ptr %52, align 8, !tbaa !28
+  %2618 = icmp eq i32 %2617, 0
+  %2619 = load i64, ptr %53, align 8, !tbaa !54
+  %2620 = load ptr, ptr %26, align 8, !tbaa !49
+  %2621 = sub nsw i64 0, %2598
+  %2622 = getelementptr inbounds i8, ptr %2620, i64 %2621
+  br i1 %2618, label %2625, label %2623
 
-2638:                                             ; preds = %2631
-  %2639 = call i64 @crc32(i64 noundef %2634, ptr noundef nonnull %2637, i32 noundef %2601) #12
-  br label %2642
+2623:                                             ; preds = %2616
+  %2624 = call i64 @crc32(i64 noundef %2619, ptr noundef nonnull %2622, i32 noundef %2586) #12
+  br label %2627
 
-2640:                                             ; preds = %2631
-  %2641 = call i64 @adler32(i64 noundef %2634, ptr noundef nonnull %2637, i32 noundef %2601) #12
-  br label %2642
+2625:                                             ; preds = %2616
+  %2626 = call i64 @adler32(i64 noundef %2619, ptr noundef nonnull %2622, i32 noundef %2586) #12
+  br label %2627
 
-2642:                                             ; preds = %2640, %2638
-  %2643 = phi i64 [ %2639, %2638 ], [ %2641, %2640 ]
-  store i64 %2643, ptr %53, align 8, !tbaa !54
-  store i64 %2643, ptr %54, align 8, !tbaa !25
-  br label %2644
+2627:                                             ; preds = %2625, %2623
+  %2628 = phi i64 [ %2624, %2623 ], [ %2626, %2625 ]
+  store i64 %2628, ptr %53, align 8, !tbaa !54
+  store i64 %2628, ptr %54, align 8, !tbaa !25
+  br label %2629
 
-2644:                                             ; preds = %2642, %2624
-  %2645 = load i32, ptr %47, align 8, !tbaa !32
-  %2646 = load i32, ptr %83, align 4, !tbaa !26
-  %2647 = icmp eq i32 %2646, 0
-  %2648 = select i1 %2647, i32 0, i32 64
-  %2649 = add nsw i32 %2648, %2645
-  %2650 = load i32, ptr %21, align 8, !tbaa !20
-  %2651 = icmp eq i32 %2650, 16191
-  %2652 = select i1 %2651, i32 128, i32 0
-  %2653 = add nsw i32 %2649, %2652
-  %2654 = icmp eq i32 %2650, 16199
-  %2655 = icmp eq i32 %2650, 16194
-  %2656 = or i1 %2654, %2655
-  %2657 = select i1 %2656, i32 256, i32 0
-  %2658 = add nsw i32 %2653, %2657
-  %2659 = getelementptr inbounds nuw i8, ptr %0, i64 88
-  store i32 %2658, ptr %2659, align 8, !tbaa !23
-  %2660 = icmp eq i32 %2595, 0
-  %2661 = icmp eq i32 %2601, 0
-  %2662 = select i1 %2660, i1 %2661, i1 false
-  %2663 = icmp eq i32 %1, 4
-  %2664 = or i1 %2663, %2662
-  %2665 = icmp eq i32 %2492, 0
-  %2666 = select i1 %2664, i1 %2665, i1 false
-  %2667 = select i1 %2666, i32 -5, i32 %2492
-  br label %2669
+2629:                                             ; preds = %2627, %2609
+  %2630 = load i32, ptr %47, align 8, !tbaa !32
+  %2631 = load i32, ptr %83, align 4, !tbaa !26
+  %2632 = icmp eq i32 %2631, 0
+  %2633 = select i1 %2632, i32 0, i32 64
+  %2634 = add nsw i32 %2633, %2630
+  %2635 = load i32, ptr %21, align 8, !tbaa !20
+  %2636 = icmp eq i32 %2635, 16191
+  %2637 = select i1 %2636, i32 128, i32 0
+  %2638 = add nsw i32 %2634, %2637
+  %2639 = icmp eq i32 %2635, 16199
+  %2640 = icmp eq i32 %2635, 16194
+  %2641 = or i1 %2639, %2640
+  %2642 = select i1 %2641, i32 256, i32 0
+  %2643 = add nsw i32 %2638, %2642
+  %2644 = getelementptr inbounds nuw i8, ptr %0, i64 88
+  store i32 %2643, ptr %2644, align 8, !tbaa !23
+  %2645 = icmp eq i32 %2580, 0
+  %2646 = icmp eq i32 %2586, 0
+  %2647 = select i1 %2645, i1 %2646, i1 false
+  %2648 = icmp eq i32 %1, 4
+  %2649 = or i1 %2648, %2647
+  %2650 = icmp eq i32 %2480, 0
+  %2651 = select i1 %2649, i1 %2650, i1 false
+  %2652 = select i1 %2651, i32 -5, i32 %2480
+  br label %2654
 
-2668:                                             ; preds = %88
-  br label %2669
+2653:                                             ; preds = %88
+  br label %2654
 
-2669:                                             ; preds = %2668, %2644, %2591, %847, %88, %32, %25, %20, %17, %13, %9, %5, %2
-  %2670 = phi i32 [ -2, %20 ], [ -4, %2668 ], [ -4, %2591 ], [ %2667, %2644 ], [ 2, %847 ], [ -2, %32 ], [ -2, %25 ], [ -2, %17 ], [ -2, %13 ], [ -2, %2 ], [ -2, %9 ], [ -2, %5 ], [ -2, %88 ]
+2654:                                             ; preds = %2653, %2629, %2576, %841, %88, %32, %25, %20, %17, %13, %9, %5, %2
+  %2655 = phi i32 [ -2, %20 ], [ -4, %2653 ], [ -4, %2576 ], [ %2652, %2629 ], [ 2, %841 ], [ -2, %32 ], [ -2, %25 ], [ -2, %17 ], [ -2, %13 ], [ -2, %2 ], [ -2, %9 ], [ -2, %5 ], [ -2, %88 ]
   call void @llvm.lifetime.end.p0(ptr nonnull %3) #12
-  ret i32 %2670
+  ret i32 %2655
 }
 
 ; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
@@ -5173,37 +5133,37 @@ define dso_local range(i32 -2, 1) i32 @inflateGetDictionary(ptr noundef readonly
 ; Function Attrs: nounwind uwtable
 define dso_local range(i32 -4, 1) i32 @inflateSetDictionary(ptr noundef readonly captures(address) %0, ptr noundef %1, i32 noundef %2) local_unnamed_addr #2 {
   %4 = icmp eq ptr %0, null
-  br i1 %4, label %124, label %5
+  br i1 %4, label %121, label %5
 
 5:                                                ; preds = %3
   %6 = getelementptr inbounds nuw i8, ptr %0, i64 64
   %7 = load ptr, ptr %6, align 8, !tbaa !8
   %8 = icmp eq ptr %7, null
-  br i1 %8, label %124, label %9
+  br i1 %8, label %121, label %9
 
 9:                                                ; preds = %5
   %10 = getelementptr inbounds nuw i8, ptr %0, i64 72
   %11 = load ptr, ptr %10, align 8, !tbaa !14
   %12 = icmp eq ptr %11, null
-  br i1 %12, label %124, label %13
+  br i1 %12, label %121, label %13
 
 13:                                               ; preds = %9
   %14 = getelementptr inbounds nuw i8, ptr %0, i64 56
   %15 = load ptr, ptr %14, align 8, !tbaa !15
   %16 = icmp eq ptr %15, null
-  br i1 %16, label %124, label %17
+  br i1 %16, label %121, label %17
 
 17:                                               ; preds = %13
   %18 = load ptr, ptr %15, align 8, !tbaa !16
   %19 = icmp eq ptr %18, %0
-  br i1 %19, label %20, label %124
+  br i1 %19, label %20, label %121
 
 20:                                               ; preds = %17
   %21 = getelementptr inbounds nuw i8, ptr %15, i64 8
   %22 = load i32, ptr %21, align 8, !tbaa !20
   %23 = add i32 %22, -16180
   %24 = icmp ult i32 %23, 32
-  br i1 %24, label %25, label %124
+  br i1 %24, label %25, label %121
 
 25:                                               ; preds = %20
   %26 = getelementptr inbounds nuw i8, ptr %15, i64 16
@@ -5213,7 +5173,7 @@ define dso_local range(i32 -4, 1) i32 @inflateSetDictionary(ptr noundef readonly
   br i1 %28, label %31, label %30
 
 30:                                               ; preds = %25
-  br i1 %29, label %32, label %124
+  br i1 %29, label %32, label %121
 
 31:                                               ; preds = %25
   br i1 %29, label %32, label %40
@@ -5224,7 +5184,7 @@ define dso_local range(i32 -4, 1) i32 @inflateSetDictionary(ptr noundef readonly
   %35 = getelementptr inbounds nuw i8, ptr %15, i64 32
   %36 = load i64, ptr %35, align 8, !tbaa !54
   %37 = icmp eq i64 %34, %36
-  br i1 %37, label %38, label %124
+  br i1 %37, label %38, label %121
 
 38:                                               ; preds = %32
   %39 = load ptr, ptr %14, align 8, !tbaa !15
@@ -5249,7 +5209,7 @@ define dso_local range(i32 -4, 1) i32 @inflateSetDictionary(ptr noundef readonly
   %54 = tail call ptr %48(ptr noundef %50, i32 noundef %53, i32 noundef 1) #12, !inline_history !104
   store ptr %54, ptr %44, align 8, !tbaa !41
   %55 = icmp eq ptr %54, null
-  br i1 %55, label %121, label %56
+  br i1 %55, label %118, label %56
 
 56:                                               ; preds = %47, %40
   %57 = phi ptr [ %54, %47 ], [ %45, %40 ]
@@ -5284,7 +5244,7 @@ define dso_local range(i32 -4, 1) i32 @inflateSetDictionary(ptr noundef readonly
   %75 = load i32, ptr %58, align 4, !tbaa !38
   %76 = getelementptr inbounds nuw i8, ptr %41, i64 64
   store i32 %75, ptr %76, align 8, !tbaa !39
-  br label %122
+  br label %119
 
 77:                                               ; preds = %67
   %78 = getelementptr inbounds nuw i8, ptr %41, i64 68
@@ -5306,76 +5266,68 @@ define dso_local range(i32 -4, 1) i32 @inflateSetDictionary(ptr noundef readonly
   tail call void @llvm.memcpy.p0.p0.i64(ptr nonnull align 1 %87, ptr readonly align 1 %1, i64 %88, i1 false)
   %89 = tail call { i32, i1 } @llvm.usub.with.overflow.i32(i32 %2, i32 %85), !nosanitize !47
   %90 = extractvalue { i32, i1 } %89, 0, !nosanitize !47
-  %91 = extractvalue { i32, i1 } %89, 1, !nosanitize !47
-  br i1 %91, label %92, label %93, !prof !48, !nosanitize !47
+  %91 = icmp eq i32 %90, 0
+  br i1 %91, label %99, label %92
 
 92:                                               ; preds = %83
-  tail call void @llvm.ubsantrap(i8 21) #13, !nosanitize !47
-  unreachable, !nosanitize !47
-
-93:                                               ; preds = %83
-  %94 = icmp eq i32 %90, 0
-  br i1 %94, label %102, label %95
-
-95:                                               ; preds = %93
-  %96 = load ptr, ptr %44, align 8, !tbaa !41
-  %97 = zext i32 %90 to i64
-  %98 = sub nsw i64 0, %97
-  %99 = getelementptr inbounds i8, ptr %43, i64 %98
-  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %96, ptr nonnull readonly align 1 %99, i64 %97, i1 false)
+  %93 = load ptr, ptr %44, align 8, !tbaa !41
+  %94 = zext i32 %90 to i64
+  %95 = sub nsw i64 0, %94
+  %96 = getelementptr inbounds i8, ptr %43, i64 %95
+  tail call void @llvm.memcpy.p0.p0.i64(ptr align 1 %93, ptr nonnull readonly align 1 %96, i64 %94, i1 false)
   store i32 %90, ptr %78, align 4, !tbaa !40
-  %100 = load i32, ptr %58, align 4, !tbaa !38
-  %101 = getelementptr inbounds nuw i8, ptr %41, i64 64
-  store i32 %100, ptr %101, align 8, !tbaa !39
-  br label %122
+  %97 = load i32, ptr %58, align 4, !tbaa !38
+  %98 = getelementptr inbounds nuw i8, ptr %41, i64 64
+  store i32 %97, ptr %98, align 8, !tbaa !39
+  br label %119
 
-102:                                              ; preds = %93
-  %103 = load i32, ptr %78, align 4, !tbaa !40
-  %104 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %103, i32 %85), !nosanitize !47
-  %105 = extractvalue { i32, i1 } %104, 1, !nosanitize !47
-  br i1 %105, label %106, label %107, !prof !48, !nosanitize !47
+99:                                               ; preds = %83
+  %100 = load i32, ptr %78, align 4, !tbaa !40
+  %101 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %100, i32 %85), !nosanitize !47
+  %102 = extractvalue { i32, i1 } %101, 1, !nosanitize !47
+  br i1 %102, label %103, label %104, !prof !48, !nosanitize !47
 
-106:                                              ; preds = %102
+103:                                              ; preds = %99
   tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-107:                                              ; preds = %102
-  %108 = extractvalue { i32, i1 } %104, 0, !nosanitize !47
-  %109 = load i32, ptr %58, align 4, !tbaa !38
-  %110 = icmp eq i32 %108, %109
-  %111 = select i1 %110, i32 0, i32 %108
-  store i32 %111, ptr %78, align 4
-  %112 = getelementptr inbounds nuw i8, ptr %41, i64 64
-  %113 = load i32, ptr %112, align 8, !tbaa !39
-  %114 = icmp ult i32 %113, %109
-  br i1 %114, label %115, label %122
+104:                                              ; preds = %99
+  %105 = extractvalue { i32, i1 } %101, 0, !nosanitize !47
+  %106 = load i32, ptr %58, align 4, !tbaa !38
+  %107 = icmp eq i32 %105, %106
+  %108 = select i1 %107, i32 0, i32 %105
+  store i32 %108, ptr %78, align 4
+  %109 = getelementptr inbounds nuw i8, ptr %41, i64 64
+  %110 = load i32, ptr %109, align 8, !tbaa !39
+  %111 = icmp ult i32 %110, %106
+  br i1 %111, label %112, label %119
 
-115:                                              ; preds = %107
-  %116 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %113, i32 %85), !nosanitize !47
-  %117 = extractvalue { i32, i1 } %116, 1, !nosanitize !47
-  br i1 %117, label %118, label %119, !prof !48, !nosanitize !47
+112:                                              ; preds = %104
+  %113 = tail call { i32, i1 } @llvm.uadd.with.overflow.i32(i32 %110, i32 %85), !nosanitize !47
+  %114 = extractvalue { i32, i1 } %113, 1, !nosanitize !47
+  br i1 %114, label %115, label %116, !prof !48, !nosanitize !47
 
-118:                                              ; preds = %115
+115:                                              ; preds = %112
   tail call void @llvm.ubsantrap(i8 0) #13, !nosanitize !47
   unreachable, !nosanitize !47
 
-119:                                              ; preds = %115
-  %120 = extractvalue { i32, i1 } %116, 0, !nosanitize !47
-  store i32 %120, ptr %112, align 8, !tbaa !39
-  br label %122
+116:                                              ; preds = %112
+  %117 = extractvalue { i32, i1 } %113, 0, !nosanitize !47
+  store i32 %117, ptr %109, align 8, !tbaa !39
+  br label %119
 
-121:                                              ; preds = %47
+118:                                              ; preds = %47
   store i32 16210, ptr %21, align 8, !tbaa !20
-  br label %124
+  br label %121
 
-122:                                              ; preds = %119, %107, %95, %70
-  %123 = getelementptr inbounds nuw i8, ptr %15, i64 20
-  store i32 1, ptr %123, align 4, !tbaa !27
-  br label %124
+119:                                              ; preds = %116, %104, %92, %70
+  %120 = getelementptr inbounds nuw i8, ptr %15, i64 20
+  store i32 1, ptr %120, align 4, !tbaa !27
+  br label %121
 
-124:                                              ; preds = %122, %121, %32, %30, %20, %17, %13, %9, %5, %3
-  %125 = phi i32 [ 0, %122 ], [ -2, %20 ], [ -2, %30 ], [ -4, %121 ], [ -3, %32 ], [ -2, %13 ], [ -2, %3 ], [ -2, %9 ], [ -2, %5 ], [ -2, %17 ]
-  ret i32 %125
+121:                                              ; preds = %119, %118, %32, %30, %20, %17, %13, %9, %5, %3
+  %122 = phi i32 [ 0, %119 ], [ -2, %20 ], [ -2, %30 ], [ -4, %118 ], [ -3, %32 ], [ -2, %13 ], [ -2, %3 ], [ -2, %9 ], [ -2, %5 ], [ -2, %17 ]
+  ret i32 %122
 }
 
 ; Function Attrs: mustprogress nofree norecurse nosync nounwind willreturn memory(readwrite, inaccessiblemem: none, target_mem: none) uwtable

@@ -5,7 +5,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 3.691304e+00 ms
+  => Total DFS & SMT Execution Time: 2.435476e+00 ms
 
 [Z3 Oracle] Analyzing Function: adler32
   => Total Traps Eliminated: 0
@@ -13,7 +13,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.443650e-01 ms
+  => Total DFS & SMT Execution Time: 5.049800e-02 ms
 
 [Z3 Oracle] Analyzing Function: adler32_combine
   => Total Traps Eliminated: 0
@@ -21,7 +21,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 5.621600e-02 ms
+  => Total DFS & SMT Execution Time: 1.690300e-02 ms
 
 [Z3 Oracle] Analyzing Function: adler32_combine64
   => Total Traps Eliminated: 0
@@ -29,4 +29,4 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 5.038300e-02 ms
+  => Total DFS & SMT Execution Time: 1.357400e-02 ms

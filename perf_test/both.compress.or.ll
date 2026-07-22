@@ -16,14 +16,14 @@ define dso_local i32 @compress2_z(ptr noundef %0, ptr noundef captures(address_i
   %9 = and i1 %8, %7
   %10 = icmp eq ptr %1, null
   %11 = or i1 %10, %9
-  br i1 %11, label %66, label %12
+  br i1 %11, label %60, label %12
 
 12:                                               ; preds = %5
   %13 = load i64, ptr %1, align 8, !tbaa !8
   %14 = icmp ne i64 %13, 0
   %15 = icmp eq ptr %0, null
   %16 = and i1 %15, %14
-  br i1 %16, label %66, label %17
+  br i1 %16, label %60, label %17
 
 17:                                               ; preds = %12
   store i64 0, ptr %1, align 8, !tbaa !8
@@ -31,7 +31,7 @@ define dso_local i32 @compress2_z(ptr noundef %0, ptr noundef captures(address_i
   call void @llvm.memset.p0.i64(ptr noundef nonnull align 8 dereferenceable(24) %18, i8 0, i64 24, i1 false)
   %19 = call i32 @deflateInit_(ptr noundef nonnull %6, i32 noundef %4, ptr noundef nonnull @.str, i32 noundef 112) #7
   %20 = icmp eq i32 %19, 0
-  br i1 %20, label %21, label %66
+  br i1 %20, label %21, label %60
 
 21:                                               ; preds = %17
   %22 = getelementptr inbounds nuw i8, ptr %6, i64 24
@@ -43,78 +43,62 @@ define dso_local i32 @compress2_z(ptr noundef %0, ptr noundef captures(address_i
   store i32 0, ptr %24, align 8, !tbaa !17
   br label %27
 
-25:                                               ; preds = %52
+25:                                               ; preds = %46
   %26 = load i32, ptr %23, align 8, !tbaa !15
   br label %27
 
 27:                                               ; preds = %25, %21
   %28 = phi i32 [ %26, %25 ], [ 0, %21 ]
-  %29 = phi i64 [ %53, %25 ], [ %3, %21 ]
-  %30 = phi i64 [ %41, %25 ], [ %13, %21 ]
+  %29 = phi i64 [ %47, %25 ], [ %3, %21 ]
+  %30 = phi i64 [ %38, %25 ], [ %13, %21 ]
   %31 = icmp eq i32 %28, 0
-  br i1 %31, label %32, label %40
+  br i1 %31, label %32, label %37
 
 32:                                               ; preds = %27
   %33 = call i64 @llvm.umin.i64(i64 %30, i64 4294967295)
   %34 = trunc nuw i64 %33 to i32
   store i32 %34, ptr %23, align 8, !tbaa !15
   %35 = call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %30, i64 %33), !nosanitize !18
-  %36 = extractvalue { i64, i1 } %35, 1, !nosanitize !18
-  br i1 %36, label %37, label %38, !prof !19, !nosanitize !18
+  %36 = extractvalue { i64, i1 } %35, 0, !nosanitize !18
+  br label %37
 
-37:                                               ; preds = %32
-  call void @llvm.ubsantrap(i8 21) #8, !nosanitize !18
-  unreachable, !nosanitize !18
+37:                                               ; preds = %32, %27
+  %38 = phi i64 [ %36, %32 ], [ %30, %27 ]
+  %39 = load i32, ptr %24, align 8, !tbaa !17
+  %40 = icmp eq i32 %39, 0
+  br i1 %40, label %41, label %46
 
-38:                                               ; preds = %32
-  %39 = extractvalue { i64, i1 } %35, 0, !nosanitize !18
-  br label %40
+41:                                               ; preds = %37
+  %42 = call i64 @llvm.umin.i64(i64 %29, i64 4294967295)
+  %43 = trunc nuw i64 %42 to i32
+  store i32 %43, ptr %24, align 8, !tbaa !17
+  %44 = call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %29, i64 %42), !nosanitize !18
+  %45 = extractvalue { i64, i1 } %44, 0, !nosanitize !18
+  br label %46
 
-40:                                               ; preds = %38, %27
-  %41 = phi i64 [ %39, %38 ], [ %30, %27 ]
-  %42 = load i32, ptr %24, align 8, !tbaa !17
-  %43 = icmp eq i32 %42, 0
-  br i1 %43, label %44, label %52
+46:                                               ; preds = %41, %37
+  %47 = phi i64 [ %45, %41 ], [ %29, %37 ]
+  %48 = icmp eq i64 %47, 0
+  %49 = select i1 %48, i32 4, i32 0
+  %50 = call i32 @deflate(ptr noundef nonnull %6, i32 noundef %49) #7
+  %51 = icmp eq i32 %50, 0
+  br i1 %51, label %25, label %52, !llvm.loop !19
 
-44:                                               ; preds = %40
-  %45 = call i64 @llvm.umin.i64(i64 %29, i64 4294967295)
-  %46 = trunc nuw i64 %45 to i32
-  store i32 %46, ptr %24, align 8, !tbaa !17
-  %47 = call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %29, i64 %45), !nosanitize !18
-  %48 = extractvalue { i64, i1 } %47, 1, !nosanitize !18
-  br i1 %48, label %49, label %50, !prof !19, !nosanitize !18
+52:                                               ; preds = %46
+  %53 = load ptr, ptr %22, align 8, !tbaa !10
+  %54 = ptrtoint ptr %53 to i64
+  %55 = ptrtoint ptr %0 to i64
+  %56 = sub i64 %54, %55
+  store i64 %56, ptr %1, align 8, !tbaa !8
+  %57 = call i32 @deflateEnd(ptr noundef nonnull %6) #7
+  %58 = icmp eq i32 %50, 1
+  %59 = select i1 %58, i32 0, i32 %50
+  br label %60
 
-49:                                               ; preds = %44
-  call void @llvm.ubsantrap(i8 21) #8, !nosanitize !18
-  unreachable, !nosanitize !18
-
-50:                                               ; preds = %44
-  %51 = extractvalue { i64, i1 } %47, 0, !nosanitize !18
-  br label %52
-
-52:                                               ; preds = %50, %40
-  %53 = phi i64 [ %51, %50 ], [ %29, %40 ]
-  %54 = icmp eq i64 %53, 0
-  %55 = select i1 %54, i32 4, i32 0
-  %56 = call i32 @deflate(ptr noundef nonnull %6, i32 noundef %55) #7
-  %57 = icmp eq i32 %56, 0
-  br i1 %57, label %25, label %58, !llvm.loop !20
-
-58:                                               ; preds = %52
-  %59 = load ptr, ptr %22, align 8, !tbaa !10
-  %60 = ptrtoint ptr %59 to i64
-  %61 = ptrtoint ptr %0 to i64
-  %62 = sub i64 %60, %61
-  store i64 %62, ptr %1, align 8, !tbaa !8
-  %63 = call i32 @deflateEnd(ptr noundef nonnull %6) #7
-  %64 = icmp eq i32 %56, 1
-  %65 = select i1 %64, i32 0, i32 %56
-  br label %66
-
-66:                                               ; preds = %58, %17, %12, %5
-  %67 = phi i32 [ %65, %58 ], [ -2, %5 ], [ -2, %12 ], [ %19, %17 ]
+60:                                               ; preds = %52, %17, %12, %5
+  %61 = phi i32 [ %59, %52 ], [ -2, %5 ], [ -2, %12 ], [ %19, %17 ]
   call void @llvm.lifetime.end.p0(ptr nonnull %6) #7
-  ret i32 %67
+  ret i32 %61
 }
 
 ; Function Attrs: nocallback nofree nosync nounwind willreturn memory(argmem: readwrite)
@@ -143,20 +127,20 @@ define dso_local i32 @compress2(ptr noundef %0, ptr noundef captures(none) %1, p
   %8 = icmp ne i64 %3, 0
   %9 = icmp eq ptr %2, null
   %10 = and i1 %9, %8
-  br i1 %10, label %64, label %11
+  br i1 %10, label %58, label %11
 
 11:                                               ; preds = %5
   %12 = icmp ne i64 %7, 0
   %13 = icmp eq ptr %0, null
   %14 = and i1 %13, %12
-  br i1 %14, label %64, label %15
+  br i1 %14, label %58, label %15
 
 15:                                               ; preds = %11
   %16 = getelementptr inbounds nuw i8, ptr %6, i64 64
   call void @llvm.memset.p0.i64(ptr noundef nonnull align 8 dereferenceable(24) %16, i8 0, i64 24, i1 false)
   %17 = call i32 @deflateInit_(ptr noundef nonnull %6, i32 noundef %4, ptr noundef nonnull @.str, i32 noundef 112) #7
   %18 = icmp eq i32 %17, 0
-  br i1 %18, label %19, label %64
+  br i1 %18, label %19, label %58
 
 19:                                               ; preds = %15
   %20 = getelementptr inbounds nuw i8, ptr %6, i64 24
@@ -168,79 +152,63 @@ define dso_local i32 @compress2(ptr noundef %0, ptr noundef captures(none) %1, p
   store i32 0, ptr %22, align 8, !tbaa !17
   br label %25
 
-23:                                               ; preds = %50
+23:                                               ; preds = %44
   %24 = load i32, ptr %21, align 8, !tbaa !15
   br label %25
 
 25:                                               ; preds = %23, %19
   %26 = phi i32 [ %24, %23 ], [ 0, %19 ]
-  %27 = phi i64 [ %51, %23 ], [ %3, %19 ]
-  %28 = phi i64 [ %39, %23 ], [ %7, %19 ]
+  %27 = phi i64 [ %45, %23 ], [ %3, %19 ]
+  %28 = phi i64 [ %36, %23 ], [ %7, %19 ]
   %29 = icmp eq i32 %26, 0
-  br i1 %29, label %30, label %38
+  br i1 %29, label %30, label %35
 
 30:                                               ; preds = %25
   %31 = call i64 @llvm.umin.i64(i64 %28, i64 4294967295)
   %32 = trunc nuw i64 %31 to i32
   store i32 %32, ptr %21, align 8, !tbaa !15
   %33 = call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %28, i64 %31), !nosanitize !18
-  %34 = extractvalue { i64, i1 } %33, 1, !nosanitize !18
-  br i1 %34, label %35, label %36, !prof !19, !nosanitize !18
+  %34 = extractvalue { i64, i1 } %33, 0, !nosanitize !18
+  br label %35
 
-35:                                               ; preds = %30
-  call void @llvm.ubsantrap(i8 21) #8, !nosanitize !18
-  unreachable, !nosanitize !18
+35:                                               ; preds = %30, %25
+  %36 = phi i64 [ %34, %30 ], [ %28, %25 ]
+  %37 = load i32, ptr %22, align 8, !tbaa !17
+  %38 = icmp eq i32 %37, 0
+  br i1 %38, label %39, label %44
 
-36:                                               ; preds = %30
-  %37 = extractvalue { i64, i1 } %33, 0, !nosanitize !18
-  br label %38
+39:                                               ; preds = %35
+  %40 = call i64 @llvm.umin.i64(i64 %27, i64 4294967295)
+  %41 = trunc nuw i64 %40 to i32
+  store i32 %41, ptr %22, align 8, !tbaa !17
+  %42 = call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %27, i64 %40), !nosanitize !18
+  %43 = extractvalue { i64, i1 } %42, 0, !nosanitize !18
+  br label %44
 
-38:                                               ; preds = %36, %25
-  %39 = phi i64 [ %37, %36 ], [ %28, %25 ]
-  %40 = load i32, ptr %22, align 8, !tbaa !17
-  %41 = icmp eq i32 %40, 0
-  br i1 %41, label %42, label %50
+44:                                               ; preds = %39, %35
+  %45 = phi i64 [ %43, %39 ], [ %27, %35 ]
+  %46 = icmp eq i64 %45, 0
+  %47 = select i1 %46, i32 4, i32 0
+  %48 = call i32 @deflate(ptr noundef nonnull %6, i32 noundef %47) #7
+  %49 = icmp eq i32 %48, 0
+  br i1 %49, label %23, label %50, !llvm.loop !19
 
-42:                                               ; preds = %38
-  %43 = call i64 @llvm.umin.i64(i64 %27, i64 4294967295)
-  %44 = trunc nuw i64 %43 to i32
-  store i32 %44, ptr %22, align 8, !tbaa !17
-  %45 = call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %27, i64 %43), !nosanitize !18
-  %46 = extractvalue { i64, i1 } %45, 1, !nosanitize !18
-  br i1 %46, label %47, label %48, !prof !19, !nosanitize !18
+50:                                               ; preds = %44
+  %51 = load ptr, ptr %20, align 8, !tbaa !10
+  %52 = ptrtoint ptr %51 to i64
+  %53 = ptrtoint ptr %0 to i64
+  %54 = sub i64 %52, %53
+  %55 = call i32 @deflateEnd(ptr noundef nonnull %6) #7
+  %56 = icmp eq i32 %48, 1
+  %57 = select i1 %56, i32 0, i32 %48
+  br label %58
 
-47:                                               ; preds = %42
-  call void @llvm.ubsantrap(i8 21) #8, !nosanitize !18
-  unreachable, !nosanitize !18
-
-48:                                               ; preds = %42
-  %49 = extractvalue { i64, i1 } %45, 0, !nosanitize !18
-  br label %50
-
-50:                                               ; preds = %48, %38
-  %51 = phi i64 [ %49, %48 ], [ %27, %38 ]
-  %52 = icmp eq i64 %51, 0
-  %53 = select i1 %52, i32 4, i32 0
-  %54 = call i32 @deflate(ptr noundef nonnull %6, i32 noundef %53) #7
-  %55 = icmp eq i32 %54, 0
-  br i1 %55, label %23, label %56, !llvm.loop !20
-
-56:                                               ; preds = %50
-  %57 = load ptr, ptr %20, align 8, !tbaa !10
-  %58 = ptrtoint ptr %57 to i64
-  %59 = ptrtoint ptr %0 to i64
-  %60 = sub i64 %58, %59
-  %61 = call i32 @deflateEnd(ptr noundef nonnull %6) #7
-  %62 = icmp eq i32 %54, 1
-  %63 = select i1 %62, i32 0, i32 %54
-  br label %64
-
-64:                                               ; preds = %56, %15, %11, %5
-  %65 = phi i64 [ %7, %5 ], [ %7, %11 ], [ %60, %56 ], [ 0, %15 ]
-  %66 = phi i32 [ -2, %5 ], [ -2, %11 ], [ %63, %56 ], [ %17, %15 ]
+58:                                               ; preds = %50, %15, %11, %5
+  %59 = phi i64 [ %7, %5 ], [ %7, %11 ], [ %54, %50 ], [ 0, %15 ]
+  %60 = phi i32 [ -2, %5 ], [ -2, %11 ], [ %57, %50 ], [ %17, %15 ]
   call void @llvm.lifetime.end.p0(ptr nonnull %6) #7
-  store i64 %65, ptr %1, align 8, !tbaa !8
-  ret i32 %66
+  store i64 %59, ptr %1, align 8, !tbaa !8
+  ret i32 %60
 }
 
 ; Function Attrs: nounwind uwtable
@@ -252,14 +220,14 @@ define dso_local i32 @compress_z(ptr noundef %0, ptr noundef captures(address_is
   %8 = and i1 %7, %6
   %9 = icmp eq ptr %1, null
   %10 = or i1 %9, %8
-  br i1 %10, label %65, label %11
+  br i1 %10, label %59, label %11
 
 11:                                               ; preds = %4
   %12 = load i64, ptr %1, align 8, !tbaa !8
   %13 = icmp ne i64 %12, 0
   %14 = icmp eq ptr %0, null
   %15 = and i1 %14, %13
-  br i1 %15, label %65, label %16
+  br i1 %15, label %59, label %16
 
 16:                                               ; preds = %11
   store i64 0, ptr %1, align 8, !tbaa !8
@@ -267,7 +235,7 @@ define dso_local i32 @compress_z(ptr noundef %0, ptr noundef captures(address_is
   call void @llvm.memset.p0.i64(ptr noundef nonnull align 8 dereferenceable(24) %17, i8 0, i64 24, i1 false)
   %18 = call i32 @deflateInit_(ptr noundef nonnull %5, i32 noundef -1, ptr noundef nonnull @.str, i32 noundef 112) #7
   %19 = icmp eq i32 %18, 0
-  br i1 %19, label %20, label %65
+  br i1 %19, label %20, label %59
 
 20:                                               ; preds = %16
   %21 = getelementptr inbounds nuw i8, ptr %5, i64 24
@@ -279,78 +247,62 @@ define dso_local i32 @compress_z(ptr noundef %0, ptr noundef captures(address_is
   store i32 0, ptr %23, align 8, !tbaa !17
   br label %26
 
-24:                                               ; preds = %51
+24:                                               ; preds = %45
   %25 = load i32, ptr %22, align 8, !tbaa !15
   br label %26
 
 26:                                               ; preds = %24, %20
   %27 = phi i32 [ %25, %24 ], [ 0, %20 ]
-  %28 = phi i64 [ %52, %24 ], [ %3, %20 ]
-  %29 = phi i64 [ %40, %24 ], [ %12, %20 ]
+  %28 = phi i64 [ %46, %24 ], [ %3, %20 ]
+  %29 = phi i64 [ %37, %24 ], [ %12, %20 ]
   %30 = icmp eq i32 %27, 0
-  br i1 %30, label %31, label %39
+  br i1 %30, label %31, label %36
 
 31:                                               ; preds = %26
   %32 = call i64 @llvm.umin.i64(i64 %29, i64 4294967295)
   %33 = trunc nuw i64 %32 to i32
   store i32 %33, ptr %22, align 8, !tbaa !15
   %34 = call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %29, i64 %32), !nosanitize !18
-  %35 = extractvalue { i64, i1 } %34, 1, !nosanitize !18
-  br i1 %35, label %36, label %37, !prof !19, !nosanitize !18
+  %35 = extractvalue { i64, i1 } %34, 0, !nosanitize !18
+  br label %36
 
-36:                                               ; preds = %31
-  call void @llvm.ubsantrap(i8 21) #8, !nosanitize !18
-  unreachable, !nosanitize !18
+36:                                               ; preds = %31, %26
+  %37 = phi i64 [ %35, %31 ], [ %29, %26 ]
+  %38 = load i32, ptr %23, align 8, !tbaa !17
+  %39 = icmp eq i32 %38, 0
+  br i1 %39, label %40, label %45
 
-37:                                               ; preds = %31
-  %38 = extractvalue { i64, i1 } %34, 0, !nosanitize !18
-  br label %39
+40:                                               ; preds = %36
+  %41 = call i64 @llvm.umin.i64(i64 %28, i64 4294967295)
+  %42 = trunc nuw i64 %41 to i32
+  store i32 %42, ptr %23, align 8, !tbaa !17
+  %43 = call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %28, i64 %41), !nosanitize !18
+  %44 = extractvalue { i64, i1 } %43, 0, !nosanitize !18
+  br label %45
 
-39:                                               ; preds = %37, %26
-  %40 = phi i64 [ %38, %37 ], [ %29, %26 ]
-  %41 = load i32, ptr %23, align 8, !tbaa !17
-  %42 = icmp eq i32 %41, 0
-  br i1 %42, label %43, label %51
+45:                                               ; preds = %40, %36
+  %46 = phi i64 [ %44, %40 ], [ %28, %36 ]
+  %47 = icmp eq i64 %46, 0
+  %48 = select i1 %47, i32 4, i32 0
+  %49 = call i32 @deflate(ptr noundef nonnull %5, i32 noundef %48) #7
+  %50 = icmp eq i32 %49, 0
+  br i1 %50, label %24, label %51, !llvm.loop !19
 
-43:                                               ; preds = %39
-  %44 = call i64 @llvm.umin.i64(i64 %28, i64 4294967295)
-  %45 = trunc nuw i64 %44 to i32
-  store i32 %45, ptr %23, align 8, !tbaa !17
-  %46 = call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %28, i64 %44), !nosanitize !18
-  %47 = extractvalue { i64, i1 } %46, 1, !nosanitize !18
-  br i1 %47, label %48, label %49, !prof !19, !nosanitize !18
+51:                                               ; preds = %45
+  %52 = load ptr, ptr %21, align 8, !tbaa !10
+  %53 = ptrtoint ptr %52 to i64
+  %54 = ptrtoint ptr %0 to i64
+  %55 = sub i64 %53, %54
+  store i64 %55, ptr %1, align 8, !tbaa !8
+  %56 = call i32 @deflateEnd(ptr noundef nonnull %5) #7
+  %57 = icmp eq i32 %49, 1
+  %58 = select i1 %57, i32 0, i32 %49
+  br label %59
 
-48:                                               ; preds = %43
-  call void @llvm.ubsantrap(i8 21) #8, !nosanitize !18
-  unreachable, !nosanitize !18
-
-49:                                               ; preds = %43
-  %50 = extractvalue { i64, i1 } %46, 0, !nosanitize !18
-  br label %51
-
-51:                                               ; preds = %49, %39
-  %52 = phi i64 [ %50, %49 ], [ %28, %39 ]
-  %53 = icmp eq i64 %52, 0
-  %54 = select i1 %53, i32 4, i32 0
-  %55 = call i32 @deflate(ptr noundef nonnull %5, i32 noundef %54) #7
-  %56 = icmp eq i32 %55, 0
-  br i1 %56, label %24, label %57, !llvm.loop !20
-
-57:                                               ; preds = %51
-  %58 = load ptr, ptr %21, align 8, !tbaa !10
-  %59 = ptrtoint ptr %58 to i64
-  %60 = ptrtoint ptr %0 to i64
-  %61 = sub i64 %59, %60
-  store i64 %61, ptr %1, align 8, !tbaa !8
-  %62 = call i32 @deflateEnd(ptr noundef nonnull %5) #7
-  %63 = icmp eq i32 %55, 1
-  %64 = select i1 %63, i32 0, i32 %55
-  br label %65
-
-65:                                               ; preds = %57, %16, %11, %4
-  %66 = phi i32 [ %64, %57 ], [ -2, %4 ], [ -2, %11 ], [ %18, %16 ]
+59:                                               ; preds = %51, %16, %11, %4
+  %60 = phi i32 [ %58, %51 ], [ -2, %4 ], [ -2, %11 ], [ %18, %16 ]
   call void @llvm.lifetime.end.p0(ptr nonnull %5) #7
-  ret i32 %66
+  ret i32 %60
 }
 
 ; Function Attrs: nounwind uwtable
@@ -361,20 +313,20 @@ define dso_local i32 @compress(ptr noundef %0, ptr noundef captures(none) %1, pt
   %7 = icmp ne i64 %3, 0
   %8 = icmp eq ptr %2, null
   %9 = and i1 %8, %7
-  br i1 %9, label %63, label %10
+  br i1 %9, label %57, label %10
 
 10:                                               ; preds = %4
   %11 = icmp ne i64 %6, 0
   %12 = icmp eq ptr %0, null
   %13 = and i1 %12, %11
-  br i1 %13, label %63, label %14
+  br i1 %13, label %57, label %14
 
 14:                                               ; preds = %10
   %15 = getelementptr inbounds nuw i8, ptr %5, i64 64
   call void @llvm.memset.p0.i64(ptr noundef nonnull align 8 dereferenceable(24) %15, i8 0, i64 24, i1 false)
   %16 = call i32 @deflateInit_(ptr noundef nonnull %5, i32 noundef -1, ptr noundef nonnull @.str, i32 noundef 112) #7
   %17 = icmp eq i32 %16, 0
-  br i1 %17, label %18, label %63
+  br i1 %17, label %18, label %57
 
 18:                                               ; preds = %14
   %19 = getelementptr inbounds nuw i8, ptr %5, i64 24
@@ -386,79 +338,63 @@ define dso_local i32 @compress(ptr noundef %0, ptr noundef captures(none) %1, pt
   store i32 0, ptr %21, align 8, !tbaa !17
   br label %24
 
-22:                                               ; preds = %49
+22:                                               ; preds = %43
   %23 = load i32, ptr %20, align 8, !tbaa !15
   br label %24
 
 24:                                               ; preds = %22, %18
   %25 = phi i32 [ %23, %22 ], [ 0, %18 ]
-  %26 = phi i64 [ %50, %22 ], [ %3, %18 ]
-  %27 = phi i64 [ %38, %22 ], [ %6, %18 ]
+  %26 = phi i64 [ %44, %22 ], [ %3, %18 ]
+  %27 = phi i64 [ %35, %22 ], [ %6, %18 ]
   %28 = icmp eq i32 %25, 0
-  br i1 %28, label %29, label %37
+  br i1 %28, label %29, label %34
 
 29:                                               ; preds = %24
   %30 = call i64 @llvm.umin.i64(i64 %27, i64 4294967295)
   %31 = trunc nuw i64 %30 to i32
   store i32 %31, ptr %20, align 8, !tbaa !15
   %32 = call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %27, i64 %30), !nosanitize !18
-  %33 = extractvalue { i64, i1 } %32, 1, !nosanitize !18
-  br i1 %33, label %34, label %35, !prof !19, !nosanitize !18
+  %33 = extractvalue { i64, i1 } %32, 0, !nosanitize !18
+  br label %34
 
-34:                                               ; preds = %29
-  call void @llvm.ubsantrap(i8 21) #8, !nosanitize !18
-  unreachable, !nosanitize !18
+34:                                               ; preds = %29, %24
+  %35 = phi i64 [ %33, %29 ], [ %27, %24 ]
+  %36 = load i32, ptr %21, align 8, !tbaa !17
+  %37 = icmp eq i32 %36, 0
+  br i1 %37, label %38, label %43
 
-35:                                               ; preds = %29
-  %36 = extractvalue { i64, i1 } %32, 0, !nosanitize !18
-  br label %37
+38:                                               ; preds = %34
+  %39 = call i64 @llvm.umin.i64(i64 %26, i64 4294967295)
+  %40 = trunc nuw i64 %39 to i32
+  store i32 %40, ptr %21, align 8, !tbaa !17
+  %41 = call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %26, i64 %39), !nosanitize !18
+  %42 = extractvalue { i64, i1 } %41, 0, !nosanitize !18
+  br label %43
 
-37:                                               ; preds = %35, %24
-  %38 = phi i64 [ %36, %35 ], [ %27, %24 ]
-  %39 = load i32, ptr %21, align 8, !tbaa !17
-  %40 = icmp eq i32 %39, 0
-  br i1 %40, label %41, label %49
+43:                                               ; preds = %38, %34
+  %44 = phi i64 [ %42, %38 ], [ %26, %34 ]
+  %45 = icmp eq i64 %44, 0
+  %46 = select i1 %45, i32 4, i32 0
+  %47 = call i32 @deflate(ptr noundef nonnull %5, i32 noundef %46) #7
+  %48 = icmp eq i32 %47, 0
+  br i1 %48, label %22, label %49, !llvm.loop !19
 
-41:                                               ; preds = %37
-  %42 = call i64 @llvm.umin.i64(i64 %26, i64 4294967295)
-  %43 = trunc nuw i64 %42 to i32
-  store i32 %43, ptr %21, align 8, !tbaa !17
-  %44 = call { i64, i1 } @llvm.usub.with.overflow.i64(i64 %26, i64 %42), !nosanitize !18
-  %45 = extractvalue { i64, i1 } %44, 1, !nosanitize !18
-  br i1 %45, label %46, label %47, !prof !19, !nosanitize !18
+49:                                               ; preds = %43
+  %50 = load ptr, ptr %19, align 8, !tbaa !10
+  %51 = ptrtoint ptr %50 to i64
+  %52 = ptrtoint ptr %0 to i64
+  %53 = sub i64 %51, %52
+  %54 = call i32 @deflateEnd(ptr noundef nonnull %5) #7
+  %55 = icmp eq i32 %47, 1
+  %56 = select i1 %55, i32 0, i32 %47
+  br label %57
 
-46:                                               ; preds = %41
-  call void @llvm.ubsantrap(i8 21) #8, !nosanitize !18
-  unreachable, !nosanitize !18
-
-47:                                               ; preds = %41
-  %48 = extractvalue { i64, i1 } %44, 0, !nosanitize !18
-  br label %49
-
-49:                                               ; preds = %47, %37
-  %50 = phi i64 [ %48, %47 ], [ %26, %37 ]
-  %51 = icmp eq i64 %50, 0
-  %52 = select i1 %51, i32 4, i32 0
-  %53 = call i32 @deflate(ptr noundef nonnull %5, i32 noundef %52) #7
-  %54 = icmp eq i32 %53, 0
-  br i1 %54, label %22, label %55, !llvm.loop !20
-
-55:                                               ; preds = %49
-  %56 = load ptr, ptr %19, align 8, !tbaa !10
-  %57 = ptrtoint ptr %56 to i64
-  %58 = ptrtoint ptr %0 to i64
-  %59 = sub i64 %57, %58
-  %60 = call i32 @deflateEnd(ptr noundef nonnull %5) #7
-  %61 = icmp eq i32 %53, 1
-  %62 = select i1 %61, i32 0, i32 %53
-  br label %63
-
-63:                                               ; preds = %55, %14, %10, %4
-  %64 = phi i64 [ %6, %4 ], [ %6, %10 ], [ %59, %55 ], [ 0, %14 ]
-  %65 = phi i32 [ -2, %4 ], [ -2, %10 ], [ %62, %55 ], [ %16, %14 ]
+57:                                               ; preds = %49, %14, %10, %4
+  %58 = phi i64 [ %6, %4 ], [ %6, %10 ], [ %53, %49 ], [ 0, %14 ]
+  %59 = phi i32 [ -2, %4 ], [ -2, %10 ], [ %56, %49 ], [ %16, %14 ]
   call void @llvm.lifetime.end.p0(ptr nonnull %5) #7
-  store i64 %64, ptr %1, align 8, !tbaa !8
-  ret i32 %65
+  store i64 %58, ptr %1, align 8, !tbaa !8
+  ret i32 %59
 }
 
 ; Function Attrs: nounwind memory(inaccessiblemem: write) uwtable
@@ -466,7 +402,7 @@ define dso_local range(i64 13, 0) i64 @compressBound_z(i64 noundef %0) local_unn
   %2 = lshr i64 %0, 12
   %3 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %0, i64 %2), !nosanitize !18
   %4 = extractvalue { i64, i1 } %3, 1, !nosanitize !18
-  br i1 %4, label %5, label %6, !prof !19, !nosanitize !18
+  br i1 %4, label %5, label %6, !prof !21, !nosanitize !18
 
 5:                                                ; preds = %1
   tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !18
@@ -477,7 +413,7 @@ define dso_local range(i64 13, 0) i64 @compressBound_z(i64 noundef %0) local_unn
   %8 = lshr i64 %0, 14
   %9 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %7, i64 %8), !nosanitize !18
   %10 = extractvalue { i64, i1 } %9, 1, !nosanitize !18
-  br i1 %10, label %11, label %12, !prof !19, !nosanitize !18
+  br i1 %10, label %11, label %12, !prof !21, !nosanitize !18
 
 11:                                               ; preds = %6
   tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !18
@@ -488,7 +424,7 @@ define dso_local range(i64 13, 0) i64 @compressBound_z(i64 noundef %0) local_unn
   %14 = lshr i64 %0, 25
   %15 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %13, i64 %14), !nosanitize !18
   %16 = extractvalue { i64, i1 } %15, 1, !nosanitize !18
-  br i1 %16, label %17, label %18, !prof !19, !nosanitize !18
+  br i1 %16, label %17, label %18, !prof !21, !nosanitize !18
 
 17:                                               ; preds = %12
   tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !18
@@ -498,7 +434,7 @@ define dso_local range(i64 13, 0) i64 @compressBound_z(i64 noundef %0) local_unn
   %19 = extractvalue { i64, i1 } %15, 0, !nosanitize !18
   %20 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %19, i64 13), !nosanitize !18
   %21 = extractvalue { i64, i1 } %20, 1, !nosanitize !18
-  br i1 %21, label %22, label %23, !prof !19, !nosanitize !18
+  br i1 %21, label %22, label %23, !prof !21, !nosanitize !18
 
 22:                                               ; preds = %18
   tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !18
@@ -519,7 +455,7 @@ define dso_local range(i64 13, 0) i64 @compressBound(i64 noundef %0) local_unnam
   %2 = lshr i64 %0, 12
   %3 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %0, i64 %2), !nosanitize !18
   %4 = extractvalue { i64, i1 } %3, 1, !nosanitize !18
-  br i1 %4, label %5, label %6, !prof !19, !nosanitize !18
+  br i1 %4, label %5, label %6, !prof !21, !nosanitize !18
 
 5:                                                ; preds = %1
   tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !18
@@ -530,7 +466,7 @@ define dso_local range(i64 13, 0) i64 @compressBound(i64 noundef %0) local_unnam
   %8 = lshr i64 %0, 14
   %9 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %7, i64 %8), !nosanitize !18
   %10 = extractvalue { i64, i1 } %9, 1, !nosanitize !18
-  br i1 %10, label %11, label %12, !prof !19, !nosanitize !18
+  br i1 %10, label %11, label %12, !prof !21, !nosanitize !18
 
 11:                                               ; preds = %6
   tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !18
@@ -541,7 +477,7 @@ define dso_local range(i64 13, 0) i64 @compressBound(i64 noundef %0) local_unnam
   %14 = lshr i64 %0, 25
   %15 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %13, i64 %14), !nosanitize !18
   %16 = extractvalue { i64, i1 } %15, 1, !nosanitize !18
-  br i1 %16, label %17, label %18, !prof !19, !nosanitize !18
+  br i1 %16, label %17, label %18, !prof !21, !nosanitize !18
 
 17:                                               ; preds = %12
   tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !18
@@ -551,7 +487,7 @@ define dso_local range(i64 13, 0) i64 @compressBound(i64 noundef %0) local_unnam
   %19 = extractvalue { i64, i1 } %15, 0, !nosanitize !18
   %20 = tail call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %19, i64 13), !nosanitize !18
   %21 = extractvalue { i64, i1 } %20, 1, !nosanitize !18
-  br i1 %21, label %22, label %23, !prof !19, !nosanitize !18
+  br i1 %21, label %22, label %23, !prof !21, !nosanitize !18
 
 22:                                               ; preds = %18
   tail call void @llvm.ubsantrap(i8 0) #8, !nosanitize !18
@@ -603,6 +539,6 @@ attributes #8 = { nomerge noreturn nounwind }
 !16 = !{!11, !12, i64 0}
 !17 = !{!11, !5, i64 8}
 !18 = !{}
-!19 = !{!"branch_weights", i32 1, i32 1048575}
-!20 = distinct !{!20, !21}
-!21 = !{!"llvm.loop.mustprogress"}
+!19 = distinct !{!19, !20}
+!20 = !{!"llvm.loop.mustprogress"}
+!21 = !{!"branch_weights", i32 1, i32 1048575}

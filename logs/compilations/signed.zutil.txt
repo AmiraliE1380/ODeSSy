@@ -5,7 +5,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 2.139060e-01 ms
+  => Total DFS & SMT Execution Time: 1.272750e-01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: zlibCompileFlags
@@ -14,7 +14,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 5.633600e-02 ms
+  => Total DFS & SMT Execution Time: 2.152000e-02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: zError
@@ -23,7 +23,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.666800e-02 ms
+  => Total DFS & SMT Execution Time: 1.065500e-02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: zcalloc
@@ -32,7 +32,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 3.630700e-02 ms
+  => Total DFS & SMT Execution Time: 3.113500e-02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: zcfree
@@ -41,5 +41,5 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 5.405500e-02 ms
+  => Total DFS & SMT Execution Time: 1.338300e-02 ms
 --------------------------------------------------
