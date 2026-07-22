@@ -1,3 +1,4 @@
+#include "llvm/IR/DebugInfoMetadata.h"
 #include "llvm/Passes/PassBuilder.h"
 #include "llvm/Plugins/PassPlugin.h"
 #include "llvm/Support/raw_ostream.h"
@@ -132,11 +133,18 @@ PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM) {
             Value *OvfCondition = Br->getCondition();
             bool TrapOnTrue = (Br->getSuccessor(0) == &BB);
 
+            if (DILocation *Loc = TrapCall->getDebugLoc()) {
+                Log << "  -> Trap source: " << Loc->getFilename().str()
+                    << ":" << Loc->getLine() << "\n";
+            }
+
             Log << "  -> Found UB Trap. Starting Backward Slice...\n";
             errs() << "  -> Found UB Trap. Starting Backward Slice...\n";
 
             // 3. The Slicer & Solver
             Z3Encoder Encoder(QueryTimeoutMs);
+            if (VacuityCheck) Encoder.enableUnsatCores();
+
             trap_attempts++;
             
             auto [Eliminated, Latency] = tryEliminateTrap(OvfCondition, TrapOnTrue, PredBB, Encoder, LI, DT, Log);
@@ -268,6 +276,12 @@ std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Bas
 
             if (GCond) {
                 Guards.push_back({GCond, GVal});
+
+                std::string GS; raw_string_ostream OS(GS); GCond->print(OS);
+                Log << "    -> Guard[" << (Guards.size()-1) << "] ("
+                    << (GVal ? "true" : "false") << " edge of '" << D->getName()
+                    << "'):" << OS.str() << "\n";
+
                 // Slice the guard too, so its defining math is encoded.
                 if (Visited.insert(GCond).second) Worklist.push(GCond);
             }
@@ -355,15 +369,26 @@ std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Bas
             }
 
             // PHASE 3: ASSERT CONTEXT + TRAP CONDITION
-            for (auto &G : Guards) {
-                Encoder.assertCondition(G.first, G.second);
+            for (unsigned i = 0; i < Guards.size(); ++i) {
+                if (VacuityCheck)
+                    Encoder.assertConditionTracked(Guards[i].first, Guards[i].second,
+                                                   "G" + std::to_string(i));
+                else
+                    Encoder.assertCondition(Guards[i].first, Guards[i].second);
             }
             Encoder.push();                                    // context | trap boundary
-            Encoder.assertCondition(TargetCond, TrapOnTrue);
+            
+            if (VacuityCheck)
+                Encoder.assertConditionTracked(TargetCond, TrapOnTrue, "TRAP");
+            else
+                Encoder.assertCondition(TargetCond, TrapOnTrue);
+
             auto [ResultString, QueryLatency] = Encoder.checkSatisfiability();
             Log << "    -> " << ResultString << "\n";
             bool IsUnsat = (ResultString.find("UNSAT") != std::string::npos);
             if (IsUnsat && VacuityCheck) {
+                Log << "    -> Unsat core: " << Encoder.getUnsatCore() << "\n";
+
                 // VACUITY AUDIT: an UNSAT only means "trap dead" if the guards
                 // ALONE are satisfiable. A contradictory context makes every
                 // query vacuously UNSAT (encoding bug or unreachable code).

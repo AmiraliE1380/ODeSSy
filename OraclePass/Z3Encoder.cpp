@@ -17,6 +17,21 @@ Z3Encoder::Z3Encoder(unsigned TimeoutMs) : Solver(Ctx) {
 void Z3Encoder::push() { Solver.push(); }
 void Z3Encoder::pop()  { Solver.pop(); }
 
+void Z3Encoder::enableUnsatCores() { Solver.set("unsat_core", true); }
+
+void Z3Encoder::assertConditionTracked(Value *Cond, bool IsTrue, const std::string &Label) {
+    z3::expr c = asBool(getOrCreateZ3Expr(Cond));
+    if (!IsTrue) c = !c;
+    Solver.add(c, Label.c_str());     // tracked: eligible for the core
+}
+
+std::string Z3Encoder::getUnsatCore() {
+    std::string out;
+    z3::expr_vector core = Solver.unsat_core();
+    for (unsigned i = 0; i < core.size(); ++i) out += core[i].to_string() + " ";
+    return out.empty() ? "(empty)" : out;
+}
+
 z3::expr Z3Encoder::asBool(z3::expr e) {
     if (e.is_bool()) return e;
     return e != Ctx.bv_val(0, e.get_sort().bv_size());

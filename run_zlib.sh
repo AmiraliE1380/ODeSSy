@@ -72,7 +72,7 @@ for spec in "${SPEC_ARR[@]}"; do
     intr=$(grep -c 'call .*\.with\.overflow' "$in")
 
     # ---- (A) analysis-only ----
-    run_opt opt -load-pass-plugin=build/OraclePass.so -passes="oracle-pass" \
+    run_opt opt -load-pass-plugin=build/OraclePass.so -passes="oracle-pass<vacuity>" \
         -disable-output "$in" > "$alog" 2>&1
     rc_a=$?
     vlog="logs/compilations/${stem}_analysis.txt"

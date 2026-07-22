@@ -44,6 +44,10 @@ public:
     void push();
     void pop();
 
+    void enableUnsatCores();
+    void assertConditionTracked(llvm::Value *Cond, bool IsTrue, const std::string &Label);
+    std::string getUnsatCore();
+    
 private:
     // Encodes the branch/switch constraint attached to a single CFG edge
     // Pred -> Succ (br cond / !cond, switch == case, switch default, or a
