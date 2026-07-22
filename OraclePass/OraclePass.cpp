@@ -1,4 +1,5 @@
 #include "llvm/IR/DebugInfoMetadata.h"
+#include "llvm/IR/IntrinsicInst.h"
 #include "llvm/Passes/PassBuilder.h"
 #include "llvm/Plugins/PassPlugin.h"
 #include "llvm/Support/raw_ostream.h"
@@ -284,6 +285,25 @@ std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Bas
 
                 // Slice the guard too, so its defining math is encoded.
                 if (Visited.insert(GCond).second) Worklist.push(GCond);
+            }
+        }
+        // ==============================================================
+        // PHASE 0.5: DOMINATING llvm.assume FACTS
+        // The optimizer's own recorded truths: if an assume dominates the
+        // trap's branch block, its condition holds on every path there --
+        // free, sound context by the same SSA argument as the guards.
+        // ==============================================================
+        for (BasicBlock &ABB : *PredBB->getParent()) {
+            for (Instruction &AI : ABB) {
+                auto *II = dyn_cast<IntrinsicInst>(&AI);
+                if (!II || II->getIntrinsicID() != Intrinsic::assume) continue;
+                if (!DT.dominates(II, PredBB)) continue;
+                Value *ACond = II->getArgOperand(0);
+                Guards.push_back({ACond, true});
+                std::string GS; raw_string_ostream OS(GS); ACond->print(OS);
+                Log << "    -> Guard[" << (Guards.size()-1) << "] (llvm.assume):"
+                    << OS.str() << "\n";
+                if (Visited.insert(ACond).second) Worklist.push(ACond);
             }
         }
         Log << "    -> Collected " << Guards.size() << " dominating context guard(s).\n";

@@ -1,6 +1,7 @@
 #include "Z3Encoder.h"
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/IR/CFG.h"
+#include "llvm/IR/Operator.h"
 #include "llvm/ADT/SmallString.h"
 #include <chrono>
 #include <string>
@@ -251,6 +252,37 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo
                 getOrCreateZ3Expr(Inst); 
                 return true; 
         }
+        // --- nsw/nuw FLAGS AS FREE FACTS ---
+        // LLVM guarantees a flagged op never wraps in any defined execution
+        // (wrapping would yield poison; every op we encode feeds a
+        // branched-on condition, and branching on poison is UB, so defined
+        // executions reaching the trap have no wrap here).
+        if (auto *OBO = dyn_cast<OverflowingBinaryOperator>(BinOp)) {
+            unsigned Opc = BinOp->getOpcode();
+            if (Opc == Instruction::Add || Opc == Instruction::Sub ||
+                Opc == Instruction::Mul) {
+                z3::expr a = asBV(op1, W), b = asBV(op2, W);
+                if (OBO->hasNoSignedWrap()) {
+                    if (Opc == Instruction::Add)
+                        Solver.add(z3::bvadd_no_overflow(a, b, true) &&
+                                   z3::bvadd_no_underflow(a, b));
+                    else if (Opc == Instruction::Sub)
+                        Solver.add(z3::bvsub_no_overflow(a, b) &&
+                                   z3::bvsub_no_underflow(a, b, true));
+                    else
+                        Solver.add(z3::bvmul_no_overflow(a, b, true) &&
+                                   z3::bvmul_no_underflow(a, b));
+                }
+                if (OBO->hasNoUnsignedWrap()) {
+                    if (Opc == Instruction::Add)
+                        Solver.add(z3::bvadd_no_overflow(a, b, false));
+                    else if (Opc == Instruction::Sub)
+                        Solver.add(z3::bvsub_no_underflow(a, b, false));
+                    else
+                        Solver.add(z3::bvmul_no_overflow(a, b, false));
+                }
+            }
+        }
         ValueMap.insert({Inst, res});
         return true;
     } 
@@ -383,8 +415,57 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo
     else if (auto *Call = dyn_cast<CallInst>(Inst)) {
         if (Function *F = Call->getCalledFunction()) {
             StringRef Name = F->getName();
-            if (Name.starts_with("llvm.sadd.with.overflow") || Name.starts_with("llvm.ssub.with.overflow")) {
-                return true; 
+            // Overflow intrinsics are decomposed at their extractvalue uses.
+            if (Name.contains(".with.overflow")) {
+                return true;
+            }
+            // --- CHEAP VALUE-RETURNING INTRINSICS ---
+            if (Call->getType()->isIntegerTy() && !Call->getType()->isIntegerTy(1)) {
+                unsigned W = Call->getType()->getIntegerBitWidth();
+                auto Arg = [&](unsigned i) {
+                    return asBV(getOrCreateZ3Expr(Call->getArgOperand(i)), W);
+                };
+                z3::expr res(Ctx);
+                bool Encoded = true;
+                if (Name.starts_with("llvm.fshl.")) {
+                    // Funnel shift left (rotate when a==b):
+                    // top W bits of (a:b) << (c % W). Shift-by->=W is 0 in
+                    // SMT-LIB, so the sh==0 edge case falls out correctly.
+                    z3::expr a = Arg(0), b = Arg(1);
+                    z3::expr sh = z3::urem(Arg(2), Ctx.bv_val(W, W));
+                    res = z3::shl(a, sh) | z3::lshr(b, Ctx.bv_val(W, W) - sh);
+                } else if (Name.starts_with("llvm.fshr.")) {
+                    // Funnel shift right: low W bits of (a:b) >> (c % W).
+                    z3::expr a = Arg(0), b = Arg(1);
+                    z3::expr sh = z3::urem(Arg(2), Ctx.bv_val(W, W));
+                    res = z3::lshr(b, sh) | z3::shl(a, Ctx.bv_val(W, W) - sh);
+                } else if (Name.starts_with("llvm.umax.")) {
+                    z3::expr a = Arg(0), b = Arg(1);
+                    res = z3::ite(z3::ugt(a, b), a, b);
+                } else if (Name.starts_with("llvm.umin.")) {
+                    z3::expr a = Arg(0), b = Arg(1);
+                    res = z3::ite(z3::ult(a, b), a, b);
+                } else if (Name.starts_with("llvm.smax.")) {
+                    z3::expr a = Arg(0), b = Arg(1);
+                    res = z3::ite(a > b, a, b);
+                } else if (Name.starts_with("llvm.smin.")) {
+                    z3::expr a = Arg(0), b = Arg(1);
+                    res = z3::ite(a < b, a, b);
+                } else if (Name.starts_with("llvm.abs.")) {
+                    z3::expr a = Arg(0);
+                    res = z3::ite(a < 0, -a, a);
+                } else if (Name.starts_with("llvm.bswap.") && W % 16 == 0) {
+                    z3::expr a = Arg(0);
+                    res = a.extract(7, 0);
+                    for (unsigned i = 1; i < W / 8; ++i)
+                        res = z3::concat(res, a.extract(8 * i + 7, 8 * i));
+                } else {
+                    Encoded = false;
+                }
+                if (Encoded) {
+                    ValueMap.insert({Inst, res});
+                    return true;
+                }
             }
         }
         // OVER-APPROXIMATE alien calls
