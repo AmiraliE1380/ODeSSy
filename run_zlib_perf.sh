@@ -35,6 +35,12 @@ read -r -a SIZE_ARR <<< "${SIZES:-8 64 512}"
 LEVEL=${LEVEL:-9}
 TIMEOUT_SECS=${TIMEOUT_SECS:-600}
 COOLDOWN=${COOLDOWN:-60}
+TIER=${TIER:-light}
+case "$TIER" in
+  light) ORACLE_PASSES="oracle-pass,simplifycfg,adce,verify" ;;
+  heavy) ORACLE_PASSES="oracle-pass<heavy>,simplifycfg,adce,verify" ;;
+  *) echo "[FATAL] unknown TIER '$TIER' (light|heavy)"; exit 1 ;;
+esac
 CSV="$ROOT/evaluation/perf_zlib.csv"
 W="$ROOT/perf_test"
 
@@ -112,7 +118,7 @@ for spec in none signed unsigned both; do
         t0=$(now)
         for f in "${SRCS[@]}"; do
           timeout "${TIMEOUT_SECS}s" opt -load-pass-plugin=build/OraclePass.so \
-            -passes="oracle-pass,simplifycfg,adce,verify" \
+            -passes="$ORACLE_PASSES" \
             -S "$W/${spec}.${f}.ll" -o "$W/${spec}.${f}.or.ll" \
             > "$W/${spec}.${f}.oracle.log" 2>&1 \
             || { echo "[FATAL] oracle failed on $spec/$f"; exit 1; }

@@ -13,12 +13,28 @@ Adds per (spec, config, size_mb) row:
 Usage:  python3 make_perf_report.py [in.csv] [out.csv]
 Defaults: evaluation/perf_zlib.csv -> evaluation/perf_zlib_report.csv
 """
+
+import argparse
 import csv
-import sys
 from pathlib import Path
 
-IN = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("evaluation/perf_zlib.csv")
-OUT = Path(sys.argv[2]) if len(sys.argv) > 2 else Path("evaluation/perf_zlib_report.csv")
+ap = argparse.ArgumentParser(description=__doc__)
+ap.add_argument("in_csv", nargs="?", default="evaluation/perf_zlib.csv")
+ap.add_argument("out_csv", nargs="?", default=None)
+ap.add_argument("--specs", default=None,
+                help="comma-separated sanitizer specs to keep (e.g. 'both'); "
+                     "'none' is always kept as the unsanitized reference")
+args = ap.parse_args()
+IN = Path(args.in_csv)
+KEEP = ({s.strip() for s in args.specs.split(",") if s.strip()} | {"none"}) \
+       if args.specs else None
+if args.out_csv:
+    OUT = Path(args.out_csv)
+elif args.specs:
+    OUT = Path("evaluation/perf_zlib_report_" +
+               "_".join(sorted(KEEP - {"none"})) + ".csv")
+else:
+    OUT = Path("evaluation/perf_zlib_report.csv")
 
 def f(x):
     try:
@@ -46,7 +62,11 @@ def size_delta(new, ref):
     return f"{d:+.0f} B ({d / ref * 100.0:+.2f}%)"
 
 rows = list(csv.DictReader(open(IN, newline="")))
+# by_key indexes ALL rows so base/base2x/none references resolve even when
+# the emitted report is filtered to a subset of specs.
 by_key = {(r["spec"], r["config"], r["size_mb"]): r for r in rows}
+if KEEP is not None:
+    rows = [r for r in rows if r["spec"] in KEEP]
 
 out_fields = [
     "sanitizer_spec", "pipeline_config", "corpus_size_mb",
@@ -132,13 +152,15 @@ with open(OUT, "w", newline="") as fh:
         })
 
 print(f"wrote {OUT}")
-
+SPEC_ORDER = [s for s in ("signed", "unsigned", "both")
+              if KEEP is None or s in KEEP]
+              
 # Console summary: oracle vs base2x (min-based) per spec, across sizes --
 # the cold-path diagnostic: shrinking % across sizes = cold-path savings.
 sizes = sorted({r["size_mb"] for r in rows}, key=float)
 print(f"\n{'spec':9} {'elim':>5} " + " ".join(f"{'@'+s+'MB':>12}" for s in sizes) +
       "   (oracle vs base2x, min-based)")
-for spec in ("signed", "unsigned", "both"):
+for spec in SPEC_ORDER:
     o = {s: by_key.get((spec, "oracle", s)) for s in sizes}
     b = {s: by_key.get((spec, "base2x", s)) for s in sizes}
     if not any(o.values()):
@@ -153,7 +175,7 @@ for spec in ("signed", "unsigned", "both"):
 
 print(f"\n{'spec':9} " + " ".join(f"{'@'+s+'MB':>12}" for s in sizes) +
       "   (sanitizer overhead vs none, min-based)")
-for spec in ("signed", "unsigned", "both"):
+for spec in SPEC_ORDER:
     cells = []
     for s in sizes:
         rr, nn = by_key.get((spec, "base", s)), by_key.get(("none", "base", s))
@@ -162,7 +184,7 @@ for spec in ("signed", "unsigned", "both"):
     print(f"{spec:9} " + " ".join(cells))
 
 print(f"\n{'spec':9} {'.text_vs_base2x':>20} {'file_vs_base2x':>20}   (oracle binary shrink)")
-for spec in ("signed", "unsigned", "both"):
+for spec in SPEC_ORDER:
     o = by_key.get((spec, "oracle", sizes[0]))
     b = by_key.get((spec, "base2x", sizes[0]))
     if o and b:

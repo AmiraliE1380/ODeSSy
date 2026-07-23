@@ -10,6 +10,7 @@
 #   SPECS="signed"        restrict specs   (default "signed unsigned")
 #   OPTS="O1"             restrict opt levels (default "O1 O3")
 #   TIMEOUT_SECS=NNN      per-opt-run wall clock (default 600)
+#   TIER=heavy            precision tier: light (default) | heavy
 #   INLINE_AGGRESSIVE=0   disable the inliner cranking
 #
 # Counting: 'call void @llvm.ubsantrap' counts CALL SITES only (no declare
@@ -21,6 +22,14 @@ PL_ROOT="$HOME/michigan/pl"
 ROOT="$PL_ROOT/smt-compiler-oracle"
 ZLIB_SRC="$PL_ROOT/zlib"
 TIMEOUT_SECS=${TIMEOUT_SECS:-600}
+TIER=${TIER:-light}
+case "$TIER" in
+  light) AUDIT_PASSES="oracle-pass<vacuity>"
+         XFORM_PASSES="oracle-pass,simplifycfg,adce,verify" ;;
+  heavy) AUDIT_PASSES="oracle-pass<vacuity;heavy>"
+         XFORM_PASSES="oracle-pass<heavy>,simplifycfg,adce,verify" ;;
+  *) echo "[FATAL] unknown TIER '$TIER' (light|heavy)"; exit 1 ;;
+esac
 read -r -a OPT_ARR  <<< "${OPTS:-O1 O3}"
 read -r -a SPEC_ARR <<< "${SPECS:-signed unsigned}"
 
@@ -58,6 +67,7 @@ for spec in "${SPEC_ARR[@]}"; do
   esac
   for opt in "${OPT_ARR[@]}"; do
     stem="deflate_integer_${spec}_${opt}"
+    [ "$TIER" = "heavy" ] && stem="${stem}_heavy"
     in="evaluation/zlib/${stem}.ll"
     out="evaluation/zlib/${stem}_oracle.ll"
     alog="logs/opt_runs/${stem}.analysis.log"
@@ -72,7 +82,7 @@ for spec in "${SPEC_ARR[@]}"; do
     intr=$(grep -c 'call .*\.with\.overflow' "$in")
 
     # ---- (A) analysis-only ----
-    run_opt opt -load-pass-plugin=build/OraclePass.so -passes="oracle-pass<vacuity>" \
+    run_opt opt -load-pass-plugin=build/OraclePass.so -passes="$AUDIT_PASSES" \
         -disable-output "$in" > "$alog" 2>&1
     rc_a=$?
     vlog="logs/compilations/${stem}_analysis.txt"
@@ -91,7 +101,7 @@ for spec in "${SPEC_ARR[@]}"; do
     # ---- (B) transform ----
     rm -f "$out"
     run_opt opt -load-pass-plugin=build/OraclePass.so \
-        -passes="oracle-pass,simplifycfg,adce,verify" \
+        -passes="$XFORM_PASSES" \
         -S "$in" -o "$out" > "$xlog" 2>&1
     rc_x=$?
     if [ "$rc_x" -eq 0 ] && [ -s "$out" ]; then

@@ -61,14 +61,21 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
     std::string LogFilename;
     bool LogInitialized = false;
 
-    // When true, every UNSAT is audited: guards alone must be SAT.
+// When true, every UNSAT is audited: guards alone must be SAT.
     // Costs one extra solver query per UNSAT (not per trap) -- enable in
     // dev/audit runs, disable for performance benchmarking.
     bool VacuityCheck = false;
+    // Precision tier. false = LIGHT: today's encoder, and it must stay
+    // byte-for-byte identical to pre-tier behavior (the tier split doubles
+    // as the analysis-facts ablation). true = HEAVY: light PLUS LLVM
+    // analysis facts (LVI / KnownBits / SCEV / !range) asserted at the
+    // over-approximation boundaries (HANDOFF §9).
+    bool HeavyMode = false;
     unsigned QueryTimeoutMs = 10000;
     OraclePass() = default;
-    OraclePass(bool Vacuity, unsigned TimeoutMs)
-        : VacuityCheck(Vacuity), QueryTimeoutMs(TimeoutMs) {}
+    OraclePass(bool Vacuity, bool Heavy, unsigned TimeoutMs)
+        : VacuityCheck(Vacuity), HeavyMode(Heavy), QueryTimeoutMs(TimeoutMs) {}
+
 
 PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM) {
         auto function_start_time = std::chrono::high_resolution_clock::now();
@@ -99,6 +106,10 @@ PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM) {
 
         Log << "\n[Z3 Oracle] Analyzing Function: " << F.getName() << "\n";
         errs() << "\n[Z3 Oracle] Analyzing Function: " << F.getName() << "\n";
+        if (HeavyMode) {
+            Log << "  [tier: heavy]\n";
+            errs() << "  [tier: heavy]\n";
+        }
 
         double TotalLatency = 0.0;
         int TrapsEliminated = 0;
@@ -452,6 +463,8 @@ llvmGetPassPluginInfo() {
                         if (!Name.consume_front("oracle-pass"))
                             return false;
                         bool Vacuity = false;
+                        bool Heavy = false;
+                        bool TierSeen = false;            // reject <light;heavy>
                         unsigned TimeoutMs = 10000;
                         if (!Name.empty()) {              // parse "<a;b;...>"
                             if (!Name.consume_front("<") || !Name.consume_back(">"))
@@ -462,14 +475,19 @@ llvmGetPassPluginInfo() {
                                 P = P.trim();
                                 if (P == "vacuity")
                                     Vacuity = true;
-                                else if (P.consume_front("timeout=")) {
+                                else if (P == "light" || P == "heavy") {
+                                    if (TierSeen)
+                                        return false;   // contradictory tiers
+                                    TierSeen = true;
+                                    Heavy = (P == "heavy");
+                                } else if (P.consume_front("timeout=")) {
                                     if (P.getAsInteger(10, TimeoutMs))
                                         return false;   // malformed number
                                 } else if (!P.empty())
                                     return false;       // unknown parameter
                             }
                         }
-                        FPM.addPass(OraclePass(Vacuity, TimeoutMs));
+                        FPM.addPass(OraclePass(Vacuity, Heavy, TimeoutMs));
                         return true;
                     }
                 );
