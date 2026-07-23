@@ -2,14 +2,14 @@
 [Z3 Oracle] Analyzing Function: complex_cfg
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 0 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1.816627 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1.112019 ms]
     -> Unsat core: TRAP 
     -> [vacuity-ok] context alone is satisfiable
   => SUCCESS: Trap mathematically neutralized!
   => Total Traps Eliminated: 1
   => Total Trap Attempts: 1
   => Total SMT Queries Executed: 1
-  => Total SMT Query Latency: 2.281427e+00 ms
-  => Average SMT Query Latency: 2.281427e+00 ms
-  => Total DFS & SMT Execution Time: 1.852380e+01 ms
+  => Total SMT Query Latency: 1.353523e+00 ms
+  => Average SMT Query Latency: 1.353523e+00 ms
+  => Total DFS & SMT Execution Time: 9.824121e+00 ms
 --------------------------------------------------

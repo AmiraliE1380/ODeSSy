@@ -2,14 +2,14 @@
 [Z3 Oracle] Analyzing Function: test_phi4
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 0 dominating context guard(s).
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1.604413 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1.570939 ms]
     -> Unsat core: TRAP 
     -> [vacuity-ok] context alone is satisfiable
   => SUCCESS: Trap mathematically neutralized!
   => Total Traps Eliminated: 1
   => Total Trap Attempts: 1
   => Total SMT Queries Executed: 1
-  => Total SMT Query Latency: 2.063484e+00 ms
-  => Average SMT Query Latency: 2.063484e+00 ms
-  => Total DFS & SMT Execution Time: 1.880993e+01 ms
+  => Total SMT Query Latency: 2.101414e+00 ms
+  => Average SMT Query Latency: 2.101414e+00 ms
+  => Total DFS & SMT Execution Time: 2.721171e+01 ms
 --------------------------------------------------
