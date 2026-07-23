@@ -1,17 +1,15 @@
 
 [Z3 Oracle] Analyzing Function: test_phi6_spaghetti
-  [tier: heavy]
   -> Found UB Trap. Starting Backward Slice...
     -> Collected 0 dominating context guard(s).
-    -> [heavy] 0 analysis fact(s) on 3 boundary value(s)
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2.221829 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4.187501 ms]
     -> Unsat core: TRAP 
     -> [vacuity-ok] context alone is satisfiable
   => SUCCESS: Trap mathematically neutralized!
   => Total Traps Eliminated: 1
   => Total Trap Attempts: 1
   => Total SMT Queries Executed: 1
-  => Total SMT Query Latency: 2.600284e+00 ms
-  => Average SMT Query Latency: 2.600284e+00 ms
-  => Total DFS & SMT Execution Time: 1.968368e+01 ms
+  => Total SMT Query Latency: 4.586045e+00 ms
+  => Average SMT Query Latency: 4.586045e+00 ms
+  => Total DFS & SMT Execution Time: 2.034822e+01 ms
 --------------------------------------------------
