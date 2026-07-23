@@ -4,6 +4,8 @@
 #include "llvm/IR/Constants.h"
 #include "llvm/IR/Dominators.h"
 #include "llvm/Analysis/LoopInfo.h"
+#include "llvm/IR/ConstantRange.h"
+#include "llvm/Support/KnownBits.h"
 #include <z3++.h>
 #include <unordered_map>
 #include <map>
@@ -33,6 +35,10 @@ class Z3Encoder {
     // reproduces the old simple-path / acyclic semantics without ever
     // re-visiting a block).
     std::set<llvm::BasicBlock*> InProgress;
+    // Every Value that became a FREE variable, in creation order. These
+    // are exactly the over-approximation boundaries of the current query
+    // -- the set the HEAVY tier walks to assert analysis facts (§9).
+    std::vector<llvm::Value*> FreeVars;
 
 public:
     explicit Z3Encoder(unsigned TimeoutMs = 10000);
@@ -47,6 +53,19 @@ public:
     void enableUnsatCores();
     void assertConditionTracked(llvm::Value *Cond, bool IsTrue, const std::string &Label);
     std::string getUnsatCore();
+    // --- HEAVY-tier fact plumbing (mechanism only; policy = FactEncoder) ---
+    // The boundary set: every Value that was given a free variable.
+    const std::vector<llvm::Value*> &getFreeVariables() const { return FreeVars; }
+    // Assert V ∈ CR via the four extreme bounds (uge/ule/sge/sle) -- sound
+    // for wrapped ranges too, where the bounds are simply weaker (§9).
+    // Empty Label => plain assert; nonempty => tracked (audit cores).
+    // Returns false when the range carries no usable information.
+    bool assertRange(llvm::Value *V, const llvm::ConstantRange &CR,
+                     const std::string &Label = "");
+    // Assert V's known-bit masks: (V & Zero)==0 and (V & One)==One.
+    // Returns false when nothing is known (or masks conflict).
+    bool assertKnownBits(llvm::Value *V, const llvm::KnownBits &KB,
+                         const std::string &Label = "");
     
 private:
     // Encodes the branch/switch constraint attached to a single CFG edge
@@ -59,7 +78,13 @@ private:
     z3::expr getBlockReachCond(llvm::BasicBlock *BB, llvm::BasicBlock *Root,
                                llvm::BasicBlock *PhiBB, llvm::DominatorTree *DT);
 
+    // APInt -> BV constant of identical width (i128-safe via decimal
+    // string; NEVER casts through unsigned -- the constant-truncation
+    // invariant from §4 applies to fact constants too).
+    z3::expr bvConst(const llvm::APInt &A);
+    void addFact(const z3::expr &Fact, const std::string &Label);
     // --- i1 sort-coercion helpers ---
+    
     // i1 lives a double life: icmp results / bool constants are Z3 Bools,
     // but trunc-to-i1 and BV math produce 1-bit BVs. These make every
     // Bool<->BV bridge total instead of throwing z3::exception.

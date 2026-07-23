@@ -10,6 +10,7 @@ add_definitions(${LLVM_DEFINITIONS})
 add_library(OraclePass MODULE
     OraclePass/OraclePass.cpp
     OraclePass/Z3Encoder.cpp
+    OraclePass/FactEncoder.cpp
 )
 
 # 3. Force it to be a .so file without the "lib" prefix 

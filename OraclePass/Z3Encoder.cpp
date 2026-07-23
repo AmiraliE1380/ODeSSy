@@ -33,6 +33,59 @@ std::string Z3Encoder::getUnsatCore() {
     return out.empty() ? "(empty)" : out;
 }
 
+z3::expr Z3Encoder::bvConst(const llvm::APInt &A) {
+    unsigned W = A.getBitWidth();
+    if (W <= 64) return Ctx.bv_val(A.getZExtValue(), W);
+    llvm::SmallString<40> S;
+    A.toString(S, /*Radix=*/10, /*Signed=*/false);
+    return Ctx.bv_val(S.c_str(), W);
+}
+
+void Z3Encoder::addFact(const z3::expr &Fact, const std::string &Label) {
+    if (Label.empty()) Solver.add(Fact);
+    else               Solver.add(Fact, Label.c_str());
+}
+
+bool Z3Encoder::assertRange(Value *V, const ConstantRange &CR,
+                            const std::string &Label) {
+    // Full set: no information. Empty set: LVI's "this point is dead" --
+    // importing it would manufacture a contradictory context, so refuse
+    // (the vacuity checker would rightly scream).
+    if (CR.isFullSet() || CR.isEmptySet()) return false;
+    unsigned W = CR.getBitWidth();
+    if (!V->getType()->isIntegerTy() ||
+        V->getType()->getIntegerBitWidth() != W) return false;  // width sanity
+    z3::expr X = asBV(getOrCreateZ3Expr(V), W);
+    llvm::APInt UMin = CR.getUnsignedMin(), UMax = CR.getUnsignedMax();
+    llvm::APInt SMin = CR.getSignedMin(),   SMax = CR.getSignedMax();
+    z3::expr Fact = Ctx.bool_val(true);
+    bool Any = false;
+    if (!UMin.isZero())           { Fact = Fact && z3::uge(X, bvConst(UMin)); Any = true; }
+    if (!UMax.isAllOnes())        { Fact = Fact && z3::ule(X, bvConst(UMax)); Any = true; }
+    if (!SMin.isMinSignedValue()) { Fact = Fact && (X >= bvConst(SMin));      Any = true; }
+    if (!SMax.isMaxSignedValue()) { Fact = Fact && (X <= bvConst(SMax));      Any = true; }
+    if (!Any) return false;                     // all four bounds trivial
+    addFact(Fact, Label);
+    return true;
+}
+
+bool Z3Encoder::assertKnownBits(Value *V, const llvm::KnownBits &KB,
+                                const std::string &Label) {
+    if (KB.isUnknown()) return false;
+    if ((KB.Zero & KB.One) != 0) return false;  // conflict: refuse to import
+    unsigned W = KB.getBitWidth();
+    if (!V->getType()->isIntegerTy() ||
+        V->getType()->getIntegerBitWidth() != W) return false;
+    z3::expr X = asBV(getOrCreateZ3Expr(V), W);
+    z3::expr Fact = Ctx.bool_val(true);
+    if (!KB.Zero.isZero())
+        Fact = Fact && ((X & bvConst(KB.Zero)) == Ctx.bv_val(0, W));
+    if (!KB.One.isZero())
+        Fact = Fact && ((X & bvConst(KB.One)) == bvConst(KB.One));
+    addFact(Fact, Label);
+    return true;
+}
+
 z3::expr Z3Encoder::asBool(z3::expr e) {
     if (e.is_bool()) return e;
     return e != Ctx.bv_val(0, e.get_sort().bv_size());
@@ -89,6 +142,7 @@ z3::expr Z3Encoder::getOrCreateZ3Expr(Value *Val) {
     if (Val->getType()->isIntegerTy(1)) {
         z3::expr new_bool = Ctx.bool_const(getSafeName(Val).c_str());
         ValueMap.insert({Val, new_bool});
+        FreeVars.push_back(Val);
         return new_bool;
     }
 
@@ -96,6 +150,7 @@ z3::expr Z3Encoder::getOrCreateZ3Expr(Value *Val) {
         unsigned BitWidth = Val->getType()->getIntegerBitWidth();
         z3::expr new_var = Ctx.bv_const(getSafeName(Val).c_str(), BitWidth);
         ValueMap.insert({Val, new_var});
+        FreeVars.push_back(Val);
         return new_var;
     }
 
@@ -105,6 +160,7 @@ z3::expr Z3Encoder::getOrCreateZ3Expr(Value *Val) {
     // We over-approximate all alien types as 64-bit BitVectors.
     z3::expr unk = Ctx.bv_const(getSafeName(Val).c_str(), 64);
     ValueMap.insert({Val, unk});
+    FreeVars.push_back(Val);   // recorded for completeness; FactEncoder skips non-int
     return unk;
 }
 

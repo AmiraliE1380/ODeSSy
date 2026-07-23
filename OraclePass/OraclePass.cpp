@@ -5,6 +5,7 @@
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/Support/FileSystem.h"
 #include "llvm/Analysis/LoopInfo.h"
+#include "llvm/Analysis/LazyValueInfo.h"
 #include "llvm/IR/Instructions.h"
 #include "llvm/IR/PassManager.h"
 #include "llvm/IR/Dominators.h"
@@ -12,6 +13,7 @@
 #include "llvm/IR/CFG.h"
 #include "llvm/ADT/PostOrderIterator.h"
 #include "Z3Encoder.h"
+#include "FactEncoder.h"
 #include "llvm/Support/Path.h"
 #include <chrono>
 #include <queue>
@@ -118,6 +120,11 @@ PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM) {
 
         LoopInfo &LI = FAM.getResult<LoopAnalysis>(F);
         DominatorTree &DT = FAM.getResult<DominatorTreeAnalysis>(F);
+        // HEAVY tier only: point-sensitive ranges for boundary facts.
+        // Never requested in light tier => light stays byte-identical.
+        LazyValueInfo *LVI =
+            HeavyMode ? &FAM.getResult<LazyValueAnalysis>(F) : nullptr;
+
 
         for (BasicBlock &BB : F) {
             // 1. The Hunter: Find the ubsantrap call
@@ -159,7 +166,7 @@ PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM) {
 
             trap_attempts++;
             
-            auto [Eliminated, Latency] = tryEliminateTrap(OvfCondition, TrapOnTrue, PredBB, Encoder, LI, DT, Log);
+            auto [Eliminated, Latency] = tryEliminateTrap(OvfCondition, TrapOnTrue, PredBB, Encoder, LI, DT, LVI, Log);
             TotalLatency += Latency;
             
             if (Latency > 0.0) {
@@ -247,8 +254,7 @@ private:
 
     
 private:
-std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, BasicBlock *PredBB, Z3Encoder &Encoder, LoopInfo &LI, DominatorTree &DT, raw_fd_ostream &Log) {
-        std::queue<Value*> Worklist; 
+std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, BasicBlock *PredBB, Z3Encoder &Encoder, LoopInfo &LI, DominatorTree &DT, LazyValueInfo *LVI, raw_fd_ostream &Log) {        std::queue<Value*> Worklist; 
         std::set<Value*> Visited;    
 
         Worklist.push(TargetCond);
@@ -399,6 +405,20 @@ std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Bas
                 }
             }
 
+            // PHASE 2.5 (HEAVY TIER ONLY): BOUNDARY ANALYSIS FACTS
+            // Free variables = over-approximation boundaries. Assert what
+            // LLVM already knows about each (!range / KnownBits / LVI).
+            // Context-side (pre-push): the vacuity audit is the alarm for
+            // a bad fact import, and RM:/KB:/LVI: labels make unsat cores
+            // attribute proofs to their fact source.
+            if (HeavyMode) {
+                FactEncoder Facts(Encoder, LVI, DT,
+                                  PredBB->getModule()->getDataLayout(),
+                                  VacuityCheck, Log);
+                unsigned NFacts = Facts.encodeBoundaryFacts(PredBB);
+                Log << "    -> [heavy] " << NFacts << " analysis fact(s) on "
+                    << Encoder.getFreeVariables().size() << " boundary value(s)\n";
+            }
             // PHASE 3: ASSERT CONTEXT + TRAP CONDITION
             for (unsigned i = 0; i < Guards.size(); ++i) {
                 if (VacuityCheck)
