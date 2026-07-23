@@ -6,6 +6,7 @@
 #include "llvm/Support/FileSystem.h"
 #include "llvm/Analysis/LoopInfo.h"
 #include "llvm/Analysis/LazyValueInfo.h"
+#include "llvm/Analysis/ScalarEvolution.h"
 #include "llvm/IR/Instructions.h"
 #include "llvm/IR/PassManager.h"
 #include "llvm/IR/Dominators.h"
@@ -124,6 +125,8 @@ PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM) {
         // Never requested in light tier => light stays byte-identical.
         LazyValueInfo *LVI =
             HeavyMode ? &FAM.getResult<LazyValueAnalysis>(F) : nullptr;
+        ScalarEvolution *SE =
+            HeavyMode ? &FAM.getResult<ScalarEvolutionAnalysis>(F) : nullptr;
 
 
         for (BasicBlock &BB : F) {
@@ -166,7 +169,7 @@ PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM) {
 
             trap_attempts++;
             
-            auto [Eliminated, Latency] = tryEliminateTrap(OvfCondition, TrapOnTrue, PredBB, Encoder, LI, DT, LVI, Log);
+            auto [Eliminated, Latency] = tryEliminateTrap(OvfCondition, TrapOnTrue, PredBB, Encoder, LI, DT, LVI, SE, Log);
             TotalLatency += Latency;
             
             if (Latency > 0.0) {
@@ -254,7 +257,7 @@ private:
 
     
 private:
-std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, BasicBlock *PredBB, Z3Encoder &Encoder, LoopInfo &LI, DominatorTree &DT, LazyValueInfo *LVI, raw_fd_ostream &Log) {        std::queue<Value*> Worklist; 
+std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, BasicBlock *PredBB, Z3Encoder &Encoder, LoopInfo &LI, DominatorTree &DT, LazyValueInfo *LVI, ScalarEvolution *SE, raw_fd_ostream &Log) {        std::queue<Value*> Worklist; 
         std::set<Value*> Visited;    
 
         Worklist.push(TargetCond);
@@ -412,7 +415,7 @@ std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, Bas
             // a bad fact import, and RM:/KB:/LVI: labels make unsat cores
             // attribute proofs to their fact source.
             if (HeavyMode) {
-                FactEncoder Facts(Encoder, LVI, DT,
+                FactEncoder Facts(Encoder, LVI, SE, DT,
                                   PredBB->getModule()->getDataLayout(),
                                   VacuityCheck, Log);
                 unsigned NFacts = Facts.encodeBoundaryFacts(PredBB);

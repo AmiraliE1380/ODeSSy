@@ -34,11 +34,13 @@
 namespace llvm {
 class LazyValueInfo;
 class DataLayout;
+class ScalarEvolution;
 }
 
 class FactEncoder {
     Z3Encoder &Encoder;
     llvm::LazyValueInfo *LVI;      // null => LVI fact source disabled
+    llvm::ScalarEvolution *SE;     // null => SCEV fact source disabled
     llvm::DominatorTree &DT;
     const llvm::DataLayout &DL;
     bool Audit;                    // true => tracked assertions with labels
@@ -47,6 +49,7 @@ class FactEncoder {
 
 public:
     FactEncoder(Z3Encoder &Enc, llvm::LazyValueInfo *LVI,
+                llvm::ScalarEvolution *SE,
                 llvm::DominatorTree &DT, const llvm::DataLayout &DL,
                 bool Audit, llvm::raw_ostream &Log);
 
@@ -58,6 +61,7 @@ private:
     bool tryRangeMetadata(llvm::Value *V);
     bool tryKnownBits(llvm::Value *V);
     bool tryLVI(llvm::Value *V, llvm::BasicBlock *PredBB);
+    bool trySCEV(llvm::Value *V);
     // "RM:<n>" etc.; n = running fact counter, so labels are unique.
     std::string mkLabel(const char *Src) const;
 };

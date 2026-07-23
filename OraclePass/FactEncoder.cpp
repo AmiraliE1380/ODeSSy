@@ -1,5 +1,7 @@
 #include "FactEncoder.h"
 #include "llvm/Analysis/LazyValueInfo.h"
+#include "llvm/Analysis/ScalarEvolution.h"
+#include "llvm/Analysis/ScalarEvolutionExpressions.h"
 #include "llvm/Analysis/ValueTracking.h"
 #include "llvm/IR/Argument.h"
 #include "llvm/IR/ConstantRange.h"
@@ -11,9 +13,10 @@
 
 using namespace llvm;
 
-FactEncoder::FactEncoder(Z3Encoder &Enc, LazyValueInfo *LVI, DominatorTree &DT,
-                         const DataLayout &DL, bool Audit, raw_ostream &Log)
-    : Encoder(Enc), LVI(LVI), DT(DT), DL(DL), Audit(Audit), Log(Log) {}
+FactEncoder::FactEncoder(Z3Encoder &Enc, LazyValueInfo *LVI, ScalarEvolution *SE,
+                         DominatorTree &DT, const DataLayout &DL, bool Audit,
+                         raw_ostream &Log)
+    : Encoder(Enc), LVI(LVI), SE(SE), DT(DT), DL(DL), Audit(Audit), Log(Log) {}
 
 std::string FactEncoder::mkLabel(const char *Src) const {
     return std::string(Src) + ":" + std::to_string(NumFacts);
@@ -44,6 +47,7 @@ unsigned FactEncoder::encodeBoundaryFacts(BasicBlock *PredBB) {
         tryRangeMetadata(V);
         tryKnownBits(V);
         tryLVI(V, PredBB);
+        trySCEV(V);
     }
     return NumFacts;
 }
@@ -101,4 +105,37 @@ bool FactEncoder::tryLVI(Value *V, BasicBlock *PredBB) {
         << " in " << rangeStr(CR) << " (LVI @ " << PredBB->getName() << ")\n";
     ++NumFacts;
     return true;
+}
+
+bool FactEncoder::trySCEV(Value *V) {
+    if (!SE) return false;
+    // SCEV's payoff is the one boundary class nothing else can see:
+    // loop-header phis (induction variables). Non-header phis are encoded
+    // as ite chains, never free -- so any free phi IS a header phi.
+    auto *Phi = dyn_cast<PHINode>(V);
+    if (!Phi) return false;
+    if (!SE->isSCEVable(Phi->getType())) return false;
+    const SCEV *S = SE->getSCEV(Phi);
+    if (isa<SCEVCouldNotCompute>(S)) return false;   // paranoia
+    if (isa<SCEVUnknown>(S)) return false;           // no structure => full range
+    // VALUE facts over the phi's whole evolution (every iteration), so no
+    // dominance gate needed. Both interpretations asserted -- unsigned and
+    // signed ranges come from different SCEV reasoning and either may be
+    // the informative one. assertRange skips full sets on its own.
+    bool Added = false;
+    ConstantRange UR = SE->getUnsignedRange(S);
+    std::string L1 = mkLabel("SCEV");
+    if (Encoder.assertRange(V, UR, Audit ? L1 : std::string())) {
+        Log << "    -> Fact[" << L1 << "] " << valueStr(V)
+            << " in " << rangeStr(UR) << " (SCEV unsigned)\n";
+        ++NumFacts; Added = true;
+    }
+    ConstantRange SR = SE->getSignedRange(S);
+    std::string L2 = mkLabel("SCEV");
+    if (Encoder.assertRange(V, SR, Audit ? L2 : std::string())) {
+        Log << "    -> Fact[" << L2 << "] " << valueStr(V)
+            << " in " << rangeStr(SR) << " (SCEV signed)\n";
+        ++NumFacts; Added = true;
+    }
+    return Added;
 }

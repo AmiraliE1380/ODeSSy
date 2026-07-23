@@ -42,6 +42,7 @@ case "$TIER" in
   *) echo "[FATAL] unknown TIER '$TIER' (light|heavy)"; exit 1 ;;
 esac
 CSV="$ROOT/evaluation/perf_zlib.csv"
+[ "$TIER" = "heavy" ] && CSV="$ROOT/evaluation/perf_zlib_heavy.csv"
 W="$ROOT/perf_test"
 
 INLINE_FLAGS=(-finline-functions
