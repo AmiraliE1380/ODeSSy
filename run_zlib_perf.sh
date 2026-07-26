@@ -22,14 +22,20 @@
 #   * BINARY SIZE: records file bytes AND .text segment bytes (pure code;
 #     eliminated trap blocks show up here without symbol-table noise).
 #
-# Output: evaluation/perf_zlib.csv, one row per (spec x config x size).
+# Output: evaluation/perf_zlib.csv (TIER=heavy: evaluation/perf_zlib_heavy.csv)
 # Knobs : RUNS=10 SIZES="8 64 512" LEVEL=9 TIMEOUT_SECS=600 COOLDOWN=60
+#         TIER=light|heavy  ZLIB=/path/to/zlib
 # NOTE  : vacuity check intentionally OFF here (plain 'oracle-pass').
+# NOTE  : requires GNU userland (timeout, stat -c, shuf, GNU size) -- run on
+#         Linux, or on macOS with coreutils gnubin on PATH; and remember
+#         arm64 runtime numbers are NOT comparable to the x86 tables.
 # =============================================================================
 set -u
-PL_ROOT="$HOME/michigan/pl"
-ROOT="$PL_ROOT/smt-compiler-oracle"
-ZLIB="$PL_ROOT/zlib"
+# Self-locating: repo root = this script's directory; benchmarks live beside
+# the repo. All three overridable via environment (ROOT / PL_ROOT / ZLIB).
+ROOT="${ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
+PL_ROOT="${PL_ROOT:-$(dirname "$ROOT")}"
+ZLIB="${ZLIB:-$PL_ROOT/zlib}"
 RUNS=${RUNS:-10}
 read -r -a SIZE_ARR <<< "${SIZES:-8 64 512}"
 LEVEL=${LEVEL:-9}

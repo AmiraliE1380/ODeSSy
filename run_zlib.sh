@@ -12,15 +12,18 @@
 #   TIMEOUT_SECS=NNN      per-opt-run wall clock (default 600)
 #   TIER=heavy            precision tier: light (default) | heavy
 #   INLINE_AGGRESSIVE=0   disable the inliner cranking
+#   ZLIB_SRC=/path        zlib sources (default: <repo-parent>/zlib)
 #
 # Counting: 'call void @llvm.ubsantrap' counts CALL SITES only (no declare
 # line). unknown = solver gave up (kept). vacuous = UNSATs rejected by the
 # vacuity audit (must stay 0).
 # =============================================================================
 set -u
-PL_ROOT="$HOME/michigan/pl"
-ROOT="$PL_ROOT/smt-compiler-oracle"
-ZLIB_SRC="$PL_ROOT/zlib"
+# Self-locating: repo root = this script's directory; benchmarks live beside
+# the repo. All three overridable via environment (ROOT / PL_ROOT / ZLIB_SRC).
+ROOT="${ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
+PL_ROOT="${PL_ROOT:-$(dirname "$ROOT")}"
+ZLIB_SRC="${ZLIB_SRC:-$PL_ROOT/zlib}"
 TIMEOUT_SECS=${TIMEOUT_SECS:-600}
 TIER=${TIER:-light}
 case "$TIER" in

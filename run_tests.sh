@@ -13,7 +13,8 @@
 # Exit code: 0 iff every test passes (usable as a pre-commit / CI gate).
 # =============================================================================
 set -u
-ROOT="$HOME/michigan/pl/smt-compiler-oracle"
+# repo root = directory containing this script (override with ROOT=... if needed)
+ROOT="${ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
 cd "$ROOT" || exit 1
 mkdir -p logs/compilations
 
