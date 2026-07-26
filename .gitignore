@@ -1,3 +1,6 @@
 perf_test/corpus.*
 perf_test/seed.txt
-*.Identifier
+*.Identifierbuild/
+logs/
+perf_test/
+perf_run.log

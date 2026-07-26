@@ -1,8 +1,0 @@
-
-[Z3 Oracle] Analyzing Function: gzclose
-  => Total Traps Eliminated: 0
-  => Total Trap Attempts: 0
-  => Total SMT Queries Executed: 0
-  => Total SMT Query Latency: 0.000000e+00 ms
-  => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.883600e-01 ms
