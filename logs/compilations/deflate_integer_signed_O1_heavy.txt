@@ -6,7 +6,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.073260e+00 ms
+  => Total DFS & SMT Execution Time: 1.272636e+00 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflateInit2_
@@ -16,7 +16,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.671670e-01 ms
+  => Total DFS & SMT Execution Time: 1.669180e-01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflateEnd
@@ -26,7 +26,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.210880e-01 ms
+  => Total DFS & SMT Execution Time: 1.724150e-01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflateReset
@@ -42,13 +42,13 @@
     -> Collected 6 dominating context guard(s).
     -> Fact[LVI:0] i32 %30 in [-2147483648,0) (LVI @ )
     -> [heavy] 1 analysis fact(s) on 7 boundary value(s)
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.002569 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.188418 ms]
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 1
   => Total SMT Queries Executed: 1
-  => Total SMT Query Latency: 1.002569e+00 ms
-  => Average SMT Query Latency: 1.002569e+00 ms
-  => Total DFS & SMT Execution Time: 1.620094e+01 ms
+  => Total SMT Query Latency: 1.188418e+00 ms
+  => Average SMT Query Latency: 1.188418e+00 ms
+  => Total DFS & SMT Execution Time: 2.061579e+01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflateSetDictionary
@@ -61,7 +61,7 @@
     -> Guard[3] (false edge of ''):  %27 = or i1 %26, %25, !dbg !313
     -> Collected 4 dominating context guard(s).
     -> [heavy] 0 analysis fact(s) on 14 boundary value(s)
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.105683 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.214227 ms]
   -> Trap source: zlib/deflate.c:0
   -> Found UB Trap. Starting Backward Slice...
     -> Guard[0] (false edge of ''):  %339 = icmp ult i32 %332, %338, !dbg !692
@@ -72,13 +72,13 @@
     -> Guard[5] (false edge of ''):  %27 = or i1 %26, %25, !dbg !313
     -> Collected 6 dominating context guard(s).
     -> [heavy] 0 analysis fact(s) on 16 boundary value(s)
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.036404 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.146122 ms]
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 2
   => Total SMT Queries Executed: 2
-  => Total SMT Query Latency: 8.142087e+00 ms
-  => Average SMT Query Latency: 4.071044e+00 ms
-  => Total DFS & SMT Execution Time: 4.421960e+01 ms
+  => Total SMT Query Latency: 9.360349e+00 ms
+  => Average SMT Query Latency: 4.680174e+00 ms
+  => Total DFS & SMT Execution Time: 3.563648e+01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflateGetDictionary
@@ -88,7 +88,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.505750e-01 ms
+  => Total DFS & SMT Execution Time: 1.209100e-01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflateResetKeep
@@ -104,13 +104,13 @@
     -> Collected 6 dominating context guard(s).
     -> Fact[LVI:0] i32 %32 in [-2147483648,0) (LVI @ )
     -> [heavy] 1 analysis fact(s) on 7 boundary value(s)
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.901797 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.213392 ms]
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 1
   => Total SMT Queries Executed: 1
-  => Total SMT Query Latency: 9.017970e-01 ms
-  => Average SMT Query Latency: 9.017970e-01 ms
-  => Total DFS & SMT Execution Time: 1.363892e+01 ms
+  => Total SMT Query Latency: 1.213392e+00 ms
+  => Average SMT Query Latency: 1.213392e+00 ms
+  => Total DFS & SMT Execution Time: 9.490725e+00 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflateSetHeader
@@ -120,7 +120,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.609330e-01 ms
+  => Total DFS & SMT Execution Time: 1.434190e-01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflatePending
@@ -130,7 +130,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.096710e-01 ms
+  => Total DFS & SMT Execution Time: 9.120000e-02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflateUsed
@@ -140,7 +140,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.302870e-01 ms
+  => Total DFS & SMT Execution Time: 8.810000e-02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflatePrime
@@ -158,13 +158,13 @@
     -> Guard[8] (false edge of ''):  %4 = icmp eq ptr %0, null, !dbg !268
     -> Collected 9 dominating context guard(s).
     -> [heavy] 0 analysis fact(s) on 12 boundary value(s)
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.109575 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.269144 ms]
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 1
   => Total SMT Queries Executed: 1
-  => Total SMT Query Latency: 5.109575e+00 ms
-  => Average SMT Query Latency: 5.109575e+00 ms
-  => Total DFS & SMT Execution Time: 1.873122e+01 ms
+  => Total SMT Query Latency: 5.269144e+00 ms
+  => Average SMT Query Latency: 5.269144e+00 ms
+  => Total DFS & SMT Execution Time: 1.691404e+01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflateParams
@@ -192,7 +192,7 @@
     -> Fact[LVI:2] i32 %87 in [1,0) (LVI @ )
     -> Fact[LVI:3] i64 %94 in [0,1) (LVI @ )
     -> [heavy] 4 analysis fact(s) on 18 boundary value(s)
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.799670 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.307705 ms]
   -> Trap source: zlib/deflate.c:1018
   -> Found UB Trap. Starting Backward Slice...
     -> Guard[0] (true edge of ''):  %130 = icmp sgt i32 %129, -1, !dbg !486
@@ -218,7 +218,7 @@
     -> Fact[LVI:3] i32 %87 in [1,0) (LVI @ )
     -> Fact[LVI:4] i64 %94 in [0,1) (LVI @ )
     -> [heavy] 5 analysis fact(s) on 18 boundary value(s)
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4.361952 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1.317732 ms]
   => SUCCESS: Trap mathematically neutralized!
   -> Trap source: zlib/deflate.c:0
   -> Found UB Trap. Starting Backward Slice...
@@ -238,7 +238,7 @@
     -> Collected 13 dominating context guard(s).
     -> Fact[LVI:0] i32 %805 in [0,1) (LVI @ )
     -> [heavy] 1 analysis fact(s) on 18 boundary value(s)
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.272625 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.642636 ms]
   -> Trap source: zlib/deflate.c:0
   -> Found UB Trap. Starting Backward Slice...
     -> Guard[0] (false edge of ''):  %814 = extractvalue { i64, i1 } %813, 1, !dbg !1260, !nosanitize !481
@@ -258,13 +258,13 @@
     -> Collected 14 dominating context guard(s).
     -> Fact[LVI:0] i32 %805 in [0,1) (LVI @ )
     -> [heavy] 1 analysis fact(s) on 19 boundary value(s)
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.500678 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.497088 ms]
   => Total Traps Eliminated: 1
   => Total Trap Attempts: 4
   => Total SMT Queries Executed: 4
-  => Total SMT Query Latency: 2.093492e+01 ms
-  => Average SMT Query Latency: 5.233731e+00 ms
-  => Total DFS & SMT Execution Time: 1.282758e+02 ms
+  => Total SMT Query Latency: 1.476516e+01 ms
+  => Average SMT Query Latency: 3.691290e+00 ms
+  => Total DFS & SMT Execution Time: 8.450084e+01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflate
@@ -283,7 +283,7 @@
     -> Fact[LVI:2] i32 %51 in [1,0) (LVI @ )
     -> Fact[LVI:3] i64 %60 in [0,1) (LVI @ )
     -> [heavy] 4 analysis fact(s) on 14 boundary value(s)
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.172224 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.955543 ms]
   -> Trap source: zlib/deflate.c:1018
   -> Found UB Trap. Starting Backward Slice...
     -> Guard[0] (true edge of ''):  %100 = icmp sgt i32 %99, -1, !dbg !439
@@ -300,14 +300,14 @@
     -> Fact[LVI:3] i32 %58 in [-1073741824,1073741824) (LVI @ )
     -> Fact[LVI:4] i64 %60 in [0,1) (LVI @ )
     -> [heavy] 5 analysis fact(s) on 14 boundary value(s)
-    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4.379207 ms]
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1.392266 ms]
   => SUCCESS: Trap mathematically neutralized!
   => Total Traps Eliminated: 1
   => Total Trap Attempts: 2
   => Total SMT Queries Executed: 2
-  => Total SMT Query Latency: 5.551431e+00 ms
-  => Average SMT Query Latency: 2.775716e+00 ms
-  => Total DFS & SMT Execution Time: 3.752796e+01 ms
+  => Total SMT Query Latency: 2.347809e+00 ms
+  => Average SMT Query Latency: 1.173904e+00 ms
+  => Total DFS & SMT Execution Time: 3.075267e+01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: slide_hash
@@ -317,7 +317,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 2.965500e-01 ms
+  => Total DFS & SMT Execution Time: 1.196590e-01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflateTune
@@ -327,7 +327,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.335630e-01 ms
+  => Total DFS & SMT Execution Time: 7.576800e-02 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflateBound_z
@@ -343,13 +343,13 @@
     -> Collected 6 dominating context guard(s).
     -> Fact[LVI:0] i32 %44 in [-2147483648,0) (LVI @ )
     -> [heavy] 1 analysis fact(s) on 7 boundary value(s)
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.245166 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.190339 ms]
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 1
   => Total SMT Queries Executed: 1
-  => Total SMT Query Latency: 1.245166e+00 ms
-  => Average SMT Query Latency: 1.245166e+00 ms
-  => Total DFS & SMT Execution Time: 1.696690e+01 ms
+  => Total SMT Query Latency: 1.190339e+00 ms
+  => Average SMT Query Latency: 1.190339e+00 ms
+  => Total DFS & SMT Execution Time: 1.133371e+01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflateBound
@@ -365,13 +365,13 @@
     -> Collected 6 dominating context guard(s).
     -> Fact[LVI:0] i32 %42 in [-2147483648,0) (LVI @ )
     -> [heavy] 1 analysis fact(s) on 7 boundary value(s)
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.197326 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.243426 ms]
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 1
   => Total SMT Queries Executed: 1
-  => Total SMT Query Latency: 1.197326e+00 ms
-  => Average SMT Query Latency: 1.197326e+00 ms
-  => Total DFS & SMT Execution Time: 1.224269e+01 ms
+  => Total SMT Query Latency: 1.243426e+00 ms
+  => Average SMT Query Latency: 1.243426e+00 ms
+  => Total DFS & SMT Execution Time: 1.258281e+01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: flush_pending
@@ -381,7 +381,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.492090e-01 ms
+  => Total DFS & SMT Execution Time: 1.238480e-01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflate_stored
@@ -391,7 +391,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 2.183370e-01 ms
+  => Total DFS & SMT Execution Time: 2.308550e-01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflate_huff
@@ -402,13 +402,13 @@
     -> Guard[1] (true edge of ''):  %30 = icmp eq i32 %29, 0, !dbg !275
     -> Collected 2 dominating context guard(s).
     -> [heavy] 0 analysis fact(s) on 5 boundary value(s)
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.872051 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.346384 ms]
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 1
   => Total SMT Queries Executed: 1
-  => Total SMT Query Latency: 3.872051e+00 ms
-  => Average SMT Query Latency: 3.872051e+00 ms
-  => Total DFS & SMT Execution Time: 2.214067e+01 ms
+  => Total SMT Query Latency: 3.346384e+00 ms
+  => Average SMT Query Latency: 3.346384e+00 ms
+  => Total DFS & SMT Execution Time: 1.333296e+01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflate_rle
@@ -419,13 +419,13 @@
     -> Guard[1] (true edge of ''):  %41 = icmp ult i32 %40, 259, !dbg !284
     -> Collected 2 dominating context guard(s).
     -> [heavy] 0 analysis fact(s) on 5 boundary value(s)
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.583657 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.255327 ms]
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 1
   => Total SMT Queries Executed: 1
-  => Total SMT Query Latency: 2.583657e+00 ms
-  => Average SMT Query Latency: 2.583657e+00 ms
-  => Total DFS & SMT Execution Time: 1.508837e+01 ms
+  => Total SMT Query Latency: 2.255327e+00 ms
+  => Average SMT Query Latency: 2.255327e+00 ms
+  => Total DFS & SMT Execution Time: 1.467591e+01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflateCopy
@@ -435,7 +435,7 @@
   => Total SMT Queries Executed: 0
   => Total SMT Query Latency: 0.000000e+00 ms
   => Average SMT Query Latency: 0.000000e+00 ms
-  => Total DFS & SMT Execution Time: 1.846730e-01 ms
+  => Total DFS & SMT Execution Time: 1.833170e-01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflate_fast
@@ -446,13 +446,13 @@
     -> Guard[1] (true edge of ''):  %71 = icmp ult i32 %70, 262, !dbg !282
     -> Collected 2 dominating context guard(s).
     -> [heavy] 0 analysis fact(s) on 5 boundary value(s)
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.401723 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.617318 ms]
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 1
   => Total SMT Queries Executed: 1
-  => Total SMT Query Latency: 6.401723e+00 ms
-  => Average SMT Query Latency: 6.401723e+00 ms
-  => Total DFS & SMT Execution Time: 2.204894e+01 ms
+  => Total SMT Query Latency: 2.617318e+00 ms
+  => Average SMT Query Latency: 2.617318e+00 ms
+  => Total DFS & SMT Execution Time: 1.471847e+01 ms
 --------------------------------------------------
 
 [Z3 Oracle] Analyzing Function: deflate_slow
@@ -463,11 +463,11 @@
     -> Guard[1] (true edge of ''):  %70 = icmp ult i32 %69, 262, !dbg !288
     -> Collected 2 dominating context guard(s).
     -> [heavy] 0 analysis fact(s) on 5 boundary value(s)
-    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.791133 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.022144 ms]
   => Total Traps Eliminated: 0
   => Total Trap Attempts: 1
   => Total SMT Queries Executed: 1
-  => Total SMT Query Latency: 2.791133e+00 ms
-  => Average SMT Query Latency: 2.791133e+00 ms
-  => Total DFS & SMT Execution Time: 2.165519e+01 ms
+  => Total SMT Query Latency: 3.022144e+00 ms
+  => Average SMT Query Latency: 3.022144e+00 ms
+  => Total DFS & SMT Execution Time: 1.787324e+01 ms
 --------------------------------------------------

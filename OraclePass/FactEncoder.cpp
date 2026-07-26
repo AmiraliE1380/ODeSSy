@@ -4,6 +4,10 @@
 #include "llvm/Analysis/ScalarEvolutionExpressions.h"
 #include "llvm/Analysis/ValueTracking.h"
 #include "llvm/IR/Argument.h"
+#include "llvm/IR/Attributes.h"
+#include "llvm/IR/Function.h"
+#include "llvm/IR/InstrTypes.h"
+#include <optional>
 #include "llvm/IR/ConstantRange.h"
 #include "llvm/IR/DataLayout.h"
 #include "llvm/IR/Instructions.h"
@@ -45,7 +49,8 @@ unsigned FactEncoder::encodeBoundaryFacts(BasicBlock *PredBB) {
         // a "range" over the stand-in is not a fact about the real value.
         if (!V->getType()->isIntegerTy()) continue;
         tryRangeMetadata(V);
-        tryKnownBits(V);
+        tryRangeAttr(V);
+        tryKnownBits(V);    
         tryLVI(V, PredBB);
         trySCEV(V);
     }
@@ -66,6 +71,29 @@ bool FactEncoder::tryRangeMetadata(Value *V) {
         return false;
     Log << "    -> Fact[" << Lbl << "] " << valueStr(V)
         << " in " << rangeStr(CR) << " (!range)\n";
+    ++NumFacts;
+    return true;
+}
+
+bool FactEncoder::tryRangeAttr(Value *V) {
+    // The 'range' ATTRIBUTE -- distinct from !range metadata. Lives in the
+    // attribute list: on call-sites / callee return values (LLVM infers
+    // these for libfuncs and via FunctionAttrs) and on function parameters.
+    // Violation => poison (LangRef), same soundness caveat as nsw/RM.
+    std::optional<ConstantRange> CRO;
+    if (auto *CB = dyn_cast<CallBase>(V)) {
+        CRO = CB->getRange();               // call-site attr, else callee's
+    } else if (auto *A = dyn_cast<Argument>(V)) {
+        Attribute Attr = A->getParent()->getParamAttribute(
+            A->getArgNo(), Attribute::Range);
+        if (Attr.isValid()) CRO = Attr.getRange();
+    }
+    if (!CRO) return false;
+    std::string Lbl = mkLabel("RA");
+    if (!Encoder.assertRange(V, *CRO, Audit ? Lbl : std::string()))
+        return false;
+    Log << "    -> Fact[" << Lbl << "] " << valueStr(V)
+        << " in " << rangeStr(*CRO) << " (range attr)\n";
     ++NumFacts;
     return true;
 }

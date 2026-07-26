@@ -9,6 +9,8 @@
 // lightweight analyses already know about each one:
 //
 //   RM  : !range metadata on loads/calls       (value fact)
+//   RA  : 'range' attribute on call returns    (value fact)
+//         and function parameters
 //   KB  : computeKnownBits bit masks           (value fact)
 //   LVI : LazyValueInfo constant range at the  (point fact -- def must
 //         trap's branch point                   dominate PredBB)
@@ -59,6 +61,7 @@ public:
 
 private:
     bool tryRangeMetadata(llvm::Value *V);
+    bool tryRangeAttr(llvm::Value *V);
     bool tryKnownBits(llvm::Value *V);
     bool tryLVI(llvm::Value *V, llvm::BasicBlock *PredBB);
     bool trySCEV(llvm::Value *V);

@@ -1,0 +1,19 @@
+
+[Z3 Oracle] Analyzing Function: f
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> Fact[RA:0] i32 %x in [0,100) (range attr)
+    -> Fact[KB:1] i32 %x known bits zero=0x4294967168 one=0x0
+    -> [heavy] 2 analysis fact(s) on 1 boundary value(s)
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1.114307 ms]
+    -> Unsat core: |RA:0| TRAP 
+    -> [vacuity-ok] context alone is satisfiable
+  => SUCCESS: Trap mathematically neutralized!
+  => Total Traps Eliminated: 1
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.737723e+00 ms
+  => Average SMT Query Latency: 1.737723e+00 ms
+  => Total DFS & SMT Execution Time: 3.337485e+01 ms
+--------------------------------------------------
