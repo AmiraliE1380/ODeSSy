@@ -4,3 +4,7 @@ perf_test/seed.txt
 logs/
 perf_test/
 perf_run.log
+build/
+logs/
+perf_test/
+perf_run.log
