@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # =============================================================================
-# run_zlib_perf.sh -- v2: COMPILE + RUNTIME benchmark, multi-size + shuffled.
+# run_zlib_perf.sh -- v3: COMPILE + RUNTIME benchmark, multi-size + shuffled,
+#                    PARALLEL oracle stage (Level-1 parallelism), avg-based.
 #
 # Specs   : none | signed | unsigned | both   (sanitizer configuration)
 # Configs : base   = clang -O3                                  -> binary
@@ -11,28 +12,32 @@
 #           should show SHRINKING %-speedup as size grows (fixed savings /
 #           growing hot-loop denominator); a flat % means a warm path changed.
 #
-# v2 protocol changes:
-#   * PHASE SEPARATION: build ALL binaries first (compile metrics + binary
-#     size), COOLDOWN pause, then one measurement phase -- so no binary is
-#     ever timed right after the CPU-saturating SMT stage.
-#   * SHUFFLED, INTERLEAVED RUNS: repetitions are round-robin -- every rep
-#     runs each (binary x size) once, in fresh random order (shuf) -- so slow
-#     thermal/frequency drift spreads evenly across all configs instead of
-#     biasing whichever binary runs last.
-#   * BINARY SIZE: records file bytes AND .text segment bytes (pure code;
-#     eliminated trap blocks show up here without symbol-table noise).
+# v3 changes:
+#   * LEVEL-1 PARALLELISM: the oracle stage runs its per-TU `opt` invocations
+#     as up to JOBS concurrent PROCESSES (default: CPU count; JOBS=1 == old
+#     serial behavior). TUs are fully independent (separate .ll in/out files
+#     and per-module logs) => no collisions. ORACLE_S is the stage
+#     WALL-CLOCK; with JOBS>1 the derived per-trap ms is wall-clock based
+#     ("latency with parallelism"). After the wave, every expected output is
+#     checked; missing/empty => FATAL with a pointer to its oracle.log.
+#   * AVG-BASED REPORTING: the min statistic is dropped; the CSV carries
+#     avg_run_s plus the full raw run list (runs_s), so any other statistic
+#     can be recomputed offline from the raw column if ever needed.
+#
+# v2 protocol (unchanged): phase separation + cooldown; shuffled interleaved
+# reps; binary file+.text size records.
 #
 # Output: evaluation/perf_zlib.csv (TIER=heavy: evaluation/perf_zlib_heavy.csv)
 # Knobs : RUNS=10 SIZES="8 64 512" LEVEL=9 TIMEOUT_SECS=600 COOLDOWN=60
-#         TIER=light|heavy  ZLIB=/path/to/zlib
+#         TIER=light|heavy  ZLIB=/path/to/zlib  JOBS=N
 # NOTE  : vacuity check intentionally OFF here (plain 'oracle-pass').
-# NOTE  : requires GNU userland (timeout, stat -c, shuf, GNU size) -- run on
-#         Linux, or on macOS with coreutils gnubin on PATH; and remember
-#         arm64 runtime numbers are NOT comparable to the x86 tables.
+# NOTE  : requires GNU userland (timeout, stat -c, shuf, GNU size) and
+#         bash >= 4 -- on macOS: brew coreutils gnubin on PATH + brew bash;
+#         and remember arm64 runtime numbers are NOT comparable to x86 tables.
 # =============================================================================
 set -u
 # Self-locating: repo root = this script's directory; benchmarks live beside
-# the repo. All three overridable via environment (ROOT / PL_ROOT / ZLIB).
+# the repo. All overridable via environment (ROOT / PL_ROOT / ZLIB).
 ROOT="${ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
 PL_ROOT="${PL_ROOT:-$(dirname "$ROOT")}"
 ZLIB="${ZLIB:-$PL_ROOT/zlib}"
@@ -41,6 +46,7 @@ read -r -a SIZE_ARR <<< "${SIZES:-8 64 512}"
 LEVEL=${LEVEL:-9}
 TIMEOUT_SECS=${TIMEOUT_SECS:-600}
 COOLDOWN=${COOLDOWN:-60}
+JOBS=${JOBS:-$(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4)}
 TIER=${TIER:-light}
 case "$TIER" in
   light) ORACLE_PASSES="oracle-pass,simplifycfg,adce,verify" ;;
@@ -77,6 +83,7 @@ cd "$ROOT" || exit 1
 echo "==== rebuilding pass ===="
 ( cd build && ninja ) || { echo "[FATAL] build failed"; exit 1; }
 rm -rf "$W"; mkdir -p "$W"
+echo "==== oracle-stage parallelism: JOBS=$JOBS ===="
 
 echo "==== minigzip driver (unsanitized, shared by every build) ===="
 MG="$ZLIB/test/minigzip.c"; [ -f "$MG" ] || MG="$ZLIB/minigzip.c"
@@ -122,13 +129,30 @@ for spec in none signed unsigned both; do
         O3_S[$k]=$(elapsed "$t0" "$(now)")
         sfx="b2.ll" ;;
       oracle)
+        # ---- LEVEL-1 PARALLEL ORACLE STAGE ----
+        # Up to JOBS concurrent opt processes, one per TU. Independent
+        # inputs/outputs/logs => no collisions. ORACLE_S = wall-clock of
+        # the whole wave (the honest "compile latency with parallelism").
         t0=$(now)
+        running=0
         for f in "${SRCS[@]}"; do
           timeout "${TIMEOUT_SECS}s" opt -load-pass-plugin=build/OraclePass.so \
             -passes="$ORACLE_PASSES" \
             -S "$W/${spec}.${f}.ll" -o "$W/${spec}.${f}.or.ll" \
-            > "$W/${spec}.${f}.oracle.log" 2>&1 \
-            || { echo "[FATAL] oracle failed on $spec/$f"; exit 1; }
+            > "$W/${spec}.${f}.oracle.log" 2>&1 &
+          running=$((running+1))
+          if [ "$running" -ge "$JOBS" ]; then
+            wait -n            # one slot frees up
+            running=$((running-1))
+          fi
+        done
+        wait                   # drain the remaining jobs
+        # Post-wave check: every output must exist and be non-empty.
+        for f in "${SRCS[@]}"; do
+          [ -s "$W/${spec}.${f}.or.ll" ] || {
+            echo "[FATAL] oracle failed on $spec/$f (see $W/${spec}.${f}.oracle.log)"
+            exit 1
+          }
         done
         ORACLE_S[$k]=$(elapsed "$t0" "$(now)")
         t0=$(now)
@@ -222,26 +246,26 @@ for rep in $(seq "$RUNS"); do
 done
 
 # =============================================================================
-# PHASE E: emit CSV.
+# PHASE E: emit CSV (avg-based; raw run list kept for offline reprocessing).
 # =============================================================================
-echo "spec,config,size_mb,traps_in,traps_final,bin_bytes,text_bytes,clang_s,oracle_s,o3_s,backend_link_s,total_compile_s,avg_run_s,min_run_s,runs_s" > "$CSV"
-printf '\n%-9s %-7s %5s %6s %6s %10s %9s %9s %9s %9s\n' \
-  spec config MB t_in t_fin bin_B text_B total_s avg_run min_run
+echo "spec,config,size_mb,traps_in,traps_final,bin_bytes,text_bytes,clang_s,oracle_s,o3_s,backend_link_s,total_compile_s,avg_run_s,runs_s" > "$CSV"
+printf '\n%-9s %-7s %5s %6s %6s %10s %9s %9s %9s\n' \
+  spec config MB t_in t_fin bin_B text_B total_s avg_run
 for k in "${KEYS2[@]}"; do
   spec="${k%.*}"; cfg="${k#*.}"
   for mb in "${SIZE_ARR[@]}"; do
     mk="$k|$mb"
     runs_join="${RUNTIMES[$mk]%;}"
-    read -r avg mn <<< "$(echo "$runs_join" | tr ';' '\n' | \
-      awk '{s+=$1; if(m==""||$1<m)m=$1} END{printf "%.3f %.3f", s/NR, m}')"
-    echo "$spec,$cfg,$mb,${TRAPS_IN[$spec]},${TRAPS_FIN[$k]},${B_BYTES[$k]},${B_TEXT[$k]},${CLANG_S[$spec]},${ORACLE_S[$k]},${O3_S[$k]},${BACKEND_S[$k]},${TOTAL_S[$k]},$avg,$mn,\"$runs_join\"" >> "$CSV"
-    printf '%-9s %-7s %5s %6s %6s %10s %9s %9s %9s %9s\n' \
+    avg=$(echo "$runs_join" | tr ';' '\n' | \
+      awk '{s+=$1} END{printf "%.3f", s/NR}')
+    echo "$spec,$cfg,$mb,${TRAPS_IN[$spec]},${TRAPS_FIN[$k]},${B_BYTES[$k]},${B_TEXT[$k]},${CLANG_S[$spec]},${ORACLE_S[$k]},${O3_S[$k]},${BACKEND_S[$k]},${TOTAL_S[$k]},$avg,\"$runs_join\"" >> "$CSV"
+    printf '%-9s %-7s %5s %6s %6s %10s %9s %9s %9s\n' \
       "$spec" "$cfg" "$mb" "${TRAPS_IN[$spec]}" "${TRAPS_FIN[$k]}" \
-      "${B_BYTES[$k]}" "${B_TEXT[$k]}" "${TOTAL_S[$k]}" "$avg" "$mn"
+      "${B_BYTES[$k]}" "${B_TEXT[$k]}" "${TOTAL_S[$k]}" "$avg"
   done
 done
 
 echo ""
-echo "CSV: $CSV   (then: python3 make_perf_report.py)"
+echo "CSV: $CSV   (then: python3 make_perf_report.py)   [oracle stage JOBS=$JOBS]"
 echo "Cold-path check: if %-speedup shrinks 8 -> 64 -> 512 MB, the savings are"
 echo "constant-per-invocation (cold path); flat % means a scaled path changed."

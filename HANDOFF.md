@@ -2,19 +2,26 @@
 > **Purpose.** Self-contained brief for continuing development in a fresh
 > conversation or by a new collaborator. Covers philosophy, architecture,
 > every module and invariant, the audit methodology, all current empirical
-> results, known issues, and the NEXT tasks: **parallelizing SMT queries,
-> perf runs on zlib+OpenSSL, and the sanitizer × benchmark slowdown matrix.**
+> results, known issues, and the NEXT task in full detail:
+> **Level-2 in-pass parallelism (multi-threaded SMT queries over traps)** —
+> Level-1 (multi-process, per-TU) is DONE and documented in §10.
 >
 > Owner: Amirali (UMich EECS). Advisor: Prof. Amir Shaikhha (weekly, Thu 11am EDT).
-> Environments: (a) WSL2 Ubuntu x86-64, local LLVM build (23.0.0git trunk,
-> `~/michigan/pl/llvm-project`), Z3 C++ API; (b) NEW: macOS (Apple Silicon)
-> being provisioned — see §11; (c) planned: CloudLab server
-> (https://www.cloudlab.us/) for parallel + x86 perf runs.
-> Repo `~/michigan/pl/smt-compiler-oracle`, branch `cgo-research`.
+> Environments:
+>   (a) WSL2 Ubuntu x86-64 (Surface Laptop 3) — original machine, x86 perf runs;
+>   (b) macOS Apple Silicon (M5 MacBook Pro) — primary dev machine, VERIFIED
+>       full verdict parity (§6); ~3.8x faster per SMT query than (a);
+>   (c) planned: CloudLab server (https://www.cloudlab.us/) — x86 perf at scale.
+> Toolchain PIN (all machines): llvm-project commit
+>   3cab3bc6384b5f58cab7140d00d7a527eade010e  (2026-04-28, 23.0.0git).
+>   Keep this pin until the paper ships. Z3: system/Homebrew (4.16 on Mac —
+>   verdicts confirmed stable across Z3 versions).
+> Repo: git@github.com:AmiraliE1380/ODeSSy.git, branch `cgo-research`,
+>   tags v1.0-course-submission, v2.0-overflow-core.
 > Target venue: CGO 2027, R2 deadline **Sept 10, 2026**.
 > Paper title (working): *ODeSSy: On-Demand SMT System for Compiler
 > Super-Analysis and Optimization*.
-> Status date: 2026-07-26.
+> Status date: 2026-07-27.
 
 ---
 
@@ -35,59 +42,60 @@ Core philosophy (paper framing):
   query contexts and answers latency with offline caching, not cheap queries.
 - **Sound + incomplete.** Every failure (Z3 exception, timeout, unknown,
   unmodeled instruction, memory, loops, multi-predecessor traps) degrades to
-  "keep the trap". SAT never means "bug exists" — only "not provably dead
-  under our over-approximation".
-- **On-demand.** The work list = the `llvm.ubsantrap` sites. Compile latency
-  is a first-class concern.
+  "keep the trap". SAT never means "bug exists".
+- **On-demand.** Work list = the `llvm.ubsantrap` sites. Compile latency is
+  a first-class concern — hence the parallelism campaign (§10).
 - **Signed vs unsigned split.** Signed overflow is UB (C11 6.5p5) — the real
-  elimination target. Unsigned wrap is defined (C11 6.2.5p9) and often
-  intentional; measured separately; unsigned all-SAT (crypto) is a
-  spec-mismatch finding, demonstrated dynamically (§7).
+  elimination target. Unsigned wrap is defined and often intentional;
+  measured separately; unsigned all-SAT (crypto) is a spec-mismatch finding,
+  demonstrated dynamically (§7).
 
-**Trap semantics / the query.** For each trap: assert dominating context ∧
-trap condition. UNSAT ⇒ eliminate (rewrite guarding branch condition to a
-constant; downstream `simplifycfg,adce` delete the block; `verify` checks IR).
-Eval pipeline: `opt -passes="oracle-pass,simplifycfg,adce,verify"`.
-Analysis-only invocations (`-disable-output`) do NOT persist IR changes.
+**Trap semantics / the query.** Per trap: assert dominating context ∧ trap
+condition. UNSAT ⇒ eliminate (fold guarding branch to constant;
+`simplifycfg,adce` delete the block; `verify` checks IR). Eval pipeline:
+`opt -passes="oracle-pass,simplifycfg,adce,verify"`. Analysis-only
+invocations (`-disable-output`) do NOT persist IR changes.
 
 ---
 
 ## 2. Repository layout
 
 ```
-smt-compiler-oracle/            (branch cgo-research; tags: v1.0-course-submission, v2.0-overflow-core)
+ODeSSy/                          (branch cgo-research)
 ├── OraclePass/
 │   ├── OraclePass.cpp          # the pass (§3)
 │   ├── Z3Encoder.h / .cpp      # IR -> Z3 translation + fact primitives (§4)
 │   ├── FactEncoder.h / .cpp    # HEAVY tier policy module (§9)
-├── build/                      # cmake+ninja -> OraclePass.so (3 source files in CMakeLists)
-├── tests/test_phi{1..8}*.ll    # 8 light-tier tests; *_sat* expect SAT, else UNSAT
-├── tests/test_heavy_*.ll       # 3 heavy-tier tests: range_load (RM), scev_loop (SCEV),
-│                               # range_call (RA); light=SAT, heavy=UNSAT with labeled core.
-│                               # run_tests.sh is NOT yet tier-aware -> these show as
-│                               # expected FAILs in the light gate (known issue, §8)
-├── run_tests.sh                # regression gate; 8/8 among test_phi*
-├── run_zlib.sh                 # audit harness; SPECS/OPTS/TIMEOUT_SECS/TIER knobs;
-│                               # TIER=heavy uses _heavy stems (separate logs/.ll)
-├── run_zlib_perf.sh            # perf protocol v2; RUNS/SIZES/LEVEL/COOLDOWN/TIER knobs;
-│                               # TIER=heavy writes evaluation/perf_zlib_heavy.csv
-├── run_zlib_behavioral.sh      # byte-identity soundness check
-├── make_perf_report.py         # perf CSV -> report; [in] [out] [--specs both] (filters
-│                               # rows/summaries; 'none' always kept as reference)
-├── plot_smt_latencies.py       # per-verdict latency stats + 2x2 histograms; default glob
-│                               # logs/compilations/*_analysis.txt (audit logs); pass the
-│                               # perf logs (logs/compilations/{signed,unsigned,both}.*.txt)
-│                               # explicitly to plot the perf experiment
-├── evaluation/                 # .ll files, perf_zlib.csv, perf_zlib_report.csv (+_both, +heavy variants)
-├── logs/compilations/          # per-module verdict logs (stem-derived, idempotent)
-└── logs/opt_runs/              # captured opt stdout/stderr
+├── CMakeLists.txt              # PORTABLE (macOS/Linux): Z3 via find_path/
+│                               # find_library; if(APPLE) -undefined dynamic_lookup
+├── build/                      # UNTRACKED. cmake+ninja -> OraclePass.so
+├── tests/test_phi{1..8}*.ll    # 8 light-tier tests; *_sat* => SAT, else UNSAT
+├── tests/test_heavy_*.ll       # 3 heavy-tier tests (RM/SCEV/RA); light=SAT,
+│                               # heavy=UNSAT with labeled core. run_tests.sh is
+│                               # NOT tier-aware -> these show as 3 expected FAILs
+├── run_tests.sh                # regression gate; self-locating ROOT
+├── run_zlib.sh                 # audit harness (single TU, deflate.c);
+│                               # SPECS/OPTS/TIMEOUT_SECS/TIER knobs; self-locating
+├── run_zlib_perf.sh            # perf protocol v3: v2 + PARALLEL oracle stage
+│                               # (JOBS=N processes over TUs; JOBS=1 == old serial;
+│                               # ORACLE_S = stage wall-clock). TIER=heavy writes
+│                               # evaluation/perf_zlib_heavy.csv
+├── make_perf_report.py         # [in] [out] [--specs both]; 'none' always kept
+├── plot_smt_latencies.py       # default glob = *_analysis.txt audit logs; pass
+│                               # perf logs (logs/compilations/{spec}.{tu}.txt)
+│                               # explicitly to plot a perf run
+├── evaluation/                 # tracked: CSVs, reports, archive/ (paper evidence)
+├── logs/, perf_test/           # UNTRACKED scratch (see archival convention §8)
 ```
-Sibling benchmark repos in `~/michigan/pl/`: zlib (primary), zstd, openssl,
-polybench, lz4, boringssl, libsodium, rodinia, npb. zlib compiles raw with
-`-DHAVE_UNISTD_H -D_LARGEFILE64_SOURCE=1`.
+Benchmarks live BESIDE the repo (`<repo-parent>/zlib` etc.); scripts are
+self-locating (`ROOT` from script path, `PL_ROOT` = parent) and every path is
+env-overridable. zlib compiles raw with `-DHAVE_UNISTD_H -D_LARGEFILE64_SOURCE=1`.
+NOTE: the Mac's zlib is a fresh clone of madler/zlib develop (traps 125/1222/
+1299 vs WSL's 125/1219/1296 — version drift, not a bug). TODO: pin zlib
+commit alongside the LLVM pin for exact cross-machine parity.
 
-Build: `cd build && ninja`. Expect ~11 benign deprecation warnings
-(`BranchInst` API churn on trunk — cosmetic; do not "fix" mid-experiment).
+Build: `cd build && ninja`. Expect ~11 benign BranchInst deprecation
+warnings (trunk API churn at the pinned commit — cosmetic, do not "fix").
 
 ---
 
@@ -96,381 +104,360 @@ Build: `cd build && ninja`. Expect ~11 benign deprecation warnings
 Members: `bool VacuityCheck` (audit), `bool HeavyMode` (tier),
 `unsigned QueryTimeoutMs` (default 10000).
 
-**Pipeline registration parses parameters** (ride the pass name). Two
-orthogonal axes, all IMPLEMENTED:
-- `oracle-pass`                → perf mode, light tier (default)
-- `oracle-pass<light>`         → explicit alias; `<light;heavy>` is rejected
-- `oracle-pass<heavy>`         → perf mode, heavy tier (§9)
-- `oracle-pass<vacuity>`       → audit mode
-- `oracle-pass<vacuity;heavy;timeout=3000>` → parameters compose freely
-Unknown parameters rejected. **Light must stay byte-for-byte identical to
-pre-tier behavior** — the tier split doubles as the facts ablation; any
-change to light-tier output is a bug. Heavy runs print `[tier: heavy]` per
-function. LVI/SCEV analyses are fetched from the FAM only in heavy mode.
+**Pass parameters** (parsed from the pass name; unknown params rejected):
+- `oracle-pass` → perf mode, light tier (default); `<light>` explicit alias
+- `oracle-pass<heavy>` → heavy tier (§9); `<light;heavy>` rejected
+- `oracle-pass<vacuity>` → audit mode; `<vacuity;heavy;timeout=3000>` composes
+**Light must stay byte-for-byte identical to pre-tier behavior** (the tier
+split doubles as the facts ablation). Heavy prints `[tier: heavy]`; LVI/SCEV
+fetched from FAM only in heavy mode.
 
-**Per-function flow (`run`):** unchanged from before the tier work except
-step 5 gains Phase 2.5:
-1. Per-module log `logs/compilations/<stem>.txt` (stem from module
-   identifier; first function truncates, rest append; rerun overwrites).
-2. **Hunter**: scan blocks for `llvm.ubsantrap` / `llvm.trap` calls.
-3. **Anchor**: single-predecessor trap block ending in a conditional branch;
-   multi-predecessor traps skipped (~9/26 signed single-TU — coverage lead).
-   Prints `Trap source: file:line` from DebugLoc when input has `-g`.
-4. Fresh `Z3Encoder Encoder(QueryTimeoutMs)` per trap;
-   `enableUnsatCores()` in audit mode.
-5. `tryEliminateTrap(...)`:
-   - **Phase 0 — dominating guards.** Dom-tree walk up from PredBB; for each
-     dominator D with a 2-way conditional branch whose one outgoing EDGE
-     dominates PredBB, assert that edge's condition (polarity GVal). Logged
-     `Guard[i] (true|false edge of 'bb'): <icmp ...>`. Sound incl. loops
-     (SSA + last-visit argument).
-   - **Phase 0.5 — dominating `llvm.assume` facts.**
-   - **Phase 1 — backward slice.** Boundaries (free variables): loads, GEPs,
-     loop-HEADER phis, alien calls. Non-header phis recurse via
-     `collectPhiConditions`. Guards sliced too.
-   - **Phase 2 — forward encode** in RPO (defs before uses).
-   - **Phase 2.5 (HEAVY ONLY)** — FactEncoder walks the encoder's recorded
-     free variables and asserts RM/RA/KB/LVI/SCEV facts, context-side
-     (pre-push), tracked with labels in audit mode. Logs
-     `[heavy] N analysis fact(s) on M boundary value(s)`.
-   - **Phase 3 — assert & solve.** Audit: guards tracked `G0..Gn`, `push()`,
-     trap tracked `TRAP`, check; on UNSAT log core (BEFORE pop), `pop()`,
-     re-check context alone → UNSAT ⇒ `[VACUOUS]`, refuse to eliminate.
-   - **Containment**: try/catch (`z3::exception`, `std::exception`) →
-     `[Skip]`, trap kept. Timeout ⇒ `UNKNOWN (Solver gave up)` ⇒ kept.
-6. **Kill**: `Br->setCondition(ConstantInt i1)`; physical removal is
-   simplifycfg+adce's job.
+**Per-function flow (`run`):**
+1. Per-module log `logs/compilations/<stem>.txt` (stem from module id;
+   truncate-then-append; idempotent across reruns).
+2. **Hunter**: scan blocks for `llvm.ubsantrap`/`llvm.trap` calls.
+3. **Anchor**: single-predecessor trap block ending in conditional branch;
+   multi-pred skipped (~9/26 signed single-TU — coverage lead).
+4. Fresh `Z3Encoder` per trap (no cross-trap state — this is what makes
+   Level-2 threading safe); `enableUnsatCores()` in audit.
+5. `tryEliminateTrap(...)`: Phase 0 dominating guards (dom-tree edge walk);
+   Phase 0.5 dominating `llvm.assume`s; Phase 1 backward slice (boundaries:
+   loads, GEPs, loop-header phis, alien calls; non-header phis via
+   `collectPhiConditions`); Phase 2 forward encode in RPO; Phase 2.5 (HEAVY
+   only) FactEncoder boundary facts; Phase 3 assert guards (tracked G0..Gn in
+   audit), `push()`, trap cond (`TRAP`), check; UNSAT+audit => core, `pop()`,
+   context-only re-check => `[VACUOUS]` refuses. try/catch containment =>
+   `[Skip]`; timeout => `UNKNOWN` => kept.
+6. **Kill**: fold branch condition to the constant selecting the surviving
+   edge; simplifycfg+adce do physical removal.
 
-**Log tokens (load-bearing for scripts):** `UNSAT`, `SAT (WARNING`,
-`UNKNOWN (Solver gave up`, `[vacuity-ok]`, `[VACUOUS]`, `[Skip]`, `[Abort]`,
-`Unsat core:`, `Trap source:`, `Guard[`, `[tier: heavy]`, `[heavy]`,
-`Fact[RM:` / `Fact[RA:` / `Fact[KB:` / `Fact[LVI:` / `Fact[SCEV:`.
-Identity in audit mode: #UNSAT-lines = #vacuity-ok + #VACUOUS.
+**Log tokens (load-bearing):** `UNSAT`, `SAT (WARNING`, `UNKNOWN (Solver gave
+up`, `[vacuity-ok]`, `[VACUOUS]`, `[Skip]`, `[Abort]`, `Unsat core:`,
+`Trap source:`, `Guard[`, `[tier: heavy]`, `[heavy]`, `Fact[RM:/RA:/KB:/LVI:/SCEV:`.
 
 ---
 
 ## 4. Z3Encoder — IR → QF_BV (mechanism layer)
 
-One context+solver per trap query. `ValueMap: Value* -> z3::expr`.
+One context+solver per trap query (thread-safe pattern: contexts are never
+shared). `ValueMap: Value* -> z3::expr`.
 
-**The i1 invariant** (source of the original crash, now totalized): icmp
-results & bool constants are Z3 **Bool**; everything else a **bit-vector**
-of its LLVM width; pointers/aliens free 64-bit BVs. `asBool(e)` (BV≠0) and
-`asBV(e, w)` (Bool→ite 0/1; resize via zext/extract) make every bridge
-total. i1 icmp operands unified to 1-bit BVs; `trunc iN->i1` yields Bool.
-Constants: exact via uint64 overload; >64-bit via decimal string
-(i128-safe). NEVER cast a constant through `(unsigned)`.
+**i1 invariant**: icmp results & bool constants are Bool; all else BV of LLVM
+width; pointers/aliens free 64-bit BVs; `asBool`/`asBV` totalize every
+bridge. Constants exact (uint64 overload / decimal string, i128-safe); NEVER
+cast through `(unsigned)`.
 
-**Encoded:** BinaryOps add/sub/mul/sdiv/udiv/srem/urem, and/or/xor (Bool at
-W==1), **shl/lshr/ashr** (shift≥W poison in LLVM, 0 in SMT — sound for
-defined executions); **nsw/nuw flags as free facts** (bv*_no_overflow/
-underflow; poison argument); all 10 ICmp predicates; trunc/zext/sext;
-ExtractValue over the FULL `{s,u}{add,sub,mul}.with.overflow` family (index
-0 = wrapped result, index 1 = overflow bit via exact Z3 builtins);
-fshl/fshr, umax/umin/smax/smin, abs, bswap; Select → ite; non-loop-header
-**PHI** → nested ite gated by memoized CFG reachability
-(`Reach(B) = OR over preds P: Reach(P) ∧ EdgeCond(P→B)`, cache keyed
-**(Root, BB, PhiBB)** — 2-key cache was a real cross-PHI poisoning bug;
-back edges skipped via recursion-stack set); switch edges (case equality /
-default disequality conjunction). Free variables: loads, GEPs, loop-header
-phis, alien calls, vector ops, unknowns, alien terminator edges.
+**Encoded:** binops incl. shl/lshr/ashr; nsw/nuw as free facts; 10 icmp
+predicates; trunc/zext/sext; full `{s,u}{add,sub,mul}.with.overflow`;
+fshl/fshr/min/max/abs/bswap; select; non-header PHIs via memoized CFG
+reachability (cache key (Root, BB, PhiBB)); switch edges. Free vars: loads,
+GEPs, loop-header phis, alien calls, vectors, unknowns, alien edges.
 
-**Boundary bookkeeping (new):** every free-variable creation is recorded in
-creation order in `FreeVars`; `getFreeVariables()` exposes the boundary set
-to the heavy tier. Recording happens in light too (vector push only — no
-solver/log effect, byte-identity preserved).
+**Boundary bookkeeping:** every free-var creation recorded in order in
+`FreeVars`; `getFreeVariables()` exposes the boundary set (heavy tier).
 
-**Fact primitives (new, mechanism only — policy lives in FactEncoder):**
-- `assertRange(V, ConstantRange, Label)` — four extreme bounds
-  (uge/ule/sge/sle), trivial bounds skipped, full/empty sets refused (empty
-  = LVI "dead point"; importing it would fabricate a vacuous context).
-  Width sanity-checked against V's type. Sound for wrapped ranges (bounds
-  weaker there). Exact wrapped-range encoding deliberately deferred.
-- `assertKnownBits(V, KnownBits, Label)` — `(X & Zero)==0 ∧ (X & One)==One`;
-  unknown/conflicting masks refused.
-- `bvConst(APInt)` — width-exact, i128-safe (decimal-string path).
-- Label nonempty ⇒ tracked assertion (eligible for cores); empty ⇒ plain.
-
-**Audit plumbing:** push/pop (context|trap boundary), enableUnsatCores,
-assertConditionTracked, getUnsatCore (valid only immediately after an UNSAT
-check, BEFORE pop).
+**Fact primitives (mechanism; policy in FactEncoder):**
+`assertRange(V, CR, Label)` — four extreme bounds, trivial bounds skipped,
+full/empty sets refused; width sanity-checked. `assertKnownBits(V, KB,
+Label)` — mask assertions, unknown/conflict refused. `bvConst(APInt)` —
+width-exact, i128-safe. Label nonempty => tracked (cores).
 
 ---
 
 ## 5. Audit methodology (the "genuinity" chain) — all implemented
 
-A claimed UNSAT is only counted after surviving, in order:
-1. **Cross-opt-level stability** (O1 == O3 verdicts on same source).
-2. **Vacuity check** (audit mode, automatic): after UNSAT, drop the trap
-   condition; guards+facts alone must be SAT. Measured vacuity rate on
-   zlib, BOTH tiers: **0%**. In heavy tier this is ALSO the alarm for a
-   wrong fact import (a bad LVI/SCEV/RA assertion = contradictory context).
-3. **Unsat core** (audit mode, automatic): healthy shape `Gk [Gm...] TRAP`,
-   now possibly with `RM:/RA:/KB:/LVI:/SCEV:` labels — the paper's "which
-   analysis mattered" evidence. Core without `TRAP` = guards self-refuting
-   (bug). Core = only `TRAP` = trap condition encoded false (bug). Cores
-   show 1–2 of ~12 guards used ⇒ guard-pruning is a compile-time lead.
-4. **Ablation** for mechanism claims: shift encoding (signed UNSATs 2→0,
-   unsigned 41→25 / 24→8) and the one-flag light-vs-heavy tier split.
-5. **Manual source mapping** via `Trap source:` + guard IR text.
-6. **Behavioral equivalence** (`run_zlib_behavioral.sh` + §7 evidence).
+1. Cross-opt-level stability (O1 == O3). 2. Vacuity check (context alone must
+be SAT; measured 0% on zlib both tiers; in heavy this is the bad-fact-import
+alarm). 3. Unsat cores (healthy: `Gk ... TRAP`, optionally RM:/RA:/KB:/LVI:/
+SCEV: labels — the "which analysis mattered" evidence; cores show 1–2 of ~12
+guards used => guard-pruning lead). 4. Ablations (shift encoding: signed 2→0,
+unsigned 41→25/24→8; light-vs-heavy tier flag). 5. Manual source mapping
+(`Trap source:` + guard IR). 6. Behavioral equivalence (byte-identity + §7).
 
-**The worked example (paper-ready).** zlib `deflate.c:1018`,
-`RANK(f) = ((f)*2) - ((f)>4 ? 9 : 0)`. Core = `{G0: icmp sgt i32 %x, -1,
-TRAP}`; upper bound from the encoded background slice; `f*2` travels
-through a shift (the ablation's smoking gun). Proven dead in `deflate` AND
-its inlined copy in `deflateParams` — one source check, two eliminations,
-~2–5 ms each.
+**Worked example (paper-ready):** zlib `deflate.c:1018` RANK macro; core
+`{G0: f > -1, TRAP}`; bound travels through a shift; proven in `deflate` and
+its inlined copy in `deflateParams`; ~2–5 ms each.
 
 ---
 
 ## 6. Empirical status
 
-**Single-TU audit (deflate.c, `run_zlib.sh`) — LIGHT tier:**
-
+**Single-TU audit (deflate.c, `run_zlib.sh`) — LIGHT tier (x86/WSL):**
 | spec | opt | traps | UNSAT | SAT | vacuous | skips |
 |---|---|---|---|---|---|---|
 | signed | O1/O3 | 26 | 2 | 15 | 0 | 0 |
 | unsigned | O1 | 457 | 50 | 401 | 0 | 0 |
 | unsigned | O3 | 438 | 33 | 391 | 0 | 0 |
 
-(9 signed traps skipped by the Anchor: multi-predecessor.)
+**HEAVY ≡ LIGHT on zlib** (verdict sequences diff clean). Fact diagnosis
+(unsigned O1): SCEV ×2 non-trivial (data-dependent while loops => full-set
+ranges), RA ×15 (real inferred attrs, [0,4)/[0,6)), RM≈0 (no !range in C IR),
+KB empty on raw loads, LVI redundant with exact guard encoding. No fact label
+NECESSARY in any core. Heavy MECHANISM validated by 3 targeted tests
+(RM/SCEV/RA each: light SAT => heavy UNSAT with correct core label);
+vacuous=0 skips=0 everywhere. Heavy's expected payoff: affine benchmarks
+(PolyBench/Rodinia/NPB) — pending experiment.
 
-**HEAVY tier on the same inputs: IDENTICAL verdicts (heavy ≡ light).**
-Verdict sequences diff clean (checked). Fact-source diagnosis on unsigned
-O1: `Fact[SCEV` ×2 (zlib loops are data-dependent `while`s ⇒ full-set
-ranges), `Fact[RA` ×15 (real inferred attributes, e.g. [0,4), [0,6)),
-RM ≈ 0 (C IR carries no !range), KB empty on raw loads, LVI redundant with
-our exact guard encoding. No fact label is NECESSARY in any core (13 cores
-*mention* fact labels — Z3 cores aren't minimal; convenient, not
-necessary). This is the honest ablation row: on zlib, remaining SATs need
-memory modeling / loop invariants, or are genuinely reachable (§7). The
-heavy MECHANISM is validated by the 3 targeted tests (RM/SCEV/RA each
-proving a light-SAT trap UNSAT with the correct core label) and by
-vacuous=0, skips=0 everywhere. Heavy's expected payoff: affine
-constant-trip-count workloads (PolyBench/Rodinia/NPB) — the pending
-experiment.
+**Whole-library perf (light, x86/WSL, v2 protocol):** eliminations signed
+10/125, unsigned 138/1219, both 142/1296; oracle vs O3∘O3 control (min):
+signed ≈0, unsigned ≈+0.8%, **both +2.2% flat across sizes (warm-path)**;
+sanitizer overhead 5.6% → 3.0% ⇒ **11% of checks = ~45% of overhead**;
+`.text` −656 B; control ≈ base validates attribution. **Compile cost:
+11–233 ms/trap serial** — the problem §10 attacks.
 
-**Whole-library perf run (light tier; 15 TUs + unsanitized minigzip, level
-9, 8/64/512 MB corpora, 10 shuffled interleaved reps, min-statistic):**
-- Configs: `base` = clang -O3 (+aggressive inlining) → llc; `base2x` =
-  + `opt default<O3>` (control); `oracle` = + oracle+cleanup + `default<O3>`.
-  Backend is pure `llc -O3 -relocation-model=pic` (never `clang -O3 -c` on
-  .ll — it reruns the mid-end and destroys config distinctions).
-- Eliminations: signed 10/125, unsigned 138/1219, both 142/1296.
-- Runtime, oracle vs base2x (min-based): signed ≈0; unsigned ≈+0.8%;
-  **both +2.2/+2.1/+2.1% at 8/64/512 MB — FLAT ⇒ warm-path effect.**
-- Overhead ceiling vs unsanitized: signed ~1%, unsigned ~2.6%, both ~5.6%;
-  oracle recovers 5.6%→3.0% ⇒ **11% of checks = ~45% of overhead**.
-  Superadditive both ways ⇒ combined spec = headline configuration.
-- `base2x ≈ base` (±0.5%) ⇒ O3 is a de-facto fixpoint here; control
-  validates attribution. Binary size: both.oracle `.text` −656 B vs base2x
-  (−0.33%; ≈4.6 B/trap ≈ cmp+jcc+ud2).
-- **Compile cost (the open problem): 11–233 ms/trap** (1.4 s signed /
-  289 s unsigned / 170 s both, whole lib). Causes: guard chains grow with
-  trap index + O(traps × function-size) re-slice quadratic. Mitigations
-  (none implemented): parallelize TUs, parallelize traps, guard pruning,
-  per-function encoder/RPO reuse.
+**macOS parity + M5 speed (2026-07-27 smoke run, RUNS=3 SIZES="8 64"):**
+- Verdict parity: signed 10/125 identical; unsigned 144/1222, both 148/1299
+  (vs 138/1219, 142/1296 — zlib version drift + arm64 IR, rates match:
+  11.8%/11.4% vs 11.3%/11.0%). run_tests: 8/8 + 3 expected heavy FAILs —
+  same across OS/arch/Z3-version. Strong reproducibility datapoint.
+- **M5 SMT latency ≈ 3.8x faster than WSL**: 6.7 vs 11.4 ms/trap (signed),
+  60.9 vs 233 (unsigned), 32.5 vs 128 (both). Serial oracle stage: 74 s
+  unsigned, 42 s both.
+- Mac runtime/size columns are NOT usable: ±1% noise at 3 reps and Mach-O
+  page-aligned segments make `.text` deltas invisible (+0 B artifacts).
+  Perf truth stays on x86.
 
-**Perf-run SMT latency logs** live at
-`logs/compilations/{signed,unsigned,both}.<tu>.txt` (45 files, ~2640
-queries) — pass them explicitly to `plot_smt_latencies.py` (its default
-glob only sees `*_analysis.txt` audit logs).
+**SMT latency logs from perf runs** live at
+`logs/compilations/{signed,unsigned,both}.<tu>.txt` — pass them explicitly to
+`plot_smt_latencies.py` (default glob only sees `*_analysis.txt`).
 
 ---
 
-## 7. Dynamic findings from the 512 MB corpus
+## 7. Dynamic findings from the 512 MB corpus (x86)
 
-All `unsigned`/`both` binaries — including untouched baselines — die SIGILL
-(rc=132) on the 512 MB corpus, at the same input point; never at 8/64 MB;
-never under signed/none. A real intentional unsigned wraparound in zlib
-accumulates past a threshold between 64 and 512 MB. Uses:
-- **Spec-mismatch demonstrated dynamically**: unsigned-sanitized zlib cannot
-  compress large files at all.
-- **Soundness evidence**: oracle binaries trap exactly where baselines trap
-  (the firing check was SAT-kept).
-- Data consequence: 512 MB rows valid within-spec, INVALID vs `none`.
-- TODO (10 min): identify the wrapping line — one `-O1 -g` sanitized
-  minigzip + `gdb -batch -ex run -ex bt`.
+All `unsigned`/`both` binaries — baselines included — die SIGILL (rc=132) on
+the 512 MB corpus; never at 8/64 MB; never signed/none. Real intentional
+unsigned wraparound in zlib. Uses: spec-mismatch demonstrated dynamically;
+soundness evidence (oracle traps exactly where baseline traps); 512 MB rows
+valid within-spec, INVALID vs `none`. TODO (10 min): identify the wrapping
+line with one `-O1 -g` build + gdb bt.
 
 ---
 
 ## 8. Known issues / hygiene
 
-- **run_tests.sh is not tier-aware**: the three `tests/test_heavy_*.ll`
-  files show as expected FAILs (light gate runs them light ⇒ SAT vs UNSAT
-  expectation). Fix: run `*heavy*` files in a separate section with
-  `oracle-pass<vacuity;heavy>`; also re-run the 8 phi tests under heavy
-  (expectations unchanged — facts only add constraints). Until then:
-  8/8 among `test_phi*` = pass.
+- **run_tests.sh not tier-aware**: 3 `test_heavy_*.ll` files are expected
+  FAILs under the light gate. Fix: run `*heavy*` in a separate section with
+  `oracle-pass<vacuity;heavy>` + re-run phi tests under heavy (expectations
+  unchanged). Until then: 8/8 among `test_phi*` = pass.
 - **Anchor skips multi-predecessor trap blocks** (~35% of signed single-TU
-  traps never queried). Real coverage lead.
-- **Quadratic + guard-chain compile cost** (§6). Blocks sha256/zstd
-  (timeouts at 600 s with 2k+ traps/function). Parallelization is next (§10).
-- Deprecation warning wall (BranchInst API) — cosmetic, leave alone.
-- Trap counting: use `call void @llvm.ubsantrap` (call sites only), not a
-  bare grep (counts the declare line).
-- Perf corpora excluded from git; regenerate from zlib sources.
-- Measurement doctrine: deterministic workload ⇒ **min** statistic;
-  shuffled interleaved reps; never on battery / non-Best-Performance
-  (WSL2 throttling once produced fake ±20% "results").
-- **macOS portability of harness scripts**: they assume GNU userland
-  (`timeout`, `stat -c`, `shuf`, `size` output format). On Mac either
-  `brew install coreutils` and use g-prefixed tools, or keep benchmarking
-  on Linux (WSL2/CloudLab) — recommended anyway for x86 comparability (§11).
-- sha256 unsigned UNSAT avalanche (guard chaining): still un-audited; audit
-  (vacuity + cores) before counting.
-- Benchmarks where unsigned all-SAT is CORRECT: sha256 (mod-2^32 by design;
-  signed spec emits ZERO traps there — crypto is all-unsigned, a finding).
+  traps). Coverage lead.
+- **Serial in-function compile cost** (guard chains + O(traps×function-size)
+  re-slice quadratic): blocks sha256/zstd (600 s timeouts). §10 Level-2 is
+  the fix; guard pruning + encoder reuse are follow-ups.
+- Trap counting: `call void @llvm.ubsantrap` (call sites), never bare grep.
+- **Archival convention**: `logs/` is untracked scratch; when a run backs a
+  published number, snapshot its logs into tracked
+  `evaluation/archive/<date>-<name>/`. Already archived: (do this for the
+  WSL whole-lib perf logs and the heavy-null-result audit logs if not yet).
+- Measurement doctrine: min statistic; shuffled interleaved reps; never on
+  battery/throttled. arm64 runtime numbers never comparable to x86 tables.
+- **macOS one-time environment checklist** (all done on the M5, needed again
+  for any new Mac): Homebrew cmake/ninja/z3/coreutils/bash; gnubin on PATH
+  (GNU stat/timeout/shuf); `brew install bash` (stock bash 3.2 lacks
+  `declare -A`); `export SDKROOT="$(xcrun --show-sdk-path)"` (self-built
+  clang finds no SDK headers without it); Z3 via `-DCMAKE_PREFIX_PATH=
+  /opt/homebrew` if CMake misses it; `size` is BSD on Mac => text_bytes
+  column invalid there. All encoded in CMakeLists + script headers.
+- sha256 unsigned UNSAT avalanche: un-audited; audit before counting.
+- sha256 signed emits ZERO traps (crypto all-unsigned — a finding).
 
 ---
 
-## 9. HEAVY tier — IMPLEMENTED (was the spec; now documentation)
+## 9. HEAVY tier — implemented (summary)
 
-Architecture = mechanism/policy split:
-- **Z3Encoder** (mechanism): records the boundary set (`FreeVars`), exposes
-  `assertRange` / `assertKnownBits` primitives (§4). No LLVM-analysis
-  dependencies — stays a pure IR→Z3 translator.
-- **FactEncoder** (policy, `OraclePass/FactEncoder.{h,cpp}`): constructed
-  per trap in Phase 2.5 (heavy only) with (Z3Encoder&, LVI*, SE*, DT, DL,
-  Audit, Log). Walks integer-typed boundary values; fires five sources,
-  each labeled and logged `Fact[<SRC>:<n>] <val> in <range>`:
-  1. **RM** — `!range` metadata on loads/calls
-     (`getConstantRangeFromMetadata(*MD)`).
-  2. **RA** — `range` ATTRIBUTE on call-sites / callee returns
-     (`CallBase::getRange()`) and on function parameters
-     (`Function::getParamAttribute(ArgNo, Attribute::Range)`).
-  3. **KB** — `computeKnownBits(V, DL)`; masks asserted unless unknown.
-  4. **LVI** — `getConstantRange(V, PredBB->getTerminator(),
-     UndefAllowed=false)`; POINT fact ⇒ gated on V's def dominating PredBB
-     (Arguments always pass; other non-instructions skipped).
-  5. **SCEV** — loop-header phis only (any free phi IS a header phi, since
-     non-header phis are encoded as ite chains); `getUnsignedRange` +
-     `getSignedRange` of `getSCEV(Phi)`; SCEVUnknown/CouldNotCompute skipped.
-- Facts are context-side (asserted before `push()`): the vacuity audit
-  covers them and the pop keeps them for the context-only re-check.
-- Soundness: value facts carry the nsw poison-semantics argument (violation
-  ⇒ poison ⇒ UB once branched on); LVI is dominance-gated; empty ranges
-  refused; a fact never moves a boundary (free-plus-constrained, never
-  sliced through).
+Mechanism/policy split: Z3Encoder records boundaries + provides assertRange/
+assertKnownBits; FactEncoder (per trap, Phase 2.5, heavy only) fires five
+labeled sources per integer boundary value:
+RM (`!range` metadata, loads/calls), RA (`range` attribute:
+`CallBase::getRange()` + param attrs), KB (`computeKnownBits(V, DL)`),
+LVI (`getConstantRange(V, PredBB->getTerminator(), UndefAllowed=false)`,
+dominance-gated), SCEV (loop-header phis only; unsigned+signed ranges;
+SCEVUnknown/CouldNotCompute skipped). Facts are context-side (pre-push) =>
+vacuity-audited; labels make cores attribute proofs. Soundness: poison
+argument for value facts; dominance gate for LVI; empty ranges refused;
+facts never move a boundary. Deferred ideas: context-sensitive KB, exact
+wrapped ranges, SCEV backedge-count relations, derived post-conditions.
 
-Remaining heavy-tier ideas (deliberately deferred): context-sensitive
-KnownBits (AC/CtxI/DT variant), exact wrapped-range encoding (disjunction),
-SCEV backedge-count relations, and generally any *derived* (non-imported)
-post-condition — the advisor-flagged "lightweight but more powerful
-post-condition derivation" future-work item.
+**CRITICAL FOR §10: LVI and ScalarEvolution mutate internal caches on every
+query — they are NOT thread-safe. DominatorTree/LoopInfo are const-query
+safe. Hence: heavy tier stays serial in Level-2 v1.**
 
 ---
 
-## 10. NEXT TASKS (in order — this is what the next conversation builds)
+## 10. PARALLELISM — Level 1 DONE, Level 2 SPEC (the next conversation's task)
 
-**Context: CGO 2027 R2 deadline Sept 10. Minimum viable paper = integer
-overflow spec, done thoroughly. Target = + index-in-bounds spec, multiple
-C/C++ benchmarks, ideally one Julia.**
+### 10.1 Level 1 (DONE, v3 perf script): multi-PROCESS over translation units
+`run_zlib_perf.sh` oracle stage now launches up to `JOBS` concurrent `opt`
+processes (default = CPU count; `JOBS=1` == old serial behavior). TUs are
+independent (separate .ll in/out + per-module logs => no collisions).
+`ORACLE_S` = stage wall-clock; derived per-trap ms in parallel runs is
+wall-clock-based ("latency with parallelism") — label it as such. Failure
+handling: post-wave check that every output .ll exists non-empty, FATAL with
+pointer to the per-TU oracle.log otherwise. Expected effect: unsigned oracle
+stage bounded by the fattest TU (deflate.c) instead of the sum — on the M5
+roughly 74 s → ~20-35 s; bigger wins on many-TU benchmarks (OpenSSL).
+Limit: Level 1 cannot speed up a single big file — that is Level 2.
+NOTE: `run_zlib.sh` (dev harness) is single-TU: Level 1 does not apply;
+it is the primary beneficiary of Level 2.
 
-1. **Parallelize SMT queries.** The single most valuable engineering task:
-   it speeds the development cycle itself, not just the benchmark table.
-   Per-trap queries are fully independent (fresh Z3Encoder per trap, no
-   shared state) ⇒ thread pool over traps within a function (collect trap
-   sites first; run tryEliminateTrap in parallel with per-thread log
-   buffers merged in order; keep IR mutation serialized — collect verdicts
-   in parallel, apply kills single-threaded after). TU-level parallelism is
-   free in the harness (`xargs -P` / GNU parallel over opt invocations) and
-   should land FIRST — zero pass code. Sweep #threads and per-query timeout
-   (advisor-requested sweeps).
-2. **Migrate long runs to the CloudLab server** (x86, stable clocks, many
-   cores). Rerun zlib perf there; then **OpenSSL end-to-end** (known high
-   UNSAT density + the scaling problem parallelism fixes). The sha256
-   avalanche audit folds in here (needs the parallelism/timeout headroom).
-3. **Sanitizer × benchmark slowdown matrix.** X = sanitizer specs, Y =
-   benchmarks, cell = sanitizer runtime overhead vs unsanitized (min-based);
-   plus a per-benchmark "all sanitizers on" vector column. Sort by overhead;
-   target the biggest cells for elimination experiments — pick benchmarks
-   where there is actually overhead to recover. Sanitizer candidates for BV
-   reasoning (triaged): bounds/local-bounds, shift, unsigned-shift-base,
-   integer-divide-by-zero, the implicit-conversion family (truncation /
-   sign-change — huge trap counts, pure range checks), vla-bound;
-   enum/bool need the heavy tier's !range facts; pointer/null checks
-   expressible but low-value; FP and type-identity checks out of scope.
-   Per new spec: 10-minute IR triage first (compile one TU, eyeball trap
-   blocks vs the Anchor's single-pred assumption).
-4. **Heavy-tier payoff experiment: PolyBench** (SCEV's home turf: affine,
-   constant trip counts). Also Rodinia/NPB. This is where light-vs-heavy
-   should separate; zlib's null result is the other half of that table.
-5. **Index-in-bounds spec** (`-fsanitize=bounds`, statically-known array
-   sizes; check the Kronecker-product / fixed-size-array angle; look for
-   Julia/Haskell benchmarks with native bounds checks).
-6. **Slides** from the paper intro: 1. general problem, 2. state of the
-   art, 3. its issues, 4. our approach, 5. contributions.
-7. Standing backlog: tier-aware run_tests.sh; multi-predecessor anchors;
-   guard pruning + per-function encoder reuse; zstd end-to-end; SPEC CPU
-   2017 triage; divide-by-zero-without-traps proof-of-concept (online
-   safety analysis, no sanitizer needed); LLVM Dev Meeting registration /
-   talk decision; circulate draft (UoM, Konstantinos @ UCLA, Nvidia
-   contact).
+### 10.2 Level 2 SPEC: multi-THREADED trap solving inside the pass
+
+**Why threads, not processes:** traps share one parsed module + built
+analyses; a process per trap would re-parse and re-analyze ~N-traps times
+and `opt` has no per-trap selector. Threads share all of it read-only.
+
+**Agreed architecture (decided with owner — do not re-litigate):**
+1. **Pass parameter `threads=N`** parsed like `timeout=` (compose freely:
+   `oracle-pass<vacuity;threads=8>`). Default `threads=1` MUST keep the
+   exact current serial code path — byte-identical logs (it is the
+   regression baseline and the ablation control). Optional `threads=0` =
+   hardware_concurrency.
+2. **Collect phase (serial):** scan the function, build
+   `std::vector<TrapSite>` {TrapBB, TrapCall, PredBB, Br, OvfCondition,
+   TrapOnTrue, DebugLoc-string} — i.e. everything the Hunter+Anchor produce
+   today, WITHOUT solving.
+3. **Solve phase (parallel):** thread pool of N `std::thread`s pulling trap
+   indices from a `std::atomic<unsigned>` counter. Each worker, per trap:
+   fresh `Z3Encoder` (already per-trap today — no sharing), run
+   `tryEliminateTrap` against the FROZEN IR (no kills have happened),
+   write all log output to a PER-TRAP `std::string` via
+   `raw_string_ostream` (change `tryEliminateTrap`'s parameter from
+   `raw_fd_ostream&` to `raw_ostream&` — source-compatible for serial too),
+   store result {IsUnsat, LatencyMs, LogText} in a pre-sized results vector
+   slot (no locking needed — one writer per slot).
+   In parallel mode, suppress the per-trap `errs()` mirroring during solve;
+   emit it (if wanted) at flush time. No IR mutation anywhere in this phase.
+4. **Commit phase (serial, after join):** iterate traps in ORIGINAL order:
+   append each trap's LogText to the module log (=> logs deterministic and
+   grep-identical in structure), and for each IsUnsat verdict apply the
+   kill (`Br->setCondition(constant selecting surviving edge)`). Sum
+   counters (attempts, eliminated, latencies) from the results vector.
+5. **Soundness of frozen-snapshot verdicts:** identical to today's serial
+   argument (HANDOFF §3): a killed branch holds the constant consistent
+   with its surviving edge, which is exactly what any other trap's guard
+   assumed. Snapshot solving is if anything STRONGER than serial (serial
+   sees already-killed branches as constant guards = weaker info), so
+   `threads>1` may in rare guard-chained cases produce MORE UNSATs than
+   serial, never fewer/different-wrong. On zlib expect identical counts.
+6. **Thread-safety constraints (the one real landmine):**
+   - DominatorTree, LoopInfo: const queries, safe to share. OK.
+   - **LazyValueInfo, ScalarEvolution: lazy caches mutate on query — NOT
+     thread-safe. v1 rule: if HeavyMode && threads>1, force threads=1 and
+     log a notice** (`[heavy] threads forced to 1 (LVI/SCEV not
+     thread-safe)`). v2 option (later): a global mutex around FactEncoder's
+     LVI/SE queries.
+   - Z3: separate context per trap (already true) — safe. Never share a
+     z3::context across threads.
+   - `getSafeName` uses pointer addresses — deterministic within a run,
+     already the status quo.
+7. **Timing/accounting:** per-trap LatencyMs unchanged in meaning (solver
+   wall time inside the worker). Function-level "Total SMT Query Latency" =
+   sum over traps (now > wall time — that's fine, it's CPU-ish); "Total
+   DFS & SMT Execution Time" = wall clock and is the headline speedup
+   number. Log the thread count once per function in parallel mode
+   (`[threads: N]` — a NEW token, add to token list).
+8. **Acceptance protocol:**
+   a. `threads=1` (and default): logs byte-identical to current build on
+      tests/ and deflate.c audit runs (diff the files).
+   b. `bash run_tests.sh` unchanged (8/8 + 3 heavy FAILs).
+   c. `SPECS=unsigned bash run_zlib.sh` with the audit invocation switched
+      to `threads=8`: same UNSAT/SAT/vacuous/skip counts (50/401/0/0 at
+      O1); any delta must be investigated (only acceptable direction: extra
+      UNSATs from the snapshot effect, per point 5 — verify via cores).
+   d. Thread sweep (advisor-requested): unsigned deflate O1, threads ∈
+      {1,2,4,8,ncores}, record wall time; produce the scaling table/plot.
+      Also sweep per-query timeout at fixed threads (second advisor sweep).
+   e. Heavy tier: confirm forced-serial notice fires and heavy results are
+      unchanged.
+9. **Implementation order:** (i) refactor tryEliminateTrap to
+   `raw_ostream&` + extract TrapSite collection — behavior-neutral commit,
+   verify byte-identity; (ii) add threads= parsing + results-vector
+   restructure with threads=1 still routed through the identical serial
+   path; (iii) enable the pool; (iv) acceptance; (v) commit + tag
+   `v2.1-parallel`.
+
+### 10.3 After Level 2 (standing roadmap, in order)
+1. CloudLab migration; rerun zlib perf on x86 with JOBS + threads; then
+   **OpenSSL end-to-end** (high UNSAT density; sha256 avalanche audit —
+   vacuity+cores — folds in here).
+2. **Sanitizer × benchmark slowdown matrix** (X = sanitizer specs, Y =
+   benchmarks, cell = overhead vs unsanitized, min-based; plus per-benchmark
+   all-sanitizers vector column). Sort, target biggest cells. BV-suitable
+   sanitizer candidates (triaged): bounds/local-bounds, shift,
+   unsigned-shift-base, integer-divide-by-zero, implicit-conversion family
+   (truncation/sign-change — huge counts, pure range checks), vla-bound;
+   enum/bool need heavy-tier facts; null/nonnull expressible but low-value;
+   FP/type-identity out of scope. Per new spec: 10-min IR triage first
+   (trap-block shape vs the Anchor's single-pred assumption).
+3. Heavy-tier payoff experiment: PolyBench (+ Rodinia/NPB) — SCEV's home
+   turf; zlib's null result is the other half of that ablation table.
+4. Index-in-bounds spec (`-fsanitize=bounds`); Julia/Haskell benchmarks
+   with native bounds checks; Kronecker-product fixed-size-array angle.
+5. Slides from paper intro (problem / SOTA / SOTA issues / approach /
+   contributions).
+6. Backlog: tier-aware run_tests.sh; multi-pred anchors; guard pruning +
+   per-function encoder reuse; zstd; SPEC CPU 2017 triage; divide-by-zero
+   no-trap proof-of-concept; LLVM Dev Meeting decision; circulate draft
+   (UoM, Konstantinos @ UCLA, Nvidia contact); pin zlib commit.
 
 ---
 
-## 11. NEW ENVIRONMENT: macOS (Apple Silicon) setup
+## 11. Environment setup (new machine bring-up)
 
-Goal: develop + unit-test on the Mac; keep perf benchmarking on x86 Linux
-(WSL2 or CloudLab) — arm64 runtime numbers are not comparable to the
-existing tables, and the harness scripts assume GNU userland (§8).
-
+### macOS (Apple Silicon) — as performed on the M5, verified
 ```bash
-# 0. prerequisites
 xcode-select --install
-brew install cmake ninja z3 coreutils
+brew install cmake ninja z3 coreutils bash tree
+echo 'export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH"' >> ~/.zshrc
+echo 'export SDKROOT="$(xcrun --show-sdk-path)"' >> ~/.zshrc
 
-# 1. LLVM trunk (matches the WSL2 setup; ~30-60 min on Apple Silicon, ~50 GB)
-git clone https://github.com/llvm/llvm-project.git ~/pl/llvm-project
-cd ~/pl/llvm-project
-cmake -S llvm -B build -G Ninja \
-  -DCMAKE_BUILD_TYPE=Release \
-  -DLLVM_ENABLE_ASSERTIONS=ON \
-  -DLLVM_ENABLE_PROJECTS="clang" \
-  -DLLVM_TARGETS_TO_BUILD="AArch64;X86" \
-  -DLLVM_ENABLE_ZSTD=OFF
-ninja -C build opt clang llc llvm-config
-export PATH="$HOME/pl/llvm-project/build/bin:$PATH"   # add to shell profile
+# LLVM at the PIN (shallow clone + single-commit fetch)
+git clone --depth 1 https://github.com/llvm/llvm-project.git ~/Project/compiler/llvm-project
+cd ~/Project/compiler/llvm-project
+git fetch --depth 1 origin 3cab3bc6384b5f58cab7140d00d7a527eade010e
+git checkout 3cab3bc6384b5f58cab7140d00d7a527eade010e
+cmake -S llvm -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \
+  -DLLVM_ENABLE_ASSERTIONS=ON -DLLVM_ENABLE_PROJECTS="clang" \
+  -DLLVM_TARGETS_TO_BUILD="AArch64;X86" -DLLVM_INCLUDE_TESTS=OFF \
+  -DLLVM_INCLUDE_EXAMPLES=OFF -DLLVM_INCLUDE_BENCHMARKS=OFF \
+  -DLLVM_PARALLEL_LINK_JOBS=4
+ninja -C build opt clang llc llvm-config       # ~20-40 min on M5
+echo 'export PATH="$HOME/Project/compiler/llvm-project/build/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc && clang --version              # must say 23.0.0git @ 3cab3bc6
 
-# 2. the pass
-git clone <repo> ~/pl/smt-compiler-oracle && cd ~/pl/smt-compiler-oracle
-mkdir -p build && cd build
+# repo + benchmarks (benchmarks live BESIDE the repo)
+git clone git@github.com:AmiraliE1380/ODeSSy.git ~/Project/compiler/ODeSSy
+git clone https://github.com/madler/zlib.git    ~/Project/compiler/zlib
+cd ~/Project/compiler/ODeSSy && mkdir build && cd build
 CC=clang CXX=clang++ cmake -G Ninja \
-  -DLLVM_DIR="$HOME/pl/llvm-project/build/lib/cmake/llvm" ..
-ninja
-bash ../run_tests.sh    # 8/8 among test_phi* = environment is good
+  -DLLVM_DIR="$HOME/Project/compiler/llvm-project/build/lib/cmake/llvm" \
+  -DCMAKE_PREFIX_PATH=/opt/homebrew ..
+ninja && cd .. && bash run_tests.sh             # 8/8 test_phi* (+3 heavy FAILs)
 ```
-Notes: (a) keep X86 in `LLVM_TARGETS_TO_BUILD` so `llc -mtriple=x86_64...`
-can cross-compile for inspection, even though binaries won't run locally;
-(b) Homebrew Z3 lives under `/opt/homebrew` — if CMake doesn't find
-`z3++.h`, add `-DCMAKE_PREFIX_PATH=/opt/homebrew` (check CMakeLists' Z3
-linking section, written against the Linux layout); (c) the `.so` suffix
-override in CMakeLists is fine on macOS (opt loads it); (d) pin the same
-llvm-project commit as WSL2 (`git rev-parse HEAD` there) to avoid API-churn
-drift between machines; (e) benchmark scripts: replace `timeout` /
-`stat -c` / `shuf` with `gtimeout` / `gstat -c` / `gshuf`, or run them on
-Linux.
+Known Mac caveats: text_bytes column invalid (BSD `size`); runtime numbers
+arm64-only (never compare to x86 tables); stock /bin/bash is 3.2 (scripts
+need brew bash 5 via PATH).
+
+### Linux (WSL2 / CloudLab)
+Same pin + cmake flags (drop CMAKE_PREFIX_PATH; GNU userland native). On
+CloudLab: `apt install cmake ninja-build libz3-dev clang` then identical
+steps; scripts run unmodified thanks to self-locating ROOT.
 
 ---
 
 ## 12. Command cheat-sheet
 
 ```bash
-cd ~/michigan/pl/smt-compiler-oracle
-ninja -C build                                    # rebuild pass
-bash run_tests.sh                                 # gate: 8/8 among test_phi* (+3 known heavy FAILs)
-SPECS=signed  bash run_zlib.sh                    # audit, light
-SPECS=signed  TIER=heavy bash run_zlib.sh         # audit, heavy (separate _heavy logs)
-grep -c 'Fact\[' logs/compilations/deflate_integer_unsigned_O1_heavy_analysis.txt
-nohup bash run_zlib_perf.sh > perf_run.log 2>&1 &          # overnight perf, light
-nohup env TIER=heavy bash run_zlib_perf.sh > perf_run_heavy.log 2>&1 &  # -> perf_zlib_heavy.csv
-python3 make_perf_report.py                       # full report
-python3 make_perf_report.py --specs both          # both+none only
-python3 plot_smt_latencies.py logs/compilations/signed.*.txt \
-    logs/compilations/unsigned.*.txt logs/compilations/both.*.txt   # perf-run latencies
-bash run_zlib_behavioral.sh                       # byte-identity soundness
+cd <repo>
+ninja -C build                                     # rebuild pass
+bash run_tests.sh                                  # 8/8 test_phi* (+3 heavy FAILs)
+SPECS=signed  bash run_zlib.sh                     # audit, light (2/15/0/0)
+SPECS=signed  TIER=heavy bash run_zlib.sh          # audit, heavy (_heavy logs)
+JOBS=8 RUNS=3 SIZES="8 64" COOLDOWN=15 bash run_zlib_perf.sh   # parallel smoke
+nohup bash run_zlib_perf.sh > perf_run.log 2>&1 &  # full perf (x86 only!)
+python3 make_perf_report.py [--specs both]
+python3 plot_smt_latencies.py logs/compilations/{signed,unsigned,both}.*.txt
 opt -load-pass-plugin=build/OraclePass.so \
     -passes="oracle-pass<vacuity;heavy;timeout=3000>" -disable-output some.ll
 ```
