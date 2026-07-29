@@ -11,6 +11,9 @@
 #   OPTS="O1"             restrict opt levels (default "O1 O3")
 #   TIMEOUT_SECS=NNN      per-opt-run wall clock (default 600)
 #   TIER=heavy            precision tier: light (default) | heavy
+#   THREADS=N             Level-2: per-trap worker threads inside opt
+#                         (default 1 = serial reference; verdicts are
+#                         THREADS-invariant by construction)
 #   INLINE_AGGRESSIVE=0   disable the inliner cranking
 #   ZLIB_SRC=/path        zlib sources (default: <repo-parent>/zlib)
 #
@@ -26,11 +29,12 @@ PL_ROOT="${PL_ROOT:-$(dirname "$ROOT")}"
 ZLIB_SRC="${ZLIB_SRC:-$PL_ROOT/zlib}"
 TIMEOUT_SECS=${TIMEOUT_SECS:-600}
 TIER=${TIER:-light}
+THREADS=${THREADS:-1}
 case "$TIER" in
-  light) AUDIT_PASSES="oracle-pass<vacuity>"
-         XFORM_PASSES="oracle-pass,simplifycfg,adce,verify" ;;
-  heavy) AUDIT_PASSES="oracle-pass<vacuity;heavy>"
-         XFORM_PASSES="oracle-pass<heavy>,simplifycfg,adce,verify" ;;
+  light) AUDIT_PASSES="oracle-pass<vacuity;threads=${THREADS}>"
+         XFORM_PASSES="oracle-pass<threads=${THREADS}>,simplifycfg,adce,verify" ;;
+  heavy) AUDIT_PASSES="oracle-pass<vacuity;heavy;threads=${THREADS}>"
+         XFORM_PASSES="oracle-pass<heavy;threads=${THREADS}>,simplifycfg,adce,verify" ;;
   *) echo "[FATAL] unknown TIER '$TIER' (light|heavy)"; exit 1 ;;
 esac
 read -r -a OPT_ARR  <<< "${OPTS:-O1 O3}"

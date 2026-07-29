@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # =============================================================================
-# run_zlib_perf.sh -- v3: COMPILE + RUNTIME benchmark, multi-size + shuffled,
-#                    PARALLEL oracle stage (Level-1 parallelism), avg-based.
+# run_zlib_perf.sh -- v4: COMPILE + RUNTIME benchmark, multi-size + shuffled,
+#                    PARALLEL oracle stage (Level-1 + Level-2), avg-based.
 #
 # Specs   : none | signed | unsigned | both   (sanitizer configuration)
 # Configs : base   = clang -O3                                  -> binary
@@ -12,14 +12,22 @@
 #           should show SHRINKING %-speedup as size grows (fixed savings /
 #           growing hot-loop denominator); a flat % means a warm path changed.
 #
+# v4 change:
+#   * LEVEL-2 PARALLELISM: oracle-pass is now a module pass with an internal
+#     per-trap worker pool, selected by the threads=N pass parameter (THREADS
+#     knob below). Composes with Level-1 (JOBS concurrent opt processes);
+#     keep JOBS*THREADS <= cores. THREADS=1 (default) == v3 behavior, and
+#     verdicts/output IR are THREADS-invariant by construction.
+#
 # v3 changes:
 #   * LEVEL-1 PARALLELISM: the oracle stage runs its per-TU `opt` invocations
 #     as up to JOBS concurrent PROCESSES (default: CPU count; JOBS=1 == old
 #     serial behavior). TUs are fully independent (separate .ll in/out files
 #     and per-module logs) => no collisions. ORACLE_S is the stage
-#     WALL-CLOCK; with JOBS>1 the derived per-trap ms is wall-clock based
-#     ("latency with parallelism"). After the wave, every expected output is
-#     checked; missing/empty => FATAL with a pointer to its oracle.log.
+#     WALL-CLOCK; with JOBS>1 (or THREADS>1) the derived per-trap ms is
+#     wall-clock based ("latency with parallelism"). After the wave, every
+#     expected output is checked; missing/empty => FATAL with a pointer to
+#     its oracle.log.
 #   * AVG-BASED REPORTING: the min statistic is dropped; the CSV carries
 #     avg_run_s plus the full raw run list (runs_s), so any other statistic
 #     can be recomputed offline from the raw column if ever needed.
@@ -29,7 +37,7 @@
 #
 # Output: evaluation/perf_zlib.csv (TIER=heavy: evaluation/perf_zlib_heavy.csv)
 # Knobs : RUNS=10 SIZES="8 64 512" LEVEL=9 TIMEOUT_SECS=600 COOLDOWN=60
-#         TIER=light|heavy  ZLIB=/path/to/zlib  JOBS=N
+#         TIER=light|heavy  ZLIB=/path/to/zlib  JOBS=N  THREADS=N
 # NOTE  : vacuity check intentionally OFF here (plain 'oracle-pass').
 # NOTE  : requires GNU userland (timeout, stat -c, shuf, GNU size) and
 #         bash >= 4 -- on macOS: brew coreutils gnubin on PATH + brew bash;
@@ -47,10 +55,13 @@ LEVEL=${LEVEL:-9}
 TIMEOUT_SECS=${TIMEOUT_SECS:-600}
 COOLDOWN=${COOLDOWN:-60}
 JOBS=${JOBS:-$(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4)}
+# Level-2: worker threads INSIDE each opt process (per-trap pool).
+# Default 1 = the serial reference. Keep JOBS*THREADS <= cores.
+THREADS=${THREADS:-1}
 TIER=${TIER:-light}
 case "$TIER" in
-  light) ORACLE_PASSES="oracle-pass,simplifycfg,adce,verify" ;;
-  heavy) ORACLE_PASSES="oracle-pass<heavy>,simplifycfg,adce,verify" ;;
+  light) ORACLE_PASSES="oracle-pass<threads=${THREADS}>,simplifycfg,adce,verify" ;;
+  heavy) ORACLE_PASSES="oracle-pass<heavy;threads=${THREADS}>,simplifycfg,adce,verify" ;;
   *) echo "[FATAL] unknown TIER '$TIER' (light|heavy)"; exit 1 ;;
 esac
 CSV="$ROOT/evaluation/perf_zlib.csv"
@@ -83,7 +94,7 @@ cd "$ROOT" || exit 1
 echo "==== rebuilding pass ===="
 ( cd build && ninja ) || { echo "[FATAL] build failed"; exit 1; }
 rm -rf "$W"; mkdir -p "$W"
-echo "==== oracle-stage parallelism: JOBS=$JOBS ===="
+echo "==== oracle-stage parallelism: JOBS=$JOBS x THREADS=$THREADS ===="
 
 echo "==== minigzip driver (unsanitized, shared by every build) ===="
 MG="$ZLIB/test/minigzip.c"; [ -f "$MG" ] || MG="$ZLIB/minigzip.c"
@@ -129,7 +140,8 @@ for spec in none signed unsigned both; do
         O3_S[$k]=$(elapsed "$t0" "$(now)")
         sfx="b2.ll" ;;
       oracle)
-        # ---- LEVEL-1 PARALLEL ORACLE STAGE ----
+        # ---- LEVEL-1 PARALLEL ORACLE STAGE (each opt is Level-2
+        # multi-threaded internally when THREADS>1) ----
         # Up to JOBS concurrent opt processes, one per TU. Independent
         # inputs/outputs/logs => no collisions. ORACLE_S = wall-clock of
         # the whole wave (the honest "compile latency with parallelism").
@@ -266,6 +278,6 @@ for k in "${KEYS2[@]}"; do
 done
 
 echo ""
-echo "CSV: $CSV   (then: python3 make_perf_report.py)   [oracle stage JOBS=$JOBS]"
+echo "CSV: $CSV   (then: python3 make_perf_report.py)   [oracle stage JOBS=$JOBS x THREADS=$THREADS]"
 echo "Cold-path check: if %-speedup shrinks 8 -> 64 -> 512 MB, the savings are"
 echo "constant-per-invocation (cold path); flat % means a scaled path changed."

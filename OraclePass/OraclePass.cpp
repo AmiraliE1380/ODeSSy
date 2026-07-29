@@ -1,35 +1,74 @@
-#include "llvm/IR/DebugInfoMetadata.h"
-#include "llvm/IR/IntrinsicInst.h"
+// =====================================================================
+// OraclePass.cpp -- ODeSSy orchestration (Level-2 parallel redesign).
+//
+// The pass is now a MODULE pass composed of three stages:
+//
+//   Stage 1 (serial, main thread)   TrapDiscovery: per-function
+//       analyses (DT/LI, + LVI/SE in heavy), trap anchoring, dominating
+//       guards + llvm.assume, backward slice. Produces one TrapJob per
+//       trap site; the job list spans the WHOLE module, so one function
+//       with 400 traps and ten with 2 load-balance perfectly (this is
+//       the "super-analysis level": the scheduling unit is the trap,
+//       not the function).
+//   Stage 2 (parallel, worker pool) TrapSolver: each worker owns a
+//       private Z3 context; RPO encode + (heavy) boundary facts +
+//       solve. The IR is READ-ONLY here. Heavy-tier LVI/SCEV queries
+//       are serialized in discovery order through FactGate: thread-safe
+//       AND deterministic (verdicts are THREADS-independent).
+//   Stage 3 (serial, main thread)   kills in discovery order, log
+//       assembly in discovery order, per-function stats.
+//
+// Determinism contract: for a given input module, THREADS=N and
+// THREADS=1 produce identical verdicts, identical output IR, and
+// byte-identical logs modulo the measured latency numbers (which were
+// never deterministic, even serially). `diff` of the output .ll across
+// THREADS values is the acceptance test.
+//
+// Analyze-then-kill note: verdicts are computed on pristine IR and the
+// branch folds are applied afterwards (old behavior interleaved them).
+// Both orders are sound; the new order's contexts are never weaker
+// (an eliminated trap's guard condition is provably true, so keeping
+// it as context for later traps is sound and possibly stronger), so
+// trap-elimination counts can only match or exceed the old pass's.
+//
+// threads=1 (the default) is the serial reference; DebugOracle
+// wiretaps (raw errs() from encode internals) are only meaningful at
+// threads=1.
+// =====================================================================
+#include "Scheduler.h"
+#include "TrapDiscovery.h"
+#include "TrapJob.h"
+#include "TrapSolver.h"
+#include "Z3Encoder.h"
+
+#include "llvm/ADT/DenseMap.h"
+#include "llvm/ADT/SmallPtrSet.h"
+#include "llvm/ADT/SmallVector.h"
+#include "llvm/Analysis/LazyValueInfo.h"
+#include "llvm/Analysis/LoopInfo.h"
+#include "llvm/Analysis/ScalarEvolution.h"
+#include "llvm/IR/Constants.h"
+#include "llvm/IR/Dominators.h"
+#include "llvm/IR/Function.h"
+#include "llvm/IR/Instructions.h"
+#include "llvm/IR/Module.h"
+#include "llvm/IR/PassManager.h"
 #include "llvm/Passes/PassBuilder.h"
 #include "llvm/Plugins/PassPlugin.h"
-#include "llvm/Support/raw_ostream.h"
 #include "llvm/Support/FileSystem.h"
-#include "llvm/Analysis/LoopInfo.h"
-#include "llvm/Analysis/LazyValueInfo.h"
-#include "llvm/Analysis/ScalarEvolution.h"
-#include "llvm/IR/Instructions.h"
-#include "llvm/IR/PassManager.h"
-#include "llvm/IR/Dominators.h"
-#include "llvm/IR/Constants.h"
-#include "llvm/IR/CFG.h"
-#include "llvm/ADT/PostOrderIterator.h"
-#include "Z3Encoder.h"
-#include "FactEncoder.h"
 #include "llvm/Support/Path.h"
-#include <chrono>
-#include <queue>
-#include <set>
-#include <vector>
-#include <utility>
-#include <string>
-#include <cctype>
+#include "llvm/Support/raw_ostream.h"
 
+#include <cctype>
+#include <chrono>
+#include <string>
+#include <thread>
+#include <vector>
 
 using namespace llvm;
 
 // --- THE DEBUG FLAG ---
 bool DebugOracle = false;
-
 
 namespace {
 
@@ -57,14 +96,14 @@ static std::string logStemForModule(const Module &M) {
     return Stem;
 }
 
+static double msSince(std::chrono::steady_clock::time_point T0) {
+    return std::chrono::duration<double, std::milli>(
+               std::chrono::steady_clock::now() - T0).count();
+}
+
 struct OraclePass : public PassInfoMixin<OraclePass> {
 
-    // Computed lazily on the first function of a given module, then reused
-    // for every remaining function in that same opt invocation.
-    std::string LogFilename;
-    bool LogInitialized = false;
-
-// When true, every UNSAT is audited: guards alone must be SAT.
+    // When true, every UNSAT is audited: guards alone must be SAT.
     // Costs one extra solver query per UNSAT (not per trap) -- enable in
     // dev/audit runs, disable for performance benchmarking.
     bool VacuityCheck = false;
@@ -75,413 +114,201 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
     // over-approximation boundaries (HANDOFF §9).
     bool HeavyMode = false;
     unsigned QueryTimeoutMs = 10000;
+    // Level-2 knob: workers for the per-trap solve stage. 1 (default)
+    // == serial reference behavior; 0 == one worker per hardware thread.
+    unsigned Threads = 1;
+
     OraclePass() = default;
-    OraclePass(bool Vacuity, bool Heavy, unsigned TimeoutMs)
-        : VacuityCheck(Vacuity), HeavyMode(Heavy), QueryTimeoutMs(TimeoutMs) {}
+    OraclePass(bool Vacuity, bool Heavy, unsigned TimeoutMs, unsigned NThreads)
+        : VacuityCheck(Vacuity), HeavyMode(Heavy), QueryTimeoutMs(TimeoutMs),
+          Threads(NThreads) {}
 
+    PreservedAnalyses run(Module &M, ModuleAnalysisManager &MAM) {
+        auto &FAM =
+            MAM.getResult<FunctionAnalysisManagerModuleProxy>(M).getManager();
 
-PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM) {
-        auto function_start_time = std::chrono::high_resolution_clock::now();
-
-        // --- Resolve the per-benchmark log file exactly once per module ---
-        // Filename is derived from the module (input .ll), NOT from a
-        // wall-clock timestamp. Consequences:
-        //   * one benchmark  -> one log file (all its functions share it)
-        //   * rerunning opt  -> overwrites the same file (idempotent),
-        //                       instead of leaving timestamped duplicates
-        //   * no same-second collision race between parallel opt runs
-        // The first function TRUNCATES the file; later functions APPEND.
-        sys::fs::OpenFlags OpenMode = sys::fs::OF_Append;
-        if (!LogInitialized) {
-            LogFilename = "logs/compilations/" +
-                          logStemForModule(*F.getParent()) + ".txt";
-            OpenMode = sys::fs::OF_None; // truncate on first open this run
-            LogInitialized = true;
-        }
-
+        // --- Resolve the per-benchmark log file (same scheme as before:
+        // module-derived, deterministic, truncated once per opt run) ---
+        std::string LogFilename =
+            "logs/compilations/" + logStemForModule(M) + ".txt";
         std::error_code EC;
-        raw_fd_ostream Log(LogFilename, EC, OpenMode);
-
+        raw_fd_ostream LogFile(LogFilename, EC, sys::fs::OF_None);
         if (EC) {
             errs() << "[Error] Could not open log file: " << EC.message() << "\n";
             return PreservedAnalyses::all();
         }
 
-        Log << "\n[Z3 Oracle] Analyzing Function: " << F.getName() << "\n";
-        errs() << "\n[Z3 Oracle] Analyzing Function: " << F.getName() << "\n";
-        if (HeavyMode) {
-            Log << "  [tier: heavy]\n";
-            errs() << "  [tier: heavy]\n";
-        }
+        unsigned NThreads =
+            Threads ? Threads : std::thread::hardware_concurrency();
+        if (NThreads == 0) NThreads = 1;
 
-        double TotalLatency = 0.0;
-        int TrapsEliminated = 0;
-        int trap_attempts = 0;
-        int smt_queries = 0; 
+        odessy::SolverConfig Cfg;
+        Cfg.VacuityCheck = VacuityCheck;
+        Cfg.HeavyMode = HeavyMode;
+        Cfg.QueryTimeoutMs = QueryTimeoutMs;
 
-        LoopInfo &LI = FAM.getResult<LoopAnalysis>(F);
-        DominatorTree &DT = FAM.getResult<DominatorTreeAnalysis>(F);
-        // HEAVY tier only: point-sensitive ranges for boundary facts.
-        // Never requested in light tier => light stays byte-identical.
-        LazyValueInfo *LVI =
-            HeavyMode ? &FAM.getResult<LazyValueAnalysis>(F) : nullptr;
-        ScalarEvolution *SE =
-            HeavyMode ? &FAM.getResult<ScalarEvolutionAnalysis>(F) : nullptr;
+        // =============================================================
+        // STAGE 1: serial discovery (main thread; IR read-only)
+        // =============================================================
+        std::vector<odessy::TrapJob> Jobs;
+        std::vector<odessy::FunctionCtx> FCs;
+        DenseMap<Function *, size_t> CtxOf;
 
+        for (Function &F : M) {
+            if (F.isDeclaration()) continue;
+            auto T0 = std::chrono::steady_clock::now();
 
-        for (BasicBlock &BB : F) {
-            // 1. The Hunter: Find the ubsantrap call
-            CallInst *TrapCall = nullptr;
-            for (Instruction &Inst : BB) {
-                if (auto *CI = dyn_cast<CallInst>(&Inst)) {
-                    if (Function *Callee = CI->getCalledFunction()) {
-                        if (Callee->getName().contains("ubsantrap") || Callee->getName() == "llvm.trap") {
-                            TrapCall = CI;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (!TrapCall) continue;
-
-            // 2. The Anchor: Find the predecessor branch that triggered this trap
-            BasicBlock *PredBB = BB.getSinglePredecessor();
-            if (!PredBB) continue; // Skip complex merged traps for now
-
-            auto *Br = dyn_cast<BranchInst>(PredBB->getTerminator());
-            if (!Br || !Br->isConditional()) continue;
-
-            Value *OvfCondition = Br->getCondition();
-            bool TrapOnTrue = (Br->getSuccessor(0) == &BB);
-
-            if (DILocation *Loc = TrapCall->getDebugLoc()) {
-                Log << "  -> Trap source: " << Loc->getFilename().str()
-                    << ":" << Loc->getLine() << "\n";
-            }
-
-            Log << "  -> Found UB Trap. Starting Backward Slice...\n";
-            errs() << "  -> Found UB Trap. Starting Backward Slice...\n";
-
-            // 3. The Slicer & Solver
-            Z3Encoder Encoder(QueryTimeoutMs);
-            if (VacuityCheck) Encoder.enableUnsatCores();
-
-            trap_attempts++;
-            
-            auto [Eliminated, Latency] = tryEliminateTrap(OvfCondition, TrapOnTrue, PredBB, Encoder, LI, DT, LVI, SE, Log);
-            TotalLatency += Latency;
-            
-            if (Latency > 0.0) {
-                smt_queries++;
-            }
-
-            if (Eliminated) {
-                // 4. The Kill
-                Br->setCondition(ConstantInt::get(Type::getInt1Ty(F.getContext()), TrapOnTrue ? 0 : 1));
-                Log << "  => SUCCESS: Trap mathematically neutralized!\n";
-                errs() << "  => SUCCESS: Trap mathematically neutralized!\n";
-                TrapsEliminated++;
-            }
-        }
-
-        Log << "  => Total Traps Eliminated: " << TrapsEliminated << "\n";
-        Log << "  => Total Trap Attempts: " << trap_attempts << "\n";
-        Log << "  => Total SMT Queries Executed: " << smt_queries << "\n";
-        Log << "  => Total SMT Query Latency: " << TotalLatency << " ms\n";
-        Log << "  => Average SMT Query Latency: " << (smt_queries > 0 ? TotalLatency / smt_queries : 0) << " ms\n";
-
-        auto function_end_time = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<double, std::milli> function_duration = function_end_time - function_start_time;
-        
-        Log << "  => Total DFS & SMT Execution Time: " << function_duration.count() << " ms\n";
-        Log << "--------------------------------------------------\n";
-
-        errs() << "  => Total Traps Eliminated: " << TrapsEliminated << "\n";
-        errs() << "  => Total Trap Attempts: " << trap_attempts << "\n";
-        errs() << "  => Total SMT Queries Executed: " << smt_queries << "\n";
-        errs() << "  => Total SMT Query Latency: " << TotalLatency << " ms\n";
-        errs() << "  => Average SMT Query Latency: " << (smt_queries > 0 ? TotalLatency / smt_queries : 0) << " ms\n";
-        errs() << "  => Total DFS & SMT Execution Time: " << function_duration.count() << " ms\n";
-
-        return TrapsEliminated > 0 ? PreservedAnalyses::none() : PreservedAnalyses::all();
-    }
-
-
-private:
-    // ==================================================================
-    // PHASE 1: LINEAR BACKWARD REGION WALK (no path enumeration)
-    // ==================================================================
-    bool collectPhiConditions(PHINode *Phi, DominatorTree &DT, std::set<Value*> &Visited, std::queue<Value*> &Worklist, raw_fd_ostream &Log) {
-        BasicBlock *PhiBB = Phi->getParent();
-        DomTreeNode *Node = DT.getNode(PhiBB);
-        if (!Node || !Node->getIDom()) return false;
-
-        BasicBlock *IDomBB = Node->getIDom()->getBlock();
-
-        std::set<BasicBlock*> RegionVisited;
-        std::queue<BasicBlock*> BlockWorklist;
-
-        for (unsigned i = 0; i < Phi->getNumIncomingValues(); ++i) {
-            Value *IncVal = Phi->getIncomingValue(i);
-            if (Visited.insert(IncVal).second) Worklist.push(IncVal);
-
-            BasicBlock *IncBB = Phi->getIncomingBlock(i);
-            if (RegionVisited.insert(IncBB).second) BlockWorklist.push(IncBB);
-        }
-
-        while (!BlockWorklist.empty()) {
-            BasicBlock *BB = BlockWorklist.front();
-            BlockWorklist.pop();
-
-            auto *Term = BB->getTerminator();
-            Value *Cond = nullptr;
-            if (auto *Br = dyn_cast<BranchInst>(Term)) {
-                if (Br->isConditional()) Cond = Br->getCondition();
-            } else if (auto *Sw = dyn_cast<SwitchInst>(Term)) {
-                Cond = Sw->getCondition();
-            }
-            if (Cond && Visited.insert(Cond).second) Worklist.push(Cond);
-
-            if (BB == IDomBB) continue;
-
-            for (BasicBlock *Pred : predecessors(BB)) {
-                if (Pred == PhiBB) continue;
-                if (!DT.dominates(IDomBB, Pred)) continue;
-                if (RegionVisited.insert(Pred).second) BlockWorklist.push(Pred);
-            }
-        }
-
-        return true;
-    }
-
-    
-private:
-std::pair<bool, double> tryEliminateTrap(Value *TargetCond, bool TrapOnTrue, BasicBlock *PredBB, Z3Encoder &Encoder, LoopInfo &LI, DominatorTree &DT, LazyValueInfo *LVI, ScalarEvolution *SE, raw_fd_ostream &Log) {        std::queue<Value*> Worklist; 
-        std::set<Value*> Visited;    
-
-        Worklist.push(TargetCond);
-        Visited.insert(TargetCond);
-
-        // ==============================================================
-        // PHASE 0: DOMINATING CONTEXT GUARDS
-        //
-        // The trap condition alone is almost never contradictory -- the
-        // proof of impossibility lives in the guards the programmer
-        // already wrote upstream (e.g. `if (len > MAX) return 0;`).
-        //
-        // Walk the dominator tree upward from the trap's branch block.
-        // For every dominator D that ends in a conditional branch, if one
-        // outgoing EDGE of D dominates the trap block, then every
-        // execution reaching the trap took that edge on its last visit
-        // to D. SSA immutability guarantees the condition's operands
-        // still denote those same values at the trap, so the edge's
-        // condition can be soundly asserted -- even across loops, since
-        // loop-variant inputs are already over-approximated as free
-        // variables.
-        // ==============================================================
-        std::vector<std::pair<Value*, bool>> Guards;
-        for (DomTreeNode *N = DT.getNode(PredBB); N && N->getIDom(); N = N->getIDom()) {
-            BasicBlock *D = N->getIDom()->getBlock();
-            auto *DBr = dyn_cast<BranchInst>(D->getTerminator());
-            if (!DBr || !DBr->isConditional()) continue;
-            if (DBr->getSuccessor(0) == DBr->getSuccessor(1)) continue;
-
-            Value *GCond = nullptr;
-            bool GVal = true;
-            if (DT.dominates(BasicBlockEdge(D, DBr->getSuccessor(0)), PredBB)) {
-                GCond = DBr->getCondition(); GVal = true;
-            } else if (DT.dominates(BasicBlockEdge(D, DBr->getSuccessor(1)), PredBB)) {
-                GCond = DBr->getCondition(); GVal = false;
-            }
-
-            if (GCond) {
-                Guards.push_back({GCond, GVal});
-
-                std::string GS; raw_string_ostream OS(GS); GCond->print(OS);
-                Log << "    -> Guard[" << (Guards.size()-1) << "] ("
-                    << (GVal ? "true" : "false") << " edge of '" << D->getName()
-                    << "'):" << OS.str() << "\n";
-
-                // Slice the guard too, so its defining math is encoded.
-                if (Visited.insert(GCond).second) Worklist.push(GCond);
-            }
-        }
-        // ==============================================================
-        // PHASE 0.5: DOMINATING llvm.assume FACTS
-        // The optimizer's own recorded truths: if an assume dominates the
-        // trap's branch block, its condition holds on every path there --
-        // free, sound context by the same SSA argument as the guards.
-        // ==============================================================
-        for (BasicBlock &ABB : *PredBB->getParent()) {
-            for (Instruction &AI : ABB) {
-                auto *II = dyn_cast<IntrinsicInst>(&AI);
-                if (!II || II->getIntrinsicID() != Intrinsic::assume) continue;
-                if (!DT.dominates(II, PredBB)) continue;
-                Value *ACond = II->getArgOperand(0);
-                Guards.push_back({ACond, true});
-                std::string GS; raw_string_ostream OS(GS); ACond->print(OS);
-                Log << "    -> Guard[" << (Guards.size()-1) << "] (llvm.assume):"
-                    << OS.str() << "\n";
-                if (Visited.insert(ACond).second) Worklist.push(ACond);
-            }
-        }
-        Log << "    -> Collected " << Guards.size() << " dominating context guard(s).\n";
-
-        // PHASE 1: BACKWARD SLICE
-        while (!Worklist.empty()) {
-            Value *V = Worklist.front();
-            Worklist.pop();
-
-            Instruction *Inst = dyn_cast<Instruction>(V);
-            if (!Inst) continue; 
-
-            // --- THE NEW PHI / MEMORY LOGIC ---
-            if (auto *Phi = dyn_cast<PHINode>(Inst)) {
-                BasicBlock *PhiBB = Phi->getParent();
-                Loop *L = LI.getLoopFor(PhiBB);
-                
-                if (L && L->getHeader() == PhiBB) {
-                    if (DebugOracle) {
-                        errs() << "    [DEBUG] Over-approximating Loop Header Phi: " << *Inst << "\n";
-                    }
-                    continue; // Stop slicing backwards, treat as a free variable!
-                } else {
-                    if (!collectPhiConditions(Phi, DT, Visited, Worklist, Log)) {
-                        return {false, 0.0};
-                    }
-                    continue;
-                }
-            }
-
-            // --- THE BOUNDARY LOGIC ---
-            if (isa<LoadInst>(Inst) || isa<GetElementPtrInst>(Inst)) {
-                if (DebugOracle) {
-                    errs() << "    [DEBUG] Over-approximating Boundary: " << Inst->getOpcodeName() << "\n";
-                }
-                continue; 
-            }
-            if (auto *Call = dyn_cast<CallInst>(Inst)) {
-                bool IsMathIntrinsic = false;
-                if (Function *F = Call->getCalledFunction()) {
-                    // Slice through the ENTIRE overflow family:
-                    // sadd/ssub/smul/uadd/usub/umul.with.overflow
-                    if (F->getName().contains(".with.overflow")) {
-                        IsMathIntrinsic = true;
-                    }
-                }
-                
-                if (!IsMathIntrinsic) {
-                    if (DebugOracle) {
-                        errs() << "    [DEBUG] Over-approximating Alien Call\n";
-                    }
-                    continue;
-                }
-            }
-            // ----------------------------------
-            
-            for (Use &U : Inst->operands()) {
-                Value *Operand = U.get();
-                if (Visited.find(Operand) == Visited.end()) {
-                    Visited.insert(Operand);
-                    Worklist.push(Operand);
-                }
-            }
-        }
-
-
-        try {
-            // PHASE 2: FORWARD ENCODE (Reverse Post-Order so defs are encoded
-            // before uses in the acyclic CFG -- prevents branch conditions
-            // from silently becoming free variables.)
-            Function *F = PredBB->getParent();
-            ReversePostOrderTraversal<Function*> RPOT(F);
-            for (BasicBlock *BB : RPOT) {
-                for (Instruction &Inst : *BB) {
-                    if (Visited.find(&Inst) != Visited.end()) {
-                        if (!Encoder.encodeInstruction(&Inst, &DT, &LI)) {
-                            Log << "    -> [Abort] Unsupported Instruction: " << Inst.getOpcodeName() << "\n";
-                            errs() << "    -> [Abort] Unsupported Instruction: " << Inst.getOpcodeName() << "\n";
-                            return {false, 0.0};
-                        }
-                    }
-                }
-            }
-
-            // PHASE 2.5 (HEAVY TIER ONLY): BOUNDARY ANALYSIS FACTS
-            // Free variables = over-approximation boundaries. Assert what
-            // LLVM already knows about each (!range / KnownBits / LVI).
-            // Context-side (pre-push): the vacuity audit is the alarm for
-            // a bad fact import, and RM:/KB:/LVI: labels make unsat cores
-            // attribute proofs to their fact source.
+            odessy::FunctionCtx FC;
+            FC.F = &F;
+            FC.DT = &FAM.getResult<DominatorTreeAnalysis>(F);
+            FC.LI = &FAM.getResult<LoopAnalysis>(F);
+            // CONCURRENCY: DominatorTree::dominates() lazily rebuilds its
+            // DFS numbering after enough slow queries -- a hidden WRITE.
+            // Force the numbering NOW, on the main thread, so every
+            // worker-side dominates() takes the const fast path.
+            FC.DT->updateDFSNumbers();
+            // HEAVY tier only: point-sensitive ranges for boundary facts.
+            // Never requested in light tier => light stays byte-identical.
             if (HeavyMode) {
-                FactEncoder Facts(Encoder, LVI, SE, DT,
-                                  PredBB->getModule()->getDataLayout(),
-                                  VacuityCheck, Log);
-                unsigned NFacts = Facts.encodeBoundaryFacts(PredBB);
-                Log << "    -> [heavy] " << NFacts << " analysis fact(s) on "
-                    << Encoder.getFreeVariables().size() << " boundary value(s)\n";
+                FC.LVI = &FAM.getResult<LazyValueAnalysis>(F);
+                FC.SE = &FAM.getResult<ScalarEvolutionAnalysis>(F);
             }
-            // PHASE 3: ASSERT CONTEXT + TRAP CONDITION
-            for (unsigned i = 0; i < Guards.size(); ++i) {
-                if (VacuityCheck)
-                    Encoder.assertConditionTracked(Guards[i].first, Guards[i].second,
-                                                   "G" + std::to_string(i));
-                else
-                    Encoder.assertCondition(Guards[i].first, Guards[i].second);
-            }
-            Encoder.push();                                    // context | trap boundary
-            
-            if (VacuityCheck)
-                Encoder.assertConditionTracked(TargetCond, TrapOnTrue, "TRAP");
-            else
-                Encoder.assertCondition(TargetCond, TrapOnTrue);
 
-            auto [ResultString, QueryLatency] = Encoder.checkSatisfiability();
-            Log << "    -> " << ResultString << "\n";
-            bool IsUnsat = (ResultString.find("UNSAT") != std::string::npos);
-            if (IsUnsat && VacuityCheck) {
-                Log << "    -> Unsat core: " << Encoder.getUnsatCore() << "\n";
+            size_t Before = Jobs.size();
+            odessy::discoverTraps(F, *FC.DT, *FC.LI, Jobs);
+            for (size_t i = Before; i < Jobs.size(); ++i)
+                FC.JobIndices.push_back(i);
 
-                // VACUITY AUDIT: an UNSAT only means "trap dead" if the guards
-                // ALONE are satisfiable. A contradictory context makes every
-                // query vacuously UNSAT (encoding bug or unreachable code).
-                Encoder.pop();                                 // drop trap condition only
-                auto [CtxResult, CtxLatency] = Encoder.checkSatisfiability();
-                QueryLatency += CtxLatency;
-                if (CtxResult.find("UNSAT") != std::string::npos) {
-                    Log << "    -> [VACUOUS] guards alone are contradictory -- refusing to eliminate. Investigate!\n";
-                    errs() << "    -> [VACUOUS] guards alone are contradictory -- refusing to eliminate. Investigate!\n";
-                    return {false, QueryLatency};
-                }
-                Log << "    -> [vacuity-ok] context alone is satisfiable\n";
-            }
-            if (DebugOracle || IsUnsat) {
-                errs() << "    -> " << ResultString << "\n";
-            }
-            return {IsUnsat, QueryLatency};
-            
-        } catch (const z3::exception &e) {
-            // Sort mismatch or any other Z3 throw: degrade to "can't prove it,
-            // keep the trap" instead of std::terminate'ing the whole opt process.
-            Log << "    -> [Skip] Z3 exception: " << e.msg() << "\n";
-            errs() << "    -> [Skip] Z3 exception: " << e.msg() << "\n";
-            return {false, 0.0};
-        } catch (const std::exception &e) {
-            Log << "    -> [Skip] C++ exception: " << e.what() << "\n";
-            errs() << "    -> [Skip] C++ exception: " << e.what() << "\n";
-            return {false, 0.0};
+            FC.DiscoveryMs = msSince(T0);
+            CtxOf[&F] = FCs.size();
+            FCs.push_back(std::move(FC));
         }
+
+        errs() << "[ODeSSy] " << Jobs.size() << " trap site(s) across "
+               << FCs.size() << " function(s); threads=" << NThreads
+               << (HeavyMode ? " [tier: heavy]" : "") << "\n";
+
+        // =============================================================
+        // STAGE 2: parallel solve (workers; IR read-only; verdicts only)
+        // =============================================================
+        odessy::FactGate Gate;
+        auto WorkerBody = [&](size_t i) {
+            odessy::TrapJob &J = Jobs[i];
+            auto T0 = std::chrono::steady_clock::now();
+            bool GatePassed = false;
+            try {
+                if (J.SliceOK) {
+                    const odessy::FunctionCtx &FC = FCs[CtxOf.lookup(J.F)];
+                    odessy::TrapSolver S(Cfg, FC, J);
+                    bool Proceed = S.encodePhase();
+                    if (HeavyMode) {
+                        // Every heavy job passes the gate exactly once, in
+                        // discovery order, even when the encode aborted
+                        // (pass-through keeps the turnstile advancing).
+                        Gate.acquire(J.Index);
+                        if (Proceed) Proceed = S.factPhase();
+                        Gate.release(J.Index);
+                        GatePassed = true;
+                    }
+                    if (Proceed) S.solvePhase();
+                }
+            } catch (...) {
+                // Phases fence their own exceptions; anything reaching
+                // here is constructor-level (e.g. Z3 context OOM).
+                // Degrade to "keep the trap" -- never unwind a worker.
+                raw_string_ostream OS(J.LogText);
+                OS << "    -> [Skip] worker-level exception -- trap kept\n";
+            }
+            if (HeavyMode && !GatePassed) {
+                Gate.acquire(J.Index);   // dead/failed job: pass-through
+                Gate.release(J.Index);
+            }
+            J.WorkerMs = msSince(T0);
+        };
+        odessy::runJobs(NThreads, Jobs.size(), WorkerBody);
+
+        // =============================================================
+        // STAGE 3a: THE KILL (serial, discovery order -- the only IR
+        // mutation in the whole pass)
+        // =============================================================
+        int ModuleEliminated = 0;
+        SmallPtrSet<BranchInst *, 16> Folded;
+        for (odessy::TrapJob &J : Jobs) {
+            if (!J.Eliminate) continue;
+            raw_string_ostream OS(J.LogText);
+            if (!Folded.insert(J.Br).second) {
+                // Pathological: both successors of one branch proved dead
+                // (would mean the branch itself is unreachable). First
+                // verdict wins; refuse a contradictory second fold.
+                OS << "    -> [Skip] anchor branch already folded by an earlier elimination -- keeping\n";
+                J.Eliminate = false;
+                continue;
+            }
+            J.Br->setCondition(ConstantInt::get(
+                Type::getInt1Ty(J.F->getContext()), J.TrapOnTrue ? 0 : 1));
+            OS << "  => SUCCESS: Trap mathematically neutralized!\n";
+            ++ModuleEliminated;
+        }
+
+        // =============================================================
+        // STAGE 3b: log assembly (discovery order => THREADS-invariant)
+        // =============================================================
+        for (odessy::FunctionCtx &FC : FCs) {
+            std::string FuncText;
+            raw_string_ostream FOS(FuncText);
+
+            FOS << "\n[Z3 Oracle] Analyzing Function: " << FC.F->getName() << "\n";
+            if (HeavyMode) {
+                FOS << "  [tier: heavy]\n";
+            }
+
+            double TotalLatency = 0.0;
+            double WorkerWall = 0.0;
+            int TrapsEliminated = 0;
+            int trap_attempts = 0;
+            int smt_queries = 0;
+
+            for (size_t ji : FC.JobIndices) {
+                odessy::TrapJob &J = Jobs[ji];
+                FOS << J.LogText;
+                trap_attempts++;
+                TotalLatency += J.LatencyMs;
+                if (J.LatencyMs > 0.0) smt_queries++;
+                if (J.Eliminate) TrapsEliminated++;
+                WorkerWall += J.WorkerMs;
+            }
+
+            FOS << "  => Total Traps Eliminated: " << TrapsEliminated << "\n";
+            FOS << "  => Total Trap Attempts: " << trap_attempts << "\n";
+            FOS << "  => Total SMT Queries Executed: " << smt_queries << "\n";
+            FOS << "  => Total SMT Query Latency: " << TotalLatency << " ms\n";
+            FOS << "  => Average SMT Query Latency: "
+                << (smt_queries > 0 ? TotalLatency / smt_queries : 0) << " ms\n";
+            // Discovery + summed per-job worker wall. With threads>1 this
+            // is CPU-time-like (jobs overlap), not elapsed time -- the
+            // honest elapsed number is the compile-stage wall clock the
+            // harness already records.
+            FOS << "  => Total DFS & SMT Execution Time: "
+                << (FC.DiscoveryMs + WorkerWall) << " ms\n";
+            FOS << "--------------------------------------------------\n";
+
+            LogFile << FuncText;
+            errs() << FuncText;   // full mirror (superset of the old stderr)
+        }
+
+        return ModuleEliminated > 0 ? PreservedAnalyses::none()
+                                    : PreservedAnalyses::all();
     }
 };
-}
+
+} // namespace
 
 extern "C" LLVM_ATTRIBUTE_WEAK ::llvm::PassPluginLibraryInfo
 llvmGetPassPluginInfo() {
     return {LLVM_PLUGIN_API_VERSION, "OraclePass", LLVM_VERSION_STRING,
             [](PassBuilder &PB) {
                 PB.registerPipelineParsingCallback(
-                    [](StringRef Name, FunctionPassManager &FPM,
+                    [](StringRef Name, ModulePassManager &MPM,
                        ArrayRef<PassBuilder::PipelineElement>) {
                         if (!Name.consume_front("oracle-pass"))
                             return false;
@@ -489,6 +316,7 @@ llvmGetPassPluginInfo() {
                         bool Heavy = false;
                         bool TierSeen = false;            // reject <light;heavy>
                         unsigned TimeoutMs = 10000;
+                        unsigned Threads = 1;             // Level-2 default: serial
                         if (!Name.empty()) {              // parse "<a;b;...>"
                             if (!Name.consume_front("<") || !Name.consume_back(">"))
                                 return false;
@@ -506,11 +334,15 @@ llvmGetPassPluginInfo() {
                                 } else if (P.consume_front("timeout=")) {
                                     if (P.getAsInteger(10, TimeoutMs))
                                         return false;   // malformed number
+                                } else if (P.consume_front("threads=")) {
+                                    // threads=0 => one worker per HW thread
+                                    if (P.getAsInteger(10, Threads))
+                                        return false;   // malformed number
                                 } else if (!P.empty())
                                     return false;       // unknown parameter
                             }
                         }
-                        FPM.addPass(OraclePass(Vacuity, Heavy, TimeoutMs));
+                        MPM.addPass(OraclePass(Vacuity, Heavy, TimeoutMs, Threads));
                         return true;
                     }
                 );
