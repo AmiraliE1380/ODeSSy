@@ -1,25 +1,24 @@
 cmake_minimum_required(VERSION 3.16)
 project(OraclePass)
-
 # 1. Find LLVM
 find_package(LLVM REQUIRED CONFIG)
 include_directories(${LLVM_INCLUDE_DIRS})
 add_definitions(${LLVM_DEFINITIONS})
-
 # 2. Build standard CMake shared library (bypassing LLVM's strict macros)
 add_library(OraclePass MODULE
     OraclePass/OraclePass.cpp
+    OraclePass/TrapDiscovery.cpp
+    OraclePass/TrapSolver.cpp
+    OraclePass/Scheduler.cpp
     OraclePass/Z3Encoder.cpp
     OraclePass/FactEncoder.cpp
 )
-
-# 3. Force it to be a .so file without the "lib" prefix 
+# 3. Force it to be a .so file without the "lib" prefix
 # (so it outputs OraclePass.so instead of libOraclePass.so)
 set_target_properties(OraclePass PROPERTIES
     PREFIX ""
     SUFFIX ".so"
 )
-
 # 4. Link the Z3 Theorem Prover (portable: Homebrew on macOS, system on Linux)
 find_path(Z3_INCLUDE_DIR z3++.h
     HINTS /opt/homebrew/include /usr/local/include /usr/include)
@@ -31,11 +30,13 @@ endif()
 message(STATUS "Z3 include: ${Z3_INCLUDE_DIR}  lib: ${Z3_LIBRARY}")
 target_include_directories(OraclePass PRIVATE ${Z3_INCLUDE_DIR})
 target_link_libraries(OraclePass PRIVATE ${Z3_LIBRARY})
-
+# 4.5. Level-2 parallelism: the Scheduler's worker pool uses std::thread.
+# Threads::Threads is a no-op flag-wise on macOS and adds -pthread on Linux.
+find_package(Threads REQUIRED)
+target_link_libraries(OraclePass PRIVATE Threads::Threads)
 # 5. macOS: pass plugins resolve LLVM symbols from the host `opt` at load
 # time; without this the Mach-O linker errors on the undefined LLVM symbols
 # that Linux tolerates by default.
 if(APPLE)
     target_link_options(OraclePass PRIVATE -undefined dynamic_lookup)
 endif()
-
