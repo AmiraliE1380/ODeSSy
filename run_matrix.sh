@@ -78,15 +78,18 @@ san_flags() {
     *)        echo "__BAD__" ;;
   esac
 }
-count_ud2() { local n; n=$(objdump -d "$1" 2>/dev/null | grep -cw 'ud2'); echo "${n:-0}"; }
+count_ud2() {
+  command -v objdump >/dev/null 2>&1 || { echo NA; return; }
+  local n; n=$(objdump -d "$1" 2>/dev/null | grep -cw 'ud2'); echo "${n:-0}"
+}
 # Exact static count: emit IR for each source with the cell's flags, grep call
 # sites. Used only by adapters where we own the compile line (zlib, polybench).
 count_ir() { # $1=out-count-var-name; rest: clang args producing ONE .ll on stdout
   local __v="$1"; shift
-  local ll n
-  ll=$("$@" -S -emit-llvm -o - 2>/dev/null) || { eval "$__v=NA"; return; }
-  n=$(printf '%s' "$ll" | grep -c 'call void @llvm.ubsantrap')
-  eval "$__v=\$n"
+  local __ll __n
+  __ll=$("$@" -S -emit-llvm -o - 2>/dev/null) || { eval "$__v=NA"; return; }
+  __n=$(printf '%s' "$__ll" | grep -c 'call void @llvm.ubsantrap')
+  eval "$__v=\$__n"
 }
 
 # ---- shared corpus in tmpfs -------------------------------------------------
@@ -131,7 +134,7 @@ build_zlib() {
   local mg="$d/test/minigzip.c"; [ -f "$mg" ] || mg="$d/minigzip.c"
   clang -O2 $ZDEFS -I"$d" -c "$mg" -o "$W/zlib.mg.o" 2>/dev/null || { echo SKIP; return; }
   clang "${objs[@]}" "$W/zlib.mg.o" -o "$W/bin.zlib.$1" 2>/dev/null || { echo SKIP; return; }
-  TRAPS_CELL=$total; TRAPMETH_CELL="ir"
+  echo "$total ir" > "$W/.trapcount.zlib.$1"
   echo "$W/bin.zlib.$1"
 }
 run_zlib() { "$1" -9 < "$CORP" > /dev/null 2>&1; }
@@ -200,7 +203,7 @@ build_polybench() {
   { echo '#!/usr/bin/env bash'
     local b; for b in "${outs[@]}"; do echo "\"$b\" > /dev/null 2>&1 || exit \$?"; done
   } > "$drv"; chmod +x "$drv"
-  TRAPS_CELL=$total; TRAPMETH_CELL="ir"
+  echo "$total ir" > "$W/.trapcount.polybench.$1"
   echo "$drv"
 }
 run_polybench() { "$1"; }
@@ -234,7 +237,7 @@ for bench in $BENCHES; do
   CELLS=()
   for s in $SPECS; do
     fl=$(san_flags "$s"); [ "$fl" = "__BAD__" ] && { echo "[FATAL] bad spec $s"; exit 1; }
-    TRAPS_CELL=""; TRAPMETH_CELL="ud2"
+    rm -f "$W/.trapcount.$bench.$s"
     bin=$("build_$bench" "$s" "$fl")
     if [ "$bin" = "SKIP" ] || [ -z "$bin" ]; then
       echo "  [skip] $bench/$s (missing clone or build failed)"
@@ -242,7 +245,8 @@ for bench in $BENCHES; do
       continue
     fi
     BIN[$s]="$bin"
-    if [ -n "$TRAPS_CELL" ]; then TRAPS[$s]="$TRAPS_CELL"; METH[$s]="$TRAPMETH_CELL"
+    if [ -f "$W/.trapcount.$bench.$s" ]; then
+      read -r "TRAPS[$s]" "METH[$s]" < "$W/.trapcount.$bench.$s"
     else TRAPS[$s]=$(count_ud2 "$bin"); METH[$s]="ud2"; fi
     CELLS+=("$s")
     printf '  built %-10s %-9s traps=%s (%s)\n' "$bench" "$s" "${TRAPS[$s]}" "${METH[$s]}"
