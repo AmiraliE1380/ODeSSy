@@ -9,8 +9,11 @@ Adds per (spec, config, size_mb) row:
     flagged like "2.3% speedup" / "1.9% slowdown"
   * compile-time overhead vs base, oracle per-trap cost (wall-clock-derived
     when the run used JOBS>1)
-All statistics are AVERAGE-based. The raw per-rep run list (runs_s) is
-carried through, so other statistics can be recomputed offline if needed.
+Statistics: MIN-based is the PRIMARY index (measurement doctrine: min is
+the low-noise estimator of the true cost on a quiet machine -- noise only
+ever ADDS time), AVG kept as the secondary/sanity column. The raw per-rep
+run list (runs_s) is carried through, so other statistics can be
+recomputed offline if needed.
 Usage:  python3 make_perf_report.py [in.csv] [out.csv] [--specs both]
 Defaults: evaluation/perf_zlib.csv -> evaluation/perf_zlib_report.csv
 """
@@ -39,6 +42,14 @@ def f(x):
         return float(x)
     except (TypeError, ValueError):
         return None
+import re
+def min_run(r):
+    """Min of the raw per-rep list (runs_s); fall back to avg_run_s."""
+    if r is None:
+        return None
+    vals = [float(t) for t in re.split(r"[,;\s]+", r.get("runs_s", "") or "")
+            if t and re.match(r"^[0-9.eE+-]+$", t)]
+    return min(vals) if vals else f(r.get("avg_run_s"))
 def pct(new, ref):
     """Signed % change vs ref. Positive = faster/smaller (improvement)."""
     if new is None or ref is None or ref == 0:
@@ -71,10 +82,9 @@ out_fields = [
     "frontend_clang_O3_s", "oracle_smt_pass_s", "oracle_avg_per_trap_ms",
     "extra_opt_O3_s", "backend_llc_link_s", "total_compile_s",
     "compile_overhead_vs_base_pct",
-    "avg_runtime_s",
-    "runtime_vs_base_avg",
-    "runtime_vs_base2x_avg",
-    "runtime_vs_unsanitized_avg",
+    "min_runtime_s", "avg_runtime_s",
+    "runtime_vs_base_min", "runtime_vs_base2x_min", "runtime_vs_unsanitized_min",
+    "runtime_vs_base_avg", "runtime_vs_base2x_avg", "runtime_vs_unsanitized_avg",
     "raw_runtimes_s",
 ]
 with open(OUT, "w", newline="") as fh:
@@ -92,6 +102,10 @@ with open(OUT, "w", newline="") as fh:
         d_base_avg = pct(avg, f(base["avg_run_s"])) if base else None
         d_b2x_avg = pct(avg, f(b2x["avg_run_s"])) if b2x else None
         d_none_avg = pct(avg, f(none_b["avg_run_s"])) if none_b else None
+        mn = min_run(r)
+        d_base_min = pct(mn, min_run(base)) if base else None
+        d_b2x_min = pct(mn, min_run(b2x)) if b2x else None
+        d_none_min = pct(mn, min_run(none_b)) if none_b else None
         tc = f(r["total_compile_s"])
         tc_base = f(base["total_compile_s"]) if base else None
         c_over = ((tc - tc_base) / tc_base * 100.0) if (tc is not None and tc_base) else None
@@ -126,7 +140,11 @@ with open(OUT, "w", newline="") as fh:
             "backend_llc_link_s": r["backend_link_s"],
             "total_compile_s": r["total_compile_s"],
             "compile_overhead_vs_base_pct": f"{c_over:+.1f}%" if c_over is not None else "",
+            "min_runtime_s": f"{mn:.3f}" if mn is not None else "",
             "avg_runtime_s": r["avg_run_s"],
+            "runtime_vs_base_min": flag(d_base_min) if cfg != "base" else "(reference)",
+            "runtime_vs_base2x_min": flag(d_b2x_min) if cfg == "oracle" else "",
+            "runtime_vs_unsanitized_min": flag(d_none_min) if spec != "none" else "(reference)",
             "runtime_vs_base_avg": flag(d_base_avg) if cfg != "base" else "(reference)",
             "runtime_vs_base2x_avg": flag(d_b2x_avg) if cfg == "oracle" else "",
             "runtime_vs_unsanitized_avg": flag(d_none_avg) if spec != "none" else "(reference)",
@@ -136,32 +154,37 @@ print(f"wrote {OUT}")
 SPEC_ORDER = [s for s in ("signed", "unsigned", "both")
               if KEEP is None or s in KEEP]
 
-# Console summary: oracle vs base2x (avg-based) per spec, across sizes --
-# the cold-path diagnostic: shrinking % across sizes = cold-path savings.
+# Console summary: oracle vs base2x per spec, across sizes -- MIN-based
+# primary, AVG-based sanity table below. Cold-path diagnostic: shrinking %
+# across sizes = cold-path savings; flat % = warm-path effect.
 sizes = sorted({r["size_mb"] for r in rows}, key=float)
-print(f"\n{'spec':9} {'elim':>5} " + " ".join(f"{'@'+s+'MB':>12}" for s in sizes) +
-      "   (oracle vs base2x, avg-based)")
-for spec in SPEC_ORDER:
-    o = {s: by_key.get((spec, "oracle", s)) for s in sizes}
-    b = {s: by_key.get((spec, "base2x", s)) for s in sizes}
-    if not any(o.values()):
-        continue
-    any_o = next(v for v in o.values() if v)
-    elim = int(f(any_o["traps_in"]) - f(any_o["traps_final"]))
-    cells = []
-    for s in sizes:
-        d = pct(f(o[s]["avg_run_s"]), f(b[s]["avg_run_s"])) if (o.get(s) and b.get(s)) else None
-        cells.append(f"{d:+11.1f}%" if d is not None else f"{'--':>12}")
-    print(f"{spec:9} {elim:5d} " + " ".join(cells))
-print(f"\n{'spec':9} " + " ".join(f"{'@'+s+'MB':>12}" for s in sizes) +
-      "   (sanitizer overhead vs none, avg-based)")
-for spec in SPEC_ORDER:
-    cells = []
-    for s in sizes:
-        rr, nn = by_key.get((spec, "base", s)), by_key.get(("none", "base", s))
-        d = pct(f(rr["avg_run_s"]), f(nn["avg_run_s"])) if (rr and nn) else None
-        cells.append(f"{-d:+11.1f}%" if d is not None else f"{'--':>12}")
-    print(f"{spec:9} " + " ".join(cells))
+def summary(stat_fn, label):
+    print(f"\n{'spec':9} {'elim':>5} " +
+          " ".join(f"{'@'+s+'MB':>12}" for s in sizes) +
+          f"   (oracle vs base2x, {label})")
+    for spec in SPEC_ORDER:
+        o = {s: by_key.get((spec, "oracle", s)) for s in sizes}
+        b = {s: by_key.get((spec, "base2x", s)) for s in sizes}
+        if not any(o.values()):
+            continue
+        any_o = next(v for v in o.values() if v)
+        elim = int(f(any_o["traps_in"]) - f(any_o["traps_final"]))
+        cells = []
+        for s in sizes:
+            d = pct(stat_fn(o[s]), stat_fn(b[s])) if (o.get(s) and b.get(s)) else None
+            cells.append(f"{d:+11.1f}%" if d is not None else f"{'--':>12}")
+        print(f"{spec:9} {elim:5d} " + " ".join(cells))
+    print(f"\n{'spec':9} " + " ".join(f"{'@'+s+'MB':>12}" for s in sizes) +
+          f"   (sanitizer overhead vs none, {label})")
+    for spec in SPEC_ORDER:
+        cells = []
+        for s in sizes:
+            rr, nn = by_key.get((spec, "base", s)), by_key.get(("none", "base", s))
+            d = pct(stat_fn(rr), stat_fn(nn)) if (rr and nn) else None
+            cells.append(f"{-d:+11.1f}%" if d is not None else f"{'--':>12}")
+        print(f"{spec:9} " + " ".join(cells))
+summary(min_run, "MIN-based [primary]")
+summary(lambda r: f(r["avg_run_s"]), "avg-based [sanity]")
 print(f"\n{'spec':9} {'.text_vs_base2x':>20} {'file_vs_base2x':>20}   (oracle binary shrink)")
 for spec in SPEC_ORDER:
     o = by_key.get((spec, "oracle", sizes[0]))

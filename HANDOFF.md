@@ -2,16 +2,22 @@
 > **Purpose.** Self-contained brief for continuing development in a fresh
 > conversation or by a new collaborator. Covers philosophy, architecture,
 > every module and invariant, the audit methodology, all current empirical
-> results, known issues, and the NEXT task in full detail:
-> **Level-2 in-pass parallelism (multi-threaded SMT queries over traps)** —
-> Level-1 (multi-process, per-TU) is DONE and documented in §10.
+> results, known issues, and the current NEXT tasks:
+> **SMT timeout control / latency engineering, OpenSSL at scale, and the
+> heavy-tier payoff experiment (PolyBench)** — BOTH parallelism levels are
+> DONE: Level-1 (multi-process, per-TU) and Level-2 (multi-threaded traps
+> inside the pass, incl. thread-safe heavy tier via FactGate) are
+> implemented, tested, and documented in §10.
 >
 > Owner: Amirali (UMich EECS). Advisor: Prof. Amir Shaikhha (weekly, Thu 11am EDT).
 > Environments:
 >   (a) WSL2 Ubuntu x86-64 (Surface Laptop 3) — original machine, x86 perf runs;
 >   (b) macOS Apple Silicon (M5 MacBook Pro) — primary dev machine, VERIFIED
 >       full verdict parity (§6); ~3.8x faster per SMT query than (a);
->   (c) planned: CloudLab server (https://www.cloudlab.us/) — x86 perf at scale.
+>   (c) LIVE: CloudLab server (https://www.cloudlab.us/), 40 HW threads,
+>       repo at /mydata/ODeSSy, LLVM via /etc/profile.d/llvm.sh
+>       (/opt/llvm/bin), governor set to `performance` — x86 perf at scale.
+>       First full zlib perf run landed 2026-07-29 (§6).
 > Toolchain PIN (all machines): llvm-project commit
 >   3cab3bc6384b5f58cab7140d00d7a527eade010e  (2026-04-28, 23.0.0git).
 >   Keep this pin until the paper ships. Z3: system/Homebrew (4.16 on Mac —
@@ -21,15 +27,18 @@
 > Target venue: CGO 2027, R2 deadline **Sept 10, 2026**.
 > Paper title (working): *ODeSSy: On-Demand SMT System for Compiler
 > Super-Analysis and Optimization*.
-> Status date: 2026-07-27.
+> Status date: 2026-07-30.
 
 ---
 
 ## 1. What ODeSSy is
 
 **ODeSSy = On-Demand SMT (Compiler) System.** An out-of-tree LLVM
-FunctionPass that proves UBSan integer-overflow traps unreachable using Z3
-(`QF_BV`) and deletes the provably-dead ones.
+MODULE pass (Level-2 redesign; formerly a FunctionPass) that proves UBSan
+integer-overflow traps unreachable using Z3 (`QF_BV`) and deletes the
+provably-dead ones. The scheduling unit is the TRAP, not the function —
+the module-wide job list is what makes per-trap thread parallelism and
+load balancing possible ("super-analysis level" scheduling).
 
 Core philosophy (paper framing):
 - **Super-analysis vs super-optimization (the invented term — use it).**
@@ -63,7 +72,11 @@ invocations (`-disable-output`) do NOT persist IR changes.
 ```
 ODeSSy/                          (branch cgo-research)
 ├── OraclePass/
-│   ├── OraclePass.cpp          # the pass (§3)
+│   ├── OraclePass.cpp          # orchestration: 3-stage module pass (§3)
+│   ├── TrapDiscovery.h / .cpp  # Stage 1: hunt/anchor/guards/assumes/slice
+│   ├── TrapJob.h               # the seam: TrapJob + FunctionCtx structs
+│   ├── TrapSolver.h / .cpp     # Stage 2: per-job encode/facts/solve phases
+│   ├── Scheduler.h / .cpp      # runJobs worker pool + FactGate turnstile
 │   ├── Z3Encoder.h / .cpp      # IR -> Z3 translation + fact primitives (§4)
 │   ├── FactEncoder.h / .cpp    # HEAVY tier policy module (§9)
 ├── CMakeLists.txt              # PORTABLE (macOS/Linux): Z3 via find_path/
@@ -99,37 +112,63 @@ warnings (trunk API churn at the pinned commit — cosmetic, do not "fix").
 
 ---
 
-## 3. OraclePass.cpp — the pass
+## 3. OraclePass.cpp — the pass (Level-2 three-stage module pass)
 
 Members: `bool VacuityCheck` (audit), `bool HeavyMode` (tier),
-`unsigned QueryTimeoutMs` (default 10000).
+`unsigned QueryTimeoutMs` (default 10000), `unsigned Threads` (default 1).
 
 **Pass parameters** (parsed from the pass name; unknown params rejected):
 - `oracle-pass` → perf mode, light tier (default); `<light>` explicit alias
 - `oracle-pass<heavy>` → heavy tier (§9); `<light;heavy>` rejected
 - `oracle-pass<vacuity>` → audit mode; `<vacuity;heavy;timeout=3000>` composes
+- `oracle-pass<threads=N>` → Level-2 worker count. `threads=1` (default) =
+  serial reference path (plain loop, no threads created); `threads=0` =
+  one worker per hardware thread. Composes with everything.
 **Light must stay byte-for-byte identical to pre-tier behavior** (the tier
 split doubles as the facts ablation). Heavy prints `[tier: heavy]`; LVI/SCEV
 fetched from FAM only in heavy mode.
 
-**Per-function flow (`run`):**
+**Module flow (`run`), three stages:**
 1. Per-module log `logs/compilations/<stem>.txt` (stem from module id;
    truncate-then-append; idempotent across reruns).
-2. **Hunter**: scan blocks for `llvm.ubsantrap`/`llvm.trap` calls.
-3. **Anchor**: single-predecessor trap block ending in conditional branch;
-   multi-pred skipped (~9/26 signed single-TU — coverage lead).
-4. Fresh `Z3Encoder` per trap (no cross-trap state — this is what makes
-   Level-2 threading safe); `enableUnsatCores()` in audit.
-5. `tryEliminateTrap(...)`: Phase 0 dominating guards (dom-tree edge walk);
-   Phase 0.5 dominating `llvm.assume`s; Phase 1 backward slice (boundaries:
-   loads, GEPs, loop-header phis, alien calls; non-header phis via
-   `collectPhiConditions`); Phase 2 forward encode in RPO; Phase 2.5 (HEAVY
-   only) FactEncoder boundary facts; Phase 3 assert guards (tracked G0..Gn in
-   audit), `push()`, trap cond (`TRAP`), check; UNSAT+audit => core, `pop()`,
-   context-only re-check => `[VACUOUS]` refuses. try/catch containment =>
-   `[Skip]`; timeout => `UNKNOWN` => kept.
-6. **Kill**: fold branch condition to the constant selecting the surviving
-   edge; simplifycfg+adce do physical removal.
+2. **STAGE 1 — serial discovery (main thread, IR read-only).** Per
+   function: fetch DT/LI (+ LVI/SE in heavy), **force DT DFS numbers**
+   (`updateDFSNumbers()` — DT's lazy renumbering is a hidden write; forcing
+   it on the main thread makes all worker-side `dominates()` const-safe).
+   `discoverTraps` (TrapDiscovery.cpp) does Hunter (ubsantrap scan), Anchor
+   (single-pred trap block + cond branch; multi-pred skipped — coverage
+   lead), Phase 0 dominating guards, Phase 0.5 dominating `llvm.assume`s,
+   Phase 1 backward slice — and appends one `TrapJob` per site to the
+   MODULE-WIDE job list. `Job.Index` (global discovery order) is THE
+   determinism key.
+3. **STAGE 2 — parallel solve (worker pool, IR strictly read-only).**
+   `runJobs(N, ...)` (Scheduler.cpp): workers claim job indices from an
+   atomic counter. Each job constructs its own `TrapSolver` with a private
+   `Z3Encoder`/`z3::context` and runs: `encodePhase` (Phase 2, RPO forward
+   encode), `factPhase` (Phase 2.5, heavy only — under the FactGate ticket,
+   see §9/§10), `solvePhase` (Phase 3: guards, `push()`, trap cond, check,
+   vacuity audit). All log output goes to the job-private `LogText`.
+   Every phase fences all exceptions → `[Skip]`, trap kept; a worker-level
+   catch-all guards constructor throws too.
+4. **STAGE 3a — the kill (serial, discovery order; the ONLY IR mutation).**
+   For each `Eliminate` verdict, fold the anchor branch condition to the
+   constant selecting the surviving edge; a `Folded` set refuses a
+   contradictory second fold of the same branch. simplifycfg+adce do the
+   physical removal downstream.
+5. **STAGE 3b — log assembly (discovery order).** Per-function stats and
+   `LogText` concatenation in `Job.Index` order ⇒ logs are byte-identical
+   for ANY `threads` value (modulo latency numbers, which were never
+   deterministic). "Total DFS & SMT Execution Time" sums per-job worker
+   wall clock — CPU-time-like when threads>1; the honest elapsed number is
+   the harness's stage wall clock.
+
+**Determinism contract:** for a given module, `threads=N` and `threads=1`
+produce identical verdicts, identical output IR, byte-identical logs
+(modulo latencies). `diff` of output .ll across THREADS values is the
+acceptance test. Analyze-then-kill note: verdicts are computed on pristine
+IR, kills applied after; contexts are never weaker than the old interleaved
+order (an eliminated trap's guard is provably true), so elimination counts
+can only match or exceed the old pass's.
 
 **Log tokens (load-bearing):** `UNSAT`, `SAT (WARNING`, `UNKNOWN (Solver gave
 up`, `[vacuity-ok]`, `[VACUOUS]`, `[Skip]`, `[Abort]`, `Unsat core:`,
@@ -217,6 +256,25 @@ sanitizer overhead 5.6% → 3.0% ⇒ **11% of checks = ~45% of overhead**;
   page-aligned segments make `.text` deltas invisible (+0 B artifacts).
   Perf truth stays on x86.
 
+**CloudLab first full perf run (x86, 40 threads, 2026-07-29, JOBS=4 ×
+THREADS=8, avg-based report):** eliminations reproduce exactly (10/125,
+138/1219, 142/1296). Oracle stage wall: signed 6.4 s, unsigned 77.8 s,
+both 45.7 s. Runtime deltas oracle-vs-base2x are NOISE-DOMINATED and
+inconsistent across sizes (e.g. signed −0.1/−1.6/−0.8%, both
++1.8/−0.3/−0.1%); sanitizer-overhead column even shows negative overhead
+(−6.8% unsigned @512MB) — physically implausible ⇒ the run does not yet
+meet the measurement doctrine. Suspects: avg (not min) statistic in this
+report invocation, low rep count, one unsigned-oracle @512MB rep dying
+rc=132 (the known §7 wraparound trap — expected, but it perturbs
+protocol timing), NUMA/SMT topology on the 40-thread node, no
+core-pinning. ACTION: rerun with min-based report, more reps, `taskset`
+pinning to one socket, SMT siblings avoided, turbo policy recorded,
+before quoting any server runtime number. The WSL +2.2% min-based result
+remains the quotable headline until then. Also note the M5 shows no
+speedup (<1% noise) — see the microarchitecture discussion: modern wide
+cores hide perfectly-predicted never-taken checks; effect size is
+machine-dependent and the paper should report per-machine.
+
 **SMT latency logs from perf runs** live at
 `logs/compilations/{signed,unsigned,both}.<tu>.txt` — pass them explicitly to
 `plot_smt_latencies.py` (default glob only sees `*_analysis.txt`).
@@ -279,9 +337,16 @@ argument for value facts; dominance gate for LVI; empty ranges refused;
 facts never move a boundary. Deferred ideas: context-sensitive KB, exact
 wrapped ranges, SCEV backedge-count relations, derived post-conditions.
 
-**CRITICAL FOR §10: LVI and ScalarEvolution mutate internal caches on every
-query — they are NOT thread-safe. DominatorTree/LoopInfo are const-query
-safe. Hence: heavy tier stays serial in Level-2 v1.**
+**Concurrency (as implemented in Level-2): LVI and ScalarEvolution mutate
+internal caches on every query — NOT thread-safe. DominatorTree/LoopInfo
+are const-query safe (DT DFS numbers forced in Stage 1). The original spec
+said "heavy forced serial"; the SHIPPED solution is stronger: the
+`FactGate` ticket turnstile (Scheduler.h) serializes ONLY the factPhase
+LVI/SCEV queries, in strict discovery order — thread-safe AND
+deterministic (LVI cache evolution identical to threads=1), while encode
+and solve still run fully parallel. Every heavy job passes the gate
+exactly once (dead/aborted jobs pass through) so the turnstile always
+advances; no-deadlock argument in Scheduler.h.**
 
 ---
 
@@ -301,7 +366,36 @@ Limit: Level 1 cannot speed up a single big file — that is Level 2.
 NOTE: `run_zlib.sh` (dev harness) is single-TU: Level 1 does not apply;
 it is the primary beneficiary of Level 2.
 
-### 10.2 Level 2 SPEC: multi-THREADED trap solving inside the pass
+### 10.2 Level 2 — DONE: multi-THREADED trap solving inside the pass
+
+**Status: IMPLEMENTED AND TESTED.** The pass is now the three-stage module
+pass of §3 (TrapDiscovery → TrapSolver pool → serial kill/log), with
+`threads=N` parsing, job-private Z3 contexts, discovery-order determinism,
+and — beyond the original spec — a thread-safe heavy tier via FactGate
+(§9) instead of the "force serial" fallback. Full design commentary lives
+in the module headers (OraclePass.cpp, Scheduler.h, TrapJob.h,
+TrapSolver.h) and LEVEL2_PARALLELISM.md.
+
+**Measured thread scaling (M5, /tmp/deflate_u.ll, whole-`opt` wall time):**
+
+| threads | 1 | 2 | 4 | 8 | 12 |
+|---|---|---|---|---|---|
+| real (s) | 2.73 | 1.55 | 1.00 | 0.77 | 0.74 |
+
+~3.5–3.7x is the plateau: the residual is Stage-1 serial discovery +
+per-job encode overhead + a latency tail of slow queries (Amdahl). ⇒ the
+next compile-latency lever is NOT more threads but **per-query timeout
+control** (sweep timeout at fixed threads; SAT-vs-UNSAT latency
+distributions decide the cutoff) plus guard pruning / slice reuse.
+
+The original spec below is retained for the record; deviations from it
+as-built: (a) TrapSite grew into TrapJob (module-wide, not per-function);
+(b) heavy tier is gated, not forced-serial; (c) verdicts are computed on
+pristine IR for ALL thread counts (analyze-then-kill), so threads=1 is
+also snapshot-based — the snapshot-vs-serial delta of point 5 no longer
+exists between thread counts, only vs the PRE-Level-2 pass.
+
+<details><summary>Original Level-2 spec (historical)</summary>
 
 **Why threads, not processes:** traps share one parsed module + built
 analyses; a process per trap would re-parse and re-analyze ~N-traps times
@@ -377,8 +471,12 @@ and `opt` has no per-trap selector. Threads share all of it read-only.
    path; (iii) enable the pool; (iv) acceptance; (v) commit + tag
    `v2.1-parallel`.
 
+</details>
+
 ### 10.3 After Level 2 (standing roadmap, in order)
-1. CloudLab migration; rerun zlib perf on x86 with JOBS + threads; then
+1. ~~CloudLab migration; rerun zlib perf on x86 with JOBS + threads~~ DONE
+   2026-07-29 (§6 — runtime deltas noisy, needs the min-based shuffled
+   protocol + noise-control pass on the server); then
    **OpenSSL end-to-end** (high UNSAT density; sha256 avalanche audit —
    vacuity+cores — folds in here).
 2. **Sanitizer × benchmark slowdown matrix** (X = sanitizer specs, Y =
@@ -460,4 +558,7 @@ python3 make_perf_report.py [--specs both]
 python3 plot_smt_latencies.py logs/compilations/{signed,unsigned,both}.*.txt
 opt -load-pass-plugin=build/OraclePass.so \
     -passes="oracle-pass<vacuity;heavy;timeout=3000>" -disable-output some.ll
+# Level-2 threads (composes with everything; threads=0 = all HW threads)
+opt -load-pass-plugin=build/OraclePass.so \
+    -passes="oracle-pass<threads=8>" -S in.ll -o out.ll
 ```

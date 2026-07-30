@@ -1,7 +1,20 @@
 #!/usr/bin/env bash
 # =============================================================================
-# run_zlib_perf.sh -- v4: COMPILE + RUNTIME benchmark, multi-size + shuffled,
-#                    PARALLEL oracle stage (Level-1 + Level-2), avg-based.
+# run_zlib_perf.sh -- v5: COMPILE + RUNTIME benchmark, multi-size + shuffled,
+#                    PARALLEL oracle stage (Level-1 + Level-2), MIN-based.
+#
+# v5 changes (noise-control release, CloudLab c220g2):
+#   * MIN-BASED: min_run_s emitted next to avg_run_s (min = primary index;
+#     noise only ever ADDS time). make_perf_report.py is min-primary too.
+#   * SIZES default "8 64 256" -- 512 dropped (fires the known intentional
+#     unsigned wraparound trap, rc=132, corrupting protocol timing; keep one
+#     manual 512 run archived as the dynamic spec-mismatch finding only).
+#   * PIN: timed+warmup runs go through $PIN (default: numactl socket-0
+#     cpu+mem binding when numactl exists; PIN="" disables). Kills
+#     cross-socket memory luck and scheduler wander.
+#   * Corpora live in /dev/shm when available (no disk I/O in timing).
+#   * Parallelism defaults sized from nproc: THREADS=8, JOBS=nproc/THREADS
+#     (c220g2: 5x8=40). Timing phase is strictly serial regardless.
 #
 # Specs   : none | signed | unsigned | both   (sanitizer configuration)
 # Configs : base   = clang -O3                                  -> binary
@@ -36,8 +49,9 @@
 # reps; binary file+.text size records.
 #
 # Output: evaluation/perf_zlib.csv (TIER=heavy: evaluation/perf_zlib_heavy.csv)
-# Knobs : RUNS=10 SIZES="8 64 512" LEVEL=9 TIMEOUT_SECS=600 COOLDOWN=60
+# Knobs : RUNS=10 SIZES="8 64 256" LEVEL=9 TIMEOUT_SECS=600 COOLDOWN=60
 #         TIER=light|heavy  ZLIB=/path/to/zlib  JOBS=N  THREADS=N
+#         PIN="numactl ..."|"taskset -c 2-9"|""   (timed-run wrapper)
 # NOTE  : vacuity check intentionally OFF here (plain 'oracle-pass').
 # NOTE  : requires GNU userland (timeout, stat -c, shuf, GNU size) and
 #         bash >= 4 -- on macOS: brew coreutils gnubin on PATH + brew bash;
@@ -50,14 +64,24 @@ ROOT="${ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
 PL_ROOT="${PL_ROOT:-$(dirname "$ROOT")}"
 ZLIB="${ZLIB:-$PL_ROOT/zlib}"
 RUNS=${RUNS:-10}
-read -r -a SIZE_ARR <<< "${SIZES:-8 64 512}"
+read -r -a SIZE_ARR <<< "${SIZES:-8 64 256}"
 LEVEL=${LEVEL:-9}
 TIMEOUT_SECS=${TIMEOUT_SECS:-600}
 COOLDOWN=${COOLDOWN:-60}
-JOBS=${JOBS:-$(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4)}
+NPROC=$(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4)
 # Level-2: worker threads INSIDE each opt process (per-trap pool).
-# Default 1 = the serial reference. Keep JOBS*THREADS <= cores.
-THREADS=${THREADS:-1}
+# Level-1 x Level-2 sized to the machine: JOBS*THREADS == nproc.
+THREADS=${THREADS:-8}
+JOBS=${JOBS:-$(( NPROC / THREADS > 0 ? NPROC / THREADS : 1 ))}
+# PIN wraps ONLY warmup + timed runs (never the parallel compile stage):
+# one socket, local memory. Override PIN="taskset -c 2-9" or PIN="" to disable.
+if [ "${PIN-unset}" = "unset" ]; then
+  if command -v numactl >/dev/null 2>&1 && numactl --hardware >/dev/null 2>&1; then
+    PIN="numactl --cpunodebind=0 --membind=0"
+  else
+    PIN=""
+  fi
+fi
 TIER=${TIER:-light}
 case "$TIER" in
   light) ORACLE_PASSES="oracle-pass<threads=${THREADS}>,simplifycfg,adce,verify" ;;
@@ -207,9 +231,16 @@ done
 echo ""
 echo "==== PHASE B: corpora (${SIZE_ARR[*]} MB) ===="
 SEED="$W/seed.txt"; cat "$ZLIB"/*.c "$ZLIB"/*.h > "$SEED"
+# tmpfs when available: corpus reads never touch disk during timing.
+CORPDIR="$W"
+if [ -d /dev/shm ] && [ -w /dev/shm ]; then
+  CORPDIR="/dev/shm/odessy_corpus.$$"; mkdir -p "$CORPDIR"
+  trap 'rm -rf "$CORPDIR"' EXIT
+fi
+echo "  corpus dir: $CORPDIR"
 declare -A CORPUS
 for mb in "${SIZE_ARR[@]}"; do
-  c="$W/corpus.${mb}M"
+  c="$CORPDIR/corpus.${mb}M"
   cp "$SEED" "$c"
   while [ "$(stat -c%s "$c")" -lt $((mb*1024*1024)) ]; do
     cat "$c" "$c" > "$c.t" && mv "$c.t" "$c"
@@ -226,11 +257,11 @@ sleep "$COOLDOWN"
 # =============================================================================
 # PHASE C: warmup -- one untimed run per (binary x size); primes page cache.
 # =============================================================================
-echo "==== PHASE C: warmup ===="
+echo "==== PHASE C: warmup ====  [pin: ${PIN:-none}]"
 MKEYS=()   # measurement keys "spec.cfg|mb"
 for k in "${KEYS2[@]}"; do
   for mb in "${SIZE_ARR[@]}"; do
-    "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+    $PIN "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
     rc=$?
     [ "$rc" -ge 128 ] && echo "  [TRAP] $k @${mb}MB warmup died rc=$rc -- a trap fired!"
     MKEYS+=("$k|$mb")
@@ -249,7 +280,7 @@ for rep in $(seq "$RUNS"); do
   while IFS= read -r mk; do
     k="${mk%|*}"; mb="${mk#*|}"
     t0=$(now)
-    "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+    $PIN "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
     rc=$?
     t1=$(now)
     [ "$rc" -ge 128 ] && echo "  [TRAP] $k @${mb}MB rep $rep died rc=$rc -- a trap fired!"
@@ -258,11 +289,11 @@ for rep in $(seq "$RUNS"); do
 done
 
 # =============================================================================
-# PHASE E: emit CSV (avg-based; raw run list kept for offline reprocessing).
+# PHASE E: emit CSV (min-primary + avg; raw run list kept for reprocessing).
 # =============================================================================
-echo "spec,config,size_mb,traps_in,traps_final,bin_bytes,text_bytes,clang_s,oracle_s,o3_s,backend_link_s,total_compile_s,avg_run_s,runs_s" > "$CSV"
-printf '\n%-9s %-7s %5s %6s %6s %10s %9s %9s %9s\n' \
-  spec config MB t_in t_fin bin_B text_B total_s avg_run
+echo "spec,config,size_mb,traps_in,traps_final,bin_bytes,text_bytes,clang_s,oracle_s,o3_s,backend_link_s,total_compile_s,min_run_s,avg_run_s,runs_s" > "$CSV"
+printf '\n%-9s %-7s %5s %6s %6s %10s %9s %9s %9s %9s\n' \
+  spec config MB t_in t_fin bin_B text_B total_s min_run avg_run
 for k in "${KEYS2[@]}"; do
   spec="${k%.*}"; cfg="${k#*.}"
   for mb in "${SIZE_ARR[@]}"; do
@@ -270,14 +301,16 @@ for k in "${KEYS2[@]}"; do
     runs_join="${RUNTIMES[$mk]%;}"
     avg=$(echo "$runs_join" | tr ';' '\n' | \
       awk '{s+=$1} END{printf "%.3f", s/NR}')
-    echo "$spec,$cfg,$mb,${TRAPS_IN[$spec]},${TRAPS_FIN[$k]},${B_BYTES[$k]},${B_TEXT[$k]},${CLANG_S[$spec]},${ORACLE_S[$k]},${O3_S[$k]},${BACKEND_S[$k]},${TOTAL_S[$k]},$avg,\"$runs_join\"" >> "$CSV"
-    printf '%-9s %-7s %5s %6s %6s %10s %9s %9s %9s\n' \
+    mn=$(echo "$runs_join" | tr ';' '\n' | \
+      awk 'NR==1||$1<m{m=$1} END{printf "%.3f", m}')
+    echo "$spec,$cfg,$mb,${TRAPS_IN[$spec]},${TRAPS_FIN[$k]},${B_BYTES[$k]},${B_TEXT[$k]},${CLANG_S[$spec]},${ORACLE_S[$k]},${O3_S[$k]},${BACKEND_S[$k]},${TOTAL_S[$k]},$mn,$avg,\"$runs_join\"" >> "$CSV"
+    printf '%-9s %-7s %5s %6s %6s %10s %9s %9s %9s %9s\n' \
       "$spec" "$cfg" "$mb" "${TRAPS_IN[$spec]}" "${TRAPS_FIN[$k]}" \
-      "${B_BYTES[$k]}" "${B_TEXT[$k]}" "${TOTAL_S[$k]}" "$avg"
+      "${B_BYTES[$k]}" "${B_TEXT[$k]}" "${TOTAL_S[$k]}" "$mn" "$avg"
   done
 done
 
 echo ""
 echo "CSV: $CSV   (then: python3 make_perf_report.py)   [oracle stage JOBS=$JOBS x THREADS=$THREADS]"
-echo "Cold-path check: if %-speedup shrinks 8 -> 64 -> 512 MB, the savings are"
+echo "Cold-path check: if %-speedup shrinks 8 -> 64 -> 256 MB, the savings are"
 echo "constant-per-invocation (cold path); flat % means a scaled path changed."
