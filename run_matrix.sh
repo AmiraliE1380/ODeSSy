@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 # =============================================================================
-# run_matrix.sh -- v2: SANITIZER x BENCHMARK opportunity matrix (baseline only).
+# run_matrix.sh -- v3: SANITIZER x BENCHMARK opportunity matrix (baseline only).
+# v3: ud1 counting (ubsantrap lowers to UD1 on x86, not UD2), lz4 built in
+# programs/ (top-level make drops MOREFLAGS), union columns all-sanitizers /
+# all-non-firing (composed per bench from warmup outcomes), PB_DATASET knob.
 #
 # Cells = (bench x spec). Three metrics per cell, three matrices in the report:
 #   1. min-based slowdown vs 'none'   (primary; noise only ADDS time)
@@ -12,8 +15,7 @@
 # where ODeSSy solver time is worth spending.
 #
 # Benchmarks : zlib lz4 zstd openssl polybench     (adapters below)
-# Specs      : none signed unsigned both divide shift bounds implicit integer
-#              ('integer' = clang's -fsanitize=integer umbrella = the ALL col)
+# Specs      : none | 7 singles | all-sanitizers | all-non-firing (unions)
 #
 # CRASH-SAFETY / RESUME:
 #   * evaluation/matrix/raw_runs.log -- every timed run appended THE MOMENT it
@@ -28,7 +30,8 @@
 #
 # Knobs : RUNS=10 CORPUS_MB=64 PIN=... RUN_TIMEOUT=300
 #         BENCHES="zlib lz4 zstd openssl polybench"
-#         SPECS="none signed unsigned both divide shift bounds implicit integer"
+#         SPECS="none signed unsigned both divide shift bounds implicit"
+#         UNIONS=1  PB_DATASET=MEDIUM|LARGE  ZSTD_LEVEL=12
 #         PL_ROOT=<dir with benchmark clones>   (default: repo parent)
 #         ZSTD_LEVEL=12  (19 is the "real" setting but ~2x the wall time)
 # Needs : pinned clang on PATH; perl+make (OpenSSL); benchmarks cloned
@@ -47,8 +50,19 @@ RUNS=${RUNS:-10}
 CORPUS_MB=${CORPUS_MB:-64}
 RUN_TIMEOUT=${RUN_TIMEOUT:-300}
 ZSTD_LEVEL=${ZSTD_LEVEL:-12}
+# PolyBench dataset. MEDIUM makes the whole matrix ~1.5h; LARGE is the
+# paper-final setting but costs ~230s PER TIMED RUN (hours of wall time).
+PB_DATASET=${PB_DATASET:-MEDIUM}
 BENCHES=${BENCHES:-"zlib lz4 zstd openssl polybench"}
-SPECS=${SPECS:-"none signed unsigned both divide shift bounds implicit integer"}
+SPECS=${SPECS:-"none signed unsigned both divide shift bounds implicit"}
+# UNIONS=1 (default): after the single specs are built and warmup-probed,
+# two composed cells are added per bench:
+#   all-sanitizers  = union of every single that BUILT (static ceiling; may
+#                     DIE at runtime wherever a component fired -- expected)
+#   all-non-firing  = union of every single that built AND survived warmup
+#                     (the strictest config this benchmark can actually SHIP
+#                     -- the deployable-overhead ceiling ODeSSy attacks)
+UNIONS=${UNIONS:-1}
 NPROC=$(nproc 2>/dev/null || echo 8)
 MDIR="$ROOT/evaluation/matrix"
 CSV="$ROOT/evaluation/matrix.csv"
@@ -74,13 +88,33 @@ san_flags() {
     shift)    echo "-fsanitize=shift -fsanitize-trap=shift" ;;
     bounds)   echo "-fsanitize=bounds -fsanitize-trap=bounds" ;;
     implicit) echo "-fsanitize=implicit-conversion -fsanitize-trap=implicit-conversion" ;;
-    integer)  echo "-fsanitize=integer -fsanitize-trap=integer" ;;
     *)        echo "__BAD__" ;;
   esac
 }
+# clang group name for each single spec (union composition)
+comp_of() {
+  case "$1" in
+    signed)   echo signed-integer-overflow ;;
+    unsigned) echo unsigned-integer-overflow ;;
+    divide)   echo integer-divide-by-zero ;;
+    shift)    echo shift ;;
+    bounds)   echo bounds ;;
+    implicit) echo implicit-conversion ;;
+  esac
+}
+union_flags() { # $@ = single-spec names -> combined -fsanitize/-fsanitize-trap
+  local list="" s c
+  for s in "$@"; do c=$(comp_of "$s"); [ -n "$c" ] && list="${list:+$list,}$c"; done
+  [ -n "$list" ] && echo "-fsanitize=$list -fsanitize-trap=$list"
+}
+# 'both' is signed+unsigned already; unions are built from these six:
+UNION_COMPONENTS="signed unsigned divide shift bounds implicit"
+# Binary trap-count proxy. NOTE: llvm.ubsantrap lowers to UD1 on x86 (the
+# immediate encodes the check kind); plain llvm.trap lowers to UD2. Count
+# both. x86-only -- on arm64 traps lower to brk and this proxy is invalid.
 count_ud2() {
   command -v objdump >/dev/null 2>&1 || { echo NA; return; }
-  local n; n=$(objdump -d "$1" 2>/dev/null | grep -cw 'ud2'); echo "${n:-0}"
+  local n; n=$(objdump -d "$1" 2>/dev/null | grep -cwE 'ud1|ud2'); echo "${n:-0}"
 }
 # Exact static count: emit IR for each source with the cell's flags, grep call
 # sites. Used only by adapters where we own the compile line (zlib, polybench).
@@ -141,9 +175,11 @@ run_zlib() { "$1" -9 < "$CORP" > /dev/null 2>&1; }
 
 build_lz4() {
   local d="$PL_ROOT/lz4"; [ -d "$d" ] || { echo SKIP; return; }
-  ( cd "$d" && make clean >/dev/null 2>&1
+  # Build in programs/ directly: the top-level 'lz4' target has been seen
+  # to drop MOREFLAGS (=> silently unsanitized binaries, traps=0 everywhere).
+  ( cd "$d/programs" && make clean >/dev/null 2>&1
     make -j"$NPROC" CC=clang MOREFLAGS="$2" lz4 >/dev/null 2>&1 ) || { echo SKIP; return; }
-  local b="$d/lz4"; [ -x "$b" ] || b="$d/programs/lz4"
+  local b="$d/programs/lz4"; [ -x "$b" ] || b="$d/lz4"
   [ -x "$b" ] || { echo SKIP; return; }
   cp "$b" "$W/bin.lz4.$1"; echo "$W/bin.lz4.$1"
 }
@@ -190,12 +226,12 @@ build_polybench() {
   local k name outs=() total=0 n src
   for k in $PB_KERNELS; do
     name=$(basename "$k")
-    clang -O3 $2 -I"$d/utilities" -I"$d/$k" -DLARGE_DATASET \
+    clang -O3 $2 -I"$d/utilities" -I"$d/$k" -D${PB_DATASET}_DATASET \
       "$d/utilities/polybench.c" "$d/$k/$name.c" -lm \
       -o "$W/bin.pb.$name.$1" 2>/dev/null || { echo SKIP; return; }
     outs+=("$W/bin.pb.$name.$1")
     for src in "$d/utilities/polybench.c" "$d/$k/$name.c"; do
-      count_ir n clang -O3 $2 -I"$d/utilities" -I"$d/$k" -DLARGE_DATASET "$src"
+      count_ir n clang -O3 $2 -I"$d/utilities" -I"$d/$k" -D${PB_DATASET}_DATASET "$src"
       [ "$n" = "NA" ] && n=0; total=$((total+n))
     done
   done
@@ -220,7 +256,7 @@ timed() { # $1 = bench, $2 = binary; returns the kernel's rc (124 = timeout)
 # =============================================================================
 # MAIN LOOP -- bench by bench (checkpoint unit), specs interleaved inside.
 # =============================================================================
-[ -f "$CSV" ] || echo "bench,spec,traps_n,trap_method,status,min_run_s,avg_run_s,slowdown_vs_none_min_pct,slowdown_vs_none_avg_pct,runs_s" > "$CSV"
+[ -f "$CSV" ] || echo "bench,spec,traps_n,trap_method,status,min_run_s,avg_run_s,slowdown_vs_none_min_pct,slowdown_vs_none_avg_pct,components,runs_s" > "$CSV"
 make_corpus
 echo "==== matrix v2: benches [$BENCHES] x specs [$SPECS] ===="
 echo "==== RUNS=$RUNS CORPUS=${CORPUS_MB}MB pin='${PIN:-none}' raw log: $RAW ===="
@@ -232,8 +268,8 @@ for bench in $BENCHES; do
   fi
   echo ""
   echo "==== [$bench] building cells ===="
-  declare -A BIN TRAPS METH DIED RUNTIMES
-  BIN=(); TRAPS=(); METH=(); DIED=(); RUNTIMES=()
+  declare -A BIN TRAPS METH DIED RUNTIMES COMPO
+  BIN=(); TRAPS=(); METH=(); DIED=(); RUNTIMES=(); COMPO=()
   CELLS=()
   for s in $SPECS; do
     fl=$(san_flags "$s"); [ "$fl" = "__BAD__" ] && { echo "[FATAL] bad spec $s"; exit 1; }
@@ -241,7 +277,7 @@ for bench in $BENCHES; do
     bin=$("build_$bench" "$s" "$fl")
     if [ "$bin" = "SKIP" ] || [ -z "$bin" ]; then
       echo "  [skip] $bench/$s (missing clone or build failed)"
-      echo "$bench,$s,,,build_failed,,,,," >> "$CSV"
+      echo "$bench,$s,,,build_failed,,,,,," >> "$CSV"
       continue
     fi
     BIN[$s]="$bin"
@@ -250,6 +286,11 @@ for bench in $BENCHES; do
     else TRAPS[$s]=$(count_ud2 "$bin"); METH[$s]="ud2"; fi
     CELLS+=("$s")
     printf '  built %-10s %-9s traps=%s (%s)\n' "$bench" "$s" "${TRAPS[$s]}" "${METH[$s]}"
+    # Sanity: a sanitized build with ZERO traps almost always means the
+    # flags never reached the compiler (build-system swallowed MOREFLAGS).
+    if [ "$s" != "none" ] && [ "${TRAPS[$s]}" = "0" ]; then
+      echo "  [WARN] $bench/$s built with 0 traps -- sanitizer flags may not have reached the compiler; verify before trusting this row"
+    fi
   done
   [ ${#CELLS[@]} -gt 0 ] || { echo "  [$bench] nothing built"; touch "$MDIR/.done.$bench"; continue; }
 
@@ -261,6 +302,44 @@ for bench in $BENCHES; do
       echo "  [TRAP] $bench/$s warmup rc=$rc ($([ $rc -eq 124 ] && echo timeout || echo 'sanitizer fired')) -- excluded from timing, kept as finding"
     fi
   done
+
+  # ---- UNION CELLS: composed from the singles' build+warmup outcomes ----
+  if [ "${UNIONS}" = "1" ]; then
+    for u in all-sanitizers all-non-firing; do
+      comps=""
+      for s in $UNION_COMPONENTS; do
+        [ -n "${BIN[$s]:-}" ] || continue                    # must have built
+        if [ "$u" = "all-non-firing" ] && [ -n "${DIED[$s]:-}" ]; then
+          continue                                           # fired => excluded
+        fi
+        comps="$comps $s"
+      done
+      comps="${comps# }"
+      [ -n "$comps" ] || { echo "  [skip] $bench/$u (no eligible components)"; continue; }
+      fl=$(union_flags $comps)
+      rm -f "$W/.trapcount.$bench.$u"
+      bin=$("build_$bench" "$u" "$fl")
+      if [ "$bin" = "SKIP" ] || [ -z "$bin" ]; then
+        echo "  [skip] $bench/$u (build failed)"
+        echo "$bench,$u,,,build_failed,,,,,\"$comps\"," >> "$CSV"
+        continue
+      fi
+      BIN[$u]="$bin"; COMPO[$u]="$comps"
+      if [ -f "$W/.trapcount.$bench.$u" ]; then
+        read -r "TRAPS[$u]" "METH[$u]" < "$W/.trapcount.$bench.$u"
+      else TRAPS[$u]=$(count_ud2 "$bin"); METH[$u]="ud2"; fi
+      CELLS+=("$u")
+      printf '  built %-10s %-15s traps=%s (%s) = {%s}\n' \
+        "$bench" "$u" "${TRAPS[$u]}" "${METH[$u]}" "$comps"
+      # warmup-probe the union too (all-non-firing SHOULD survive; if it
+      # dies anyway that is itself a finding -- interacting checks)
+      timed "$bench" "${BIN[$u]}"; rc=$?
+      if [ "$rc" -ge 128 ] || [ "$rc" -eq 124 ]; then
+        DIED[$u]=$rc
+        echo "  [TRAP] $bench/$u warmup rc=$rc -- excluded from timing"
+      fi
+    done
+  fi
 
   echo "==== [$bench] timing: $RUNS shuffled reps ===="
   for rep in $(seq "$RUNS"); do
@@ -297,7 +376,7 @@ for bench in $BENCHES; do
       [ -n "$refa" ] && [ -n "${AV[$s]:-}" ] && \
         ova=$(awk -v n="${AV[$s]}" -v r="$refa" 'BEGIN{printf "%+.1f", (n-r)/r*100}')
     fi
-    echo "$bench,$s,${TRAPS[$s]:-},${METH[$s]:-},$st,${MN[$s]:-},${AV[$s]:-},$ovm,$ova,\"$rj\"" >> "$CSV"
+    echo "$bench,$s,${TRAPS[$s]:-},${METH[$s]:-},$st,${MN[$s]:-},${AV[$s]:-},$ovm,$ova,\"${COMPO[$s]:-}\",\"$rj\"" >> "$CSV"
   done
   touch "$MDIR/.done.$bench"
   echo "==== [$bench] rows appended to $CSV ; checkpoint written ===="
