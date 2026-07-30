@@ -1,0 +1,161 @@
+==== matrix v2: benches [zlib lz4 zstd openssl polybench] x specs [none signed unsigned both divide shift bounds implicit] ====
+==== RUNS=10 CORPUS=64MB pin='numactl --cpunodebind=0 --membind=0' raw log: /mydata/ODeSSy/evaluation/matrix/raw_runs.log ====
+
+==== [zlib] building cells ====
+  built zlib       none      traps=0 (ir)
+  built zlib       signed    traps=65 (ir)
+  built zlib       unsigned  traps=636 (ir)
+  built zlib       both      traps=680 (ir)
+  built zlib       divide    traps=2 (ir)
+  built zlib       shift     traps=21 (ir)
+  built zlib       bounds    traps=38 (ir)
+  built zlib       implicit  traps=77 (ir)
+==== [zlib] warmup ====
+environment: line 1: 146082 Illegal instruction     (core dumped) "$1" -9 < "$CORP" > /dev/null 2>&1
+  [TRAP] zlib/implicit warmup rc=132 (sanitizer fired) -- excluded from timing, kept as finding
+  built zlib       all-sanitizers  traps=813 (ir) = {signed unsigned divide shift bounds implicit}
+environment: line 1: 146193 Illegal instruction     (core dumped) "$1" -9 < "$CORP" > /dev/null 2>&1
+  [TRAP] zlib/all-sanitizers warmup rc=132 -- excluded from timing
+  built zlib       all-non-firing  traps=739 (ir) = {signed unsigned divide shift bounds}
+==== [zlib] timing: 10 shuffled reps ====
+  rep 1/10 done (16:23:18)
+  rep 2/10 done (16:25:29)
+  rep 3/10 done (16:27:40)
+  rep 4/10 done (16:29:51)
+  rep 5/10 done (16:32:01)
+  rep 6/10 done (16:34:12)
+  rep 7/10 done (16:36:23)
+  rep 8/10 done (16:38:33)
+  rep 9/10 done (16:40:44)
+  rep 10/10 done (16:42:54)
+==== [zlib] rows appended to /mydata/ODeSSy/evaluation/matrix.csv ; checkpoint written ====
+
+==== [lz4] building cells ====
+  built lz4        none      traps=0 (ud2)
+  built lz4        signed    traps=0 (ud2)
+  [WARN] lz4/signed built with 0 traps -- sanitizer flags may not have reached the compiler; verify before trusting this row
+  built lz4        unsigned  traps=0 (ud2)
+  [WARN] lz4/unsigned built with 0 traps -- sanitizer flags may not have reached the compiler; verify before trusting this row
+  built lz4        both      traps=0 (ud2)
+  [WARN] lz4/both built with 0 traps -- sanitizer flags may not have reached the compiler; verify before trusting this row
+  built lz4        divide    traps=0 (ud2)
+  [WARN] lz4/divide built with 0 traps -- sanitizer flags may not have reached the compiler; verify before trusting this row
+  built lz4        shift     traps=0 (ud2)
+  [WARN] lz4/shift built with 0 traps -- sanitizer flags may not have reached the compiler; verify before trusting this row
+  built lz4        bounds    traps=0 (ud2)
+  [WARN] lz4/bounds built with 0 traps -- sanitizer flags may not have reached the compiler; verify before trusting this row
+  built lz4        implicit  traps=0 (ud2)
+  [WARN] lz4/implicit built with 0 traps -- sanitizer flags may not have reached the compiler; verify before trusting this row
+==== [lz4] warmup ====
+  built lz4        all-sanitizers  traps=0 (ud2) = {signed unsigned divide shift bounds implicit}
+  built lz4        all-non-firing  traps=0 (ud2) = {signed unsigned divide shift bounds implicit}
+==== [lz4] timing: 10 shuffled reps ====
+  rep 1/10 done (16:43:33)
+  rep 2/10 done (16:43:38)
+  rep 3/10 done (16:43:43)
+  rep 4/10 done (16:43:48)
+  rep 5/10 done (16:43:52)
+  rep 6/10 done (16:43:57)
+  rep 7/10 done (16:44:02)
+  rep 8/10 done (16:44:07)
+  rep 9/10 done (16:44:12)
+  rep 10/10 done (16:44:17)
+==== [lz4] rows appended to /mydata/ODeSSy/evaluation/matrix.csv ; checkpoint written ====
+
+==== [zstd] building cells ====
+  built zstd       none      traps=0 (ud2)
+  built zstd       signed    traps=199 (ud2)
+  built zstd       unsigned  traps=6615 (ud2)
+  built zstd       both      traps=6794 (ud2)
+  built zstd       divide    traps=14 (ud2)
+  built zstd       shift     traps=192 (ud2)
+  built zstd       bounds    traps=481 (ud2)
+  built zstd       implicit  traps=314 (ud2)
+==== [zstd] warmup ====
+environment: line 1: 161338 Illegal instruction     (core dumped) "$1" -"$ZSTD_LEVEL" -f -c < "$CORP" > /dev/null 2>&1
+  [TRAP] zstd/unsigned warmup rc=132 (sanitizer fired) -- excluded from timing, kept as finding
+environment: line 1: 161347 Illegal instruction     (core dumped) "$1" -"$ZSTD_LEVEL" -f -c < "$CORP" > /dev/null 2>&1
+  [TRAP] zstd/both warmup rc=132 (sanitizer fired) -- excluded from timing, kept as finding
+environment: line 1: 161377 Illegal instruction     (core dumped) "$1" -"$ZSTD_LEVEL" -f -c < "$CORP" > /dev/null 2>&1
+  [TRAP] zstd/implicit warmup rc=132 (sanitizer fired) -- excluded from timing, kept as finding
+  built zstd       all-sanitizers  traps=7460 (ud2) = {signed unsigned divide shift bounds implicit}
+environment: line 1: 162125 Illegal instruction     (core dumped) "$1" -"$ZSTD_LEVEL" -f -c < "$CORP" > /dev/null 2>&1
+  [TRAP] zstd/all-sanitizers warmup rc=132 -- excluded from timing
+  built zstd       all-non-firing  traps=857 (ud2) = {signed divide shift bounds}
+==== [zstd] timing: 10 shuffled reps ====
+  rep 1/10 done (16:45:48)
+  rep 2/10 done (16:45:49)
+  rep 3/10 done (16:45:51)
+  rep 4/10 done (16:45:52)
+  rep 5/10 done (16:45:53)
+  rep 6/10 done (16:45:55)
+  rep 7/10 done (16:45:56)
+  rep 8/10 done (16:45:57)
+  rep 9/10 done (16:45:58)
+  rep 10/10 done (16:46:00)
+==== [zstd] rows appended to /mydata/ODeSSy/evaluation/matrix.csv ; checkpoint written ====
+
+==== [openssl] building cells ====
+  built openssl    none      traps=2 (ud2)
+  built openssl    signed    traps=1165 (ud2)
+  built openssl    unsigned  traps=5826 (ud2)
+  built openssl    both      traps=6952 (ud2)
+  built openssl    divide    traps=34 (ud2)
+  built openssl    shift     traps=76 (ud2)
+  built openssl    bounds    traps=878 (ud2)
+  built openssl    implicit  traps=2014 (ud2)
+==== [openssl] warmup ====
+environment: line 1: 163703 Illegal instruction     (core dumped) "$1" dgst -sha256 "$CORP" > /dev/null 2>&1
+  [TRAP] openssl/unsigned warmup rc=132 (sanitizer fired) -- excluded from timing, kept as finding
+environment: line 1: 163712 Illegal instruction     (core dumped) "$1" dgst -sha256 "$CORP" > /dev/null 2>&1
+  [TRAP] openssl/both warmup rc=132 (sanitizer fired) -- excluded from timing, kept as finding
+environment: line 1: 163733 Illegal instruction     (core dumped) "$1" dgst -sha256 "$CORP" > /dev/null 2>&1
+  [TRAP] openssl/implicit warmup rc=132 (sanitizer fired) -- excluded from timing, kept as finding
+  built openssl    all-sanitizers  traps=9388 (ud2) = {signed unsigned divide shift bounds implicit}
+environment: line 1: 172054 Illegal instruction     (core dumped) "$1" dgst -sha256 "$CORP" > /dev/null 2>&1
+  [TRAP] openssl/all-sanitizers warmup rc=132 -- excluded from timing
+  built openssl    all-non-firing  traps=2088 (ud2) = {signed divide shift bounds}
+==== [openssl] timing: 10 shuffled reps ====
+  rep 1/10 done (16:47:33)
+  rep 2/10 done (16:47:36)
+  rep 3/10 done (16:47:39)
+  rep 4/10 done (16:47:41)
+  rep 5/10 done (16:47:44)
+  rep 6/10 done (16:47:47)
+  rep 7/10 done (16:47:50)
+  rep 8/10 done (16:47:53)
+  rep 9/10 done (16:47:56)
+  rep 10/10 done (16:47:59)
+==== [openssl] rows appended to /mydata/ODeSSy/evaluation/matrix.csv ; checkpoint written ====
+
+==== [polybench] building cells ====
+  built polybench  none      traps=0 (ir)
+  built polybench  signed    traps=0 (ir)
+  [WARN] polybench/signed built with 0 traps -- sanitizer flags may not have reached the compiler; verify before trusting this row
+  built polybench  unsigned  traps=5 (ir)
+  built polybench  both      traps=5 (ir)
+  built polybench  divide    traps=0 (ir)
+  [WARN] polybench/divide built with 0 traps -- sanitizer flags may not have reached the compiler; verify before trusting this row
+  built polybench  shift     traps=0 (ir)
+  [WARN] polybench/shift built with 0 traps -- sanitizer flags may not have reached the compiler; verify before trusting this row
+  built polybench  bounds    traps=0 (ir)
+  [WARN] polybench/bounds built with 0 traps -- sanitizer flags may not have reached the compiler; verify before trusting this row
+  built polybench  implicit  traps=5 (ir)
+==== [polybench] warmup ====
+  built polybench  all-sanitizers  traps=10 (ir) = {signed unsigned divide shift bounds implicit}
+  built polybench  all-non-firing  traps=10 (ir) = {signed unsigned divide shift bounds implicit}
+==== [polybench] timing: 10 shuffled reps ====
+  rep 1/10 done (16:48:24)
+  rep 2/10 done (16:48:27)
+  rep 3/10 done (16:48:30)
+  rep 4/10 done (16:48:33)
+  rep 5/10 done (16:48:36)
+  rep 6/10 done (16:48:38)
+  rep 7/10 done (16:48:41)
+  rep 8/10 done (16:48:44)
+  rep 9/10 done (16:48:47)
+  rep 10/10 done (16:48:50)
+==== [polybench] rows appended to /mydata/ODeSSy/evaluation/matrix.csv ; checkpoint written ====
+
+CSV: /mydata/ODeSSy/evaluation/matrix.csv
+Report: python3 make_matrix_report.py   (3 matrices: min / avg / traps)

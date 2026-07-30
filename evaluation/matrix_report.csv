@@ -1,0 +1,16 @@
+metric,bench,signed,unsigned,both,divide,shift,bounds,implicit,all-sanitizers,all-non-firing
+slowdown_min_pct,zlib,-0.4,+2.9,+2.8,-0.1,+0.0,+0.5,DIED,DIED,+1.5
+slowdown_min_pct,lz4,-0.6,-1.9,-0.6,-0.6,-0.4,-1.0,-1.2,-0.8,+1.2
+slowdown_min_pct,zstd,+1.0,DIED,DIED,+0.5,+0.0,+2.0,DIED,DIED,+3.5
+slowdown_min_pct,openssl,+5.4,DIED,DIED,+5.7,+5.4,+5.4,DIED,DIED,+1.4
+slowdown_min_pct,polybench,+1.4,+0.0,+0.7,+0.7,+0.0,+1.4,+0.4,+1.8,+1.4
+slowdown_avg_pct,zlib,-0.1,+2.9,+3.4,+0.3,+0.6,+0.8,DIED,DIED,+1.5
+slowdown_avg_pct,lz4,+1.0,+0.6,+0.0,+0.6,+0.8,+0.6,+0.0,+1.0,+1.2
+slowdown_avg_pct,zstd,+0.5,DIED,DIED,+0.0,-1.0,+0.5,DIED,DIED,+1.4
+slowdown_avg_pct,openssl,+0.6,DIED,DIED,+0.9,+0.9,+0.9,DIED,DIED,+0.4
+slowdown_avg_pct,polybench,+0.4,+0.0,-0.4,-0.4,-0.4,-0.4,-0.4,+0.4,+0.4
+traps_n,zlib,65,636,680,2,21,38,77,813,739
+traps_n,lz4,0,0,0,0,0,0,0,0,0
+traps_n,zstd,199,6615,6794,14,192,481,314,7460,857
+traps_n,openssl,1165,5826,6952,34,76,878,2014,9388,2088
+traps_n,polybench,0,5,5,0,0,0,5,10,10
