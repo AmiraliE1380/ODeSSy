@@ -1,0 +1,16 @@
+metric,bench,signed,unsigned,both,divide,shift,bounds,implicit,integer
+slowdown_min_pct,zlib,+0.0,+2.8,+3.2,-0.3,+0.4,+0.4,DIED,DIED
+slowdown_min_pct,lz4,+2.3,+1.1,+0.8,+2.5,+0.2,+1.7,+0.6,+1.1
+slowdown_min_pct,zstd,-1.5,DIED,DIED,-3.4,-1.0,-2.0,DIED,DIED
+slowdown_min_pct,openssl,+0.2,DIED,DIED,-0.2,-0.6,-0.4,DIED,DIED
+slowdown_min_pct,polybench,+0.2,+0.2,-0.0,+0.6,+0.1,-0.1,+0.1,-0.0
+slowdown_avg_pct,zlib,+0.2,+3.1,+2.9,+0.9,+0.1,+1.1,DIED,DIED
+slowdown_avg_pct,lz4,+0.6,+0.0,+0.2,+0.4,+1.0,+0.4,-0.4,+0.2
+slowdown_avg_pct,zstd,+0.5,DIED,DIED,-1.0,-1.0,-1.0,DIED,DIED
+slowdown_avg_pct,openssl,+0.0,DIED,DIED,+0.0,-0.2,-0.2,DIED,DIED
+slowdown_avg_pct,polybench,+0.2,+0.1,-0.1,+0.2,+0.0,+0.1,-0.1,-0.1
+traps_n,zlib,65,636,680,2,21,38,DIED,DIED
+traps_n,lz4,0,0,0,0,0,0,0,0
+traps_n,zstd,0,DIED,DIED,0,0,0,DIED,DIED
+traps_n,openssl,2,DIED,DIED,2,2,2,DIED,DIED
+traps_n,polybench,0,5,5,0,0,0,5,10

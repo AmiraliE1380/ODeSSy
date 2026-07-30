@@ -1,0 +1,145 @@
+==== matrix v2: benches [zlib lz4 zstd openssl polybench] x specs [none signed unsigned both divide shift bounds implicit integer] ====
+==== RUNS=10 CORPUS=64MB pin='numactl --cpunodebind=0 --membind=0' raw log: /mydata/ODeSSy/evaluation/matrix/raw_runs.log ====
+
+==== [zlib] building cells ====
+  built zlib       none      traps=0 (ir)
+  built zlib       signed    traps=65 (ir)
+  built zlib       unsigned  traps=636 (ir)
+  built zlib       both      traps=680 (ir)
+  built zlib       divide    traps=2 (ir)
+  built zlib       shift     traps=21 (ir)
+  built zlib       bounds    traps=38 (ir)
+  built zlib       implicit  traps=77 (ir)
+  built zlib       integer   traps=837 (ir)
+==== [zlib] warmup ====
+environment: line 1: 29838 Illegal instruction     (core dumped) "$1" -9 < "$CORP" > /dev/null 2>&1
+  [TRAP] zlib/implicit warmup rc=132 (sanitizer fired) -- excluded from timing, kept as finding
+environment: line 1: 29847 Illegal instruction     (core dumped) "$1" -9 < "$CORP" > /dev/null 2>&1
+  [TRAP] zlib/integer warmup rc=132 (sanitizer fired) -- excluded from timing, kept as finding
+==== [zlib] timing: 10 shuffled reps ====
+  rep 1/10 done (23:51:18)
+  rep 2/10 done (23:53:12)
+  rep 3/10 done (23:55:05)
+  rep 4/10 done (23:56:59)
+  rep 5/10 done (23:58:53)
+  rep 6/10 done (00:00:46)
+  rep 7/10 done (00:02:40)
+  rep 8/10 done (00:04:34)
+  rep 9/10 done (00:06:27)
+  rep 10/10 done (00:08:21)
+==== [zlib] rows appended to /mydata/ODeSSy/evaluation/matrix.csv ; checkpoint written ====
+
+==== [lz4] building cells ====
+  built lz4        none      traps=0 (ud2)
+  built lz4        signed    traps=0 (ud2)
+  built lz4        unsigned  traps=0 (ud2)
+  built lz4        both      traps=0 (ud2)
+  built lz4        divide    traps=0 (ud2)
+  built lz4        shift     traps=0 (ud2)
+  built lz4        bounds    traps=0 (ud2)
+  built lz4        implicit  traps=0 (ud2)
+  built lz4        integer   traps=0 (ud2)
+==== [lz4] warmup ====
+==== [lz4] timing: 10 shuffled reps ====
+  rep 1/10 done (00:09:01)
+  rep 2/10 done (00:09:05)
+  rep 3/10 done (00:09:10)
+  rep 4/10 done (00:09:14)
+  rep 5/10 done (00:09:18)
+  rep 6/10 done (00:09:23)
+  rep 7/10 done (00:09:27)
+  rep 8/10 done (00:09:32)
+  rep 9/10 done (00:09:36)
+  rep 10/10 done (00:09:41)
+==== [lz4] rows appended to /mydata/ODeSSy/evaluation/matrix.csv ; checkpoint written ====
+
+==== [zstd] building cells ====
+  built zstd       none      traps=0 (ud2)
+  built zstd       signed    traps=0 (ud2)
+  built zstd       unsigned  traps=0 (ud2)
+  built zstd       both      traps=0 (ud2)
+  built zstd       divide    traps=0 (ud2)
+  built zstd       shift     traps=0 (ud2)
+  built zstd       bounds    traps=0 (ud2)
+  built zstd       implicit  traps=0 (ud2)
+  built zstd       integer   traps=0 (ud2)
+==== [zstd] warmup ====
+environment: line 1: 46938 Illegal instruction     (core dumped) "$1" -"$ZSTD_LEVEL" -f -c < "$CORP" > /dev/null 2>&1
+  [TRAP] zstd/unsigned warmup rc=132 (sanitizer fired) -- excluded from timing, kept as finding
+environment: line 1: 46947 Illegal instruction     (core dumped) "$1" -"$ZSTD_LEVEL" -f -c < "$CORP" > /dev/null 2>&1
+  [TRAP] zstd/both warmup rc=132 (sanitizer fired) -- excluded from timing, kept as finding
+environment: line 1: 46977 Illegal instruction     (core dumped) "$1" -"$ZSTD_LEVEL" -f -c < "$CORP" > /dev/null 2>&1
+  [TRAP] zstd/implicit warmup rc=132 (sanitizer fired) -- excluded from timing, kept as finding
+environment: line 1: 46990 Illegal instruction     (core dumped) "$1" -"$ZSTD_LEVEL" -f -c < "$CORP" > /dev/null 2>&1
+  [TRAP] zstd/integer warmup rc=132 (sanitizer fired) -- excluded from timing, kept as finding
+==== [zstd] timing: 10 shuffled reps ====
+  rep 1/10 done (00:11:03)
+  rep 2/10 done (00:11:04)
+  rep 3/10 done (00:11:05)
+  rep 4/10 done (00:11:06)
+  rep 5/10 done (00:11:07)
+  rep 6/10 done (00:11:08)
+  rep 7/10 done (00:11:09)
+  rep 8/10 done (00:11:10)
+  rep 9/10 done (00:11:11)
+  rep 10/10 done (00:11:12)
+==== [zstd] rows appended to /mydata/ODeSSy/evaluation/matrix.csv ; checkpoint written ====
+
+==== [openssl] building cells ====
+  built openssl    none      traps=2 (ud2)
+  built openssl    signed    traps=2 (ud2)
+  built openssl    unsigned  traps=2 (ud2)
+  built openssl    both      traps=2 (ud2)
+  built openssl    divide    traps=2 (ud2)
+  built openssl    shift     traps=2 (ud2)
+  built openssl    bounds    traps=2 (ud2)
+  built openssl    implicit  traps=2 (ud2)
+  built openssl    integer   traps=2 (ud2)
+==== [openssl] warmup ====
+environment: line 1: 121122 Illegal instruction     (core dumped) "$1" dgst -sha256 "$CORP" > /dev/null 2>&1
+  [TRAP] openssl/unsigned warmup rc=132 (sanitizer fired) -- excluded from timing, kept as finding
+environment: line 1: 121131 Illegal instruction     (core dumped) "$1" dgst -sha256 "$CORP" > /dev/null 2>&1
+  [TRAP] openssl/both warmup rc=132 (sanitizer fired) -- excluded from timing, kept as finding
+environment: line 1: 121152 Illegal instruction     (core dumped) "$1" dgst -sha256 "$CORP" > /dev/null 2>&1
+  [TRAP] openssl/implicit warmup rc=132 (sanitizer fired) -- excluded from timing, kept as finding
+environment: line 1: 121161 Illegal instruction     (core dumped) "$1" dgst -sha256 "$CORP" > /dev/null 2>&1
+  [TRAP] openssl/integer warmup rc=132 (sanitizer fired) -- excluded from timing, kept as finding
+==== [openssl] timing: 10 shuffled reps ====
+  rep 1/10 done (00:16:24)
+  rep 2/10 done (00:16:26)
+  rep 3/10 done (00:16:29)
+  rep 4/10 done (00:16:31)
+  rep 5/10 done (00:16:33)
+  rep 6/10 done (00:16:36)
+  rep 7/10 done (00:16:38)
+  rep 8/10 done (00:16:40)
+  rep 9/10 done (00:16:43)
+  rep 10/10 done (00:16:45)
+==== [openssl] rows appended to /mydata/ODeSSy/evaluation/matrix.csv ; checkpoint written ====
+
+==== [polybench] building cells ====
+  built polybench  none      traps=0 (ir)
+  built polybench  signed    traps=0 (ir)
+  built polybench  unsigned  traps=5 (ir)
+  built polybench  both      traps=5 (ir)
+  built polybench  divide    traps=0 (ir)
+  built polybench  shift     traps=0 (ir)
+  built polybench  bounds    traps=0 (ir)
+  built polybench  implicit  traps=5 (ir)
+  built polybench  integer   traps=10 (ir)
+==== [polybench] warmup ====
+==== [polybench] timing: 10 shuffled reps ====
+  rep 1/10 done (01:26:28)
+  rep 2/10 done (02:01:11)
+  rep 3/10 done (02:35:47)
+  rep 4/10 done (03:10:33)
+  rep 5/10 done (03:45:16)
+  rep 6/10 done (04:19:56)
+  rep 7/10 done (04:54:35)
+  rep 8/10 done (05:29:17)
+  rep 9/10 done (06:03:53)
+  rep 10/10 done (06:38:26)
+==== [polybench] rows appended to /mydata/ODeSSy/evaluation/matrix.csv ; checkpoint written ====
+
+CSV: /mydata/ODeSSy/evaluation/matrix.csv
+Report: python3 make_matrix_report.py   (3 matrices: min / avg / traps)
