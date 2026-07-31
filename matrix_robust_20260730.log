@@ -1,0 +1,254 @@
+==== matrix v2: benches [zlib lz4 zstd] x specs [none signed unsigned both divide shift bounds implicit] ====
+==== RUNS=40 CORPUS=64MB pin='numactl --cpunodebind=0 --membind=0' raw log: /mydata/ODeSSy/evaluation/matrix/raw_runs.log ====
+
+==== [zlib] building cells ====
+  built zlib       none      traps=0 (ir)
+  built zlib       signed    traps=65 (ir)
+  built zlib       unsigned  traps=636 (ir)
+  built zlib       both      traps=680 (ir)
+  built zlib       divide    traps=2 (ir)
+  built zlib       shift     traps=21 (ir)
+  built zlib       bounds    traps=38 (ir)
+  built zlib       implicit  traps=77 (ir)
+==== [zlib] warmup ====
+environment: line 1: 188175 Illegal instruction     (core dumped) "$1" -9 < "$CORP" > /dev/null 2>&1
+  [TRAP] zlib/implicit warmup rc=132 (sanitizer fired) -- excluded from timing, kept as finding
+  built zlib       all-sanitizers  traps=813 (ir) = {signed unsigned divide shift bounds implicit}
+environment: line 1: 188286 Illegal instruction     (core dumped) "$1" -9 < "$CORP" > /dev/null 2>&1
+  [TRAP] zlib/all-sanitizers warmup rc=132 -- excluded from timing
+  built zlib       all-non-firing  traps=739 (ir) = {signed unsigned divide shift bounds}
+==== [zlib] timing: 40 shuffled reps ====
+  rep 1/40 done (22:14:21)
+  rep 2/40 done (22:16:31)
+  rep 3/40 done (22:18:41)
+  rep 4/40 done (22:20:50)
+  rep 5/40 done (22:23:01)
+  rep 6/40 done (22:25:11)
+  rep 7/40 done (22:27:21)
+  rep 8/40 done (22:29:32)
+  rep 9/40 done (22:31:42)
+  rep 10/40 done (22:33:53)
+  rep 11/40 done (22:36:03)
+  rep 12/40 done (22:38:15)
+  rep 13/40 done (22:40:25)
+  rep 14/40 done (22:42:35)
+  rep 15/40 done (22:44:45)
+  rep 16/40 done (22:46:55)
+  rep 17/40 done (22:49:05)
+  rep 18/40 done (22:51:16)
+  rep 19/40 done (22:53:27)
+  rep 20/40 done (22:55:38)
+  rep 21/40 done (22:57:48)
+  rep 22/40 done (22:59:58)
+  rep 23/40 done (23:02:08)
+  rep 24/40 done (23:04:18)
+  rep 25/40 done (23:06:28)
+  rep 26/40 done (23:08:38)
+  rep 27/40 done (23:10:48)
+  rep 28/40 done (23:12:58)
+  rep 29/40 done (23:15:09)
+  rep 30/40 done (23:17:18)
+  rep 31/40 done (23:19:29)
+  rep 32/40 done (23:21:40)
+  rep 33/40 done (23:23:52)
+  rep 34/40 done (23:26:02)
+  rep 35/40 done (23:28:13)
+  rep 36/40 done (23:30:24)
+  rep 37/40 done (23:32:34)
+  rep 38/40 done (23:34:44)
+  rep 39/40 done (23:36:57)
+  rep 40/40 done (23:39:07)
+==== [zlib] rows appended to /mydata/ODeSSy/evaluation/matrix.csv ; checkpoint written ====
+
+==== [lz4] building cells ====
+  built lz4        none      traps=0 (ud2)
+  built lz4        signed    traps=52 (ud2)
+  built lz4        unsigned  traps=1428 (ud2)
+  built lz4        both      traps=1483 (ud2)
+  built lz4        divide    traps=7 (ud2)
+  built lz4        shift     traps=1 (ud2)
+  built lz4        bounds    traps=149 (ud2)
+  built lz4        implicit  traps=70 (ud2)
+==== [lz4] warmup ====
+environment: line 1: 193078 Illegal instruction     (core dumped) "$1" -9 -f -c < "$CORP" > /dev/null 2>&1
+  [TRAP] lz4/unsigned warmup rc=132 (sanitizer fired) -- excluded from timing, kept as finding
+environment: line 1: 193122 Illegal instruction     (core dumped) "$1" -9 -f -c < "$CORP" > /dev/null 2>&1
+  [TRAP] lz4/both warmup rc=132 (sanitizer fired) -- excluded from timing, kept as finding
+  built lz4        all-sanitizers  traps=1709 (ud2) = {signed unsigned divide shift bounds implicit}
+environment: line 1: 193502 Illegal instruction     (core dumped) "$1" -9 -f -c < "$CORP" > /dev/null 2>&1
+  [TRAP] lz4/all-sanitizers warmup rc=132 -- excluded from timing
+  built lz4        all-non-firing  traps=282 (ud2) = {signed divide shift bounds implicit}
+==== [lz4] timing: 40 shuffled reps ====
+  rep 1/40 done (23:39:48)
+  rep 2/40 done (23:39:51)
+  rep 3/40 done (23:39:55)
+  rep 4/40 done (23:39:58)
+  rep 5/40 done (23:40:02)
+  rep 6/40 done (23:40:06)
+  rep 7/40 done (23:40:09)
+  rep 8/40 done (23:40:13)
+  rep 9/40 done (23:40:16)
+  rep 10/40 done (23:40:20)
+  rep 11/40 done (23:40:23)
+  rep 12/40 done (23:40:27)
+  rep 13/40 done (23:40:30)
+  rep 14/40 done (23:40:34)
+  rep 15/40 done (23:40:37)
+  rep 16/40 done (23:40:41)
+  rep 17/40 done (23:40:44)
+  rep 18/40 done (23:40:48)
+  rep 19/40 done (23:40:51)
+  rep 20/40 done (23:40:55)
+  rep 21/40 done (23:40:58)
+  rep 22/40 done (23:41:02)
+  rep 23/40 done (23:41:05)
+  rep 24/40 done (23:41:09)
+  rep 25/40 done (23:41:12)
+  rep 26/40 done (23:41:16)
+  rep 27/40 done (23:41:19)
+  rep 28/40 done (23:41:23)
+  rep 29/40 done (23:41:27)
+  rep 30/40 done (23:41:30)
+  rep 31/40 done (23:41:34)
+  rep 32/40 done (23:41:37)
+  rep 33/40 done (23:41:41)
+  rep 34/40 done (23:41:44)
+  rep 35/40 done (23:41:48)
+  rep 36/40 done (23:41:51)
+  rep 37/40 done (23:41:55)
+  rep 38/40 done (23:41:58)
+  rep 39/40 done (23:42:02)
+  rep 40/40 done (23:42:05)
+==== [lz4] rows appended to /mydata/ODeSSy/evaluation/matrix.csv ; checkpoint written ====
+
+==== [zstd] building cells ====
+  built zstd       none      traps=0 (ud2)
+  built zstd       signed    traps=199 (ud2)
+  built zstd       unsigned  traps=6615 (ud2)
+  built zstd       both      traps=6794 (ud2)
+  built zstd       divide    traps=14 (ud2)
+  built zstd       shift     traps=192 (ud2)
+  built zstd       bounds    traps=481 (ud2)
+  built zstd       implicit  traps=314 (ud2)
+==== [zstd] warmup ====
+environment: line 1: 211623 Illegal instruction     (core dumped) "$1" -"$ZSTD_LEVEL" -f -c < "$CORP" > /dev/null 2>&1
+  [TRAP] zstd/unsigned warmup rc=132 (sanitizer fired) -- excluded from timing, kept as finding
+environment: line 1: 211632 Illegal instruction     (core dumped) "$1" -"$ZSTD_LEVEL" -f -c < "$CORP" > /dev/null 2>&1
+  [TRAP] zstd/both warmup rc=132 (sanitizer fired) -- excluded from timing, kept as finding
+  built zstd       all-sanitizers  traps=7460 (ud2) = {signed unsigned divide shift bounds implicit}
+environment: line 1: 212405 Illegal instruction     (core dumped) "$1" -"$ZSTD_LEVEL" -f -c < "$CORP" > /dev/null 2>&1
+  [TRAP] zstd/all-sanitizers warmup rc=132 -- excluded from timing
+  built zstd       all-non-firing  traps=1128 (ud2) = {signed divide shift bounds implicit}
+==== [zstd] timing: 40 shuffled reps ====
+  rep 1/40 done (23:43:42)
+  rep 2/40 done (23:43:48)
+  rep 3/40 done (23:43:53)
+  rep 4/40 done (23:43:58)
+  rep 5/40 done (23:44:03)
+  rep 6/40 done (23:44:08)
+  rep 7/40 done (23:44:14)
+  rep 8/40 done (23:44:19)
+  rep 9/40 done (23:44:24)
+  rep 10/40 done (23:44:29)
+  rep 11/40 done (23:44:34)
+  rep 12/40 done (23:44:40)
+  rep 13/40 done (23:44:45)
+  rep 14/40 done (23:44:50)
+  rep 15/40 done (23:44:55)
+  rep 16/40 done (23:45:00)
+  rep 17/40 done (23:45:06)
+  rep 18/40 done (23:45:11)
+  rep 19/40 done (23:45:16)
+  rep 20/40 done (23:45:21)
+  rep 21/40 done (23:45:26)
+  rep 22/40 done (23:45:31)
+  rep 23/40 done (23:45:37)
+  rep 24/40 done (23:45:42)
+  rep 25/40 done (23:45:47)
+  rep 26/40 done (23:45:53)
+  rep 27/40 done (23:45:58)
+  rep 28/40 done (23:46:03)
+  rep 29/40 done (23:46:08)
+  rep 30/40 done (23:46:13)
+  rep 31/40 done (23:46:19)
+  rep 32/40 done (23:46:24)
+  rep 33/40 done (23:46:29)
+  rep 34/40 done (23:46:34)
+  rep 35/40 done (23:46:39)
+  rep 36/40 done (23:46:44)
+  rep 37/40 done (23:46:50)
+  rep 38/40 done (23:46:55)
+  rep 39/40 done (23:47:00)
+  rep 40/40 done (23:47:05)
+==== [zstd] rows appended to /mydata/ODeSSy/evaluation/matrix.csv ; checkpoint written ====
+
+CSV: /mydata/ODeSSy/evaluation/matrix.csv
+Report: python3 make_matrix_report.py   (3 matrices: min / avg / traps)
+==== matrix v2: benches [openssl] x specs [none signed unsigned both divide shift bounds implicit] ====
+==== RUNS=40 CORPUS=512MB pin='numactl --cpunodebind=0 --membind=0' raw log: /mydata/ODeSSy/evaluation/matrix/raw_runs.log ====
+
+==== [openssl] building cells ====
+  built openssl    none      traps=2 (ud2)
+  built openssl    signed    traps=1165 (ud2)
+  built openssl    unsigned  traps=5826 (ud2)
+  built openssl    both      traps=6952 (ud2)
+  built openssl    divide    traps=34 (ud2)
+  built openssl    shift     traps=76 (ud2)
+  built openssl    bounds    traps=878 (ud2)
+  built openssl    implicit  traps=2014 (ud2)
+==== [openssl] warmup ====
+environment: line 1: 216594 Illegal instruction     (core dumped) "$1" dgst -sha256 "$CORP" > /dev/null 2>&1
+  [TRAP] openssl/unsigned warmup rc=132 (sanitizer fired) -- excluded from timing, kept as finding
+environment: line 1: 216603 Illegal instruction     (core dumped) "$1" dgst -sha256 "$CORP" > /dev/null 2>&1
+  [TRAP] openssl/both warmup rc=132 (sanitizer fired) -- excluded from timing, kept as finding
+environment: line 1: 216624 Illegal instruction     (core dumped) "$1" dgst -sha256 "$CORP" > /dev/null 2>&1
+  [TRAP] openssl/implicit warmup rc=132 (sanitizer fired) -- excluded from timing, kept as finding
+  built openssl    all-sanitizers  traps=9388 (ud2) = {signed unsigned divide shift bounds implicit}
+environment: line 1: 216648 Illegal instruction     (core dumped) "$1" dgst -sha256 "$CORP" > /dev/null 2>&1
+  [TRAP] openssl/all-sanitizers warmup rc=132 -- excluded from timing
+  built openssl    all-non-firing  traps=2088 (ud2) = {signed divide shift bounds}
+==== [openssl] timing: 40 shuffled reps ====
+  rep 1/40 done (23:48:11)
+  rep 2/40 done (23:48:31)
+  rep 3/40 done (23:48:51)
+  rep 4/40 done (23:49:11)
+  rep 5/40 done (23:49:31)
+  rep 6/40 done (23:49:51)
+  rep 7/40 done (23:50:11)
+  rep 8/40 done (23:50:31)
+  rep 9/40 done (23:50:51)
+  rep 10/40 done (23:51:11)
+  rep 11/40 done (23:51:31)
+  rep 12/40 done (23:51:51)
+  rep 13/40 done (23:52:11)
+  rep 14/40 done (23:52:31)
+  rep 15/40 done (23:52:51)
+  rep 16/40 done (23:53:11)
+  rep 17/40 done (23:53:31)
+  rep 18/40 done (23:53:51)
+  rep 19/40 done (23:54:11)
+  rep 20/40 done (23:54:31)
+  rep 21/40 done (23:54:52)
+  rep 22/40 done (23:55:12)
+  rep 23/40 done (23:55:32)
+  rep 24/40 done (23:55:52)
+  rep 25/40 done (23:56:12)
+  rep 26/40 done (23:56:32)
+  rep 27/40 done (23:56:52)
+  rep 28/40 done (23:57:12)
+  rep 29/40 done (23:57:32)
+  rep 30/40 done (23:57:52)
+  rep 31/40 done (23:58:12)
+  rep 32/40 done (23:58:32)
+  rep 33/40 done (23:58:52)
+  rep 34/40 done (23:59:12)
+  rep 35/40 done (23:59:32)
+  rep 36/40 done (23:59:52)
+  rep 37/40 done (00:00:12)
+  rep 38/40 done (00:00:32)
+  rep 39/40 done (00:00:52)
+  rep 40/40 done (00:01:12)
+==== [openssl] rows appended to /mydata/ODeSSy/evaluation/matrix.csv ; checkpoint written ====
+
+CSV: /mydata/ODeSSy/evaluation/matrix.csv
+Report: python3 make_matrix_report.py   (3 matrices: min / avg / traps)

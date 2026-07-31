@@ -1,0 +1,83 @@
+
+=== MATRIX 0: slowdown vs none, MEDIAN-based [PRIMARY] ===
+bench          signed  unsigned      both    divide     shift    bounds  implicit  all-sanitizers  all-non-firing
+zlib            -0.3%     +2.7%     +2.9%     +0.2%     +0.1%     +0.1%      DIED            DIED           +1.5%
+lz4             +3.3%      DIED      DIED     +0.5%     +0.4%     +0.9%     +1.8%            DIED           +3.2%
+zstd            +0.8%      DIED      DIED     -0.7%     -0.6%     -1.1%     -1.1%            DIED           +1.7%
+openssl         +0.0%      DIED      DIED     +0.0%     -0.0%     -0.0%      DIED            DIED           +0.0%
+polybench       -0.2%     -0.2%     -1.1%     -0.5%     -0.9%     -0.9%     -0.7%           -0.2%           +0.0%
+
+=== MATRIX 1: slowdown vs none, MIN-based [bound; see outlier audit] ===
+bench          signed  unsigned      both    divide     shift    bounds  implicit  all-sanitizers  all-non-firing
+zlib            +0.0%     +3.1%     +3.6%     +0.3%     +0.5%     +0.4%      DIED            DIED           +1.7%
+lz4             +2.5%      DIED      DIED     +1.1%     +0.6%     +0.8%     +2.1%            DIED           +3.4%
+zstd            +1.2%      DIED      DIED     +1.3%     +1.8%     +0.4%     +1.5%            DIED           +3.2%
+openssl         +0.0%      DIED      DIED     +0.1%     +0.0%     +0.1%      DIED            DIED           +0.0%
+polybench       +1.4%     +0.0%     +0.7%     +0.7%     +0.0%     +1.4%     +0.4%           +1.8%           +1.4%
+
+=== MATRIX 2: slowdown vs none, AVG-based [sanity] ===
+bench          signed  unsigned      both    divide     shift    bounds  implicit  all-sanitizers  all-non-firing
+zlib            -0.7%     +2.4%     +2.4%     -0.2%     -0.0%     -0.5%      DIED            DIED           +1.0%
+lz4             +3.3%      DIED      DIED     +0.0%     +0.2%     +0.6%     +1.6%            DIED           +3.1%
+zstd            +0.5%      DIED      DIED     -0.5%     +0.1%     -1.1%     -0.7%            DIED           +1.1%
+openssl         +0.0%      DIED      DIED     +0.0%     +0.0%     +0.0%      DIED            DIED           +0.1%
+polybench       +0.4%     +0.0%     -0.4%     -0.4%     -0.4%     -0.4%     -0.4%           +0.4%           +0.4%
+
+=== MATRIX 3: traps injected (ir=exact, ud2=binary proxy; counted at build time, shown even for cells that DIED at runtime) ===
+bench          signed  unsigned      both    divide     shift    bounds  implicit  all-sanitizers  all-non-firing
+zlib               65       636       680         2        21        38        77             813             739
+lz4                52      1428      1483         7         1       149        70            1709             282
+zstd              199      6615      6794        14       192       481       314            7460            1128
+openssl          1165      5826      6952        34        76       878      2014            9388            2088
+polybench           0         5         5         0         0         0         5              10              10
+    (ud2 proxy counts: lz4, openssl, zstd)
+
+=== UNION COMPOSITIONS ===
+  zlib       all-sanitizers  = {signed unsigned divide shift bounds implicit}
+  zlib       all-non-firing  = {signed unsigned divide shift bounds}
+  lz4        all-sanitizers  = {signed unsigned divide shift bounds implicit}
+  lz4        all-non-firing  = {signed divide shift bounds implicit}
+  zstd       all-sanitizers  = {signed unsigned divide shift bounds implicit}
+  zstd       all-non-firing  = {signed divide shift bounds implicit}
+  openssl    all-sanitizers  = {signed unsigned divide shift bounds implicit}
+  openssl    all-non-firing  = {signed divide shift bounds}
+  polybench  all-sanitizers  = {signed unsigned divide shift bounds implicit}
+  polybench  all-non-firing  = {signed unsigned divide shift bounds implicit}
+
+=== OUTLIER AUDIT: suspect fast minima (min <98% of median) ===
+  lz4        all-non-firing   min=0.489  median=0.505  (3.2% below) -- do NOT trust min here
+  lz4        bounds           min=0.477  median=0.494  (3.4% below) -- do NOT trust min here
+  lz4        divide           min=0.478  median=0.492  (2.8% below) -- do NOT trust min here
+  lz4        implicit         min=0.483  median=0.498  (3.1% below) -- do NOT trust min here
+  lz4        none             min=0.473  median=0.489  (3.4% below) -- do NOT trust min here
+  lz4        shift            min=0.476  median=0.491  (3.2% below) -- do NOT trust min here
+  lz4        signed           min=0.485  median=0.506  (4.1% below) -- do NOT trust min here
+  polybench  none             min=0.276  median=0.284  (3.0% below) -- do NOT trust min here
+  polybench  shift            min=0.276  median=0.282  (2.1% below) -- do NOT trust min here
+  polybench  unsigned         min=0.276  median=0.284  (2.8% below) -- do NOT trust min here
+  zstd       all-non-firing   min=0.699  median=0.767  (8.9% below) -- do NOT trust min here
+  zstd       bounds           min=0.680  median=0.746  (8.8% below) -- do NOT trust min here
+  zstd       divide           min=0.686  median=0.748  (8.4% below) -- do NOT trust min here
+  zstd       implicit         min=0.687  median=0.746  (7.9% below) -- do NOT trust min here
+  zstd       none             min=0.677  median=0.754  (10.2% below) -- do NOT trust min here
+  zstd       shift            min=0.689  median=0.750  (8.1% below) -- do NOT trust min here
+  zstd       signed           min=0.685  median=0.760  (9.9% below) -- do NOT trust min here
+
+=== TARGET RANKING (median slowdown, cells with traps>0) ===
+  lz4        signed       +3.3%   traps=52
+  lz4        all-non-firing   +3.2%   traps=282
+  zlib       both         +2.9%   traps=680
+  zlib       unsigned     +2.7%   traps=636
+  lz4        implicit     +1.8%   traps=70
+  zstd       all-non-firing   +1.7%   traps=1128
+  zlib       all-non-firing   +1.5%   traps=739
+  lz4        bounds       +0.9%   traps=149
+  zstd       signed       +0.8%   traps=199
+  lz4        divide       +0.5%   traps=7
+  lz4        shift        +0.4%   traps=1
+  zlib       divide       +0.2%   traps=2
+  zlib       bounds       +0.1%   traps=38
+  zlib       shift        +0.1%   traps=21
+  openssl    all-non-firing   +0.0%   traps=2088
+
+wrote evaluation/matrix_report.csv
