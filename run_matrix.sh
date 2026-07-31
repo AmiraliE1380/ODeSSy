@@ -177,8 +177,12 @@ build_lz4() {
   local d="$PL_ROOT/lz4"; [ -d "$d" ] || { echo SKIP; return; }
   # Build in programs/ directly: the top-level 'lz4' target has been seen
   # to drop MOREFLAGS (=> silently unsanitized binaries, traps=0 everywhere).
+  # MOREFLAGS proven dropped (v2 top-level AND v3 programs/ builds came out
+  # uninstrumented). Command-line CFLAGS overrides every Makefile assignment
+  # -- the one mechanism make guarantees. -O3 included since override kills
+  # the default optimization flags.
   ( cd "$d/programs" && make clean >/dev/null 2>&1
-    make -j"$NPROC" CC=clang MOREFLAGS="$2" lz4 >/dev/null 2>&1 ) || { echo SKIP; return; }
+    make -j"$NPROC" CC=clang CFLAGS="-O3 $2" lz4 >/dev/null 2>&1 ) || { echo SKIP; return; }
   local b="$d/programs/lz4"; [ -x "$b" ] || b="$d/lz4"
   [ -x "$b" ] || { echo SKIP; return; }
   cp "$b" "$W/bin.lz4.$1"; echo "$W/bin.lz4.$1"
