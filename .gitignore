@@ -6,3 +6,5 @@ perf_test/corpus.*
 perf_test/seed.txt
 *.Identifier
 matrix_test/
+native_test/
+native_bench/*/target/

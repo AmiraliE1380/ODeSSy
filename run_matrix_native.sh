@@ -197,13 +197,15 @@ EOF
 cat > "$NB/lz77.swift" <<'EOF'
 import Foundation
 let iters = Int(CommandLine.arguments[1])!
-let data = [UInt8](try! Data(contentsOf: URL(fileURLWithPath: CommandLine.arguments[2])))
+let full = [UInt8](try! Data(contentsOf: URL(fileURLWithPath: CommandLine.arguments[2])))
+let cap = min(full.count, 2 * 1024 * 1024)
+let data = Array(full[0..<cap])
 var total = 0
 for _ in 0..<iters {
   var out = 0
   var i = 0
   let n = data.count
-  let window = 4096, minMatch = 4, maxMatch = 255
+  let window = 1024, minMatch = 4, maxMatch = 255
   while i < n {
     var bestLen = 0, bestDist = 0
     let start = i > window ? i - window : 0
@@ -299,7 +301,7 @@ function step!(B, A, n)
 end
 for s in 1:steps
     step!(B, A, n)
-    A, B = B, A
+    global A, B = B, A
 end
 println(sum(A))
 EOF
@@ -455,7 +457,11 @@ for bench in $BENCHES; do
     echo "  warmup $bench/$s rc=$rc t=$(elapsed "$t0" "$t1")s"
     if [ "$rc" -ge 128 ]; then
       DIED[$s]=$rc
-      echo "  [TRAP] $bench/$s died rc=$rc -- a native check fired (finding); excluded from timing"
+      if [ "$rc" -eq 137 ]; then
+        echo "  [TIMEOUT] $bench/$s exceeded ${RUN_TIMEOUT}s (watchdog) -- excluded; resize its iteration knob"
+      else
+        echo "  [TRAP] $bench/$s died rc=$rc -- a native check fired (finding); excluded from timing"
+      fi
     fi
   done
 

@@ -12,6 +12,6 @@ function step!(B, A, n)
 end
 for s in 1:steps
     step!(B, A, n)
-    A, B = B, A
+    global A, B = B, A
 end
 println(sum(A))

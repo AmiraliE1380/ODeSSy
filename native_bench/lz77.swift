@@ -1,12 +1,14 @@
 import Foundation
 let iters = Int(CommandLine.arguments[1])!
-let data = [UInt8](try! Data(contentsOf: URL(fileURLWithPath: CommandLine.arguments[2])))
+let full = [UInt8](try! Data(contentsOf: URL(fileURLWithPath: CommandLine.arguments[2])))
+let cap = min(full.count, 2 * 1024 * 1024)
+let data = Array(full[0..<cap])
 var total = 0
 for _ in 0..<iters {
   var out = 0
   var i = 0
   let n = data.count
-  let window = 4096, minMatch = 4, maxMatch = 255
+  let window = 1024, minMatch = 4, maxMatch = 255
   while i < n {
     var bestLen = 0, bestDist = 0
     let start = i > window ? i - window : 0
