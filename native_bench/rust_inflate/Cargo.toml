@@ -1,0 +1,8 @@
+[package]
+name = "rust_inflate"
+version = "0.1.0"
+edition = "2021"
+[dependencies]
+miniz_oxide = "0.8"
+[profile.release]
+debug = false
