@@ -1,0 +1,55 @@
+
+=== MATRIX 0: slowdown vs none, MEDIAN-based [PRIMARY] ===
+bench          bounds
+swift_nbody         x
+swift_sha256         x
+swift_lz77          x
+rust_miniz          x
+rust_inflate         x
+julia_stencil   +288.6%
+julia_gemm    +309.1%
+
+=== MATRIX 1: slowdown vs none, MIN-based [bound; see outlier audit] ===
+bench          bounds
+swift_nbody         x
+swift_sha256         x
+swift_lz77          x
+rust_miniz          x
+rust_inflate         x
+julia_stencil   +281.7%
+julia_gemm    +321.2%
+
+=== MATRIX 2: slowdown vs none, AVG-based [sanity] ===
+bench          bounds
+swift_nbody         x
+swift_sha256         x
+swift_lz77          x
+rust_miniz          x
+rust_inflate         x
+julia_stencil   +288.0%
+julia_gemm    +307.7%
+
+=== MATRIX 3: traps injected (ir=exact, ud2=binary proxy; counted at build time, shown even for cells that DIED at runtime) ===
+bench          bounds
+swift_nbody         x
+swift_sha256         x
+swift_lz77          x
+rust_miniz          x
+rust_inflate         x
+julia_stencil        NA
+julia_gemm         NA
+    (ud2 proxy counts: swift_lz77, swift_nbody, swift_sha256)
+
+=== OUTLIER AUDIT: suspect fast minima (min <98% of median) ===
+  julia_gemm none             min=0.877  median=0.907  (3.4% below) -- do NOT trust min here
+  julia_stencilbounds           min=12.227  median=12.681  (3.6% below) -- do NOT trust min here
+  swift_lz77 checked          min=7.662  median=7.820  (2.0% below) -- do NOT trust min here
+
+=== TARGET RANKING (median slowdown, cells with traps>0) ===
+  swift_nbodychecked    +409.9%   traps=89
+  rust_inflateoverflow     +9.6%   traps=11
+  swift_sha256checked      +9.5%   traps=41
+  swift_lz77 checked      +4.4%   traps=30
+  rust_miniz overflow     +3.6%   traps=11
+
+wrote evaluation/matrix_native_report.csv

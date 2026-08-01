@@ -1,0 +1,278 @@
+corpus.z: 67108864 -> 21849628
+==== native matrix: [swift_nbody swift_sha256 swift_lz77 rust_miniz rust_inflate julia_stencil julia_gemm] RUNS=30 pin='numactl --cpunodebind=0 --membind=0' ====
+
+==== [swift_nbody] building ====
+  built swift_nbody    none      traps=0 (ud2)
+  built swift_nbody    checked   traps=89 (ud2)
+==== [swift_nbody] warmup ====
+  warmup swift_nbody/none rc=0 t=2.278s
+  warmup swift_nbody/checked rc=0 t=11.597s
+==== [swift_nbody] timing: 30 shuffled reps ====
+  rep 1/30 done (17:51:24)
+  rep 2/30 done (17:51:38)
+  rep 3/30 done (17:51:52)
+  rep 4/30 done (17:52:06)
+  rep 5/30 done (17:52:20)
+  rep 6/30 done (17:52:33)
+  rep 7/30 done (17:52:48)
+  rep 8/30 done (17:53:01)
+  rep 9/30 done (17:53:15)
+  rep 10/30 done (17:53:29)
+  rep 11/30 done (17:53:43)
+  rep 12/30 done (17:53:57)
+  rep 13/30 done (17:54:11)
+  rep 14/30 done (17:54:25)
+  rep 15/30 done (17:54:39)
+  rep 16/30 done (17:54:53)
+  rep 17/30 done (17:55:07)
+  rep 18/30 done (17:55:20)
+  rep 19/30 done (17:55:34)
+  rep 20/30 done (17:55:49)
+  rep 21/30 done (17:56:03)
+  rep 22/30 done (17:56:17)
+  rep 23/30 done (17:56:31)
+  rep 24/30 done (17:56:44)
+  rep 25/30 done (17:56:58)
+  rep 26/30 done (17:57:12)
+  rep 27/30 done (17:57:26)
+  rep 28/30 done (17:57:40)
+  rep 29/30 done (17:57:54)
+  rep 30/30 done (17:58:08)
+==== [swift_nbody] rows appended to /mydata/ODeSSy/evaluation/matrix_native.csv ====
+
+==== [swift_sha256] building ====
+  built swift_sha256   none      traps=0 (ud2)
+  built swift_sha256   checked   traps=41 (ud2)
+==== [swift_sha256] warmup ====
+  warmup swift_sha256/none rc=0 t=3.050s
+  warmup swift_sha256/checked rc=0 t=3.338s
+==== [swift_sha256] timing: 30 shuffled reps ====
+  rep 1/30 done (17:58:25)
+  rep 2/30 done (17:58:31)
+  rep 3/30 done (17:58:37)
+  rep 4/30 done (17:58:44)
+  rep 5/30 done (17:58:50)
+  rep 6/30 done (17:58:57)
+  rep 7/30 done (17:59:03)
+  rep 8/30 done (17:59:10)
+  rep 9/30 done (17:59:16)
+  rep 10/30 done (17:59:22)
+  rep 11/30 done (17:59:29)
+  rep 12/30 done (17:59:35)
+  rep 13/30 done (17:59:42)
+  rep 14/30 done (17:59:48)
+  rep 15/30 done (17:59:54)
+  rep 16/30 done (18:00:01)
+  rep 17/30 done (18:00:07)
+  rep 18/30 done (18:00:14)
+  rep 19/30 done (18:00:20)
+  rep 20/30 done (18:00:26)
+  rep 21/30 done (18:00:33)
+  rep 22/30 done (18:00:39)
+  rep 23/30 done (18:00:46)
+  rep 24/30 done (18:00:52)
+  rep 25/30 done (18:00:58)
+  rep 26/30 done (18:01:05)
+  rep 27/30 done (18:01:11)
+  rep 28/30 done (18:01:18)
+  rep 29/30 done (18:01:24)
+  rep 30/30 done (18:01:31)
+==== [swift_sha256] rows appended to /mydata/ODeSSy/evaluation/matrix_native.csv ====
+
+==== [swift_lz77] building ====
+  built swift_lz77     none      traps=0 (ud2)
+  built swift_lz77     checked   traps=30 (ud2)
+==== [swift_lz77] warmup ====
+  warmup swift_lz77/none rc=0 t=7.488s
+  warmup swift_lz77/checked rc=0 t=7.851s
+==== [swift_lz77] timing: 30 shuffled reps ====
+  rep 1/30 done (18:02:03)
+  rep 2/30 done (18:02:19)
+  rep 3/30 done (18:02:34)
+  rep 4/30 done (18:02:49)
+  rep 5/30 done (18:03:04)
+  rep 6/30 done (18:03:20)
+  rep 7/30 done (18:03:35)
+  rep 8/30 done (18:03:50)
+  rep 9/30 done (18:04:06)
+  rep 10/30 done (18:04:21)
+  rep 11/30 done (18:04:37)
+  rep 12/30 done (18:04:52)
+  rep 13/30 done (18:05:07)
+  rep 14/30 done (18:05:22)
+  rep 15/30 done (18:05:38)
+  rep 16/30 done (18:05:54)
+  rep 17/30 done (18:06:09)
+  rep 18/30 done (18:06:25)
+  rep 19/30 done (18:06:40)
+  rep 20/30 done (18:06:56)
+  rep 21/30 done (18:07:11)
+  rep 22/30 done (18:07:26)
+  rep 23/30 done (18:07:41)
+  rep 24/30 done (18:07:57)
+  rep 25/30 done (18:08:12)
+  rep 26/30 done (18:08:27)
+  rep 27/30 done (18:08:43)
+  rep 28/30 done (18:08:58)
+  rep 29/30 done (18:09:14)
+  rep 30/30 done (18:09:30)
+==== [swift_lz77] rows appended to /mydata/ODeSSy/evaluation/matrix_native.csv ====
+
+==== [rust_miniz] building ====
+  built rust_miniz     none      traps=11 (panic)
+  built rust_miniz     overflow  traps=11 (panic)
+==== [rust_miniz] warmup ====
+  warmup rust_miniz/none rc=0 t=13.477s
+  warmup rust_miniz/overflow rc=0 t=14.044s
+==== [rust_miniz] timing: 30 shuffled reps ====
+  rep 1/30 done (18:10:26)
+  rep 2/30 done (18:10:54)
+  rep 3/30 done (18:11:21)
+  rep 4/30 done (18:11:48)
+  rep 5/30 done (18:12:16)
+  rep 6/30 done (18:12:43)
+  rep 7/30 done (18:13:11)
+  rep 8/30 done (18:13:38)
+  rep 9/30 done (18:14:06)
+  rep 10/30 done (18:14:33)
+  rep 11/30 done (18:15:00)
+  rep 12/30 done (18:15:28)
+  rep 13/30 done (18:15:55)
+  rep 14/30 done (18:16:22)
+  rep 15/30 done (18:16:50)
+  rep 16/30 done (18:17:17)
+  rep 17/30 done (18:17:45)
+  rep 18/30 done (18:18:12)
+  rep 19/30 done (18:18:40)
+  rep 20/30 done (18:19:08)
+  rep 21/30 done (18:19:35)
+  rep 22/30 done (18:20:03)
+  rep 23/30 done (18:20:30)
+  rep 24/30 done (18:20:58)
+  rep 25/30 done (18:21:25)
+  rep 26/30 done (18:21:53)
+  rep 27/30 done (18:22:20)
+  rep 28/30 done (18:22:47)
+  rep 29/30 done (18:23:15)
+  rep 30/30 done (18:23:42)
+==== [rust_miniz] rows appended to /mydata/ODeSSy/evaluation/matrix_native.csv ====
+
+==== [rust_inflate] building ====
+  built rust_inflate   none      traps=11 (panic)
+  built rust_inflate   overflow  traps=11 (panic)
+==== [rust_inflate] warmup ====
+  warmup rust_inflate/none rc=0 t=10.313s
+  warmup rust_inflate/overflow rc=0 t=11.251s
+==== [rust_inflate] timing: 30 shuffled reps ====
+  rep 1/30 done (18:24:26)
+  rep 2/30 done (18:24:48)
+  rep 3/30 done (18:25:09)
+  rep 4/30 done (18:25:31)
+  rep 5/30 done (18:25:52)
+  rep 6/30 done (18:26:14)
+  rep 7/30 done (18:26:35)
+  rep 8/30 done (18:26:57)
+  rep 9/30 done (18:27:18)
+  rep 10/30 done (18:27:40)
+  rep 11/30 done (18:28:01)
+  rep 12/30 done (18:28:23)
+  rep 13/30 done (18:28:44)
+  rep 14/30 done (18:29:06)
+  rep 15/30 done (18:29:27)
+  rep 16/30 done (18:29:49)
+  rep 17/30 done (18:30:10)
+  rep 18/30 done (18:30:31)
+  rep 19/30 done (18:30:53)
+  rep 20/30 done (18:31:15)
+  rep 21/30 done (18:31:36)
+  rep 22/30 done (18:31:58)
+  rep 23/30 done (18:32:19)
+  rep 24/30 done (18:32:41)
+  rep 25/30 done (18:33:02)
+  rep 26/30 done (18:33:24)
+  rep 27/30 done (18:33:45)
+  rep 28/30 done (18:34:07)
+  rep 29/30 done (18:34:28)
+  rep 30/30 done (18:34:50)
+==== [rust_inflate] rows appended to /mydata/ODeSSy/evaluation/matrix_native.csv ====
+
+==== [julia_stencil] building ====
+  built julia_stencil  none      traps=NA (jit)
+  built julia_stencil  bounds    traps=NA (jit)
+==== [julia_stencil] warmup ====
+  warmup julia_stencil/none rc=0 t=3.253s
+  warmup julia_stencil/bounds rc=0 t=12.882s
+==== [julia_stencil] timing: 30 shuffled reps ====
+  rep 1/30 done (18:35:22)
+  rep 2/30 done (18:35:38)
+  rep 3/30 done (18:35:54)
+  rep 4/30 done (18:36:11)
+  rep 5/30 done (18:36:27)
+  rep 6/30 done (18:36:43)
+  rep 7/30 done (18:37:00)
+  rep 8/30 done (18:37:16)
+  rep 9/30 done (18:37:32)
+  rep 10/30 done (18:37:47)
+  rep 11/30 done (18:38:03)
+  rep 12/30 done (18:38:19)
+  rep 13/30 done (18:38:35)
+  rep 14/30 done (18:38:51)
+  rep 15/30 done (18:39:07)
+  rep 16/30 done (18:39:23)
+  rep 17/30 done (18:39:39)
+  rep 18/30 done (18:39:55)
+  rep 19/30 done (18:40:11)
+  rep 20/30 done (18:40:27)
+  rep 21/30 done (18:40:43)
+  rep 22/30 done (18:40:59)
+  rep 23/30 done (18:41:15)
+  rep 24/30 done (18:41:31)
+  rep 25/30 done (18:41:48)
+  rep 26/30 done (18:42:03)
+  rep 27/30 done (18:42:20)
+  rep 28/30 done (18:42:36)
+  rep 29/30 done (18:42:52)
+  rep 30/30 done (18:43:08)
+==== [julia_stencil] rows appended to /mydata/ODeSSy/evaluation/matrix_native.csv ====
+
+==== [julia_gemm] building ====
+  built julia_gemm     none      traps=NA (jit)
+  built julia_gemm     bounds    traps=NA (jit)
+==== [julia_gemm] warmup ====
+  warmup julia_gemm/none rc=0 t=0.883s
+  warmup julia_gemm/bounds rc=0 t=3.706s
+==== [julia_gemm] timing: 30 shuffled reps ====
+  rep 1/30 done (18:43:17)
+  rep 2/30 done (18:43:22)
+  rep 3/30 done (18:43:26)
+  rep 4/30 done (18:43:31)
+  rep 5/30 done (18:43:36)
+  rep 6/30 done (18:43:40)
+  rep 7/30 done (18:43:45)
+  rep 8/30 done (18:43:49)
+  rep 9/30 done (18:43:54)
+  rep 10/30 done (18:43:59)
+  rep 11/30 done (18:44:03)
+  rep 12/30 done (18:44:08)
+  rep 13/30 done (18:44:13)
+  rep 14/30 done (18:44:17)
+  rep 15/30 done (18:44:22)
+  rep 16/30 done (18:44:27)
+  rep 17/30 done (18:44:31)
+  rep 18/30 done (18:44:36)
+  rep 19/30 done (18:44:41)
+  rep 20/30 done (18:44:45)
+  rep 21/30 done (18:44:50)
+  rep 22/30 done (18:44:54)
+  rep 23/30 done (18:44:59)
+  rep 24/30 done (18:45:04)
+  rep 25/30 done (18:45:08)
+  rep 26/30 done (18:45:13)
+  rep 27/30 done (18:45:18)
+  rep 28/30 done (18:45:22)
+  rep 29/30 done (18:45:27)
+  rep 30/30 done (18:45:32)
+==== [julia_gemm] rows appended to /mydata/ODeSSy/evaluation/matrix_native.csv ====
+
+CSV: /mydata/ODeSSy/evaluation/matrix_native.csv
+Report: python3 make_matrix_report.py evaluation/matrix_native.csv evaluation/matrix_native_report.csv
