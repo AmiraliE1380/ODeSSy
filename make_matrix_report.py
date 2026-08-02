@@ -15,7 +15,8 @@ IN = Path(sys.argv[1] if len(sys.argv) > 1 else "evaluation/matrix.csv")
 OUT = Path(sys.argv[2] if len(sys.argv) > 2 else "evaluation/matrix_report.csv")
 
 SPEC_ORDER = ["signed", "unsigned", "both", "divide", "shift", "bounds",
-              "implicit", "all-sanitizers", "all-non-firing"]
+              "implicit", "checked", "overflow",
+              "all-sanitizers", "all-non-firing"]
 rows = list(csv.DictReader(open(IN, newline="")))
 # last row wins (reruns append; the freshest measurement is authoritative)
 cell = {(r["bench"], r["spec"]): r for r in rows}
