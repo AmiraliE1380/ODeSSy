@@ -109,6 +109,10 @@ set_san() {
                     -fsanitize-trap=unsigned-integer-overflow) ;;
     both)     SANF=(-fsanitize=signed-integer-overflow,unsigned-integer-overflow
                     -fsanitize-trap=signed-integer-overflow,unsigned-integer-overflow) ;;
+    # anf = zlib's all-non-firing union (robust matrix): everything that
+    # can actually SHIP on zlib -- the deployable config ODeSSy attacks.
+    anf)      SANF=(-fsanitize=signed-integer-overflow,unsigned-integer-overflow,integer-divide-by-zero,shift,bounds
+                    -fsanitize-trap=signed-integer-overflow,unsigned-integer-overflow,integer-divide-by-zero,shift,bounds) ;;
   esac
 }
 now()     { date +%s.%N; }
@@ -134,7 +138,7 @@ KEYS2=()   # list of "spec.cfg"
 
 echo ""
 echo "==== PHASE A: building all binaries ===="
-for spec in none signed unsigned both; do
+for spec in ${SPECS:-none signed unsigned both}; do
   set_san "$spec"
   t0=$(now)
   for f in "${SRCS[@]}"; do
