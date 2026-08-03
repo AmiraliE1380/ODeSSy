@@ -18,7 +18,7 @@ cd "$ROOT" || exit 1
 ( cd build && ninja ) || exit 1
 echo "timeout_ms,unsat,sat,unknown,vacuous,skips,wall_s" > "$CSV"
 stem=$(basename "$INPUT" .ll)
-for T in 10000 3000 1000 300 100 30; do
+for T in 1 3 10 30 100 300 1000 3000 10000; do
   t0=$(date +%s.%N)
   opt -load-pass-plugin=build/OraclePass.so \
       -passes="oracle-pass<vacuity;timeout=${T};threads=${THREADS}>" \
