@@ -31,6 +31,7 @@ HC_LEVEL=${HC_LEVEL:-9}
 ITERS=${ITERS:-3}
 SPECS=${SPECS:-"none anf"}
 THREADS=${THREADS:-8}
+TIMEOUT_MS=${TIMEOUT_MS:-300}
 COOLDOWN=${COOLDOWN:-45}
 W="$ROOT/perf_lz4_test"; rm -rf "$W"; mkdir -p "$W" "$ROOT/evaluation" logs/compilations
 CSV="$ROOT/evaluation/perf_lz4.csv"
@@ -128,7 +129,7 @@ for spec in $SPECS; do
         t0=$(now)
         for f in $SRCS; do
           opt -load-pass-plugin=build/OraclePass.so \
-            -passes="oracle-pass<threads=${THREADS}>,simplifycfg,adce,verify" \
+            -passes="oracle-pass<threads=${THREADS};timeout=${TIMEOUT_MS}>,simplifycfg,adce,verify" \
             -S "$W/${spec}.${f}.ll" -o "$W/${spec}.${f}.or.ll" \
             > "$W/${spec}.${f}.oracle.log" 2>&1 || { echo "[FATAL] oracle $spec/$f"; exit 1; }
           opt -passes='default<O3>' -S "$W/${spec}.${f}.or.ll" -o "$W/${spec}.${f}.or2.ll" || exit 1
@@ -168,7 +169,9 @@ for rep in $(seq "$RUNS"); do
 done
 
 # ---- PHASE C: CSV (make_perf_report.py compatible) ----
-echo "spec,config,size_mb,traps_in,traps_final,bin_bytes,text_bytes,clang_s,oracle_s,o3_s,backend_link_s,total_compile_s,min_run_s,avg_run_s,runs_s" > "$CSV"
+# Append-aware: multiple invocations (one per CORPUS_MB) build one
+# multi-size table, mirroring the zlib 8/64/256 protocol.
+[ -f "$CSV" ] || echo "spec,config,size_mb,traps_in,traps_final,bin_bytes,text_bytes,clang_s,oracle_s,o3_s,backend_link_s,total_compile_s,min_run_s,avg_run_s,runs_s" > "$CSV"
 for k in "${KEYS[@]}"; do
   spec="${k%.*}"; cfg="${k#*.}"
   rj="${RUNTIMES[$k]%;}"

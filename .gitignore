@@ -9,3 +9,4 @@ matrix_test/
 native_test/
 native_bench/*/target/
 zstd_audit_test/
+perf_lz4_test/
