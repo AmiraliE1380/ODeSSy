@@ -8,3 +8,4 @@ perf_test/seed.txt
 matrix_test/
 native_test/
 native_bench/*/target/
+zstd_audit_test/
