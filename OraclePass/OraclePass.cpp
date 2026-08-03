@@ -117,11 +117,16 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
     // Level-2 knob: workers for the per-trap solve stage. 1 (default)
     // == serial reference behavior; 0 == one worker per hardware thread.
     unsigned Threads = 1;
+    // LDEQ knob (oracle-pass<ldeq>): same-BB no-clobber load unification
+    // in the encoder. Default OFF (light tier stays byte-identical; the
+    // knob is its own ablation). Composes with everything.
+    bool LoadEq = false;
 
     OraclePass() = default;
-    OraclePass(bool Vacuity, bool Heavy, unsigned TimeoutMs, unsigned NThreads)
+    OraclePass(bool Vacuity, bool Heavy, unsigned TimeoutMs, unsigned NThreads,
+               bool LdEq)
         : VacuityCheck(Vacuity), HeavyMode(Heavy), QueryTimeoutMs(TimeoutMs),
-          Threads(NThreads) {}
+          Threads(NThreads), LoadEq(LdEq) {}
 
     PreservedAnalyses run(Module &M, ModuleAnalysisManager &MAM) {
         auto &FAM =
@@ -146,6 +151,7 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
         Cfg.VacuityCheck = VacuityCheck;
         Cfg.HeavyMode = HeavyMode;
         Cfg.QueryTimeoutMs = QueryTimeoutMs;
+        Cfg.LoadEq = LoadEq;
 
         // =============================================================
         // STAGE 1: serial discovery (main thread; IR read-only)
@@ -186,7 +192,8 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
 
         errs() << "[ODeSSy] " << Jobs.size() << " trap site(s) across "
                << FCs.size() << " function(s); threads=" << NThreads
-               << (HeavyMode ? " [tier: heavy]" : "") << "\n";
+               << (HeavyMode ? " [tier: heavy]" : "")
+               << (LoadEq ? " [ldeq]" : "") << "\n";
 
         // =============================================================
         // STAGE 2: parallel solve (workers; IR read-only; verdicts only)
@@ -317,6 +324,7 @@ llvmGetPassPluginInfo() {
                         bool TierSeen = false;            // reject <light;heavy>
                         unsigned TimeoutMs = 10000;
                         unsigned Threads = 1;             // Level-2 default: serial
+                        bool LdEq = false;                // LDEQ default: off
                         if (!Name.empty()) {              // parse "<a;b;...>"
                             if (!Name.consume_front("<") || !Name.consume_back(">"))
                                 return false;
@@ -326,6 +334,8 @@ llvmGetPassPluginInfo() {
                                 P = P.trim();
                                 if (P == "vacuity")
                                     Vacuity = true;
+                                else if (P == "ldeq")
+                                    LdEq = true;
                                 else if (P == "light" || P == "heavy") {
                                     if (TierSeen)
                                         return false;   // contradictory tiers
@@ -342,7 +352,7 @@ llvmGetPassPluginInfo() {
                                     return false;       // unknown parameter
                             }
                         }
-                        MPM.addPass(OraclePass(Vacuity, Heavy, TimeoutMs, Threads));
+                        MPM.addPass(OraclePass(Vacuity, Heavy, TimeoutMs, Threads, LdEq));
                         return true;
                     }
                 );

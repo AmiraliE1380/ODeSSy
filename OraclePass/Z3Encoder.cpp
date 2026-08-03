@@ -86,6 +86,54 @@ bool Z3Encoder::assertKnownBits(Value *V, const llvm::KnownBits &KB,
     return true;
 }
 
+// =====================================================================
+// LDEQ -- load-equality (oracle-pass<ldeq>, default OFF).
+//
+// Soundness: if L0 and L load the same pointer SSA value, have the same
+// type, sit in the same basic block, are both simple (non-volatile,
+// non-atomic), and NO instruction between them may write memory, then
+// every execution observes identical memory at both loads => identical
+// loaded values. This is precisely the theorem GVN uses to delete the
+// second load; we only merge their SMT variables (no IR change), so a
+// wrong merge cannot miscompile -- but it could manufacture a false
+// UNSAT, hence the conservatism:
+//   * exact same pointer Value* (no aliasing reasoning at all),
+//   * mayWriteToMemory() on ANY intervening instruction kills the match
+//     (calls, stores, atomics -- LLVM's own conservative predicate),
+//   * fences kill the match explicitly (ordering, not writing),
+//   * same-BB only: encode order (RPO + BB instruction order) guarantees
+//     the earlier load is already encoded; cross-block equivalence needs
+//     a path-clobber argument (MemorySSA) and is deliberately deferred.
+// =====================================================================
+llvm::LoadInst *Z3Encoder::findEquivalentLoad(LoadInst *L) {
+    if (!LoadEqEnabled) return nullptr;
+    if (!L->isSimple()) return nullptr;
+
+    Value *Ptr = L->getPointerOperand();
+    LoadInst *Match = nullptr;
+
+    auto It = LoadsByPtr.find(Ptr);
+    if (It != LoadsByPtr.end()) {
+        for (LoadInst *L0 : It->second) {
+            if (L0->getParent() != L->getParent()) continue;  // same-BB fence
+            if (L0->getType() != L->getType()) continue;      // same width/type
+            if (!L0->isSimple()) continue;
+            // Walk the straight-line gap L0..L; any may-write clobbers.
+            bool Clobbered = false;
+            for (auto I = std::next(L0->getIterator());
+                 &*I != L && I != L->getParent()->end(); ++I) {
+                if (I->mayWriteToMemory() || isa<FenceInst>(&*I)) {
+                    Clobbered = true;
+                    break;
+                }
+            }
+            if (!Clobbered) { Match = L0; break; }
+        }
+    }
+    LoadsByPtr[Ptr].push_back(L);   // L is now a candidate for later loads
+    return Match;
+}
+
 z3::expr Z3Encoder::asBool(z3::expr e) {
     if (e.is_bool()) return e;
     return e != Ctx.bv_val(0, e.get_sort().bv_size());
@@ -580,6 +628,20 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo
     }
     
     else if (auto *Load = dyn_cast<LoadInst>(Inst)) {
+        // LDEQ (opt-in): a provably-equal earlier load donates its SMT
+        // variable -- ONE boundary instead of two, which is what lets
+        // `i < n` (guard's load) contradict `i >= n'` (check's reload).
+        if (LoadInst *Eq = findEquivalentLoad(Load)) {
+            z3::expr Same = getOrCreateZ3Expr(Eq);  // already encoded (RPO)
+            ValueMap.insert({Load, Same});
+            ++NumLoadEquivs;
+            if (DebugOracle) {
+                errs() << "    [LDEQ] load " << getSafeName(Load)
+                       << " unified with earlier load " << getSafeName(Eq)
+                       << " (same ptr, no intervening writes)\n";
+            }
+            return true;
+        }
         getOrCreateZ3Expr(Load);
         return true;
     }

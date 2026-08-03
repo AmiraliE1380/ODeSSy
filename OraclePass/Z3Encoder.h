@@ -35,6 +35,22 @@ class Z3Encoder {
     // reproduces the old simple-path / acyclic semantics without ever
     // re-visiting a block).
     std::set<llvm::BasicBlock*> InProgress;
+
+    // --- LOAD-EQUALITY (LDEQ) -- opt-in via oracle-pass<ldeq> ---
+    // Two loads of the SAME pointer SSA value, in the SAME basic block,
+    // with NO possibly-memory-writing instruction between them, must
+    // observe the same memory and therefore the same value -- this is
+    // GVN/CSE's own theorem applied at encoding time instead of
+    // transform time. When it fires, the later load maps to the SAME
+    // Z3 expression as the earlier one (one boundary variable instead
+    // of two), which is exactly what symbolic-bound proofs need when
+    // the optimizer failed to CSE a reloaded array length.
+    // Scope fence (v1): same-BB only. Cross-block equivalence needs a
+    // path-clobber argument (MemorySSA) -- deferred, documented in
+    // HANDOFF. OFF by default so the light tier stays byte-identical.
+    bool LoadEqEnabled = false;
+    unsigned NumLoadEquivs = 0;
+    std::map<llvm::Value*, std::vector<llvm::LoadInst*>> LoadsByPtr;
     // Every Value that became a FREE variable, in creation order. These
     // are exactly the over-approximation boundaries of the current query
     // -- the set the HEAVY tier walks to assert analysis facts (§9).
@@ -66,7 +82,10 @@ public:
     // Returns false when nothing is known (or masks conflict).
     bool assertKnownBits(llvm::Value *V, const llvm::KnownBits &KB,
                          const std::string &Label = "");
-    
+    // --- LDEQ knob + stats (see field comment above) ---
+    void enableLoadEquivalence() { LoadEqEnabled = true; }
+    unsigned getNumLoadEquivs() const { return NumLoadEquivs; }
+
 private:
     // Encodes the branch/switch constraint attached to a single CFG edge
     // Pred -> Succ (br cond / !cond, switch == case, switch default, or a
@@ -77,6 +96,12 @@ private:
     // through PhiBB (the "boundary wall"). O(V+E) total across a region.
     z3::expr getBlockReachCond(llvm::BasicBlock *BB, llvm::BasicBlock *Root,
                                llvm::BasicBlock *PhiBB, llvm::DominatorTree *DT);
+
+    // LDEQ search: returns an earlier load provably observing the same
+    // memory as L (same pointer SSA value, same type, same BB, no
+    // may-write instruction between), else nullptr. Records L in
+    // LoadsByPtr either way. No-op (nullptr) unless LoadEqEnabled.
+    llvm::LoadInst *findEquivalentLoad(llvm::LoadInst *L);
 
     // APInt -> BV constant of identical width (i128-safe via decimal
     // string; NEVER casts through unsigned -- the constant-truncation

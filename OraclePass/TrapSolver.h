@@ -33,6 +33,10 @@ namespace odessy {
 struct SolverConfig {
     bool VacuityCheck = false;
     bool HeavyMode = false;
+    // LDEQ: same-BB no-clobber load unification in the encoder
+    // (oracle-pass<ldeq>). Off by default: the light tier must stay
+    // byte-identical, and LDEQ-on/off doubles as its own ablation.
+    bool LoadEq = false;
     unsigned QueryTimeoutMs = 10000;
 };
 

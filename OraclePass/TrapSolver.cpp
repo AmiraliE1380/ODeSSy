@@ -21,6 +21,8 @@ TrapSolver::TrapSolver(const SolverConfig &Cfg, const FunctionCtx &FC,
       Log(Job.LogText) {
     if (Cfg.VacuityCheck)
         Encoder.enableUnsatCores();
+    if (Cfg.LoadEq)
+        Encoder.enableLoadEquivalence();
 }
 
 bool TrapSolver::encodePhase() {
@@ -42,6 +44,12 @@ bool TrapSolver::encodePhase() {
                     }
                 }
             }
+        }
+        // LDEQ visibility: only ever printed when the knob is on, so
+        // default-mode logs stay byte-identical to the pre-LDEQ pass.
+        if (Cfg.LoadEq && Encoder.getNumLoadEquivs() > 0) {
+            Log << "    -> [ldeq] " << Encoder.getNumLoadEquivs()
+                << " redundant load(s) unified with their originals\n";
         }
         return true;
     } catch (const z3::exception &e) {
