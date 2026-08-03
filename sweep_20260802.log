@@ -1,0 +1,11 @@
+ninja: no work to do.
+  timeout=1     ms  unsat=16   sat=66   unknown=375  wall=3.92s
+  timeout=3     ms  unsat=27   sat=173  unknown=257  wall=3.99s
+  timeout=10    ms  unsat=43   sat=319  unknown=95   wall=4.13s
+  timeout=30    ms  unsat=47   sat=384  unknown=26   wall=4.17s
+  timeout=100   ms  unsat=50   sat=405  unknown=2    wall=4.17s
+  timeout=300   ms  unsat=50   sat=405  unknown=2    wall=4.21s
+  timeout=1000  ms  unsat=50   sat=405  unknown=2    wall=4.19s
+  timeout=3000  ms  unsat=52   sat=405  unknown=0    wall=4.20s
+  timeout=10000 ms  unsat=52   sat=405  unknown=0    wall=4.29s
+CSV: /mydata/ODeSSy/evaluation/timeout_sweep.csv   (paper claim: UNSATs survive tight timeouts; wall collapses)
