@@ -56,7 +56,7 @@ for SRC in "${KERNELS[@]}"; do
 
   # --- gate 3: verdicts (analysis-only; vacuity + ldeq; threads for speed) ---
   opt -load-pass-plugin="$ROOT/build/OraclePass.so" \
-      -passes="oracle-pass<vacuity;ldeq;threads=8>" \
+      -passes="oracle-pass<vacuity;heavy;ldeq;threads=8>" \
       -disable-output "$ll" > "$log" 2>&1
   rc=$?
   anchored=$(grep -oE '[0-9]+ trap site\(s\)' "$log" | grep -oE '^[0-9]+' | head -1)

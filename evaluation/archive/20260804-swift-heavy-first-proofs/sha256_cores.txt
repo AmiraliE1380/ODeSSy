@@ -1,0 +1,35 @@
+    -> Fact[LVI:6] i64 %233 in [1,0) (LVI @ )
+    -> Fact[KB:7] i64 %248 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:8] i64 %248 in [0,144115188075855871) (SCEV unsigned)
+    -> Fact[SCEV:9] i64 %248 in [0,144115188075855871) (SCEV signed)
+    -> Fact[KB:10] i64 %253 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[LVI:11] i64 %253 in [0,9223372036854775807) (LVI @ )
+    -> Fact[SCEV:12] i64 %253 in [0,16) (SCEV unsigned)
+    -> Fact[SCEV:13] i64 %253 in [0,16) (SCEV signed)
+    -> [heavy] 14 analysis fact(s) on 41 boundary value(s)
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5.570791 ms]
+    -> Unsat core: |RM:4| |SCEV:8| |LVI:11| |SCEV:12| G0 G1 TRAP 
+--
+    -> Fact[LVI:6] i64 %233 in [2,0) (LVI @ )
+    -> Fact[KB:7] i64 %248 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:8] i64 %248 in [0,144115188075855871) (SCEV unsigned)
+    -> Fact[SCEV:9] i64 %248 in [0,144115188075855871) (SCEV signed)
+    -> Fact[KB:10] i64 %253 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[LVI:11] i64 %253 in [0,9223372036854775807) (LVI @ )
+    -> Fact[SCEV:12] i64 %253 in [0,16) (SCEV unsigned)
+    -> Fact[SCEV:13] i64 %253 in [0,16) (SCEV signed)
+    -> [heavy] 14 analysis fact(s) on 41 boundary value(s)
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4.845458 ms]
+    -> Unsat core: |RM:4| |SCEV:8| |LVI:11| |SCEV:12| G0 G2 TRAP 
+--
+    -> Fact[LVI:6] i64 %233 in [3,0) (LVI @ )
+    -> Fact[KB:7] i64 %248 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:8] i64 %248 in [0,144115188075855871) (SCEV unsigned)
+    -> Fact[SCEV:9] i64 %248 in [0,144115188075855871) (SCEV signed)
+    -> Fact[KB:10] i64 %253 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[LVI:11] i64 %253 in [0,9223372036854775807) (LVI @ )
+    -> Fact[SCEV:12] i64 %253 in [0,16) (SCEV unsigned)
+    -> Fact[SCEV:13] i64 %253 in [0,16) (SCEV signed)
+    -> [heavy] 14 analysis fact(s) on 41 boundary value(s)
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 7.737125 ms]
+    -> Unsat core: |RM:4| |SCEV:8| |LVI:11| |SCEV:12| G0 G3 TRAP 
