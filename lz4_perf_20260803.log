@@ -1,0 +1,66 @@
+ninja: no work to do.
+==== PHASE A: builds (specs: none anf) ====
+  built none.base      traps    0->0    smt 0s
+  built anf.base       traps 3403->3403 smt 0s
+  built anf.base2x     traps 3403->2569 smt 0s
+  built anf.oracle     traps 3403->2361 smt 731.996s
+==== cooldown 45s ====
+==== timing: 40 reps x 4 binaries  [pin: numactl --cpunodebind=0 --membind=0] ====
+  rep 5/40 (16:25:46)
+  rep 10/40 (16:26:17)
+  rep 15/40 (16:26:48)
+  rep 20/40 (16:27:19)
+  rep 25/40 (16:27:50)
+  rep 30/40 (16:28:21)
+  rep 35/40 (16:28:52)
+  rep 40/40 (16:29:23)
+none.base      traps    0->0    min 1.492s avg 1.527s
+anf.base       traps 3403->3403 min 1.508s avg 1.552s
+anf.base2x     traps 3403->2569 min 1.510s avg 1.559s
+anf.oracle     traps 3403->2361 min 1.532s avg 1.565s
+
+CSV: /mydata/ODeSSy/evaluation/perf_lz4.csv   (report: python3 make_perf_report.py /mydata/ODeSSy/evaluation/perf_lz4.csv evaluation/perf_lz4_report.csv)
+ninja: no work to do.
+==== PHASE A: builds (specs: none anf) ====
+  built none.base      traps    0->0    smt 0s
+  built anf.base       traps 3403->3403 smt 0s
+  built anf.base2x     traps 3403->2569 smt 0s
+  built anf.oracle     traps 3403->2369 smt 730.374s
+==== cooldown 45s ====
+==== timing: 40 reps x 4 binaries  [pin: numactl --cpunodebind=0 --membind=0] ====
+  rep 5/40 (16:49:52)
+  rep 10/40 (16:53:57)
+  rep 15/40 (16:58:02)
+  rep 20/40 (17:02:07)
+  rep 25/40 (17:06:11)
+  rep 30/40 (17:10:14)
+  rep 35/40 (17:14:19)
+  rep 40/40 (17:18:23)
+none.base      traps    0->0    min 11.918s avg 12.111s
+anf.base       traps 3403->3403 min 12.043s avg 12.227s
+anf.base2x     traps 3403->2569 min 12.015s avg 12.251s
+anf.oracle     traps 3403->2369 min 12.141s avg 12.311s
+
+CSV: /mydata/ODeSSy/evaluation/perf_lz4.csv   (report: python3 make_perf_report.py /mydata/ODeSSy/evaluation/perf_lz4.csv evaluation/perf_lz4_report.csv)
+ninja: no work to do.
+==== PHASE A: builds (specs: none anf) ====
+  built none.base      traps    0->0    smt 0s
+  built anf.base       traps 3403->3403 smt 0s
+  built anf.base2x     traps 3403->2569 smt 0s
+  built anf.oracle     traps 3403->2376 smt 727.858s
+==== cooldown 45s ====
+==== timing: 40 reps x 4 binaries  [pin: numactl --cpunodebind=0 --membind=0] ====
+  rep 5/40 (17:53:10)
+  rep 10/40 (18:09:10)
+  rep 15/40 (18:25:09)
+  rep 20/40 (18:41:08)
+  rep 25/40 (18:57:14)
+  rep 30/40 (19:13:41)
+  rep 35/40 (19:30:13)
+  rep 40/40 (19:46:44)
+none.base      traps    0->0    min 47.287s avg 48.123s
+anf.base       traps 3403->3403 min 47.592s avg 48.661s
+anf.base2x     traps 3403->2569 min 47.686s avg 48.650s
+anf.oracle     traps 3403->2376 min 48.035s avg 48.963s
+
+CSV: /mydata/ODeSSy/evaluation/perf_lz4.csv   (report: python3 make_perf_report.py /mydata/ODeSSy/evaluation/perf_lz4.csv evaluation/perf_lz4_report.csv)
