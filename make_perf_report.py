@@ -151,7 +151,7 @@ with open(OUT, "w", newline="") as fh:
             "raw_runtimes_s": r["runs_s"],
         })
 print(f"wrote {OUT}")
-SPEC_ORDER = [s for s in ("signed", "unsigned", "both")
+SPEC_ORDER = [s for s in ("signed", "unsigned", "both", "anf")
               if KEEP is None or s in KEEP]
 
 # Console summary: oracle vs base2x per spec, across sizes -- MIN-based
