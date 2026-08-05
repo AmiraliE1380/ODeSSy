@@ -1,5 +1,4 @@
 #include "TrapDiscovery.h"
-
 #include "llvm/IR/BasicBlock.h"
 #include "llvm/IR/CFG.h"
 #include "llvm/IR/DebugInfoMetadata.h"
@@ -9,17 +8,12 @@
 #include "llvm/IR/IntrinsicInst.h"
 #include "llvm/Analysis/LoopInfo.h"
 #include "llvm/Support/raw_ostream.h"
-
 #include <queue>
 #include <set>
 #include <string>
-
 using namespace llvm;
-
 extern bool DebugOracle;   // defined in OraclePass.cpp
-
 namespace odessy {
-
 // ==================================================================
 // PHASE 1 helper: LINEAR BACKWARD REGION WALK (no path enumeration).
 // Verbatim from the old OraclePass::collectPhiConditions (the unused
@@ -31,24 +25,18 @@ static bool collectPhiConditions(PHINode *Phi, DominatorTree &DT,
     BasicBlock *PhiBB = Phi->getParent();
     DomTreeNode *Node = DT.getNode(PhiBB);
     if (!Node || !Node->getIDom()) return false;
-
     BasicBlock *IDomBB = Node->getIDom()->getBlock();
-
     std::set<BasicBlock*> RegionVisited;
     std::queue<BasicBlock*> BlockWorklist;
-
     for (unsigned i = 0; i < Phi->getNumIncomingValues(); ++i) {
         Value *IncVal = Phi->getIncomingValue(i);
         if (Visited.insert(IncVal).second) Worklist.push(IncVal);
-
         BasicBlock *IncBB = Phi->getIncomingBlock(i);
         if (RegionVisited.insert(IncBB).second) BlockWorklist.push(IncBB);
     }
-
     while (!BlockWorklist.empty()) {
         BasicBlock *BB = BlockWorklist.front();
         BlockWorklist.pop();
-
         auto *Term = BB->getTerminator();
         Value *Cond = nullptr;
         if (auto *Br = dyn_cast<BranchInst>(Term)) {
@@ -57,19 +45,15 @@ static bool collectPhiConditions(PHINode *Phi, DominatorTree &DT,
             Cond = Sw->getCondition();
         }
         if (Cond && Visited.insert(Cond).second) Worklist.push(Cond);
-
         if (BB == IDomBB) continue;
-
         for (BasicBlock *Pred : predecessors(BB)) {
             if (Pred == PhiBB) continue;
             if (!DT.dominates(IDomBB, Pred)) continue;
             if (RegionVisited.insert(Pred).second) BlockWorklist.push(Pred);
         }
     }
-
     return true;
 }
-
 // ==================================================================
 // PHASE 0 + 0.5 + 1: guards, assumes, backward slice. Fills
 // Job.Guards / Job.Visited / Job.SliceOK and writes discovery log
@@ -79,10 +63,8 @@ static void collectGuardsAndSlice(TrapJob &Job, DominatorTree &DT,
                                   LoopInfo &LI, raw_ostream &Log) {
     std::queue<Value*> Worklist;
     std::set<Value*> &Visited = Job.Visited;
-
     Worklist.push(Job.TrapCond);
     Visited.insert(Job.TrapCond);
-
     // ==============================================================
     // PHASE 0: DOMINATING CONTEXT GUARDS
     //
@@ -114,7 +96,6 @@ static void collectGuardsAndSlice(TrapJob &Job, DominatorTree &DT,
         auto *DBr = dyn_cast<BranchInst>(D->getTerminator());
         if (!DBr || !DBr->isConditional()) continue;
         if (DBr->getSuccessor(0) == DBr->getSuccessor(1)) continue;
-
         Value *GCond = nullptr;
         bool GVal = true;
         if (DT.dominates(BasicBlockEdge(D, DBr->getSuccessor(0)), Job.PredBB)) {
@@ -122,20 +103,16 @@ static void collectGuardsAndSlice(TrapJob &Job, DominatorTree &DT,
         } else if (DT.dominates(BasicBlockEdge(D, DBr->getSuccessor(1)), Job.PredBB)) {
             GCond = DBr->getCondition(); GVal = false;
         }
-
         if (GCond) {
             Job.Guards.push_back({GCond, GVal});
-
             std::string GS; raw_string_ostream OS(GS); GCond->print(OS);
             Log << "    -> Guard[" << (Job.Guards.size()-1) << "] ("
                 << (GVal ? "true" : "false") << " edge of '" << D->getName()
                 << "'):" << OS.str() << "\n";
-
             // Slice the guard too, so its defining math is encoded.
             if (Visited.insert(GCond).second) Worklist.push(GCond);
         }
     }
-
     // ==============================================================
     // PHASE 0.5: DOMINATING llvm.assume FACTS
     // The optimizer's own recorded truths: if an assume dominates the
@@ -156,20 +133,16 @@ static void collectGuardsAndSlice(TrapJob &Job, DominatorTree &DT,
         }
     }
     Log << "    -> Collected " << Job.Guards.size() << " dominating context guard(s).\n";
-
     // PHASE 1: BACKWARD SLICE (boundary rules unchanged)
     while (!Worklist.empty()) {
         Value *V = Worklist.front();
         Worklist.pop();
-
         Instruction *Inst = dyn_cast<Instruction>(V);
         if (!Inst) continue;
-
         // --- THE PHI / MEMORY LOGIC ---
         if (auto *Phi = dyn_cast<PHINode>(Inst)) {
             BasicBlock *PhiBB = Phi->getParent();
             Loop *L = LI.getLoopFor(PhiBB);
-
             if (L && L->getHeader() == PhiBB) {
                 if (DebugOracle) {
                     errs() << "    [DEBUG] Over-approximating Loop Header Phi: " << *Inst << "\n";
@@ -183,7 +156,6 @@ static void collectGuardsAndSlice(TrapJob &Job, DominatorTree &DT,
                 continue;
             }
         }
-
         // --- THE BOUNDARY LOGIC ---
         if (isa<LoadInst>(Inst) || isa<GetElementPtrInst>(Inst)) {
             if (DebugOracle) {
@@ -200,7 +172,6 @@ static void collectGuardsAndSlice(TrapJob &Job, DominatorTree &DT,
                     IsMathIntrinsic = true;
                 }
             }
-
             if (!IsMathIntrinsic) {
                 if (DebugOracle) {
                     errs() << "    [DEBUG] Over-approximating Alien Call\n";
@@ -209,7 +180,6 @@ static void collectGuardsAndSlice(TrapJob &Job, DominatorTree &DT,
             }
         }
         // ----------------------------------
-
         for (Use &U : Inst->operands()) {
             Value *Operand = U.get();
             if (Visited.find(Operand) == Visited.end()) {
@@ -219,33 +189,66 @@ static void collectGuardsAndSlice(TrapJob &Job, DominatorTree &DT,
         }
     }
 }
-
+// ==================================================================
+// THE HUNTER's acceptance test.
+//
+// Path 1 (always on): the sanitizer intrinsics -- llvm.ubsantrap /
+// llvm.trap. Byte-identical to the original Hunter.
+//
+// Path 2 (opt-in via oracle-pass<traps=a,b,...>): native-check
+// languages. Rust lowers bounds/overflow checks to calls of
+// core::panicking::* symbols; Julia to (i)jl_bounds_error*. A call
+// qualifies iff its callee name contains one of the substrings AND
+// the call provably DIVERGES: noreturn on the call site or callee,
+// or the next instruction is `unreachable`.
+//
+// Why the divergence gate matters: Stage 3's kill folds the anchor
+// BRANCH, which is justified purely by the UNSAT proof about the
+// edge -- but classification must never sweep in a fallible,
+// returning call (a logging helper whose name happens to match),
+// because everything downstream (trap census, elimination stats,
+// ANF reasoning) assumes "trap == divergence point".
+// ==================================================================
+static bool isTrapCall(CallInst *CI,
+                       const std::vector<std::string> &TrapCallees) {
+    Function *Callee = CI->getCalledFunction();
+    if (!Callee) return false;
+    StringRef N = Callee->getName();
+    if (N.contains("ubsantrap") || N == "llvm.trap")
+        return true;
+    for (const std::string &S : TrapCallees) {
+        if (!N.contains(S)) continue;
+        // Divergence gate: attribute on call site or callee...
+        if (CI->doesNotReturn() || Callee->doesNotReturn())
+            return true;
+        // ...or structurally: the call is immediately followed by
+        // `unreachable` (the exact shape rustc/julia emit).
+        Instruction *Next = CI->getNextNode();
+        if (Next && isa<UnreachableInst>(Next))
+            return true;
+    }
+    return false;
+}
 void discoverTraps(Function &F, DominatorTree &DT, LoopInfo &LI,
-                   std::vector<TrapJob> &Jobs) {
+                   std::vector<TrapJob> &Jobs,
+                   const std::vector<std::string> &TrapCallees) {
     for (BasicBlock &BB : F) {
-        // 1. The Hunter: Find the ubsantrap call
+        // 1. The Hunter: Find the ubsantrap / trap-callee call
         CallInst *TrapCall = nullptr;
         for (Instruction &Inst : BB) {
             if (auto *CI = dyn_cast<CallInst>(&Inst)) {
-                if (Function *Callee = CI->getCalledFunction()) {
-                    if (Callee->getName().contains("ubsantrap") ||
-                        Callee->getName() == "llvm.trap") {
-                        TrapCall = CI;
-                        break;
-                    }
+                if (isTrapCall(CI, TrapCallees)) {
+                    TrapCall = CI;
+                    break;
                 }
             }
         }
-
         if (!TrapCall) continue;
-
         // 2. The Anchor: Find the predecessor branch that triggered this trap
         BasicBlock *PredBB = BB.getSinglePredecessor();
         if (!PredBB) continue; // Skip complex merged traps for now
-
         auto *Br = dyn_cast<BranchInst>(PredBB->getTerminator());
         if (!Br || !Br->isConditional()) continue;
-
         Jobs.emplace_back();
         TrapJob &Job = Jobs.back();
         Job.Index = Jobs.size() - 1;   // global, module-wide discovery index
@@ -256,17 +259,14 @@ void discoverTraps(Function &F, DominatorTree &DT, LoopInfo &LI,
         Job.Br = Br;
         Job.TrapCond = Br->getCondition();
         Job.TrapOnTrue = (Br->getSuccessor(0) == &BB);
-
         raw_string_ostream Log(Job.LogText);
         if (DILocation *Loc = TrapCall->getDebugLoc()) {
             Log << "  -> Trap source: " << Loc->getFilename().str()
                 << ":" << Loc->getLine() << "\n";
         }
         Log << "  -> Found UB Trap. Starting Backward Slice...\n";
-
         // 3. The Slicer (the Solver half now lives in TrapSolver)
         collectGuardsAndSlice(Job, DT, LI, Log);
     }
 }
-
 } // namespace odessy

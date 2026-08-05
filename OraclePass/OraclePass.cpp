@@ -121,12 +121,17 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
     // in the encoder. Default OFF (light tier stays byte-identical; the
     // knob is its own ablation). Composes with everything.
     bool LoadEq = false;
+    // Trap-callee list (oracle-pass<traps=a,b,...>): callee-name
+    // substrings the Hunter additionally accepts as trap sites, behind
+    // the divergence gate (see TrapDiscovery.cpp). Empty (default) =>
+    // intrinsic-only Hunter, byte-identical to all prior behavior.
+    std::vector<std::string> TrapCallees;
 
     OraclePass() = default;
     OraclePass(bool Vacuity, bool Heavy, unsigned TimeoutMs, unsigned NThreads,
-               bool LdEq)
+               bool LdEq, std::vector<std::string> Traps = {})
         : VacuityCheck(Vacuity), HeavyMode(Heavy), QueryTimeoutMs(TimeoutMs),
-          Threads(NThreads), LoadEq(LdEq) {}
+          Threads(NThreads), LoadEq(LdEq), TrapCallees(std::move(Traps)) {}
 
     PreservedAnalyses run(Module &M, ModuleAnalysisManager &MAM) {
         auto &FAM =
@@ -181,7 +186,7 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
             }
 
             size_t Before = Jobs.size();
-            odessy::discoverTraps(F, *FC.DT, *FC.LI, Jobs);
+            odessy::discoverTraps(F, *FC.DT, *FC.LI, Jobs, TrapCallees);
             for (size_t i = Before; i < Jobs.size(); ++i)
                 FC.JobIndices.push_back(i);
 
@@ -193,7 +198,14 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
         errs() << "[ODeSSy] " << Jobs.size() << " trap site(s) across "
                << FCs.size() << " function(s); threads=" << NThreads
                << (HeavyMode ? " [tier: heavy]" : "")
-               << (LoadEq ? " [ldeq]" : "") << "\n";
+               << (LoadEq ? " [ldeq]" : "");
+        if (!TrapCallees.empty()) {
+            errs() << " [traps=";
+            for (size_t i = 0; i < TrapCallees.size(); ++i)
+                errs() << (i ? "," : "") << TrapCallees[i];
+            errs() << "]";
+        }
+        errs() << "\n";
 
         // =============================================================
         // STAGE 2: parallel solve (workers; IR read-only; verdicts only)
@@ -325,6 +337,7 @@ llvmGetPassPluginInfo() {
                         unsigned TimeoutMs = 10000;
                         unsigned Threads = 1;             // Level-2 default: serial
                         bool LdEq = false;                // LDEQ default: off
+                        std::vector<std::string> Traps;   // traps= callees: empty
                         if (!Name.empty()) {              // parse "<a;b;...>"
                             if (!Name.consume_front("<") || !Name.consume_back(">"))
                                 return false;
@@ -344,6 +357,17 @@ llvmGetPassPluginInfo() {
                                 } else if (P.consume_front("timeout=")) {
                                     if (P.getAsInteger(10, TimeoutMs))
                                         return false;   // malformed number
+                                } else if (P.consume_front("traps=")) {
+                                    // Comma-separated callee-name substrings
+                                    // (';' separates pass params, ',' items).
+                                    SmallVector<StringRef, 4> Syms;
+                                    P.split(Syms, ',');
+                                    for (StringRef S : Syms) {
+                                        S = S.trim();
+                                        if (!S.empty()) Traps.push_back(S.str());
+                                    }
+                                    if (Traps.empty())
+                                        return false;   // traps= with no names
                                 } else if (P.consume_front("threads=")) {
                                     // threads=0 => one worker per HW thread
                                     if (P.getAsInteger(10, Threads))
@@ -352,7 +376,8 @@ llvmGetPassPluginInfo() {
                                     return false;       // unknown parameter
                             }
                         }
-                        MPM.addPass(OraclePass(Vacuity, Heavy, TimeoutMs, Threads, LdEq));
+                        MPM.addPass(OraclePass(Vacuity, Heavy, TimeoutMs, Threads,
+                                               LdEq, std::move(Traps)));
                         return true;
                     }
                 );

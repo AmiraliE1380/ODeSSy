@@ -1,0 +1,12 @@
+rustc: rustc 1.97.1 (8bab26f4f 2026-07-14)
+opt  : LLVM (http://llvm.org/):
+pass : oracle-pass<vacuity;heavy;ldeq;threads=8;traps=panic>
+
+kernel          traps anchored      pct  unsat    sat  vacuous  skips   ldeq  status
+lz77                3        3     100%      0      3        0      0      0  ok
+matmul              5        5     100%      0      5        0      0      0  ok
+
+Per-trap logs: /Users/ebrah/Project/compiler/ODeSSy/logs/rust_triage/<kernel>.log   IR: /Users/ebrah/Project/compiler/ODeSSy/logs/rust_triage/<kernel>.ll
+Read: anchored/traps = Anchor coverage (multi-pred gap; rustc MERGES
+      panic blocks aggressively -- expect a bigger gap than Swift);
+      vacuous MUST be 0; audit any UNSAT via its core before celebrating.
