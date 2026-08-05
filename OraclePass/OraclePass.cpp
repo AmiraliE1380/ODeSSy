@@ -358,13 +358,22 @@ llvmGetPassPluginInfo() {
                                     if (P.getAsInteger(10, TimeoutMs))
                                         return false;   // malformed number
                                 } else if (P.consume_front("traps=")) {
-                                    // Comma-separated callee-name substrings
-                                    // (';' separates pass params, ',' items).
+                                    // ':'-separated callee-name substrings.
+                                    // NOT ',': opt's own pipeline parser
+                                    // splits on top-level commas BEFORE this
+                                    // callback runs, so a comma list arrives
+                                    // truncated and the pass name fails to
+                                    // parse. ',' is still accepted for a
+                                    // single-symbol string's future-proofing.
                                     SmallVector<StringRef, 4> Syms;
-                                    P.split(Syms, ',');
-                                    for (StringRef S : Syms) {
-                                        S = S.trim();
-                                        if (!S.empty()) Traps.push_back(S.str());
+                                    P.split(Syms, ':');
+                                    for (StringRef Part : Syms) {
+                                        SmallVector<StringRef, 2> Sub;
+                                        Part.split(Sub, ',');
+                                        for (StringRef S : Sub) {
+                                            S = S.trim();
+                                            if (!S.empty()) Traps.push_back(S.str());
+                                        }
                                     }
                                     if (Traps.empty())
                                         return false;   // traps= with no names
