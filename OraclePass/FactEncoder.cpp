@@ -1,5 +1,6 @@
 #include "FactEncoder.h"
 #include "llvm/Analysis/LazyValueInfo.h"
+#include "llvm/Analysis/LoopInfo.h"
 #include "llvm/Analysis/ScalarEvolution.h"
 #include "llvm/Analysis/ScalarEvolutionExpressions.h"
 #include "llvm/Analysis/ValueTracking.h"
@@ -18,9 +19,10 @@
 using namespace llvm;
 
 FactEncoder::FactEncoder(Z3Encoder &Enc, LazyValueInfo *LVI, ScalarEvolution *SE,
-                         DominatorTree &DT, const DataLayout &DL, bool Audit,
-                         raw_ostream &Log)
-    : Encoder(Enc), LVI(LVI), SE(SE), DT(DT), DL(DL), Audit(Audit), Log(Log) {}
+                         LoopInfo *LI, DominatorTree &DT, const DataLayout &DL,
+                         bool Audit, raw_ostream &Log)
+    : Encoder(Enc), LVI(LVI), SE(SE), LI(LI), DT(DT), DL(DL), Audit(Audit),
+      Log(Log) {}
 
 std::string FactEncoder::mkLabel(const char *Src) const {
     return std::string(Src) + ":" + std::to_string(NumFacts);
@@ -50,9 +52,10 @@ unsigned FactEncoder::encodeBoundaryFacts(BasicBlock *PredBB) {
         if (!V->getType()->isIntegerTy()) continue;
         tryRangeMetadata(V);
         tryRangeAttr(V);
-        tryKnownBits(V);    
+        tryKnownBits(V);
         tryLVI(V, PredBB);
         trySCEV(V);
+        trySCEVSym(V);
     }
     return NumFacts;
 }
@@ -166,4 +169,173 @@ bool FactEncoder::trySCEV(Value *V) {
         ++NumFacts; Added = true;
     }
     return Added;
+}
+// =====================================================================
+// SCEVSYM -- symbolic trip-count facts (the rotated-loop unlock).
+//
+// PROBLEM. After loop rotation the latch's `i < n` test dominates
+// nothing inside the body, so Phase-0 guard collection cannot assert
+// it, the header phi stays a free variable with no upper bound, and
+// every in-loop bounds check is trivially SAT.
+//
+// FACT. ScalarEvolution already proved the bound. For an affine
+// recurrence  phi = {C,+,1}<L>  with backedge-taken count BTC, SCEV's
+// semantics guarantee: on every iteration of L, the number of back
+// edges taken so far, k, satisfies 0 <= k <= BTC, and phi's value on
+// that iteration is C + k. Therefore, at EVERY program point inside L:
+//
+//     C <=u phi  /\  phi <=u C + BTC
+//
+// This is a VALUE fact over the phi's whole evolution (like the
+// existing constant-range SCEV facts), so no dominance gate is needed.
+//
+// SOUNDNESS GATES (v1 -- widen only with a written argument):
+//  * step must be the constant +1 and start a CONSTANT C; and either
+//    C == 0 (then phi = k mod 2^W = k exactly, since k <= BTC < 2^W as
+//    a W-bit count -- no wrap possible without SCEV having widened or
+//    refused), or the addrec carries nuw (then C + k never unsigned-
+//    wraps across the recurrence, including the final C + BTC).
+//  * BTC must not be CouldNotCompute, and must translate through the
+//    mini-translator below (constants / SSA leaves / adds / casts);
+//    anything unmodeled REFUSES the fact rather than approximating.
+//    BTC leaves are loop-invariant SSA values by SCEV construction, so
+//    referencing them in the query is well-defined; if the encoder has
+//    not seen a leaf yet it becomes a fresh free variable, which only
+//    WEAKENS the fact (a free bound constrains nothing) -- never wrong.
+//  * Widths may differ (SCEV canonicalizes counts); both sides are
+//    zero-extended to the wider width, which preserves unsigned order.
+//
+// The fact is asserted CONTEXT-SIDE with a tracked SCEVSYM: label, so
+// the vacuity audit alarms on a bad import and unsat cores attribute
+// proofs to this source. CONCURRENCY: called only from factPhase under
+// the FactGate ticket, same as every other SE query.
+// =====================================================================
+z3::expr FactEncoder::scevToZ3(const SCEV *S, bool &OK, unsigned &W) {
+    if (auto *SC = dyn_cast<SCEVConstant>(S)) {
+        const APInt &A = SC->getAPInt();
+        W = A.getBitWidth();
+        return Encoder.apintToBV(A);
+    }
+    if (auto *SU = dyn_cast<SCEVUnknown>(S)) {
+        Value *V = SU->getValue();
+        if (!V->getType()->isIntegerTy()) { OK = false; W = 1; }
+        else W = V->getType()->getIntegerBitWidth();
+        if (!OK) return Encoder.apintToBV(APInt(1, 0));
+        return Encoder.valueAsBV(V, W);
+    }
+    if (auto *SA = dyn_cast<SCEVAddExpr>(S)) {
+        // All operands of an add share the expression's type.
+        unsigned W0 = 0;
+        z3::expr Acc = scevToZ3(SA->getOperand(0), OK, W0);
+        for (unsigned i = 1; OK && i < SA->getNumOperands(); ++i) {
+            unsigned Wi = 0;
+            z3::expr Ei = scevToZ3(SA->getOperand(i), OK, Wi);
+            if (!OK) break;
+            if (Wi != W0) { OK = false; break; }   // paranoia; SCEV promises equal
+            Acc = Acc + Ei;
+        }
+        W = W0;
+        return Acc;
+    }
+    if (auto *SZ = dyn_cast<SCEVZeroExtendExpr>(S)) {
+        unsigned Wi = 0;
+        z3::expr E = scevToZ3(SZ->getOperand(), OK, Wi);
+        W = DL.getTypeSizeInBits(SZ->getType());
+        if (OK && W > Wi) return z3::zext(E, W - Wi);
+        OK = OK && (W == Wi);
+        return E;
+    }
+    if (auto *SS = dyn_cast<SCEVSignExtendExpr>(S)) {
+        unsigned Wi = 0;
+        z3::expr E = scevToZ3(SS->getOperand(), OK, Wi);
+        W = DL.getTypeSizeInBits(SS->getType());
+        if (OK && W > Wi) return z3::sext(E, W - Wi);
+        OK = OK && (W == Wi);
+        return E;
+    }
+    if (auto *ST = dyn_cast<SCEVTruncateExpr>(S)) {
+        unsigned Wi = 0;
+        z3::expr E = scevToZ3(ST->getOperand(), OK, Wi);
+        W = DL.getTypeSizeInBits(ST->getType());
+        if (OK && W < Wi) return E.extract(W - 1, 0);
+        OK = OK && (W == Wi);
+        return E;
+    }
+    // umin / umin_seq: EXACTLY expressible in BV as ite(a <=u b, a, b) --
+    // no approximation involved, so translating it does not violate the
+    // refusal policy. This case is load-bearing: when the trap edge is
+    // itself a loop exit (the normal shape for sanitizer traps), SCEV's
+    // exact BTC is umin(trap-exit count, latch count), and without this
+    // case every such loop is silently refused. umin_seq differs from
+    // umin only in poison propagation, not value, and a poisoned bound
+    // feeding a branch is UB => defined executions still satisfy the
+    // fact (same caveat as the nsw/nuw import).
+    if (isa<SCEVUMinExpr>(S) || isa<SCEVSequentialUMinExpr>(S)) {
+        auto *NAry = cast<SCEVNAryExpr>(S);
+        unsigned W0 = 0;
+        z3::expr Acc = scevToZ3(NAry->getOperand(0), OK, W0);
+        for (unsigned i = 1; OK && i < NAry->getNumOperands(); ++i) {
+            unsigned Wi = 0;
+            z3::expr Ei = scevToZ3(NAry->getOperand(i), OK, Wi);
+            if (!OK) break;
+            if (Wi != W0) { OK = false; break; }   // paranoia; SCEV promises equal
+            Acc = z3::ite(z3::ule(Acc, Ei), Acc, Ei);
+        }
+        W = W0;
+        return Acc;
+    }
+    // umax/smax/mul/udiv/addrec/...: REFUSE (never approximate a bound).
+    OK = false; W = 1;
+    return Encoder.apintToBV(APInt(1, 0));
+}
+
+bool FactEncoder::trySCEVSym(Value *V) {
+    if (!SE || !LI) return false;
+    auto *Phi = dyn_cast<PHINode>(V);
+    if (!Phi) return false;
+    Loop *L = LI->getLoopFor(Phi->getParent());
+    if (!L || L->getHeader() != Phi->getParent()) return false;
+    if (!SE->isSCEVable(Phi->getType())) return false;
+
+    const SCEV *S = SE->getSCEV(Phi);
+    auto *AR = dyn_cast<SCEVAddRecExpr>(S);
+    if (!AR || AR->getLoop() != L || !AR->isAffine()) return false;
+
+    auto *Step = dyn_cast<SCEVConstant>(AR->getStepRecurrence(*SE));
+    if (!Step || !Step->getAPInt().isOne()) return false;      // {C,+,1} only
+    auto *Start = dyn_cast<SCEVConstant>(AR->getStart());
+    if (!Start) return false;
+    const APInt &C = Start->getAPInt();
+    if (!C.isZero() && !AR->hasNoUnsignedWrap()) return false; // gate (a)/(b)
+
+    const SCEV *BTC = SE->getBackedgeTakenCount(L);
+    if (isa<SCEVCouldNotCompute>(BTC)) return false;
+
+    bool OK = true;
+    unsigned WB = 0;
+    z3::expr TB = scevToZ3(BTC, OK, WB);
+    if (!OK || WB == 0) return false;
+
+    unsigned WP = Phi->getType()->getIntegerBitWidth();
+    unsigned W = WP > WB ? WP : WB;
+    z3::expr PhiE = Encoder.valueAsBV(Phi, WP);
+    if (WP < W) PhiE = z3::zext(PhiE, W - WP);
+    if (WB < W) TB = z3::zext(TB, W - WB);
+
+    z3::expr Upper = TB;
+    if (!C.isZero())
+        Upper = Upper + Encoder.apintToBV(C.zext(W));
+    z3::expr Fact = z3::ule(PhiE, Upper);
+    if (!C.isZero())
+        Fact = Fact && z3::uge(PhiE, Encoder.apintToBV(C.zext(W)));
+
+    std::string Lbl = mkLabel("SCEVSYM");
+    Encoder.assertRawFact(Fact, Audit ? Lbl : std::string());
+
+    std::string BS; raw_string_ostream BOS(BS); BTC->print(BOS);
+    Log << "    -> Fact[" << Lbl << "] " << valueStr(V)
+        << " <=u start(" << C << ") + BTC(" << BS
+        << ") (SCEV symbolic trip count)\n";
+    ++NumFacts;
+    return true;
 }

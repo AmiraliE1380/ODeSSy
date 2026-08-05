@@ -80,7 +80,7 @@ bool TrapSolver::factPhase() {
         // time, in discovery order -- thread-safe (those analyses
         // memoize on query) AND deterministic (cache evolution is
         // identical to the THREADS=1 run).
-        FactEncoder Facts(Encoder, FC.LVI, FC.SE, *FC.DT,
+        FactEncoder Facts(Encoder, FC.LVI, FC.SE, FC.LI, *FC.DT,
                           Job.F->getParent()->getDataLayout(),
                           Cfg.VacuityCheck, Log);
         unsigned NFacts = Facts.encodeBoundaryFacts(Job.PredBB);

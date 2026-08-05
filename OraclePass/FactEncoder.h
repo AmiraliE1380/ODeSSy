@@ -14,7 +14,11 @@
 //   KB  : computeKnownBits bit masks           (value fact)
 //   LVI : LazyValueInfo constant range at the  (point fact -- def must
 //         trap's branch point                   dominate PredBB)
-//   SCEV: loop-header phi ranges               (step 6, one more method)
+//   SCEV: loop-header phi ranges               (constant intervals)
+//   SCEVSYM: loop-header phi vs SYMBOLIC trip  (the rotated-loop unlock:
+//         count -- phi <=u start + BTC, where   asserts the latch bound
+//         BTC is an SSA-valued expression       that dominance-based guard
+//         translated into the query             collection cannot see)
 //
 // Facts are asserted CONTEXT-SIDE (before the push()/trap boundary), so
 // the vacuity audit doubles as the alarm for a wrong fact import, and in
@@ -37,12 +41,15 @@ namespace llvm {
 class LazyValueInfo;
 class DataLayout;
 class ScalarEvolution;
+class LoopInfo;
+class SCEV;
 }
 
 class FactEncoder {
     Z3Encoder &Encoder;
     llvm::LazyValueInfo *LVI;      // null => LVI fact source disabled
-    llvm::ScalarEvolution *SE;     // null => SCEV fact source disabled
+    llvm::ScalarEvolution *SE;     // null => SCEV fact sources disabled
+    llvm::LoopInfo *LI;            // null => SCEVSYM fact source disabled
     llvm::DominatorTree &DT;
     const llvm::DataLayout &DL;
     bool Audit;                    // true => tracked assertions with labels
@@ -51,7 +58,7 @@ class FactEncoder {
 
 public:
     FactEncoder(Z3Encoder &Enc, llvm::LazyValueInfo *LVI,
-                llvm::ScalarEvolution *SE,
+                llvm::ScalarEvolution *SE, llvm::LoopInfo *LI,
                 llvm::DominatorTree &DT, const llvm::DataLayout &DL,
                 bool Audit, llvm::raw_ostream &Log);
 
@@ -65,6 +72,13 @@ private:
     bool tryKnownBits(llvm::Value *V);
     bool tryLVI(llvm::Value *V, llvm::BasicBlock *PredBB);
     bool trySCEV(llvm::Value *V);
+    // SCEVSYM: symbolic trip-count bound for an affine {C,+,1} header phi
+    // (see the soundness block in FactEncoder.cpp). Requires SE and LI.
+    bool trySCEVSym(llvm::Value *V);
+    // SCEV -> Z3 mini-translator (constants, SSA unknowns, adds, casts,
+    // umin/umin_seq [exact via ite]; everything else REFUSED). On success OK stays true and W is the
+    // expression's bit width. All exprs live in Encoder's context.
+    z3::expr scevToZ3(const llvm::SCEV *S, bool &OK, unsigned &W);
     // "RM:<n>" etc.; n = running fact counter, so labels are unique.
     std::string mkLabel(const char *Src) const;
 };

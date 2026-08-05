@@ -85,6 +85,19 @@ public:
     // --- LDEQ knob + stats (see field comment above) ---
     void enableLoadEquivalence() { LoadEqEnabled = true; }
     unsigned getNumLoadEquivs() const { return NumLoadEquivs; }
+    // --- SCEV-SYM mechanism hooks (policy lives in FactEncoder) ---
+    // Public bridges so FactEncoder can BUILD facts about SSA values and
+    // constants in THIS encoder's context, then assert them tracked.
+    // valueAsBV totalizes exactly like the private asBV path.
+    z3::expr valueAsBV(llvm::Value *V, unsigned W) {
+        return asBV(getOrCreateZ3Expr(V), W);
+    }
+    z3::expr apintToBV(const llvm::APInt &A) { return bvConst(A); }
+    // Assert an arbitrary already-built fact expression. Label empty =>
+    // plain assert; nonempty => tracked (eligible for unsat cores).
+    void assertRawFact(const z3::expr &F, const std::string &Label) {
+        addFact(F, Label);
+    }
 
 private:
     // Encodes the branch/switch constraint attached to a single CFG edge
