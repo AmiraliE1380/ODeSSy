@@ -309,6 +309,15 @@ bool FactEncoder::trySCEVSym(Value *V) {
     if (!C.isZero() && !AR->hasNoUnsignedWrap()) return false; // gate (a)/(b)
 
     const SCEV *BTC = SE->getBackedgeTakenCount(L);
+    if (isa<SCEVCouldNotCompute>(BTC)) {
+        // MULTI-EXIT FALLBACK: when the trap edge is itself a loop exit
+        // (the normal sanitizer shape), SCEV usually reports the EXACT
+        // BTC as CouldNotCompute -- but still offers a SYMBOLIC MAX.
+        // Sound by construction: our fact is an upper bound
+        // (phi <=u start + BTC), and the symbolic max is >= the true
+        // backedge count, so substituting it only WEAKENS the fact.
+        BTC = SE->getSymbolicMaxBackedgeTakenCount(L);
+    }
     if (isa<SCEVCouldNotCompute>(BTC)) return false;
 
     bool OK = true;
