@@ -1,135 +1,131 @@
-# ODeSSy — On-Demand SMT System for Compiler Super-Analysis and Optimization
-**An LLVM pass that uses an SMT solver to prove sanitizer checks unreachable — and deletes them.**
-Author: Amirali Ebrahimzadeh (UMich EECS) · Advisor: Prof. Amir Shaikhha
+# ODeSSy — On-Demand SMT System for Compiler Super-Analysis
 
-## What it does
-Compiling with `-fsanitize=signed-integer-overflow,unsigned-integer-overflow`
-`-fsanitize-trap=...` makes clang guard every at-risk integer operation with a
-runtime check ending in a trap (`ud2`). Many of those checks are *provably
-dead*: the surrounding code — parameter validation, dominating branches,
-`llvm.assume` facts, `nsw`/`nuw` flags — already implies the overflow cannot
-happen. LLVM's built-in analyses (known-bits, LazyValueInfo, ConstraintElim)
-miss a large class of these proofs, particularly when the bound must travel
-through **shifts, rotates, and bitwise arithmetic**, where lightweight abstract
-domains lose precision but a bit-vector decision procedure is exact.
+ODeSSy is an out-of-tree LLVM module pass that uses an SMT solver (Z3, QF_BV)
+to **prove sanitizer traps and native language safety checks unreachable — and
+delete them**. It is the first instantiation of a paradigm we call
+**super-analysis**: the middle ground between conventional compiler
+optimization (fast, heuristic, per-analysis) and super-optimization
+(exhaustive search over programs). A super-analyzer does not search for new
+code; it asks a solver to *logically conjoin* everything the compiler's own
+lightweight analyses already know — range metadata, known bits, value
+intervals, loop trip counts, dominating branch conditions — and to discharge
+proofs that no single analysis, and no heuristic combination of them, can
+reach.
 
-ODeSSy runs as an out-of-tree function pass after clang -O3. For every
-`llvm.ubsantrap` site it builds an SMT query — *dominating context* ∧ *trap
-condition* — over Z3's `QF_BV` theory and asks for satisfiability:
-- **UNSAT** → the trap is unreachable → the guarding branch is folded to a
-  constant, and `simplifycfg`+`adce` physically remove the check.
-- **SAT / UNKNOWN / timeout / any error** → the trap is kept. Always.
-
-## Philosophy: super-analysis, not super-optimization
-- **Analysis, not synthesis.** ODeSSy is a *super-analyzer*, not a
-  superoptimizer: there is no candidate-program search. Where
-  super-optimization uses the solver to *find new code* at exponential cost,
-  super-analysis uses it to *prove existing facts* the compiler's native
-  analyses are too weak to establish — licensing a transformation the compiler
-  already knows (delete a dead check). Dropping synthesis is what makes
-  per-site solver queries affordable *inside* the pipeline (~10–250 ms/trap)
-  instead of requiring offline caching.
-- **Sound, incomplete, on demand.** A missed proof costs a redundant check; a
-  wrong proof would miscompile — so every failure mode (solver exception,
-  timeout, unmodeled instruction, memory, loops) degrades to "keep the trap."
-  The work list is exactly the set of trap sites the sanitizer injected: the
-  pass knows precisely where to spend solver time.
-- **Audited, not trusted.** In audit mode every UNSAT passes a **vacuity
-  check** (the context alone must be satisfiable — a contradictory context
-  would make anything vacuously UNSAT) and reports its **unsat core** (the
-  minimal set of named assumptions used), which maps mechanically back to
-  source-level guards and imported analysis facts via labels and debug
-  locations.
-
-## Two precision tiers
-The pass has a user-facing latency/precision dial, selected by pass parameter:
-- **light** (default) — dominating guards + `llvm.assume` + exact BV encoding
-  of the backward slice. Over-approximation boundaries (loads, alien calls,
-  loop-header phis, GEPs) are unconstrained free variables.
-- **heavy** — light PLUS a `FactEncoder` module that imports everything
-  LLVM's own lightweight analyses know about each boundary value as SMT
-  constraints: `!range` metadata (RM), `range` attributes on call returns and
-  parameters (RA), KnownBits masks (KB), LazyValueInfo point ranges (LVI,
-  dominance-gated), and ScalarEvolution loop-phi ranges (SCEV). In audit mode
-  each fact is tracked with a source label so unsat cores attribute proofs to
-  the analysis that enabled them.
-
-The light/heavy split doubles as the built-in ablation for the fact-import
-feature. Honest finding on zlib: **heavy ≡ light** — every fact source fires
-and is validated by targeted tests, but zlib's remaining SAT traps depend on
-memory contents and data-dependent loop bounds no lightweight fact can
-express. Heavy's expected payoff is affine, constant-trip-count workloads
-(PolyBench/Rodinia/NPB), where SCEV ranges are tight.
-
-## Headline results (zlib 1.3.x, whole library + minigzip, x86-64, clang/LLVM trunk)
-| sanitizer spec | traps | eliminated | runtime vs O3∘O3 control | `.text` shrink |
-|---|---|---|---|---|
-| signed | 125 | 10 (8.0%) | ≈ 0% | −80 B |
-| unsigned | 1219 | 138 (11.3%) | ≈ +0.8% | −120 B |
-| signed+unsigned | 1296 | 142 (11.0%) | **+2.2%** (flat across 8–512 MB inputs) | −656 B |
-
-Eliminating 11% of checks recovers **~45% of the total sanitizer runtime
-overhead** on the combined spec. Compile cost is currently 11–233 ms per trap
-(embarrassingly parallel across traps and translation units; see roadmap).
-
-Worked example: UBSan instruments the signed arithmetic in zlib's `RANK` flush
--ranking macro (`deflate.c:1018`, `((f)*2) - ((f)>4 ? 9 : 0)`). The operand is
-range-limited by the API's own validation, but the bound travels through a
-shift — LLVM keeps the check through -O3; ODeSSy proves it dead with the
-two-assumption unsat core `{G0: f > -1, TRAP}` in under 5 ms, in both `deflate`
-and its inlined copy in `deflateParams`. An ablation confirms the mechanism:
-with shift encoding disabled, all signed proofs disappear.
-
-A complementary *dynamic* finding: zlib binaries sanitized for **unsigned**
-overflow abort on inputs ≥ ~512 MB — an intentional wraparound fires — in
-baseline and ODeSSy builds identically (the pass had classified that check SAT
-and kept it). Unsigned wraparound is defined C; sanitizing it is a spec
-mismatch, which is why ODeSSy reports signed and unsigned separately.
-
-## Usage
-```bash
-# build (out-of-tree pass; needs local LLVM trunk + Z3)
-mkdir -p build && cd build && CC=clang CXX=clang++ cmake -G Ninja .. && ninja
-# performance mode, light tier (default) — the configuration to benchmark
-opt -load-pass-plugin=build/OraclePass.so \
-    -passes="oracle-pass,simplifycfg,adce,verify" -S in.ll -o out.ll
-# heavy tier: + LLVM analysis facts at the boundaries
-opt ... -passes="oracle-pass<heavy>,simplifycfg,adce,verify" ...
-# audit mode: vacuity check + unsat cores per UNSAT; parameters compose
-opt ... -passes="oracle-pass<vacuity>" -disable-output in.ll
-opt ... -passes="oracle-pass<vacuity;heavy;timeout=3000>" ...
 ```
-Harness knobs: `TIER=heavy bash run_zlib.sh` (audit),
-`TIER=heavy bash run_zlib_perf.sh` (perf; writes `perf_zlib_heavy.csv`),
-`python3 make_perf_report.py --specs both` (filtered report).
+conventional optimization  ──────  ODeSSy (super-analysis)  ──────  super-optimization
+LLVM -O3: fast, heuristic          SMT-certified facts,             Souper/STOKE: search
+per-analysis reasoning             online latency, sound            over program space
+```
 
-Per-trap verdict logs land in `logs/compilations/<module-stem>.txt`
-(greppable tokens: `UNSAT`, `SAT (WARNING`, `UNKNOWN (Solver gave up`,
-`[vacuity-ok]`, `[VACUOUS]`, `[Skip]`, `Unsat core:`, `Trap source:`,
-`[tier: heavy]`, `[heavy]`, `Fact[RM:`/`RA:`/`KB:`/`LVI:`/`SCEV:`).
+## Headline results
 
-## Repository tour
-| path | what |
-|---|---|
-| `OraclePass/OraclePass.cpp` | the pass: trap discovery, dominating-guard + `llvm.assume` collection, backward slice, kill, tier + audit orchestration |
-| `OraclePass/Z3Encoder.{h,cpp}` | LLVM IR → Z3 `QF_BV` translation, memoized CFG reachability for PHIs, boundary (free-variable) bookkeeping, generic range/known-bits assertion primitives, vacuity/core plumbing |
-| `OraclePass/FactEncoder.{h,cpp}` | heavy tier policy: walks boundary values, queries RM/RA/KB/LVI/SCEV, asserts labeled facts |
-| `run_tests.sh` | expectation-checked regression suite over `tests/*.ll` (`*_sat*` ⇒ SAT, else ⇒ UNSAT); the three `test_heavy_*` files are heavy-tier-only (expected FAIL under the light gate until it is tier-aware) |
-| `run_zlib.sh` | audit harness: zlib/deflate × {signed, unsigned} × {O1, O3} × {light, heavy} with verdict accounting |
-| `run_zlib_perf.sh` | performance protocol: 4 specs × {O3, O3∘O3 control, O3∘oracle∘O3} × 3 corpus sizes, shuffled interleaved timing, binary-size metrics, TIER knob |
-| `make_perf_report.py`, `plot_smt_latencies.py` | reporting: speedup/shrink tables (`--specs` filter), per-verdict SMT latency distributions |
-| `run_zlib_behavioral.sh` | end-to-end soundness: two minigzip builds differing only in eliminated traps must produce byte-identical output |
-| `HANDOFF.md` | full developer documentation: internals, invariants, audit methodology, roadmap |
+* **C/C++ (UBSan traps):** 11% of zlib's, 12.2% of zstd's, and 9.5% of lz4's
+  sanitizer traps proven dead and eliminated (vs the double-compiled `base2x`
+  attribution control; 243 attributable eliminations; ~35% vs plain base).
+  Runtime recovery up to ~+0.6% of the 1.5–5.4% ANF ceiling on x86 servers
+  (cold-path checks; wide OoO cores hide them), plus consistent **binary text
+  shrink (−0.69% zlib, −1.21% lz4)**.
+* **Swift (native bounds checks): the centerpiece.** In SHA-256's
+  message-schedule inner loop, ODeSSy proves 3 of the 5 per-iteration bounds
+  checks dead. Re-optimizing after elimination (the O3 sandwich) unlocks loop
+  unrolling and yields **+4.2–4.3% median speedup on a Xeon server and
+  +3.5–4.7% on Apple M-series** — replicated across two ISAs, with
+  byte-identical program output (a built-in soundness gate). The eliminated
+  checks are exactly 3 of 38 in the program: *value per check is wildly
+  non-uniform, and one hot check can be worth more than fifty cold ones.*
+* **Multi-analysis cooperative proofs:** the sha256 unsat cores read
+  `|RM| |SCEV| |LVI| |SCEV| G0 G1 TRAP` — four independent LLVM fact sources
+  plus programmer-written guards, composable only by a solver. This is the
+  empirical existence proof for super-analysis.
+* **Latency is a dial:** 96% of all proofs survive a 100 ms per-query timeout
+  (52 → 50 UNSATs from 3 s down to 100 ms; the cliff is at 1–3 ms), and the
+  parallel solve stage scales 2.73 s → 0.77 s at 8 threads (0.74 s at 12) with
+  a determinism contract (verdicts and logs are byte-identical for any thread
+  count). ODeSSy can run as an online pass, an offline binary optimizer, or a
+  pure static analyzer.
 
-## Positioning
-SMT has been used in compilers to *find new code* (superoptimization: Souper,
-STOKE) and to *check the compiler itself* (translation validation: Alive2).
-ODeSSy occupies a third slot — **super-analysis**: using the solver to *prove
-facts the compiler's native analyses are too weak to prove*, licensing
-transformations the compiler already knows. Souper's path conditions are the
-closest structural relative; Souper synthesizes (and therefore caches
-offline), ODeSSy only decides — which is what makes on-demand, in-pipeline use
-viable. The import also runs in the other direction: the heavy tier asserts
-LLVM's own lightweight analysis facts (LVI ranges, known bits, SCEV bounds,
-range metadata/attributes) at the query's over-approximation boundaries, with
-unsat-core attribution of which analysis mattered.
+## Architecture (v3 module pass)
+
+Three stages. **Stage 1 (serial):** `TrapDiscovery` hunts anchored trap sites
+(single-predecessor trap blocks behind a conditional branch), collects
+dominating context guards + `llvm.assume` facts, and takes a backward slice.
+**Stage 2 (parallel):** one `TrapSolver` worker per trap, each with a private
+Z3 context; the heavy tier imports analysis facts (`!range`, range attributes,
+KnownBits, LazyValueInfo, SCEV constant ranges, and SCEV-SYM symbolic
+trip-count bounds) at the over-approximation boundaries, serialized through a
+`FactGate` ticket turnstile so LVI/SCEV caches evolve deterministically.
+**Stage 3 (serial):** UNSAT verdicts fold the anchor branches in discovery
+order. Every UNSAT is audited: tracked assertions produce labeled unsat cores
+(proof attribution) and a vacuity check re-solves the context alone (a
+contradictory context refuses to eliminate).
+
+### Pass string
+
+```
+opt -load-pass-plugin=build/OraclePass.so \
+    -passes="oracle-pass<vacuity;heavy;ldeq;timeout=300;threads=8;traps=panic:boundserror>" ...
+```
+
+* `light` / `heavy` — precision tier (light stays byte-identical to the
+  pre-tier encoder; heavy adds analysis facts). Heavy is standard for native
+  languages, light for C.
+* `vacuity` — unsat cores + context-satisfiability audit on every UNSAT.
+* `ldeq` — same-BB redundant-load unification (GVN's theorem at encoding time).
+* `timeout=<ms>`, `threads=<n>` — the two orthogonal latency dials.
+* `traps=<sub1>:<sub2>` — accept calls to named symbols as trap sites (Rust
+  `panic`, Julia `boundserror`), behind a divergence gate (noreturn or
+  call+`unreachable`). Empty default keeps the intrinsic-only Hunter
+  byte-identical.
+
+## Language coverage (one mechanism, four frontends)
+
+| Language | Check model | Trap shape | Notes |
+|---|---|---|---|
+| C/C++ | `-fsanitize=...-trap` (UBSan) | `llvm.ubsantrap` (x86 `ud1`) | light tier standard |
+| Swift | on by default at `-O`; `-Ounchecked` opt-out | `cond_fail` → `llvm.trap` | IR parses under trunk opt unmodified |
+| Rust | bounds always on; overflow via `-C overflow-checks=on` | `core::panicking::*` calls — **compile with `-C panic=abort`** (unwind emits `invoke`, invisible to a call-based hunter) | `traps=panic` |
+| Julia | bounds on by default; `--check-bounds` flag | 1.12 outlines to `j_throw_boundserror_NNN` thunks | `traps=boundserror`; loop multiversioning shares error blocks (multi-pred anchor gap) |
+
+## Repository map
+
+* `OraclePass/` — the pass: `OraclePass.cpp` (orchestration, parsing, kill
+  stage), `TrapDiscovery.*` (hunter/anchor/guards/slice), `TrapSolver.*`
+  (per-trap worker), `Z3Encoder.*` (IR→Z3, memoized CFG encoding, LDEQ),
+  `FactEncoder.*` (heavy-tier fact sources incl. SCEV-SYM), `Scheduler.h`
+  (FactGate).
+* `tests/` — regression suite (`bash run_tests.sh`; expected gate
+  **PASS=16 / FAIL=5** — the 5 "fails" are heavy/ldeq tests run under the
+  light gate by design). `tests/manual/` needs nonstandard pass strings.
+* `native_bench/` — Swift (`nbody`, `sha256`, `lz77`), Rust
+  (`lz77.rs`, `matmul.rs`), Julia (`lz77.jl`, `matmul.jl`, `julia_dump.jl`).
+* Triage harnesses: `swift_triage.sh`, `rust_triage.sh`, `julia_triage.sh`
+  (census → anchor coverage → verdicts → LDEQ relevance, with a lowering
+  shape probe).
+* Perf harnesses: `run_zlib_perf.sh`, `run_lz4_perf.sh`, `run_swift_perf.sh`
+  (O3-sandwich + output-equivalence gate), `run_matrix.sh` /
+  `run_matrix_native.sh` (sanitizer × benchmark opportunity matrices),
+  `run_timeout_sweep.sh`, `run_zstd_audit.sh`.
+* `PAPER_FACTS.md` — **the complete statistics, contributions, and narrative
+  record for the CGO paper.** Start there for any number.
+
+## Measurement doctrine (hard-won)
+
+Median-primary statistics (min is corrupted by rare fast outliers — an
+OpenSSL run once showed a fake +5.4% on min); every oracle delta is reported
+against **both** `base` and `base2x` (the double-round-trip attribution
+control; their gap is the noise floor); shuffled interleaved reps; pinned
+socket + `no_turbo` on servers; and every perf binary must produce
+**byte-identical output** to its baselines before any timing is trusted.
+
+## Quick start
+
+```bash
+ninja -C build                    # build the plugin (needs LLVM trunk + Z3)
+bash run_tests.sh                 # expect PASS=16 / FAIL=5
+bash swift_triage.sh              # 10-minute Swift static triage
+RUNARGS="200 perf_test/sha_input.bin" bash run_swift_perf.sh   # the headline experiment
+```
+
+Developed by Amirali Ebrahimzadeh (University of Michigan / advisor Prof.
+Amir Shaikhha) targeting CGO 2027.
