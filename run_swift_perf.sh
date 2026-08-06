@@ -77,7 +77,7 @@ build_one() {  # $1=config
   # every config, so the comparison stays fair; note it in the paper's
   # methodology (binaries lack stack-clash probes vs stock swiftc).
   perl -pi -e 's/"probe-stack"="[^"]*"\s*//g' "$ll"
-  llc -O2 -filetype=obj "$ll" -o "$W/$stem.$cfg.o" || return 1
+  llc -O2 -relocation-model=pic -filetype=obj "$ll" -o "$W/$stem.$cfg.o" || return 1
   swiftc -O "$W/$stem.$cfg.o" -o "$W/$stem.$cfg" || return 1
   local t1; t1=$(grep -cE 'call void @llvm\.(ubsan)?trap' "$ll")
   printf '  built %-8s traps %4s->%-4s bin %8s B  eliminated %s\n' \
