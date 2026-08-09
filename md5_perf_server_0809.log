@@ -1,0 +1,11 @@
+swiftc: Swift version 6.3.3 (swift-6.3.3-RELEASE)
+opt   : LLVM (http://llvm.org/):
+reps  : 15   kernel: md5   runargs: 'N perf_test/sha_input.bin'
+
+==== PHASE A: building ====
+  built base     traps   30->30   bin    28680 B  eliminated 0
+  built base2x   traps   30->30   bin    28680 B  eliminated 0
+  built oracle   traps   30->30   bin    28680 B  eliminated 0
+==== PHASE B: output equivalence gate ====
+run_swift_perf.sh: line 92: 417309 Illegal instruction     (core dumped) "$W/$stem.$cfg" $RUNARGS > "$W/out.$cfg" 2> /dev/null
+[FATAL] base run failed
