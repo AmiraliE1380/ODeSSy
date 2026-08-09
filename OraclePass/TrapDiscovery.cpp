@@ -1,4 +1,5 @@
 #include "TrapDiscovery.h"
+#include "llvm/ADT/SmallPtrSet.h"
 #include "llvm/IR/BasicBlock.h"
 #include "llvm/IR/CFG.h"
 #include "llvm/IR/DebugInfoMetadata.h"
@@ -244,29 +245,69 @@ void discoverTraps(Function &F, DominatorTree &DT, LoopInfo &LI,
             }
         }
         if (!TrapCall) continue;
-        // 2. The Anchor: Find the predecessor branch that triggered this trap
-        BasicBlock *PredBB = BB.getSinglePredecessor();
-        if (!PredBB) continue; // Skip complex merged traps for now
-        auto *Br = dyn_cast<BranchInst>(PredBB->getTerminator());
-        if (!Br || !Br->isConditional()) continue;
-        Jobs.emplace_back();
-        TrapJob &Job = Jobs.back();
-        Job.Index = Jobs.size() - 1;   // global, module-wide discovery index
-        Job.F = &F;
-        Job.TrapCall = TrapCall;
-        Job.TrapBB = &BB;
-        Job.PredBB = PredBB;
-        Job.Br = Br;
-        Job.TrapCond = Br->getCondition();
-        Job.TrapOnTrue = (Br->getSuccessor(0) == &BB);
-        raw_string_ostream Log(Job.LogText);
-        if (DILocation *Loc = TrapCall->getDebugLoc()) {
-            Log << "  -> Trap source: " << Loc->getFilename().str()
-                << ":" << Loc->getLine() << "\n";
+        // ==============================================================
+        // 2. The Anchor (v2: MULTI-PREDECESSOR). Frontends merge trap
+        // blocks (Swift) and multiversion loops around one shared error
+        // block (Julia preloop/postloop), so a trap block routinely has
+        // N incoming edges. The disjunction never needs to be reasoned
+        // about: the trap fires via edge k iff control reaches pred k
+        // AND takes the trap-side edge, so each edge is an INDEPENDENT
+        // proof obligation -- one TrapJob per qualifying edge, each with
+        // exactly the single-pred job shape. An UNSAT on edge k folds
+        // pred k's branch regardless of the other edges (PARTIAL
+        // elimination of a shared trap block is sound and profitable:
+        // it removes one side exit from one loop version).
+        //
+        // Per-edge gates:
+        //   * pred must end in a CONDITIONAL branch (uncond/switch/
+        //     invoke preds skipped -- reaching the trap from them needs
+        //     the pred's own reachability condition; out of scope, as
+        //     in v1);
+        //   * exactly ONE successor may be the trap block (both-succs
+        //     branches are decorative: the trap is reached irrespective
+        //     of the condition, so an edge proof would fold a branch
+        //     without unreaching the trap -- skip);
+        //   * each pred visited once (predecessors() lists a pred per
+        //     edge).
+        //
+        // PHI NOTE: multi-pred trap blocks may contain PHIs (e.g. lcssa
+        // values feeding the error call). Safe: we never encode the
+        // trap block's contents -- only TrapCond, defined in the pred.
+        //
+        // BYTE-IDENTITY: a single-pred block yields exactly the v1 job
+        // (same order, same log lines); multi-pred blocks -- previously
+        // skipped silently -- only ADD jobs. Discovery order = block
+        // order x predecessor order, deterministic for fixed IR, so
+        // Job.Index keeps its role as the determinism key. Stage 3's
+        // Folded set already refuses the pathological second fold if
+        // both successors of one branch ever prove dead.
+        // ==============================================================
+        SmallPtrSet<BasicBlock *, 8> SeenPred;
+        for (BasicBlock *PredBB : predecessors(&BB)) {
+            if (!SeenPred.insert(PredBB).second) continue;
+            auto *Br = dyn_cast<BranchInst>(PredBB->getTerminator());
+            if (!Br || !Br->isConditional()) continue;
+            if (Br->getSuccessor(0) == &BB && Br->getSuccessor(1) == &BB)
+                continue;   // decorative: trap reached on both edges
+            Jobs.emplace_back();
+            TrapJob &Job = Jobs.back();
+            Job.Index = Jobs.size() - 1;   // global, module-wide discovery index
+            Job.F = &F;
+            Job.TrapCall = TrapCall;
+            Job.TrapBB = &BB;
+            Job.PredBB = PredBB;
+            Job.Br = Br;
+            Job.TrapCond = Br->getCondition();
+            Job.TrapOnTrue = (Br->getSuccessor(0) == &BB);
+            raw_string_ostream Log(Job.LogText);
+            if (DILocation *Loc = TrapCall->getDebugLoc()) {
+                Log << "  -> Trap source: " << Loc->getFilename().str()
+                    << ":" << Loc->getLine() << "\n";
+            }
+            Log << "  -> Found UB Trap. Starting Backward Slice...\n";
+            // 3. The Slicer (the Solver half now lives in TrapSolver)
+            collectGuardsAndSlice(Job, DT, LI, Log);
         }
-        Log << "  -> Found UB Trap. Starting Backward Slice...\n";
-        // 3. The Slicer (the Solver half now lives in TrapSolver)
-        collectGuardsAndSlice(Job, DT, LI, Log);
     }
 }
 } // namespace odessy
