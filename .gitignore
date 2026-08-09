@@ -10,3 +10,4 @@ native_test/
 native_bench/*/target/
 zstd_audit_test/
 perf_lz4_test/
+perf_swift_work/
