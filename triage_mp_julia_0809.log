@@ -1,0 +1,23 @@
+julia: julia version 1.12.6
+opt  : LLVM (http://llvm.org/):
+pass : oracle-pass<vacuity;heavy;ldeq;threads=8;traps=bounds_error:boundserror>
+
+kernel          traps anchored      pct  unsat    sat  vacuous  skips   ldeq  status
+---- shape probe (lz77): first bounds sites ----
+   store i64 %.lcssa, ptr %"new::Tuple25", align 8, !dbg !48, !tbaa !50, !alias.scope !52, !noalias !55
+   call swiftcc void @j_throw_boundserror_147(ptr nonnull swiftself %pgcstack, ptr nonnull %"data::Array", ptr nocapture nonnull readonly %"new::Tuple25") #10, !dbg !48
+   unreachable, !dbg !48
+
+--
+   store i64 %.lcssa40, ptr %"new::Tuple", align 8, !dbg !48, !tbaa !50, !alias.scope !52, !noalias !55
+   call swiftcc void @j_throw_boundserror_147(ptr nonnull swiftself %pgcstack, ptr nonnull %"data::Array", ptr nocapture nonnull readonly %"new::Tuple") #10, !dbg !48
+   unreachable, !dbg !48
+
+---- (expect: call + unreachable; if you see 'invoke', STOP) ----
+
+lz77                2        4     200%      0      4        0      0      0  ok
+matmul              -        -        -      -      -        -      -      -  JULIA_FAIL (see /Users/ebrah/Project/compiler/ODeSSy/logs/julia_triage/matmul.julia.err)
+
+Per-trap logs: /Users/ebrah/Project/compiler/ODeSSy/logs/julia_triage/<kernel>.log   IR: /Users/ebrah/Project/compiler/ODeSSy/logs/julia_triage/<kernel>.ll
+Read: anchored/traps = Anchor coverage; vacuous MUST be 0;
+      audit any UNSAT via its core before celebrating.
