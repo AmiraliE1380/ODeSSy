@@ -284,7 +284,19 @@ z3::expr FactEncoder::scevToZ3(const SCEV *S, bool &OK, unsigned &W) {
         W = W0;
         return Acc;
     }
-    // umax/smax/mul/udiv/addrec/...: REFUSE (never approximate a bound).
+    // udiv: EXACTLY representable -- SCEV's udiv is unsigned division
+    // with the same semantics as BV udiv, so translation is precise
+    // (no approximation; the refusal policy is intact). Load-bearing
+    // for stride-s loops, whose BTCs are (n - c) /u s shapes.
+    if (auto *UD = dyn_cast<SCEVUDivExpr>(S)) {
+        unsigned Wl = 0, Wr = 0;
+        z3::expr L = scevToZ3(UD->getLHS(), OK, Wl);
+        z3::expr R = scevToZ3(UD->getRHS(), OK, Wr);
+        if (OK && Wl == Wr) { W = Wl; return z3::udiv(L, R); }
+        OK = false; W = 1;
+        return Encoder.apintToBV(APInt(1, 0));
+    }
+    // umax/smax/mul/addrec/...: REFUSE (never approximate a bound).
     OK = false; W = 1;
     return Encoder.apintToBV(APInt(1, 0));
 }
@@ -302,11 +314,19 @@ bool FactEncoder::trySCEVSym(Value *V) {
     if (!AR || AR->getLoop() != L || !AR->isAffine()) return false;
 
     auto *Step = dyn_cast<SCEVConstant>(AR->getStepRecurrence(*SE));
-    if (!Step || !Step->getAPInt().isOne()) return false;      // {C,+,1} only
+    if (!Step) return false;
+    const APInt &SC = Step->getAPInt();
+    if (!SC.isStrictlyPositive()) return false;   // positive constant strides only
     auto *Start = dyn_cast<SCEVConstant>(AR->getStart());
     if (!Start) return false;
     const APInt &C = Start->getAPInt();
-    if (!C.isZero() && !AR->hasNoUnsignedWrap()) return false; // gate (a)/(b)
+    // {0,+,1} is wrap-free by construction (value == iteration count).
+    // EVERY other (start, step) combination -- nonzero start or stride
+    // s > 1 -- needs SCEV's own no-unsigned-wrap proof: under nuw the
+    // recurrence is monotone and its value at iteration k is exactly
+    // start + s*k with k <= BTC, so start <=u phi <=u start + s*BTC,
+    // and the BV computation of that bound cannot wrap either.
+    if (!(C.isZero() && SC.isOne()) && !AR->hasNoUnsignedWrap()) return false;
 
     const SCEV *BTC = SE->getBackedgeTakenCount(L);
     if (isa<SCEVCouldNotCompute>(BTC)) {
@@ -332,19 +352,22 @@ bool FactEncoder::trySCEVSym(Value *V) {
     if (WB < W) TB = z3::zext(TB, W - WB);
 
     z3::expr Upper = TB;
+    if (!SC.isOne())
+        Upper = Encoder.apintToBV(SC.zextOrTrunc(W)) * Upper;  // s*BTC, exact in BV (nuw-gated)
     if (!C.isZero())
-        Upper = Upper + Encoder.apintToBV(C.zext(W));
+        Upper = Upper + Encoder.apintToBV(C.zextOrTrunc(W));
     z3::expr Fact = z3::ule(PhiE, Upper);
     if (!C.isZero())
-        Fact = Fact && z3::uge(PhiE, Encoder.apintToBV(C.zext(W)));
+        Fact = Fact && z3::uge(PhiE, Encoder.apintToBV(C.zextOrTrunc(W)));
 
     std::string Lbl = mkLabel("SCEVSYM");
     Encoder.assertRawFact(Fact, Audit ? Lbl : std::string());
 
     std::string BS; raw_string_ostream BOS(BS); BTC->print(BOS);
     Log << "    -> Fact[" << Lbl << "] " << valueStr(V)
-        << " <=u start(" << C << ") + BTC(" << BS
-        << ") (SCEV symbolic trip count)\n";
+        << " <=u start(" << C << ") + ";
+    if (!SC.isOne()) Log << SC << "*";                // s==1 stays byte-identical
+    Log << "BTC(" << BS << ") (SCEV symbolic trip count)\n";
     ++NumFacts;
     return true;
 }
