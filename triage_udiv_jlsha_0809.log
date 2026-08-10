@@ -1,0 +1,29 @@
+julia: julia version 1.12.6
+opt  : LLVM (http://llvm.org/):
+pass : oracle-pass<vacuity;heavy;ldeq;threads=8;traps=bounds_error:boundserror>
+
+kernel          traps anchored      pct  unsat    sat  vacuous  skips   ldeq  status
+---- shape probe (sha256): first bounds sites ----
+   store ptr null, ptr %gc_slot_addr_0, align 8
+   call swiftcc void @j_throw_boundserror_153(ptr nonnull swiftself %pgcstack, ptr nonnull %"data::Array", ptr nocapture nonnull readonly %"new::Tuple277") #14, !dbg !79
+   unreachable, !dbg !79
+
+--
+   store ptr null, ptr %gc_slot_addr_0, align 8
+   call swiftcc void @j_throw_boundserror_153(ptr nonnull swiftself %pgcstack, ptr nonnull %"data::Array", ptr nocapture nonnull readonly %"new::Tuple275") #14, !dbg !79
+   unreachable, !dbg !79
+
+--
+   store ptr null, ptr %gc_slot_addr_0, align 8
+   call swiftcc void @j_throw_boundserror_153(ptr nonnull swiftself %pgcstack, ptr nonnull %"data::Array", ptr nocapture nonnull readonly %"new::Tuple273") #14, !dbg !79
+   unreachable, !dbg !79
+
+--
+   store ptr null, ptr %gc_slot_addr_0, align 8
+---- (expect: call + unreachable; if you see 'invoke', STOP) ----
+
+sha256             12       16     133%      4     12        0      0      0  ok
+
+Per-trap logs: /Users/ebrah/Project/compiler/ODeSSy/logs/julia_triage/<kernel>.log   IR: /Users/ebrah/Project/compiler/ODeSSy/logs/julia_triage/<kernel>.ll
+Read: anchored/traps = Anchor coverage; vacuous MUST be 0;
+      audit any UNSAT via its core before celebrating.
