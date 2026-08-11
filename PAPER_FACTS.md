@@ -1,310 +1,248 @@
 # PAPER_FACTS — the complete statistics, contributions, and narrative record
+### (v2, updated Aug 10 2026 — supersedes the Aug 6 version; master table added)
 
-Every number below was produced in the July 29 – Aug 6, 2026 experimental
-campaign and verified against the session logs committed to this repo
-(`triage_*.log`, `swift_perf_*.log`, `matrix_*.log`, `evaluation/*.csv`).
-This file is the single source of truth for the CGO submission. When a paper
-sentence needs a number, take it from here; when a number is updated, update
-it here first.
+Every number verified against the logs committed to this repo. This file is
+the single source of truth for the CGO 2027 submission. Update here first.
 
 ---
 
-## 1. Contributions (paper-ready list)
+## 0. MASTER TABLE — all benchmarks
 
-1. **Super-analysis, the concept.** We introduce super-analysis as the middle
-   ground between conventional optimization (fast, heuristic, per-analysis)
-   and super-optimization (search over programs): an SMT solver logically
-   conjoins the facts the compiler's own lightweight analyses already
-   produce, discharging proofs none of them can reach alone. Spectrum:
-   `LLVM -O3 ←— ODeSSy —→ Souper/STOKE`.
-2. **The existence proof.** Unsat cores from real eliminations attribute each
-   proof to a *conjunction* of independent fact sources — e.g. sha256's three
-   cores are `|RM:4| |SCEV:8| |LVI:11| |SCEV:12| G0 G{1,2,3} TRAP`
-   (!range metadata + two SCEV facts + LazyValueInfo + programmer guards).
-   Conventional pipelines cannot AND these — entailment across analyses is by
-   nature an SMT problem. This is the empirical case that super-analysis is
-   necessary, not just sufficient.
-3. **ODeSSy, the system.** A three-stage LLVM module pass (serial discovery →
-   parallel Z3 workers with private contexts → serial kill), with a
-   determinism contract (verdicts and logs byte-identical for any thread
-   count, via the FactGate ticket turnstile serializing LVI/SCEV queries in
-   discovery order), a two-tier precision model (light = pure encoder,
-   byte-identical ablation baseline; heavy = + analysis facts), per-proof
-   auditing (labeled unsat cores + vacuity check), and per-query timeouts.
-4. **Latency is a dial; the tool stays online.** Timeout and threads are
-   orthogonal controls: threads flatten wall-clock, timeout bounds worst-case
-   per query. 96% of proofs survive at 100 ms/query. ODeSSy operates as an
-   online pass, an offline optimizer, or a static analyzer from the same
-   binary.
-5. **One mechanism, four language frontends.** The `traps=` named-callee
-   hunter (behind a divergence soundness gate) extends the same pass from
-   UBSan C/C++ to Swift, Rust, and Julia native checks with zero per-language
-   C++.
-6. **Results.** 9–12% of sanitizer traps eliminated in C/C++ (243
-   attributable eliminations); binary text shrink −0.69%/−1.21%; and the
-   headline: 3 hot-loop bounds checks eliminated in Swift SHA-256 yield
-   +4.2–4.3% (Xeon) / +3.5–4.7% (Apple M-series) — cross-ISA replication,
-   soundness-gated, from 3 of 38 checks.
-7. **The residual-proof-obligation taxonomy** (three-language evidence):
-   (a) symbolic trip counts — solved in this paper (SCEV-SYM);
-   (b) heap/interprocedural length invariants — located precisely, shown out
-   of reach of any intra-procedural memory reasoning, motivating future work;
-   (c) structural anchor gaps (frontend trap-block merging, Julia loop
-   multiversioning). A taxonomy with receipts is the roadmap contribution.
-8. **Value-per-check is wildly non-uniform.** Native-check languages pay
-   multiple-hundreds-percent for a *handful* of checks (2–5 census in Julia
-   kernels) because a check in an inner loop is a side exit that blocks
-   unrolling/vectorization. Counting eliminated traps (the C metric)
-   undersells native languages; the right metric is what re-optimization
-   unlocks after elimination.
+Provenance: R = existing repo / faithful transpile of repo code; O = our
+implementation of a standard algorithm. Ceiling = checked-vs-unchecked
+(`-Ounchecked`, `--check-bounds=no`, or sanitizer-off ANF). Speedups are
+oracle-vs-base2x medians (vs-base in parens where they differ materially).
+"—" = not measured; "n/a" = measurement not meaningful (reason noted).
 
----
+| Benchmark | Lang | Prov | Traps | UNSAT | % elim | Ceiling | Mac Δ | Server Δ |
+|---|---|---|---|---|---|---|---|---|
+| zlib (whole, combined spec) | C | R | 1296 | 142→144¹ | 11.0% | ANF +1.5% | — | ≈0 |
+| zstd | C | R | ~1900 | 12.2% incl. bounds 18/198 | 12.2% | ANF +1.7–3.5% | — | — |
+| lz4 | C | R | 3403² | ~9.5% | 9.5% | ANF +3.2–5.4% | — | ≈0 (layout noise) |
+| OpenSSL | C | R | 2088 | — (not run) | — | ≈0 (asm-dominated) | — | — |
+| CryptoSwift (whole lib) | Swift | **R** | 2807 | 183 | 6.5% | 2.5–3% | +2.3% (+1.4 vs base)³ | flat |
+| sha256 | Swift | O | 38 | 5 | 13% | ~9.5% | +3.5–4.7% | **+4.7% (+5.0 vs base)** |
+| sha1 | Swift | O | 26 | 7 | 27% | — | **+6.4% (+7.3 vs base)** | −4.5%⁴ |
+| md5 | Swift | O | 27 | 5 | 19% | — | pending | n/a (Linux vectorizes)⁵ |
+| adler32 (zlib transpile) | Swift | R | 39 | 1⁶ | 2.6% | **~5%** | pending | pending |
+| crc32 (zlib transpile) | Swift | R | 38 | 0⁷ | 0 | — | n/a | n/a |
+| utf8 validator | Swift | O | 22 | 2 | 9% | ≈0 both machines | −2%⁸ | +0.00%⁸ |
+| base64 | Swift | O | 28 | 0⁷ | 0 | — | n/a | n/a |
+| lz77 | Swift | O | 27 | 1 | 4% | — | — | — |
+| nbody | Swift | O | 86 | 0⁹ | 0 | **+410% (5.1×)** | n/a | n/a |
+| sha256 | Julia | O | 12 | 4 | 33% | ≈0¹⁰ | n/a | n/a |
+| matmul | Julia | O | 3 | 0⁹ | 0 | ~4× class (gemm +309%) | n/a | n/a |
+| lz77 | Julia | O | 2 | 0 | 0 | — | n/a | n/a |
+| matmul / lz77 | Rust | O | 5 / 3 | 0⁹ | 0 | modest | n/a | n/a |
+| sha256 | Zig | O | parked (0.16 API churn) | | | | | |
 
-## 2. The headline experiment: Swift SHA-256 (the O3 sandwich)
-
-**Setup.** `swiftc -O -emit-ir` → `opt` middle stage → `opt default<O3>` →
-`llc -O2 -relocation-model=pic` → `swiftc` link. Three configs: `base` (one
-O3 round-trip), `base2x` (two round-trips; the noise-floor/attribution
-control), `oracle` (`oracle-pass<heavy;ldeq;timeout=300;threads=8>` then O3).
-Soundness gate: all three binaries must produce byte-identical stdout before
-any timing. Workload: 1 MiB random input; iters calibrated per machine.
-Median-primary over shuffled interleaved reps.
-
-**Static result.** 38 trap sites (41 on Linux/x86 emission), 35 anchored
-(92%). Heavy tier proves **3 UNSAT** — all three in the message-schedule
-word-assembly loop (blocks 257/259/261): the `off+4t+1 / +2 / +3` byte
-accesses, proven from the lead check (`off+4t < count`, guard G0) conjoined
-with `!range` on count, SCEV bounds on the chunk index, and LVI+SCEV pinning
-`t ∈ [0,16)`. The loop runs 16×(input/64) times per hash — unambiguously the
-hot path. The two SAT residues per iteration: the lead check itself and the
-`w[t]` store bound (a heap length — taxonomy slot b).
-
-**Runtime result (median, oracle vs base / vs base2x):**
-
-| machine | reps | vs base | vs base2x | noise floor (base↔base2x) |
-|---|---|---|---|---|
-| Apple M-series (macOS, arm64) | 10 | **+4.71%** | **+3.53%** | ~1.2% |
-| Xeon server (Linux, x86-64; no_turbo, numactl socket 0) | 15 | **+4.31%** | **+4.21%** | ~0.1% (min≈median all rows) |
-
-First smoke (REPS=3, Mac): +6.78%/+6.64% — directionally identical.
-Ceiling (all 38 checks off, native matrix): ~+9.5%. **3 of 38 checks recover
-roughly half the ceiling.**
-
-**Mechanism.** No vectorization appears (0 `vector` tokens in both IRs); the
-oracle IR is +178 lines vs base → **post-elimination loop unrolling**: with
-the three side-exits gone, O3 unrolls the multi-exit loop it previously
-could not. Paper sentence: *elimination converts a multi-exit loop into an
-unrollable one; the speedup is the transform, not the branch.*
-
-**Server contrast.** The C benchmarks showed no server speedup (wide OoO
-hides cold never-taken branches), but sha256 replicates on the Xeon —
-because this is a structural unlock, not branch overhead. Sentence: *check
-elimination pays where checks are cold only on narrow cores; check
-elimination plus re-optimization pays everywhere the checks block
-transforms.*
+¹ 142/1296 pre-anchor-v2; multi-pred anchor added 2 more on the signed
+  spec (125→113). A full C re-elimination sweep with anchor-v2 +
+  SCEVSYM/udiv heavy is queued and may raise all three C rows.
+² lz4 trap count under aggressive inlining; 300 ms timeout costs 35/1077
+  proofs (1580 s → 732 s oracle stage).
+³ Borderline: exceeds the ~0.9% base↔base2x floor; REPS=30 rerun queued.
+⁴ Genuine regression: Linux emission keeps only 2/26 proofs and post-
+  elimination O3 re-optimization lands worse (the relottery, see §5).
+⁵ Linux pipeline vectorizes md5's little-endian assembly loop; hot-path
+  work already check-free there (emission-dependence finding).
+⁶ The one adler proof is INSIDE the DO16 hot group (16-deep guard-chain
+  core `|RM| G0 G1 G3 G7`) but is 1 of 16 per group.
+⁷ crc32/base64 zeros = taxonomy class (d): non-unit-stride index phis
+  (4 and 3) defeat SCEV trip counts entirely (§4d).
+⁸ utf8 = the measurement-floor control pair: eliminations off the hot
+  path give exactly 0.00% (server); Mac −2% = relottery at zero ceiling.
+⁹ Heap-invariant residue (taxonomy slot b) — the 3–5× ceilings live here.
+¹⁰ Julia sha256 checked-vs-`--check-bounds=no`: within noise (0.48 vs
+  0.53 s) — nothing to recover regardless of toolchain; static proofs +
+  ceiling reported, runtime recovery evaluated on AOT toolchains.
 
 ---
 
-## 3. C/C++ campaign (UBSan traps)
+## 1. Contributions (paper-ready)
 
-**Benchmarks:** zlib (minigzip driver), lz4 (LZ4_compress_HC driver, tmpfs
-corpus), zstd, OpenSSL, PolyBench (PB_DATASET=MEDIUM for nights). Specs:
-`none | signed | unsigned | both | divide | shift | bounds | implicit` +
-union columns `all-sanitizers` and `ANF` (all-non-firing = union of specs
-that never fire at runtime = the deployable configuration = the recovery
-ceiling).
-
-**Elimination rates (vs base2x attribution control; light tier):**
-
-| benchmark | eliminated | notes |
-|---|---|---|
-| zlib | **11%** of traps (~45% of measured sanitizer overhead) | signed spec: 125→115 traps, byte-identical light-tier reference |
-| zstd | **12.2%** | includes the **first bounds-spec proofs: 18/198 = 9.1%** |
-| lz4 | **9.5%** | 3403→2326 traps under 300 ms timeout |
-| total | **243 attributable eliminations** (~35% vs plain base — report both) | base2x isolates double-compilation effects |
-
-**ANF runtime ceilings (checked-vs-none, server, median doctrine):**
-zlib +1.5%, lz4 +3.2–3.4% (per-size ceiling up to +5.4% at 64 MB),
-zstd ~+1.7–3.5% (min-vs-avg spread on a 0.2 s kernel), OpenSSL ≈ 0
-(asm-dominated). Recovery (oracle vs base2x) on the Xeon: ≈ +0.14–0.64%
-depending on size — cold-path checks; honest null. **Binary text shrink is
-the C-side win: −0.69% (zlib), −1.21% (lz4)** (−0.75% / −1.86% on specific
-binaries). DIED-paper findings generalize: unsigned/implicit specs fire at
-runtime on zlib/lz4/zstd/openssl (so they are excluded from ANF).
-
-**Runtime-recovery night (Xeon, zlib+lz4 ANF):** lz4 +0.5% (within ±0.5–1.5%
-code-layout perturbation noise), zlib ≈ 0. Sentence: *on wide out-of-order
-servers, never-taken cold checks are architecturally free; their cost is
-code size and the transforms they block.*
+1. **Super-analysis**: SMT for analysis only, conventional transformations
+   — the middle ground between heuristics (ms, per-analysis) and
+   super-optimization (hours, synthesis). Spectrum: LLVM -O3 ← ODeSSy →
+   Souper/STOKE.
+2. **The conjunction evidence**: unsat cores attribute every nontrivial
+   proof to facts from multiple independent LLVM analyses plus
+   programmer guards (6+ distinct core shapes, §3) — entailment across
+   analyses is an SMT problem no pass pipeline performs.
+3. **ODeSSy**: 3-stage module pass; private Z3 contexts; FactGate
+   determinism contract (verdicts/logs byte-identical ∀ thread counts);
+   light/heavy tiers (light = byte-identical ablation); per-proof audit
+   (labeled cores + vacuity re-check); per-query timeout.
+4. **Latency is a dial**: 96% of proofs survive 100 ms/query (52→50;
+   cliff at 1–3 ms); solve stage 2.73 s→0.77 s at 8 threads; online /
+   offline / static-analyzer from one binary.
+5. **One mechanism, four frontends**: `traps=` named-callee hunter +
+   divergence gate covers C/C++, Swift, Rust, Julia (Zig compatible,
+   parked) with zero per-language C++.
+6. **Results** (master table): 9–12% C eliminations on real repos;
+   183 proofs in unmodified CryptoSwift (output byte-identical);
+   cross-ISA sha256 +4.7–5.0%; sha1 +6.4–7.3% (M-series);
+   binary shrink −0.69%/−1.21% text.
+7. **Residual-obligation taxonomy** with three-language receipts (§4).
+8. **Check value is non-uniform in both directions** (§5) — the
+   dose-response ladder is the causal argument.
 
 ---
 
-## 4. Native language static triage (Mac, heavy tier)
+## 2. Headline experiments
 
-| kernel | traps | anchored | pct | UNSAT | SAT | notes |
-|---|---|---|---|---|---|---|
-| Swift nbody | 86 | 83 | 97% | 0 | 83 | all residue = heap count invariants |
-| Swift sha256 | 38 | 35 | 92% | **3** | 32 | the headline three |
-| Swift lz77 | 27 | 24 | 89% | **1** | 23 | guard-chain proof |
-| Rust lz77 | 3 | 3 | 100% | 0 | 3 | rustc pre-eliminates the easy checks |
-| Rust matmul | 5 | 5 | 100% | 0 | 5 | Vec-len heap facts + one value-dependent overflow |
-| Julia matmul | 3 | 3 | 100% | 0 | 3 | arg-array `size` fields (interprocedural) |
-| Julia lz77 | 2 | 0 | 0% | 0 | 0 | multiversioned-loop shared error blocks (multi-pred) |
+### Swift SHA-256 (cross-ISA row)
+O3-sandwich pipeline: `swiftc -O -emit-ir → opt <config> → opt
+default<O3> → llc -O2 -relocation-model=pic → swiftc link`; configs
+base / base2x (round-trip controls) / oracle
+(`heavy;ldeq;timeout=300;threads=8`); output-equivalence gate before any
+timing; median-primary, shuffled interleaved, dual-baseline.
 
-Anchor coverage: Swift 89–97% (frontend merges trap blocks), Rust 100% at
-this scale, Julia bimodal (multiversioning). Vacuous = 0 everywhere, always.
+* 5/38 checks proven dead (3 word-assembly + 2 outer-block-loop via the
+  udiv-translated BTC `count/64−1`).
+* **Xeon: +5.00% vs base / +4.71% vs base2x** (REPS=15, no_turbo,
+  numactl socket 0, min≈median). M-series: +3.5–4.7% (REPS=10).
+* Ceiling ~9.5% ⇒ ~half recovered. Mechanism: post-elimination
+  unrolling (multi-exit → unrollable; oracle IR +178 lines, no vector).
+* All three eliminated word-assembly checks lie in the message-schedule
+  inner loop (16×blocks per hash).
 
-**Native opportunity ceilings (server matrix, checked vs unchecked):**
-Swift nbody **+410% (5.1×)** (89 traps in server emission); julia_gemm
-**+309% (4.1×)**; Julia kernels ~4× class; Swift sha256 **+9.5%**. Rust
-overflow-checks cost is modest on these kernels. Julia's check surface is
-bounds-only (integers wrap by design) — the per-language spec-support
-asymmetry is itself a table in the paper.
+### The dose-response ladder (causal attribution)
+| eliminations (hot) | result |
+|---|---|
+| 7 (sha1, Mac) | +6.4/+7.3% |
+| 5 (sha256, server) | +4.7/+5.0% |
+| 3 (sha256, server, pre-udiv) | +4.2/+4.3% |
+| 2 (sha1, server — Linux keeps 2/26) | −4.5% (relottery regression) |
+| 2 (utf8, off hot path) | +0.00% exactly |
+| 1 (sha1 pre-udiv server) | ±0.0% |
+Recovery tracks hot-path eliminations, not plumbing; re-optimization
+after non-unlocking eliminations is a two-sided lottery.
 
-**The key insight (verified in IR):** these slowdowns come from 2–5 checks
-in hot inner loops (bounds check = side exit = no unroll/vectorize; visible
-as `%.lcssa` phis feeding error blocks), not from thousands of cold checks.
-
----
-
-## 5. The residual-SAT taxonomy (with receipts)
-
-**(a) Symbolic trip counts — SOLVED (SCEV-SYM).** Rotated loops put the
-latch test where it dominates nothing; the header phi arrives as a free
-variable with no upper bound → all-SAT. Fix: assert `phi ≤ᵤ start + BTC`
-for affine `{C,+,1}` header phis (gates: constant start, C==0 or
-`hasNoUnsignedWrap`, translator must accept the BTC). Two critical
-generalizations discovered by hand-tests: (i) trap edges are loop exits, so
-the exact BTC is `umin(trap-exit count, latch count)` — umin translated
-*exactly* via `ite(a≤ᵤb,a,b)`, never approximated; (ii) on real code the
-exact BTC is usually `CouldNotCompute` — fall back to the **symbolic max**
-BTC, sound because the fact is an upper bound. Result: SCEVSYM facts fire on
-real Swift (0 → 71 on nbody) and prove the hand-written rotated-loop test
-with core `|SCEV| |SCEVSYM| G0 TRAP`.
-
-**(b) Heap / interprocedural length invariants — LOCATED, out of scope.**
-nbody's traps compare `i` against `%268/%274/%286` — `!range` loads through
-*distinct pointers* (count fields of three different array objects); the
-needed fact is `count == n`, established inside the runtime allocator in
-another function. Rust matmul: lens arrive as opaque values (in our harness,
-a `black_box` `~{memory}` asm clobber between `store 4096` and its reload —
-unforgeable by any alias analysis, and an accidental-but-faithful model of
-the function-boundary case). Julia matmul: `%"a::Array.size.0.copyload"` —
-size fields of *argument* arrays. Three languages, three mechanisms, one
-conclusion: **no intra-procedural memory reasoning discharges these; they
-need allocation-contract facts (postconditions of known allocators) plus a
-frame argument (no interleaving may-alias store)** — the future-work program
-(and the reason a store/load SMT array theory alone is insufficient).
-
-**(c) Structural anchor gaps.** Swift merges trap blocks (multi-pred →
-skipped; 3–11% of sites). Julia 1.12 multiversions loops (preloop/postloop)
-and points both versions at one shared error block. rustc merges panic
-blocks under `panic=unwind`.
+### CryptoSwift (real-library row)
+114-file whole-module compile of the deployed MIT library, unmodified.
+Static: **183/2807 proofs (6.5%), vacuous=0, skips=0**, cores spanning
+guard-chain / SCEV / LVI-only / single-guard shapes. Runtime (sha256
+workload): ceiling 2.5–3%; Mac +1.42/+2.29% (exceeds ~0.9% noise floor;
+REPS=30 rerun queued); Xeon flat (cold checks — consistent with the C
+pattern). O3 round-trips INFLATE trap counts via inlining (2678→2992
+base, →3348 base2x): attribution valid only vs round-trip controls.
+Output byte-identical across configs — the strongest end-to-end
+soundness demonstration in the project.
 
 ---
 
-## 6. Engineering facts & latency
+## 3. Unsat-core shapes (the conjunction evidence)
 
-* **Thread sweep (server, 40 cores):** solve stage 2.73 s serial → 0.77 s at
-  8 threads (3.5×) → 0.74 s at 12 (3.7×). threads=8 is standard (FactGate
-  serialization + Amdahl caps returns; 20+ threads buys nothing).
-* **Timeout sweep:** 52 UNSATs @3 s → 50 @100 ms–1 s (96%) → 43 @10 ms (83%)
-  → cliff to 16 @1 ms. 300 ms is the standard knob (lz4 smoke: oracle stage
-  1580 s untimed → 732 s at 300 ms, costing 35/1077 proofs).
-* **Determinism contract:** verdicts and per-trap logs are byte-identical for
-  any THREADS value (jobs assembled in discovery order; FactGate tickets).
-* **Light tier is a byte-identity ablation:** every heavy/ldeq/traps feature
-  is gated so default output is byte-for-byte the pre-feature pass (verified
-  on zlib signed 125→115 after every change).
-* **Regression gate:** PASS=16 / FAIL=5 (the 5 are heavy/ldeq tests under the
-  light gate by design; `test_heavy_scevsym_sat` is the over-tightness
-  tripwire and must always PASS as SAT).
-* **LDEQ:** same-BB same-pointer no-clobber load unification;
-  `test_ldeq_clobber_sat` is the soundness tripwire (store between loads must
-  stay SAT).
-* SMT query latencies on these workloads: ~0.03–10 ms per query typical.
+1. Word-assembly trailing checks: `|RM| |SCEV| |LVI| |SCEV| G0 Gk`
+   (sha256 ×3, md5 ×3, sha1 ×3 — identical across three kernels).
+2. udiv-BTC outer-loop: `|RM| |SCEVSYM| G0`, `|RM| |SCEV| |SCEVSYM|
+   |SCEV| G1` (sha256/md5/sha1 +2 each after udiv translation).
+3. Pure index-range (no guards): `|SCEV| TRAP`, `|LVI| |SCEV| TRAP`
+   (sha1 schedule expansion `w[t-3..]`, t∈[16,80)).
+4. Julia SCEVSYM chains: `|SCEV| |SCEVSYM| |SCEV| G0 G1 G3` (all four
+   Julia sha256 proofs — the rotated-loop machinery composing with
+   guard chains).
+5. Guards+metadata only: `|RM| G0 G1 G7` (utf8 continuation reads;
+   adler32's 16-deep DO16 chain `|RM| G0 G1 G3 G7`).
+6. Mask/bit proofs: `and`-bounded index vs constant bound (manual
+   traps= test; light tier).
+CryptoSwift adds `G0 G2`-only and `|LVI| TRAP` shapes at scale.
 
 ---
 
-## 7. Measurement doctrine
+## 4. Residual-obligation taxonomy (receipts in logs)
 
-* **Median-primary.** Min is corrupted by rare fast outliers (OpenSSL showed
-  a fake +5.4% on min); outlier audit flags min < 98% of median.
-* **Dual baselines.** Every oracle delta reported vs `base` AND vs `base2x`
-  (double round-trip). The base↔base2x gap is the measured noise floor;
-  a result must exceed it and agree in sign across both comparisons.
-* **Output-equivalence gate.** Oracle binaries must produce byte-identical
-  output to baselines before timing (passed in every Swift run, both ISAs).
-* **Server protocol.** no_turbo, numactl socket 0 + membind, tmpfs corpora,
-  shuffled interleaved reps, cooldown after compile phase.
-* **Code-layout noise is ±0.5–1.5%** — never claim a delta inside it.
-* **Trap census doctrine:** count call sites in IR; on x86 `llvm.ubsantrap`
-  lowers to **UD1** (not UD2) — objdump greps must match both; count
-  `invoke` as well as `call` so shape mismatches read as "mismatch," never
-  "no checks."
-
----
-
-## 8. Toolchain lowering facts (each cost us a debugging round)
-
-* Rust `panic=unwind` emits panics as `invoke` + landing pads — invisible to
-  a CallInst hunter. **`-C panic=abort` is load-bearing** (also the honest
-  comparison vs trap-based sanitizers). rustc 1.97 symbols:
-  `..panic_bounds_check`, `..panic_const_add_overflow` (v0 mangling).
-* Julia 1.12 outlines bounds failures into module-local
-  `j_throw_boundserror_NNN` thunks (noreturn, call+unreachable, swiftcc).
-  Julia integers wrap — no overflow-check family exists.
-* Swift marks trap blocks `<compiler-generated>:0` — no source lines even
-  with `-g`; hot-path attribution must be positional (loop structure in IR).
-* `opt`'s pipeline parser eats top-level commas before pass-plugin parsing —
-  multi-value pass parameters must use `:` (hence `traps=a:b`).
-* Trunk `llc` rejects Swift's `probe-stack` attribute on AArch64
-  ("Unsupported stack probing method") — stripped uniformly across configs;
-  on Linux x86-64 `llc` needs `-relocation-model=pic` to link against
-  Swift's runtime.
-* Swift 6.3 IR parses under trunk `opt` unmodified (no version-skew
-  workarounds needed); Julia `code_llvm(raw=true, dump_module=true)` modules
-  also parse.
+(a) **Symbolic trip counts — SOLVED** (SCEVSYM: umin-exact, symbolic-max
+    fallback for multi-exit loops, exact udiv; stride-s gate behind
+    SCEV's own nuw). nbody facts 0→71; Julia+hash-kernel cores.
+(b) **Heap/interprocedural length invariants — LOCATED, out of scope.**
+    Swift `array.count` (runtime-allocated), Rust `Vec` len (opaque
+    provenance / `black_box` asm clobber — unforgeable by any alias
+    analysis), Julia argument-array `size` fields. Needs allocation
+    contracts + frame facts (MemorySSA). Owns the 3–5× ceilings.
+(c) **Anchor gaps — CLOSED** (anchor v2: one job per incoming edge;
+    partial elimination of shared error blocks; Swift merged blocks +
+    Julia preloop/postloop multiversioning now attempted; zlib +2).
+(d) **Non-unit / variable stride induction — SCEV's own limit.**
+    SCEV computes NO trip count (exact, symbolic-max, or per-exit) for
+    stride-3/4 ult latches even with nuw (verified: all
+    COULDNOTCOMPUTE). Witnesses: base64 (stride 3), crc32 (stride 4),
+    utf8 (variable 1–4; its 2 proofs are guard-only). Plan C
+    (back-edge-frame induction) is the machinery; future work.
 
 ---
 
-## 9. Sentences that should survive into the paper
+## 5. Findings ledger
 
-* "A super-analyzer does not search for better code; it proves that the code
-  the compiler already emitted contains work that provably cannot happen."
-* "The unsat core `|RM| |SCEV| |LVI| |SCEV| G0 G1 TRAP` is a proof written
-  jointly by four analyses that have never met: no pass in LLVM can conjoin
-  them, because entailment across analyses is an SMT problem."
-* "Latency is a dial, not a verdict: 96% of our proofs survive a 100 ms
-  per-query budget."
-* "Three of thirty-eight checks, all in one loop, recover half the benefit
-  of deleting all thirty-eight: the value of a check is where it stands, not
-  what it costs."
-* "Elimination converts a multi-exit loop into an unrollable one; the
-  speedup is the transform, not the branch."
-* "On wide out-of-order servers, never-taken checks are architecturally
-  free; their cost is code size and the optimizations they forbid."
-* "Every surviving native check traces to one of three obligations: a
-  symbolic trip count (we solve it), a heap invariant crossing a function
-  boundary (we locate it), or a control-flow shape our anchor declines (we
-  measure it)."
-* "The compilers that insert the most checks are also the best at removing
-  them: rustc leaves only the hard residue, Swift leaves the hot loops, and
-  the difference is exactly the set of facts that live in the heap."
+* **Non-uniform check value, both directions**: 2–5 checks in hot loops
+  cause 3–5× slowdowns (side exits block unroll/vectorize); the same
+  count elsewhere costs ~0. Trap counting undersells native languages;
+  the metric is what re-optimization unlocks (and the relottery can
+  lose when nothing is unlocked — sha1 server −4.5%).
+* **Emission-dependence**: identical source is provable under macOS
+  Swift and already-vectorized (check-free hot path) under Linux Swift
+  (md5); sha1 partially (7 vs 2 proofs). The oracle and the vectorizer
+  are complementary consumers of the same loop structure. Loop-carried
+  dependences (crc/adler) block vectorization on both platforms.
+* **Microarchitectural check-sensitivity**: Xeon hides cold checks
+  (C ANF, CryptoSwift, sha1-with-2 all flat); M-series pays more
+  (CryptoSwift +2.3%, sha1 +7.3%). Structural unlocks pay on both
+  (sha256).
+* **Compiler self-sufficiency ordering**: rustc pre-eliminates almost
+  everything (3–5 traps left); Swift leaves hot-loop chains; Julia
+  leaves bounds everywhere but they're often free.
+* **The library-vs-kernel tax**: CryptoSwift's sha256 ceiling (2.5–3%)
+  < lean kernel's (9.5%) — abstraction overhead dilutes per-check cost.
 
 ---
 
-## 10. Status & future work
+## 6. Engineering & latency (unchanged numbers)
 
-* **Done:** v3 module pass, Level-2 parallelism + determinism, heavy tier
-  (RM/RA/KB/LVI/SCEV/SCEVSYM), LDEQ, traps= (Rust/Julia unlock), four
-  triage harnesses, C matrix + ANF, timeout/thread sweeps, zstd audit,
-  cross-ISA sha256 result.
-* **Parked (post-CGO):** Plan C (back-edge-frame 1-induction, for
-  data-dependent-loop residue); Plan D (cross-BB LDEQ via MemorySSA frame
-  proofs); Plan E (allocation-contract + frame facts — the PLDI-scale
-  program: sound online heap-invariant proofs targeting the 4–5× native
-  ceilings); multi-pred anchor (disjoined predecessor conditions); Julia
-  `@inbounds` licensing experiment; Surface Laptop ANF rerun; more
-  byte-assembly-idiom kernels (base64, CRC32, UTF-8 validation, varint) —
-  the recipe that made sha256 win.
+Threads: 2.73→1.55→1.00→0.77→0.74 s (1/2/4/8/12; plateau ~3.7×,
+Amdahl). Timeouts: 52 UNSATs@3 s → 50@100 ms (96%) → 43@10 ms → 16@1 ms;
+300 ms standard (lz4: 1580→732 s, −35/1077 proofs). Server SMT ~3.8×
+slower/query than M5. Regression gate PASS=17/FAIL=6 (heavy/ldeq/stride
+tests under light gate by design; both _sat tripwires must PASS).
+Determinism contract; light-tier byte-identity ablation.
+
+---
+
+## 7. Methodology doctrine
+
+Median-primary (min corrupted by outliers — OpenSSL fake +5.4%); dual
+baselines base AND base2x, result must exceed the base↔base2x gap and
+agree in sign; output-equivalence gate before any timing; no_turbo +
+numactl + shuffled interleaved on servers; code-layout noise ±0.5–1.5%;
+census counts `call|invoke`; x86 ubsantrap lowers to UD1; kernels are
+block-processing loops of the standard algorithms (state in methodology);
+adler32/crc32 are faithful transpiles of zlib's own C (BASE/NMAX/DO16;
+BYFOUR slicing-by-4); O3 round-trips inflate trap counts via inlining.
+
+---
+
+## 8. Toolchain lowering facts (artifact appendix)
+
+Rust `panic=unwind`→invoke (invisible to CallInst hunter): `-C
+panic=abort` is load-bearing. rustc v0-mangled `panic_bounds_check`/
+`panic_const_add_overflow`. Julia 1.12 outlines to
+`j_throw_boundserror_NNN` (noreturn, call+unreachable, swiftcc);
+integers wrap (bounds-only check surface). Swift traps are
+`<compiler-generated>:0` even with -g. `opt` eats top-level commas →
+`traps=a:b`. Trunk llc: strip `probe-stack` (AArch64), add
+`-relocation-model=pic` (Linux). zsh doesn't word-split unquoted vars.
+Zig 0.15/0.16 stdlib churn (allocator/args APIs) — pin before porting.
+
+---
+
+## 9. Status & queue
+
+**Queued measurements**: adler32 Mac recovery (ceiling ~5%, 1 hot
+proof); CryptoSwift Mac REPS=30; md5 Mac perf; C re-elimination sweep
+with anchor-v2 + heavy SCEVSYM/udiv (zlib/zstd/lz4, server, static);
+adler32 server (loop-carried ⇒ Linux-scalar hypothesis).
+**Parked**: Zig (API churn); base64/crc32 runtime (class-d);
+Julia runtime (ceiling ≈0); OpenSSL elimination run.
+**Post-CGO program**: Plan C (back-edge-frame induction — unlocks
+class d), Plan D (cross-BB LDEQ/frame facts), Plan E (allocation
+contracts — unlocks the 3–5× ceilings; the PLDI-scale story).
