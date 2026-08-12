@@ -151,3 +151,52 @@ use bare oracle-pass (already encoded in the harnesses).
 static UNSATs + cores audited → ceiling (3–5 runs) → Mac perf REPS=30 →
 server perf REPS=30 (if Mac shows signal or row is cross-ISA-relevant) →
 commit logs+CSVs same day → update PAPER_FACTS master table.
+
+## 8. PARALLEL THREAD — heap-invariant super-analysis (the sequel; FRAME facts)
+
+Runs alongside CGO writing, timeboxed. Goal: discharge O2/O3/O4 (see
+PAPER_FACTS §1) as a new fact source FRAME (cores read |FRAME:k|).
+Target: OOPSLA 2027 R1 (Oct 14 2026) or PLDI 2027 (~Nov).
+
+**Milestone 1 — cross-BB load equivalence (O3, the frame condition):**
+in FactEncoder (or a new FrameEncoder), for each free LOAD boundary
+value L2, find an earlier load/guard-load L1 of the SAME pointer SSA
+value; walk MemorySSA from L2's defining memory access back to L1's;
+for every intervening store, disprove aliasing (TBAA metadata first —
+Julia emits arraysize vs arraybuf tags, Clang emits !tbaa — then
+provenance/distinct-object arguments); for intervening calls require
+readnone/memory(argmem) or a runtime-function axiom; on success assert
+L1 == L2 tracked as FRAME:k. Vacuity audit + SAT tripwire tests
+mandatory (a wrong frame fact is silent unsoundness).
+
+**Milestone 2 — allocation axioms (O2):** a per-language table of
+runtime allocator symbols -> (which return-object field is the length,
+equals which argument). Assert len-field-load == n at the allocation's
+dominated uses, FRAME-tracked, gated by Milestone 1's clobber walk.
+
+**Milestone 3 — cross-object transfer (O4):** free once M1 lands for
+guard-carried equalities (gemm); via M2 for shared-allocation-argument
+cases (nbody); caller summaries = out of scope for the sequel v1.
+
+**Benchmark ladder, easiest -> hardest (what each needs):**
+1. jl_gemm_base (Julia, 3.4x measured ceiling): M1 only — dimension
+   guards already present; intervening stores are float TBAA vs
+   arraysize TBAA; no calls in the loop. ACCEPTANCE TEST.
+2. jl matmul / julia lz77: same shape as (1).
+3. Swift sha256 residual (the w[t] store bound) + CryptoSwift
+   residuals: M1 + M2 (local `[UInt32](repeating:count:)` allocation
+   axiom); moderate — allocation is in-function, clobber walk short.
+4. Swift nbody (+410% ceiling): M2 for global arrays initialized in
+   module init + M1 across init->use (longer walks, GC-safepoint calls
+   need mod/ref axioms); hard but bounded.
+5. Rust matmul: caller-fact O4 (interprocedural) — sequel v2; the
+   black_box harness variant is UNPROVABLE BY DESIGN (honest bound).
+6. Taxonomy class (d) (base64/crc32 strides): NOT a FRAME problem —
+   needs Plan C (back-edge-frame induction); separate line item.
+
+**Nonlinearity note:** Julia 2-D Matrix checks are per-dimension
+(linear). Flattened i*n+j layouts (Rust/Swift ports) add BV
+multiplication to the query — budget-hostile; keep out of v1 claims.
+
+**Discipline:** FRAME work must not eat September. CGO's 11 pages own
+the calendar; this thread gets evenings and the post-submission window.
