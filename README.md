@@ -20,7 +20,7 @@ per-analysis reasoning             online latency, sound            over program
 
 ## Headline results
 
-* **C/C++ (UBSan traps):** 11% of zlib's, 12.2% of zstd's, and 9.5% of lz4's
+* **C/C++ (UBSan traps):** 11% of zlib's, 13.2% of zstd's, and 9.5% of lz4's
   sanitizer traps proven dead and eliminated (vs the double-compiled `base2x`
   attribution control; 243 attributable eliminations; ~35% vs plain base).
   Runtime recovery up to ~+0.6% of the 1.5–5.4% ANF ceiling on x86 servers
@@ -95,8 +95,8 @@ opt -load-pass-plugin=build/OraclePass.so \
   `FactEncoder.*` (heavy-tier fact sources incl. SCEV-SYM), `Scheduler.h`
   (FactGate).
 * `tests/` — regression suite (`bash run_tests.sh`; expected gate
-  **PASS=16 / FAIL=5** — the 5 "fails" are heavy/ldeq tests run under the
-  light gate by design). `tests/manual/` needs nonstandard pass strings.
+  **PASS=17 / FAIL=6** — the 6 "fails" are heavy/ldeq/stride tests run under
+  the light gate by design). `tests/manual/` needs nonstandard pass strings.
 * `native_bench/` — Swift (`nbody`, `sha256`, `lz77`), Rust
   (`lz77.rs`, `matmul.rs`), Julia (`lz77.jl`, `matmul.jl`, `julia_dump.jl`).
 * Triage harnesses: `swift_triage.sh`, `rust_triage.sh`, `julia_triage.sh`
@@ -122,7 +122,7 @@ socket + `no_turbo` on servers; and every perf binary must produce
 
 ```bash
 ninja -C build                    # build the plugin (needs LLVM trunk + Z3)
-bash run_tests.sh                 # expect PASS=16 / FAIL=5
+bash run_tests.sh                 # expect PASS=17 / FAIL=6
 bash swift_triage.sh              # 10-minute Swift static triage
 RUNARGS="200 perf_test/sha_input.bin" bash run_swift_perf.sh   # the headline experiment
 ```
