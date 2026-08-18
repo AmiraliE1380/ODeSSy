@@ -153,3 +153,47 @@ reps  : 30   kernel: sha1   runargs: '900 perf_test/sha_input.bin'
 ==== PHASE B: output equivalence gate ====
 run_swift_perf.sh: line 95: 10962 Illegal instruction     (core dumped) "$W/$stem.$cfg" $RUNARGS > "$W/out.$cfg" 2> /dev/null
 [FATAL] base run failed
+Missing or invalid credentials.
+Error: connect ECONNREFUSED /run/user/20001/vscode-git-fa8269cc02.sock
+    at PipeConnectWrap.afterConnect [as oncomplete] (node:net:1706:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '/run/user/20001/vscode-git-fa8269cc02.sock'
+}
+Missing or invalid credentials.
+Error: connect ECONNREFUSED /run/user/20001/vscode-git-fa8269cc02.sock
+    at PipeConnectWrap.afterConnect [as oncomplete] (node:net:1706:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '/run/user/20001/vscode-git-fa8269cc02.sock'
+}
+remote: No anonymous write access.
+fatal: Authentication failed for 'https://github.com/AmiraliE1380/ODeSSy.git/'
+[push failed, commit is local]
+
+=== [2026-08-18 02:11:25] JOB3 adler32 server (calibration then finals) ===
+
+swiftc: Swift version 6.3.3 (swift-6.3.3-RELEASE)
+opt   : LLVM (http://llvm.org/):
+reps  : 3   kernel: adler32   runargs: '7500 perf_test/sha_input.bin'
+
+==== PHASE A: building ====
+  built base     traps   42->42   bin    27632 B  eliminated 0
+  built base2x   traps   42->42   bin    27632 B  eliminated 0
+  built oracle   traps   42->41   bin    27632 B  eliminated 1
+==== PHASE B: output equivalence gate ====
+run_swift_perf.sh: line 95: 11111 Illegal instruction     (core dumped) "$W/$stem.$cfg" $RUNARGS > "$W/out.$cfg" 2> /dev/null
+[FATAL] base run failed
+swiftc: Swift version 6.3.3 (swift-6.3.3-RELEASE)
+opt   : LLVM (http://llvm.org/):
+reps  : 30   kernel: adler32   runargs: '7500 perf_test/sha_input.bin'
+
+==== PHASE A: building ====
+  built base     traps   42->42   bin    27632 B  eliminated 0
+  built base2x   traps   42->42   bin    27632 B  eliminated 0
+  built oracle   traps   42->41   bin    27632 B  eliminated 1
+==== PHASE B: output equivalence gate ====
+run_swift_perf.sh: line 95: 11210 Illegal instruction     (core dumped) "$W/$stem.$cfg" $RUNARGS > "$W/out.$cfg" 2> /dev/null
+[FATAL] base run failed
