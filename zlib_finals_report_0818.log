@@ -1,0 +1,25 @@
+wrote evaluation/perf_zlib_report.csv
+
+spec       elim         @8MB        @64MB       @256MB   (oracle vs base2x, MIN-based [primary])
+both        142        +0.0%        +0.1%        -0.1%
+anf         157        +0.1%        +0.1%        +0.0%
+
+spec              @8MB        @64MB       @256MB   (sanitizer overhead vs none, MIN-based [primary])
+signed              --           --           --
+unsigned            --           --           --
+both             +4.9%        +5.1%        +5.0%
+anf              +5.1%        +5.1%        +5.3%
+
+spec       elim         @8MB        @64MB       @256MB   (oracle vs base2x, avg-based [sanity])
+both        142        -2.4%        -0.2%        -0.0%
+anf         157        +3.4%        -0.1%        +0.3%
+
+spec              @8MB        @64MB       @256MB   (sanitizer overhead vs none, avg-based [sanity])
+signed              --           --           --
+unsigned            --           --           --
+both             +4.9%        +5.3%        +4.6%
+anf              +4.9%        +5.4%        +4.9%
+
+spec           .text_vs_base2x       file_vs_base2x   (oracle binary shrink)
+both          -1008 B (-0.51%)        +0 B (+0.00%)
+anf           -2464 B (-1.20%)     -4096 B (-1.86%)

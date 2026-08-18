@@ -1,0 +1,108 @@
+
+=== [2026-08-17 22:30:26] ENV ===
+
+clang    /mydata/swift-toolchain/usr/bin/clang
+opt      /opt/llvm/bin/opt
+llc      /opt/llvm/bin/llc
+swiftc   /mydata/swift-toolchain/usr/bin/swiftc
+
+=== [2026-08-17 22:30:26] WORKLOADS ===
+
+
+=== [2026-08-17 22:30:26] JOB1 zlib C runtime finals  (~3-4h, the long one) ===
+
+==== rebuilding pass ====
+ninja: no work to do.
+==== oracle-stage parallelism: JOBS=5 x THREADS=8 ====
+==== minigzip driver (unsanitized, shared by every build) ====
+
+==== PHASE A: building all binaries ====
+  built none.base        traps     0->0     bin   195832 B text   181446 B compile    6.278s (smt 0.000s)
+  built both.base        traps  1298->1298  bin   208120 B text   192094 B compile    5.783s (smt 0.000s)
+  built both.base2x      traps  1298->1296  bin   212216 B text   197286 B compile    8.270s (smt 0.000s)
+  built both.oracle      traps  1298->1156  bin   212216 B text   196278 B compile  137.262s (smt 129.236s)
+  built anf.base         traps  1385->1385  bin   212360 B text   197734 B compile    6.174s (smt 0.000s)
+  built anf.base2x       traps  1385->1372  bin   220552 B text   204878 B compile    8.657s (smt 0.000s)
+  built anf.oracle       traps  1385->1228  bin   216456 B text   202414 B compile  187.887s (smt 179.314s)
+
+==== PHASE B: corpora (8 64 256 MB) ====
+  corpus dir: /dev/shm/odessy_corpus.3692
+  corpus 8 MB ready
+  corpus 64 MB ready
+  corpus 256 MB ready
+
+==== cooldown 60s after compile phase (thermal settle) ====
+==== PHASE C: warmup ====  [pin: numactl --cpunodebind=0 --membind=0]
+==== PHASE D: 20 shuffled reps x 21 (binary x size) pairs ====
+  rep 1/20  (22:47:07)
+  rep 2/20  (22:57:00)
+  rep 3/20  (23:06:52)
+  rep 4/20  (23:16:45)
+  rep 5/20  (23:26:37)
+  rep 6/20  (23:36:29)
+  rep 7/20  (23:46:21)
+  rep 8/20  (23:56:13)
+  rep 9/20  (00:06:05)
+  rep 10/20  (00:16:01)
+  rep 11/20  (00:25:59)
+  rep 12/20  (00:35:53)
+  rep 13/20  (00:45:44)
+  rep 14/20  (00:55:50)
+  rep 15/20  (01:05:43)
+  rep 16/20  (01:15:38)
+  rep 17/20  (01:25:30)
+  rep 18/20  (01:35:24)
+  rep 19/20  (01:45:17)
+  rep 20/20  (01:55:11)
+
+spec      config     MB   t_in  t_fin      bin_B    text_B   total_s   min_run   avg_run
+none      base        8      0      0     195832    181446     6.278     1.975     2.082
+none      base       64      0      0     195832    181446     6.278    15.770    15.903
+none      base      256      0      0     195832    181446     6.278    63.050    63.812
+both      base        8   1298   1298     208120    192094     5.783     2.072     2.183
+both      base       64   1298   1298     208120    192094     5.783    16.567    16.738
+both      base      256   1298   1298     208120    192094     5.783    66.174    66.774
+both      base2x      8   1298   1296     212216    197286     8.270     2.055     2.137
+both      base2x     64   1298   1296     212216    197286     8.270    16.434    16.596
+both      base2x    256   1298   1296     212216    197286     8.270    65.563    66.103
+both      oracle      8   1298   1156     212216    196278   137.262     2.055     2.189
+both      oracle     64   1298   1156     212216    196278   137.262    16.420    16.635
+both      oracle    256   1298   1156     212216    196278   137.262    65.619    66.112
+anf       base        8   1385   1385     212360    197734     6.174     2.075     2.183
+anf       base       64   1385   1385     212360    197734     6.174    16.578    16.764
+anf       base      256   1385   1385     212360    197734     6.174    66.362    66.917
+anf       base2x      8   1385   1372     220552    204878     8.657     2.066     2.190
+anf       base2x     64   1385   1372     220552    204878     8.657    16.483    16.700
+anf       base2x    256   1385   1372     220552    204878     8.657    65.898    66.581
+anf       oracle      8   1385   1228     216456    202414   187.887     2.063     2.116
+anf       oracle     64   1385   1228     216456    202414   187.887    16.468    16.718
+anf       oracle    256   1385   1228     216456    202414   187.887    65.893    66.377
+
+CSV: /mydata/ODeSSy/evaluation/perf_zlib.csv   (then: python3 make_perf_report.py)   [oracle stage JOBS=5 x THREADS=8]
+Cold-path check: if %-speedup shrinks 8 -> 64 -> 256 MB, the savings are
+constant-per-invocation (cold path); flat % means a scaled path changed.
+wrote evaluation/perf_zlib_report.csv
+
+spec       elim         @8MB        @64MB       @256MB   (oracle vs base2x, MIN-based [primary])
+both        142        +0.0%        +0.1%        -0.1%
+anf         157        +0.1%        +0.1%        +0.0%
+
+spec              @8MB        @64MB       @256MB   (sanitizer overhead vs none, MIN-based [primary])
+signed              --           --           --
+unsigned            --           --           --
+both             +4.9%        +5.1%        +5.0%
+anf              +5.1%        +5.1%        +5.3%
+
+spec       elim         @8MB        @64MB       @256MB   (oracle vs base2x, avg-based [sanity])
+both        142        -2.4%        -0.2%        -0.0%
+anf         157        +3.4%        -0.1%        +0.3%
+
+spec              @8MB        @64MB       @256MB   (sanitizer overhead vs none, avg-based [sanity])
+signed              --           --           --
+unsigned            --           --           --
+both             +4.9%        +5.3%        +4.6%
+anf              +4.9%        +5.4%        +4.9%
+
+spec           .text_vs_base2x       file_vs_base2x   (oracle binary shrink)
+both          -1008 B (-0.51%)        +0 B (+0.00%)
+anf           -2464 B (-1.20%)     -4096 B (-1.86%)
