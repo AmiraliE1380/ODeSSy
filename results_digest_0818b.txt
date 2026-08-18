@@ -1,0 +1,95 @@
+=== sha1 repA (tail) ===
+  rep 25/30
+  rep 26/30
+  rep 27/30
+  rep 28/30
+  rep 29/30
+  rep 30/30
+
+config      median       min       avg  audit
+base        4.6508    4.6476    4.6635  ok
+base2x      4.6510    4.6382    4.6620  ok
+oracle      4.8670    4.8415    4.8830  ok
+oracle vs base: -4.65% (median)
+oracle vs base2x: -4.65% (median)
+
+CSV appended: /mydata/ODeSSy/evaluation/perf_swift.csv   (rerun with REPS=15 on the server for the real number)
+=== sha1 repB (tail) ===
+  rep 25/30
+  rep 26/30
+  rep 27/30
+  rep 28/30
+  rep 29/30
+  rep 30/30
+
+config      median       min       avg  audit
+base        4.6531    4.6453    4.6623  ok
+base2x      4.6530    4.6436    4.6604  ok
+oracle      4.8776    4.8401    4.8828  ok
+oracle vs base: -4.82% (median)
+oracle vs base2x: -4.83% (median)
+
+CSV appended: /mydata/ODeSSy/evaluation/perf_swift.csv   (rerun with REPS=15 on the server for the real number)
+=== sha256 anchor (tail) ===
+  rep 25/30
+  rep 26/30
+  rep 27/30
+  rep 28/30
+  rep 29/30
+  rep 30/30
+
+config      median       min       avg  audit
+base        4.9277    4.9235    4.9278  ok
+base2x      4.9169    4.9036    4.9167  ok
+oracle      4.6836    4.6808    4.6840  ok
+oracle vs base: +4.95% (median)
+oracle vs base2x: +4.74% (median)
+
+CSV appended: /mydata/ODeSSy/evaluation/perf_swift.csv   (rerun with REPS=15 on the server for the real number)
+=== adler32 (tail) ===
+  rep 25/30
+  rep 26/30
+  rep 27/30
+  rep 28/30
+  rep 29/30
+  rep 30/30
+
+config      median       min       avg  audit
+base        4.8108    4.8036    4.8146  ok
+base2x      4.8103    4.8050    4.8136  ok
+oracle      4.6316    4.6259    4.6349  ok
+oracle vs base: +3.72% (median)
+oracle vs base2x: +3.71% (median)
+
+CSV appended: /mydata/ODeSSy/evaluation/perf_swift.csv   (rerun with REPS=15 on the server for the real number)
+=== ceilings ===
+  sha256 chk runs: 5.023 5.019 5.020 5.022 5.016 median=5.020
+  sha256 unc runs: 4.570 4.570 4.572 4.569 4.566 median=4.570
+  sha1 chk runs: 4.840 4.821 4.825 4.825 4.829 median=4.825
+  sha1 unc runs: 4.633 4.595 4.594 4.612 4.596 median=4.596
+  adler32 chk runs: 4.816 4.825 4.814 4.811 4.809 median=4.814
+  adler32 unc runs: 4.245 4.243 4.266 4.255 4.259 median=4.255
+=== openssl counts ===
+171
+  => Total SMT Queries Executed: 201
+  => Total SMT Query Latency: 5.731191e+04 ms
+  => Average SMT Query Latency: 2.851339e+02 ms
+  => Total DFS & SMT Execution Time: 3.551475e+05 ms
+--------------------------------------------------
+=== smoke ===
+config      median       min       avg  audit
+base        4.6714    4.6714    4.6714  ok
+base2x      4.6529    4.6529    4.6529  ok
+oracle      4.9173    4.9173    4.9173  ok
+oracle vs base: -5.26% (median)
+oracle vs base2x: -5.68% (median)
+
+CSV appended: /mydata/ODeSSy/evaluation/perf_swift.csv   (rerun with REPS=15 on the server for the real number)
+=== perf_swift.csv new rows ===
+sha1,base2x,21,4.647414
+sha1,base,21,4.650543
+sha1,oracle,21,4.857316
+sha1,base2x,22,4.650832
+sha1,base,22,4.654452
+(raw rep rows counted:)
+1057
