@@ -1,0 +1,21 @@
+swiftc: Swift version 6.3.3 (swift-6.3.3-RELEASE)
+opt   : LLVM (http://llvm.org/):
+reps  : 1   kernel: sha1   runargs: '900 perf_test/sha_input.bin'
+
+==== PHASE A: building ====
+  built base     traps   28->27   bin    27616 B  eliminated 0
+  built base2x   traps   28->27   bin    27616 B  eliminated 0
+  built oracle   traps   28->26   bin    27616 B  eliminated 2
+==== PHASE B: output equivalence gate ====
+  outputs byte-identical across all configs -- gate passed
+==== PHASE C: 1 shuffled reps x 3 configs ====
+  rep 1/1
+
+config      median       min       avg  audit
+base        4.6714    4.6714    4.6714  ok
+base2x      4.6529    4.6529    4.6529  ok
+oracle      4.9173    4.9173    4.9173  ok
+oracle vs base: -5.26% (median)
+oracle vs base2x: -5.68% (median)
+
+CSV appended: /mydata/ODeSSy/evaluation/perf_swift.csv   (rerun with REPS=15 on the server for the real number)
