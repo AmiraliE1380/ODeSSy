@@ -106,3 +106,50 @@ anf              +4.9%        +5.4%        +4.9%
 spec           .text_vs_base2x       file_vs_base2x   (oracle binary shrink)
 both          -1008 B (-0.51%)        +0 B (+0.00%)
 anf           -2464 B (-1.20%)     -4096 B (-1.86%)
+Missing or invalid credentials.
+Error: connect ECONNREFUSED /run/user/20001/vscode-git-fa8269cc02.sock
+    at PipeConnectWrap.afterConnect [as oncomplete] (node:net:1706:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '/run/user/20001/vscode-git-fa8269cc02.sock'
+}
+Missing or invalid credentials.
+Error: connect ECONNREFUSED /run/user/20001/vscode-git-fa8269cc02.sock
+    at PipeConnectWrap.afterConnect [as oncomplete] (node:net:1706:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '/run/user/20001/vscode-git-fa8269cc02.sock'
+}
+remote: No anonymous write access.
+fatal: Authentication failed for 'https://github.com/AmiraliE1380/ODeSSy.git/'
+[push failed, commit is local]
+
+=== [2026-08-18 02:07:06] JOB2a sha1 relottery replication A ===
+
+swiftc: Swift version 6.3.3 (swift-6.3.3-RELEASE)
+opt   : LLVM (http://llvm.org/):
+reps  : 30   kernel: sha1   runargs: '900 perf_test/sha_input.bin'
+
+==== PHASE A: building ====
+  built base     traps   28->27   bin    27616 B  eliminated 0
+  built base2x   traps   28->27   bin    27616 B  eliminated 0
+  built oracle   traps   28->26   bin    27616 B  eliminated 2
+==== PHASE B: output equivalence gate ====
+run_swift_perf.sh: line 95: 10854 Illegal instruction     (core dumped) "$W/$stem.$cfg" $RUNARGS > "$W/out.$cfg" 2> /dev/null
+[FATAL] base run failed
+
+=== [2026-08-18 02:09:20] JOB2b sha1 relottery replication B ===
+
+swiftc: Swift version 6.3.3 (swift-6.3.3-RELEASE)
+opt   : LLVM (http://llvm.org/):
+reps  : 30   kernel: sha1   runargs: '900 perf_test/sha_input.bin'
+
+==== PHASE A: building ====
+  built base     traps   28->27   bin    27616 B  eliminated 0
+  built base2x   traps   28->27   bin    27616 B  eliminated 0
+  built oracle   traps   28->26   bin    27616 B  eliminated 2
+==== PHASE B: output equivalence gate ====
+run_swift_perf.sh: line 95: 10962 Illegal instruction     (core dumped) "$W/$stem.$cfg" $RUNARGS > "$W/out.$cfg" 2> /dev/null
+[FATAL] base run failed
