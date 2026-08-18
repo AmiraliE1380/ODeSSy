@@ -239,3 +239,25 @@ In file included from ../openssl/include/internal/deprecated.h:28:
       |          ^~~~~~~~~~~~~~~~~~~~
 1 error generated.
 [openssl compile FAILED — skipped]
+Missing or invalid credentials.
+Error: connect ECONNREFUSED /run/user/20001/vscode-git-fa8269cc02.sock
+    at PipeConnectWrap.afterConnect [as oncomplete] (node:net:1706:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '/run/user/20001/vscode-git-fa8269cc02.sock'
+}
+Missing or invalid credentials.
+Error: connect ECONNREFUSED /run/user/20001/vscode-git-fa8269cc02.sock
+    at PipeConnectWrap.afterConnect [as oncomplete] (node:net:1706:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '/run/user/20001/vscode-git-fa8269cc02.sock'
+}
+remote: No anonymous write access.
+fatal: Authentication failed for 'https://github.com/AmiraliE1380/ODeSSy.git/'
+[push failed, commit is local]
+
+=== [2026-08-18 02:12:28] ALL DONE ===
+
