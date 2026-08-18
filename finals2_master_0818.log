@@ -253,3 +253,10 @@ CSV appended: /mydata/ODeSSy/evaluation/perf_swift.csv   (rerun with REPS=15 on 
 
 traps in: 2225
 UNSAT=0 SAT=171 VACUOUS=0 SKIPS=0
+
+=== [2026-08-18 13:47:25] TEARDOWN: mirror everything off the dying node ===
+
+mirrored to /proj/odessy-PG0/odessy-final-0818b
+
+=== [2026-08-18 13:49:24] ALL DONE — verify 'git status' says up to date, then you may sleep ===
+
