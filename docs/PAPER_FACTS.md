@@ -1,5 +1,6 @@
 # PAPER_FACTS — statistics, contributions, and narrative record
-### (v4, Aug 18 2026 — post server-finals campaign. Supersedes v3/Aug 12.)
+### (v4-final, Aug 18 2026 — post server-finals campaign incl. OpenSSL
+### spec/tier/budget ablations. Supersedes v3/Aug 12.)
 
 Single source of truth for the CGO 2027 submission. Every number verified
 against committed logs (filenames cited). Update here first.
@@ -26,7 +27,7 @@ Server = CloudLab c220g2 (see MACHINE_SPEC); Mac = M-series.
 | zstd (both spec) | C | R | 12798¹ | **1688** | **13.2%** | ANF +1.7–3.5% | — | static only¹³ |
 | zstd bounds spec | C | R | 396¹ | 37 | 9.3% | | | |
 | lz4 | C | R | 3403 | ~9.5% | 9.5% | ANF +3.2–5.4% | — | ≈0 |
-| OpenSSL sha256 | C | R | 2225 | **0 @300ms**¹⁴ | 0¹⁴ | ≈0 (asm) | — | 171 SAT / **2054 UNKNOWN**¹⁴ |
+| OpenSSL sha256 | C | R | 0 signed / 2225 unsigned¹⁴ | 0 @≤5s / **43 @30s** / 125 uncapped¹⁴ | 1.9% @30s¹⁴ | ≈0 (asm) | — | budget-bound¹⁴ |
 | CryptoSwift (lib) | Swift | **R** | 2807 | **183** | 6.5% | 2.5–3% | flat² | flat |
 | sha256 | Swift | O | 38 | 5 | 13% | ~9.5% / **9.0%**¹⁵ | +3.5–4.7% | **+4.7/+5.0%**, reval **+4.7/+5.0%**¹⁶ |
 | sha1 | Swift | O | 26 | 7 (Mac) / 2 (Linux) | 27/8% | — / **4.7%**¹⁵ | **+6.4/+7.3%** | **−4.5, −4.65, −4.83%** (x3)¹⁷ |
@@ -67,15 +68,42 @@ Server = CloudLab c220g2 (see MACHINE_SPEC); Mac = M-series.
    oracle .text SHRINKS vs base2x (−0.51% both / −1.20% anf).
 ¹³ zstd runtime harness does not exist (audit-only); zlib+lz4 are the C
    runtime representatives. State plainly in methodology.
-¹⁴ TIMEOUT-BOUND, NOT REFUTED (openssl_audit_0818b.log, timeout=300ms,
-   heavy+ldeq+vacuity, threads=16): 2225 anchored, 0 UNSAT, 171 SAT,
-   2054 UNKNOWN = 92% of queries exhausted the 300 ms budget (avg query
-   latency 285 ms ≈ pinned at ceiling). Cause: aggressive inlining gives
-   each query ~200 dominating overflow-guard context edges — a
-   budget-hostile query shape unique among our benchmarks. Pending: the
-   timeout=5000 rerun (openssl_audit_t5000_0818.log) decides whether the
-   cell becomes eliminations or a documented guard-chain-complexity
-   finding. EITHER WAY it instantiates the timeout dial on real code.
+¹⁴ BUDGET-BOUND, TIER-INVARIANT (openssl_audit_0818b.log,
+   openssl_audit_t5000_0818.log, openssl_light_t1000_0818.log,
+   openssl_unsigned_{light,heavy}_t1000_0818.log,
+   openssl_signed{,_noinl}_t1000_0818.log):
+   * SPEC SPLIT: the signed spec emits **0 traps** — sha256.c contains
+     no clang-instrumented signed arithmetic, with or without aggressive
+     inlining. Nothing to eliminate under strict UB. All 2225 traps in
+     the `both` build are unsigned-wraparound checks, and wraparound IS
+     the SHA-256 algorithm — all-SAT here is the spec-mismatch finding
+     of §doctrine (the zlib/CRC/Adler result in pure form).
+   * BUDGET, NOT TIER: at per-query budgets 0.3 s / 1 s / 5 s the result
+     is 0 UNSAT, ~200 SAT, ~2020 UNKNOWN — IDENTICAL for light and
+     heavy tiers (light 0/201/2024 vs heavy 0/199/2026 @1 s). UNKNOWN
+     latencies are pinned at the cap (min 5000.1 / med 5000.3 /
+     max 5028.7 ms at the 5 s budget): pure timeout, not early give-up.
+     Raising 300 ms -> 5000 ms converted only 40 queries, all to SAT.
+   * THE PROOFS EXIST: the historical run with NO per-query cap (600 s
+     process wall; trap_metadata.csv, benchmark_commands.sh era) proved
+     **34 UNSAT (O1) / 125 UNSAT (O3)** on the unsigned spec before the
+     wall killed the process. Individual OpenSSL queries need
+     seconds-to-minutes, not milliseconds.
+   * CAUSE: aggressive inlining gives each trap query ~200 dominating
+     overflow-guard context edges (observed in-log) — every preceding
+     check's false-edge becomes context for the next.
+   * FRAMING: OpenSSL is the far end of the latency dial. zlib's
+     provable set saturates at 100 ms (§4); OpenSSL's does not saturate
+     at 5 s. Same tool, same dial, five orders of magnitude apart —
+     query hardness scales with inlined guard-chain depth.
+   * RECONNECTION CONFIRMED (openssl_unsigned_light_t30000_0818.log):
+     at timeout=30 s on TODAY'S IR and pass, **43 UNSAT** appear
+     (253 SAT, 1929 UNKNOWN). The full budget curve on one input:
+     0 @1 s -> 0 @5 s -> 43 @30 s -> 34/125 historical uncapped.
+     Monotone in budget, tier-invariant — version drift eliminated as
+     the explanation; per-query budget is THE variable. This is the
+     paper's cleanest exhibit that the dial spans five orders of
+     magnitude of query hardness on real code.
 ¹⁵ SERVER CEILINGS (ceilings_server_0818b.log; -O vs -Ounchecked, 5 runs,
    median): sha256 9.0% (5.020→4.570 s), sha1 4.7% (4.825→4.596),
    adler32 11.6% (4.814→4.255). Mac ceilings retained alongside.
@@ -117,10 +145,13 @@ specification.
    Souper/STOKE).
 2. Conjunction evidence via unsat cores (6+ shapes).
 3. ODeSSy system (3-stage, FactGate determinism, tiers, audit, timeout).
-4. Latency is a dial — now cross-platform: server sweep 50/52 UNSATs
-   (96%) @100 ms, unknown 379→0 as budget 1 ms→3 s, wall ≈4 s flat at
-   threads=8 (timeout_sweep_server_0818.log); and OpenSSL as the
-   dial's other end — real code whose guard-chain queries NEED seconds¹⁴.
+4. Latency is a dial — now cross-platform AND two-ended: server sweep
+   50/52 UNSATs (96%) @100 ms, unknown 379→0 as budget 1 ms→3 s, wall
+   ≈4 s flat at threads=8 (timeout_sweep_server_0818.log); and OpenSSL
+   as the far end — real code whose inlined guard-chain queries exceed
+   millisecond budgets yet yield 43 proofs at 30 s and 125 uncapped —
+   a monotone budget curve (0@1s/0@5s/43@30s/125@inf), tier-invariant¹⁴.
+   Same tool, same dial, five orders of magnitude of query hardness.
 5. One traps= mechanism, four frontends.
 6. Results: C 11–13.2% elimination on real repos with runtime-neutral,
    size-shrinking binaries¹²; CryptoSwift 183 proofs output-byte-identical;
@@ -180,9 +211,26 @@ blow any millisecond budget¹⁴ — the dial matters in both directions.
 * OpenSSL guard-chain finding¹⁴: aggressive inlining makes each trap
   query carry the false-edges of ALL preceding overflow checks (~200
   context guards observed). First benchmark where UNKNOWN dominates.
-  Framing: query complexity scales with inlined guard depth, and the
-  timeout dial is the mitigation — never silent unsoundness (UNKNOWN
-  keeps the trap).
+  Query hardness scales with inlined guard-chain depth; the timeout
+  dial is the mitigation — never silent unsoundness (UNKNOWN keeps
+  the trap).
+* Tier ablation on OpenSSL¹⁴: light ≡ heavy (0 UNSAT both, ~same
+  SAT/UNKNOWN split at 1 s). Hardness comes from guard-chain context
+  depth, NOT from heavy-tier fact count. (Do NOT claim a tier
+  inversion — the ablation refuted it.)
+* Tier consistency in perf harnesses (methodology sentence): all Swift
+  perf runs use heavy;ldeq;timeout=300 (run_swift_perf.sh default);
+  zlib/lz4 C perf use light;timeout=300/default. Consistent within each
+  language family. Defense: heavy on zlib buys 4 proofs (142->146) for
+  +10 s SMT and zlib runtime is flat regardless, so tier cannot affect
+  the C conclusions; Swift, where heavy is load-bearing (SCEVSYM),
+  is heavy everywhere. Heavy-tier zlib confirmation run:
+  zlib_heavy_confirm_0818.log (RUNS=10, sizes 8/64 — expected flat).
+* Timeout-choice defense (methodology sentence): perf builds use a
+  300 ms per-query budget; §4 shows the verdict set is 96% saturated at
+  100 ms and fully saturated at 3 s on the densest workload, and the
+  perf builds' per-platform elimination counts exactly match the audit
+  runs' (Phase A gate) — so no elimination was lost to the budget.
 * zlib compile-cost receipt¹²: ~100–130 ms/trap wall at JOBS×THREADS=40
   on 1300–1400-trap libraries; total pipeline 137–188 s vs 6 s baseline.
 * Oracle binaries SHRINK vs base2x¹² while remaining runtime-neutral:
@@ -206,6 +254,10 @@ blow any millisecond budget¹⁴ — the dial matters in both directions.
 | sha256_anchor_0818b.log | anchor revalidation¹⁶ |
 | adler32_server_0818b.log (+ calib) | new positive row¹⁸ |
 | ceilings_server_0818b.log | server ceilings¹⁵ |
-| openssl_audit_0818b.log | timeout-bound audit¹⁴ |
-| openssl_audit_t5000_0818.log | PENDING — decides cell¹⁴ |
+| openssl_audit_0818b.log (300 ms) + openssl_audit_t5000_0818.log (5 s) | budget-bound audits¹⁴ |
+| openssl_signed{,_noinl}_t1000_0818.log | signed spec: 0 traps emitted¹⁴ |
+| openssl_unsigned_{light,heavy}_t1000_0818.log + openssl_light_t1000_0818.log | tier ablation: light ≡ heavy¹⁴ |
+| openssl_unsigned_light_t30000_0818.log | reconnection: 43 UNSAT @30 s¹⁴ |
+| evaluation/trap_metadata.csv (historical) | uncapped run: 34/125 UNSAT¹⁴ |
+| zlib_heavy_confirm_0818.log | TIER=heavy perf confirmation (§5) |
 | finals_master_0818.log / finals2_master_0818.log | campaign masters |
