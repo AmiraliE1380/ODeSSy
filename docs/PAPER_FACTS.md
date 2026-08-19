@@ -207,6 +207,47 @@ blow any millisecond budget¹⁴ — the dial matters in both directions.
 
 ## 5. Core shapes, findings, engineering, doctrine
 
+### 5.1 Residual-obligation taxonomy (a)–(d) — receipts in logs
+
+RESTORED VERBATIM FROM v2 §4 (the v3 freeze cited "(a)–(d)" in
+Contributions but dropped the definitions; §2 is unusable without
+them). Recoverable at `git show 8ec5d33^:PAPER_FACTS.md`.
+
+(a) **Symbolic trip counts — SOLVED** (SCEVSYM: umin-exact, symbolic-max
+    fallback for multi-exit loops, exact udiv; stride-s gate behind
+    SCEV's own nuw). nbody facts 0→71; Julia+hash-kernel cores.
+(b) **Heap/interprocedural length invariants — LOCATED, out of scope.**
+    Swift `array.count` (runtime-allocated), Rust `Vec` len (opaque
+    provenance / `black_box` asm clobber — unforgeable by any alias
+    analysis), Julia argument-array `size` fields. Needs allocation
+    contracts + frame facts (MemorySSA). Owns the 3–5× ceilings.
+(c) **Anchor gaps — CLOSED** (anchor v2: one job per incoming edge;
+    partial elimination of shared error blocks; Swift merged blocks +
+    Julia preloop/postloop multiversioning now attempted; zlib +2).
+(d) **Non-unit / variable stride induction — SCEV's own limit.**
+    SCEV computes NO trip count (exact, symbolic-max, or per-exit) for
+    stride-3/4 ult latches even with nuw (verified: all
+    COULDNOTCOMPUTE). Witnesses: base64 (stride 3), crc32 (stride 4),
+    utf8 (variable 1–4; its 2 proofs are guard-only). Plan C
+    (back-edge-frame induction) is the machinery; future work.
+
+**Map onto the O1–O4 frontier (§1) and the successor program.** The
+v1/v2 roadmap named three post-CGO plans; two have since been merged
+and renamed, and the correspondence is worth keeping explicit because
+the old letters still appear in kernel comments:
+
+| v1/v2 plan | Today | Discharges |
+|---|---|---|
+| Plan C — back-edge-frame induction | still separate; NOT a FRAME problem | taxonomy (d) |
+| Plan D — cross-BB LDEQ / frame facts (MemorySSA) | heap-invariant super-analysis, **M1** | O3 |
+| Plan E — allocation contracts | heap-invariant super-analysis, **M2** | O2 (and O4 via M1/M2) |
+
+So (b) is the FRAME program (HANDOFF §8; acceptance test jl_gemm's
+3.4×), while (d) is Plan C and must not be scoped into it. (a) and (c)
+are closed and are reported as such.
+
+### 5.2 Findings ledger
+
 (v3 §4 carries forward, plus:)
 * OpenSSL guard-chain finding¹⁴: aggressive inlining makes each trap
   query carry the false-edges of ALL preceding overflow checks (~200
@@ -246,18 +287,25 @@ blow any millisecond budget¹⁴ — the dial matters in both directions.
 
 ## 6. Campaign log index (0818 finals)
 
+Paths are as committed. Logs were filed out of the repo root into
+`results/` on 2026-08-19: `results/static/` = elimination and audit
+runs, `results/perf/` = timing, ceilings, relottery, and the timeout
+dial, `results/campaigns/` = whole-campaign master transcripts.
+(`logs/` is gitignored and holds only live scratch — never keepers.)
+
 | Log | Content |
 |---|---|
-| zlib_finals_server_0818.log + perf_zlib{,_report}.csv | C runtime finals¹² |
-| timeout_sweep_server_0818.log + timeout_sweep.csv | dial table §4 |
-| sha1_relottery_rep{A,B}_0818b.log | replication ×2¹⁷ |
-| sha256_anchor_0818b.log | anchor revalidation¹⁶ |
-| adler32_server_0818b.log (+ calib) | new positive row¹⁸ |
-| ceilings_server_0818b.log | server ceilings¹⁵ |
-| openssl_audit_0818b.log (300 ms) + openssl_audit_t5000_0818.log (5 s) | budget-bound audits¹⁴ |
-| openssl_signed{,_noinl}_t1000_0818.log | signed spec: 0 traps emitted¹⁴ |
-| openssl_unsigned_{light,heavy}_t1000_0818.log + openssl_light_t1000_0818.log | tier ablation: light ≡ heavy¹⁴ |
-| openssl_unsigned_light_t30000_0818.log | reconnection: 43 UNSAT @30 s¹⁴ |
+| results/perf/zlib_finals_server_0818.log + evaluation/perf_zlib{,_report}.csv | C runtime finals¹² |
+| results/perf/timeout_sweep_server_0818.log + evaluation/timeout_sweep.csv | dial table §4 |
+| results/perf/sha1_relottery_rep{A,B}_0818b.log | replication ×2¹⁷ |
+| results/perf/sha256_anchor_0818b.log | anchor revalidation¹⁶ |
+| results/perf/adler32_server_0818b.log (+ calib) | new positive row¹⁸ |
+| results/perf/ceilings_server_0818b.log | server ceilings¹⁵ |
+| results/static/openssl_audit_0818b.log (300 ms) + results/static/openssl_audit_t5000_0818.log (5 s) | budget-bound audits¹⁴ |
+| results/static/openssl_signed{,_noinl}_t1000_0818.log | signed spec: 0 traps emitted¹⁴ |
+| results/static/openssl_unsigned_{light,heavy}_t1000_0818.log + results/static/openssl_light_t1000_0818.log | tier ablation: light ≡ heavy¹⁴ |
+| results/static/openssl_unsigned_light_t30000_0818.log | reconnection: 43 UNSAT @30 s¹⁴ |
 | evaluation/trap_metadata.csv (historical) | uncapped run: 34/125 UNSAT¹⁴ |
-| zlib_heavy_confirm_0818.log | TIER=heavy perf confirmation (§5) |
-| finals_master_0818.log / finals2_master_0818.log | campaign masters |
+| results/static/zlib_heavy_confirm_0818.log | TIER=heavy perf confirmation (§5) |
+| results/campaigns/finals_master_0818.log / finals2_master_0818.log | campaign masters |
+| results/campaigns/results_digest_0818b.txt | 0818b digest (tails of every rep) |
