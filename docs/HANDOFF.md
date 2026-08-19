@@ -192,7 +192,9 @@ cases (nbody); caller summaries = out of scope for the sequel v1.
 5. Rust matmul: caller-fact O4 (interprocedural) — sequel v2; the
    black_box harness variant is UNPROVABLE BY DESIGN (honest bound).
 6. Taxonomy class (d) (base64/crc32 strides): NOT a FRAME problem —
-   needs Plan C (back-edge-frame induction); separate line item.
+   needs Plan C (back-edge induction, §9); separate line item, but
+   sequenced AFTER M1 because its loop-carried frame caveat (§9.4)
+   reuses M1's clobber walk.
 
 **Nonlinearity note:** Julia 2-D Matrix checks are per-dimension
 (linear). Flattened i*n+j layouts (Rust/Swift ports) add BV
@@ -200,3 +202,132 @@ multiplication to the query — budget-hostile; keep out of v1 claims.
 
 **Discipline:** FRAME work must not eat September. CGO's 11 pages own
 the calendar; this thread gets evenings and the post-submission window.
+
+## 9. PLAN C — back-edge induction (specified Aug 19 2026; taxonomy (d))
+
+### 9.1 Historical record vs this spec
+The v1/v2 PAPER_FACTS carried only the name ("Plan C, back-edge-frame
+induction / back-edge-frame 1-induction — unlocks class d") with NO
+mechanism written down; the v3 freeze deleted even that (recovered in
+PAPER_FACTS §5.1). This section is the first written spec. The idea in
+one line: k-induction with k=1, encoded as an if-then-else over the
+loop-header phi's incoming edges — a single-iteration SYMBOLIC
+unrolling of the loop body as the inductive step.
+
+### 9.2 The problem it solves (why SCEVSYM cannot)
+Phase-1's slice boundary rule makes loop-header phis FREE VARIABLES.
+SCEVSYM (FactEncoder.cpp trySCEVSym) repairs that arithmetically:
+ask SCEV for the backedge-taken count, assert start <=u phi <=u
+start + s*BTC. For stride-3/4 ult latches and variable-stride loops
+SCEV returns CouldNotCompute for EVERY BTC variant (verified, all
+COULDNOTCOMPUTE — PAPER_FACTS §5.1(d)), so the phi stays unbounded and
+every in-loop check is trivially SAT. Witnesses: base64 (stride 3),
+crc32 (stride 4), utf8 (variable 1–4). Plan C recovers the SAME fact
+STRUCTURALLY: the latch/guard conditions along each back-edge path are
+asserted directly on the back-edge arm — stride never enters.
+
+### 9.3 The encoding (base + step in one query)
+For a trap T inside loop L with header phi(s) %r:
+
+    %r = phi [v_pre, PREHEADER], [v_back, LATCH]
+
+encode reachability of T as usual, but replace "%r free" with:
+
+    ite(entry,  ENC_pre,  ENC_step)
+
+* entry: fresh Bool ("this iteration was reached via the preheader").
+* ENC_pre (BASE CASE): %r = v_pre, plus the ordinary dominating
+  constraints of the preheader path (Phase-0 guards already do this).
+* ENC_step (INDUCTIVE STEP): %r = v_back', where v_back' and every
+  value feeding it are a FRESH COPY of the previous iteration's body
+  slice, constrained by that iteration's own path conditions:
+  - the previous iteration's header phi %r_prev is a fresh free var
+    (this is what makes the step an induction, not an unrolling);
+  - the in-body branch conditions along whichever path produced
+    v_back' (encode all latch-reaching paths, disjoined, exactly like
+    normal multi-predecessor path encoding);
+  - the back-edge branch condition COND = true;
+  - NOT TRAP_COND_prev for every trap in the body — sound because an
+    iteration that trapped never reaches the back edge (the standard
+    first-failure argument: we prove the FIRST trap occurrence
+    impossible).
+Then push TRAP_COND for the current iteration and check(). UNSAT =>
+no iteration can trap: base arm covers iteration 0, step arm covers
+iteration k+1 given k completed — induction over the iteration count.
+
+ANSWER TO "doesn't this just encode iteration 0 vs iteration 10?":
+no — the step arm's fresh variables are constrained only by one
+generic body traversal, so they stand for an ARBITRARY completing
+iteration; UNSAT under both arms is a proof for all k simultaneously.
+
+### 9.4 Soundness gates (each is mandatory)
+1. FRESHNESS. The previous-iteration copy must not share Z3 variables
+   with the current iteration. Z3Encoder memoizes on Value* — the step
+   copy needs a separate encoder instance or a renaming prefix
+   ("prev$"). One accidental unification = bogus proof.
+2. LOOP-CARRIED HEAP (the "frame" in the historical name). If the
+   bound is RELOADED each iteration (Julia arraysize loads in-loop),
+   prev-n and cur-n are different load instructions; unrelated free
+   vars make the step fail (soundly, uselessly). Closing it needs M1's
+   clobber walk applied ACROSS the back edge. v1 RESTRICTION: only
+   accept bounds that are a single SSA value defined OUTSIDE the loop
+   (utf8/base64/crc32 all qualify: `let n = d.count` precedes the
+   loop). Lift the restriction only after M1 lands.
+3. 1-INDUCTIVENESS. Invariants needing k>=2 or an auxiliary invariant
+   come back SAT; REFUSE (keep the trap), never widen. Report as
+   incompleteness, not failure.
+4. NESTED LOOPS: v1 handles the INNERMOST loop of the trap only; outer
+   phis stay free (weaker, never wrong). Multiple latches: disjoin, or
+   refuse if any latch path is unmodelable. Irreducible CFGs: refuse.
+5. TRIPWIRES BEFORE FEATURES: a SAT test where the invariant is truly
+   not inductive (e.g. i grows by 1 or 2 but the check is i+3 < n
+   unguarded) and a SAT test with an in-loop store through an alias of
+   the bound. Mirror test_heavy_scevsym_sat discipline.
+
+### 9.5 Worked example (utf8.swift 2-byte arm, the class-(d) witness)
+    var i = 0; let n = d.count          // n: SSA value, pre-loop
+    while i < n {                        // rotated: latch tests i' < n
+      let b0 = d[i]                      // trap1: i <u n
+      ... else if b0 < 0xE0 {
+        if i+1 >= n { bad += 1; break }
+        let b1 = d[i+1]                  // trap2: i+1 <u n
+        ...; i += 2
+      } ...
+    }
+Target trap1, current iteration. Base arm: i = 0, loop entered =>
+0 < n => i <u n. QED base. Step arm: i = i_prev + delta where delta in
+{1,2,3,4} chosen by the path; every path either (a) guards i_prev +
+delta - 1 < n before its last read and continues, or (b) breaks
+(doesn't reach the latch, excluded from the step arm); plus back-edge
+COND: i_prev + delta < n. That inequality IS trap1's condition for the
+next iteration => UNSAT. Note what was never needed: a trip count.
+The same argument with delta = 3 (base64) and 4 (crc32 words) is
+strictly simpler (one path). Expected yields: utf8 ~14 in-loop bounds
+checks (2 current proofs are guard-only), base64 and crc32's
+d[i+1..3] trailing reads. crc32's table lookups stay SAT (class (b),
+runtime-built arrays — that residue is FRAME/M2's, not Plan C's).
+
+### 9.6 Implementation sketch (for the future developer; do NOT start
+### before FRAME M1 — see §8 rung 6 and the sequencing note below)
+* Site: TrapSolver's encode phase. After the normal encoding, if the
+  trap is in loop L and its slice hit L's header phi boundary, attempt
+  the step encoding instead of leaving the phi free.
+* New machinery: a second backward slice STARTING from the latch's
+  incoming values, bounded to L's body, emitted into the same solver
+  under a "prev$" namespace; assert edge conditions for latch-reaching
+  paths; assert !TRAP_COND_prev for body traps; tie prev$'s header phi
+  free, tie current phi = prev$'s latch value under the ite.
+* Determinism: pure IR walk, no new analysis queries => no FactGate
+  interaction; label facts |BEIND:k| for cores (name distinct from
+  FRAME — different fact source, different audit story).
+* Budget: the query roughly doubles (two body copies). Fine at the
+  300 ms default per §4's saturation curve; measure, don't assume.
+* Vacuity audit applies unchanged (context-alone re-check).
+
+### 9.7 Sequencing verdict (Aug 19 2026)
+FRAME M1 FIRST (jl_gemm 3.4x is the acceptance test and the paper
+lead); Plan C second, reusing M1's clobber walk to lift gate 9.4(2).
+Rationale: C-first would either re-invent that walk or ship the
+register-only restriction as the headline, and its witnesses
+(base64/crc32/utf8) all have ~0 measured runtime ceilings — class (d)
+is a COVERAGE result, FRAME owns the PERFORMANCE results (3.4x, +410%).

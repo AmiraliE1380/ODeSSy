@@ -230,6 +230,15 @@ them). Recoverable at `git show 8ec5d33^:PAPER_FACTS.md`.
     COULDNOTCOMPUTE). Witnesses: base64 (stride 3), crc32 (stride 4),
     utf8 (variable 1–4; its 2 proofs are guard-only). Plan C
     (back-edge-frame induction) is the machinery; future work.
+    UPDATE Aug 19 2026: mechanism now SPECIFIED — HANDOFF §9.
+    One line: 1-induction encoded as an ite over the header phi's
+    incoming edges (base = preheader constraints; step = fresh-variable
+    copy of the previous iteration's latch-reaching paths + back-edge
+    condition + not-trapped-before). Stride-oblivious: recovers the
+    latch condition structurally where SCEVSYM needed a trip count.
+    The historical "frame" in the name = the loop-carried-heap caveat
+    (reloaded bounds need M1's clobber walk across the back edge;
+    HANDOFF §9.4 gate 2) — hence sequenced after FRAME M1.
 
 **Map onto the O1–O4 frontier (§1) and the successor program.** The
 v1/v2 roadmap named three post-CGO plans; two have since been merged
@@ -238,7 +247,7 @@ the old letters still appear in kernel comments:
 
 | v1/v2 plan | Today | Discharges |
 |---|---|---|
-| Plan C — back-edge-frame induction | still separate; NOT a FRAME problem | taxonomy (d) |
+| Plan C — back-edge-frame induction | still separate; NOT a FRAME problem; spec: HANDOFF §9 | taxonomy (d) |
 | Plan D — cross-BB LDEQ / frame facts (MemorySSA) | heap-invariant super-analysis, **M1** | O3 |
 | Plan E — allocation contracts | heap-invariant super-analysis, **M2** | O2 (and O4 via M1/M2) |
 
