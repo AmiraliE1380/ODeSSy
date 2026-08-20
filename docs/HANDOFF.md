@@ -23,11 +23,13 @@ tmux. If DNS dies: `echo "nameserver 8.8.8.8" | sudo tee
 **Build + gate (both machines):**
 ```
 ninja -C build
-bash run_tests.sh          # MUST print PASS=17 / FAIL=6
+bash run_tests.sh          # MUST print PASS=19 / FAIL=7 (was 17/6 pre-FRAME-tests)
 ```
-The 6 FAILs are heavy/ldeq/stride tests under the light gate BY DESIGN;
-`test_heavy_scevsym_sat` and `test_heavy_scevsym_stride_sat` must PASS
-(over-tightness tripwires). Manual soundness pair when touching the
+The 7 FAILs are heavy/ldeq/stride/frame tests under the light gate BY
+DESIGN (test_frame1 flips to PASS once FRAME lands, gate becomes 20/6);
+`test_heavy_scevsym_sat`, `test_heavy_scevsym_stride_sat`,
+`test_frame_clobber_sat`, and `test_frame_phi_sat` must PASS
+(over-tightness / silent-unsoundness tripwires). Manual soundness pair when touching the
 Hunter: `opt ... -passes="oracle-pass<vacuity;traps=my_panic>"
 tests/manual/traps_callee.ll` (2 sites, 1 UNSAT + 1 SAT; 0 sites
 without traps=) and tests/manual/multipred.ll (1 UNSAT + 1 SAT,
@@ -309,11 +311,25 @@ Swift sha256 residual headroom for FRAME: total ceiling ~9.5%, +4.7/
 
 ### 8.7 Implementation plan (M1 v1; steps in order, soundness first)
 
-1. TRIPWIRES BEFORE FEATURES: commit test_frame_clobber_sat.ll +
-   test_frame_phi_sat.ll + a positive test_frame_unsat.ll distilled
-   from the gemm shape (guard-load, loop stores scoped jnoalias_data,
-   check-load of same ptr). Gate: the two SAT tests must stay SAT
-   under every later change.
+1. TRIPWIRES BEFORE FEATURES — DONE Aug 19 2026: tests/test_frame1.ll
+   (distilled gemm shape; UNSAT once FRAME lands, EXPECTED-FAIL under
+   the knobless gate today, ldeq/heavy precedent) +
+   test_frame_clobber_sat.ll (may-alias store through a third pointer
+   => must refuse; frame bugs RAISE elimination counts so no other
+   gate can catch one) + test_frame_phi_sat.ll (clobber on one
+   MemoryPhi arm only => every-arm discharge). Suite gate is now
+   PASS=19/FAIL=7. The two SAT tests must stay SAT forever.
+   MECHANISM CONFIRMED EMPIRICALLY the same day: on frame1 with L1's
+   tags supplied as the query location, LLVM's stock walker reports
+   L2 "clobbered by liveOnEntry" == L1's defining access — i.e.
+   ScopedNoAliasAA discharges the scoped store and the walker recurses
+   the loop MemoryPhi correctly, before any C++ exists.
+   IMPLEMENTATION SHORTCUT this licenses (use in step 4):
+   getClobberingMemoryAccess(MA(L2), MemoryLocation-of-L1) ==
+   definingAccess(L1) is a sufficient frame check — LLVM owns the phi
+   recursion, termination, and per-def AA; our D1-D4 hand walk is the
+   fallback/diagnostic path (and the refusal-taxonomy logger), not the
+   primary mechanism.
 2. PLUMBING: Stage 1 requests MemorySSA (+ keep AAManager results)
    per function alongside DT/LI/SE. The MemorySSA WALKER CACHES ⇒
    Level-2 rule: all walker/AA queries go through the FactGate ticket
@@ -330,7 +346,7 @@ Swift sha256 residual headroom for FRAME: total ceiling ~9.5%, +4.7/
 5. FACT: assert var(L1) == var(L2) context-side, label FRAME:k,
    Audit-gated exactly like SCEVSYM (mkLabel/assertRawFact path).
 6. ACCEPTANCE (§8.6): jl_gemm_base 0 -> UNSAT>0, every new core
-   contains FRAME:, vacuous=0, PASS=17/FAIL=6 unchanged, THREADS
+   contains FRAME:, vacuous=0, PASS=20/FAIL=6 (frame1 flips to PASS under the frame knob), THREADS
    determinism diff test clean.
 7. THEN sha256/CryptoSwift residuals (adds M2 one-level summaries +
    the N2 axiom table entries actually needed), THEN nbody (adds N3
