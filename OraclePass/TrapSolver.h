@@ -37,6 +37,12 @@ struct SolverConfig {
     // (oracle-pass<ldeq>). Off by default: the light tier must stay
     // byte-identical, and LDEQ-on/off doubles as its own ablation.
     bool LoadEq = false;
+    // FRAME: cross-BB load unification from Stage 1's MemorySSA walk
+    // (oracle-pass<frame>; HANDOFF §8). The solver only CONSUMES
+    // Job.FramePairs -- asserts val(L1) == val(L2) context-side as
+    // FRAME:k, before the guards, so the vacuity audit covers it and
+    // unsat cores attribute proofs to the fact source. Off by default.
+    bool FrameMode = false;
     unsigned QueryTimeoutMs = 10000;
 };
 

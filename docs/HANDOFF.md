@@ -352,6 +352,24 @@ Swift sha256 residual headroom for FRAME: total ceiling ~9.5%, +4.7/
    the N2 axiom table entries actually needed), THEN nbody (adds N3
    preservation form). Julia matmul/lz77 ride along with (6).
 
+STATUS Aug 20 2026 — steps 2+3+first half of 4 LANDED (commit on
+heap-invariant). oracle-pass<frame> knob; harvest in TrapDiscovery
+(Stage 1, walker query per candidate pair, earliest-dominating-L1,
+integer simple loads only); FRAME:k asserts in TrapSolver phase 2.75
+(context-side, vacuity-covered). Verified same day:
+  * frame tests under <vacuity;frame>: frame1 UNSAT core
+    |FRAME:0| G0 TRAP; clobber_sat + phi_sat correctly REFUSED => SAT.
+  * knobless suite: PASS=19/FAIL=7 unchanged (byte-identity holds).
+  * ACCEPTANCE MET: jl_gemm_base 0 -> 2/16 UNSAT under
+    <vacuity;heavy;ldeq;frame;traps=bounds_error:boundserror>, cores
+    |FRAME:0| |FRAME:4| G1 TRAP (frame facts composing with a
+    dimension guard), vacuous=0, log byte-identical across runs.
+REMAINING for full step 4: the other 14/16 gemm edges — expected to
+need chained/cross-object equalities (O4 via more FRAME pairs and
+guard composition) and possibly SCEVSYM on the inner-loop phis;
+diagnose from the per-trap SAT logs, then rungs 2 (matmul/lz77) and
+step 5 (the @inbounds runtime experiment, §8.6).
+
 **Benchmark ladder, easiest -> hardest (what each needs):**
 1. jl_gemm_base (Julia, 3.4x measured ceiling): M1 only — dimension
    guards already present; loop-carried defs are jnoalias_data-scoped

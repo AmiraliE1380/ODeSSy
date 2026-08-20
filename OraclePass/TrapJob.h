@@ -50,6 +50,12 @@ struct TrapJob {
     bool SliceOK = true;                 // false => keep the trap, never query
     std::vector<std::pair<llvm::Value *, bool>> Guards;  // (condition, polarity)
     std::set<llvm::Value *> Visited;     // backward-slice closure (encode filter)
+    // FRAME (oracle-pass<frame>, HANDOFF §8): validated cross-BB load
+    // pairs (L1, L2) -- same pointer SSA value, L1 dominates L2, and the
+    // Stage-1 MemorySSA walk proved no intervening def clobbers L1's
+    // location. Stage 2 asserts val(L1) == val(L2) context-side as
+    // FRAME:k. Harvested serially in Stage 1; Stage 2 only reads.
+    std::vector<std::pair<llvm::Value *, llvm::Value *>> FramePairs;
 
     // --- filled by Stage 2 (TrapSolver, one worker) ---
     bool Eliminate = false;              // UNSAT (and vacuity-clean, if audited)

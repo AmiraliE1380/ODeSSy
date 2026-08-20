@@ -101,6 +101,27 @@ bool TrapSolver::factPhase() {
 
 void TrapSolver::solvePhase() {
     try {
+        // PHASE 2.75 (FRAME only): cross-BB load unification facts from
+        // Stage 1's MemorySSA frame walk (HANDOFF §8.1). Each validated
+        // pair (L1, L2) reads the same never-clobbered location, so
+        // their (already-free) boundary variables are equal. Asserted
+        // CONTEXT-SIDE, before the guards: covered by the vacuity audit,
+        // attributed in unsat cores via the FRAME: label. Reads only
+        // job-private state -- no analyses, no FactGate.
+        if (Cfg.FrameMode) {
+            for (size_t k = 0; k < Job.FramePairs.size(); ++k) {
+                Value *L1 = Job.FramePairs[k].first;
+                Value *L2 = Job.FramePairs[k].second;
+                unsigned W = L1->getType()->getIntegerBitWidth();
+                z3::expr Fact =
+                    Encoder.valueAsBV(L1, W) == Encoder.valueAsBV(L2, W);
+                std::string Lbl = "FRAME:" + std::to_string(k);
+                Encoder.assertRawFact(
+                    Fact, Cfg.VacuityCheck ? Lbl : std::string());
+                Log << "    -> Fact[" << Lbl
+                    << "] cross-BB load pair unified (frame held)\n";
+            }
+        }
         // PHASE 3: ASSERT CONTEXT + TRAP CONDITION
         for (unsigned i = 0; i < Job.Guards.size(); ++i) {
             if (Cfg.VacuityCheck)

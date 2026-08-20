@@ -8,6 +8,8 @@
 #include "llvm/IR/Instructions.h"
 #include "llvm/IR/IntrinsicInst.h"
 #include "llvm/Analysis/LoopInfo.h"
+#include "llvm/Analysis/MemoryLocation.h"
+#include "llvm/Analysis/MemorySSA.h"
 #include "llvm/Support/raw_ostream.h"
 #include <queue>
 #include <set>
@@ -191,6 +193,80 @@ static void collectGuardsAndSlice(TrapJob &Job, DominatorTree &DT,
     }
 }
 // ==================================================================
+// FRAME HARVEST (oracle-pass<frame>; HANDOFF §8.1/§8.7 step 2).
+//
+// For each integer load L2 inside the job's slice, find the EARLIEST
+// (program-order) dominating load L1 of the SAME pointer SSA value and
+// ask one question: walking up from L2's defining memory access, what
+// clobbers L1's OWN MemoryLocation (address + size + L1's AATags)?
+// If the answer is L1's defining access A0 -- or something dominating
+// A0, i.e. strictly before L1 -- then NO def between L1 and L2 writes
+// the location, so on every execution reaching L2 both loads read the
+// value stored at/before that clobber: val(L1) == val(L2). (Soundness
+// argument + the D1-D4 refusal ladder this replaces: HANDOFF §8.1;
+// the walker internally runs the full AA stack per def -- on Julia IR
+// the discharging component is ScopedNoAliasAA over the jnoalias
+// scopes -- and owns MemoryPhi recursion, so a clobber on ANY phi arm
+// makes it return the phi, which fails the criterion => refuse.)
+//
+// Querying with L1's location is the load-bearing design point: gemm's
+// check-side load L2 is a multiversioned clone with NO metadata, so a
+// walk over loc(L2) learns nothing (that is why LLVM itself leaves the
+// checks in). loc(L1) carries the frontend's scope assertions, and
+// scope facts describe the LOCATION, which the two loads share.
+//
+// v1 gates (widen only with a written argument): integer-typed simple
+// loads; identical pointer SSA value and type; DT.dominates(L1, L2).
+// Deterministic by construction: candidate scan is program-order,
+// verdicts depend only on IR + MemorySSA (Stage-1 serial).
+// ==================================================================
+static void harvestFramePairs(TrapJob &Job, DominatorTree &DT,
+                              MemorySSA &MSSA, raw_ostream &Log) {
+    for (BasicBlock &BB2 : *Job.F) {
+        for (Instruction &I2 : BB2) {
+            auto *L2 = dyn_cast<LoadInst>(&I2);
+            if (!L2 || !Job.Visited.count(L2)) continue;
+            if (!L2->isSimple() || !L2->getType()->isIntegerTy()) continue;
+            Value *Ptr = L2->getPointerOperand();
+            // Earliest dominating same-pointer load = L1.
+            LoadInst *L1 = nullptr;
+            for (BasicBlock &BB1 : *Job.F) {
+                for (Instruction &I1 : BB1) {
+                    auto *C = dyn_cast<LoadInst>(&I1);
+                    if (!C || C == L2) continue;
+                    if (C->getPointerOperand() != Ptr) continue;
+                    if (!C->isSimple() || C->getType() != L2->getType())
+                        continue;
+                    if (!DT.dominates(C, L2)) continue;
+                    L1 = C;
+                    break;
+                }
+                if (L1) break;
+            }
+            if (!L1) continue;
+            MemoryUseOrDef *MA1 = MSSA.getMemoryAccess(L1);
+            MemoryUseOrDef *MA2 = MSSA.getMemoryAccess(L2);
+            if (!MA1 || !MA2) continue;
+            MemoryAccess *A0 = MA1->getDefiningAccess();
+            MemoryAccess *Clob = MSSA.getWalker()->getClobberingMemoryAccess(
+                MA2->getDefiningAccess(), MemoryLocation::get(L1));
+            bool Held = (Clob == A0) || MSSA.dominates(Clob, A0);
+            std::string S1, S2;
+            { raw_string_ostream O1(S1); L1->print(O1); }
+            { raw_string_ostream O2(S2); L2->print(O2); }
+            if (Held) {
+                Job.FramePairs.push_back({L1, L2});
+                Log << "    -> Frame[" << (Job.FramePairs.size() - 1)
+                    << "] held (cross-BB, no intervening clobber):"
+                    << S1 << "  ==" << S2 << "\n";
+            } else {
+                Log << "    -> Frame refused (clobber between loads):"
+                    << S1 << "  vs" << S2 << "\n";
+            }
+        }
+    }
+}
+// ==================================================================
 // THE HUNTER's acceptance test.
 //
 // Path 1 (always on): the sanitizer intrinsics -- llvm.ubsantrap /
@@ -232,7 +308,8 @@ static bool isTrapCall(CallInst *CI,
 }
 void discoverTraps(Function &F, DominatorTree &DT, LoopInfo &LI,
                    std::vector<TrapJob> &Jobs,
-                   const std::vector<std::string> &TrapCallees) {
+                   const std::vector<std::string> &TrapCallees,
+                   MemorySSA *MSSA) {
     for (BasicBlock &BB : F) {
         // 1. The Hunter: Find the ubsantrap / trap-callee call
         CallInst *TrapCall = nullptr;
@@ -307,6 +384,10 @@ void discoverTraps(Function &F, DominatorTree &DT, LoopInfo &LI,
             Log << "  -> Found UB Trap. Starting Backward Slice...\n";
             // 3. The Slicer (the Solver half now lives in TrapSolver)
             collectGuardsAndSlice(Job, DT, LI, Log);
+            // 4. FRAME harvest (only under oracle-pass<frame>; null MSSA
+            // keeps every other configuration byte-identical).
+            if (MSSA && Job.SliceOK)
+                harvestFramePairs(Job, DT, *MSSA, Log);
         }
     }
 }

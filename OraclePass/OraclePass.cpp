@@ -46,6 +46,7 @@
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/Analysis/LazyValueInfo.h"
 #include "llvm/Analysis/LoopInfo.h"
+#include "llvm/Analysis/MemorySSA.h"
 #include "llvm/Analysis/ScalarEvolution.h"
 #include "llvm/IR/Constants.h"
 #include "llvm/IR/Dominators.h"
@@ -126,12 +127,20 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
     // the divergence gate (see TrapDiscovery.cpp). Empty (default) =>
     // intrinsic-only Hunter, byte-identical to all prior behavior.
     std::vector<std::string> TrapCallees;
+    // FRAME knob (oracle-pass<frame>; HANDOFF §8): cross-BB load
+    // unification via a Stage-1 MemorySSA frame walk. Default OFF (every
+    // other configuration stays byte-identical; the knob is its own
+    // ablation). Composes with everything; MemorySSA is requested only
+    // when on.
+    bool FrameMode = false;
 
     OraclePass() = default;
     OraclePass(bool Vacuity, bool Heavy, unsigned TimeoutMs, unsigned NThreads,
-               bool LdEq, std::vector<std::string> Traps = {})
+               bool LdEq, std::vector<std::string> Traps = {},
+               bool Frame = false)
         : VacuityCheck(Vacuity), HeavyMode(Heavy), QueryTimeoutMs(TimeoutMs),
-          Threads(NThreads), LoadEq(LdEq), TrapCallees(std::move(Traps)) {}
+          Threads(NThreads), LoadEq(LdEq), TrapCallees(std::move(Traps)),
+          FrameMode(Frame) {}
 
     PreservedAnalyses run(Module &M, ModuleAnalysisManager &MAM) {
         auto &FAM =
@@ -157,6 +166,7 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
         Cfg.HeavyMode = HeavyMode;
         Cfg.QueryTimeoutMs = QueryTimeoutMs;
         Cfg.LoadEq = LoadEq;
+        Cfg.FrameMode = FrameMode;
 
         // =============================================================
         // STAGE 1: serial discovery (main thread; IR read-only)
@@ -184,9 +194,16 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
                 FC.LVI = &FAM.getResult<LazyValueAnalysis>(F);
                 FC.SE = &FAM.getResult<ScalarEvolutionAnalysis>(F);
             }
+            // FRAME only: MemorySSA for the Stage-1 frame walk. The
+            // walker caches internally, but every query happens HERE,
+            // serially, before any worker exists -- no FactGate needed
+            // regardless of threads= (HANDOFF §8.7 step 2).
+            MemorySSA *MSSA = nullptr;
+            if (FrameMode)
+                MSSA = &FAM.getResult<MemorySSAAnalysis>(F).getMSSA();
 
             size_t Before = Jobs.size();
-            odessy::discoverTraps(F, *FC.DT, *FC.LI, Jobs, TrapCallees);
+            odessy::discoverTraps(F, *FC.DT, *FC.LI, Jobs, TrapCallees, MSSA);
             for (size_t i = Before; i < Jobs.size(); ++i)
                 FC.JobIndices.push_back(i);
 
@@ -198,7 +215,8 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
         errs() << "[ODeSSy] " << Jobs.size() << " trap site(s) across "
                << FCs.size() << " function(s); threads=" << NThreads
                << (HeavyMode ? " [tier: heavy]" : "")
-               << (LoadEq ? " [ldeq]" : "");
+               << (LoadEq ? " [ldeq]" : "")
+               << (FrameMode ? " [frame]" : "");
         if (!TrapCallees.empty()) {
             errs() << " [traps=";
             for (size_t i = 0; i < TrapCallees.size(); ++i)
@@ -337,6 +355,7 @@ llvmGetPassPluginInfo() {
                         unsigned TimeoutMs = 10000;
                         unsigned Threads = 1;             // Level-2 default: serial
                         bool LdEq = false;                // LDEQ default: off
+                        bool Frame = false;               // FRAME default: off
                         std::vector<std::string> Traps;   // traps= callees: empty
                         if (!Name.empty()) {              // parse "<a;b;...>"
                             if (!Name.consume_front("<") || !Name.consume_back(">"))
@@ -349,6 +368,8 @@ llvmGetPassPluginInfo() {
                                     Vacuity = true;
                                 else if (P == "ldeq")
                                     LdEq = true;
+                                else if (P == "frame")
+                                    Frame = true;
                                 else if (P == "light" || P == "heavy") {
                                     if (TierSeen)
                                         return false;   // contradictory tiers
@@ -386,7 +407,7 @@ llvmGetPassPluginInfo() {
                             }
                         }
                         MPM.addPass(OraclePass(Vacuity, Heavy, TimeoutMs, Threads,
-                                               LdEq, std::move(Traps)));
+                                               LdEq, std::move(Traps), Frame));
                         return true;
                     }
                 );
