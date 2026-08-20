@@ -292,7 +292,20 @@ SWIFT: the O3-sandwich (run_swift_perf.sh) IS the
 analyze-then-reoptimize-then-run flow: swiftc -O -emit-ir ->
 oracle-pass on trap-bearing IR -> opt -O3 -> llc -> link -> run,
 byte-identical-output gate before any timing. FRAME's RUNTIME claims
-land on Swift rows; Julia rows are static+ceiling.
+land on Swift rows; Julia rows are static+ceiling... PLUS the
+ORACLE-GUIDED @inbounds EXPERIMENT (proposed Aug 19, the Julia runtime
+number): for every UNSAT trap, place @inbounds on EXACTLY the
+corresponding source expression, run under the normal JIT, report the
+speedup as proof-backed annotation-mediated recovery ("today @inbounds
+is trusted; with ODeSSy it is verified"). HONESTY RULE: @inbounds is
+per-expression, coarser than per-trap — annotate ONLY statements whose
+EVERY check was proven; partially-proven statements stay unannotated
+(or are reported separately as an upper bound). If FRAME proves all 16
+gemm edges the fully-annotated kernel should land at ~the 3.4x ceiling
+(--check-bounds=no is the global version of the same annotation).
+Swift sha256 residual headroom for FRAME: total ceiling ~9.5%, +4.7/
++5.0 already banked via SCEVSYM => ~4.5-5% behind the w[t] count field
+(M1 + one M2 contract), dose-ladder-conditional as always.
 
 ### 8.7 Implementation plan (M1 v1; steps in order, soundness first)
 
