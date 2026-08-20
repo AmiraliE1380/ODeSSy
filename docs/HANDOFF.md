@@ -158,37 +158,184 @@ Runs alongside CGO writing, timeboxed. Goal: discharge O2/O3/O4 (see
 PAPER_FACTS §1) as a new fact source FRAME (cores read |FRAME:k|).
 Target: OOPSLA 2027 R1 (Oct 14 2026) or PLDI 2027 (~Nov).
 
-**Milestone 1 — cross-BB load equivalence (O3, the frame condition):**
-in FactEncoder (or a new FrameEncoder), for each free LOAD boundary
-value L2, find an earlier load/guard-load L1 of the SAME pointer SSA
-value; walk MemorySSA from L2's defining memory access back to L1's;
-for every intervening store, disprove aliasing (TBAA metadata first —
-Julia emits arraysize vs arraybuf tags, Clang emits !tbaa — then
-provenance/distinct-object arguments); for intervening calls require
-readnone/memory(argmem) or a runtime-function axiom; on success assert
-L1 == L2 tracked as FRAME:k. Vacuity audit + SAT tripwire tests
-mandatory (a wrong frame fact is silent unsoundness).
+### 8.1 Milestone 1 — cross-BB load equivalence (O3, the frame rule).
+### SPEC REWRITTEN Aug 19 2026 after the gemm ground-truth session
+### (§8.2); the original TBAA-based discharge plan was WRONG for
+### Julia 1.12 and is corrected here.
 
-**Milestone 2 — allocation axioms (O2):** a per-language table of
-runtime allocator symbols -> (which return-object field is the length,
-equals which argument). Assert len-field-load == n at the allocation's
-dominated uses, FRAME-tracked, gated by Milestone 1's clobber walk.
+FORMAL STATEMENT. Fix loads L1, L2 with the SAME pointer operand p
+(one SSA value), same width w, both simple (non-atomic non-volatile),
+L1 dominating L2 (DT-checked). Frame obligation F(L1,L2): on every
+CFG path L1 -> L2, every memory-writing event d has
+written(d) ∩ [p, p+w) = ∅. Then Mem@L2[p,p+w) = Mem@L1[p,p+w), hence
+val(L2) = val(L1). The FRAME:k fact is exactly that BV equality
+between the two boundary variables, asserted CONTEXT-SIDE with a
+tracked label — nothing else about memory is claimed.
 
-**Milestone 3 — cross-object transfer (O4):** free once M1 lands for
-guard-carried equalities (gemm); via M2 for shared-allocation-argument
-cases (nbody); caller summaries = out of scope for the sequel v1.
+DISCHARGE PROCEDURE (over MemorySSA; these are C++ analysis objects
+obtained via MSSA.getMemoryAccess(I) — NOT IR annotations; the
+printer's "; 8 = MemoryDef(7)" lines are comments it renders):
+compute obligation set O by walking the def/phi graph upward from
+definingAccess(L2): MemoryDef -> enters O, continue through operand;
+MemoryPhi -> recurse into EVERY arm; stop on reaching
+A0 = definingAccess(L1); visited-set for termination. Every recursion
+branch must bottom out at A0 — a branch reaching liveOnEntry or an
+unvisitable access REFUSES the fact (all-paths coverage). MemorySSA's
+structure guarantees O covers every write ordered before L2 on any
+path. Then each D in O is discharged by the FIRST applicable rule:
+  D1 non-writing def: fence, volatile load — Defs for ordering only,
+     write no bytes. Syntactic.
+  D2 AA verdict: AA.alias(MemoryLocation(L1), MemoryLocation(D)) ==
+     NoAlias, querying with L1's OWN location (address, size, AATags).
+     No tag transplant onto L2 is ever needed: "no def wrote L1's
+     location" IS the frame premise, and L2 reads the same address —
+     this sidesteps L2's missing metadata (§8.2) with no new axiom.
+     Trust class: frontend metadata (same as the existing nsw/!range/
+     TBAA imports), audit-labeled.
+  D3 call with modeled effects: memory(none)/readonly attributes, or
+     an entry in a per-runtime axiom table (§8.5; empty for gemm).
+     Calls in unreachable-terminated error blocks never enter O
+     (no path to L2) — automatic, no rule needed.
+  D4 REFUSE. Never approximate (scevToZ3 doctrine).
+Vacuity audit + SAT tripwires MANDATORY and FIRST (a wrong frame fact
+is silent unsoundness): test_frame_clobber_sat.ll (intervening store
+through a may-alias pointer => fact off, verdict SAT) and a
+test_frame_phi_sat.ll (clobber on only ONE MemoryPhi arm => refuse).
+
+### 8.2 Ground truth: jl_gemm_base traced end-to-end (Aug 19 2026;
+### IR: logs/julia_triage/jl_gemm_base.ll, Julia 1.12.6)
+
+* THE PAIR. %.size_ptr = gep(%0, 16) (A's row count). L1 = line-50
+  load (entry block, feeds the size(A,1)==m guard, carries !tbaa !44 +
+  !alias.scope !45 + !noalias !46). L2 = line-209 load, SAME %.size_ptr
+  (loop region, feeds the hot icmp ult bounds check), NO metadata at
+  all (multiversioned clone; L2' at line 279 is the same story).
+  Footnote-10's "nothing connects them" is exactly this pair.
+* MEMORYSSA SHAPE. L2 = MemoryUse(58); 58 = MemoryPhi({preheader, 8},
+  {loopexit, 49}); 8 = definingAccess(L1). Entry arm: discharged by
+  identity. The whole milestone reduces to ONE arm: prove the loop
+  nest (def chain 49) doesn't clobber *%.size_ptr.
+* TBAA IS DEAD HERE — DO NOT USE THE OLD PLAN. Julia 1.12 removed
+  jtbaa_arraysize (Memory rework); the module's tag set is
+  {value,tag,stack,immut,gcframe,data,const,arraybuf}. Size loads are
+  tagged !44 = near-ROOT jtbaa — an ANCESTOR of the stores'
+  jtbaa_arraybuf => TBAA says MayAlias. Any FRAME v1 that "checks
+  arraysize vs arraybuf" proves nothing on current Julia.
+* THE ACTUAL DISCHARGE: Julia's SCOPED alias metadata. One domain
+  (jnoalias) with five category scopes: gcframe, stack, data, typemd,
+  const. L1: !noalias !46 = {gcframe, data, const}. Every loop-carried
+  MemoryDef is a buffer store (store double / <2 x double>, !tbaa
+  arraybuf) with !alias.scope = {jnoalias_data} (!125/!171).
+  ScopedNoAliasAA: store scopes ⊆ L1's noalias in-domain => NoAlias.
+  Rule D2 fires with STOCK LLVM AA — no custom alias logic in v1.
+* REMAINING DEFS on the walk: entry fence (singlethread) + one
+  volatile safepoint load => rule D1. Error-path defs (gc_small_alloc,
+  ijl_throw, boundserror tuple stores) all sit in unreachable-
+  terminated blocks => never in O. Acceptance expectation: all 16
+  anchored edges' checks consume one of the three %.size_ptr-family
+  loads plus the analogous %2/%4 size fields — same treatment each.
+
+### 8.3 Milestone 2 — allocation/count contracts (O2): a per-language
+table of runtime allocator/init/copy symbols -> (which return-object
+field is the length, equals which argument). Swift reality check
+(§8.5): the count store IS plain IR (store <count, capacity> at
+buffer+16) but lives in outlined specialized init/copy helpers, so M2
+is one-level call summaries or symbol axioms, not layout divination.
+Assert len-field-load == n at dominated uses, FRAME-tracked, gated by
+M1's walk.
+
+### 8.4 Milestone 3 — cross-object transfer (O4): free once M1 lands
+for guard-carried equalities (gemm); via M2 for shared-allocation-
+argument cases; caller summaries = out of scope for sequel v1.
+
+### 8.5 nbody ground truth (Aug 19 2026; logs/swift_triage/nbody.ll,
+### 87 trap sites) — what rung 4 ACTUALLY requires
+
+The seven [Double] arrays are MUTABLE GLOBALS (%TSa = one BridgeObject
+ptr each); checks load global -> mask bridge bits -> load count at
+buffer+16. Three obligations, all receipt-verified:
+* N1 (O2): only 4 swift_allocObject calls in the module and 2 are a
+  print box — the arrays' alloc+count-store is OUTLINED into
+  specialized helpers => M2 needs one-level summaries of those two
+  helpers (returned buffer's count field == count arg).
+* N2 (runtime axiom table — LOAD-BEARING for ALL Swift global-array
+  code): hot path contains swift_beginAccess ×37, endAccess ×19,
+  isUniquelyReferenced_nonNull_native ×19, bridgeObjectRetain/Release.
+  Declared attrs are BARE nounwind (#2) / mustprogress nounwind
+  willreturn (#6) — NO memory attributes => every call is an opaque
+  clobber-world MemoryDef. Without trusted axioms (beginAccess/
+  endAccess: runtime shadow state only; isUnique: reads refcount word
+  only; retain/release: write refcount word at +8 only, never count at
+  +16) ZERO frame facts survive. This supersedes the old "GC-safepoint
+  mod/ref" wording (that was the Julia guess).
+* N3 (the CoW wall — M1's shape is STRUCTURALLY insufficient): 19 live
+  isUnique calls mean CoW slow paths exist in IR; on non-unique, a
+  copy helper allocates a NEW buffer and stores a NEW BridgeObject
+  into the global => the buffer pointer is not one SSA value across
+  iterations, so same-address no-clobber framing cannot apply. What
+  holds is an OBJECT INVARIANT P(g): count(buffer(load g)) = 5,
+  preserved by every def (buffer stores: N2/D2; runtime calls: N2;
+  CoW copy: contract "copy preserves count", M2-family). Preservation
+  induction over defs is the part that earns the program's name — and
+  it is the same preservation-across-back-edge shape as Plan C gate
+  §9.4(2): budget shared machinery.
+
+### 8.6 How experiments run (methodology; asked and settled Aug 19)
+
+JULIA: static verdicts + measured ceilings ONLY. code_llvm dumps are
+NOT reinjectable (pgcstack/safepoint/jl_* ABI; no supported path to
+swap a method's IR into the JIT) — this is the documented "runtime
+blocked by JIT" doctrine. jl_gemm acceptance = 0 -> nonzero UNSAT with
+FRAME: in every new core, vacuous=0, valued against the measured 3.4x
+ceiling. (juliac AOT / patched-Julia-pipeline = exploratory, NOT v1.)
+SWIFT: the O3-sandwich (run_swift_perf.sh) IS the
+analyze-then-reoptimize-then-run flow: swiftc -O -emit-ir ->
+oracle-pass on trap-bearing IR -> opt -O3 -> llc -> link -> run,
+byte-identical-output gate before any timing. FRAME's RUNTIME claims
+land on Swift rows; Julia rows are static+ceiling.
+
+### 8.7 Implementation plan (M1 v1; steps in order, soundness first)
+
+1. TRIPWIRES BEFORE FEATURES: commit test_frame_clobber_sat.ll +
+   test_frame_phi_sat.ll + a positive test_frame_unsat.ll distilled
+   from the gemm shape (guard-load, loop stores scoped jnoalias_data,
+   check-load of same ptr). Gate: the two SAT tests must stay SAT
+   under every later change.
+2. PLUMBING: Stage 1 requests MemorySSA (+ keep AAManager results)
+   per function alongside DT/LI/SE. The MemorySSA WALKER CACHES ⇒
+   Level-2 rule: all walker/AA queries go through the FactGate ticket
+   (or run entirely in Stage 1 and ship results in the TrapJob —
+   PREFERRED: keeps Stage 2 share-nothing and verdicts
+   thread-invariant; a candidate-pair list + per-pair verdict is
+   small, deterministic, and computed in discovery order).
+3. CANDIDATE PAIRS: during discovery, for each free LOAD boundary
+   value L2 in a slice, scan L2's pointer operand's other loads; keep
+   pairs (L1, L2) with L1 dominating L2, same width, both simple.
+4. THE WALK (§8.1): implement O-set construction + D1-D4 ladder.
+   Refuse on: liveOnEntry, unvisited-arm, any D4. Log every refusal
+   reason (the taxonomy of refusals is paper material).
+5. FACT: assert var(L1) == var(L2) context-side, label FRAME:k,
+   Audit-gated exactly like SCEVSYM (mkLabel/assertRawFact path).
+6. ACCEPTANCE (§8.6): jl_gemm_base 0 -> UNSAT>0, every new core
+   contains FRAME:, vacuous=0, PASS=17/FAIL=6 unchanged, THREADS
+   determinism diff test clean.
+7. THEN sha256/CryptoSwift residuals (adds M2 one-level summaries +
+   the N2 axiom table entries actually needed), THEN nbody (adds N3
+   preservation form). Julia matmul/lz77 ride along with (6).
 
 **Benchmark ladder, easiest -> hardest (what each needs):**
 1. jl_gemm_base (Julia, 3.4x measured ceiling): M1 only — dimension
-   guards already present; intervening stores are float TBAA vs
-   arraysize TBAA; no calls in the loop. ACCEPTANCE TEST.
+   guards already present; loop-carried defs are jnoalias_data-scoped
+   buffer stores, discharged by ScopedNoAliasAA vs L1's noalias list
+   (NOT TBAA — see §8.2); no on-path calls. ACCEPTANCE TEST.
 2. jl matmul / julia lz77: same shape as (1).
 3. Swift sha256 residual (the w[t] store bound) + CryptoSwift
    residuals: M1 + M2 (local `[UInt32](repeating:count:)` allocation
    axiom); moderate — allocation is in-function, clobber walk short.
-4. Swift nbody (+410% ceiling): M2 for global arrays initialized in
-   module init + M1 across init->use (longer walks, GC-safepoint calls
-   need mod/ref axioms); hard but bounded.
+4. Swift nbody (+410% ceiling): N1+N2+N3 per §8.5 — outlined-init
+   summaries, the Swift runtime axiom table, and the CoW preservation
+   invariant (M1's no-clobber shape is structurally insufficient);
+   hard but bounded and now precisely specified.
 5. Rust matmul: caller-fact O4 (interprocedural) — sequel v2; the
    black_box harness variant is UNPROVABLE BY DESIGN (honest bound).
 6. Taxonomy class (d) (base64/crc32 strides): NOT a FRAME problem —
