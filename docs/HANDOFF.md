@@ -405,10 +405,47 @@ contact (some losing queries never contained a bvmul at all).
 current trunk LLVM before AND after these changes — SCEV now reports
 Unpredictable for that multi-exit stride shape; drift, not regression;
 the committed campaign numbers predate it.)
-REMAINING for full step 4: classify the 5 vacuous refusals (genuine
-unreachable-version vs freeze-equality overtightening — both sound,
-different reporting) and the 2 SATs; then rungs 2 (matmul/lz77) and
-step 5 (the @inbounds runtime experiment, §8.6).
+STATUS Aug 21 2026 — the 14/16 classified end-to-end:
+* TRANSFORMATION CENSUS (opt + simplifycfg/adce, no audit): trap-edge
+  count 17 -> 5; 12 branches folded; NO trap block fully dead yet.
+  The vectorized bodies (vector.body*) had NO trap side exits even
+  BEFORE the pass — the vectorizer already versions checks out of the
+  vector loop. ODeSSy's folds clean the SCALAR versions, peels, and
+  preheader guard chains (remainder iterations + small-size paths).
+  Consequence for §8.6: the Julia runtime value must come from
+  source-level @inbounds (JIT generates better code upfront), not from
+  post-hoc IR surgery — as already doctrined.
+* THE 5 VACUOUS REFUSALS ARE GENUINE, NOT A BUG. Verified concretely
+  on job 12: G0 asserts fr268=true, freeze identity gives
+  %31 >=u size58-clone, FRAME unifies the clone with the entry k-load,
+  and G1 asserts %31 <u k — both guards dominate the trap pred, so
+  the pred is dynamically INFEASIBLE (a vectorizer version-selection
+  combination that cannot execute). Freeze transparency + FRAME
+  equalities EXPOSED latent infeasibility that used to hide behind
+  free variables. Audit refuses per doctrine (cannot distinguish from
+  encoder bug) = the zstd-xxhash attributed-refusal class. Perf-style
+  runs (no vacuity) fold them — established behavior.
+* THE LAST 2 SATs are the KNOWN trySCEVSym constant-start gate:
+  scalar-remainder loops (L133, L55.us662.us) whose induction phis are
+  {%bc.resume.val,+,1} with NO nuw — symbolic start, refused by design.
+  Closing them = symbolic-start SCEVSYM (needs a written wrap
+  argument) or a guard/FRAME route; next code session's question.
+* FREEZE COMPOSITION CAVEAT (found while writing the §8.7 soundness
+  story, documented honestly): freeze(x)=x composed with the nsw
+  no-wrap IMPORT is not airtight in adversarial IR — a defined
+  execution can create poison via a flagged op, freeze it, and branch
+  on it; the nsw fact excludes that execution from our models, so a
+  trap reachable ONLY through it would be wrongly proven dead. Narrow:
+  requires the trap to be reachable solely via wrapped-then-frozen
+  values. gemm's frozen icmps consume add nsw(phi,-1) with phi >= 1 —
+  wrap needs phi = INT_MIN, impossible in real runs here. Mitigations
+  if it ever matters: conditional identity (no-wrap holds => f = x) or
+  skip nsw import inside frozen slices. Trust-class note belongs in
+  the paper's soundness section.
+REMAINING for full step 4: close the 2 symbolic-start edges; then
+rungs 2 (matmul/lz77) and step 5 — the THREE-ARM @inbounds experiment
+(baseline / all-@inbounds / ODeSSy-proven-@inbounds), honesty rule:
+arm 3 annotates only statements with EVERY emitted check discharged.
 
 **Benchmark ladder, easiest -> hardest (what each needs):**
 1. jl_gemm_base (Julia, 3.4x measured ceiling): M1 only — dimension
