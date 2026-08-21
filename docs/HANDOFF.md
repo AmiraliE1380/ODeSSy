@@ -352,6 +352,21 @@ Swift sha256 residual headroom for FRAME: total ceiling ~9.5%, +4.7/
    the N2 axiom table entries actually needed), THEN nbody (adds N3
    preservation form). Julia matmul/lz77 ride along with (6).
 
+DIAGNOSTIC DOCTRINE (earned Aug 20 2026, use it FIRST): when a
+should-prove query returns SAT FAST (sub-millisecond), the story is a
+MISSING CONSTRAINT, not solver hardness — a struggling solver is slow;
+instant SAT means an easy countermodel exists. Standard move: flip
+`bool DebugOracle = true` in OraclePass.cpp (compile-time; threads=1),
+rerun the one benchmark, read the SMT-LIB + MODEL dumps on stderr, and
+look for (a) trap/guard variables that are STANDALONE free Booleans
+(unmodeled opcode swallowed the condition — the freeze incident), and
+(b) model values that violate facts you believed were asserted. Ten
+minutes; it definitively named the blocker each time it was used.
+Revert the flag after. Three sessions of this pattern (ground-truth IR
+trace -> dead TBAA; per-edge fact table -> smax refusal; countermodel
+dump -> opaque freeze) each redirected the plan before code was
+written — diagnose read-only first, always.
+
 STATUS Aug 20 2026 — steps 2+3+first half of 4 LANDED (commit on
 heap-invariant). oracle-pass<frame> knob; harvest in TrapDiscovery
 (Stage 1, walker query per candidate pair, earliest-dominating-L1,
@@ -364,10 +379,35 @@ integer simple loads only); FRAME:k asserts in TrapSolver phase 2.75
     <vacuity;heavy;ldeq;frame;traps=bounds_error:boundserror>, cores
     |FRAME:0| |FRAME:4| G1 TRAP (frame facts composing with a
     dimension guard), vacuous=0, log byte-identical across runs.
-REMAINING for full step 4: the other 14/16 gemm edges — expected to
-need chained/cross-object equalities (O4 via more FRAME pairs and
-guard composition) and possibly SCEVSYM on the inner-loop phis;
-diagnose from the per-trap SAT logs, then rungs 2 (matmul/lz77) and
+STATUS Aug 20 2026 (later) — TWO MORE BLOCKERS FOUND AND FIXED:
+* smax/umax in scevToZ3 (exactly representable, n-ary ite) + the WRAP
+  GATE it requires (a max can GROW the C + s*BTC bound, so for any
+  (C,s) != (0,1) require SCEV's constant max backedge count and prove
+  the addition fits the width — a wrapped bound is wrong-STRONG).
+  gemm SCEVSYM facts 0 -> 28.
+* freeze(x) == x in Z3Encoder. THE dominant blocker: Julia's
+  vectorizer multiversioning freezes its guard flags and, in 13/16
+  jobs, the TRAP CONDITION itself; as an unknown opcode freeze became
+  a fresh free Boolean, so those queries were trivially SAT forever.
+  Soundness: freeze is the identity on non-poison operands (LangRef);
+  on poison the operand is free in our encoding, so the solver can
+  match freeze's choice — over-approximation intact, same caveat
+  class as nsw/umin_seq. Found via the countermodel dump (doctrine
+  above).
+SCORE: jl_gemm_base 3 -> 14/16 UNSAT, 9 edges ELIMINATED, 2 SAT,
+5 UNSAT refused by the vacuity audit (cores without TRAP: the guard
+context alone is contradictory — likely genuinely-unreachable
+multiversion combinations, the zstd-xxhash refusal class, possibly
+sharpened by double-freeze unification). 0 UNKNOWN — no nonlinear
+blowup anywhere; the "nonlinearity wall" hypothesis did NOT survive
+contact (some losing queries never contained a bvmul at all).
+(Environment note: test_heavy_scevsym_stride1 is SAT under heavy on
+current trunk LLVM before AND after these changes — SCEV now reports
+Unpredictable for that multi-exit stride shape; drift, not regression;
+the committed campaign numbers predate it.)
+REMAINING for full step 4: classify the 5 vacuous refusals (genuine
+unreachable-version vs freeze-equality overtightening — both sound,
+different reporting) and the 2 SATs; then rungs 2 (matmul/lz77) and
 step 5 (the @inbounds runtime experiment, §8.6).
 
 **Benchmark ladder, easiest -> hardest (what each needs):**

@@ -468,6 +468,33 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo
         ValueMap.insert({Inst, res});
         return true;
     }
+    else if (isa<FreezeInst>(Inst)) {
+        // freeze(x) == x, asserted by construction: the frozen value IS
+        // its operand's expression. LangRef: freeze is the IDENTITY on
+        // any non-poison/undef operand; it differs only when x is
+        // poison, where it picks some fixed ordinary value v -- and in
+        // that case x is (directly or transitively) a free variable in
+        // this encoding, so the solver may choose x = v: every defined
+        // execution still has a model, the over-approximation is
+        // intact, UNSAT still means unreachable. Same trust class as
+        // the nsw/umin_seq poison caveats documented elsewhere.
+        //
+        // Load-bearing discovery (jl_gemm_base, Aug 20 2026): Julia's
+        // vectorizer multiversioning FREEZES its guard flags and -- in
+        // 13 of 16 trap jobs -- the TRAP CONDITION itself. As an
+        // unknown opcode, freeze fell through to a fresh free variable,
+        // so those queries were "guards && (unconstrained Bool)":
+        // trivially SAT in 0.2 ms no matter what facts were added.
+        // Found via the DebugOracle countermodel dump (HANDOFF §8.7).
+        Value *Op = Inst->getOperand(0);
+        if (!Op->getType()->isIntegerTy()) {
+            // Pointer/vector freeze: stay a free variable (never wrong).
+            getOrCreateZ3Expr(Inst);
+            return true;
+        }
+        ValueMap.insert({Inst, getOrCreateZ3Expr(Op)});
+        return true;
+    }
     else if (auto *ExtVal = dyn_cast<ExtractValueInst>(Inst)) {
         Value *Agg = ExtVal->getAggregateOperand();
         auto *Call = dyn_cast<CallInst>(Agg);
