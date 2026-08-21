@@ -296,7 +296,33 @@ z3::expr FactEncoder::scevToZ3(const SCEV *S, bool &OK, unsigned &W) {
         OK = false; W = 1;
         return Encoder.apintToBV(APInt(1, 0));
     }
-    // umax/smax/mul/addrec/...: REFUSE (never approximate a bound).
+    // umax / smax: EXACTLY expressible in BV as ite(a >=u b, a, b) /
+    // ite(a >=s b, a, b) -- value-preserving, no approximation (the
+    // refusal policy is intact). Load-bearing for gemm-class rotated
+    // Julia loops: their 1-based counters' symbolic-max BTCs are
+    // (-1 + (0 smax n)) shapes, so without these cases every such loop
+    // was silently refused and SCEVSYM asserted nothing (verified on
+    // jl_gemm_base, Aug 20 2026 -- scevsym=0 in all 16 jobs). NOTE:
+    // unlike umin, a max can GROW the bound, so the C + s*BTC addition
+    // can newly wrap; trySCEVSym's wrap gate below is the required
+    // companion -- do not remove one without the other.
+    if (isa<SCEVUMaxExpr>(S) || isa<SCEVSMaxExpr>(S)) {
+        bool IsSigned = isa<SCEVSMaxExpr>(S);
+        auto *NAry = cast<SCEVNAryExpr>(S);
+        unsigned W0 = 0;
+        z3::expr Acc = scevToZ3(NAry->getOperand(0), OK, W0);
+        for (unsigned i = 1; OK && i < NAry->getNumOperands(); ++i) {
+            unsigned Wi = 0;
+            z3::expr Ei = scevToZ3(NAry->getOperand(i), OK, Wi);
+            if (!OK) break;
+            if (Wi != W0) { OK = false; break; }   // paranoia; SCEV promises equal
+            Acc = z3::ite(IsSigned ? z3::sge(Acc, Ei) : z3::uge(Acc, Ei),
+                          Acc, Ei);
+        }
+        W = W0;
+        return Acc;
+    }
+    // mul/addrec/...: REFUSE (never approximate a bound).
     OK = false; W = 1;
     return Encoder.apintToBV(APInt(1, 0));
 }
@@ -339,6 +365,31 @@ bool FactEncoder::trySCEVSym(Value *V) {
         BTC = SE->getSymbolicMaxBackedgeTakenCount(L);
     }
     if (isa<SCEVCouldNotCompute>(BTC)) return false;
+
+    // WRAP GATE (companion of the umax/smax translator cases). The fact
+    // asserts phi <=u C + s*BTC in W-bit BV arithmetic. For {0,+,1} the
+    // bound IS BTC -- no addition, nothing can wrap. Every other (C, s)
+    // now must prove the addition cannot wrap for any value the bound
+    // expression can take: require SCEV's CONSTANT max backedge count M
+    // (refuse on CouldNotCompute or the all-ones "unknown" sentinel) and
+    // check C + s*M fits in the phi's width. Sound because the true BTC
+    // and the symbolic max are both <=u M, so the asserted bound's value
+    // never exceeds C + s*M. Before the max cases this was vacuously
+    // covered for umin/udiv shapes (they only shrink the latch bound the
+    // nuw flag already covers); a max can GROW it, so the explicit gate
+    // is now load-bearing.
+    if (!(C.isZero() && SC.isOne())) {
+        const SCEV *CM = SE->getConstantMaxBackedgeTakenCount(L);
+        auto *CMC = dyn_cast<SCEVConstant>(CM);
+        if (!CMC) return false;
+        APInt M = CMC->getAPInt();
+        if (M.isAllOnes()) return false;           // "unknown" sentinel
+        unsigned WG = Phi->getType()->getIntegerBitWidth();
+        bool Ovf1 = false, Ovf2 = false;
+        APInt Prod = SC.zextOrTrunc(WG).umul_ov(M.zextOrTrunc(WG), Ovf1);
+        (void)Prod.uadd_ov(C.zextOrTrunc(WG), Ovf2);
+        if (Ovf1 || Ovf2) return false;
+    }
 
     bool OK = true;
     unsigned WB = 0;
