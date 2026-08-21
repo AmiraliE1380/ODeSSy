@@ -442,10 +442,42 @@ STATUS Aug 21 2026 — the 14/16 classified end-to-end:
   if it ever matters: conditional identity (no-wrap holds => f = x) or
   skip nsw import inside frozen slices. Trust-class note belongs in
   the paper's soundness section.
-REMAINING for full step 4: close the 2 symbolic-start edges; then
-rungs 2 (matmul/lz77) and step 5 — the THREE-ARM @inbounds experiment
-(baseline / all-@inbounds / ODeSSy-proven-@inbounds), honesty rule:
-arm 3 annotates only statements with EVERY emitted check discharged.
+STATUS Aug 21 2026 (later) — the last-2-edges problem SIZED (it is a
+milestone, not an evening): countermodels assign the version-copy phis
+(value_phi20.us669.us, value_phi35) 2^63+1 — no upper bound. Closing
+them needs SCEVSYM-v2:
+* SUBTRACTION-FORM FACTS (the key design insight, record before it is
+  lost): assert `phi - start <=u BTC` instead of `phi <=u start+BTC`.
+  phi = start + k in mod-2^W arithmetic makes phi - start = k EXACTLY,
+  unconditionally — no nuw needed for the UPPER bound, the C + s*BTC
+  wrap hazard disappears (the Aug 20 wrap gate becomes unnecessary in
+  this form), and SYMBOLIC starts (bc.resume.val) come free. Keep the
+  lower bound (phi >=u start) nuw-gated as today.
+* const-mul translation in scevToZ3 (exact in BV; the remainder BTCs
+  contain -1 * %bc.resume.val).
+* THE OPEN QUESTION that decides success: both edges still hinge on
+  bounding the free leaf %bc.resume.val (the vector loop's resume
+  index) relative to m — its defining arithmetic (n.vec = m - m urem 8
+  shape) is OUTSIDE the slice. Candidate: assert SCEV/LVI facts on
+  free LEAVES OF BTC EXPRESSIONS, not just slice boundary values.
+  Without this the subtraction-form fact is mod-weak and the
+  countermodel survives. Prototype on query 1 (constant-start
+  phi20.us669.us) first.
+RUNG 2 REALITY CHECK (same day): matmul.jl / lz77.jl under the full
+current stack: 0 UNSAT — and that is CONSISTENT, not a failure: they
+are our implementations WITHOUT dimension guards (taxonomy (b));
+nothing relates the sizes, mismatched inputs genuinely trap, the
+checks are the spec (irreducibility framing). The HANDOFF §8 ladder's
+"rung 2 rides along free" was WRONG — jl_gemm_base is special because
+it carries Base's real guards; it remains the @inbounds-experiment
+vehicle. Do not burn time re-triaging matmul/lz77 expecting proofs.
+REMAINING for full step 4: SCEVSYM-v2 (above) to close the last 2
+edges; then step 5 — the THREE-ARM @inbounds experiment (baseline /
+all-@inbounds / ODeSSy-proven-@inbounds), honesty rule: arm 3
+annotates only statements with EVERY emitted check discharged. Arms
+1+2 (baseline + ceiling) can be measured any time; arm 3 waits for
+16/16 (the 5 audit-refused edges are provably-unreachable preds and
+do not block annotation).
 
 **Benchmark ladder, easiest -> hardest (what each needs):**
 1. jl_gemm_base (Julia, 3.4x measured ceiling): M1 only — dimension
