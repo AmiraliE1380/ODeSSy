@@ -542,7 +542,35 @@ AND THE COUNTERMODELS NOW NAME THE FINAL ARCHITECTURE GAP:
   audit-eliminated + 5 attributed-infeasible), with the last 2 named
   as vectorizer zero-trip-guard residue — an honest, well-understood
   bound.
-REMAINING for full step 4: Go 3 (leaf pre-encoding) OR accept 14/16; then step 5 — the THREE-ARM @inbounds experiment (baseline /
+STATUS Aug 22 2026 (evening) — STEP 5 RAN. THE SEQUEL HAS ITS
+HEADLINE NUMBER:
+* BLOCK -> SOURCE MAPPING (read-only, debug-info inlinedAt walk,
+  cross-checked against which array each boundserror call receives):
+  L82 = B[l,j] read (line 19), L160 = C[i,j] READ (line 21),
+  L220 = A[i,l] read (line 21), L282 = C[i,j] WRITE (line 21).
+  Fully-proven blocks: L220 (4/4 edges) and L282 (3/3). L82 and L160
+  each keep one unproven edge (the zero-trip remainder residue).
+* THREE-ARM EXPERIMENT (native_bench/jl_gemm_arms.jl; log
+  results/perf/gemm_inbounds_arms_0822.log; N=512, REPS=21 rotated,
+  identical desugared bodies differing ONLY in @inbounds placement,
+  outputs bitwise identical across arms):
+    arm1 baseline            0.0601 s
+    arm2 all-@inbounds       0.0144 s   4.185x   (in-protocol ceiling)
+    arm3 ODeSSy-proven only  0.0145 s   4.156x   = 99.8% OF THE GAP
+  arm3 annotates ONLY the two proven accesses (A read + C write); the
+  B read and C read STAY CHECKED. Sentence for the paper: proof-backed
+  selective @inbounds on Julia stdlib GEMM recovers 99.8% of the
+  expert-annotation ceiling while leaving half the accesses checked —
+  the two accesses ODeSSy fully proved are exactly the
+  performance-critical ones.
+* Open mechanism question (footnote, not blocker): WHY arm3 matches
+  arm2 with the inner-loop C-read still checked — plausibly the
+  vectorizer can multiversion a load-side check but the store-side
+  check and A-side exits were what blocked profitable vectorization.
+  A code_llvm diff of arm2 vs arm3 would settle it; optional.
+REMAINING for full step 4: Go 3 (leaf pre-encoding) OR accept 14/16
+— NOTE the arm-3 result weakens Go 3's value further: the unproven
+residue guards accesses whose checks demonstrably cost ~nothing; then step 5 — the THREE-ARM @inbounds experiment (baseline /
 all-@inbounds / ODeSSy-proven-@inbounds), honesty rule: arm 3
 annotates only statements with EVERY emitted check discharged. Arms
 1+2 (baseline + ceiling) can be measured any time; arm 3 waits for

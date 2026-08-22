@@ -1,0 +1,9 @@
+# three-arm @inbounds experiment, Mac M-series, julia 1.12.6, 2026-08-22
+# arms differ ONLY in @inbounds placement; identical desugared body
+# arm3 annotations = ODeSSy-proven blocks L220 (A[i,l] read, 4/4 edges) + L282 (C[i,j] write, 3/3)
+outputs identical: arm2==arm1 true   arm3==arm1 true
+N=512 REPS=21  (medians, seconds)
+arm1 baseline      : 0.0601
+arm2 all-inbounds  : 0.0144   speedup vs arm1: 4.185x
+arm3 odessy-proven : 0.0145   speedup vs arm1: 4.156x
+arm3 recovers 99.8% of the arm2 gap
