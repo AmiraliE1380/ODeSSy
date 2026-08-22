@@ -57,7 +57,111 @@ unsigned FactEncoder::encodeBoundaryFacts(BasicBlock *PredBB) {
         trySCEV(V);
         trySCEVSym(V);
     }
+    processScevLeaves(PredBB);
     return NumFacts;
+}
+
+// =====================================================================
+// Go 2 -- LEAF FACTS (Aug 22 2026). trySCEVSym's translated bounds
+// reference SSA leaves (SCEVUnknown) that are OUTSIDE the slice; each
+// became a fresh free variable, and a bound over free variables is
+// mod-weak (the solver assigns the leaf 2^63 and walks around it --
+// verified countermodels on jl_gemm_base's remainder loops). This pass
+// drains the queue of every such leaf and asserts what is known about
+// IT, enqueueing any leaves those facts introduce (work-list, seen-set,
+// hard budget). Per leaf:
+//   * the value battery (RM/RA/KB/LVI/SCEV ranges + SCEVSYM if it is a
+//     header phi) -- all existing, individually-audited fact sources;
+//   * ONE structural fact, first match wins, label SCEVEQ:
+//     - freeze:      leaf == operand      (identity on non-poison; on
+//                    poison the operand is free and can match freeze's
+//                    choice -- the Z3Encoder freeze argument verbatim);
+//     - non-header phi: OR_i (leaf == incoming_i) -- a phi's value IS
+//                    one of its incomings on every execution,
+//                    unconditionally; edge conditions would only
+//                    STRENGTHEN it, so the pure disjunction is sound;
+//     - SCEV equality: leaf == scevToZ3(SCEV(leaf)) when SCEV folds the
+//                    leaf to a non-Unknown expression -- SCEV semantics
+//                    IS the value's ring semantics, so the equality is
+//                    exact (poison caveat: nsw class, as everywhere).
+// Facts NEVER move a boundary: the leaf stays free-plus-constrained.
+// =====================================================================
+void FactEncoder::processScevLeaves(BasicBlock *PredBB) {
+    // Budget: leaves processed, not facts -- keeps worst-case audit runs
+    // (CryptoSwift-scale) bounded. 32 is ~4x what gemm needs.
+    unsigned Budget = 32;
+    for (size_t Head = 0; Head < LeafQueue.size() && Budget; ++Head) {
+        Value *V = LeafQueue[Head];
+        auto *I = dyn_cast<Instruction>(V);
+        if (!I || !I->getType()->isIntegerTy()) continue;
+        --Budget;
+        // Value battery (each source has its own gates and labels).
+        tryRangeMetadata(V);
+        tryRangeAttr(V);
+        tryKnownBits(V);
+        tryLVI(V, PredBB);
+        trySCEV(V);
+        trySCEVSym(V);
+        unsigned W = I->getType()->getIntegerBitWidth();
+        // Structural fact.
+        if (auto *FI = dyn_cast<FreezeInst>(I)) {
+            Value *Op = FI->getOperand(0);
+            if (!Op->getType()->isIntegerTy()) continue;
+            z3::expr Fact =
+                Encoder.valueAsBV(V, W) == Encoder.valueAsBV(Op, W);
+            std::string Lbl = mkLabel("SCEVEQ");
+            Encoder.assertRawFact(Fact, Audit ? Lbl : std::string());
+            Log << "    -> Fact[" << Lbl << "] " << valueStr(V)
+                << " == freeze operand (leaf identity)\n";
+            ++NumFacts;
+            if (auto *OpI = dyn_cast<Instruction>(Op))
+                if (LeafSeen.insert(OpI).second) LeafQueue.push_back(OpI);
+            continue;
+        }
+        if (auto *Phi = dyn_cast<PHINode>(I)) {
+            Loop *L = LI ? LI->getLoopFor(Phi->getParent()) : nullptr;
+            if (L && L->getHeader() == Phi->getParent())
+                continue;   // header phi: SCEVSYM above was its chance
+            if (Phi->getNumIncomingValues() == 0) continue;
+            z3::expr PhiE = Encoder.valueAsBV(V, W);
+            z3::expr Fact = (PhiE == Encoder.valueAsBV(Phi->getIncomingValue(0), W));
+            bool OK = Phi->getIncomingValue(0)->getType()->isIntegerTy();
+            for (unsigned i = 1; OK && i < Phi->getNumIncomingValues(); ++i) {
+                Value *Inc = Phi->getIncomingValue(i);
+                if (!Inc->getType()->isIntegerTy()) { OK = false; break; }
+                Fact = Fact || (PhiE == Encoder.valueAsBV(Inc, W));
+            }
+            if (!OK) continue;
+            for (unsigned i = 0; i < Phi->getNumIncomingValues(); ++i)
+                if (auto *IncI = dyn_cast<Instruction>(Phi->getIncomingValue(i)))
+                    if (LeafSeen.insert(IncI).second)
+                        LeafQueue.push_back(IncI);
+            std::string Lbl = mkLabel("SCEVEQ");
+            Encoder.assertRawFact(Fact, Audit ? Lbl : std::string());
+            Log << "    -> Fact[" << Lbl << "] " << valueStr(V)
+                << " in phi image (" << Phi->getNumIncomingValues()
+                << " incoming)\n";
+            ++NumFacts;
+            continue;
+        }
+        if (SE && SE->isSCEVable(I->getType())) {
+            const SCEV *S = SE->getSCEV(I);
+            if (!isa<SCEVUnknown>(S) && !isa<SCEVCouldNotCompute>(S)) {
+                bool OK = true;
+                unsigned WE = 0;
+                z3::expr E = scevToZ3(S, OK, WE);   // enqueues new leaves
+                if (OK && WE == W) {
+                    z3::expr Fact = Encoder.valueAsBV(V, W) == E;
+                    std::string Lbl = mkLabel("SCEVEQ");
+                    Encoder.assertRawFact(Fact, Audit ? Lbl : std::string());
+                    std::string SS; raw_string_ostream SOS(SS); S->print(SOS);
+                    Log << "    -> Fact[" << Lbl << "] " << valueStr(V)
+                        << " == SCEV(" << SS << ")\n";
+                    ++NumFacts;
+                }
+            }
+        }
+    }
 }
 
 bool FactEncoder::tryRangeMetadata(Value *V) {
@@ -221,6 +325,12 @@ z3::expr FactEncoder::scevToZ3(const SCEV *S, bool &OK, unsigned &W) {
         if (!V->getType()->isIntegerTy()) { OK = false; W = 1; }
         else W = V->getType()->getIntegerBitWidth();
         if (!OK) return Encoder.apintToBV(APInt(1, 0));
+        // Go 2: remember every SSA leaf we turn into a query variable so
+        // processScevLeaves() can give it facts of its own (otherwise a
+        // leaf like %bc.resume.val stays a free variable and the bound
+        // referencing it is mod-weak -- the gemm remainder-loop lesson).
+        if (isa<Instruction>(V) && LeafSeen.insert(V).second)
+            LeafQueue.push_back(V);
         return Encoder.valueAsBV(V, W);
     }
     if (auto *SA = dyn_cast<SCEVAddExpr>(S)) {

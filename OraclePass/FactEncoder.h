@@ -55,6 +55,13 @@ class FactEncoder {
     bool Audit;                    // true => tracked assertions with labels
     llvm::raw_ostream &Log;
     unsigned NumFacts = 0;
+    // SCEVSYM-v2 Go 2 (leaf facts): scevToZ3 records every SCEVUnknown
+    // SSA leaf it turns into a query variable; after the main boundary
+    // walk, processScevLeaves() drains the queue giving each leaf its
+    // own facts (value battery + one structural fact), enqueueing any
+    // leaves those facts introduce. Seen-set + budget bound the walk.
+    std::vector<llvm::Value *> LeafQueue;
+    llvm::SmallPtrSet<llvm::Value *, 16> LeafSeen;
 
 public:
     FactEncoder(Z3Encoder &Enc, llvm::LazyValueInfo *LVI,
@@ -75,6 +82,10 @@ private:
     // SCEVSYM: symbolic trip-count bound for an affine {C,+,1} header phi
     // (see the soundness block in FactEncoder.cpp). Requires SE and LI.
     bool trySCEVSym(llvm::Value *V);
+    // Go 2: drain LeafQueue -- give every free leaf of a translated SCEV
+    // expression its own facts (value battery + freeze identity /
+    // non-header-phi image / SCEV equality). See soundness block in .cpp.
+    void processScevLeaves(llvm::BasicBlock *PredBB);
     // SCEV -> Z3 mini-translator (constants, SSA unknowns, adds, casts,
     // umin/umin_seq [exact via ite]; everything else REFUSED). On success OK stays true and W is the
     // expression's bit width. All exprs live in Encoder's context.

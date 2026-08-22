@@ -506,8 +506,43 @@ Go 2 (run_swift_perf Phase A will now eliminate 7; the +4.7/+5.0
 row may move). nbody: 0 UNSAT, 88 frame pairs harvested / 100% refused
 on attribute-less runtime calls (N2 confirmed load-bearing, see probe
 note above).
-REMAINING for full step 4: Go 2 (leaf facts) to close the last 2
-edges; then step 5 — the THREE-ARM @inbounds experiment (baseline /
+STATUS Aug 22 2026 (later) — GO 2 LANDED, LAST 2 EDGES STILL STAND,
+AND THE COUNTERMODELS NOW NAME THE FINAL ARCHITECTURE GAP:
+* Landed: processScevLeaves (FactEncoder) — scevToZ3 records every
+  SCEVUnknown SSA leaf; a work-list pass (seen-set, budget 32) gives
+  each leaf the full value battery PLUS one structural fact, label
+  SCEVEQ: freeze identity / non-header-phi image disjunction
+  (leaf == inc_1 ∨ ... — unconditionally sound) / SCEV equality
+  (leaf == translated SCEV; ring semantics, exact). 20 SCEVEQ facts
+  fire on gemm; all 5 SAT tripwires hold; gate 20/8; sha256 stays 7;
+  symstart1 stays UNSAT.
+* WHY THE 2 EDGES SURVIVE (countermodel receipts, gemm_debug3):
+  the leaf chain is now CONNECTED (resume = ind.end = SCEV expr all
+  consistent) but (a) SELECT leaves (%68, %16 = select(c, VF, n.mod.vf))
+  have only range facts — their arm structure is lost; and (b) even a
+  select-image rule cannot close them: the models pick the ZERO-TRIP
+  scenario (r = ind.end = limit+1, scalar remainder loop never
+  executes) which reality excludes via the MIDDLE-BLOCK BRANCH
+  ("resume == limit? skip scalar loop") — PATH information that
+  unconditional image disjunctions structurally cannot carry, and that
+  Phase-0 guard collection misses (the middle-block branch does not
+  dominate via the collected chain in the .us structure).
+* GO 3 DESIGN (the correct fix, sized honestly — a session, not a
+  patch): LEAF PRE-ENCODING. Before asserting SCEVSYM facts, compute
+  the leaf def-closure (worklist, standard boundary rules: header
+  phis/loads/calls stay boundaries), then encode the closure PRECISELY
+  via Z3Encoder::encodeInstruction in RPO — selects become real ites,
+  non-header phis get their edge conditions, branch-condition icmps
+  encode — and only then run the fact battery. ORDERING TRAP that
+  forces the pre-encoding shape: ValueMap.insert is first-wins, so any
+  valueAsBV reference made BEFORE the precise encode permanently
+  freezes the leaf as a free variable — leaves must be encoded before
+  the first fact translation touches them.
+* Fallback position if Go 3 is deferred: gemm ships as 14/16 (9
+  audit-eliminated + 5 attributed-infeasible), with the last 2 named
+  as vectorizer zero-trip-guard residue — an honest, well-understood
+  bound.
+REMAINING for full step 4: Go 3 (leaf pre-encoding) OR accept 14/16; then step 5 — the THREE-ARM @inbounds experiment (baseline /
 all-@inbounds / ODeSSy-proven-@inbounds), honesty rule: arm 3
 annotates only statements with EVERY emitted check discharged. Arms
 1+2 (baseline + ceiling) can be measured any time; arm 3 waits for
