@@ -471,6 +471,16 @@ checks are the spec (irreducibility framing). The HANDOFF §8 ladder's
 "rung 2 rides along free" was WRONG — jl_gemm_base is special because
 it carries Base's real guards; it remains the @inbounds-experiment
 vehicle. Do not burn time re-triaging matmul/lz77 expecting proofs.
+NBODY PROBE (Aug 21, "maybe we are lucky" run): full stack
+<vacuity;heavy;ldeq;frame> on logs/swift_triage/nbody.ll: 0 UNSAT /
+84 SAT, and the diagnostic that matters: 88 frame candidate pairs
+HARVESTED (pointer-identity works — pairs are reloads of the global
+n and array metadata) and 100% REFUSED on intervening opaque calls —
+the attribute-less swift_beginAccess / isUniquelyReferenced / retain /
+release wall, exactly as §8.5 N2 predicted. Machinery validated; the
+missing ingredient is precisely the Swift runtime axiom table (N2),
+then N1 outlined-init summaries, then N3's preservation invariant.
+No shortcut exists: do not re-run nbody expecting movement before N2.
 REMAINING for full step 4: SCEVSYM-v2 (above) to close the last 2
 edges; then step 5 — the THREE-ARM @inbounds experiment (baseline /
 all-@inbounds / ODeSSy-proven-@inbounds), honesty rule: arm 3
