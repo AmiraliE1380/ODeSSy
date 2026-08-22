@@ -23,9 +23,9 @@ tmux. If DNS dies: `echo "nameserver 8.8.8.8" | sudo tee
 **Build + gate (both machines):**
 ```
 ninja -C build
-bash run_tests.sh          # MUST print PASS=19 / FAIL=7 (was 17/6 pre-FRAME-tests)
+bash run_tests.sh          # MUST print PASS=20 / FAIL=8 (17/6 pre-FRAME, 19/7 pre-SCEVSYM-v2)
 ```
-The 7 FAILs are heavy/ldeq/stride/frame tests under the light gate BY
+The 8 FAILs are heavy/ldeq/stride/frame/symstart tests under the light gate BY
 DESIGN (test_frame1 flips to PASS once FRAME lands, gate becomes 20/6);
 `test_heavy_scevsym_sat`, `test_heavy_scevsym_stride_sat`,
 `test_frame_clobber_sat`, and `test_frame_phi_sat` must PASS
@@ -481,7 +481,32 @@ release wall, exactly as §8.5 N2 predicted. Machinery validated; the
 missing ingredient is precisely the Swift runtime axiom table (N2),
 then N1 outlined-init summaries, then N3's preservation invariant.
 No shortcut exists: do not re-run nbody expecting movement before N2.
-REMAINING for full step 4: SCEVSYM-v2 (above) to close the last 2
+STATUS Aug 22 2026 — SCEVSYM-v2 GO 1 LANDED: subtraction-form facts
+(phi - start <=u s*BTC; s==1 upper bound UNCONDITIONAL — modular
+subtraction cancels wrap, no nuw, no wrap gate, symbolic starts free;
+s>1 keeps constant-start+nuw+s*M gates), general mul in scevToZ3
+(exact ring arithmetic; a wrapped product only weakens under the
+sub-form), two new tests (test_heavy_scevsym_symstart1 UNSAT-under-
+heavy exercising symbolic start + mul(-1) + umax + umin in one BTC;
+test_heavy_scevsym_symstart_sat tripwire). Gate now PASS=20/FAIL=8.
+All regression points re-verified (5 UNSAT-under-knob tests, 6 SAT
+tripwires, frame tests, sha256 stays 7, gemm stays 14/16 + 9 elim).
+GO 2 QUESTION NOW SURGICALLY ISOLATED: the v2 facts FIRE on gemm's
+two surviving edges (phi35 - bc.resume.val <=u BTC(...) asserted, mul
+translated) but the traps survive because %bc.resume.val is a FREE
+LEAF — its defining arithmetic (n.vec = m - m urem 8 shape) is outside
+the slice, so the solver picks r huge and the modular bound is weak.
+Go 2 = facts on BTC/start free leaves (encode the leaf's defining
+arithmetic, or assert its SCEV range/expression) — everything else is
+already in place.
+ALSO BANKED (Aug 21-22, cross-benchmark ride-alongs): Swift sha256
+static 5 -> 7 of 38 UNSAT (smax/umax translator; frame not involved —
+0 candidate pairs there). Mac perf rerun of sha256 is warranted AFTER
+Go 2 (run_swift_perf Phase A will now eliminate 7; the +4.7/+5.0
+row may move). nbody: 0 UNSAT, 88 frame pairs harvested / 100% refused
+on attribute-less runtime calls (N2 confirmed load-bearing, see probe
+note above).
+REMAINING for full step 4: Go 2 (leaf facts) to close the last 2
 edges; then step 5 — the THREE-ARM @inbounds experiment (baseline /
 all-@inbounds / ODeSSy-proven-@inbounds), honesty rule: arm 3
 annotates only statements with EVERY emitted check discharged. Arms

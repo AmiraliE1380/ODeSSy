@@ -302,10 +302,11 @@ z3::expr FactEncoder::scevToZ3(const SCEV *S, bool &OK, unsigned &W) {
     // Julia loops: their 1-based counters' symbolic-max BTCs are
     // (-1 + (0 smax n)) shapes, so without these cases every such loop
     // was silently refused and SCEVSYM asserted nothing (verified on
-    // jl_gemm_base, Aug 20 2026 -- scevsym=0 in all 16 jobs). NOTE:
-    // unlike umin, a max can GROW the bound, so the C + s*BTC addition
-    // can newly wrap; trySCEVSym's wrap gate below is the required
-    // companion -- do not remove one without the other.
+    // jl_gemm_base, Aug 20 2026 -- scevsym=0 in all 16 jobs). NOTE
+    // (v2 update, Aug 22): under the subtraction-form fact a grown or
+    // even wrapped bound value is WEAK, never wrong-strong, so no wrap
+    // gate is needed for s == 1; the s > 1 path keeps its s*M gate in
+    // trySCEVSym.
     if (isa<SCEVUMaxExpr>(S) || isa<SCEVSMaxExpr>(S)) {
         bool IsSigned = isa<SCEVSMaxExpr>(S);
         auto *NAry = cast<SCEVNAryExpr>(S);
@@ -322,7 +323,29 @@ z3::expr FactEncoder::scevToZ3(const SCEV *S, bool &OK, unsigned &W) {
         W = W0;
         return Acc;
     }
-    // mul/addrec/...: REFUSE (never approximate a bound).
+    // mul: EXACT in BV -- SCEV arithmetic is ring arithmetic mod 2^W and
+    // bvmul implements exactly that, so translating it approximates
+    // NOTHING (refusal policy intact; the original blanket refusal was
+    // caution, not necessity). Load-bearing for remainder-loop BTCs,
+    // which contain -1 * %bc.resume.val terms (verified on
+    // jl_gemm_base's L55.us662.us / L133, Aug 21 2026). The BOUND
+    // remains safe because the v2 fact shape (see trySCEVSym) never
+    // adds start to it -- a wrapped product makes the bound weak, not
+    // wrong-strong.
+    if (auto *SM = dyn_cast<SCEVMulExpr>(S)) {
+        unsigned W0 = 0;
+        z3::expr Acc = scevToZ3(SM->getOperand(0), OK, W0);
+        for (unsigned i = 1; OK && i < SM->getNumOperands(); ++i) {
+            unsigned Wi = 0;
+            z3::expr Ei = scevToZ3(SM->getOperand(i), OK, Wi);
+            if (!OK) break;
+            if (Wi != W0) { OK = false; break; }   // paranoia; SCEV promises equal
+            Acc = Acc * Ei;
+        }
+        W = W0;
+        return Acc;
+    }
+    // addrec/...: REFUSE (never approximate a bound).
     OK = false; W = 1;
     return Encoder.apintToBV(APInt(1, 0));
 }
@@ -343,82 +366,97 @@ bool FactEncoder::trySCEVSym(Value *V) {
     if (!Step) return false;
     const APInt &SC = Step->getAPInt();
     if (!SC.isStrictlyPositive()) return false;   // positive constant strides only
-    auto *Start = dyn_cast<SCEVConstant>(AR->getStart());
-    if (!Start) return false;
-    const APInt &C = Start->getAPInt();
-    // {0,+,1} is wrap-free by construction (value == iteration count).
-    // EVERY other (start, step) combination -- nonzero start or stride
-    // s > 1 -- needs SCEV's own no-unsigned-wrap proof: under nuw the
-    // recurrence is monotone and its value at iteration k is exactly
-    // start + s*k with k <= BTC, so start <=u phi <=u start + s*BTC,
-    // and the BV computation of that bound cannot wrap either.
-    if (!(C.isZero() && SC.isOne()) && !AR->hasNoUnsignedWrap()) return false;
+    const SCEV *StartS = AR->getStart();
+    auto *StartC = dyn_cast<SCEVConstant>(StartS);
+    bool HasNUW = AR->hasNoUnsignedWrap();
 
-    const SCEV *BTC = SE->getBackedgeTakenCount(L);
-    if (isa<SCEVCouldNotCompute>(BTC)) {
-        // MULTI-EXIT FALLBACK: when the trap edge is itself a loop exit
-        // (the normal sanitizer shape), SCEV usually reports the EXACT
-        // BTC as CouldNotCompute -- but still offers a SYMBOLIC MAX.
-        // Sound by construction: our fact is an upper bound
-        // (phi <=u start + BTC), and the symbolic max is >= the true
-        // backedge count, so substituting it only WEAKENS the fact.
-        BTC = SE->getSymbolicMaxBackedgeTakenCount(L);
-    }
-    if (isa<SCEVCouldNotCompute>(BTC)) return false;
-
-    // WRAP GATE (companion of the umax/smax translator cases). The fact
-    // asserts phi <=u C + s*BTC in W-bit BV arithmetic. For {0,+,1} the
-    // bound IS BTC -- no addition, nothing can wrap. Every other (C, s)
-    // now must prove the addition cannot wrap for any value the bound
-    // expression can take: require SCEV's CONSTANT max backedge count M
-    // (refuse on CouldNotCompute or the all-ones "unknown" sentinel) and
-    // check C + s*M fits in the phi's width. Sound because the true BTC
-    // and the symbolic max are both <=u M, so the asserted bound's value
-    // never exceeds C + s*M. Before the max cases this was vacuously
-    // covered for umin/udiv shapes (they only shrink the latch bound the
-    // nuw flag already covers); a max can GROW it, so the explicit gate
-    // is now load-bearing.
-    if (!(C.isZero() && SC.isOne())) {
+    // ================= SCEVSYM v2: SUBTRACTION-FORM FACTS =============
+    // (Aug 22 2026; v1's phi <=u start + s*BTC shape and its wrap gate
+    // are retired for s == 1 -- see the soundness note below.)
+    //
+    //   UPPER:  phi - start <=u s*BTC          (s == 1: UNCONDITIONAL)
+    //   LOWER:  start <=u phi                  (only under nuw)
+    //
+    // WHY THE s == 1 UPPER BOUND NEEDS NO GATES AT ALL: the recurrence's
+    // value at iteration k is (start + k) mod 2^W, so in BV arithmetic
+    // phi - start = k EXACTLY -- modular subtraction cancels any wrap,
+    // no nuw flag and no constant start required. And k <=u BTC is
+    // SCEV's own claim (for the symbolic-max fallback: its W-bit value
+    // is >=u the true count, so substituting only WEAKENS the fact).
+    // v1's hazard -- start + BTC wrapping into a wrong-STRONG bound --
+    // cannot occur because no addition is ever computed. A wrapped
+    // value inside the translated BTC expression itself (mul/max
+    // composites) makes the bound WEAK, never wrong: weak-but-true is
+    // the refusal-policy-compatible failure mode.
+    //
+    // SYMBOLIC STARTS COME FREE: start is translated by scevToZ3 like
+    // any bound expression (constants, SSA leaves, arithmetic); an
+    // unencoded leaf becomes a fresh free variable, which only weakens.
+    // This is what the vectorizer's remainder loops ({bc.resume.val,
+    // +,1}) need -- v1's constant-start gate refused all of them.
+    //
+    // s > 1 KEEPS THE v1 GATES (constant start + nuw + s*M no-overflow
+    // via SCEV's constant max M): phi - start = (s*k) mod 2^W, and
+    // comparing that against a possibly-wrapped s*BTC is only exact
+    // when s*k cannot wrap -- which is what nuw plus the s*M check
+    // establish. Stride-s loops are rare and SCEV mostly refuses their
+    // BTCs on current trunk anyway (see HANDOFF environment note).
+    if (!SC.isOne()) {
+        if (!StartC || !HasNUW) return false;
         const SCEV *CM = SE->getConstantMaxBackedgeTakenCount(L);
         auto *CMC = dyn_cast<SCEVConstant>(CM);
         if (!CMC) return false;
         APInt M = CMC->getAPInt();
         if (M.isAllOnes()) return false;           // "unknown" sentinel
         unsigned WG = Phi->getType()->getIntegerBitWidth();
-        bool Ovf1 = false, Ovf2 = false;
-        APInt Prod = SC.zextOrTrunc(WG).umul_ov(M.zextOrTrunc(WG), Ovf1);
-        (void)Prod.uadd_ov(C.zextOrTrunc(WG), Ovf2);
-        if (Ovf1 || Ovf2) return false;
+        bool Ovf = false;
+        (void)SC.zextOrTrunc(WG).umul_ov(M.zextOrTrunc(WG), Ovf);
+        if (Ovf) return false;
     }
+
+    const SCEV *BTC = SE->getBackedgeTakenCount(L);
+    if (isa<SCEVCouldNotCompute>(BTC)) {
+        // MULTI-EXIT FALLBACK: when the trap edge is itself a loop exit
+        // (the normal sanitizer shape), SCEV usually reports the EXACT
+        // BTC as CouldNotCompute -- but still offers a SYMBOLIC MAX.
+        BTC = SE->getSymbolicMaxBackedgeTakenCount(L);
+    }
+    if (isa<SCEVCouldNotCompute>(BTC)) return false;
 
     bool OK = true;
     unsigned WB = 0;
     z3::expr TB = scevToZ3(BTC, OK, WB);
     if (!OK || WB == 0) return false;
+    unsigned WS = 0;
+    z3::expr SB = scevToZ3(StartS, OK, WS);
+    if (!OK || WS == 0) return false;
 
     unsigned WP = Phi->getType()->getIntegerBitWidth();
     unsigned W = WP > WB ? WP : WB;
+    if (WS > W) W = WS;
     z3::expr PhiE = Encoder.valueAsBV(Phi, WP);
     if (WP < W) PhiE = z3::zext(PhiE, W - WP);
     if (WB < W) TB = z3::zext(TB, W - WB);
+    if (WS < W) SB = z3::zext(SB, W - WS);
 
     z3::expr Upper = TB;
     if (!SC.isOne())
-        Upper = Encoder.apintToBV(SC.zextOrTrunc(W)) * Upper;  // s*BTC, exact in BV (nuw-gated)
-    if (!C.isZero())
-        Upper = Upper + Encoder.apintToBV(C.zextOrTrunc(W));
-    z3::expr Fact = z3::ule(PhiE, Upper);
-    if (!C.isZero())
-        Fact = Fact && z3::uge(PhiE, Encoder.apintToBV(C.zextOrTrunc(W)));
+        Upper = Encoder.apintToBV(SC.zextOrTrunc(W)) * Upper;  // s*BTC (gated above)
+    z3::expr Fact = z3::ule(PhiE - SB, Upper);
+    // Lower bound only under nuw (monotone recurrence => phi never dips
+    // below start); skipped for the trivial start == 0.
+    if (HasNUW && !(StartC && StartC->getAPInt().isZero()))
+        Fact = Fact && z3::uge(PhiE, SB);
 
     std::string Lbl = mkLabel("SCEVSYM");
     Encoder.assertRawFact(Fact, Audit ? Lbl : std::string());
 
     std::string BS; raw_string_ostream BOS(BS); BTC->print(BOS);
+    std::string SS; raw_string_ostream SOS(SS); StartS->print(SOS);
     Log << "    -> Fact[" << Lbl << "] " << valueStr(V)
-        << " <=u start(" << C << ") + ";
-    if (!SC.isOne()) Log << SC << "*";                // s==1 stays byte-identical
-    Log << "BTC(" << BS << ") (SCEV symbolic trip count)\n";
+        << " - start(" << SS << ") <=u ";
+    if (!SC.isOne()) Log << SC << "*";
+    Log << "BTC(" << BS << ") (SCEV symbolic trip count, sub-form)\n";
     ++NumFacts;
     return true;
 }

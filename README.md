@@ -95,7 +95,7 @@ opt -load-pass-plugin=build/OraclePass.so \
   `FactEncoder.*` (heavy-tier fact sources incl. SCEV-SYM), `Scheduler.h`
   (FactGate).
 * `tests/` — regression suite (`bash run_tests.sh`; expected gate
-  **PASS=19 / FAIL=7** — the 7 "fails" are heavy/ldeq/stride/frame tests run under
+  **PASS=20 / FAIL=8** — the 8 "fails" are heavy/ldeq/stride/frame/symstart tests run under
   the light gate by design). `tests/manual/` needs nonstandard pass strings.
 * `native_bench/` — Swift (`nbody`, `sha256`, `lz77`), Rust
   (`lz77.rs`, `matmul.rs`), Julia (`lz77.jl`, `matmul.jl`, `julia_dump.jl`).
@@ -122,7 +122,7 @@ socket + `no_turbo` on servers; and every perf binary must produce
 
 ```bash
 ninja -C build                    # build the plugin (needs LLVM trunk + Z3)
-bash run_tests.sh                 # expect PASS=19 / FAIL=7
+bash run_tests.sh                 # expect PASS=20 / FAIL=8
 bash swift_triage.sh              # 10-minute Swift static triage
 RUNARGS="200 perf_test/sha_input.bin" bash run_swift_perf.sh   # the headline experiment
 ```
