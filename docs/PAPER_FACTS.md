@@ -361,8 +361,16 @@ accesses still checked** — the two accesses ODeSSy fully proved are
 exactly the performance-critical ones. Sentence: today @inbounds is
 trusted; with ODeSSy it is verified — at no measurable cost.
 
-Ride-alongs: Swift sha256 statics 5 → 7 of 38 (smax/umax translator;
-Mac perf rerun pending). nbody: 88 frame pairs harvested, 100%
+Ride-alongs: Swift sha256 statics 5 → 7 of 38 (smax/umax translator).
+MAC PERF RERUN LANDED (results/perf/sha256v3_perf_mac_0822.log,
+REPS=30, RUNARGS="200 sha_input.bin", swiftc 6.3.3): Phase A
+eliminated 7 (was 5); Phase B outputs byte-identical — the freeze +
+sub-form + max encodings pass the end-to-end soundness gate in a real
+binary; Phase C medians base 0.4939 / base2x 0.4906 / oracle 0.4600:
+**+6.86% vs base, +6.24% vs base2x** — up from the campaign's
++3.5–4.7% Mac row. The two extra proofs moved the headline Swift
+number by ~+2 points. (Server rerun of the same is the natural
+follow-up; the campaign row there was +4.7/+5.0.) nbody: 88 frame pairs harvested, 100%
 refused on attribute-less Swift runtime calls (the N2 axiom table is
 the confirmed next wall). matmul/lz77.jl: 0 UNSAT is CORRECT — no
 dimension guards, checks are the spec (irreducibility). Diagnostic
