@@ -318,3 +318,53 @@ dial, `results/campaigns/` = whole-campaign master transcripts.
 | results/static/zlib_heavy_confirm_0818.log | TIER=heavy perf confirmation (§5) |
 | results/campaigns/finals_master_0818.log / finals2_master_0818.log | campaign masters |
 | results/campaigns/results_digest_0818b.txt | 0818b digest (tails of every rep) |
+
+---
+
+## 7. SEQUEL RESULTS — heap-invariant super-analysis (heap-invariant
+## branch, Aug 19–22 2026; full narrative in HANDOFF §8/§9)
+
+Machinery landed (all knob-gated; knobless configs byte-identical;
+suite gate 20/8 with six SAT tripwires):
+* FRAME (oracle-pass<frame>): cross-BB load unification — Stage-1
+  MemorySSA walk against L1's own MemoryLocation; discharge on Julia
+  is stock ScopedNoAliasAA over jnoalias scopes (jtbaa_arraysize is
+  GONE in 1.12 — TBAA cannot do it). Cores read |FRAME:k|.
+* freeze(x) == x in the encoder (identity on non-poison; dominant
+  blocker — 13/16 gemm trap conditions were freeze-wrapped free
+  Booleans, trivially SAT forever).
+* SCEVSYM-v2: subtraction-form facts (phi − start <=u BTC;
+  unconditional for step 1, symbolic starts free, v1's wrap hazard
+  structurally gone), smax/umax/mul in the SCEV translator, leaf
+  facts (|SCEVEQ:k|: freeze identity / phi image / SCEV equality).
+
+**jl_gemm_base (the acceptance test): 0 → 14/16 trap edges UNSAT.**
+9 audit-eliminated + 5 attributed-infeasible (guard contexts
+contradictory = provably unreachable multiversion preds; the
+zstd-xxhash refusal class) + 2 residue (zero-trip remainder-loop
+entry checks; understood, cold). Transformation run: trap edges
+17 → 5; blocks L220 (A[i,l] read) and L282 (C[i,j] write) fully
+starved. Block→source mapping via inlinedAt chains, cross-checked
+against each boundserror's array argument.
+
+**THE HEADLINE — oracle-guided @inbounds (three-arm experiment,
+native_bench/jl_gemm_arms.jl; results/perf/gemm_inbounds_arms_0822
+.log; N=512, REPS=21 medians, rotated order, outputs bitwise
+identical):**
+| arm | annotation | median | speedup |
+|---|---|---|---|
+| 1 baseline | none | 0.0601 s | 1× |
+| 2 ceiling | all 4 accesses | 0.0144 s | 4.185× |
+| 3 ODeSSy-proven | A read + C write ONLY | 0.0145 s | **4.156×** |
+Arm 3 recovers **99.8% of the expert-annotation ceiling with half the
+accesses still checked** — the two accesses ODeSSy fully proved are
+exactly the performance-critical ones. Sentence: today @inbounds is
+trusted; with ODeSSy it is verified — at no measurable cost.
+
+Ride-alongs: Swift sha256 statics 5 → 7 of 38 (smax/umax translator;
+Mac perf rerun pending). nbody: 88 frame pairs harvested, 100%
+refused on attribute-less Swift runtime calls (the N2 axiom table is
+the confirmed next wall). matmul/lz77.jl: 0 UNSAT is CORRECT — no
+dimension guards, checks are the spec (irreducibility). Diagnostic
+doctrine earned: fast-SAT ⇒ missing constraint ⇒ read the
+countermodel (DebugOracle), never guess.
