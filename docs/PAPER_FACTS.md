@@ -351,15 +351,23 @@ against each boundserror's array argument.
 native_bench/jl_gemm_arms.jl; results/perf/gemm_inbounds_arms_0822
 .log; N=512, REPS=21 medians, rotated order, outputs bitwise
 identical):**
-| arm | annotation | median | speedup |
+| arm | annotation | Mac M-series | Xeon c220g2¹ |
 |---|---|---|---|
-| 1 baseline | none | 0.0601 s | 1× |
-| 2 ceiling | all 4 accesses | 0.0144 s | 4.185× |
-| 3 ODeSSy-proven | A read + C write ONLY | 0.0145 s | **4.156×** |
-Arm 3 recovers **99.8% of the expert-annotation ceiling with half the
-accesses still checked** — the two accesses ODeSSy fully proved are
-exactly the performance-critical ones. Sentence: today @inbounds is
-trusted; with ODeSSy it is verified — at no measurable cost.
+| 1 baseline | none | 0.0601 s (1×) | 0.1771 s (1×) |
+| 2 ceiling | all 4 accesses | 0.0144 s (4.185×) | 0.0447 s (3.965×) |
+| 3 ODeSSy-proven | A read + C write ONLY | 0.0145 s (**4.156×**) | 0.0494 s (**3.588×**) |
+| arm-3 ceiling recovery | | **99.8%** | **96.4%** |
+¹ server: results/perf/gemm_inbounds_arms_server_0822.log, julia
+  1.12.7, numactl node 0, no_turbo; outputs bitwise identical on both
+  machines. CROSS-ISA REPLICATION: same protocol, same annotations,
+  3.6–4.2× on both architectures.
+Arm 3 recovers **96–100% of the expert-annotation ceiling with half
+the accesses still checked** — the two accesses ODeSSy fully proved
+are exactly the performance-critical ones. Sentence: today @inbounds
+is trusted; with ODeSSy it is verified — at no measurable cost on
+M-series and a 3.6% residual gap on Xeon (the still-checked C-read's
+per-iteration cost is nonzero there — honest, and itself evidence
+that the remaining 2 unproven edges are worth little).
 
 Ride-alongs: Swift sha256 statics 5 → 7 of 38 (smax/umax translator).
 MAC PERF RERUN LANDED (results/perf/sha256v3_perf_mac_0822.log,
