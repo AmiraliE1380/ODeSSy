@@ -362,8 +362,16 @@ identical):**
   1.12.7, numactl node 0, no_turbo; outputs bitwise identical on both
   machines. CROSS-ISA REPLICATION: same protocol, same annotations,
   3.6–4.2× on both architectures.
-Arm 3 recovers **96–100% of the expert-annotation ceiling with half
-the accesses still checked** — the two accesses ODeSSy fully proved
+UPDATE Aug 24 (post-Go 3, 16/16): with every edge proven, ALL FOUR
+accesses are annotatable and proof-guided annotation becomes
+SOURCE-IDENTICAL to arm 2 — **recovery = ceiling = 100% by
+construction**. The 96–100% rows above remain the measured
+PARTIAL-annotation result (2 of 4 accesses, pre-Go 3 proofs).
+CORES (results/static/gemm_16of16_cores_0824.log): all 16 attributed;
+flagship composite core |SCEVSYM| |KB| |SCEVEQ|x3 |FRAME|x3 + 4 guards
+— six fact sources in one proof, the super-analysis thesis in a line.
+Arm 3 (partial) recovers **96–100% of the expert-annotation ceiling
+with half the accesses still checked** — the two accesses ODeSSy fully proved
 are exactly the performance-critical ones. Sentence: today @inbounds
 is trusted; with ODeSSy it is verified — at no measurable cost on
 M-series and a 3.6% residual gap on Xeon (the still-checked C-read's
