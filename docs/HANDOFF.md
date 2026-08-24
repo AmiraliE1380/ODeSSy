@@ -589,6 +589,19 @@ TEST IS FULLY DISCHARGED; R&D CAMPAIGN CLOSED.
   ABOVE the 300 ms perf budget (fine for audit runs at timeout=10000;
   a Julia perf run would drop that edge to UNKNOWN=kept, but Julia
   runtime goes through @inbounds anyway).
+SURFACE LAPTOP 3 / WSL PLAN (third platform; decided Aug 24): main
+body may claim "industrial repos show high recoveries on
+weaker/everyday microarchitectures" with ONE headline number (best
+repo, N%) citing Appendix F for the full per-repo table — BUT the
+claim ships only after the Surface runs actually land: rerun zlib ANF
++ sha256 + sha1 there (the rows with a story), median-primary, the
+base<->base2x noise floor PRINTED BESIDE every delta, fixed power
+profile, interleaved reps, one methodology sentence saying all that.
+Structural rule: no claim in the paper DEPENDS on the Surface; it
+seasons the microarchitecture-dependence argument (check cost varies
+0-12% across three microarchitectures; ODeSSy recovers where there is
+anything to recover). Server = necessary, Mac = cross-ISA, Surface =
+generality color.
 FUTURE-WORK LEDGER (post-campaign, in value order): N2 Swift runtime
 axiom table (unlocks nbody + CryptoSwift residuals; M2 one-level
 summaries with it); sha256 server perf rerun (Mac moved +4.7 -> +6.9);

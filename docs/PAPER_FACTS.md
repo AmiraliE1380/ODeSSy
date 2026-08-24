@@ -387,6 +387,20 @@ Horner kernels, previously zero, now yield under freeze+v2 WITHOUT the
 frame knob. CryptoSwift 183→200 (+17; 25 UNKNOWN at the 300 ms budget).
 Rust 0→0 (correct). The encoder campaign is strictly monotone across
 the entire suite.
+JULIA DEPLOYMENT MODEL (methodology / appendix text): the analyzed
+.ll is a code_llvm dump — JIT-internal IR, analyzable but NOT
+executable outside the dumping process: it threads thread-local GC
+state (%pgcstack) through a Julia-specific convention, bakes ABSOLUTE
+ADDRESSES of the live session's runtime structures in as integer
+constants, calls jl_*/ijl_* symbols whose semantics assume the JIT's
+world, and Julia exposes NO API to hand a method's compiled body back.
+llc could emit an object; the result would crash instantly. The honest
+bridge — and arguably the DEPLOYMENT MODEL, not a workaround: ODeSSy
+produces machine-checked verdicts; the verdicts license source-level
+@inbounds (Julia's own sanctioned mechanism); the JIT compiles the
+annotated source. The appendix lists the exact annotations and the
+audit cores justifying each — proof-carrying annotations.
+
 Ride-alongs: Swift sha256 statics 5 → 7 of 38 (smax/umax translator).
 MAC PERF RERUN LANDED (results/perf/sha256v3_perf_mac_0822.log,
 REPS=30, RUNARGS="200 sha_input.bin", swiftc 6.3.3): Phase A
