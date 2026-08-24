@@ -338,11 +338,12 @@ suite gate 20/8 with six SAT tripwires):
   structurally gone), smax/umax/mul in the SCEV translator, leaf
   facts (|SCEVEQ:k|: freeze identity / phi image / SCEV equality).
 
-**jl_gemm_base (the acceptance test): 0 → 14/16 trap edges UNSAT.**
-9 audit-eliminated + 5 attributed-infeasible (guard contexts
+**jl_gemm_base (the acceptance test): 0 → 16/16 trap edges UNSAT
+(Aug 24, Go 3 leaf pre-encoding: definitional axioms replace havoc
+leaves; zero-trip countermodels die by violating the definitions).**
+11 audit-eliminated + 5 attributed-infeasible (guard contexts
 contradictory = provably unreachable multiversion preds; the
-zstd-xxhash refusal class) + 2 residue (zero-trip remainder-loop
-entry checks; understood, cold). Transformation run: trap edges
+zstd-xxhash refusal class). 0 SAT, 0 UNKNOWN, byte-deterministic. Transformation run: trap edges
 17 → 5; blocks L220 (A[i,l] read) and L282 (C[i,j] write) fully
 starved. Block→source mapping via inlinedAt chains, cross-checked
 against each boundserror's array argument.

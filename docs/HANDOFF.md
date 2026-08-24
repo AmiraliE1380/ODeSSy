@@ -568,9 +568,32 @@ HEADLINE NUMBER:
   vectorizer can multiversion a load-side check but the store-side
   check and A-side exits were what blocked profitable vectorization.
   A code_llvm diff of arm2 vs arm3 would settle it; optional.
-REMAINING for full step 4: Go 3 (leaf pre-encoding) OR accept 14/16
-— NOTE the arm-3 result weakens Go 3's value further: the unproven
-residue guards accesses whose checks demonstrably cost ~nothing; then step 5 — the THREE-ARM @inbounds experiment (baseline /
+STATUS Aug 24 2026 — GO 3 LANDED. jl_gemm_base: **16/16 UNSAT, 0 SAT**
+(11 eliminated + 5 audit-refused infeasible preds). THE ACCEPTANCE
+TEST IS FULLY DISCHARGED; R&D CAMPAIGN CLOSED.
+* Implementation: FactEncoder::preEncodeScevLeafClosure — runs FIRST
+  in encodeBoundaryFacts (ValueMap first-wins ordering). Seeds = pure
+  SCEV-side walk of every boundary header-phi's (BTC, start); closure
+  = backward slice with the main slicer's boundary rules (header phis
+  / loads / GEPs / alien calls stay free) PLUS incoming-edge branch
+  conditions at non-header phis (where the middle-block guard enters);
+  definitional encode via encodeInstruction in RPO; failures
+  tolerated (value stays free — weaker, never wrong); cap 256, logged.
+* Formal content: leaves stop being havoc and get definitional axioms
+  v == [[def(v)]]; zero-trip models die by VIOLATING THE DEFINITIONS,
+  no trip-count assertion anywhere; over-approximation untouched, no
+  new trust class.
+* Verified same day: gate 20/8; all five SAT tripwires hold; sha256
+  stays 7 vacuous=0; symstart1/frame1/scevsym1/ldeq1 all UNSAT; gemm
+  log byte-deterministic across runs. Hardest gemm query now 1.06 s —
+  ABOVE the 300 ms perf budget (fine for audit runs at timeout=10000;
+  a Julia perf run would drop that edge to UNKNOWN=kept, but Julia
+  runtime goes through @inbounds anyway).
+FUTURE-WORK LEDGER (post-campaign, in value order): N2 Swift runtime
+axiom table (unlocks nbody + CryptoSwift residuals; M2 one-level
+summaries with it); sha256 server perf rerun (Mac moved +4.7 -> +6.9);
+Plan C / back-edge induction (§9, taxonomy (d) coverage); arm2-vs-arm3
+code_llvm diff footnote; trunk-drift watch (scevsym_stride1). then step 5 — the THREE-ARM @inbounds experiment (baseline /
 all-@inbounds / ODeSSy-proven-@inbounds), honesty rule: arm 3
 annotates only statements with EVERY emitted check discharged. Arms
 1+2 (baseline + ceiling) can be measured any time; arm 3 waits for

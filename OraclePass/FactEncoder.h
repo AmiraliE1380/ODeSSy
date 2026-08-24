@@ -86,6 +86,10 @@ private:
     // expression its own facts (value battery + freeze identity /
     // non-header-phi image / SCEV equality). See soundness block in .cpp.
     void processScevLeaves(llvm::BasicBlock *PredBB);
+    // Go 3: BEFORE any fact translation references a leaf, encode the
+    // leaf def-closure PRECISELY (definitional axioms, not havoc) via
+    // Z3Encoder::encodeInstruction in RPO. See soundness block in .cpp.
+    void preEncodeScevLeafClosure();
     // SCEV -> Z3 mini-translator (constants, SSA unknowns, adds, casts,
     // umin/umin_seq [exact via ite]; everything else REFUSED). On success OK stays true and W is the
     // expression's bit width. All exprs live in Encoder's context.

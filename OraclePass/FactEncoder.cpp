@@ -1,4 +1,7 @@
 #include "FactEncoder.h"
+#include "llvm/ADT/PostOrderIterator.h"
+#include "llvm/ADT/SmallPtrSet.h"
+#include "llvm/ADT/SmallVector.h"
 #include "llvm/Analysis/LazyValueInfo.h"
 #include "llvm/Analysis/LoopInfo.h"
 #include "llvm/Analysis/ScalarEvolution.h"
@@ -41,7 +44,133 @@ static std::string rangeStr(const ConstantRange &CR) {
     return S;
 }
 
+// =====================================================================
+// Go 3 -- LEAF PRE-ENCODING (Aug 24 2026). The SCEVSYM bounds reference
+// SSA leaves (bc.resume.val and the vectorizer preamble behind it) that
+// Go 2 could only constrain with UNCONDITIONAL facts; the countermodels
+// exploited the zero-trip scenario (resume = limit+1, remainder loop
+// never runs), which only the middle-block BRANCH excludes -- PATH
+// information no unconditional fact can carry.
+//
+// FORMALLY: the query is an over-approximation A of the executions
+// reaching the trap. Leaves were HAVOC (existentially free). This pass
+// replaces havoc with DEFINITIONAL AXIOMS: for every instruction in the
+// leaves' def-closure, add  v == [[def(v)]]  by running the ordinary
+// encoder over it -- selects become ites, non-header phis become
+// guarded unions over their incoming edges (the encoder's memoized
+// reachability machinery supplies R(pred) ∧ cond(pred->B)), and the
+// controlling branch icmps encode as themselves. No "trip count > 0"
+// is ever asserted: zero-trip models die because they VIOLATE THE
+// DEFINITIONS. Definitional axioms are true of every real execution by
+// construction, so the over-approximation -- and hence soundness -- is
+// untouched; no new trust is introduced.
+//
+// ORDERING (the trap that forces this shape): Z3Encoder's ValueMap
+// insert is FIRST-WINS, so any valueAsBV reference made before the
+// precise encode permanently freezes the leaf as a free variable.
+// Hence this pass runs FIRST in encodeBoundaryFacts, before the fact
+// battery translates anything.
+//
+// CLOSURE RULES mirror the main slicer's boundaries: loop-header phis,
+// loads/GEPs, and non-intrinsic calls stay FREE (the battery gives
+// them facts); everything else is definitional. Non-header phis also
+// pull their incoming edges' branch conditions (that is where the
+// middle-block guard enters). Cap = 256 instructions (logged if hit).
+// =====================================================================
+void FactEncoder::preEncodeScevLeafClosure() {
+    if (!SE || !LI) return;
+    // ---- seeds: SCEVUnknown instruction leaves of every boundary
+    // header-phi's (BTC, start) pair, collected purely SCEV-side so no
+    // Z3 variable is created before the closure is encoded.
+    SmallPtrSet<Instruction *, 16> Seeds;
+    auto Collect = [&](const SCEV *S) {
+        SmallVector<const SCEV *, 16> WL{S};
+        SmallPtrSet<const SCEV *, 32> Seen;
+        while (!WL.empty()) {
+            const SCEV *C = WL.pop_back_val();
+            if (!Seen.insert(C).second) continue;
+            if (auto *U = dyn_cast<SCEVUnknown>(C)) {
+                if (auto *I = dyn_cast<Instruction>(U->getValue()))
+                    Seeds.insert(I);
+                continue;
+            }
+            for (const SCEV *Op : C->operands()) WL.push_back(Op);
+        }
+    };
+    for (Value *V : Encoder.getFreeVariables()) {
+        auto *Phi = dyn_cast<PHINode>(V);
+        if (!Phi) continue;
+        Loop *L = LI->getLoopFor(Phi->getParent());
+        if (!L || L->getHeader() != Phi->getParent()) continue;
+        if (!SE->isSCEVable(Phi->getType())) continue;
+        auto *AR = dyn_cast<SCEVAddRecExpr>(SE->getSCEV(Phi));
+        if (!AR || AR->getLoop() != L || !AR->isAffine()) continue;
+        const SCEV *BTC = SE->getBackedgeTakenCount(L);
+        if (isa<SCEVCouldNotCompute>(BTC))
+            BTC = SE->getSymbolicMaxBackedgeTakenCount(L);
+        if (isa<SCEVCouldNotCompute>(BTC)) continue;
+        Collect(BTC);
+        Collect(AR->getStart());
+    }
+    if (Seeds.empty()) return;
+    // ---- def-closure with slicer boundary rules.
+    SmallPtrSet<Instruction *, 32> Closure;
+    SmallVector<Instruction *, 64> WL(Seeds.begin(), Seeds.end());
+    const unsigned Cap = 256;
+    bool CapHit = false;
+    while (!WL.empty()) {
+        if (Closure.size() >= Cap) { CapHit = true; break; }
+        Instruction *I = WL.pop_back_val();
+        if (Closure.count(I)) continue;
+        if (auto *P = dyn_cast<PHINode>(I)) {
+            Loop *L = LI->getLoopFor(P->getParent());
+            if (L && L->getHeader() == P->getParent())
+                continue;                       // boundary: header phi
+            Closure.insert(I);
+            for (unsigned i = 0; i < P->getNumIncomingValues(); ++i) {
+                if (auto *II = dyn_cast<Instruction>(P->getIncomingValue(i)))
+                    WL.push_back(II);
+                // The guarded union needs the incoming edges' branch
+                // predicates to MEAN something: pull their conditions.
+                if (auto *Br = dyn_cast<BranchInst>(
+                        P->getIncomingBlock(i)->getTerminator()))
+                    if (Br->isConditional())
+                        if (auto *CI = dyn_cast<Instruction>(Br->getCondition()))
+                            WL.push_back(CI);
+            }
+            continue;
+        }
+        if (isa<LoadInst>(I) || isa<GetElementPtrInst>(I))
+            continue;                           // boundary: memory
+        if (auto *CB = dyn_cast<CallInst>(I)) {
+            Function *CF = CB->getCalledFunction();
+            if (!CF || !CF->getName().contains(".with.overflow"))
+                continue;                       // boundary: alien call
+        }
+        Closure.insert(I);
+        for (Use &U : I->operands())
+            if (auto *OI = dyn_cast<Instruction>(U.get()))
+                WL.push_back(OI);
+    }
+    // ---- definitional encode in RPO (defs before uses in the acyclic
+    // skeleton; header phis are boundaries so back edges never matter).
+    // encodeInstruction failures are TOLERATED: that value simply stays
+    // free (weaker, never wrong) -- unlike the main slice, an abort
+    // here must not kill the query.
+    Function *F = DT.getRoot()->getParent();
+    unsigned N = 0;
+    ReversePostOrderTraversal<Function *> RPOT(F);
+    for (BasicBlock *BB : RPOT)
+        for (Instruction &I : *BB)
+            if (Closure.count(&I))
+                if (Encoder.encodeInstruction(&I, &DT, LI)) ++N;
+    Log << "    -> [go3] " << N << " leaf-closure instruction(s) encoded"
+        << (CapHit ? " (CAP HIT -- closure truncated, leaves weaker)" : "")
+        << "\n";
+}
+
 unsigned FactEncoder::encodeBoundaryFacts(BasicBlock *PredBB) {
+    preEncodeScevLeafClosure();
     // NOTE: iterate by index -- assertRange/assertKnownBits only look up
     // existing exprs so FreeVars cannot grow mid-walk, but stay defensive.
     const auto &Boundaries = Encoder.getFreeVariables();
