@@ -23,7 +23,7 @@ tmux. If DNS dies: `echo "nameserver 8.8.8.8" | sudo tee
 **Build + gate (both machines):**
 ```
 ninja -C build
-bash run_tests.sh          # MUST print PASS=20 / FAIL=8 (17/6 pre-FRAME, 19/7 pre-SCEVSYM-v2)
+bash scripts/run_tests.sh          # MUST print PASS=20 / FAIL=8 (17/6 pre-FRAME, 19/7 pre-SCEVSYM-v2)
 ```
 The 8 FAILs are heavy/ldeq/stride/frame/symstart tests under the light gate BY
 DESIGN (test_frame1 flips to PASS once FRAME lands, gate becomes 20/6);
@@ -46,17 +46,17 @@ python3 -c "open('perf_test/utf8_input.txt','wb').write(('汉字漢字テキス�
 
 **Static eliminations (light + heavy):**
 ```
-SPECS="signed unsigned both" RUNS=1 SIZES="8" COOLDOWN=5 bash run_zlib_perf.sh
-SPECS="signed unsigned both" RUNS=1 SIZES="8" COOLDOWN=5 TIER=heavy bash run_zlib_perf.sh
-THREADS=16 bash run_zstd_audit.sh            # hours; totals block at end
+SPECS="signed unsigned both" RUNS=1 SIZES="8" COOLDOWN=5 bash scripts/run_zlib_perf.sh
+SPECS="signed unsigned both" RUNS=1 SIZES="8" COOLDOWN=5 TIER=heavy bash scripts/run_zlib_perf.sh
+THREADS=16 bash scripts/run_zstd_audit.sh            # hours; totals block at end
 ```
 Expected: zlib both 1298→1156 light / →1152 heavy; zstd both
 1688/12798 (13.2%), vacuous cluster on xxhash is EXPLAINED-OK (see
-PAPER_FACTS §4). lz4: `bash run_lz4_perf.sh` (TIMEOUT_MS=300 default).
+PAPER_FACTS §4). lz4: `bash scripts/run_lz4_perf.sh` (TIMEOUT_MS=300 default).
 
 **C runtime (server, final numbers):**
 ```
-SPECS="none both anf" RUNS=20 SIZES="8 64 256" bash run_zlib_perf.sh
+SPECS="none both anf" RUNS=20 SIZES="8 64 256" bash scripts/run_zlib_perf.sh
 python3 make_perf_report.py                   # median-primary report
 ```
 (min/avg on console are cosmetic; medians come from the report over the
@@ -66,8 +66,8 @@ raw runs_s column.)
 
 **Static triage (Mac):**
 ```
-bash swift_triage.sh                                          # nbody sha256 lz77
-bash swift_triage.sh native_bench/md5.swift native_bench/sha1.swift \
+bash scripts/swift_triage.sh                                          # nbody sha256 lz77
+bash scripts/swift_triage.sh native_bench/md5.swift native_bench/sha1.swift \
      native_bench/utf8.swift native_bench/adler32.swift \
      native_bench/crc32.swift native_bench/base64.swift
 ```
@@ -85,7 +85,7 @@ RUNARGS (Mac→server iters for ~1 s→~5 s single runs):**
 | utf8   | 1500 (utf8_input.txt) | 1500 |
 ```
 KERNEL=native_bench/sha256.swift RUNARGS="200 perf_test/sha_input.bin" REPS=30 \
-  bash run_swift_perf.sh 2>&1 | tee sha256_final_mac.log
+  bash scripts/run_swift_perf.sh 2>&1 | tee sha256_final_mac.log
 # server: same + numactl wrapper + no_turbo + tmux, RUNARGS="600 ..."
 ```
 Gates to verify in EVERY perf log: Phase A `eliminated` matches the
@@ -110,7 +110,7 @@ opt -load-pass-plugin=build/OraclePass.so \
 mkdir -p /tmp/csdrv && cp native_bench/cryptoswift_main.swift /tmp/csdrv/main.swift
 KERNEL=/tmp/csdrv/main.swift \
 EXTRA_SRCS="$(find ../CryptoSwift/Sources/CryptoSwift -name '*.swift' | tr '\n' ' ')" \
-RUNARGS="300 perf_test/sha_input.bin" REPS=30 bash run_swift_perf.sh
+RUNARGS="300 perf_test/sha_input.bin" REPS=30 bash scripts/run_swift_perf.sh
 # expected verdict: flat both machines (report ceiling 2.5-3% + 183 static)
 ```
 
@@ -118,8 +118,8 @@ RUNARGS="300 perf_test/sha_input.bin" REPS=30 bash run_swift_perf.sh
 
 ```
 export PATH="$HOME/.juliaup/bin:$PATH"
-bash julia_triage.sh                                          # lz77 matmul
-bash julia_triage.sh native_bench/sha256.jl native_bench/jl_gemm_base.jl \
+bash scripts/julia_triage.sh                                          # lz77 matmul
+bash scripts/julia_triage.sh native_bench/sha256.jl native_bench/jl_gemm_base.jl \
      native_bench/jl_filt_dsp.jl native_bench/jl_poly.jl
 # ceilings: julia -e '<include+@time>' vs julia --check-bounds=no -e '...'
 # (exact one-liners in triage_jl3 commit message / conversation log)
@@ -132,7 +132,7 @@ commas).
 ## 5. Rust (static only)
 
 ```
-bash rust_triage.sh        # lz77.rs matmul.rs; panic=abort is LOAD-BEARING
+bash scripts/rust_triage.sh        # lz77.rs matmul.rs; panic=abort is LOAD-BEARING
 ```
 Expected: 3/3 + 5/5 anchored, 0 UNSAT (rustc pre-eliminates; residue =
 taxonomy b + value-dependent overflow).

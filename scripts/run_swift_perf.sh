@@ -29,7 +29,7 @@
 #         (median primary; min/avg shown; outlier audit min<98%median).
 # =============================================================================
 set -u
-ROOT="${ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
+ROOT="${ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 NB="${NB:-$ROOT/native_bench}"
 W="$ROOT/perf_swift_work"; mkdir -p "$W" "$ROOT/evaluation"
 CSV="$ROOT/evaluation/perf_swift.csv"

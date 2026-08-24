@@ -44,7 +44,7 @@
 # Output: evaluation/matrix.csv  (then: python3 make_matrix_report.py)
 # =============================================================================
 set -u
-ROOT="${ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
+ROOT="${ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 PL_ROOT="${PL_ROOT:-$(dirname "$ROOT")}"
 RUNS=${RUNS:-10}
 CORPUS_MB=${CORPUS_MB:-64}

@@ -60,7 +60,7 @@
 set -u
 # Self-locating: repo root = this script's directory; benchmarks live beside
 # the repo. All overridable via environment (ROOT / PL_ROOT / ZLIB).
-ROOT="${ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
+ROOT="${ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 PL_ROOT="${PL_ROOT:-$(dirname "$ROOT")}"
 ZLIB="${ZLIB:-$PL_ROOT/zlib}"
 RUNS=${RUNS:-10}

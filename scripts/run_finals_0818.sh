@@ -20,30 +20,30 @@ mkdir -p perf_test
 
 # ===================== TIMED PHASE (serial, stabilized) =====================
 log "JOB1 zlib C runtime finals  (~3-4h, the long one)"
-SPECS="none both anf" RUNS=20 SIZES="8 64 256" bash run_zlib_perf.sh 2>&1 | tee zlib_finals_server_$S.log
+SPECS="none both anf" RUNS=20 SIZES="8 64 256" bash scripts/run_zlib_perf.sh 2>&1 | tee zlib_finals_server_$S.log
 python3 tools/make_perf_report.py 2>&1 | tee zlib_finals_report_$S.log
 save "zlib runtime finals"; sleep 120
 
 log "JOB2a sha1 relottery replication A"
 $PIN env KERNEL=native_bench/sha1.swift RUNARGS="900 perf_test/sha_input.bin" REPS=30 \
-  bash run_swift_perf.sh 2>&1 | tee sha1_relottery_repA_$S.log
+  bash scripts/run_swift_perf.sh 2>&1 | tee sha1_relottery_repA_$S.log
 sleep 120
 log "JOB2b sha1 relottery replication B"
 $PIN env KERNEL=native_bench/sha1.swift RUNARGS="900 perf_test/sha_input.bin" REPS=30 \
-  bash run_swift_perf.sh 2>&1 | tee sha1_relottery_repB_$S.log
+  bash scripts/run_swift_perf.sh 2>&1 | tee sha1_relottery_repB_$S.log
 save "sha1 relottery x2"; sleep 120
 
 log "JOB3 adler32 server (calibration then finals)"
 $PIN env KERNEL=native_bench/adler32.swift RUNARGS="7500 perf_test/sha_input.bin" REPS=3 \
-  bash run_swift_perf.sh 2>&1 | tee adler32_calib_$S.log
+  bash scripts/run_swift_perf.sh 2>&1 | tee adler32_calib_$S.log
 $PIN env KERNEL=native_bench/adler32.swift RUNARGS="7500 perf_test/sha_input.bin" REPS=30 \
-  bash run_swift_perf.sh 2>&1 | tee adler32_server_$S.log
+  bash scripts/run_swift_perf.sh 2>&1 | tee adler32_server_$S.log
 save "adler32 server"
 
 # ============ ANALYSIS-ONLY from here: machine load no longer matters ============
 log "JOB4 timeout sweep"
 [ -f evaluation/zlib/deflate_integer_unsigned_O1.ll ] || SPECS=unsigned OPTS=O1 bash run_zlib.sh
-THREADS=8 bash run_timeout_sweep.sh 2>&1 | tee timeout_sweep_server_$S.log
+THREADS=8 bash scripts/run_timeout_sweep.sh 2>&1 | tee timeout_sweep_server_$S.log
 
 log "JOB5 openssl elimination audit"
 [ -f ../openssl/include/openssl/configuration.h ] || ( cd ../openssl && ./Configure no-asm >/dev/null 2>&1 )

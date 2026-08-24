@@ -94,7 +94,7 @@ opt -load-pass-plugin=build/OraclePass.so \
   (per-trap worker), `Z3Encoder.*` (IR→Z3, memoized CFG encoding, LDEQ),
   `FactEncoder.*` (heavy-tier fact sources incl. SCEV-SYM), `Scheduler.h`
   (FactGate).
-* `tests/` — regression suite (`bash run_tests.sh`; expected gate
+* `tests/` — regression suite (`bash scripts/run_tests.sh`; expected gate
   **PASS=20 / FAIL=8** — the 8 "fails" are heavy/ldeq/stride/frame/symstart tests run under
   the light gate by design). `tests/manual/` needs nonstandard pass strings.
 * `native_bench/` — Swift (`nbody`, `sha256`, `lz77`), Rust
@@ -122,9 +122,9 @@ socket + `no_turbo` on servers; and every perf binary must produce
 
 ```bash
 ninja -C build                    # build the plugin (needs LLVM trunk + Z3)
-bash run_tests.sh                 # expect PASS=20 / FAIL=8
-bash swift_triage.sh              # 10-minute Swift static triage
-RUNARGS="200 perf_test/sha_input.bin" bash run_swift_perf.sh   # the headline experiment
+bash scripts/run_tests.sh                 # expect PASS=20 / FAIL=8
+bash scripts/swift_triage.sh              # 10-minute Swift static triage
+RUNARGS="200 perf_test/sha_input.bin" bash scripts/run_swift_perf.sh   # the headline experiment
 ```
 
 Developed by Amirali Ebrahimzadeh (University of Michigan / advisor Prof.

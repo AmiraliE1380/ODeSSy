@@ -19,7 +19,7 @@
 # Output: logs/rust_triage/<stem>.{ll,log} + a per-kernel summary table.
 # =============================================================================
 set -u
-ROOT="${ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
+ROOT="${ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 NB="${NB:-$ROOT/native_bench}"
 OUT="$ROOT/logs/rust_triage"
 mkdir -p "$OUT"

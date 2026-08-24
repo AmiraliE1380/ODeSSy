@@ -11,7 +11,7 @@
 # Out  : evaluation/zstd_audit.csv (+ logs/compilations/zstd.* per TU)
 # =============================================================================
 set -u
-ROOT="${ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
+ROOT="${ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 PL_ROOT="${PL_ROOT:-$(dirname "$ROOT")}"
 ZSTD="${ZSTD:-$PL_ROOT/zstd}"
 SPECS=${SPECS:-"signed unsigned bounds both"}

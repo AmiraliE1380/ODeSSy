@@ -37,7 +37,7 @@
 # Needs : swiftc, cargo, julia on PATH (see setup commands in chat).
 # =============================================================================
 set -u
-ROOT="${ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
+ROOT="${ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 RUNS=${RUNS:-20}
 CORPUS_MB=${CORPUS_MB:-64}
 RUN_TIMEOUT=${RUN_TIMEOUT:-300}

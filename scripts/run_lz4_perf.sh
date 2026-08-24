@@ -22,7 +22,7 @@
 #         python3 make_perf_report.py evaluation/perf_lz4.csv evaluation/perf_lz4_report.csv)
 # =============================================================================
 set -u
-ROOT="${ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
+ROOT="${ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 PL_ROOT="${PL_ROOT:-$(dirname "$ROOT")}"
 LZ4="${LZ4:-$PL_ROOT/lz4}"
 RUNS=${RUNS:-40}

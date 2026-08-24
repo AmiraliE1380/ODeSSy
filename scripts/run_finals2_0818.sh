@@ -19,21 +19,21 @@ ls -la perf_test/sha_input.bin
 
 log "SMOKE: sha1 gate must pass (REPS=1) before burning time"
 $PIN env KERNEL=native_bench/sha1.swift RUNARGS="900 perf_test/sha_input.bin" REPS=1 \
-  bash run_swift_perf.sh 2>&1 | tee sha1_smoke_$S.log
+  bash scripts/run_swift_perf.sh 2>&1 | tee sha1_smoke_$S.log
 grep -q 'byte-identical' sha1_smoke_$S.log || { echo "FATAL: gate still failing — STOP"; exit 1; }
 
 log "JOB1a sha1 relottery A (REPS=30)"
 $PIN env KERNEL=native_bench/sha1.swift RUNARGS="900 perf_test/sha_input.bin" REPS=30 \
-  bash run_swift_perf.sh 2>&1 | tee sha1_relottery_repA_$S.log
+  bash scripts/run_swift_perf.sh 2>&1 | tee sha1_relottery_repA_$S.log
 sleep 90
 log "JOB1b sha1 relottery B (REPS=30)"
 $PIN env KERNEL=native_bench/sha1.swift RUNARGS="900 perf_test/sha_input.bin" REPS=30 \
-  bash run_swift_perf.sh 2>&1 | tee sha1_relottery_repB_$S.log
+  bash scripts/run_swift_perf.sh 2>&1 | tee sha1_relottery_repB_$S.log
 save "sha1 relottery x2 (rerun after perf_test collision)"; sleep 90
 
 log "JOB2 sha256 anchor (REPS=30) — validates pipeline vs known +4.7/+5.0"
 $PIN env KERNEL=native_bench/sha256.swift RUNARGS="600 perf_test/sha_input.bin" REPS=30 \
-  bash run_swift_perf.sh 2>&1 | tee sha256_anchor_$S.log
+  bash scripts/run_swift_perf.sh 2>&1 | tee sha256_anchor_$S.log
 save "sha256 anchor"; sleep 90
 
 log "JOB3 adler32 — real calibration then finals"
@@ -42,7 +42,7 @@ T0=$(date +%s.%N); /tmp/adler_cal 1000 perf_test/sha_input.bin >/dev/null; T1=$(
 ITERS=$(python3 -c "t=$T1-$T0; print(max(200,min(60000,int(1000*5.0/t))))")
 echo "  calibration: 1000 iters took $(python3 -c "print(f'{$T1-$T0:.2f}')")s -> ITERS=$ITERS (~5s target)"
 $PIN env KERNEL=native_bench/adler32.swift RUNARGS="$ITERS perf_test/sha_input.bin" REPS=30 \
-  bash run_swift_perf.sh 2>&1 | tee adler32_server_$S.log
+  bash scripts/run_swift_perf.sh 2>&1 | tee adler32_server_$S.log
 save "adler32 server ITERS=$ITERS"; sleep 90
 
 log "JOB4 server ceilings: -O vs -Ounchecked, 5 runs each (median user-facing wall)"

@@ -9,7 +9,7 @@
 # Out  : evaluation/timeout_sweep.csv
 # =============================================================================
 set -u
-ROOT="${ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
+ROOT="${ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 THREADS=${THREADS:-8}
 INPUT=${INPUT:-evaluation/zlib/deflate_integer_unsigned_O1.ll}
 CSV="$ROOT/evaluation/timeout_sweep.csv"
