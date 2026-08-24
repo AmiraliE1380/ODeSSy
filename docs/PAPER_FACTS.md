@@ -384,7 +384,13 @@ downward drift on any benchmark): Swift sha256 5→7, lz77 1→2, others
 unchanged (nbody 0 = the N2 wall; crc32/base64 0 = taxonomy (d)).
 Julia sha256 4→10, jl_filt_dsp 0→6, jl_poly 0→1 — the DSP filter and
 Horner kernels, previously zero, now yield under freeze+v2 WITHOUT the
-frame knob. CryptoSwift 183→200 (+17; 25 UNKNOWN at the 300 ms budget).
+frame knob. CryptoSwift 183→200 (+17; 25 UNKNOWN at the 300 ms budget); at a
+10 s budget the perf pipeline eliminates **215**, byte-identical gate
+passed, runtime FLAT (−1.81%/−0.36% vs base/base2x, noise floor 1.4%;
+REPS=10, results/perf/cryptoswift_perf_mac_t10s_0824.log) — 215
+scattered cold eliminations with no unlock produce no speedup: the
+dose-ladder claim (count ≠ value) reproduced on the real library with
+the strongest encoder.
 Rust 0→0 (correct). The encoder campaign is strictly monotone across
 the entire suite.
 JULIA DEPLOYMENT MODEL (methodology / appendix text): the analyzed
