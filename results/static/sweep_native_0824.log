@@ -1,0 +1,24 @@
+# full native-benchmark regression sweep, Mac, 2026-08-24, encoder = post-Go-3 (freeze+scevsym-v2+leaf-preencode)
+# triage scripts' own pass strings (heavy;ldeq, NO frame knob); CryptoSwift = heavy;ldeq;frame;threads=8;timeout=300
+# kernel: campaign_UNSAT -> now_UNSAT (traps)
+swift: nbody 0->0(86) sha256 5->7(38) lz77 1->2(27) md5 5->5(27) sha1 7->7(26) utf8 2->2(22) adler32 1->1(39) crc32 0->0(38) base64 0->0(28)
+julia: sha256 4->10(12) jl_gemm_base 0->4(16e, 16/16 with frame knob) jl_filt_dsp 0->6(19e) jl_poly 0->1(1) lz77 0->0 matmul 0->0
+rust:  lz77 0->0 matmul 0->0 (rustc pre-eliminates; correct)
+cryptoswift: 183->200 UNSAT / 2582 SAT / 25 UNKNOWN@300ms / vacuous=0 / skips=0
+vacuous = 0 on EVERY benchmark. no downward drift anywhere.
+--- raw triage tables ---
+nbody              86       84      98%      0     84        0      0      0  ok
+sha256             38       36      95%      7     29        0      0      0  ok
+lz77               27       25      93%      2     23        0      0      0  ok
+md5                27       25      93%      5     20        0      0      0  ok
+sha1               26       24      92%      7     17        0      0      0  ok
+utf8               22       20      91%      2     18        0      0      0  ok
+adler32            39       37      95%      1     36        0      0      0  ok
+crc32              38       36      95%      0     36        0      0      0  ok
+base64             28       27      96%      0     27        0      0      0  ok
+sha256             12       16     133%     10      6        0      0      0  ok
+jl_gemm_base        4       16     400%      4     12        0      0      0  ok
+jl_filt_dsp         9       19     211%      6     13        0      0      0  ok
+jl_poly             1        1     100%      1      0        0      0      0  ok
+lz77                2        4     200%      0      4        0      0      0  ok
+matmul              3        3     100%      0      3        0      0      0  ok

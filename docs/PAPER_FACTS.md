@@ -378,6 +378,15 @@ M-series and a 3.6% residual gap on Xeon (the still-checked C-read's
 per-iteration cost is nonzero there — honest, and itself evidence
 that the remaining 2 unproven edges are worth little).
 
+FULL REGRESSION SWEEP (Aug 24, post-Go-3 encoder, all native rows;
+results/static/sweep_native_0824.log; vacuous=0 EVERYWHERE, no
+downward drift on any benchmark): Swift sha256 5→7, lz77 1→2, others
+unchanged (nbody 0 = the N2 wall; crc32/base64 0 = taxonomy (d)).
+Julia sha256 4→10, jl_filt_dsp 0→6, jl_poly 0→1 — the DSP filter and
+Horner kernels, previously zero, now yield under freeze+v2 WITHOUT the
+frame knob. CryptoSwift 183→200 (+17; 25 UNKNOWN at the 300 ms budget).
+Rust 0→0 (correct). The encoder campaign is strictly monotone across
+the entire suite.
 Ride-alongs: Swift sha256 statics 5 → 7 of 38 (smax/umax translator).
 MAC PERF RERUN LANDED (results/perf/sha256v3_perf_mac_0822.log,
 REPS=30, RUNARGS="200 sha_input.bin", swiftc 6.3.3): Phase A
