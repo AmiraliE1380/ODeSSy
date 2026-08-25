@@ -422,3 +422,71 @@ the confirmed next wall). matmul/lz77.jl: 0 UNSAT is CORRECT — no
 dimension guards, checks are the spec (irreducibility). Diagnostic
 doctrine earned: fast-SAT ⇒ missing constraint ⇒ read the
 countermodel (DebugOracle), never guess.
+
+---
+
+## 8. FINAL SERVER DATA (0825–0827 window; 3 days of c220g2 access)
+
+ADDITIVE section — nothing above is altered. Fills as runs land.
+
+**PROTOCOL (fixed for all final runs).** REPS=30 kernels / RUNS=20
+whole-library C (the campaign doctrine — NOT 40); medians primary,
+base↔base2x gap printed as noise floor; byte-identical gate before any
+timing. Timeout: perf builds 300 ms (harness default), audits 10 s;
+the ONLY benchmark where budget changes elimination counts is
+CryptoSwift (200@300ms vs 215@10s) — it alone gets both budgets.
+**TIER NAMES (use everywhere):** `light` | `heavy` (= heavy;ldeq,
+matches campaign Swift perf config) | **`full`** (= heavy;ldeq;frame).
+PROVENANCE: freeze / subtraction-form SCEVSYM / leaf pre-encoding are
+ENCODER-level, not knob-gated — every run on the current binary
+(a1043be) differs from campaign runs even at matching tier strings.
+Campaign numbers stay pinned at tag v4.0-cgo-campaign-encoder; this
+section's runs are all current-encoder. light-vs-heavy = fact-import
+ablation; heavy-vs-full = frame ablation; campaign-vs-current at same
+tier = §7-machinery delta.
+
+### 8.1 Status matrix (server)
+
+| Item | Exists (campaign/base encoder) | Needed (current encoder) |
+|---|---|---|
+| Swift kernel statics, Linux emission | sha256=5, sha1=2, md5=0 (implied by Phase A gates) | **YES — triage all 9, tiers light/heavy/full** (cheap; Linux counts gate every perf run) |
+| sha256 perf | +4.7/+5.0 (0818b anchor) | **YES — full tier** (Mac moved +4.7→+6.9; headline mover) |
+| sha1 perf | −4.5/−4.65/−4.83 ×3 (relottery) | **YES if Linux statics change** (new encoder may alter the 2-elim relottery row) |
+| adler32 perf | +3.7 (1 proof, DO16) | full-tier confirm (REPS=30) |
+| md5 / utf8 perf | md5 n/a (vectorized), utf8 +0.00 | rerun only if Linux statics change |
+| Ceilings | sha256 9.0 / sha1 4.7 / adler32 11.6 (0818b); gemm 3.965× (arm2, 0822) | **MISSING: md5, utf8, CryptoSwift server ceilings** (cheap, 5 runs each); crc32/base64/lz77/nbody optional |
+| CryptoSwift | static 183 + perf flat (0810) | **YES — static @300ms+@10s + perf full REPS=30** |
+| zlib | statics 146 heavy + runtime flat RUNS=20 + ANF overhead 4.9–5.3 | statics light/heavy/full (fast) + runtime CONFIRM (RUNS=10, sizes 8/64 — flat expected) |
+| lz4 | statics ~9.5% + runtime ≈0 | statics confirm (fast) |
+| zstd | audit 1688/12798 (audit-only; no runtime harness — documented posture stands) | OVERNIGHT tmux audit rerun (hours, THREADS=16) — optional, statics only |
+| OpenSSL | budget curve 0→43@30s→125 uncapped | **NO RERUN** — static-only by design (ceiling ≈0, asm; its role is RQ2's far end, complete) |
+| timeout sweep | 457-query dial (0818) | quick rerun current encoder (fast; RQ2 continuity) |
+| gemm arms | server arms 3.965×/3.588× (0822, current encoder) | DONE — exists |
+| Julia statics | Mac data (code_llvm is platform-emission-specific; Julia rows stay Mac) | none on server |
+
+### 8.2 Three-day priority plan (kernels first per doctrine)
+
+DAY 1: Linux triage all 9 Swift kernels ×3 tiers (morning; gates
+everything) → sha256 perf full REPS=30 → sha1 perf full REPS=30 (if
+statics moved) → missing ceilings (md5, utf8, CryptoSwift; 5 runs
+each) → launch zstd audit overnight in tmux (optional).
+DAY 2: adler32 + utf8 + md5 perf full (as statics dictate) →
+CryptoSwift static @300ms/@10s + perf full REPS=30.
+DAY 3: zlib statics ×3 tiers + runtime confirm RUNS=10 → lz4 statics
+→ timeout-sweep rerun → buffer for reruns/failures; commit + push
+same day, every day (server access expires).
+
+---
+
+## 9. FINAL MAC DATA (placeholder — fill after server window)
+
+Exists already (current encoder): sha256 perf +6.86/+6.24 (0822);
+CryptoSwift perf t=10s flat, 215 elim (0824); gemm arms 4.185×/4.156×
+(0822); full static sweep (sweep_native_0824.log). To fill: remaining
+kernel perf reruns at full tier; Mac ceilings refresh if any row moved.
+
+## 10. FINAL SURFACE DATA (placeholder — third platform, appendix F)
+
+Scope per HANDOFF plan: zlib ANF + sha256 + sha1 only; median-primary
+with noise floor beside every delta; fixed power profile, interleaved
+reps. Claim template ships ONLY after these runs land.
