@@ -1,0 +1,50 @@
+swiftc: Swift version 6.3.3 (swift-6.3.3-RELEASE)
+opt   : LLVM (http://llvm.org/):
+reps  : 30   kernel: utf8   runargs: '1500 perf_test/utf8_input.txt'
+
+==== PHASE A: building ====
+  built base     traps   25->25   bin    27512 B  eliminated 0
+  built base2x   traps   25->25   bin    27512 B  eliminated 0
+  built oracle   traps   25->23   bin    27512 B  eliminated 2
+==== PHASE B: output equivalence gate ====
+  outputs byte-identical across all configs -- gate passed
+==== PHASE C: 30 shuffled reps x 3 configs ====
+  rep 1/30
+  rep 2/30
+  rep 3/30
+  rep 4/30
+  rep 5/30
+  rep 6/30
+  rep 7/30
+  rep 8/30
+  rep 9/30
+  rep 10/30
+  rep 11/30
+  rep 12/30
+  rep 13/30
+  rep 14/30
+  rep 15/30
+  rep 16/30
+  rep 17/30
+  rep 18/30
+  rep 19/30
+  rep 20/30
+  rep 21/30
+  rep 22/30
+  rep 23/30
+  rep 24/30
+  rep 25/30
+  rep 26/30
+  rep 27/30
+  rep 28/30
+  rep 29/30
+  rep 30/30
+
+config      median       min       avg  audit
+base        2.8699    2.8680    2.8711  ok
+base2x      2.8698    2.8661    2.8704  ok
+oracle      2.8699    2.8661    2.8711  ok
+oracle vs base: +0.00% (median)
+oracle vs base2x: -0.00% (median)
+
+CSV appended: /mydata/ODeSSy/evaluation/perf_swift.csv   (rerun with REPS=15 on the server for the real number)
