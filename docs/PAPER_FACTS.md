@@ -454,7 +454,7 @@ tier = §7-machinery delta.
 | sha1 perf | −4.5/−4.65/−4.83 ×3 (relottery) | **YES if Linux statics change** (new encoder may alter the 2-elim relottery row) |
 | adler32 perf | +3.7 (1 proof, DO16) | full-tier confirm (REPS=30) |
 | md5 / utf8 perf | md5 n/a (vectorized), utf8 +0.00 | rerun only if Linux statics change |
-| Ceilings | sha256 9.0 / sha1 4.7 / adler32 11.6 (0818b); gemm 3.965× (arm2, 0822) | **MISSING: md5, utf8, CryptoSwift server ceilings** (cheap, 5 runs each); crc32/base64/lz77/nbody optional |
+| Ceilings | sha256 9.0 / sha1 4.7 / adler32 11.6 (0818b); gemm 3.965× (arm2, 0822) | DONE 0825 — md5 6.0 / utf8 7.5 / CryptoSwift 19.6 (§8.3); crc32/base64/lz77/nbody optional |
 | CryptoSwift | static 183 + perf flat (0810) | **YES — static @300ms+@10s + perf full REPS=30** |
 | zlib | statics 146 heavy + runtime flat RUNS=20 + ANF overhead 4.9–5.3 | statics light/heavy/full (fast) + runtime CONFIRM (RUNS=10, sizes 8/64 — flat expected) |
 | lz4 | statics ~9.5% + runtime ≈0 | statics confirm (fast) |
@@ -475,6 +475,26 @@ CryptoSwift static @300ms/@10s + perf full REPS=30.
 DAY 3: zlib statics ×3 tiers + runtime confirm RUNS=10 → lz4 statics
 → timeout-sweep rerun → buffer for reruns/failures; commit + push
 same day, every day (server access expires).
+
+### 8.3 Results as they land (additive)
+
+**0825 — server ceilings completed** (ceilings_server_0825.log; c220g2,
+swift-6.3.3-RELEASE, -O vs -Ounchecked, 5 interleaved pinned runs,
+medians, no_turbo on; outputs byte-identical per binary pair):
+
+| kernel | chk median | unc median | ceiling |
+|---|---|---|---|
+| md5 | 7.06 s | 6.66 s | **6.0%** |
+| utf8 | 2.86 s | 2.66 s | **7.5%** |
+| CryptoSwift (300 iters) | 3.23 s | 2.70 s | **19.6%** |
+
+Notable: (i) md5 has a real 6.0% server ceiling — unlike the Mac,
+where its hot loop vectorized check-free; a Linux md5 perf run is
+therefore live if the triage finds eliminations. (ii) CryptoSwift's
+server ceiling is 19.6%, ~6× the Mac's ~3% — the largest
+whole-library headroom measured anywhere in the study, raising the
+stakes of the Day-2 CryptoSwift full-tier perf run. Run-to-run spread
+was ≤0.02 s on multi-second medians (noise floor ≪ all three gaps).
 
 ---
 
