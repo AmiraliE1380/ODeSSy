@@ -449,11 +449,11 @@ tier = §7-machinery delta.
 
 | Item | Exists (campaign/base encoder) | Needed (current encoder) |
 |---|---|---|
-| Swift kernel statics, Linux emission | sha256=5, sha1=2, md5=0 (implied by Phase A gates) | **YES — triage all 9, tiers light/heavy/full** (cheap; Linux counts gate every perf run) |
+| Swift kernel statics, Linux emission | sha256=5, sha1=2, md5=0 (implied by Phase A gates) | DONE 0825 — 9×3 tier matrix (§8.3); sha256 5→7, md5 0→1, frame adds 0 on kernels |
 | sha256 perf | +4.7/+5.0 (0818b anchor) | DONE 0825 — **+8.82/+8.64, 7 elim** (§8.3; 98% of the 9.0% ceiling) |
-| sha1 perf | −4.5/−4.65/−4.83 ×3 (relottery) | **YES if Linux statics change** (new encoder may alter the 2-elim relottery row) |
+| sha1 perf | −4.5/−4.65/−4.83 ×3 (relottery) | DONE 0825 — −5.02/−5.05 at same 2 elim (§8.3; relottery row reproduced 4th time, stands) |
 | adler32 perf | +3.7 (1 proof, DO16) | full-tier confirm (REPS=30) |
-| md5 / utf8 perf | md5 n/a (vectorized), utf8 +0.00 | rerun only if Linux statics change |
+| md5 / utf8 perf | md5 n/a (vectorized), utf8 +0.00 | **NOW JUSTIFIED — md5 statics moved 0→1 + real 6.0% server ceiling; utf8 at 2 elim vs 7.5% ceiling** |
 | Ceilings | sha256 9.0 / sha1 4.7 / adler32 11.6 (0818b); gemm 3.965× (arm2, 0822) | DONE 0825 — md5 6.0 / utf8 7.5 / CryptoSwift 19.6 (§8.3); crc32/base64/lz77/nbody optional |
 | CryptoSwift | static 183 + perf flat (0810) | perf full DONE 0825 — +0.26/−0.37, 183 elim, flat confirmed (§8.3); static @300ms+@10s still to do |
 | zlib | statics 146 heavy + runtime flat RUNS=20 + ANF overhead 4.9–5.3 | statics light/heavy/full (fast) + runtime CONFIRM (RUNS=10, sizes 8/64 — flat expected) |
@@ -555,6 +555,46 @@ exclusivity). The paper's honest ceiling for CryptoSwift is therefore
 **10.4% vs the true baseline**, and the flat perf verdict says the
 bounds-check share reachable by ODeSSy's 183 cold-surface proofs is
 ≈0 — dose location, not dose size.
+
+**0825 — Linux triage, 9 kernels × 3 tiers**
+(swift_triage_server_tiers_0825.log; current encoder, vacuity,
+timeout=10s; UNSAT counts):
+
+| kernel | light | heavy | full |
+|---|---|---|---|
+| sha256 | 0 | 7 | 7 |
+| sha1 | 0 | 2 | 2 |
+| md5 | 0 | 1 | 1 |
+| adler32 | 1 | 1 | 1 |
+| crc32 | 0 | 0 | 0 |
+| base64 | 0 | 0 | 0 |
+| utf8 | 1 | 2 | 2 |
+| lz77 | 1 | 3 | 3 |
+| nbody | 0 | 0 | 0 |
+
+Reads: (i) the ablation attribution is clean — LIGHT proves almost
+nothing on Swift kernels (3 total), HEAVY's fact import is the
+workhorse (16 total), and FULL == HEAVY on every kernel row: FRAME
+adds ZERO Swift-kernel proofs, consistent with the nbody probe
+(attribute-less Swift runtime calls refuse the frame walk). FRAME's
+value is the Julia/gemm §7 result, not Swift kernels — this table is
+the honest scoping statement. (ii) sha256's 5→7 Linux jump is
+ENCODER-level (freeze/SCEVSYM-v2/leaf pre-encoding), visible at heavy
+tier — not frame. (iii) md5 moved 0→1 on Linux (was 0-elim,
+vectorizer): with the new 6.0% server ceiling, an md5 perf run is now
+live. (iv) sha1=2 unchanged; crc32/base64/nbody remain 0 (taxonomy
+walls stand).
+
+**0825 — sha1 server perf, FULL tier, REPS=30**
+(sha1_perf_server_full_0825.log; RUNARGS="900", same protocol):
+base 4.6513 / base2x 4.6501 / oracle 4.8848 → **−5.02% / −5.05%** at
+the same 2 eliminations, outputs byte-identical, base↔base2x gap
+0.0012 s ≈ 0.03%. The sha1 relottery slowdown reproduces a FOURTH
+time (−4.5/−4.65/−4.83 campaign, −5.02 current encoder): removing the
+2 provable traps perturbs downstream optimization (layout/scheduling
+lottery) by more than the checks cost. Statics unchanged → the
+documented honest-negative row stands, now confirmed under the final
+encoder.
 
 ---
 
