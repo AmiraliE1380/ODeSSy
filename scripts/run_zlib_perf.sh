@@ -86,10 +86,12 @@ TIER=${TIER:-light}
 case "$TIER" in
   light) ORACLE_PASSES="oracle-pass<threads=${THREADS}>,simplifycfg,adce,verify" ;;
   heavy) ORACLE_PASSES="oracle-pass<heavy;threads=${THREADS}>,simplifycfg,adce,verify" ;;
-  *) echo "[FATAL] unknown TIER '$TIER' (light|heavy)"; exit 1 ;;
+  full)  ORACLE_PASSES="oracle-pass<heavy;ldeq;frame;threads=${THREADS}>,simplifycfg,adce,verify" ;;
+  *) echo "[FATAL] unknown TIER '$TIER' (light|heavy|full)"; exit 1 ;;
 esac
 CSV="$ROOT/evaluation/perf_zlib.csv"
 [ "$TIER" = "heavy" ] && CSV="$ROOT/evaluation/perf_zlib_heavy.csv"
+[ "$TIER" = "full" ]  && CSV="$ROOT/evaluation/perf_zlib_full.csv"
 W="$ROOT/perf_test"
 
 INLINE_FLAGS=(-finline-functions
