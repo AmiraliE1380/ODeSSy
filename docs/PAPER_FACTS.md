@@ -456,9 +456,9 @@ tier = §7-machinery delta.
 | md5 / utf8 perf | md5 n/a (vectorized), utf8 +0.00 | **NOW JUSTIFIED — md5 statics moved 0→1 + real 6.0% server ceiling; utf8 at 2 elim vs 7.5% ceiling** |
 | Ceilings | sha256 9.0 / sha1 4.7 / adler32 11.6 (0818b); gemm 3.965× (arm2, 0822) | DONE 0825 — md5 6.0 / utf8 7.5 / CryptoSwift 19.6 (§8.3); crc32/base64/lz77/nbody optional |
 | CryptoSwift | static 183 + perf flat (0810) | perf full DONE 0825 — +0.26/−0.37, 183 elim, flat confirmed (§8.3); static @300ms+@10s still to do |
-| zlib | statics 146 heavy + runtime flat RUNS=20 + ANF overhead 4.9–5.3 | statics light/heavy/full (fast) + runtime CONFIRM (RUNS=10, sizes 8/64 — flat expected) |
-| lz4 | statics ~9.5% + runtime ≈0 | statics confirm (fast) |
-| zstd | audit 1688/12798 (audit-only; no runtime harness — documented posture stands) | OVERNIGHT tmux audit rerun (hours, THREADS=16) — optional, statics only |
+| zlib | statics 146 heavy + runtime flat RUNS=20 + ANF overhead 4.9–5.3 | DONE 0826 — tiers 1156/1153/1153 (frame +0), runtime flat vs base2x, overhead 5.4–5.5 (§8.3) |
+| lz4 | statics ~9.5% + runtime ≈0 | DONE 0826 — 1027 removed vs 834 base2x (193 beyond-2×O3); runtime flat (§8.3) |
+| zstd | audit 1688/12798 (audit-only; no runtime harness — documented posture stands) | DONE 0826 — 2619/19197 = 13.6% (§8.3) |
 | OpenSSL | budget curve 0→43@30s→125 uncapped | **NO RERUN** — static-only by design (ceiling ≈0, asm; its role is RQ2's far end, complete) |
 | timeout sweep | 457-query dial (0818) | quick rerun current encoder (fast; RQ2 continuity) |
 | gemm arms | server arms 3.965×/3.588× (0822, current encoder) | DONE — exists |
