@@ -544,6 +544,18 @@ minority is bounds-check-attributable, and ODeSSy's partial dose does
 not reach the hot group — the whole-library contrast to the kernel
 rows, not a measurement artifact.
 
+**0825 — CryptoSwift ceiling VERIFIED at 15 interleaved runs, 3 arms**
+(cryptoswift_ceiling_server_15runs_0825.log): plain `swiftc -O` 3.22 /
+O3-sandwich base 2.98 / `-Ounchecked` 2.70 (medians). The 5-run
+ceiling was NOT distorted — it reproduced within 0.01 s. Decomposition
+of the apparent 19.3% gap: **8.1 pts is the compilation pipeline**
+(-O vs the sandwich re-optimization that the perf harness base already
+includes) **+ 10.4 pts is unchecked semantics** (bounds + overflow +
+exclusivity). The paper's honest ceiling for CryptoSwift is therefore
+**10.4% vs the true baseline**, and the flat perf verdict says the
+bounds-check share reachable by ODeSSy's 183 cold-surface proofs is
+≈0 — dose location, not dose size.
+
 ---
 
 ## 9. FINAL MAC DATA (placeholder — fill after server window)
