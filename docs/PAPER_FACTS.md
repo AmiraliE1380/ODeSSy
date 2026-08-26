@@ -616,6 +616,16 @@ utf8 EXACTLY flat (three medians within 0.1 ms) at 2 elim — proofs
 off the hot path; its 7.5% ceiling is exclusivity/overflow-dominated.
 Dose-location story uniform across all six perf'd kernels.
 
+**0826 — zlib LIGHT-tier statics, server, current encoder**
+(zlib_static_light_0826.log; RUNS=1 statics mode): eliminations
+REPRODUCE the campaign exactly — signed 125→113, unsigned 1221→1081,
+both 1298→1156. NOTE ON THE APPARENT ~5–7% RUNTIME DELTAS IN THIS
+LOG: RUNS=1, and the base↔base2x control scatter in the same table is
+up to 6% (unsigned base 2.128 vs base2x 2.255) — same magnitude as
+the oracle deltas. NOT citable as speedup; the RUNS=10 sizes-8/64
+runtime-confirm run (queued 0826 overnight) is the adjudicating
+experiment. Campaign RUNS=20 verdict was flat.
+
 ---
 
 ## 9. FINAL MAC DATA (placeholder — fill after server window)
