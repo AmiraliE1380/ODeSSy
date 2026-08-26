@@ -450,7 +450,7 @@ tier = §7-machinery delta.
 | Item | Exists (campaign/base encoder) | Needed (current encoder) |
 |---|---|---|
 | Swift kernel statics, Linux emission | sha256=5, sha1=2, md5=0 (implied by Phase A gates) | **YES — triage all 9, tiers light/heavy/full** (cheap; Linux counts gate every perf run) |
-| sha256 perf | +4.7/+5.0 (0818b anchor) | **YES — full tier** (Mac moved +4.7→+6.9; headline mover) |
+| sha256 perf | +4.7/+5.0 (0818b anchor) | DONE 0825 — **+8.82/+8.64, 7 elim** (§8.3; 98% of the 9.0% ceiling) |
 | sha1 perf | −4.5/−4.65/−4.83 ×3 (relottery) | **YES if Linux statics change** (new encoder may alter the 2-elim relottery row) |
 | adler32 perf | +3.7 (1 proof, DO16) | full-tier confirm (REPS=30) |
 | md5 / utf8 perf | md5 n/a (vectorized), utf8 +0.00 | rerun only if Linux statics change |
@@ -495,6 +495,27 @@ server ceiling is 19.6%, ~6× the Mac's ~3% — the largest
 whole-library headroom measured anywhere in the study, raising the
 stakes of the Day-2 CryptoSwift full-tier perf run. Run-to-run spread
 was ≤0.02 s on multi-second medians (noise floor ≪ all three gaps).
+
+**0825 — sha256 server perf, FULL tier, REPS=30**
+(sha256_perf_server_full_0825.log; c220g2, swift-6.3.3, RUNARGS="600
+sha_input.bin", oracle-pass<heavy;ldeq;frame;timeout=300;threads=8>,
+numactl-pinned, no_turbo):
+
+| config | median | min | avg |
+|---|---|---|---|
+| base | 4.9269 | 4.9146 | 4.9273 |
+| base2x | 4.9172 | 4.9119 | 4.9173 |
+| oracle | 4.4923 | 4.4833 | 4.4935 |
+
+**oracle vs base +8.82%, vs base2x +8.64% (medians).** Gates: Phase A
+eliminated **7 of 40** trap edges (campaign heavy-tier Linux count was
+5 — the §7 encoder machinery adds 2 Linux proofs, mirroring the Mac's
+5→7); Phase B outputs byte-identical. base↔base2x gap 0.0097 s ≈ 0.2%
+= noise floor, ≪ the 8.8% delta. Against the 0818b server ceiling of
+9.0% (-O vs -Ounchecked), this is **~98% of the unchecked ceiling
+recovered by proof** — up from +4.7–5.0% (≈52–56% of ceiling) with the
+campaign encoder. Headline mover confirmed on both ISAs: Mac
++6.86/+6.24, server +8.82/+8.64, both at 7 eliminations.
 
 ---
 
