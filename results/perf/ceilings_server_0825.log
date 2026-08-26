@@ -1,0 +1,11 @@
+# server ceilings, c220g2, 2026-08-25, swiftc (swift-6.3.3-RELEASE)
+# checked(-O) vs unchecked(-Ounchecked), 5 interleaved pinned runs, medians; no_turbo on
+  md5 chk runs: 7.06 7.06 7.07 7.06 7.05 median=7.06
+  md5 unc runs: 6.66 6.66 6.66 6.66 6.67 median=6.66
+  md5 ceiling: 6.0%
+  utf8 chk runs: 2.87 2.86 2.86 2.86 2.87 median=2.86
+  utf8 unc runs: 2.66 2.65 2.66 2.66 2.66 median=2.66
+  utf8 ceiling: 7.5%
+  cryptoswift chk runs: 3.23 3.23 3.23 3.25 3.23 median=3.23
+  cryptoswift unc runs: 2.71 2.71 2.70 2.69 2.69 median=2.70
+  cryptoswift ceiling: 19.6%
