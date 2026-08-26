@@ -626,6 +626,40 @@ the oracle deltas. NOT citable as speedup; the RUNS=10 sizes-8/64
 runtime-confirm run (queued 0826 overnight) is the adjudicating
 experiment. Campaign RUNS=20 verdict was flat.
 
+**0826 overnight — zlib tiers + runtime confirm, lz4, zstd audit:**
+
+zlib STATIC TIER MATRIX (both-spec eliminations, current encoder,
+server): light 1298→1156, heavy 1298→1153, full 1298→1153 (signed
+113/113/113; unsigned 1081/1078/1078). Heavy's ldeq adds 3 proofs
+over light; **FRAME adds 0 on zlib** — same scoping as Swift kernels:
+plain-C loads carry no scoped-noalias metadata the frame walk can
+discharge. (Campaign heavy was 1152; current encoder 1153 — +1
+encoder-level proof.)
+
+zlib RUNTIME CONFIRM (RUNS=10, sizes 8/64, full tier,
+zlib_runtime_full_0826.log; avg-based): 8 MB — base 2.179, base2x
+2.152, oracle 2.121 (vs base +2.7%, vs base2x +1.4%, base↔base2x gap
+1.2%); 64 MB — base 16.758, base2x 16.568, oracle 16.556 (vs base
++1.2%, **vs base2x +0.07%**). VERDICT: the light-run ~6% tease was
+lottery/noise as predicted — deltas shrink 8→64 (cold-path,
+constant-per-invocation savings) and vanish against base2x. zlib
+runtime remains FLAT; the citable zlib runtime fact stays the ANF
+checks-overhead (both.base vs none.base here: +5.5%@8, +5.4%@64 —
+reconfirming the 4.9–5.3% overhead-ceiling claim under the final
+encoder). lz4 RUNTIME (40 reps): flat (anf.base 12.452 avg, base2x
+12.445, oracle 12.405) — ≈0 confirmed.
+
+lz4 STATICS: anf 3403→2376 oracle vs 3403→2569 base2x — ODeSSy
+removes 1027 traps where doubled-O3 removes 834; 193 beyond-2×O3.
+
+zstd AUDIT RERUN (THREADS=16, zstd_audit_0826.log): totals both-spec
+**2619/19197 = 13.6% UNSAT** (light 2618; ldeq +1) — campaign was
+1688/12798 = 13.2%; the current audit covers more translation units
+and holds the same rate. signed 85/552 (15.4%), unsigned 2455/18711
+(13.1%), bounds 56/594 (9.4%). Per-TU pattern stable (e.g.
+huf_decompress 151/512, zstd_opt 90/724); vacuous counts small and
+localized (xxhash class, explained-OK posture stands).
+
 ---
 
 ## 9. FINAL MAC DATA (placeholder — fill after server window)
