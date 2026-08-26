@@ -596,6 +596,26 @@ lottery) by more than the checks cost. Statics unchanged → the
 documented honest-negative row stands, now confirmed under the final
 encoder.
 
+**0826 — md5 / utf8 / adler32 server perf, FULL tier, REPS=30 each**
+(<k>_perf_server_full_0826.log; same protocol; all Phase A counts
+match the 0825 triage, all outputs byte-identical):
+
+| kernel | elim | base | base2x | oracle | vs base | vs base2x | ceiling |
+|---|---|---|---|---|---|---|---|
+| md5 (1200 it) | 1 | 6.9633 | 6.9632 | 7.0858 | **−1.76%** | −1.76% | 6.0% |
+| utf8 (1500 it) | 2 | 2.8699 | 2.8698 | 2.8699 | **+0.00%** | −0.00% | 7.5% |
+| adler32 (7100 it) | 1 | 4.9009 | 4.8998 | 4.7198 | **+3.69%** | +3.67% | 11.6% |
+
+Reads: (i) adler32 REPRODUCED at full tier on the final encoder —
++3.69% from the single hot-group DO16 proof, 32% of its 11.6%
+ceiling; base↔base2x gap ≈0.001 s. Positive kernel row set now:
+sha256 +8.82 (~98% of ceiling) and adler32 +3.69. (ii) md5 −1.76% at
+1 elim — sha1's relottery phenomenon at smaller dose; the 6.0%
+ceiling stays unreached (1 cold proof, 28 surviving traps). (iii)
+utf8 EXACTLY flat (three medians within 0.1 ms) at 2 elim — proofs
+off the hot path; its 7.5% ceiling is exclusivity/overflow-dominated.
+Dose-location story uniform across all six perf'd kernels.
+
 ---
 
 ## 9. FINAL MAC DATA (placeholder — fill after server window)
