@@ -455,7 +455,7 @@ tier = §7-machinery delta.
 | adler32 perf | +3.7 (1 proof, DO16) | full-tier confirm (REPS=30) |
 | md5 / utf8 perf | md5 n/a (vectorized), utf8 +0.00 | rerun only if Linux statics change |
 | Ceilings | sha256 9.0 / sha1 4.7 / adler32 11.6 (0818b); gemm 3.965× (arm2, 0822) | DONE 0825 — md5 6.0 / utf8 7.5 / CryptoSwift 19.6 (§8.3); crc32/base64/lz77/nbody optional |
-| CryptoSwift | static 183 + perf flat (0810) | **YES — static @300ms+@10s + perf full REPS=30** |
+| CryptoSwift | static 183 + perf flat (0810) | perf full DONE 0825 — +0.26/−0.37, 183 elim, flat confirmed (§8.3); static @300ms+@10s still to do |
 | zlib | statics 146 heavy + runtime flat RUNS=20 + ANF overhead 4.9–5.3 | statics light/heavy/full (fast) + runtime CONFIRM (RUNS=10, sizes 8/64 — flat expected) |
 | lz4 | statics ~9.5% + runtime ≈0 | statics confirm (fast) |
 | zstd | audit 1688/12798 (audit-only; no runtime harness — documented posture stands) | OVERNIGHT tmux audit rerun (hours, THREADS=16) — optional, statics only |
@@ -516,6 +516,33 @@ eliminated **7 of 40** trap edges (campaign heavy-tier Linux count was
 recovered by proof** — up from +4.7–5.0% (≈52–56% of ceiling) with the
 campaign encoder. Headline mover confirmed on both ISAs: Mac
 +6.86/+6.24, server +8.82/+8.64, both at 7 eliminations.
+
+**0825 — CryptoSwift server perf, FULL tier, REPS=30**
+(cryptoswift_perf_server_full_0825.log; whole library + driver,
+RUNARGS="300 sha_input.bin", same pass string/pinning as sha256):
+base median 2.9914, base2x 2.9726, oracle 2.9835 → **oracle vs base
++0.26%, vs base2x −0.37% — FLAT**, at **183 eliminations** (of 2600
+front-end trap edges; binary 1.08 MB), outputs byte-identical.
+Dose-ladder verdict reproduced cross-ISA: proofs land on cold API
+surface, the SHA-256 compression hot loop keeps its remaining traps.
+
+RECONCILING THE 19.6% CEILING (§8.3 top) WITH FLAT PERF — three
+compounding reasons, all evidenced in the logs:
+(1) BASELINE MISMATCH: the ceiling's checked arm is plain `swiftc -O`
+(median 3.23 s) but the perf harness base is the O3-sandwich
+(swiftc -O → opt -O3 → llc), median 2.99 s — the sandwich pipeline
+alone recovers ~7.4 pts of the 19.6% before any proof is used. The
+ODeSSy-relevant headroom vs unchecked (2.70 s) is ≈10.7%, not 19.6%.
+(2) -Ounchecked REMOVES MORE THAN BOUNDS CHECKS (overflow trapping,
+preconditions, exclusivity); in a whole-library binary those
+non-bounds effects dominate the gap and are outside ODeSSy's contract.
+(3) DOSE LOCATION: 183 proofs vs 2682 surviving traps; the hot loop's
+traps survive, so runtime is unchanged — same mechanism as the Mac
+dose ladder (0810/0824). The honest paper claim: CryptoSwift shows
+large *apparent* unchecked headroom (19.6% server) of which only a
+minority is bounds-check-attributable, and ODeSSy's partial dose does
+not reach the hot group — the whole-library contrast to the kernel
+rows, not a measurement artifact.
 
 ---
 
