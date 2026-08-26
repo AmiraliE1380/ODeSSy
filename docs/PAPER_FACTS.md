@@ -455,12 +455,12 @@ tier = §7-machinery delta.
 | adler32 perf | +3.7 (1 proof, DO16) | full-tier confirm (REPS=30) |
 | md5 / utf8 perf | md5 n/a (vectorized), utf8 +0.00 | **NOW JUSTIFIED — md5 statics moved 0→1 + real 6.0% server ceiling; utf8 at 2 elim vs 7.5% ceiling** |
 | Ceilings | sha256 9.0 / sha1 4.7 / adler32 11.6 (0818b); gemm 3.965× (arm2, 0822) | DONE 0825 — md5 6.0 / utf8 7.5 / CryptoSwift 19.6 (§8.3); crc32/base64/lz77/nbody optional |
-| CryptoSwift | static 183 + perf flat (0810) | perf full DONE 0825 — +0.26/−0.37, 183 elim, flat confirmed (§8.3); static @300ms+@10s still to do |
+| CryptoSwift | static 183 + perf flat (0810) | ALL DONE — perf 0825 (+0.26/−0.37, flat); statics 0826 full tier 182@300ms / 210@10s, vac=0 (§8.3) |
 | zlib | statics 146 heavy + runtime flat RUNS=20 + ANF overhead 4.9–5.3 | DONE 0826 — tiers 1156/1153/1153 (frame +0), runtime flat vs base2x, overhead 5.4–5.5 (§8.3) |
 | lz4 | statics ~9.5% + runtime ≈0 | DONE 0826 — 1027 removed vs 834 base2x (193 beyond-2×O3); runtime flat (§8.3) |
 | zstd | audit 1688/12798 (audit-only; no runtime harness — documented posture stands) | DONE 0826 — 2619/19197 = 13.6% (§8.3) |
 | OpenSSL | budget curve 0→43@30s→125 uncapped | **NO RERUN** — static-only by design (ceiling ≈0, asm; its role is RQ2's far end, complete) |
-| timeout sweep | 457-query dial (0818) | quick rerun current encoder (fast; RQ2 continuity) |
+| timeout sweep | 457-query dial (0818) | DONE 0826 — dial reproduces, 96% of yield @100ms, wall flat ~4s (§8.3) |
 | gemm arms | server arms 3.965×/3.588× (0822, current encoder) | DONE — exists |
 | Julia statics | Mac data (code_llvm is platform-emission-specific; Julia rows stay Mac) | none on server |
 
@@ -659,6 +659,36 @@ and holds the same rate. signed 85/552 (15.4%), unsigned 2455/18711
 (13.1%), bounds 56/594 (9.4%). Per-TU pattern stable (e.g.
 huf_decompress 151/512, zstd_opt 90/724); vacuous counts small and
 localized (xxhash class, explained-OK posture stands).
+
+**0826 — timeout sweep rerun, server, current encoder**
+(timeout_sweep_server_0826.log; zlib/deflate unsigned O1 workhorse,
+457 queries, THREADS=8):
+
+| timeout | UNSAT | SAT | UNKNOWN | wall |
+|---|---|---|---|---|
+| 1 ms | 16 | 66 | 375 | 3.95 s |
+| 3 ms | 27 | 171 | 259 | 4.01 s |
+| 10 ms | 43 | 319 | 95 | 4.11 s |
+| 30 ms | 47 | 387 | 23 | 4.15 s |
+| 100 ms | 50 | 405 | 2 | 4.21 s |
+| 300 ms | 50 | 405 | 2 | 4.13 s |
+| 3000 ms | 52 | 405 | 0 | 4.25 s |
+| 10000 ms | 52 | 405 | 0 | 4.32 s |
+
+The RQ2 dial reproduces under the final encoder: strictly monotone
+UNSAT growth, 96% of the 10 s yield already at 100 ms, UNKNOWN → 0,
+and stage wall FLAT (~4 s) at every point — per-query timeout bounds
+tail latency without sacrificing the fast majority.
+
+**0826 — CryptoSwift statics, server, FULL tier, both budgets**
+(cryptoswift_static_full_t{300,10000}_0826.log; whole library,
+vacuity audit): **@300 ms: 182 UNSAT / 2424 SAT / 80 UNKNOWN;
+@10 s: 210 UNSAT / 2461 SAT / 15 UNKNOWN; vacuous = 0 at both.**
+Server emission tracks the Mac dose ladder (183→215 Mac,
+182→210 server) — budget buys ~28 more proofs (the UNKNOWN pool
+draining), vacuity clean. Perf remains flat at either dose (dose
+location, §8.3 above): the ladder is the paper's compile-budget
+knob evidence, not a runtime lever, on this library.
 
 ---
 
