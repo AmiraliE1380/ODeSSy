@@ -1,0 +1,2 @@
+# frontier ceilings redo (julia lz77 + rust), c220g2 2026-08-27
+  lz77.jl chk=0.4411s unc=0.1035s ceiling=+326.3%
