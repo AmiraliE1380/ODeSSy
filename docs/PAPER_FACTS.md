@@ -728,6 +728,32 @@ pinned runs, output-equality gate passed):
 | base64 (3225 it) | 4.83 | 3.08 | **56.8%** |
 | lz77 (2 it) | 4.39 | 4.25 | **3.3%** |
 
+**0827 — zstd RUNTIME, signed spec, FULL tier, REPS=30 — FIRST
+WHOLE-LIBRARY C SPEEDUP** (zstd_perf_server_full_0827b.log; new
+run_zstd_perf.sh harness: per-TU O3-sandwich, unsigned spec excluded
+as dynamically un-runnable, asm fast-path linked, byte-identity gate
+passed; 512 MB text corpus, comp = `-3 -c`, decomp = `-d -c`):
+
+| config | comp median | decomp median |
+|---|---|---|
+| base | 0.4162 | 0.1596 |
+| base2x | 0.4152 | 0.1594 |
+| oracle | 0.4057 | 0.1594 |
+
+**Compression: oracle +2.58% vs base, +2.33% vs base2x, noise floor
+0.24% — ~10× above noise, from 6 eliminations** (harness census: 249
+signed traps in the emitted IR → 243 after oracle). Decompression: +0.13/+0.01%
+= exactly flat. Reads: (i) the first C-library runtime win of the
+study — six proofs land in the compression hot path (dose location
+finally favorable in C); (ii) the +2.3% EXCEEDS the 1.2% compression
+overhead-ceiling — legal (eliminations unlock re-optimization, the
+sha256 mechanism), but the two numbers use different corpora (CLI
+bench vs 512 MB file), so report both, no recovery %; (iii) decomp
+flat while its overhead ceiling is 9.0%: the decompression checks'
+redundancy is not establishable by current fact sources — consistent
+with zlib. SERVER CAMPAIGN COMPLETE: suite gate PASS=20/FAIL=8
+recorded on the final binary; tag v5.0-final-server-data.
+
 base64 is the headline residue row: checks are over a third of its
 runtime — the LARGEST ceiling measured anywhere in the study — and
 ODeSSy proves 0 of its 28 traps. CLASS CORRECTION (verified against

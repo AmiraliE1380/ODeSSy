@@ -288,7 +288,8 @@ This paper makes the following contributions:
   runtime experiments with round-trip controls, output-equivalence gates,
   and 30-repetition medians on two ISAs show \emph{when} elimination pays
   --- a dose--response account in which one hot proof can buy \pct{3.7}
-  while 183 cold proofs buy nothing, and in which non-unlocking
+  and six buy the study's only whole-library C speedup, while 183 cold
+  proofs buy nothing, and in which non-unlocking
   elimination is a measured, replicated, two-sided lottery.
 \item \textbf{Latency as a dial} (\S\ref{sec:results-cost}): \pct{96} of
   zlib's proofs survive a 100\,ms per-query budget while OpenSSL's
@@ -696,6 +697,7 @@ Hot elims & Unlock? & Platform & Result\\
 5 (md5) & none & M-series & flat\\
 3 (sha256, earlier) & unroll & x86 & $+4.2/{+}4.3$\%\\
 1 (adler32, DO16 group) & group & x86 & $+3.7$\%\\
+6 (zstd compression, C) & hot group & x86 & $+2.6/{+}2.3$\%\\
 1 (adler32) & none & M-series & $-1.4$\%\\
 2 (utf8, off hot path) & --- & x86 & $+0.00$\% exact\\
 1 (md5, cold) & none & x86 & $-1.8$\%\\
@@ -742,7 +744,16 @@ fact sources cannot establish (\S\ref{sec:future}). The eliminations do
 pay in code size (\texttt{.text} shrinks \pct{0.5}--\pct{1.2} versus the
 control) at zero runtime risk --- and the honest summary of the C story
 is capability plus accounting, in the tradition of
-Souper~\cite{sasnauskas2017souper}, not raw speedup.
+Souper~\cite{sasnauskas2017souper}, not raw speedup. One C library
+breaks the pattern: on zstd under the signed specification (the
+unsigned one is un-runnable in trap mode, \S\ref{sec:results-static}),
+\emph{six} full-tier eliminations buy \pct{2.3} on whole-file
+compression against the double-O3 control with a \pct{0.24} noise
+floor and byte-identical output --- the study's only whole-library C
+speedup, and a tenth C confirmation of dose location: decompression,
+whose signed checks cost \pct{9} when all present, stays exactly flat
+because its surviving checks' redundancy is precisely what today's
+fact sources cannot establish.
 \FIGURE{dose--response ladder / recovery-vs-ceiling bar chart}
 \subsection{RQ2: What does it cost?}
 \label{sec:results-cost}
