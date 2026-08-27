@@ -56,7 +56,7 @@ transform_one() {  # $1=stem $2=cfg
               -passes="$ORACLE_PASSES,$CLEANUP" -S "$ll" -o "$tmp.mid" \
               && opt -O3 -S "$tmp.mid" -o "$tmp" ;;
   esac || return 1
-  llc -O2 -filetype=obj "$tmp" -o "$out"
+  llc -O2 -relocation-model=pic -filetype=obj "$tmp" -o "$out"
 }
 export -f transform_one; export W ORACLE_PASSES CLEANUP
 for cfg in base base2x oracle; do
@@ -71,11 +71,16 @@ for cfg in base base2x oracle; do
   echo "  built $cfg   traps $TRAPS_IN->$tfin   ($(($(date +%s)-t0))s)"
 done
 
-echo "==== PHASE C: programs (unsanitized, shared) + link ===="
+echo "==== PHASE C: programs + lib asm (unsanitized, shared) + link ===="
 for p in "$ZSTD/programs/"*.c; do
   clang -O3 $INC -I"$ZSTD/programs" -c "$p" -o "$W/progobj/$(basename "$p" .c).o" \
     || { echo "[FATAL] clang program $p"; exit 1; }
 done
+# lib assembly TUs (e.g. huf_decompress_amd64.S) -- shared by every config
+while IFS= read -r s; do
+  clang -O3 $INC -c "$s" -o "$W/progobj/asm_$(basename "$s" .S).o" \
+    || { echo "[FATAL] clang asm $s"; exit 1; }
+done < <(find "$ZSTD/lib" -name '*.S')
 for cfg in base base2x oracle; do
   clang "$W/obj.$cfg"/*.o "$W/progobj"/*.o -o "$W/zstd.$cfg" -lpthread \
     || { echo "[FATAL] link $cfg"; exit 1; }
