@@ -632,7 +632,13 @@ crypto code (CRC, Adler, xxHash, SHA) is intentionally-wrapping ---
 all-\textsc{sat} there is a finding about the spec, not imprecision, and
 OpenSSL's SHA-256 is the limit case: the signed spec emits \emph{zero}
 checks (the code contains no instrumentable signed arithmetic), so under
-strict UB there is simply nothing to eliminate. Second, the \emph{affine
+strict UB there is simply nothing to eliminate. The split is dynamic as
+well as static: a trap-mode \emph{unsigned} build of zstd's CLI executes
+a trap in its first benchmark block --- the intentional wraps in its
+xxhash checksum fire immediately --- so under that specification the
+library is not merely check-laden but unrunnable, while the signed-spec
+build runs cleanly at \pct{1.2} (compression) to \pct{9.0}
+(decompression) overhead. Second, the \emph{affine
 overfit}: PolyBench-style affine kernels emit zero residual traps at O3
 --- LLVM's existing heuristics fully handle the affine case, and the
 opportunities live in the data-dependent loops of compression and crypto.
@@ -953,7 +959,13 @@ source of the sha256 unlock; (b) \emph{heap length invariants}
 class, blocking gemm, matmul, nbody, and the Swift residuals; (c)
 \emph{value-dependent overflow} --- irreducible without value
 information, correctly kept; (d) \emph{non-unit strides} --- SCEV computes
-no trip count; a separate induction argument is required. Class (b) is
+no trip count; a separate induction argument is required. The residue is
+not cheap: base64 --- whose stride-3 hot loop is class (d) and whose
+runtime-built lookup table is class (b)'s allocation-carried case (the
+6-bit-masked indices are provably in range; the table's \emph{length}
+is an undischarged O2 allocation contract) --- runs \pct{56.8} faster
+with checks off, the largest kernel ceiling we measured, entirely
+unrecovered. Class (b) is
 where the money is, and it is not an engineering gap but a missing
 \emph{theory} in the fact sources --- the theory that
 \S\ref{sec:frame} supplies for its guard-carried case. What remains of

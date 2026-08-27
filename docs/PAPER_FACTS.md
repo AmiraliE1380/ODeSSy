@@ -730,8 +730,13 @@ pinned runs, output-equality gate passed):
 
 base64 is the headline residue row: checks are over a third of its
 runtime — the LARGEST ceiling measured anywhere in the study — and
-ODeSSy proves 0 of its 28 traps (per-byte table lookups indexed by
-runtime data; heap-count taxonomy class b). Strongest possible
+ODeSSy proves 0 of its 28 traps. CLASS CORRECTION (verified against
+source + triage record): the residue is (d)+(b), not (b) alone — the
+stride-3 data accesses are taxonomy (d) non-unit strides (Plan C's
+skipped induction target), and the tbl[x&63] lookups are (b)
+allocation-carried: the 6-bit-masked index is KnownBits-provable, but
+the runtime-built 64-entry table's LENGTH is an unproven O2
+allocation contract. Strongest possible
 motivation datapoint for the frontier/taxonomy section: the residue
 is not cheap checks nobody cares about. crc32 (4.6%) and lz77 (3.3%)
 are ordinary unreached ceilings. CEILING CAMPAIGN NOW COMPLETE — every
