@@ -1,0 +1,35 @@
+==== rebuilding pass ====
+ninja: no work to do.
+
+test                 expect    unsat    sat  unknown  vacuous  skips  result
+test_bounds1         UNSAT         1      0        0        0      0  PASS
+test_bounds_sat      SAT           0      1        0        0      0  PASS
+test_div1            UNSAT         1      0        0        0      0  PASS
+test_div_sat         SAT           0      1        0        0      0  PASS
+test_frame1          UNSAT         0      1        0        0      0  FAIL
+test_frame_clobber_sat SAT           0      1        0        0      0  PASS
+test_frame_phi_sat   SAT           0      1        0        0      0  PASS
+test_heavy_range_call UNSAT         0      1        0        0      0  FAIL
+test_heavy_range_load UNSAT         0      1        0        0      0  FAIL
+test_heavy_scev_loop UNSAT         0      1        0        0      0  FAIL
+test_heavy_scevsym1  UNSAT         0      1        0        0      0  FAIL
+test_heavy_scevsym_sat SAT           0      1        0        0      0  PASS
+test_heavy_scevsym_stride1 UNSAT         0      1        0        0      0  FAIL
+test_heavy_scevsym_stride_sat SAT           0      1        0        0      0  PASS
+test_heavy_scevsym_symstart1 UNSAT         0      1        0        0      0  FAIL
+test_heavy_scevsym_symstart_sat SAT           0      1        0        0      0  PASS
+test_implicit1       UNSAT         1      0        0        0      0  PASS
+test_implicit_sat    SAT           0      1        0        0      0  PASS
+test_ldeq1           UNSAT         0      1        0        0      0  FAIL
+test_ldeq_clobber_sat SAT           0      1        0        0      0  PASS
+test_phi1            UNSAT         1      0        0        0      0  PASS
+test_phi2            UNSAT         1      0        0        0      0  PASS
+test_phi3            UNSAT         1      0        0        0      0  PASS
+test_phi4            UNSAT         1      0        0        0      0  PASS
+test_phi5_sat        SAT           0      1        0        0      0  PASS
+test_phi6            UNSAT         1      0        0        0      0  PASS
+test_phi7            UNSAT         1      0        0        0      0  PASS
+test_phi8_sat        SAT           0      1        0        0      0  PASS
+
+================ PASS=20 FAIL=8 ================
+Inspect failures: logs/compilations/<test>.txt
