@@ -651,6 +651,10 @@ encoder). lz4 RUNTIME (40 reps): flat (anf.base 12.452 avg, base2x
 
 lz4 STATICS: anf 3403→2376 oracle vs 3403→2569 base2x — ODeSSy
 removes 1027 traps where doubled-O3 removes 834; 193 beyond-2×O3.
+lz4 OVERHEAD CEILING, PRECISE (computed 0828 from the 0826 run's raw
+40-rep CSV, medians): none.base 12.171 s vs anf.base 12.419 s =
+**+2.04%** — replaces the earlier "≈2%" approximation; same data,
+median-primary per doctrine.
 
 zstd AUDIT RERUN (THREADS=16, zstd_audit_0826.log): totals both-spec
 **2619/19197 = 13.6% UNSAT** (light 2618; ldeq +1) — campaign was
