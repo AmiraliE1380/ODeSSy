@@ -690,6 +690,18 @@ draining), vacuity clean. Perf remains flat at either dose (dose
 location, §8.3 above): the ladder is the paper's compile-budget
 knob evidence, not a runtime lever, on this library.
 
+**0827 — 0-elim kernel ceilings (crc32/base64/lz77): RUN FAILED, no
+data** (ceilings_server_0elim_0827.log contains only crash
+backtraces). Every execution crashed at ~1.2 s with an identical
+early-main signature across all three kernels — checked binaries via
+fatalError trap (Sig 4), unchecked via segfault (Sig 11) — consistent
+with `try! Data(contentsOf:)` failing: perf_test/sha_input.bin
+(gitignored, machine-local) presumably vanished from the server
+between 0826 and 0827. The probe crash then cascaded into empty-ITERS
+invocations. NOT a kernel or encoder finding; nothing citable. Fix:
+recreate the workload, manual probe, rerun. These rows are optional
+descriptive ceilings only.
+
 ---
 
 ## 9. FINAL MAC DATA (placeholder — fill after server window)
