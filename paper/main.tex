@@ -652,61 +652,46 @@ loses.
 \subsection{RQ1b: When do proofs become speed?}
 \label{sec:results-perf}
 \begin{table}
-\caption{Checked-vs-unchecked ceilings and \tool{} recovery (x86 server;
-medians of 30 shuffled reps; oracle vs.\ the double-O3 control; final
-encoder, full fact tier).}
-\label{tab:recovery}
-\small
-\begin{tabular}{lrrr}
+\caption{The dose--response table: every runtime experiment, sorted by
+speedup (medians, REPS$\geq$21 shuffled reps, oracle vs.\ the double-O3
+control, byte-identical-output gate; final encoder, full fact tier).
+``Elim'' counts proven trap edges; ``Unlock'' names the transformation
+the proofs gate.}
+\label{tab:speedups}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lrllrrr}
 \toprule
-Benchmark & Ceiling & \tool{} $\Delta$ & Recovery\\
+Benchmark & Elim & Platform & Speedup & Unlock & Ceiling & Recov.\\
 \midrule
-gemm (Julia, \S\ref{sec:frame})$^{b}$ & $3.97\times$ & $3.59\times$ & 96.4\%\\
-sha256 (Swift) & 9.0\% & $+8.8$\% & 98\%\\
-adler32 (Swift) & 11.6\% & $+3.7$\% & 32\% (1 proof)\\
-utf8 (Swift) & 7.5\% & $+0.0$\% & 0 (cold proofs)\\
-md5 (Swift) & 6.0\% & $-1.8$\% & $<0$\\
-sha1 (Swift) & 4.7\% & $-5.0$\% ($\times4$ runs) & $<0$\\
-CryptoSwift (library) & 10.4\%$^{c}$ & $\pm0.3$\% & $\approx$0\\
-zlib (C, whole library) & $+4.9$--$5.4$\%$^{a}$ & $\pm0.1$\% & $\approx$0\\
+gemm (Julia)$^{b}$ & 16 & M-series & $4.16\times$ & vec+unroll & $4.19\times$ & 99.8\%\\
+gemm (Julia)$^{b}$ & 16 & x86 & $3.59\times$ & vec+unroll & $3.97\times$ & 96.4\%\\
+sha256 (Swift) & 7 & x86 & $+8.8$\% & unroll & 9.0\% & 98\%\\
+sha1 (Swift) & 7 & M-series & $+6.4/{+}7.3$\% & unroll & --- & ---\\
+sha256 (Swift) & 7 & M-series & $+6.9$\% & unroll & --- & ---\\
+adler32 (Swift) & 1 & x86 & $+3.7$\% & DO16 group & 11.6\% & 32\%\\
+zstd comp.\ (C) & 6 & x86 & $+2.3$\% & hot group & 1.2\%$^{a}$ & ---$^{a}$\\
+utf8 (Swift) & 2 & x86 & $+0.0$\% & none (cold) & 7.5\% & 0\\
+CryptoSwift & 183 & x86 & $\pm0.3$\% & none (cold) & 10.4\%$^{c}$ & $\approx$0\\
+zlib comp.\ (C) & 145 & x86 & $+0.1$\% & none (cold) & 5.4\%$^{a}$ & $\approx$0\\
+zlib decomp.\ (C) & 113 & x86 & $+0.3$\% & none (cold) & 1.1\%$^{a}$ & $\approx$0\\
+md5 (Swift) & 1 & x86 & $-1.8$\% & none (cold) & 6.0\% & $<0$\\
+adler32 (Swift) & 1 & M-series & $-1.4$\% & none & --- & $<0$\\
+sha1 (Swift) & 2 & x86 & $-5.0$\% ($\times4$) & none & 4.7\% & $<0$\\
 \bottomrule
 \end{tabular}\\
-\raggedright\footnotesize $^{a}$Measured sanitizer overhead vs.\
-unsanitized --- the deployable ceiling the eliminations attack.
-$^{b}$Via proof-licensed \texttt{@inbounds} (Table~\ref{tab:inbounds});
-ceiling is the expert-annotation arm. M-series: $4.16\times$ of
-$4.19\times$, \pct{99.8}. $^{c}$The raw
-\texttt{-O}-vs-\texttt{-Ounchecked} gap is \pct{19.6}, of which 8.1
-points are the compilation pipeline (recovered by the harness baseline
-itself) and \pct{10.4} are unchecked semantics --- the honest
-ceiling.\par
+\raggedright\footnotesize $^{a}$C ceilings are measured sanitizer
+overhead vs.\ unsanitized (the deployable ceiling the eliminations
+attack); zstd's \pct{2.3} \emph{exceeds} its overhead ceiling ---
+eliminations also unlock re-optimization --- so no recovery fraction
+is computed. $^{b}$Via proof-licensed \texttt{@inbounds}
+(Table~\ref{tab:inbounds}); ceiling is the expert-annotation arm.
+$^{c}$The raw \texttt{-O}-vs-\texttt{-Ounchecked} gap is \pct{19.6},
+of which 8.1 points are the compilation pipeline (recovered by the
+harness baseline itself) and \pct{10.4} are unchecked semantics ---
+the honest ceiling.\par
 \end{table}
-\begin{table}
-\caption{The dose--response ladder: hot eliminations vs.\ measured effect
-(medians, REPS$\geq$15, both baselines).}
-\label{tab:ladder}
-\small
-\begin{tabular}{rllr}
-\toprule
-Hot elims & Unlock? & Platform & Result\\
-\midrule
-16 (gemm, \S\ref{sec:frame}) & vector+unroll & x86 \& M & $3.59\times$, $4.16\times$\\
-7 (sha256, final enc.) & unroll & x86 \& M & $+8.8/{+}8.6$\%, $+6.9$\%\\
-7 (sha1) & unroll & M-series & $+6.4/{+}7.3$\%\\
-5 (sha256) & unroll & x86 \& M & $+4.7/{+}5.0$\%, $+3.5$--$4.7$\%\\
-5 (md5) & none & M-series & flat\\
-3 (sha256, earlier) & unroll & x86 & $+4.2/{+}4.3$\%\\
-1 (adler32, DO16 group) & group & x86 & $+3.7$\%\\
-6 (zstd compression, C) & hot group & x86 & $+2.6/{+}2.3$\%\\
-1 (adler32) & none & M-series & $-1.4$\%\\
-2 (utf8, off hot path) & --- & x86 & $+0.00$\% exact\\
-1 (md5, cold) & none & x86 & $-1.8$\%\\
-2 (sha1) & none & x86 & $-4.5/{-}4.65/{-}4.83/{-}5.02$\%\\
-183--215 (CryptoSwift, cold) & none & both & flat\\
-\bottomrule
-\end{tabular}
-\end{table}
-Tables~\ref{tab:recovery} and~\ref{tab:ladder} answer RQ1b, and the answer
+Table~\ref{tab:speedups} answers RQ1b, and the answer
 is a \emph{causal account}, not a single number. Elimination buys
 performance exactly when it \emph{gates a further transformation}.
 SHA-256 is the constructive case: seven proofs in the message-schedule
@@ -715,13 +700,12 @@ kernel gains \pct{8.8} on Haswell and \pct{6.9} on
 Apple Silicon --- \pct{98} of the \emph{entire} checks-off ceiling on
 x86, recovered soundly, after both mature pipelines had finished.
 (The base encoder proved five of the seven and recovered \pct{53};
-the final encoder's two additional proofs nearly close the ceiling ---
-the ladder's top rows in Table~\ref{tab:ladder} show both stages.) The adler32
+the final encoder's two additional proofs nearly close the ceiling.) The adler32
 row sharpens the point: a \emph{single} proof inside the sixteen-fold
 unrolled DO16 group recovers \pct{32} of an \pct{11.6} ceiling.
 Concentration beats count: 183 scattered cold proofs in CryptoSwift
 buy nothing, one hot proof in adler32 buys \pct{3.7}.
-The ladder's lower half is equally load-bearing. Where eliminations do not
+The table's lower half is equally load-bearing. Where eliminations do not
 unlock a transformation, re-optimization is a genuine two-sided lottery:
 the same adler32 elimination that gains \pct{3.7} on Haswell costs
 \pct{1.4} on M-series, and sha1 on x86 --- where Linux code generation
