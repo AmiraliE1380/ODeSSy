@@ -1,0 +1,11 @@
+# lz4 decompression overhead ceiling: plain vs anf-trap CLI, -d -c 256MB, 5 interleaved
+plain: 0.20
+san  : 0.20
+plain: 0.20
+san  : 0.20
+plain: 0.20
+san  : 0.20
+plain: 0.20
+san  : 0.20
+plain: 0.20
+san  : 0.20

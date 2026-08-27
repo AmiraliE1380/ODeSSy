@@ -1,0 +1,7 @@
+# OpenSSL sha256 overhead ceiling, plain vs {signed,div,shift,bounds}-trap, speed -evp sha256
+plain: 
+san  : 
+plain: 
+san  : 
+plain: 
+san  : 
