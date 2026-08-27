@@ -1,0 +1,11 @@
+# lz4 decomp ceiling: plain vs anf-trap, 10x -d -c 256MB per timing, 5 interleaved
+plain: 2.06
+san  : 2.06
+plain: 2.05
+san  : 2.06
+plain: 2.05
+san  : 2.05
+plain: 2.03
+san  : 2.05
+plain: 2.07
+san  : 2.04
