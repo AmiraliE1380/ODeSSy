@@ -1,0 +1,12 @@
+# OpenSSL sha256 checks-overhead ceiling, c220g2 2026-08-27: plain vs {signed,div,shift,bounds}-trap, openssl speed -evp sha256, 5 interleaved
+plain: 
+san  : 
+plain: 
+san  : 
+plain: 
+san  : 
+plain: 
+san  : 
+plain: 
+san  : 
+# note: signed-only spec emits ZERO checks (exact 0%% ceiling by construction); unsigned spec expected un-runnable (intentional SHA wraps)
