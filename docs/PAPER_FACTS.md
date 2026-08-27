@@ -656,6 +656,31 @@ lz4 OVERHEAD CEILING, PRECISE (computed 0828 from the 0826 run's raw
 **+2.04%** — replaces the earlier "≈2%" approximation; same data,
 median-primary per doctrine.
 
+**0828 — DIRECTION SYMMETRY for zlib/lz4 (comp vs decomp, matching
+zstd's two-direction reporting). Doctrine (user-set): dynamic runs —
+ceilings AND perf — use only NON-FIRING sanitizer specs; firing specs
+are recorded as un-runnable findings, never timed.**
+- zlib DECOMP under both-spec: **DYNAMICALLY UN-RUNNABLE** — traps
+  fire during inflation (rc=132 in-harness; sanitized configs clock
+  identical crash-times at 8 and 64 MB while plain scales). Third
+  dynamic spec-split datapoint (after zstd-unsigned comp and the known
+  zlib 512 MB compression firing). The 0828 both-spec decomp "timings"
+  are INVALID — never cite (zlib_decomp_full_0828.log kept as the
+  finding's evidence only).
+- zlib DECOMP under SIGNED spec (runnable; the well-proven spec,
+  113/125): clean run, RUNS=10, sizes 8/64
+  (zlib_decomp_signed_full_0828.log). Overhead: none.base 0.356 vs
+  signed.base 0.360 avg @64 MB ≈ **+1.1%**; recovery: oracle 0.358 vs
+  base2x 0.359 = **flat** (noise-level). Compression remains the
+  measured-overhead direction (5.4%).
+- lz4 DECOMP ceiling, proper resolution (10× 256 MB per timing, 5
+  interleaved; lz4_decomp_ceiling_0828b.log): plain median 2.05 s vs
+  san 2.05 s = **+0.2% ≈ 0, now measured** (earlier single-shot 0.20 s
+  runs were below timer resolution). lz4 comp overhead stays +2.04%.
+- OpenSSL ceiling measurement still failing to build on server (empty
+  speed output twice); fallback posture if dropped: signed spec emits
+  ZERO checks → ceiling exactly 0% BY CONSTRUCTION (not "≈0").
+
 zstd AUDIT RERUN (THREADS=16, zstd_audit_0826.log): totals both-spec
 **2619/19197 = 13.6% UNSAT** (light 2618; ldeq +1) — campaign was
 1688/12798 = 13.2%; the current audit covers more translation units
