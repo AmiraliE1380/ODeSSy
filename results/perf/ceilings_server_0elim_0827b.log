@@ -1,0 +1,10 @@
+# server ceilings for 0-elim kernels (rerun), c220g2 2026-08-27, 5 interleaved pinned runs, no_turbo
+  crc32 (iters=3703) chk runs: 4.74 4.72 4.74 4.73 4.73 median=4.73
+  crc32 (iters=3703) unc runs: 4.52 4.52 4.53 4.52 4.52 median=4.52
+  crc32 ceiling: 4.6%
+  base64 (iters=3225) chk runs: 4.83 4.84 4.84 4.83 4.83 median=4.83
+  base64 (iters=3225) unc runs: 3.08 3.08 3.08 3.08 3.08 median=3.08
+  base64 ceiling: 56.8%
+  lz77 (iters=2) chk runs: 4.61 4.45 4.39 4.38 4.36 median=4.39
+  lz77 (iters=2) unc runs: 4.25 4.25 4.25 4.25 4.25 median=4.25
+  lz77 ceiling: 3.3%
