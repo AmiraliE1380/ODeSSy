@@ -702,6 +702,41 @@ invocations. NOT a kernel or encoder finding; nothing citable. Fix:
 recreate the workload, manual probe, rerun. These rows are optional
 descriptive ceilings only.
 
+**0827 — zstd checks-overhead ceiling + a dynamic spec-split finding**
+(zstd_overhead_ceiling{,_signed}_0827.log; CLI `zstd -b3 -i2`, pinned,
+5 interleaved):
+- UNSIGNED-spec trap build is DYNAMICALLY UN-RUNNABLE: it executes a
+  trap within the first benchmark block (intentional xxhash unsigned
+  wraps fire immediately). This is runtime proof of the paper's
+  specification-split claim: on hashing code the unsigned spec
+  contradicts intended semantics — and 18,711 of our 19,197 audited
+  zstd traps are unsigned-spec.
+- SIGNED-spec build runs clean. Medians: compression 152.5 (plain) vs
+  150.6 MB/s (sanitized) = **1.2% overhead**; decompression 840.8 vs
+  765.3 MB/s = **9.0% overhead**. The runnable spec's cost is
+  concentrated in decompression. Supports the static-only posture:
+  audit measures proof capability; the deployable signed ceiling is
+  1–9% depending on direction.
+
+**0827b — 0-elim kernel ceilings (rerun, workload restored)**
+(ceilings_server_0elim_0827b.log; -O vs -Ounchecked, 5 interleaved
+pinned runs, output-equality gate passed):
+
+| kernel | chk | unc | ceiling |
+|---|---|---|---|
+| crc32 (3703 it) | 4.73 | 4.52 | **4.6%** |
+| base64 (3225 it) | 4.83 | 3.08 | **56.8%** |
+| lz77 (2 it) | 4.39 | 4.25 | **3.3%** |
+
+base64 is the headline residue row: checks are over a third of its
+runtime — the LARGEST ceiling measured anywhere in the study — and
+ODeSSy proves 0 of its 28 traps (per-byte table lookups indexed by
+runtime data; heap-count taxonomy class b). Strongest possible
+motivation datapoint for the frontier/taxonomy section: the residue
+is not cheap checks nobody cares about. crc32 (4.6%) and lz77 (3.3%)
+are ordinary unreached ceilings. CEILING CAMPAIGN NOW COMPLETE — every
+benchmark with a runnable harness has a measured ceiling.
+
 ---
 
 ## 9. FINAL MAC DATA (placeholder — fill after server window)
