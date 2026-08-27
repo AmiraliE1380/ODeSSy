@@ -255,6 +255,20 @@ for mb in "${SIZE_ARR[@]}"; do
   CORPUS[$mb]="$c"
   echo "  corpus ${mb} MB ready"
 done
+# MODE=decomp: time inflation instead of deflation. Corpora are
+# pre-compressed ONCE (system gzip, deflate-format, level $LEVEL) and the
+# timed command becomes `minigzip -d`. MODE=comp (default) is unchanged.
+MODE=${MODE:-comp}
+if [ "$MODE" = "decomp" ]; then
+  for mb in "${SIZE_ARR[@]}"; do
+    gzip -"$LEVEL" -c "${CORPUS[$mb]}" > "${CORPUS[$mb]}.gz"
+    CORPUS[$mb]="${CORPUS[$mb]}.gz"
+  done
+  RUNFLAG="-d"
+  echo "  MODE=decomp: corpora pre-compressed; timing minigzip -d"
+else
+  RUNFLAG="-$LEVEL"
+fi
 
 echo ""
 echo "==== cooldown ${COOLDOWN}s after compile phase (thermal settle) ===="
@@ -267,7 +281,7 @@ echo "==== PHASE C: warmup ====  [pin: ${PIN:-none}]"
 MKEYS=()   # measurement keys "spec.cfg|mb"
 for k in "${KEYS2[@]}"; do
   for mb in "${SIZE_ARR[@]}"; do
-    $PIN "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+    $PIN "${B_PATH[$k]}" "$RUNFLAG" < "${CORPUS[$mb]}" > /dev/null 2>&1
     rc=$?
     [ "$rc" -ge 128 ] && echo "  [TRAP] $k @${mb}MB warmup died rc=$rc -- a trap fired!"
     MKEYS+=("$k|$mb")
@@ -286,7 +300,7 @@ for rep in $(seq "$RUNS"); do
   while IFS= read -r mk; do
     k="${mk%|*}"; mb="${mk#*|}"
     t0=$(now)
-    $PIN "${B_PATH[$k]}" -"$LEVEL" < "${CORPUS[$mb]}" > /dev/null 2>&1
+    $PIN "${B_PATH[$k]}" "$RUNFLAG" < "${CORPUS[$mb]}" > /dev/null 2>&1
     rc=$?
     t1=$(now)
     [ "$rc" -ge 128 ] && echo "  [TRAP] $k @${mb}MB rep $rep died rc=$rc -- a trap fired!"
