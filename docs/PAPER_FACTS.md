@@ -677,9 +677,16 @@ are recorded as un-runnable findings, never timed.**
   interleaved; lz4_decomp_ceiling_0828b.log): plain median 2.05 s vs
   san 2.05 s = **+0.2% ≈ 0, now measured** (earlier single-shot 0.20 s
   runs were below timer resolution). lz4 comp overhead stays +2.04%.
-- OpenSSL ceiling measurement still failing to build on server (empty
-  speed output twice); fallback posture if dropped: signed spec emits
-  ZERO checks → ceiling exactly 0% BY CONSTRUCTION (not "≈0").
+- OpenSSL ceiling: measurement DROPPED (decision 0828; server build
+  failed twice with swallowed output). ADOPTED POSTURE, final: under
+  the signed spec OpenSSL's SHA-256 emits ZERO checks → ceiling
+  **exactly 0% by construction** (no timing needed, no "≈"); unsigned
+  presumed un-runnable in trap mode like zstd/zlib (intentional SHA
+  wraps). The paper's RQ1a text already states the zero-checks fact.
+
+SERVER CAMPAIGN CLOSED 0828: every ceiling measured, computed from raw
+data, or exact-by-construction; every recovery measured or dodged with
+a recorded reason (0 UNSATs / un-runnable spec / static-by-design).
 
 zstd AUDIT RERUN (THREADS=16, zstd_audit_0826.log): totals both-spec
 **2619/19197 = 13.6% UNSAT** (light 2618; ldeq +1) — campaign was
