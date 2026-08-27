@@ -1,0 +1,723 @@
+; ModuleID = '/mydata/ODeSSy/perf_zstd_work/ll/zstd_preSplit.ll'
+source_filename = "/mydata/zstd/lib/compress/zstd_preSplit.c"
+target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128"
+target triple = "x86_64-unknown-linux-gnu"
+
+@ZSTD_splitBlock_byChunks.records_fs = internal unnamed_addr constant [4 x ptr] [ptr @ZSTD_recordFingerprint_43, ptr @ZSTD_recordFingerprint_11, ptr @ZSTD_recordFingerprint_5, ptr @ZSTD_recordFingerprint_1], align 16
+@ZSTD_splitBlock_byChunks.hashParams = internal unnamed_addr constant [4 x i32] [i32 8, i32 9, i32 10, i32 10], align 16
+
+; Function Attrs: nounwind uwtable
+define dso_local i64 @ZSTD_splitBlock(ptr noundef %0, i64 noundef %1, i32 noundef %2, ptr noundef %3, i64 noundef %4) local_unnamed_addr #0 {
+  %6 = icmp eq i32 %2, 0
+  br i1 %6, label %7, label %220
+
+7:                                                ; preds = %5
+  tail call void @llvm.memset.p0.i64(ptr noundef nonnull align 8 dereferenceable(8208) %3, i8 0, i64 8208, i1 false)
+  tail call void @HIST_add(ptr noundef nonnull %3, ptr noundef %0, i64 noundef 512) #6
+  %8 = getelementptr inbounds nuw i8, ptr %3, i64 4104
+  %9 = getelementptr inbounds nuw i8, ptr %0, i64 %1
+  %10 = getelementptr inbounds i8, ptr %9, i64 -512
+  tail call void @HIST_add(ptr noundef nonnull %8, ptr noundef nonnull %10, i64 noundef 512) #6
+  %11 = getelementptr inbounds nuw i8, ptr %3, i64 8200
+  store i64 512, ptr %11, align 8, !tbaa !5
+  %12 = getelementptr inbounds nuw i8, ptr %3, i64 4096
+  store i64 512, ptr %12, align 8, !tbaa !11
+  %13 = load i32, ptr %3, align 4, !tbaa !12
+  %14 = zext i32 %13 to i64
+  %15 = load i32, ptr %8, align 4, !tbaa !12
+  %16 = zext i32 %15 to i64
+  %17 = sub nsw i64 %14, %16
+  %18 = icmp slt i64 %17, 0
+  %19 = shl nsw i64 %17, 9
+  %20 = sub nsw i64 0, %19
+  %21 = select i1 %18, i64 %20, i64 %19
+  %22 = insertelement <2 x i64> <i64 poison, i64 0>, i64 %21, i64 0
+  br label %23
+
+23:                                               ; preds = %23, %7
+  %24 = phi i64 [ 0, %7 ], [ %52, %23 ]
+  %25 = phi <2 x i64> [ %22, %7 ], [ %50, %23 ]
+  %26 = phi <2 x i64> [ zeroinitializer, %7 ], [ %51, %23 ]
+  %27 = or disjoint i64 %24, 1
+  %28 = getelementptr inbounds nuw [1024 x i32], ptr %3, i64 0, i64 %27
+  %29 = getelementptr inbounds nuw i8, ptr %28, i64 8
+  %30 = load <2 x i32>, ptr %28, align 4, !tbaa !12
+  %31 = load <2 x i32>, ptr %29, align 4, !tbaa !12
+  %32 = zext <2 x i32> %30 to <2 x i64>
+  %33 = zext <2 x i32> %31 to <2 x i64>
+  %34 = getelementptr inbounds nuw [1024 x i32], ptr %8, i64 0, i64 %27
+  %35 = getelementptr inbounds nuw i8, ptr %34, i64 8
+  %36 = load <2 x i32>, ptr %34, align 4, !tbaa !12
+  %37 = load <2 x i32>, ptr %35, align 4, !tbaa !12
+  %38 = zext <2 x i32> %36 to <2 x i64>
+  %39 = zext <2 x i32> %37 to <2 x i64>
+  %40 = sub nsw <2 x i64> %32, %38
+  %41 = sub nsw <2 x i64> %33, %39
+  %42 = shl nsw <2 x i64> %40, splat (i64 9)
+  %43 = shl nsw <2 x i64> %41, splat (i64 9)
+  %44 = icmp slt <2 x i64> %40, zeroinitializer
+  %45 = icmp slt <2 x i64> %41, zeroinitializer
+  %46 = sub nsw <2 x i64> zeroinitializer, %42
+  %47 = sub nsw <2 x i64> zeroinitializer, %43
+  %48 = select <2 x i1> %44, <2 x i64> %46, <2 x i64> %42
+  %49 = select <2 x i1> %45, <2 x i64> %47, <2 x i64> %43
+  %50 = add <2 x i64> %48, %25
+  %51 = add <2 x i64> %49, %26
+  %52 = add nuw i64 %24, 4
+  %53 = icmp eq i64 %52, 252
+  br i1 %53, label %54, label %23, !llvm.loop !14
+
+54:                                               ; preds = %23
+  %55 = add <2 x i64> %51, %50
+  %56 = tail call i64 @llvm.vector.reduce.add.v2i64(<2 x i64> %55)
+  %57 = getelementptr inbounds nuw i8, ptr %3, i64 1012
+  %58 = load i32, ptr %57, align 4, !tbaa !12
+  %59 = zext i32 %58 to i64
+  %60 = getelementptr inbounds nuw i8, ptr %3, i64 5116
+  %61 = load i32, ptr %60, align 4, !tbaa !12
+  %62 = zext i32 %61 to i64
+  %63 = sub nsw i64 %59, %62
+  %64 = shl nsw i64 %63, 9
+  %65 = icmp slt i64 %63, 0
+  %66 = sub nsw i64 0, %64
+  %67 = select i1 %65, i64 %66, i64 %64
+  %68 = add i64 %67, %56
+  %69 = getelementptr inbounds nuw i8, ptr %3, i64 1016
+  %70 = load i32, ptr %69, align 4, !tbaa !12
+  %71 = zext i32 %70 to i64
+  %72 = getelementptr inbounds nuw i8, ptr %3, i64 5120
+  %73 = load i32, ptr %72, align 4, !tbaa !12
+  %74 = zext i32 %73 to i64
+  %75 = sub nsw i64 %71, %74
+  %76 = shl nsw i64 %75, 9
+  %77 = icmp slt i64 %75, 0
+  %78 = sub nsw i64 0, %76
+  %79 = select i1 %77, i64 %78, i64 %76
+  %80 = add i64 %79, %68
+  %81 = getelementptr inbounds nuw i8, ptr %3, i64 1020
+  %82 = load i32, ptr %81, align 4, !tbaa !12
+  %83 = zext i32 %82 to i64
+  %84 = getelementptr inbounds nuw i8, ptr %3, i64 5124
+  %85 = load i32, ptr %84, align 4, !tbaa !12
+  %86 = zext i32 %85 to i64
+  %87 = sub nsw i64 %83, %86
+  %88 = shl nsw i64 %87, 9
+  %89 = icmp slt i64 %87, 0
+  %90 = sub nsw i64 0, %88
+  %91 = select i1 %89, i64 %90, i64 %88
+  %92 = add i64 %91, %80
+  %93 = icmp ult i64 %92, 229376
+  br i1 %93, label %345, label %94
+
+94:                                               ; preds = %54
+  %95 = getelementptr inbounds nuw i8, ptr %3, i64 2048
+  %96 = lshr i64 %1, 1
+  %97 = getelementptr inbounds nuw i8, ptr %0, i64 %96
+  %98 = getelementptr inbounds i8, ptr %97, i64 -256
+  tail call void @HIST_add(ptr noundef nonnull %95, ptr noundef nonnull %98, i64 noundef 512) #6
+  %99 = getelementptr inbounds nuw i8, ptr %3, i64 6144
+  store i64 512, ptr %99, align 8, !tbaa !19
+  %100 = load i32, ptr %95, align 4, !tbaa !12
+  %101 = zext i32 %100 to i64
+  %102 = load i64, ptr %12, align 8, !tbaa !19
+  %103 = tail call { i64, i1 } @llvm.smul.with.overflow.i64(i64 %101, i64 %102), !nosanitize !20
+  %104 = extractvalue { i64, i1 } %103, 1, !nosanitize !20
+  br i1 %104, label %128, label %105, !prof !21, !nosanitize !20
+
+105:                                              ; preds = %94
+  %106 = load i32, ptr %3, align 4, !tbaa !12
+  %107 = zext i32 %106 to i64
+  %108 = shl nuw nsw i64 %107, 9
+  %109 = extractvalue { i64, i1 } %103, 0, !nosanitize !20
+  %110 = tail call { i64, i1 } @llvm.ssub.with.overflow.i64(i64 %108, i64 %109), !nosanitize !20
+  %111 = extractvalue { i64, i1 } %110, 1, !nosanitize !20
+  br i1 %111, label %137, label %112, !prof !21, !nosanitize !20
+
+112:                                              ; preds = %105
+  %113 = extractvalue { i64, i1 } %110, 0, !nosanitize !20
+  %114 = icmp slt i64 %113, 0
+  br i1 %114, label %115, label %118
+
+115:                                              ; preds = %112
+  %116 = tail call { i64, i1 } @llvm.ssub.with.overflow.i64(i64 0, i64 %113), !nosanitize !20
+  %117 = extractvalue { i64, i1 } %116, 0, !nosanitize !20
+  br label %118
+
+118:                                              ; preds = %115, %112
+  %119 = phi i64 [ %113, %112 ], [ %117, %115 ]
+  br label %120
+
+120:                                              ; preds = %146, %118
+  %121 = phi i64 [ %149, %146 ], [ 1, %118 ]
+  %122 = phi i64 [ %148, %146 ], [ %119, %118 ]
+  %123 = getelementptr inbounds nuw [1024 x i32], ptr %95, i64 0, i64 %121
+  %124 = load i32, ptr %123, align 4, !tbaa !12
+  %125 = zext i32 %124 to i64
+  %126 = tail call { i64, i1 } @llvm.smul.with.overflow.i64(i64 %125, i64 %102), !nosanitize !20
+  %127 = extractvalue { i64, i1 } %126, 1, !nosanitize !20
+  br i1 %127, label %128, label %129, !prof !22, !nosanitize !20
+
+128:                                              ; preds = %120, %94
+  tail call void @llvm.ubsantrap(i8 12) #7, !nosanitize !20
+  unreachable, !nosanitize !20
+
+129:                                              ; preds = %120
+  %130 = getelementptr inbounds nuw [1024 x i32], ptr %3, i64 0, i64 %121
+  %131 = load i32, ptr %130, align 4, !tbaa !12
+  %132 = zext i32 %131 to i64
+  %133 = shl nuw nsw i64 %132, 9
+  %134 = extractvalue { i64, i1 } %126, 0, !nosanitize !20
+  %135 = tail call { i64, i1 } @llvm.ssub.with.overflow.i64(i64 %133, i64 %134), !nosanitize !20
+  %136 = extractvalue { i64, i1 } %135, 1, !nosanitize !20
+  br i1 %136, label %137, label %138, !prof !22, !nosanitize !20
+
+137:                                              ; preds = %129, %105
+  tail call void @llvm.ubsantrap(i8 21) #7, !nosanitize !20
+  unreachable, !nosanitize !20
+
+138:                                              ; preds = %129
+  %139 = extractvalue { i64, i1 } %135, 0, !nosanitize !20
+  %140 = icmp slt i64 %139, 0
+  br i1 %140, label %141, label %146
+
+141:                                              ; preds = %138
+  %142 = tail call { i64, i1 } @llvm.ssub.with.overflow.i64(i64 0, i64 %139), !nosanitize !20
+  %143 = extractvalue { i64, i1 } %142, 0, !nosanitize !20
+  %144 = extractvalue { i64, i1 } %142, 1, !nosanitize !20
+  br i1 %144, label %145, label %146, !prof !22, !nosanitize !20
+
+145:                                              ; preds = %141
+  tail call void @llvm.ubsantrap(i8 13) #7, !nosanitize !20
+  unreachable, !nosanitize !20
+
+146:                                              ; preds = %141, %138
+  %147 = phi i64 [ %143, %141 ], [ %139, %138 ]
+  %148 = add i64 %147, %122
+  %149 = add nuw nsw i64 %121, 1
+  %150 = icmp eq i64 %149, 256
+  br i1 %150, label %151, label %120, !llvm.loop !23
+
+151:                                              ; preds = %146
+  %152 = load i64, ptr %11, align 8, !tbaa !19
+  %153 = tail call { i64, i1 } @llvm.smul.with.overflow.i64(i64 %101, i64 %152), !nosanitize !20
+  %154 = extractvalue { i64, i1 } %153, 1, !nosanitize !20
+  br i1 %154, label %179, label %155, !prof !21, !nosanitize !20
+
+155:                                              ; preds = %151
+  %156 = load i32, ptr %8, align 4, !tbaa !12
+  %157 = zext i32 %156 to i64
+  %158 = shl nuw nsw i64 %157, 9
+  %159 = extractvalue { i64, i1 } %153, 0, !nosanitize !20
+  %160 = tail call { i64, i1 } @llvm.ssub.with.overflow.i64(i64 %158, i64 %159), !nosanitize !20
+  %161 = extractvalue { i64, i1 } %160, 1, !nosanitize !20
+  br i1 %161, label %188, label %162, !prof !21, !nosanitize !20
+
+162:                                              ; preds = %155
+  %163 = extractvalue { i64, i1 } %160, 0, !nosanitize !20
+  %164 = icmp slt i64 %163, 0
+  br i1 %164, label %165, label %169
+
+165:                                              ; preds = %162
+  %166 = tail call { i64, i1 } @llvm.ssub.with.overflow.i64(i64 0, i64 %163), !nosanitize !20
+  %167 = extractvalue { i64, i1 } %166, 0, !nosanitize !20
+  %168 = extractvalue { i64, i1 } %166, 1, !nosanitize !20
+  br i1 %168, label %196, label %169, !prof !21, !nosanitize !20
+
+169:                                              ; preds = %165, %162
+  %170 = phi i64 [ %163, %162 ], [ %167, %165 ]
+  br label %171
+
+171:                                              ; preds = %197, %169
+  %172 = phi i64 [ %200, %197 ], [ 1, %169 ]
+  %173 = phi i64 [ %199, %197 ], [ %170, %169 ]
+  %174 = getelementptr inbounds nuw [1024 x i32], ptr %95, i64 0, i64 %172
+  %175 = load i32, ptr %174, align 4, !tbaa !12
+  %176 = zext i32 %175 to i64
+  %177 = tail call { i64, i1 } @llvm.smul.with.overflow.i64(i64 %176, i64 %152), !nosanitize !20
+  %178 = extractvalue { i64, i1 } %177, 1, !nosanitize !20
+  br i1 %178, label %179, label %180, !prof !22, !nosanitize !20
+
+179:                                              ; preds = %171, %151
+  tail call void @llvm.ubsantrap(i8 12) #7, !nosanitize !20
+  unreachable, !nosanitize !20
+
+180:                                              ; preds = %171
+  %181 = getelementptr inbounds nuw [1024 x i32], ptr %8, i64 0, i64 %172
+  %182 = load i32, ptr %181, align 4, !tbaa !12
+  %183 = zext i32 %182 to i64
+  %184 = shl nuw nsw i64 %183, 9
+  %185 = extractvalue { i64, i1 } %177, 0, !nosanitize !20
+  %186 = tail call { i64, i1 } @llvm.ssub.with.overflow.i64(i64 %184, i64 %185), !nosanitize !20
+  %187 = extractvalue { i64, i1 } %186, 1, !nosanitize !20
+  br i1 %187, label %188, label %189, !prof !22, !nosanitize !20
+
+188:                                              ; preds = %180, %155
+  tail call void @llvm.ubsantrap(i8 21) #7, !nosanitize !20
+  unreachable, !nosanitize !20
+
+189:                                              ; preds = %180
+  %190 = extractvalue { i64, i1 } %186, 0, !nosanitize !20
+  %191 = icmp slt i64 %190, 0
+  br i1 %191, label %192, label %197
+
+192:                                              ; preds = %189
+  %193 = tail call { i64, i1 } @llvm.ssub.with.overflow.i64(i64 0, i64 %190), !nosanitize !20
+  %194 = extractvalue { i64, i1 } %193, 0, !nosanitize !20
+  %195 = extractvalue { i64, i1 } %193, 1, !nosanitize !20
+  br i1 %195, label %196, label %197, !prof !22, !nosanitize !20
+
+196:                                              ; preds = %192, %165
+  tail call void @llvm.ubsantrap(i8 13) #7, !nosanitize !20
+  unreachable, !nosanitize !20
+
+197:                                              ; preds = %192, %189
+  %198 = phi i64 [ %194, %192 ], [ %190, %189 ]
+  %199 = add i64 %198, %173
+  %200 = add nuw nsw i64 %172, 1
+  %201 = icmp eq i64 %200, 256
+  br i1 %201, label %202, label %171, !llvm.loop !23
+
+202:                                              ; preds = %197
+  %203 = tail call { i64, i1 } @llvm.ssub.with.overflow.i64(i64 %148, i64 %199), !nosanitize !20
+  %204 = extractvalue { i64, i1 } %203, 1, !nosanitize !20
+  br i1 %204, label %205, label %206, !prof !21, !nosanitize !20
+
+205:                                              ; preds = %202
+  tail call void @llvm.ubsantrap(i8 21) #7, !nosanitize !20
+  unreachable, !nosanitize !20
+
+206:                                              ; preds = %202
+  %207 = extractvalue { i64, i1 } %203, 0, !nosanitize !20
+  %208 = icmp slt i64 %207, 0
+  br i1 %208, label %209, label %214
+
+209:                                              ; preds = %206
+  %210 = tail call { i64, i1 } @llvm.ssub.with.overflow.i64(i64 0, i64 %207), !nosanitize !20
+  %211 = extractvalue { i64, i1 } %210, 0, !nosanitize !20
+  %212 = extractvalue { i64, i1 } %210, 1, !nosanitize !20
+  br i1 %212, label %213, label %214, !prof !21, !nosanitize !20
+
+213:                                              ; preds = %209
+  tail call void @llvm.ubsantrap(i8 13) #7, !nosanitize !20
+  unreachable, !nosanitize !20
+
+214:                                              ; preds = %209, %206
+  %215 = phi i64 [ %211, %209 ], [ %207, %206 ]
+  %216 = icmp ult i64 %215, 87381
+  %217 = icmp ugt i64 %148, %199
+  %218 = select i1 %217, i64 32768, i64 98304
+  %219 = select i1 %216, i64 65536, i64 %218
+  br label %345
+
+220:                                              ; preds = %5
+  %221 = tail call { i32, i1 } @llvm.sadd.with.overflow.i32(i32 %2, i32 -1)
+  %222 = extractvalue { i32, i1 } %221, 1, !nosanitize !20
+  br i1 %222, label %223, label %224, !prof !21, !nosanitize !20
+
+223:                                              ; preds = %220
+  tail call void @llvm.ubsantrap(i8 21) #7, !nosanitize !20
+  unreachable, !nosanitize !20
+
+224:                                              ; preds = %220
+  %225 = extractvalue { i32, i1 } %221, 0, !nosanitize !20
+  %226 = sext i32 %225 to i64
+  %227 = getelementptr inbounds [4 x ptr], ptr @ZSTD_splitBlock_byChunks.records_fs, i64 0, i64 %226
+  %228 = load ptr, ptr %227, align 8, !tbaa !24
+  tail call void @llvm.memset.p0.i64(ptr noundef nonnull align 8 dereferenceable(8208) %3, i8 0, i64 8208, i1 false)
+  tail call void %228(ptr noundef nonnull %3, ptr noundef %0, i64 noundef 8192) #6
+  %229 = add i64 %1, -8192
+  %230 = icmp ult i64 %229, 8192
+  br i1 %230, label %345, label %231
+
+231:                                              ; preds = %224
+  %232 = getelementptr inbounds nuw i8, ptr %3, i64 4104
+  %233 = getelementptr inbounds [4 x i32], ptr @ZSTD_splitBlock_byChunks.hashParams, i64 0, i64 %226
+  %234 = getelementptr inbounds nuw i8, ptr %3, i64 4096
+  %235 = getelementptr inbounds nuw i8, ptr %3, i64 8200
+  br label %236
+
+236:                                              ; preds = %338, %231
+  %237 = phi i64 [ 8192, %231 ], [ %343, %338 ]
+  %238 = phi i32 [ 3, %231 ], [ %342, %338 ]
+  %239 = getelementptr inbounds nuw i8, ptr %0, i64 %237
+  tail call void %228(ptr noundef nonnull %232, ptr noundef %239, i64 noundef 8192) #6
+  %240 = load i32, ptr %233, align 4, !tbaa !12
+  %241 = load i64, ptr %234, align 8, !tbaa !19
+  %242 = load i64, ptr %235, align 8, !tbaa !19
+  %243 = zext nneg i32 %240 to i64
+  %244 = load i32, ptr %3, align 4, !tbaa !12
+  %245 = zext i32 %244 to i64
+  %246 = tail call { i64, i1 } @llvm.smul.with.overflow.i64(i64 %245, i64 %242), !nosanitize !20
+  %247 = extractvalue { i64, i1 } %246, 0, !nosanitize !20
+  %248 = extractvalue { i64, i1 } %246, 1, !nosanitize !20
+  br i1 %248, label %276, label %249, !prof !21, !nosanitize !20
+
+249:                                              ; preds = %236
+  %250 = load i32, ptr %232, align 4, !tbaa !12
+  %251 = zext i32 %250 to i64
+  %252 = tail call { i64, i1 } @llvm.smul.with.overflow.i64(i64 %251, i64 %241), !nosanitize !20
+  %253 = extractvalue { i64, i1 } %252, 1, !nosanitize !20
+  br i1 %253, label %276, label %254, !prof !21, !nosanitize !20
+
+254:                                              ; preds = %249
+  %255 = extractvalue { i64, i1 } %252, 0, !nosanitize !20
+  %256 = tail call { i64, i1 } @llvm.ssub.with.overflow.i64(i64 %247, i64 %255), !nosanitize !20
+  %257 = extractvalue { i64, i1 } %256, 1, !nosanitize !20
+  br i1 %257, label %287, label %258, !prof !21, !nosanitize !20
+
+258:                                              ; preds = %254
+  %259 = extractvalue { i64, i1 } %256, 0, !nosanitize !20
+  %260 = icmp slt i64 %259, 0
+  br i1 %260, label %261, label %265
+
+261:                                              ; preds = %258
+  %262 = tail call { i64, i1 } @llvm.ssub.with.overflow.i64(i64 0, i64 %259), !nosanitize !20
+  %263 = extractvalue { i64, i1 } %262, 0, !nosanitize !20
+  %264 = extractvalue { i64, i1 } %262, 1, !nosanitize !20
+  br i1 %264, label %295, label %265, !prof !21, !nosanitize !20
+
+265:                                              ; preds = %261, %258
+  %266 = phi i64 [ %259, %258 ], [ %263, %261 ]
+  br label %267
+
+267:                                              ; preds = %296, %265
+  %268 = phi i64 [ %299, %296 ], [ 1, %265 ]
+  %269 = phi i64 [ %298, %296 ], [ %266, %265 ]
+  %270 = getelementptr inbounds nuw [1024 x i32], ptr %3, i64 0, i64 %268
+  %271 = load i32, ptr %270, align 4, !tbaa !12
+  %272 = zext i32 %271 to i64
+  %273 = tail call { i64, i1 } @llvm.smul.with.overflow.i64(i64 %272, i64 %242), !nosanitize !20
+  %274 = extractvalue { i64, i1 } %273, 0, !nosanitize !20
+  %275 = extractvalue { i64, i1 } %273, 1, !nosanitize !20
+  br i1 %275, label %276, label %277, !prof !22, !nosanitize !20
+
+276:                                              ; preds = %277, %267, %249, %236
+  tail call void @llvm.ubsantrap(i8 12) #7, !nosanitize !20
+  unreachable, !nosanitize !20
+
+277:                                              ; preds = %267
+  %278 = getelementptr inbounds nuw [1024 x i32], ptr %232, i64 0, i64 %268
+  %279 = load i32, ptr %278, align 4, !tbaa !12
+  %280 = zext i32 %279 to i64
+  %281 = tail call { i64, i1 } @llvm.smul.with.overflow.i64(i64 %280, i64 %241), !nosanitize !20
+  %282 = extractvalue { i64, i1 } %281, 1, !nosanitize !20
+  br i1 %282, label %276, label %283, !prof !22, !nosanitize !20
+
+283:                                              ; preds = %277
+  %284 = extractvalue { i64, i1 } %281, 0, !nosanitize !20
+  %285 = tail call { i64, i1 } @llvm.ssub.with.overflow.i64(i64 %274, i64 %284), !nosanitize !20
+  %286 = extractvalue { i64, i1 } %285, 1, !nosanitize !20
+  br i1 %286, label %287, label %288, !prof !22, !nosanitize !20
+
+287:                                              ; preds = %283, %254
+  tail call void @llvm.ubsantrap(i8 21) #7, !nosanitize !20
+  unreachable, !nosanitize !20
+
+288:                                              ; preds = %283
+  %289 = extractvalue { i64, i1 } %285, 0, !nosanitize !20
+  %290 = icmp slt i64 %289, 0
+  br i1 %290, label %291, label %296
+
+291:                                              ; preds = %288
+  %292 = tail call { i64, i1 } @llvm.ssub.with.overflow.i64(i64 0, i64 %289), !nosanitize !20
+  %293 = extractvalue { i64, i1 } %292, 0, !nosanitize !20
+  %294 = extractvalue { i64, i1 } %292, 1, !nosanitize !20
+  br i1 %294, label %295, label %296, !prof !22, !nosanitize !20
+
+295:                                              ; preds = %291, %261
+  tail call void @llvm.ubsantrap(i8 13) #7, !nosanitize !20
+  unreachable, !nosanitize !20
+
+296:                                              ; preds = %291, %288
+  %297 = phi i64 [ %293, %291 ], [ %289, %288 ]
+  %298 = add i64 %297, %269
+  %299 = add i64 %268, 1
+  %300 = lshr i64 %299, %243
+  %301 = icmp eq i64 %300, 0
+  br i1 %301, label %267, label %302, !llvm.loop !23
+
+302:                                              ; preds = %296
+  %303 = tail call { i32, i1 } @llvm.sadd.with.overflow.i32(i32 %238, i32 14), !nosanitize !20
+  %304 = extractvalue { i32, i1 } %303, 1, !nosanitize !20
+  br i1 %304, label %305, label %306, !prof !21, !nosanitize !20
+
+305:                                              ; preds = %302
+  tail call void @llvm.ubsantrap(i8 0) #7, !nosanitize !20
+  unreachable, !nosanitize !20
+
+306:                                              ; preds = %302
+  %307 = extractvalue { i32, i1 } %303, 0, !nosanitize !20
+  %308 = sext i32 %307 to i64
+  %309 = mul i64 %241, %308
+  %310 = mul i64 %309, %242
+  %311 = lshr i64 %310, 4
+  %312 = icmp ult i64 %298, %311
+  br i1 %312, label %313, label %345
+
+313:                                              ; preds = %313, %306
+  %314 = phi i64 [ %336, %313 ], [ 0, %306 ]
+  %315 = getelementptr inbounds nuw [1024 x i32], ptr %232, i64 0, i64 %314
+  %316 = getelementptr inbounds nuw i8, ptr %315, i64 16
+  %317 = load <4 x i32>, ptr %315, align 4, !tbaa !12
+  %318 = load <4 x i32>, ptr %316, align 4, !tbaa !12
+  %319 = getelementptr inbounds nuw [1024 x i32], ptr %3, i64 0, i64 %314
+  %320 = getelementptr inbounds nuw i8, ptr %319, i64 16
+  %321 = load <4 x i32>, ptr %319, align 4, !tbaa !12
+  %322 = load <4 x i32>, ptr %320, align 4, !tbaa !12
+  %323 = add <4 x i32> %321, %317
+  %324 = add <4 x i32> %322, %318
+  store <4 x i32> %323, ptr %319, align 4, !tbaa !12
+  store <4 x i32> %324, ptr %320, align 4, !tbaa !12
+  %325 = or disjoint i64 %314, 8
+  %326 = getelementptr inbounds nuw [1024 x i32], ptr %232, i64 0, i64 %325
+  %327 = getelementptr inbounds nuw i8, ptr %326, i64 16
+  %328 = load <4 x i32>, ptr %326, align 4, !tbaa !12
+  %329 = load <4 x i32>, ptr %327, align 4, !tbaa !12
+  %330 = getelementptr inbounds nuw [1024 x i32], ptr %3, i64 0, i64 %325
+  %331 = getelementptr inbounds nuw i8, ptr %330, i64 16
+  %332 = load <4 x i32>, ptr %330, align 4, !tbaa !12
+  %333 = load <4 x i32>, ptr %331, align 4, !tbaa !12
+  %334 = add <4 x i32> %332, %328
+  %335 = add <4 x i32> %333, %329
+  store <4 x i32> %334, ptr %330, align 4, !tbaa !12
+  store <4 x i32> %335, ptr %331, align 4, !tbaa !12
+  %336 = add nuw nsw i64 %314, 16
+  %337 = icmp eq i64 %336, 1024
+  br i1 %337, label %338, label %313, !llvm.loop !26
+
+338:                                              ; preds = %313
+  %339 = add i64 %242, %241
+  store i64 %339, ptr %234, align 8, !tbaa !19
+  %340 = icmp sgt i32 %238, 0
+  %341 = sext i1 %340 to i32
+  %342 = add nsw i32 %238, %341
+  %343 = add i64 %237, 8192
+  %344 = icmp ugt i64 %343, %229
+  br i1 %344, label %345, label %236, !llvm.loop !27
+
+345:                                              ; preds = %338, %306, %224, %214, %54
+  %346 = phi i64 [ %219, %214 ], [ %1, %54 ], [ %1, %224 ], [ %237, %306 ], [ %1, %338 ]
+  ret i64 %346
+}
+
+; Function Attrs: cold noreturn nounwind memory(inaccessiblemem: write)
+declare void @llvm.ubsantrap(i8 immarg) #1
+
+declare void @HIST_add(ptr noundef, ptr noundef, i64 noundef) local_unnamed_addr #2
+
+; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+declare { i64, i1 } @llvm.ssub.with.overflow.i64(i64, i64) #3
+
+; Function Attrs: nocallback nofree nounwind willreturn memory(argmem: write)
+declare void @llvm.memset.p0.i64(ptr writeonly captures(none), i8, i64, i1 immarg) #4
+
+; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+declare { i32, i1 } @llvm.sadd.with.overflow.i32(i32, i32) #3
+
+; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+declare { i64, i1 } @llvm.smul.with.overflow.i64(i64, i64) #3
+
+; Function Attrs: nofree norecurse nosync nounwind memory(argmem: readwrite) uwtable
+define internal void @ZSTD_recordFingerprint_43(ptr noundef captures(none) initializes((0, 1024), (4096, 4104)) %0, ptr noundef readonly captures(none) %1, i64 noundef %2) #5 {
+  tail call void @llvm.memset.p0.i64(ptr noundef nonnull align 8 dereferenceable(1024) %0, i8 0, i64 1024, i1 false)
+  %4 = getelementptr inbounds nuw i8, ptr %0, i64 4096
+  store i64 0, ptr %4, align 8, !tbaa !19
+  %5 = add i64 %2, -1
+  %6 = icmp eq i64 %5, 0
+  br i1 %6, label %17, label %7
+
+7:                                                ; preds = %7, %3
+  %8 = phi i64 [ %15, %7 ], [ 0, %3 ]
+  %9 = getelementptr inbounds nuw i8, ptr %1, i64 %8
+  %10 = load i8, ptr %9, align 1, !tbaa !28
+  %11 = zext i8 %10 to i64
+  %12 = getelementptr inbounds nuw [1024 x i32], ptr %0, i64 0, i64 %11
+  %13 = load i32, ptr %12, align 4, !tbaa !12
+  %14 = add i32 %13, 1
+  store i32 %14, ptr %12, align 4, !tbaa !12
+  %15 = add i64 %8, 43
+  %16 = icmp ult i64 %15, %5
+  br i1 %16, label %7, label %17, !llvm.loop !29
+
+17:                                               ; preds = %7, %3
+  %18 = udiv i64 %5, 43
+  store i64 %18, ptr %4, align 8, !tbaa !19
+  ret void
+}
+
+; Function Attrs: nofree norecurse nosync nounwind memory(argmem: readwrite) uwtable
+define internal void @ZSTD_recordFingerprint_11(ptr noundef captures(none) initializes((0, 2048)) %0, ptr noundef readonly captures(none) %1, i64 noundef %2) #5 {
+  tail call void @llvm.memset.p0.i64(ptr noundef nonnull align 8 dereferenceable(2048) %0, i8 0, i64 2048, i1 false)
+  %4 = add i64 %2, -1
+  %5 = icmp eq i64 %4, 0
+  br i1 %5, label %19, label %6
+
+6:                                                ; preds = %6, %3
+  %7 = phi i64 [ %17, %6 ], [ 0, %3 ]
+  %8 = getelementptr inbounds nuw i8, ptr %1, i64 %7
+  %9 = load i16, ptr %8, align 1, !tbaa !30
+  %10 = zext i16 %9 to i64
+  %11 = mul nuw nsw i64 %10, 2654435769
+  %12 = lshr i64 %11, 23
+  %13 = and i64 %12, 511
+  %14 = getelementptr inbounds nuw [1024 x i32], ptr %0, i64 0, i64 %13
+  %15 = load i32, ptr %14, align 4, !tbaa !12
+  %16 = add i32 %15, 1
+  store i32 %16, ptr %14, align 4, !tbaa !12
+  %17 = add i64 %7, 11
+  %18 = icmp ult i64 %17, %4
+  br i1 %18, label %6, label %19, !llvm.loop !29
+
+19:                                               ; preds = %6, %3
+  %20 = getelementptr inbounds nuw i8, ptr %0, i64 4096
+  %21 = udiv i64 %4, 11
+  store i64 %21, ptr %20, align 8, !tbaa !19
+  ret void
+}
+
+; Function Attrs: nofree norecurse nosync nounwind memory(argmem: readwrite) uwtable
+define internal void @ZSTD_recordFingerprint_5(ptr noundef captures(none) initializes((0, 4104)) %0, ptr noundef readonly captures(none) %1, i64 noundef %2) #5 {
+  %4 = add i64 %2, -1
+  %5 = icmp eq i64 %4, 0
+  tail call void @llvm.memset.p0.i64(ptr noundef nonnull align 8 dereferenceable(4104) %0, i8 0, i64 4104, i1 false)
+  br i1 %5, label %19, label %6
+
+6:                                                ; preds = %6, %3
+  %7 = phi i64 [ %17, %6 ], [ 0, %3 ]
+  %8 = getelementptr inbounds nuw i8, ptr %1, i64 %7
+  %9 = load i16, ptr %8, align 1, !tbaa !30
+  %10 = zext i16 %9 to i64
+  %11 = mul nuw nsw i64 %10, 2654435769
+  %12 = lshr i64 %11, 22
+  %13 = and i64 %12, 1023
+  %14 = getelementptr inbounds nuw [1024 x i32], ptr %0, i64 0, i64 %13
+  %15 = load i32, ptr %14, align 4, !tbaa !12
+  %16 = add i32 %15, 1
+  store i32 %16, ptr %14, align 4, !tbaa !12
+  %17 = add i64 %7, 5
+  %18 = icmp ult i64 %17, %4
+  br i1 %18, label %6, label %19, !llvm.loop !29
+
+19:                                               ; preds = %6, %3
+  %20 = getelementptr inbounds nuw i8, ptr %0, i64 4096
+  %21 = udiv i64 %4, 5
+  store i64 %21, ptr %20, align 8, !tbaa !19
+  ret void
+}
+
+; Function Attrs: nofree norecurse nosync nounwind memory(argmem: readwrite) uwtable
+define internal void @ZSTD_recordFingerprint_1(ptr noundef captures(none) initializes((0, 4104)) %0, ptr noundef readonly captures(none) %1, i64 noundef %2) #5 {
+  %4 = add i64 %2, -1
+  %5 = icmp eq i64 %4, 0
+  tail call void @llvm.memset.p0.i64(ptr noundef nonnull align 8 dereferenceable(4104) %0, i8 0, i64 4104, i1 false)
+  br i1 %5, label %49, label %6
+
+6:                                                ; preds = %3
+  %7 = and i64 %4, 1
+  %8 = icmp eq i64 %2, 2
+  br i1 %8, label %36, label %9
+
+9:                                                ; preds = %6
+  %10 = and i64 %4, -2
+  %11 = getelementptr i8, ptr %1, i64 1
+  br label %12
+
+12:                                               ; preds = %12, %9
+  %13 = phi i64 [ 0, %9 ], [ %33, %12 ]
+  %14 = phi i64 [ 0, %9 ], [ %34, %12 ]
+  %15 = getelementptr inbounds nuw i8, ptr %1, i64 %13
+  %16 = load i16, ptr %15, align 1, !tbaa !30
+  %17 = zext i16 %16 to i64
+  %18 = mul nuw nsw i64 %17, 2654435769
+  %19 = lshr i64 %18, 22
+  %20 = and i64 %19, 1023
+  %21 = getelementptr inbounds nuw [1024 x i32], ptr %0, i64 0, i64 %20
+  %22 = load i32, ptr %21, align 4, !tbaa !12
+  %23 = add i32 %22, 1
+  store i32 %23, ptr %21, align 4, !tbaa !12
+  %24 = getelementptr i8, ptr %11, i64 %13
+  %25 = load i16, ptr %24, align 1, !tbaa !30
+  %26 = zext i16 %25 to i64
+  %27 = mul nuw nsw i64 %26, 2654435769
+  %28 = lshr i64 %27, 22
+  %29 = and i64 %28, 1023
+  %30 = getelementptr inbounds nuw [1024 x i32], ptr %0, i64 0, i64 %29
+  %31 = load i32, ptr %30, align 4, !tbaa !12
+  %32 = add i32 %31, 1
+  store i32 %32, ptr %30, align 4, !tbaa !12
+  %33 = add nuw i64 %13, 2
+  %34 = add i64 %14, 2
+  %35 = icmp eq i64 %34, %10
+  br i1 %35, label %36, label %12, !llvm.loop !29
+
+36:                                               ; preds = %12, %6
+  %37 = phi i64 [ 0, %6 ], [ %33, %12 ]
+  %38 = icmp eq i64 %7, 0
+  br i1 %38, label %49, label %39
+
+39:                                               ; preds = %36
+  %40 = getelementptr inbounds nuw i8, ptr %1, i64 %37
+  %41 = load i16, ptr %40, align 1, !tbaa !30
+  %42 = zext i16 %41 to i64
+  %43 = mul nuw nsw i64 %42, 2654435769
+  %44 = lshr i64 %43, 22
+  %45 = and i64 %44, 1023
+  %46 = getelementptr inbounds nuw [1024 x i32], ptr %0, i64 0, i64 %45
+  %47 = load i32, ptr %46, align 4, !tbaa !12
+  %48 = add i32 %47, 1
+  store i32 %48, ptr %46, align 4, !tbaa !12
+  br label %49
+
+49:                                               ; preds = %39, %36, %3
+  %50 = getelementptr inbounds nuw i8, ptr %0, i64 4096
+  store i64 %4, ptr %50, align 8, !tbaa !19
+  ret void
+}
+
+; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+declare i64 @llvm.vector.reduce.add.v2i64(<2 x i64>) #3
+
+attributes #0 = { nounwind uwtable "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #1 = { cold noreturn nounwind memory(inaccessiblemem: write) }
+attributes #2 = { "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #3 = { nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none) }
+attributes #4 = { nocallback nofree nounwind willreturn memory(argmem: write) }
+attributes #5 = { nofree norecurse nosync nounwind memory(argmem: readwrite) uwtable "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #6 = { nounwind }
+attributes #7 = { noreturn nounwind }
+
+!llvm.module.flags = !{!0, !1, !2, !3}
+!llvm.ident = !{!4}
+
+!0 = !{i32 1, !"wchar_size", i32 4}
+!1 = !{i32 8, !"PIC Level", i32 2}
+!2 = !{i32 7, !"PIE Level", i32 2}
+!3 = !{i32 7, !"uwtable", i32 2}
+!4 = !{!"clang version 21.0.0 (https://github.com/swiftlang/llvm-project.git 82cdc19fa54d566969527b56f587ea8ea30bef51)"}
+!5 = !{!6, !10, i64 8200}
+!6 = !{!"", !7, i64 0, !7, i64 4104}
+!7 = !{!"", !8, i64 0, !10, i64 4096}
+!8 = !{!"omnipotent char", !9, i64 0}
+!9 = !{!"Simple C/C++ TBAA"}
+!10 = !{!"long", !8, i64 0}
+!11 = !{!6, !10, i64 4096}
+!12 = !{!13, !13, i64 0}
+!13 = !{!"int", !8, i64 0}
+!14 = distinct !{!14, !15, !16, !17, !18}
+!15 = !{!"llvm.loop.mustprogress"}
+!16 = !{!"llvm.loop.peeled.count", i32 1}
+!17 = !{!"llvm.loop.isvectorized", i32 1}
+!18 = !{!"llvm.loop.unroll.runtime.disable"}
+!19 = !{!7, !10, i64 4096}
+!20 = !{}
+!21 = !{!"branch_weights", i32 1, i32 1048575}
+!22 = !{!"branch_weights", i32 1, i32 1048574}
+!23 = distinct !{!23, !15, !16}
+!24 = !{!25, !25, i64 0}
+!25 = !{!"any pointer", !8, i64 0}
+!26 = distinct !{!26, !15, !17, !18}
+!27 = distinct !{!27, !15}
+!28 = !{!8, !8, i64 0}
+!29 = distinct !{!29, !15}
+!30 = !{!31, !31, i64 0}
+!31 = !{!"short", !8, i64 0}
