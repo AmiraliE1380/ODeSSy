@@ -1,0 +1,5 @@
+  sha256.jl        chk=0.0932s unc=0.1042s ceiling=-10.6%
+  matmul.jl        chk=0.1253s unc=0.1233s ceiling=+1.6%
+  lz77.jl          chk=0.0898s unc=0.0341s ceiling=+163.5%
+  jl_poly.jl       chk=0.0251s unc=0.0251s ceiling=-0.0%
+  jl_filt_dsp.jl   chk=0.0910s unc=0.0916s ceiling=-0.7%

@@ -1,0 +1,6 @@
+outputs identical: arm2==arm1 true   arm3==arm1 true
+filt! (DSP.jl)  N=1048576 x 20 calls, REPS=21 (medians, seconds)
+arm1 baseline        : 0.0902
+arm2 all-inbounds    : 0.0915   speedup vs arm1: 0.985x  (ceiling -1.5%)
+arm3 proven-only     : 0.0934   speedup vs arm1: 0.965x
+ceiling recovered by arm3: 234.5%

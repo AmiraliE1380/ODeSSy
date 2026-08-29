@@ -835,7 +835,46 @@ benchmark with a runnable harness has a measured ceiling.
 
 ---
 
-## 9. FINAL MAC DATA (placeholder — fill after server window)
+## 9. FINAL MAC DATA
+
+### 9.1 Julia sha256 / filt @inbounds arms (0829) — RESULT: NO MAC CEILING
+
+Mac full-tier audit (current encoder, vacuity, frame): sha256.jl
+**10/16 edges UNSAT**, jl_filt_dsp **6/19** (vacuous 0 both). Proven
+sets mapped edge→source (discovery order == IR trap-block order,
+cross-checked by the array.jl:990 setindex! entries):
+- sha256.jl: data[i+1..i+4] (line 30, 2/2 edges each) and w[t-16],
+  w[t-7] (line 36) proven; w[t]= stores, w[t-15], w[t-2], K[t], w[t]
+  (compression loop) unproven.
+- filt!: x[i] (line 11, 2/2) and si[j+1] (line 14, 3/3 unswitched
+  versions) proven; b[j+1] 1/3, a[j+1] 0/3, line 12/16/17 accesses
+  unproven. (si[j]= emits no check at all — Julia/LLVM already prove it.)
+Arms files: native_bench/jl_sha256_arms.jl, jl_filt_arms.jl (gemm
+protocol: 3 arms, 21 rotated reps, output-equality gate; code_llvm
+census confirms arm2 = 0 boundserror sites, arm3 partial).
+
+Mac results (jl_*_arms_mac_0829.log; medians of 21; outputs identical):
+| kernel | arm1 base | arm2 all-@inbounds | arm3 proven-only |
+|---|---|---|---|
+| sha256.jl (1 MiB×40) | 0.0970 s | 0.1022 s (**−5.1%**) | 0.0923 s (+5.0%) |
+| filt! (2^20×20) | 0.0902 s | 0.0915 s (−1.5%) | 0.0934 s (−3.5%) |
+
+INDEPENDENT CONFIRMATION by the global switch (julia_ceilings_mac_0829.log,
+`--check-bounds=no`, two runs): sha256.jl **−4.4% / −10.6%**, filt
+**−0.2% / −0.7%**, matmul +1.9/+1.6%, poly +0.6/−0.0%, lz77 +163.5%
+(server +326%; the one Julia kernel whose checks cost on both ISAs —
+and it has 0 UNSATs). VERDICT: on M-series Julia 1.12, bounds checks in
+these kernels cost NOTHING (arm2 and --check-bounds=no agree; filt's
+CHECKED build vectorizes more — 114 vs 38 <2 x double> ops in
+code_llvm — checks do not block vectorization on arm64 here). All arm
+deltas are noise-band or relottery; **no recovery is possible on the
+Mac because there is no ceiling** — dodged by the ≤1% rule, with the
+experiment run and recorded rather than assumed. This is the Julia
+mirror of the Swift sha1 7-vs-2 platform split: the x86 ceilings
+(9.5% / 58.3%) are real, the arm64 ceilings are ≈0. The only machine
+where a Julia sha256/filt @inbounds recovery could exist is x86, where
+the server proves only 2/16 and 4/19 edges (§8.3) — an x86 arm-3 would
+need those edges mapped on the server's own emission.
 
 Exists already (current encoder): sha256 perf +6.86/+6.24 (0822);
 CryptoSwift perf t=10s flat, 215 elim (0824); gemm arms 4.185×/4.156×

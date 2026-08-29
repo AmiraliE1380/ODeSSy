@@ -1,0 +1,6 @@
+outputs identical: arm2==arm1 true   arm3==arm1 true
+sha256.jl  1 MiB x 40 iters, REPS=21 (medians, seconds)
+arm1 baseline        : 0.097
+arm2 all-inbounds    : 0.1022   speedup vs arm1: 0.949x  (ceiling -5.1%)
+arm3 proven-only     : 0.0923   speedup vs arm1: 1.05x
+ceiling recovered by arm3: -99.5%

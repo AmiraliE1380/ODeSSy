@@ -17,7 +17,7 @@ EXPR[matmul.jl]='n=512; a=rand(Int64,n*n).%7; b=rand(Int64,n*n).%5; c=zeros(Int6
   matmul!(c,a,b,n);
   ts=[(@elapsed matmul!(c,a,b,n)) for _ in 1:5]; println(minimum(ts))'
 EXPR[lz77.jl]='x=UInt32(123456789); data=Vector{UInt8}(undef,1<<16);
-  for k in 1:length(data); x=x*0x0019660d+0x3c6ef35f; data[k]=UInt8((x>>24)&0xff); end;
+  for k in 1:length(data); global x = x*0x0019660d+0x3c6ef35f; data[k]=UInt8((x>>24)&0xff); end;
   lz77_scan(data,1024);
   ts=[(@elapsed lz77_scan(data,1024)) for _ in 1:5]; println(minimum(ts))'
 EXPR[jl_poly.jl]='a=rand(1<<20); poly!(a,1.0,2.0,3.0,2);
