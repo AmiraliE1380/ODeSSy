@@ -914,6 +914,23 @@ iters → 0.5–1.5 s runs; per-element check cost is size-invariant, so
 larger inputs would tighten noise but cannot flip signs; the same
 1 MiB workload is what the x86 rows use (comparability).
 
+### 9.3 CryptoSwift Mac ceiling decomposition (0830; 3 arms, 15
+interleaved runs, outputs identical; cryptoswift_ceiling_mac_15runs_0830.log)
+
+-O 0.922 s / O3-sandwich base 0.906 s / -Ounchecked 0.912 s (medians).
+Raw ceiling (-O vs -Ounchecked) **+1.1%**; pipeline share +1.8 pts;
+honest ceiling (sandwich vs -Ounchecked) **−0.7% ≈ 0**. The earlier
+"2.5–3%" Mac range is SUPERSEDED: on M-series CryptoSwift has NO
+checks-attributable ceiling — the whole raw gap is the compilation
+pipeline, which the harness baseline already includes. Run spread
+(0.88–0.95 s) exceeds the arm differences; all three arms overlap.
+Consistent with the flat Mac perf verdict (215 elim, −0.4%), which is
+now flat-by-necessity rather than dose-location alone. Contrast x86:
+19.6% raw = 8.1 pipeline + 10.4 honest.
+
+MAC EXPERIMENTS CONCLUDED (0830): every Mac row in the paper's tables
+is now measured at the final encoder or carries a measured dodge.
+
 Exists already (current encoder): sha256 perf +6.86/+6.24 (0822);
 CryptoSwift perf t=10s flat, 215 elim (0824); gemm arms 4.185×/4.156×
 (0822); full static sweep (sweep_native_0824.log). To fill: remaining

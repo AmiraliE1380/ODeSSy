@@ -1134,7 +1134,7 @@ utf8 validator & Swift & 2 & x86 & $+0.00$\% & 7.5\% & 0 & none; off hot path\\
 zlib comp.\ (both spec) & C & 145 & x86 & $+0.1$\% & 5.4\% & $\approx$0 & none (cold); 3 sizes, 3 tiers\\
 lz4 comp. & C & 193$^{\P}$ & x86 & $\approx0$\% & 2.0\% & $\approx$0 & none (cold)\\
 CryptoSwift (library) & Swift & 183 & x86 & $\pm0.3$\% & 10.4\%$^{c}$ & $\approx$0 & none; cold API surface\\
-CryptoSwift (library) & Swift & 215 & M-series & $-0.4$\% & 2.5--3\% & $\approx$0 & none; 10\,s budget dose\\
+CryptoSwift (library) & Swift & 215 & M-series & $-0.4$\% & $-0.7$\%$^{c}$ & --- & none; 10\,s budget dose; no ceiling on M-series\\
 sha256 & Julia & 10 & M-series & $+6.9$\% & $-7.9$\% & --- & \texttt{@inbounds} on 6 of 12 sites; no ceiling on arm64 --- lottery\\
 md5 & Swift & 5 & M-series & $+0.2$\% & $-1.4$\% & --- & none; no ceiling on M-series\\
 adler32 & Swift & 1 & M-series & $-1.5$\% & 8.9\% & $<0$ & none; relottery\\
@@ -1160,8 +1160,10 @@ matmul / lz77 & Rust & 0 & --- & n/a & --- & --- & taxonomy (b), \texttt{Vec} le
 \end{tabular}\\
 \raggedright\footnotesize $^{\P}$Marginal over the double-O3 control:
 \tool{} removes 1027 of 3403 traps, the control removes 834.
-$^{c}$Honest ceiling after removing the 8.1 points of the
-\texttt{-O}-vs-sandwich pipeline gap from the raw \pct{19.6}.
+$^{c}$Honest ceiling after removing the \texttt{-O}-vs-sandwich
+pipeline gap: on x86, 8.1 points of the raw \pct{19.6}; on M-series the
+raw gap is only \pct{1.1} and the pipeline accounts for all of it
+(sandwich vs.\ \texttt{-Ounchecked}: \pct{-0.7}, 15 interleaved runs).
 $^{d}$Exactly zero by construction: under the signed specification
 OpenSSL's SHA-256 emits no checks at all.\par
 \end{table*}
