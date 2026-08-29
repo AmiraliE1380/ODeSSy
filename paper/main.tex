@@ -648,6 +648,7 @@ gemm (stdlib)$^{b}$ & Julia & 16 & M-series & $4.16\times$ & vec+unroll & $4.19\
 gemm (stdlib)$^{b}$ & Julia & 16 & x86 & $3.59\times$ & vec+unroll & $3.97\times$ & 96.4\%\\
 sha256 & Swift & 7 & x86 & $+8.8$\% & unroll & 9.0\% & 98\%\\
 sha256 & Swift & 7 & M-series & $+6.9$\% & unroll & 2.8\%$^{a}$ & ---$^{a}$\\
+sha256$^{b}$ & Julia & 10 & M-series & $+6.9$\% & \texttt{@inbounds}, 6/12 sites & $-7.9$\%$^{c}$ & N/A$^{c}$\\
 adler32 & Swift & 1 & x86 & $+3.7$\% & DO16 group & 11.6\% & 32\%\\
 zstd comp. & C & 6 & x86 & $+2.3$\% & hot group & 1.2\%$^{a}$ & ---$^{a}$\\
 sha1 & Swift & 7 & M-series & $+2.1$\% & unroll & 7.6\% & 27\%\\
@@ -660,7 +661,13 @@ over \pct{1.2}, sha256's \pct{6.9} over M-series' \pct{2.8}
 checked-vs-unchecked gap --- eliminations unlocked re-optimization
 worth more than the checks themselves, and no recovery fraction is
 computed. $^{b}$Via proof-licensed \texttt{@inbounds}
-(Table~\ref{tab:inbounds}); ceiling is the expert-annotation arm.\par
+(Table~\ref{tab:inbounds}); ceiling is the all-annotated arm.
+$^{c}$For sha256.jl on M-series the all-annotated arm is \emph{slower}
+than the baseline (\pct{-7.9}, reproduced in three sessions and by
+\texttt{--check-bounds=no}), so there is no ceiling to recover: the
+proven-only arm's \pct{6.9} is a real, reproducible gain (medians of
+21, bitwise-identical output) that the lottery, not check removal,
+pays for.\par
 \end{table*}
 Table~\ref{tab:speedups} answers RQ1b, and the answer
 is a \emph{causal account}, not a single number. Elimination buys
