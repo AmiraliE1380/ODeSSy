@@ -1,0 +1,6 @@
+# Mac kernel ceilings: swiftc -O vs -Ounchecked, 5 interleaved runs, medians of wall seconds
+  sha256   chk=0.502 unc=0.489 ceiling=+2.8%  outputs identical
+  sha1     chk=1.095 unc=1.017 ceiling=+7.6%  outputs identical
+  md5      chk=1.466 unc=1.486 ceiling=-1.4%  outputs identical
+  adler32  chk=0.788 unc=0.723 ceiling=+8.9%  outputs identical
+  utf8     chk=0.920 unc=0.928 ceiling=-0.8%  outputs identical
