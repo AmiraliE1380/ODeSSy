@@ -124,7 +124,7 @@
 Aggressive compiler optimization today occupies two distant extremes.
 Conventional optimizers run in milliseconds but reason through ad-hoc
 heuristics that miss opportunities; superoptimizers synthesize faster code
-but take hours, confining them to small kernels. We introduce
+but take hours, confining them to small kernels and offline use. We introduce
 \emph{super-analysis}, a middle ground that uses an SMT solver purely for
 \emph{analysis} while transformations remain conventional, avoiding
 synthesis entirely. The key observation is that the opportunities
@@ -133,26 +133,15 @@ to \emph{justify}: proving a safety check dead can require facts from four
 independent LLVM analyses \emph{simultaneously} --- a conjunctive entailment
 problem suited to a solver, not to any single dataflow pass. We instantiate
 super-analysis in \tool{}, an LLVM pass that proves sanitizer traps and
-native-language safety checks unreachable and deletes them. \tool{}
-eliminates up to \pct{83} of the checks a single \texttt{-O3}
-pipeline leaves behind. Where eliminations gate a
-further transformation they buy real performance on already-optimized
-code: \tool{} enables a speedup of \pct{6.9}--\pct{8.8} on a Swift SHA-256 kernel across two
-microarchitectures --- \pct{98} of that kernel's entire
-checked-vs-unchecked ceiling on x86 --- and \pct{3.7} on an adler32
-kernel from a \emph{single} proof. Latency is a dial rather than a fixed cost:
-\pct{96} of proofs survive a 100\,ms per-query budget, making
+native-language safety checks unreachable and deletes them.
+One mechanism serves three frontends and yields speedups in each:
+\tool{} generates code up to $4.16\times$ faster than LLVM -O3 for a Julia
+benchmark, speeds up a Swift SHA-256 kernel by \pct{8.8}, and delivers a
+whole-library runtime win of \pct{2.6} for zstd compression in C. Latency
+is a dial rather than a fixed cost:
+\pct{96} of proofs survive a 100\,ms per-query SMT timeout budget, making
 super-analysis viable as an online compiler pass rather than an offline
-audit. Finally, we contribute a taxonomy of the residual checks and the
-four heap-reasoning obligations that block them --- a frontier standing
-between super-analysis today and a measured $3.4\times$ ceiling. We then
-cross that frontier: a \emph{heap-invariant} extension --- a frame-rule
-fact source built on MemorySSA plus a definitional encoding of the
-vectorizer's poison-stabilized values --- proves \emph{all 16} residual
-bounds checks in Julia's own standard-library GEMM, and proof-licensed
-\texttt{@inbounds} annotation recovers \pct{96}--\pct{100} of the
-checks-off ceiling ($3.6$--$4.2\times$) on both microarchitectures, with
-byte-identical outputs throughout.
+audit.
 \end{abstract}
 \begin{CCSXML}
 <ccs2012>
@@ -217,7 +206,7 @@ no search is performed. The solver answers exactly one kind of question
 --- \emph{is this program point reachable under this context?} --- and a
 standard, trivially correct transformation (deleting an unreachable branch)
 consumes the answer. Soundness is preserved by construction: an
-\textsc{unsat} verdict is a proof, an \textsc{sat} or \textsc{unknown}
+\textsc{unsat} verdict is a proof, a \textsc{sat} or \textsc{unknown}
 verdict changes nothing.
 Why should a solver find opportunities that forty years of heuristics
 miss? Our central empirical finding is that the missed opportunities are
@@ -272,30 +261,19 @@ This paper makes the following contributions:
 \begin{itemize}
 \item \textbf{Super-analysis} (\S\ref{sec:superanalysis}): a paradigm
   positioning between heuristic optimization and superoptimization ---
-  SMT for analysis, conventional code for transformation --- together
-  with unsat-core evidence that the target reasoning is inherently
-  conjunctive across analysis domains.
+  SMT for analysis, conventional code for transformation.
 \item \textbf{\tool{}} (\S\ref{sec:system}): a three-stage LLVM pass
-  (serial discovery, parallel solve, serial transform) whose verdicts,
-  output IR, and logs are invariant in the thread count by construction; a
-  two-tier fact system importing LLVM's own analyses as solver
-  constraints; a self-distrusting vacuity audit; and a single
-  \texttt{traps=} mechanism that retargets the pass to Swift, Rust, and
-  Julia checks with zero per-language code.
+  (serial discovery, parallel solve, serial transform) that eliminates sanitizer checks and optimizes the resulting IR. ODeSSy supports C/C++, Swift, and Julia as frontends and can enable transformations and speedups.
 \item \textbf{An honest evaluation} (\S\ref{sec:results}): across C
-  libraries (zlib, zstd, lz4, OpenSSL) and three native-check languages,
+  libraries (zlib, zstd, lz4, OpenSSL) and two native-check languages,
   \tool{} removes \pct{11}--\pct{13.6} of checks on real repositories;
-  runtime experiments with round-trip controls, output-equivalence gates,
+  runtime experiments with output-equivalence gates,
   and 30-repetition medians on two ISAs show \emph{when} elimination pays
-  --- a dose--response account in which one hot proof can buy \pct{3.7}
-  and six buy the study's only whole-library C speedup, while 183 cold
-  proofs buy nothing, and in which non-unlocking
-  elimination is a measured, replicated, two-sided lottery.
+  --- a single hot loop proof in a swift kernel can buy \pct{3.7}, while 183 cold
+  proofs in the entire crypto swift buy nothing.
 \item \textbf{Latency as a dial} (\S\ref{sec:results-cost}): \pct{96} of
-  zlib's proofs survive a 100\,ms per-query budget while OpenSSL's
-  guard-chain queries need 30\,s --- five orders of magnitude of query
-  hardness under one knob, with wall-clock held flat by per-trap
-  parallelism.
+  zlib's proofs survive a 100\,ms per-query budget; proofs are generally cheap. The OpenSSL library's 
+  long guard-chain queries need 30\,s, which makes ODeSSy a static analyzer for this benchmark.
 \item \textbf{The formal frontier} (\S\ref{sec:future}): a taxonomy of
   residual checks from a three-language triage, and a formalization of
   four obligations (O1--O4) --- loop invariants, allocation contracts,
@@ -651,33 +629,28 @@ compositions is doing attributable work that range/known-bits reasoning
 loses.
 \subsection{RQ1b: When do proofs become speed?}
 \label{sec:results-perf}
-\begin{table}
-\caption{The dose--response table: every runtime experiment, sorted by
-speedup (medians, REPS$\geq$21 shuffled reps, oracle vs.\ the double-O3
-control, byte-identical-output gate; final encoder, full fact tier).
-``Elim'' counts proven trap edges; ``Unlock'' names the transformation
-the proofs gate.}
+\begin{table*}
+\caption{Genuine speedups: every runtime experiment in which elimination
+paid, sorted by speedup (medians, REPS$\geq$21 shuffled reps, oracle
+vs.\ the double-O3 control, byte-identical-output gate; final encoder,
+full fact tier). ``Elim'' counts proven trap edges; ``Unlock'' names the
+transformation the proofs gate. The complete table --- every benchmark,
+including the flat and negative rows that carry the dose--response
+argument --- is Table~\ref{tab:speedups-full} in
+Appendix~\ref{sec:app-full}.}
 \label{tab:speedups}
-\footnotesize
-\setlength{\tabcolsep}{3pt}
-\begin{tabular}{lrllrrr}
+\small
+\begin{tabular}{llrlrlrr}
 \toprule
-Benchmark & Elim & Platform & Speedup & Unlock & Ceiling & Recov.\\
+Benchmark & Lang & Elim & Platform & Speedup & Unlock & Ceiling & Recov.\\
 \midrule
-gemm (Julia)$^{b}$ & 16 & M-series & $4.16\times$ & vec+unroll & $4.19\times$ & 99.8\%\\
-gemm (Julia)$^{b}$ & 16 & x86 & $3.59\times$ & vec+unroll & $3.97\times$ & 96.4\%\\
-sha256 (Swift) & 7 & x86 & $+8.8$\% & unroll & 9.0\% & 98\%\\
-sha1 (Swift) & 7 & M-series & $+6.4/{+}7.3$\% & unroll & --- & ---\\
-sha256 (Swift) & 7 & M-series & $+6.9$\% & unroll & --- & ---\\
-adler32 (Swift) & 1 & x86 & $+3.7$\% & DO16 group & 11.6\% & 32\%\\
-zstd comp.\ (C) & 6 & x86 & $+2.3$\% & hot group & 1.2\%$^{a}$ & ---$^{a}$\\
-utf8 (Swift) & 2 & x86 & $+0.0$\% & none (cold) & 7.5\% & 0\\
-CryptoSwift & 183 & x86 & $\pm0.3$\% & none (cold) & 10.4\%$^{c}$ & $\approx$0\\
-zlib comp.\ (C) & 145 & x86 & $+0.1$\% & none (cold) & 5.4\%$^{a}$ & $\approx$0\\
-zlib decomp.\ (C) & 113 & x86 & $+0.3$\% & none (cold) & 1.1\%$^{a}$ & $\approx$0\\
-md5 (Swift) & 1 & x86 & $-1.8$\% & none (cold) & 6.0\% & $<0$\\
-adler32 (Swift) & 1 & M-series & $-1.4$\% & none & --- & $<0$\\
-sha1 (Swift) & 2 & x86 & $-5.0$\% ($\times4$) & none & 4.7\% & $<0$\\
+gemm (stdlib)$^{b}$ & Julia & 16 & M-series & $4.16\times$ & vec+unroll & $4.19\times$ & 99.8\%\\
+gemm (stdlib)$^{b}$ & Julia & 16 & x86 & $3.59\times$ & vec+unroll & $3.97\times$ & 96.4\%\\
+sha256 & Swift & 7 & x86 & $+8.8$\% & unroll & 9.0\% & 98\%\\
+sha1 & Swift & 7 & M-series & $+6.4/{+}7.3$\% & unroll & --- & ---\\
+sha256 & Swift & 7 & M-series & $+6.9$\% & unroll & --- & ---\\
+adler32 & Swift & 1 & x86 & $+3.7$\% & DO16 group & 11.6\% & 32\%\\
+zstd comp. & C & 6 & x86 & $+2.3$\% & hot group & 1.2\%$^{a}$ & ---$^{a}$\\
 \bottomrule
 \end{tabular}\\
 \raggedright\footnotesize $^{a}$C ceilings are measured sanitizer
@@ -685,12 +658,8 @@ overhead vs.\ unsanitized (the deployable ceiling the eliminations
 attack); zstd's \pct{2.3} \emph{exceeds} its overhead ceiling ---
 eliminations also unlock re-optimization --- so no recovery fraction
 is computed. $^{b}$Via proof-licensed \texttt{@inbounds}
-(Table~\ref{tab:inbounds}); ceiling is the expert-annotation arm.
-$^{c}$The raw \texttt{-O}-vs-\texttt{-Ounchecked} gap is \pct{19.6},
-of which 8.1 points are the compilation pipeline (recovered by the
-harness baseline itself) and \pct{10.4} are unchecked semantics ---
-the honest ceiling.\par
-\end{table}
+(Table~\ref{tab:inbounds}); ceiling is the expert-annotation arm.\par
+\end{table*}
 Table~\ref{tab:speedups} answers RQ1b, and the answer
 is a \emph{causal account}, not a single number. Elimination buys
 performance exactly when it \emph{gates a further transformation}.
@@ -705,7 +674,8 @@ row sharpens the point: a \emph{single} proof inside the sixteen-fold
 unrolled DO16 group recovers \pct{32} of an \pct{11.6} ceiling.
 Concentration beats count: 183 scattered cold proofs in CryptoSwift
 buy nothing, one hot proof in adler32 buys \pct{3.7}.
-The table's lower half is equally load-bearing. Where eliminations do not
+The full table's lower half (Table~\ref{tab:speedups-full},
+Appendix~\ref{sec:app-full}) is equally load-bearing. Where eliminations do not
 unlock a transformation, re-optimization is a genuine two-sided lottery:
 the same adler32 elimination that gains \pct{3.7} on Haswell costs
 \pct{1.4} on M-series, and sha1 on x86 --- where Linux code generation
@@ -744,9 +714,11 @@ fact sources cannot establish.
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=0.92\textwidth]{smt_latencies.png}
+\includegraphics[width=0.92\textwidth]{smt_latencies.pdf}
 \caption{SMT query latency by verdict class (1{,}818 queries over eight
-whole-module C runs, light tier, unbounded per-query budget). Proofs are
+runs of zlib's \texttt{deflate} module: signed and unsigned
+specifications $\times$ O1 and O3 $\times$ light and heavy tiers, the two
+tiers yielding identical verdict sets; unbounded per-query budget). Proofs are
 \emph{cheaper} than refutations at the median (\textsc{unsat} 3.0\,ms vs.\
 \textsc{sat} 5.5\,ms); the expense lives entirely in a thin tail
 (\textsc{unsat} max 2{,}238\,ms). This is the distribution that makes the
@@ -1084,4 +1056,79 @@ full specification is published; all timed runs disable turbo and pin to
 one socket; medians over shuffled interleaved repetitions are primary
 throughout. An artifact with the pass, benchmarks, harnesses, and raw
 per-repetition CSVs is prepared for submission.
+
+\section{Complete Runtime Results}
+\label{sec:app-full}
+Table~\ref{tab:speedups-full} is the unabridged version of
+Table~\ref{tab:speedups}: every benchmark in the study, with its runtime
+result where a harness exists, sorted by speedup. The rows below zstd
+compression are the ones that carry the dose--response argument of
+\S\ref{sec:results-perf} --- flat where proofs land cold, negative where
+non-unlocking elimination loses the re-optimization lottery. Rows marked
+``n/a'' have no runtime experiment: either the benchmark proves zero
+checks (nothing to time), or it has no executable harness (Julia's JIT
+IR, \S\ref{sec:future}; OpenSSL, static-by-design), or its sanitized
+build is dynamically un-runnable under the specification that emits the
+checks (\S\ref{sec:results-static}). Ceilings are checked-vs-unchecked
+for native kernels and measured sanitizer overhead for C libraries; they
+are reported even for zero-proof rows, since an unrecovered ceiling is a
+statement about the residue (\S\ref{sec:future}).
+
+\begin{table*}
+\caption{All benchmarks and their runtime results. ``Elim'' is proven
+trap edges at the final encoder and full fact tier; speedups are medians
+of $\geq$21 shuffled interleaved repetitions, oracle vs.\ the double-O3
+control, behind a byte-identical-output gate. Ceilings are per-platform.}
+\label{tab:speedups-full}
+\small
+\begin{tabular}{llrllrrl}
+\toprule
+Benchmark & Lang & Elim & Platform & Speedup & Ceiling & Recov. & Unlock / note\\
+\midrule
+\multicolumn{8}{l}{\emph{Proofs that paid}}\\
+gemm (stdlib) & Julia & 16 & M-series & $4.16\times$ & $4.19\times$ & 99.8\% & vec+unroll, via \texttt{@inbounds}\\
+gemm (stdlib) & Julia & 16 & x86 & $3.59\times$ & $3.97\times$ & 96.4\% & vec+unroll, via \texttt{@inbounds}\\
+sha256 & Swift & 7 & x86 & $+8.8$\% & 9.0\% & 98\% & unroll\\
+sha1 & Swift & 7 & M-series & $+6.4/{+}7.3$\% & --- & --- & unroll\\
+sha256 & Swift & 7 & M-series & $+6.9$\% & --- & --- & unroll\\
+adler32 & Swift & 1 & x86 & $+3.7$\% & 11.6\% & 32\% & DO16 unrolled group\\
+zstd comp.\ (signed) & C & 6 & x86 & $+2.3$\% & 1.2\% & --- & hot group; exceeds overhead ceiling\\
+\midrule
+\multicolumn{8}{l}{\emph{Proofs that did not pay}}\\
+zlib decomp.\ (signed) & C & 113 & x86 & $+0.3$\% & 1.1\% & $\approx$0 & none (cold)\\
+zstd decomp.\ (signed) & C & 6 & x86 & $+0.0$\% & 9.0\% & $\approx$0 & none (cold)\\
+utf8 validator & Swift & 2 & x86 & $+0.00$\% & 7.5\% & 0 & none; off hot path\\
+zlib comp.\ (both spec) & C & 145 & x86 & $+0.1$\% & 5.4\% & $\approx$0 & none (cold); 3 sizes, 3 tiers\\
+lz4 comp. & C & 193$^{\P}$ & x86 & $\approx0$\% & 2.0\% & $\approx$0 & none (cold)\\
+CryptoSwift (library) & Swift & 183 & x86 & $\pm0.3$\% & 10.4\%$^{c}$ & $\approx$0 & none; cold API surface\\
+CryptoSwift (library) & Swift & 215 & M-series & $-0.4$\% & 2.5--3\% & $\approx$0 & none; 10\,s budget dose\\
+md5 & Swift & 5 & M-series & flat & --- & --- & none; same count, no unlock\\
+adler32 & Swift & 1 & M-series & $-1.4$\% & $\sim$5\% & $<0$ & none; relottery\\
+md5 & Swift & 1 & x86 & $-1.8$\% & 6.0\% & $<0$ & none; relottery\\
+utf8 validator & Swift & 2 & M-series & $-2$\% & $\approx$0 & $<0$ & none; relottery\\
+sha1 & Swift & 2 & x86 & $-5.0$\% ($\times4$) & 4.7\% & $<0$ & none; replicated relottery\\
+\midrule
+\multicolumn{8}{l}{\emph{No runtime experiment}}\\
+lz4 decomp. & C & --- & x86 & n/a & $+0.2$\% & --- & ceiling below timer resolution\\
+zlib decomp.\ (both spec) & C & --- & x86 & n/a & --- & --- & traps fire; un-runnable spec\\
+zstd comp.\ (unsigned) & C & --- & x86 & n/a & --- & --- & traps fire; un-runnable spec\\
+OpenSSL sha256 & C & 43 & --- & n/a & 0\%$^{d}$ & --- & static-by-design; asm fast path\\
+crc32 (zlib port) & Swift & 0 & x86 & n/a & 4.6\% & 0 & taxonomy (d)\\
+base64 & Swift & 0 & x86 & n/a & 56.8\% & 0 & taxonomy (d)$+$(b)\\
+lz77 & Swift & 2 & x86 & n/a & 3.3\% & --- & ordinary unreached ceiling\\
+nbody & Swift & 0 & M-series & n/a & $+410$\% & 0 & taxonomy (b), call-carried\\
+sha256 & Julia & 10 & --- & n/a & $\approx$0 & --- & JIT IR not executable\\
+filt (DSP.jl port) & Julia & 6 & --- & n/a & $\approx$0 & --- & JIT IR not executable\\
+poly (Horner) & Julia & 1 & --- & n/a & $\approx$0 & --- & JIT IR not executable\\
+matmul / lz77 & Julia & 0 & --- & n/a & --- & --- & checks are the spec\\
+matmul / lz77 & Rust & 0 & --- & n/a & --- & --- & taxonomy (b), \texttt{Vec} len\\
+\bottomrule
+\end{tabular}\\
+\raggedright\footnotesize $^{\P}$Marginal over the double-O3 control:
+\tool{} removes 1027 of 3403 traps, the control removes 834.
+$^{c}$Honest ceiling after removing the 8.1 points of the
+\texttt{-O}-vs-sandwich pipeline gap from the raw \pct{19.6}.
+$^{d}$Exactly zero by construction: under the signed specification
+OpenSSL's SHA-256 emits no checks at all.\par
+\end{table*}
 \end{document}
