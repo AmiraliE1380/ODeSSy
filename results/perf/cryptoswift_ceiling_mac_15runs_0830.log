@@ -1,0 +1,7 @@
+# CryptoSwift Mac ceiling decomposition, 15 interleaved runs, medians of wall seconds
+# outputs identical across arms: True
+  chk (-O)           runs: 0.905 0.919 0.915 0.910 0.927 0.906 0.930 0.918 0.913 0.938 0.926 0.954 0.926 0.922 0.932  median=0.922
+  sandwich base      runs: 0.881 0.889 0.899 0.895 0.900 0.924 0.899 0.893 0.906 0.924 0.916 0.909 0.922 0.913 0.923  median=0.906
+  unc (-Ounchecked)  runs: 0.882 0.885 0.885 0.912 0.912 0.929 0.913 0.923 0.901 0.927 0.930 0.911 0.932 0.896 0.916  median=0.912
+  raw ceiling (-O vs -Ounchecked): +1.1%
+  pipeline share (-O vs sandwich): +1.8 pts   honest ceiling (sandwich vs -Ounchecked): -0.7%
