@@ -876,6 +876,44 @@ where a Julia sha256/filt @inbounds recovery could exist is x86, where
 the server proves only 2/16 and 4/19 edges (§8.3) — an x86 arm-3 would
 need those edges mapped on the server's own emission.
 
+### 9.2 Quiet-session Mac finals (0829q; apps closed, on power,
+caffeinate, 60 s settle; all logs *_0829q.log)
+
+JULIA ARMS RERUN (quiet): sha256.jl arm1 0.0971 / arm2 0.1054
+(**−7.9%**) / arm3 0.0908 (**+6.9%**); filt arm1 0.0895 / arm2 0.0910
+(−1.6%) / arm3 0.0930 (−3.7%). Global switch: sha256 −7.2%, filt
+−1.1%, lz77 +157.7%, matmul +1.7%, poly 0.0%. SIGNS REPRODUCE across
+noisy and quiet sessions (sha256 arm2: −5.1/−7.9; arm3: +5.0/+6.9;
+global: −4.4/−10.6/−7.2). The sha256.jl arm-3 gain is a REPRODUCIBLE
+two-sided-lottery outcome: annotating 6 of 12 sites beats both the
+all-checks and no-checks builds on arm64. Recorded as lottery
+evidence (sign non-uniformity), NOT as recovery (ceiling < 0).
+
+MAC SWIFT KERNEL CEILINGS (ceilings_mac_0829q.log; -O vs -Ounchecked,
+5 interleaved, medians): **sha256 +2.8%, sha1 +7.6%, md5 −1.4%,
+adler32 +8.9%, utf8 −0.8%** (outputs identical). Note sha256's Mac
+ceiling (2.8%) is BELOW its measured ODeSSy gain (+6.9%, 0822): the
+unlock (unrolling) buys more than the checks cost — the zstd pattern,
+now on a kernel. md5/utf8 have no Mac ceiling.
+
+MAC SWIFT PERF, FULL TIER, REPS=30 (current encoder; byte-identical
+gates passed; some OUTLIER flags = residual laptop noise):
+| kernel | elim | base | base2x | oracle | vs base | vs base2x | Mac ceiling |
+|---|---|---|---|---|---|---|---|
+| sha1 | 7 | 1.0115 | 1.0148 | 0.9935 | **+1.77%** | **+2.09%** | 7.6% (27% rec.) |
+| adler32 | 1 | 0.7714 | 0.7713 | 0.7829 | −1.48% | −1.50% | 8.9% |
+| md5 | 5 | 1.4867 | 1.4998 | 1.4963 | −0.65% | +0.23% | −1.4% (none) |
+| utf8 | 2 | 0.9409 | 0.9392 | 0.9664 | −2.71% | −2.90% | −0.8% (none) |
+Reads: sha1 Mac moved from the campaign's +6.4/+7.3 (base encoder) to
++1.8/+2.1 (final encoder, same 7 elims) — the lottery re-rolled with
+the encoder revision, still positive; adler32 Mac −1.5 reproduces the
+campaign's −1.4; md5 flat reproduces; utf8 Mac −2.9 is a new small
+negative on a kernel with no ceiling (relottery). INPUT-SIZE NOTE:
+workloads are 1 MiB inputs (cache-resident, compute-bound) × 200–3000
+iters → 0.5–1.5 s runs; per-element check cost is size-invariant, so
+larger inputs would tighten noise but cannot flip signs; the same
+1 MiB workload is what the x86 rows use (comparability).
+
 Exists already (current encoder): sha256 perf +6.86/+6.24 (0822);
 CryptoSwift perf t=10s flat, 215 elim (0824); gemm arms 4.185×/4.156×
 (0822); full static sweep (sweep_native_0824.log). To fill: remaining

@@ -647,17 +647,19 @@ Benchmark & Lang & Elim & Platform & Speedup & Unlock & Ceiling & Recov.\\
 gemm (stdlib)$^{b}$ & Julia & 16 & M-series & $4.16\times$ & vec+unroll & $4.19\times$ & 99.8\%\\
 gemm (stdlib)$^{b}$ & Julia & 16 & x86 & $3.59\times$ & vec+unroll & $3.97\times$ & 96.4\%\\
 sha256 & Swift & 7 & x86 & $+8.8$\% & unroll & 9.0\% & 98\%\\
-sha1 & Swift & 7 & M-series & $+6.4/{+}7.3$\% & unroll & --- & ---\\
-sha256 & Swift & 7 & M-series & $+6.9$\% & unroll & --- & ---\\
+sha256 & Swift & 7 & M-series & $+6.9$\% & unroll & 2.8\%$^{a}$ & ---$^{a}$\\
 adler32 & Swift & 1 & x86 & $+3.7$\% & DO16 group & 11.6\% & 32\%\\
 zstd comp. & C & 6 & x86 & $+2.3$\% & hot group & 1.2\%$^{a}$ & ---$^{a}$\\
+sha1 & Swift & 7 & M-series & $+2.1$\% & unroll & 7.6\% & 27\%\\
 \bottomrule
 \end{tabular}\\
 \raggedright\footnotesize $^{a}$C ceilings are measured sanitizer
 overhead vs.\ unsanitized (the deployable ceiling the eliminations
-attack); zstd's \pct{2.3} \emph{exceeds} its overhead ceiling ---
-eliminations also unlock re-optimization --- so no recovery fraction
-is computed. $^{b}$Via proof-licensed \texttt{@inbounds}
+attack). Where a gain \emph{exceeds} its ceiling --- zstd's \pct{2.3}
+over \pct{1.2}, sha256's \pct{6.9} over M-series' \pct{2.8}
+checked-vs-unchecked gap --- eliminations unlocked re-optimization
+worth more than the checks themselves, and no recovery fraction is
+computed. $^{b}$Via proof-licensed \texttt{@inbounds}
 (Table~\ref{tab:inbounds}); ceiling is the expert-annotation arm.\par
 \end{table*}
 Table~\ref{tab:speedups} answers RQ1b, and the answer
@@ -678,7 +680,7 @@ The full table's lower half (Table~\ref{tab:speedups-full},
 Appendix~\ref{sec:app-full}) is equally load-bearing. Where eliminations do not
 unlock a transformation, re-optimization is a genuine two-sided lottery:
 the same adler32 elimination that gains \pct{3.7} on Haswell costs
-\pct{1.4} on M-series, and sha1 on x86 --- where Linux code generation
+\pct{1.5} on M-series, and sha1 on x86 --- where Linux code generation
 keeps only 2 of the 7 proofs on the hot path --- \emph{loses}
 \pct{5}, a result we replicated in four independent 30-rep runs
 spanning a machine reboot and an encoder revision ($-4.5$, $-4.65$,
@@ -1113,10 +1115,10 @@ Benchmark & Lang & Elim & Platform & Speedup & Ceiling & Recov. & Unlock / note\
 gemm (stdlib) & Julia & 16 & M-series & $4.16\times$ & $4.19\times$ & 99.8\% & vec+unroll, via \texttt{@inbounds}\\
 gemm (stdlib) & Julia & 16 & x86 & $3.59\times$ & $3.97\times$ & 96.4\% & vec+unroll, via \texttt{@inbounds}\\
 sha256 & Swift & 7 & x86 & $+8.8$\% & 9.0\% & 98\% & unroll\\
-sha1 & Swift & 7 & M-series & $+6.4/{+}7.3$\% & --- & --- & unroll\\
-sha256 & Swift & 7 & M-series & $+6.9$\% & --- & --- & unroll\\
+sha256 & Swift & 7 & M-series & $+6.9$\% & 2.8\% & --- & unroll; exceeds checked-vs-unchecked gap\\
 adler32 & Swift & 1 & x86 & $+3.7$\% & 11.6\% & 32\% & DO16 unrolled group\\
 zstd comp.\ (signed) & C & 6 & x86 & $+2.3$\% & 1.2\% & --- & hot group; exceeds overhead ceiling\\
+sha1 & Swift & 7 & M-series & $+2.1$\% & 7.6\% & 27\% & unroll (base encoder: $+6.4/{+}7.3$\%)\\
 \midrule
 \multicolumn{8}{l}{\emph{Proofs that did not pay}}\\
 zlib decomp.\ (signed) & C & 113 & x86 & $+0.3$\% & 1.1\% & $\approx$0 & none (cold)\\
@@ -1126,10 +1128,12 @@ zlib comp.\ (both spec) & C & 145 & x86 & $+0.1$\% & 5.4\% & $\approx$0 & none (
 lz4 comp. & C & 193$^{\P}$ & x86 & $\approx0$\% & 2.0\% & $\approx$0 & none (cold)\\
 CryptoSwift (library) & Swift & 183 & x86 & $\pm0.3$\% & 10.4\%$^{c}$ & $\approx$0 & none; cold API surface\\
 CryptoSwift (library) & Swift & 215 & M-series & $-0.4$\% & 2.5--3\% & $\approx$0 & none; 10\,s budget dose\\
-md5 & Swift & 5 & M-series & flat & --- & --- & none; same count, no unlock\\
-adler32 & Swift & 1 & M-series & $-1.4$\% & $\sim$5\% & $<0$ & none; relottery\\
+sha256 & Julia & 10 & M-series & $+6.9$\% & $-7.9$\% & --- & \texttt{@inbounds} on 6 of 12 sites; no ceiling on arm64 --- lottery\\
+md5 & Swift & 5 & M-series & $+0.2$\% & $-1.4$\% & --- & none; no ceiling on M-series\\
+adler32 & Swift & 1 & M-series & $-1.5$\% & 8.9\% & $<0$ & none; relottery\\
 md5 & Swift & 1 & x86 & $-1.8$\% & 6.0\% & $<0$ & none; relottery\\
-utf8 validator & Swift & 2 & M-series & $-2$\% & $\approx$0 & $<0$ & none; relottery\\
+utf8 validator & Swift & 2 & M-series & $-2.9$\% & $-0.8$\% & --- & none; no ceiling on M-series\\
+filt (DSP.jl port) & Julia & 6 & M-series & $-3.7$\% & $-1.6$\% & --- & \texttt{@inbounds} on 2 of 9 sites; no ceiling on arm64\\
 sha1 & Swift & 2 & x86 & $-5.0$\% ($\times4$) & 4.7\% & $<0$ & none; replicated relottery\\
 \midrule
 \multicolumn{8}{l}{\emph{No runtime experiment}}\\
@@ -1141,10 +1145,9 @@ crc32 (zlib port) & Swift & 0 & x86 & n/a & 4.6\% & 0 & taxonomy (d)\\
 base64 & Swift & 0 & x86 & n/a & 56.8\% & 0 & taxonomy (d)$+$(b)\\
 lz77 & Swift & 2 & x86 & n/a & 3.3\% & --- & ordinary unreached ceiling\\
 nbody & Swift & 0 & M-series & n/a & $+410$\% & 0 & taxonomy (b), call-carried\\
-sha256 & Julia & 10 & --- & n/a & $\approx$0 & --- & JIT IR not executable\\
-filt (DSP.jl port) & Julia & 6 & --- & n/a & $\approx$0 & --- & JIT IR not executable\\
-poly (Horner) & Julia & 1 & --- & n/a & $\approx$0 & --- & JIT IR not executable\\
-matmul / lz77 & Julia & 0 & --- & n/a & --- & --- & checks are the spec\\
+sha256 / filt & Julia & 10 / 6 & x86 & n/a & 9.5\% / 58.3\% & --- & x86 emission proves only 2/16, 4/19 edges\\
+poly (Horner) & Julia & 1 & both & n/a & 0.0\% & --- & no ceiling on either ISA\\
+matmul / lz77 & Julia & 0 & x86 & n/a & 14.4\% / 326\% & 0 & checks are the spec (M-series: 1.7\% / 158\%)\\
 matmul / lz77 & Rust & 0 & --- & n/a & --- & --- & taxonomy (b), \texttt{Vec} len\\
 \bottomrule
 \end{tabular}\\
