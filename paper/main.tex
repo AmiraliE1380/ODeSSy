@@ -756,8 +756,9 @@ Budget & \textsc{unsat} & \textsc{sat} & \textsc{unknown} & Wall\\
 Whole-library zlib costs 131--207\,s of solver stage (about 100--160\,ms
 per trap of wall time at 5 processes $\times$ 8 threads) against a 6\,s
 unsanitized compile. Per-trap jobs are share-nothing and embarrassingly
-parallel; a thread sweep plateaus at $\sim3.7\times$ on 8 workers
-(Amdahl: serial discovery plus the slow-query tail).
+parallel; the thread dial of Figure~\ref{fig:matrix} gives $3.8\times$
+at 8 workers and plateaus at $4.05\times$ by 16 (Amdahl: serial
+discovery plus the slow-query tail).
 \paragraph{The dial.}
 Table~\ref{tab:dial} is the central cost result: \pct{96} of the provable
 facts (50 of 52) survive a \emph{100\,ms} per-query budget, and the
@@ -769,6 +770,29 @@ Figure~\ref{fig:latency} shows why the dial is so cheap to turn: across
 1{,}818 real queries the proofs we want are \emph{faster} than the
 refutations we discard, and the cost sits in a thin high-latency tail that
 a per-query budget removes almost losslessly.
+\begin{figure}
+\centering
+\includegraphics[width=\columnwidth]{dial_matrix.pdf}
+\caption{The two dials compose. Oracle-stage wall-clock (median of 3
+pinned runs) for the Table~\ref{tab:dial} workload over worker threads
+$\times$ per-query timeout; each cell also shows its \textsc{unsat}
+yield. Proof yield is set by the timeout alone (every column agrees
+with Table~\ref{tab:dial} to the proof, row-independent down to 10\,ms);
+wall-clock is set mostly by threads. Serially, the timeout dial is worth
+$1.5\times$ (16.7\,s $\to$ 11.0\,s); at 8 threads the pool has already
+absorbed the tail and the same dial is worth $1.24\times$. Corner to
+corner: $4.8\times$. Below 10\,ms at 16 threads the budget begins to
+interact with oversubscription --- a wall-clock budget under contention
+--- and the yield dips (52 $\to$ 38 proofs), the one region where the
+two knobs are not independent.}
+\Description{A five-by-five heatmap, rows are 1 to 16 worker threads,
+columns are per-query timeouts from 1 millisecond to 10 seconds. Cells
+are colored from red for slow to green for fast on a log scale and
+annotated with wall-clock seconds and UNSAT counts. Wall-clock falls
+from 16.7 seconds at one thread to about 4 seconds at 8 and 16 threads;
+UNSAT counts rise left to right from 16 to 52 in every row.}
+\label{fig:matrix}
+\end{figure}
 \paragraph{The far end of the dial.}
 OpenSSL's SHA-256, compiled with aggressive inlining, is the counterpoint:
 each of its 2225 unsigned-spec queries carries the false-edges of up to

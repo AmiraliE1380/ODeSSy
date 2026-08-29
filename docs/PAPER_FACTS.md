@@ -684,7 +684,36 @@ are recorded as un-runnable findings, never timed.**
   presumed un-runnable in trap mode like zstd/zlib (intentional SHA
   wraps). The paper's RQ1a text already states the zero-checks fact.
 
-SERVER CAMPAIGN CLOSED 0828: every ceiling measured, computed from raw
+**0829 — DIAL MATRIX (threads × timeout), deflate unsigned O1, median
+of 3 pinned runs** (evaluation/dial_matrix.csv, dial_matrix_server_0829.log,
+paper/dial_matrix.pdf via tools/plot_dial_matrix.py). Wall (s) / UNSAT:
+
+| threads | 1 ms | 10 ms | 100 ms | 1 s | 10 s |
+|---|---|---|---|---|---|
+| 1 | 10.99 / 19 | 12.60 / 43 | 14.34 / 50 | 16.10 / 50 | 16.71 / 52 |
+| 2 | 6.69 / 17 | 7.54 / 43 | 8.24 / 50 | 9.09 / 50 | 9.30 / 52 |
+| 4 | 4.49 / 17 | 4.90 / 43 | 5.28 / 50 | 5.68 / 50 | 5.80 / 52 |
+| 8 | 3.55 / 16 | 3.72 / 43 | 3.90 / 50 | 4.01 / 50 | 4.38 / 52 |
+| 16 | 3.50 / 10 | 3.58 / 38 | 3.65 / 48 | 3.67 / 50 | 4.13 / 52 |
+
+CONSISTENCY WITH TABLE 3 (threads=8 row vs timeout_sweep 0826): UNSAT
+yields IDENTICAL at every budget (16/43/50/50/52); UNKNOWN at 10 ms
+106 vs 95 (borderline queries jitter across a 10 ms wall-clock budget);
+wall band 3.55–4.38 vs 3.95–4.32 (this run pinned) — fully consistent.
+NEW SOURCED FACTS: thread speedup 1→8 = **3.81×**, 1→16 = **4.05×**
+(the paper's previously unsourced "~3.7× plateau" now has a log and
+reads 3.8×/4.05×); timeout dial worth 1.52× serially (16.71→10.99 s)
+but only 1.24× at 8 threads (the pool absorbs the tail); corner-to-
+corner (1 thr/10 s → 16 thr/1 ms) **4.8×**. CAVEAT: at 16 threads and
+≤10 ms the budget interacts with oversubscription (wall-clock budget
+under contention): UNSAT dips to 10@1ms / 38@10ms — the one region
+where the knobs are not independent; stated in the figure caption.
+Also Figure 3 provenance pinned: 8 deflate runs (signed/unsigned ×
+O1/O3 × light/heavy), 1644 SAT + 174 UNSAT = 1818, logs in
+logs/compilations/deflate_integer_*_analysis.txt (Mac-local,
+gitignored); regenerated as vector PDF, stats reproduce the caption.
+
+SERVER CAMPAIGN CLOSED 0828 (dial matrix added 0829 as the final run): every ceiling measured, computed from raw
 data, or exact-by-construction; every recovery measured or dodged with
 a recorded reason (0 UNSATs / un-runnable spec / static-by-design).
 
