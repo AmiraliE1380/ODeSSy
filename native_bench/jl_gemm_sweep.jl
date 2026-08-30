@@ -8,7 +8,8 @@
 #          = 100% by construction) -- arm2 IS the ODeSSy result here.
 # Same desugared loop body as jl_gemm_arms.jl; medians of REPS rotated reps;
 # bitwise output-equality gate per shape.
-# Usage: julia native_bench/jl_gemm_sweep.jl [REPS]     (default 11)
+# Usage: julia native_bench/jl_gemm_sweep.jl [REPS] [shapes]   (default 11, built-in list)
+#        shapes = comma-separated MxNxK, e.g. "4096x4096x4096,8192x64x64"
 
 function gemm1!(C, A, B)
     m, n = size(C); k = size(A, 2)
@@ -45,12 +46,14 @@ const REPS = length(ARGS) >= 1 ? parse(Int, ARGS[1]) : 11
 med(x) = sort(x)[div(length(x) + 1, 2)]
 
 # (m, n, k): square scaling, then aspect ratios / short inner loop at ~512^3 work
-const SHAPES = [
+const SHAPES = length(ARGS) >= 2 ?
+    [Tuple(parse.(Int, split(s, 'x'))) for s in split(ARGS[2], ',')] :
+    [
     (64, 64, 64), (128, 128, 128), (256, 256, 256), (512, 512, 512),
     (1024, 1024, 1024), (2048, 2048, 2048),
     (4096, 128, 128), (128, 4096, 128), (128, 128, 4096),
     (8, 2048, 2048), (32, 2048, 2048), (2048, 32, 2048), (2048, 2048, 32),
-]
+    ]
 
 println("# GEMM dimension sweep: arm1 = all checks, arm2 = all @inbounds (== ODeSSy, 16/16 proven)")
 println("# REPS=$REPS rotated reps per shape, medians of seconds; gate = bitwise-equal C")
