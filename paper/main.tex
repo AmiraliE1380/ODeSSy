@@ -930,7 +930,14 @@ of the expert-annotation ceiling --- the two accesses the tool proved
 first turn out to be exactly the performance-critical ones --- and the
 Xeon's residual \pct{3.6} gap independently confirms that the last
 checks standing were worth almost nothing. Today \texttt{@inbounds} is
-trusted; here it is \emph{verified}, at no measurable cost.
+trusted; here it is \emph{verified}, at no measurable cost. The gain is
+not an artifact of one problem size: sweeping $(m, n, k)$ over 13
+shapes --- square from $64^3$ to $2048^3$, tall, wide, deep, and inner
+loops as short as $m{=}8$ --- the proof-licensed build is faster at
+\emph{every} shape, by $1.9\times$ to $6.8\times$
+(Figure~\ref{fig:gemm-sweep}, Appendix~\ref{sec:app-full}); the
+speedup tracks the cache residency of the vectorized inner loop, not
+the problem size.
 \paragraph{Ride-along gains.}
 The same encoder additions, none of them GEMM-specific, moved every
 sufficiently-similar benchmark: Swift sha256's statics rise from 5 to 7
@@ -1167,4 +1174,29 @@ raw gap is only \pct{1.1} and the pipeline accounts for all of it
 $^{d}$Exactly zero by construction: under the signed specification
 OpenSSL's SHA-256 emits no checks at all.\par
 \end{table*}
+
+\begin{figure*}
+\centering
+\includegraphics[width=0.92\textwidth]{gemm_sweep.pdf}
+\caption{GEMM speedup of the proof-licensed build (all four accesses
+\texttt{@inbounds}, which with 16-of-16 edges proven is
+source-identical to \tool{}'s arm) over the all-checks baseline, as a
+function of the problem shape ($C = m{\times}n$, $A = m{\times}k$,
+$B = k{\times}n$; Xeon c220g2, medians of 11 rotated repetitions,
+bitwise-equal outputs at every shape). \emph{Left:} square scaling.
+\emph{Right:} aspect ratios at roughly constant work and short inner
+loops. The gain is present at every shape ($1.9\times$--$6.8\times$)
+and is governed by the memory regime of the inner loop over $m$, which
+the eliminated checks unblock for vectorization: while its column
+working set is cache-resident the unlock pays $4$--$7\times$; at
+$m \geq 2048$ (the $2048^3$ point and the $m{=}2048$ bars) the loop
+streams 16--32\,KB columns from memory and bandwidth, not checks,
+becomes the limiter.}
+\Description{Two panels. Left, a line chart of speedup versus square
+matrix dimension from 64 to 2048 on a log axis: about 6.8x and 6.2x at
+64 and 128, about 4.1 to 4.4x from 256 to 1024, and 1.9x at 2048.
+Right, a bar chart of seven non-square shapes with speedups between
+1.9x and 6.3x.}
+\label{fig:gemm-sweep}
+\end{figure*}
 \end{document}

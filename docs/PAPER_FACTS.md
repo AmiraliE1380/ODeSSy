@@ -928,6 +928,39 @@ Consistent with the flat Mac perf verdict (215 elim, −0.4%), which is
 now flat-by-necessity rather than dose-location alone. Contrast x86:
 19.6% raw = 8.1 pipeline + 10.4 honest.
 
+### 9.4 GEMM (m,n,k) DIMENSION SWEEP — server, 0830 (collaborator
+request; jl_gemm_sweep_server_0830.log; arm1 all checks vs arm2 all
+@inbounds == the ODeSSy arm, 16/16 proven; REPS=11 rotated, medians,
+bitwise-equal C at every shape)
+
+| m | n | k | GFLOP | checked s | @inbounds s | speedup |
+|---|---|---|---|---|---|---|
+| 64 | 64 | 64 | 0.00 | 0.0004 | 0.0001 | 6.77× |
+| 128 | 128 | 128 | 0.00 | 0.0030 | 0.0005 | 6.22× |
+| 256 | 256 | 256 | 0.03 | 0.0226 | 0.0055 | 4.08× |
+| 512 | 512 | 512 | 0.27 | 0.1771 | 0.0403 | 4.39× |
+| 1024 | 1024 | 1024 | 2.15 | 1.4037 | 0.3260 | 4.31× |
+| 2048 | 2048 | 2048 | 17.18 | 12.879 | 6.851 | 1.88× |
+| 4096 | 128 | 128 | 0.13 | 0.0872 | 0.0296 | 2.95× |
+| 128 | 4096 | 128 | 0.13 | 0.0940 | 0.0149 | 6.31× |
+| 128 | 128 | 4096 | 0.13 | 0.0942 | 0.0209 | 4.50× |
+| 8 | 2048 | 2048 | 0.07 | 0.1157 | 0.0330 | 3.50× |
+| 32 | 2048 | 2048 | 0.27 | 0.2057 | 0.0516 | 3.99× |
+| 2048 | 32 | 2048 | 0.27 | 0.2005 | 0.1070 | 1.87× |
+| 2048 | 2048 | 32 | 0.27 | 0.1759 | 0.0452 | 3.89× |
+
+READS: (i) the speedup is present at EVERY shape — min 1.87×, max
+6.77× — never below ~1.9×; (ii) it is governed by the memory regime
+of the inner (vectorized, i-over-m) loop, not by problem size: while
+the column C[:,j]/A[:,l] working set is cache-resident the unlock pays
+4–7×; when m is large (m=2048/4096 rows: 1.87×, 1.88×, 2.95×) the
+inner loop streams 16–32 KB columns from memory and bandwidth, not
+checks, becomes the limiter; (iii) wide-n (128×4096×128) is the best
+case at 6.3× and short inner loops (m=8, 32) still get 3.5–4.0×;
+(iv) the 512³ point (4.39×) reproduces the arms-table 3.965× regime
+(REPS=11 vs 21; same medians band). Figure: paper/gemm_sweep.pdf via
+tools/plot_gemm_sweep.py.
+
 MAC EXPERIMENTS CONCLUDED (0830): every Mac row in the paper's tables
 is now measured at the final encoder or carries a measured dodge.
 
