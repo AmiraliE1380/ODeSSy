@@ -1,0 +1,4 @@
+# GEMM dimension sweep: arm1 = all checks, arm2 = all @inbounds (== ODeSSy, 16/16 proven)
+# REPS=5 rotated reps per shape, medians of seconds; gate = bitwise-equal C
+#   m     n     k    flops(G)   arm1_s    arm2_s   speedup  ceiling%  gate
+4096  4096  4096    137.44  109.3621   74.5691   1.467x     46.7  ok
