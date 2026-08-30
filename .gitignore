@@ -11,6 +11,7 @@ native_bench/*/target/
 zstd_audit_test/
 perf_lz4_test/
 perf_swift_work/
+perf_zstd_work/
 
 # build junk that has previously been committed by accident.
 # Root-anchored on purpose: evaluation/lz4/*.o are real tracked artifacts.
