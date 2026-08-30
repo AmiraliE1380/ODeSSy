@@ -17,23 +17,28 @@ import matplotlib.pyplot as plt
 
 def main():
     args = sys.argv[1:]
-    log = "results/perf/jl_gemm_sweep_server_0830.log"
+    logs = ["results/perf/jl_gemm_sweep_server_0830.log",
+            "results/perf/jl_gemm_sweep_server_4096_0830.log"]
     out = "paper/gemm_sweep.pdf"
-    if "--log" in args:
-        log = args[args.index("--log") + 1]
+    if "--log" in args:   # comma-separated list of logs (merged)
+        logs = args[args.index("--log") + 1].split(",")
     if "--out" in args:
         out = args[args.index("--out") + 1]
     rows = []
-    for line in open(log):
-        if line.startswith("#"):
+    import os
+    for log in logs:
+        if not os.path.exists(log):
             continue
-        p = line.split()
-        if len(p) < 8:
-            continue
-        m, n, k = int(p[0]), int(p[1]), int(p[2])
-        sp = float(p[6].rstrip("x"))
-        rows.append((m, n, k, sp))
-    square = [(m, s) for m, n, k, s in rows if m == n == k]
+        for line in open(log):
+            if line.startswith("#"):
+                continue
+            p = line.split()
+            if len(p) < 8:
+                continue
+            m, n, k = int(p[0]), int(p[1]), int(p[2])
+            sp = float(p[6].rstrip("x"))
+            rows.append((m, n, k, sp))
+    square = sorted([(m, s) for m, n, k, s in rows if m == n == k])
     other = [(f"{m}$\\times${n}$\\times${k}", s) for m, n, k, s in rows if not (m == n == k)]
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(7.2, 2.7), gridspec_kw={"width_ratios": [1, 1.35]})

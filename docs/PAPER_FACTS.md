@@ -941,6 +941,7 @@ bitwise-equal C at every shape)
 | 512 | 512 | 512 | 0.27 | 0.1771 | 0.0403 | 4.39× |
 | 1024 | 1024 | 1024 | 2.15 | 1.4037 | 0.3260 | 4.31× |
 | 2048 | 2048 | 2048 | 17.18 | 12.879 | 6.851 | 1.88× |
+| 4096 | 4096 | 4096 | 137.44 | 109.36 | 74.57 | 1.47× (REPS=5, separate log _4096_) |
 | 4096 | 128 | 128 | 0.13 | 0.0872 | 0.0296 | 2.95× |
 | 128 | 4096 | 128 | 0.13 | 0.0940 | 0.0149 | 6.31× |
 | 128 | 128 | 4096 | 0.13 | 0.0942 | 0.0209 | 4.50× |
@@ -949,8 +950,10 @@ bitwise-equal C at every shape)
 | 2048 | 32 | 2048 | 0.27 | 0.2005 | 0.1070 | 1.87× |
 | 2048 | 2048 | 32 | 0.27 | 0.1759 | 0.0452 | 3.89× |
 
-READS: (i) the speedup is present at EVERY shape — min 1.87×, max
-6.77× — never below ~1.9×; (ii) it is governed by the memory regime
+READS: (i) the speedup is present at EVERY shape — min 1.47× (4096³,
+the fully memory-bound extreme: 512 GB of A-column traffic per call),
+max 6.77× — the floor trends down with working set (1.88× at 2048³ →
+1.47× at 4096³) but remains a 47% gain at 137 GFLOP; (ii) it is governed by the memory regime
 of the inner (vectorized, i-over-m) loop, not by problem size: while
 the column C[:,j]/A[:,l] working set is cache-resident the unlock pays
 4–7×; when m is large (m=2048/4096 rows: 1.87×, 1.88×, 2.95×) the
