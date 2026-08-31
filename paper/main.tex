@@ -127,21 +127,20 @@ heuristics that miss opportunities; superoptimizers synthesize faster code
 but take hours, confining them to small kernels and offline use. We introduce
 \emph{super-analysis}, a middle ground that uses an SMT solver purely for
 \emph{analysis} while transformations remain conventional, avoiding
-synthesis entirely. The key observation is that the opportunities
-conventional passes miss are typically not hard to \emph{transform} but hard
-to \emph{justify}: proving a safety check dead can require facts from four
+synthesis entirely. The key argument for super-analysis is that many simple, yet fruitful transformations require complex reasoning: proving a safety check dead often needs facts from four
 independent LLVM analyses \emph{simultaneously} --- a conjunctive entailment
-problem suited to a solver, not to any single dataflow pass. We instantiate
+problem suited to a solver, not to any single dataflow pass. 
+
+We instantiate
 super-analysis in \tool{}, an LLVM pass that proves sanitizer traps and
 native-language safety checks unreachable and deletes them.
 One mechanism serves three frontends and yields speedups in each:
-\tool{} generates code up to $4.16\times$ faster than LLVM -O3 for a Julia
-benchmark, speeds up a Swift SHA-256 kernel by \pct{8.8}, and delivers a
+\tool{} generates code up to $4.16\times$ faster than LLVM -O3 for a GEMM implemented in Julia, speeds up a Swift SHA-256 kernel by \pct{8.8}, and delivers a
 whole-library runtime win of \pct{2.6} for zstd compression in C. Latency
-is a dial rather than a fixed cost:
+is controllable:
 \pct{96} of proofs survive a 100\,ms per-query SMT timeout budget, making
 super-analysis viable as an online compiler pass rather than an offline
-audit.
+tool.
 \end{abstract}
 \begin{CCSXML}
 <ccs2012>
@@ -175,11 +174,11 @@ cost--precision spectrum. At one end, conventional optimizers such as
 LLVM's O3 pipeline~\cite{lattner2004llvm} make millions of decisions in
 milliseconds, each justified by an ad-hoc heuristic or a lightweight
 dataflow analysis; the heuristics are fast precisely because each one
-reasons locally, over a single abstract domain, and gives up early. At the
+reasons locally and gives up early. At the
 other end, superoptimizers~\cite{massalin1987superoptimizer,
 schkufza2013stoke, sasnauskas2017souper} hand the entire problem ---
 analysis \emph{and} transformation --- to an expensive decision procedure
-that searches for replacement code, achieving precision that heuristics
+that aggressively searches for replacement code, achieving precision that heuristics
 cannot match at costs that confine them to peephole windows and offline
 runs.
 
@@ -205,9 +204,12 @@ to the conventional machinery that already exists. No code is synthesized;
 no search is performed. The solver answers exactly one kind of question
 --- \emph{is this program point reachable under this context?} --- and a
 standard, trivially correct transformation (deleting an unreachable branch)
-consumes the answer. Soundness is preserved by construction: an
+consumes the answer. 
+
+We use an SMT solver as an analysis oracle and feed it with the encoded formula $Context \land Query$ and ask if it is satisfiable. Soundness is preserved by construction: an
 \textsc{unsat} verdict is a proof, a \textsc{sat} or \textsc{unknown}
 verdict changes nothing.
+
 Why should a solver find opportunities that forty years of heuristics
 miss? Our central empirical finding is that the missed opportunities are
 typically not hard to \emph{transform} but hard to \emph{justify}. Proving
@@ -217,20 +219,21 @@ on a third value, and two dominating branch conditions ---
 \emph{simultaneously}. Each fact lives in a different LLVM analysis; no
 single pass computes their conjunction, and the phase-ordering problem
 ensures no fixed pipeline ever will. Deciding satisfiability of a
-conjunction across abstract domains is, on principle, an entailment
+complex conjunction is, on principle, an entailment
 problem --- exactly what an SMT solver decides and exactly what a
 heuristic cannot. Our tool extracts the unsat core of every proof, so this
 claim is not an intuition but a measurement: the cores name the
 contributing analyses, and the majority of our nontrivial proofs draw on
 two to four sources at once (\S\ref{sec:results-static}).
+
 We instantiate super-analysis in \tool{}\footnote{On-Demand SMT System.},
-an LLVM module pass targeting the most consequential class of
+an LLVM module pass targeting one of the most consequential class of
 provably-dead code in modern software: \emph{safety checks}. Sanitizers
 such as UBSan~\cite{ubsanDocs} and the native checks of memory-safe
 languages (Swift bounds and overflow checks, Rust panics, Julia bounds
 errors) compile to trap-guarded branches whose hot-path cost is the
-standing tax of memory safety --- we measure it at \pct{4.9}--\pct{5.3} on
-fully sanitized zlib and up to $4$--$5\times$ on native-language kernels.
+standing tax of memory safety --- we measure it at up to \pct{9.0} on
+the fully sanitized zstd library and up to $4$--$5\times$ on native-language kernels (Swift, Julia implementations of nbody, GEMM, respectively).
 Today the only recourse on hot paths is to turn checks \emph{off}
 wholesale (\texttt{-Ounchecked}, \texttt{--check-bounds=no}), trading away
 the safety guarantee entirely. \tool{} offers the sound alternative:
@@ -238,6 +241,8 @@ delete exactly the checks that are provably redundant with the guards,
 contracts, and invariants already present in the program, and keep every
 check that is not --- each deletion certified by an unsat core, audited
 for vacuity, and validated by byte-identical program output.
+
+\tool{} is sandwiched between two LLVM -O3 runs in our pipeline. The first -O3 run injects the sanitizers and performs intial optimizations. \tool{} then eliminated many of the injected traps and sanitizers, followed by the second -O3 run that cleans the IR and performs new transformations enabled by \tool{}. \tool{} eliminates up to \pct{35.0} sanitizers left by a single -O3 run in large scale C repositories, and up to \pct{13.6} of sanitizers left after 2 consecutive -O3 runs. In our experiments we compare \tool{} against $2\times$-O3.
 
 Super-analysis is a general compilation paradigm rather than a single
 optimization, and it carries one open problem we deliberately defer:
@@ -247,11 +252,7 @@ where precision repays its cost demands a cost model no compiler has.
 Safety-check elimination is the ideal first instantiation precisely
 because it answers that question for free. The work list is given --- run
 exactly where the traps are, a set the frontend already enumerates. The
-payoff needs no cost model --- erasing a check is unambiguously an
-improvement in both code size and executed instructions, never a
-trade-off to be weighed. And the transformation is trivial: folding a
-branch whose condition is provably false is a rewrite every compiler
-already performs correctly. Only the \emph{proof} is hard. This
+payoff needs no cost model --- erasing a check simplifies the program control-flow, allowing other optimizations to be performed on by subsequent passes. This
 application therefore isolates the paradigm's contribution --- precision
 of analysis --- from the question it defers, and we return in
 \S\ref{sec:future} to what invoking super-analysis elsewhere would
@@ -259,39 +260,15 @@ require.
 
 This paper makes the following contributions:
 \begin{itemize}
-\item \textbf{Super-analysis} (\S\ref{sec:superanalysis}): a paradigm
-  positioning between heuristic optimization and superoptimization ---
-  SMT for analysis, conventional code for transformation.
+\item \textbf{Super-analysis} (\S\ref{sec:superanalysis}): an aggressive compilation paradigm
+  positioning between conventional heuristic-based optimization and super-optimization. The general recipe for this paradigm is to use solvers (SMT in particular) as an analysis oracle, while applying cheap conventional rules-based transformation for optimization.
 \item \textbf{\tool{}} (\S\ref{sec:system}): a three-stage LLVM pass
-  (serial discovery, parallel solve, serial transform) that eliminates sanitizer checks and optimizes the resulting IR. ODeSSy supports C/C++, Swift, and Julia as frontends and can enable transformations and speedups.
-\item \textbf{An honest evaluation} (\S\ref{sec:results}): across C
-  libraries (zlib, zstd, lz4, OpenSSL) and two native-check languages,
-  \tool{} removes \pct{11}--\pct{13.6} of checks on real repositories;
-  runtime experiments with output-equivalence gates,
-  and 30-repetition medians on two ISAs show \emph{when} elimination pays
-  --- a single hot loop proof in a swift kernel can buy \pct{3.7}, while 183 cold
-  proofs in the entire crypto swift buy nothing.
-\item \textbf{Latency as a dial} (\S\ref{sec:results-cost}): \pct{96} of
-  zlib's proofs survive a 100\,ms per-query budget; proofs are generally cheap. The OpenSSL library's 
-  long guard-chain queries need 30\,s, which makes ODeSSy a static analyzer for this benchmark.
-\item \textbf{The formal frontier} (\S\ref{sec:future}): a taxonomy of
-  residual checks from a three-language triage, and a formalization of
-  four obligations (O1--O4) --- loop invariants, allocation contracts,
-  frame conditions, cross-object transfer --- that separate present
-  super-analysis from a measured $3.4\times$ ceiling behind heap
-  invariants.
-\item \textbf{Crossing the frontier} (\S\ref{sec:frame}):
-  \emph{heap-invariant super-analysis} --- a FRAME fact source that
-  discharges the frame condition (O3) with one MemorySSA walk per load
-  pair, a definitional encoding that replaces free variables with the
-  axioms of their defining code (retiring, along the way, the
-  \texttt{freeze} instructions behind which the vectorizer had hidden
-  \pct{81} of GEMM's trap conditions), and a subtraction-form trip-count
-  fact whose upper bound is wrap-safe by construction. Together they take
-  Julia's stdlib GEMM from 0 to 16-of-16 checks proven --- one composite
-  proof draws on \emph{six} fact sources --- and proof-licensed
-  \texttt{@inbounds} recovers \pct{96}--\pct{100} of the
-  $3.6$--$4.2\times$ ceiling on both ISAs.
+  (serial discovery, parallel solve, serial transform) that eliminates sanitizer checks and optimizes the resulting IR. ODeSSy supports C/C++, Swift, and Julia as frontends and can enable hot-path transformations and speedups.
+\item \textbf{An honest evaluation} (\S\ref{sec:results}): 
+  \tool{} removes up to \pct{13.6} of checks on real repositories.
+  Runtime experiments with 30-repetition medians on two target architectures (x86 and M-series) show \emph{when} elimination pays: removing hot-loop checks has a cascading effect, unlocking further transformations (unrolling, vectorization, etc) that enables up to $4.16\times$ speedups for some widely used kernels. 
+\item \textbf{Flexible Compiler Latency} (\S\ref{sec:results-cost}): \tool{} proofs are generally cheap: \pct{96} of
+  zlib's proofs survive a 100\,ms per-query budget. By multi-threading and strict SMT timout budgets \tool{} can compile up to $4.8\times$ faster, making it an online compiler.
 \end{itemize}
 %% =====================================================================
 \section{Background and Related Work}
@@ -956,119 +933,39 @@ sweep is strictly monotone --- no benchmark lost a proof, and the
 vacuity audit reports zero on every one.
 
 %% =====================================================================
-\section{Limitations and Future Work}
+\section{Future Work}
 \label{sec:future}
-\subsection{A taxonomy of the residue}
-Triaging every surviving \textsc{sat} across Swift, Rust, and Julia yields
-four classes: (a) \emph{symbolic trip counts} --- solved by SCEVSYM, the
-source of the sha256 unlock; (b) \emph{heap length invariants}
-(\texttt{array.count == n} across blocks and objects) --- the dominant
-class, blocking gemm, matmul, nbody, and the Swift residuals; (c)
-\emph{value-dependent overflow} --- irreducible without value
-information, correctly kept; (d) \emph{non-unit strides} --- SCEV computes
-no trip count; a separate induction argument is required. The residue is
-not cheap: base64 --- whose stride-3 hot loop is class (d) and whose
-runtime-built lookup table is class (b)'s allocation-carried case (the
-6-bit-masked indices are provably in range; the table's \emph{length}
-is an undischarged O2 allocation contract) --- runs \pct{56.8} faster
-with checks off, the largest kernel ceiling we measured, entirely
-unrecovered. Class (b) is
-where the money is, and it is not an engineering gap but a missing
-\emph{theory} in the fact sources --- the theory that
-\S\ref{sec:frame} supplies for its guard-carried case. What remains of
-(b) after \S\ref{sec:frame} is its \emph{allocation-carried} case:
-Swift's global arrays (nbody) route every access through runtime calls
-(\texttt{beginAccess}, uniqueness checks, reference counting) that
-declare no memory effects, so every frame walk is --- correctly ---
-refused; discharging them needs a small table of trusted runtime
-mod/ref axioms plus, for copy-on-write, a \emph{preservation} invariant
-(every write preserves the length) rather than a no-clobber one. Classes
-(c) and (d) stand.
-\subsection{The formal frontier: O1--O4}
-The minimal program exhibiting class (b) is
-\texttt{a := alloc(n); for i in 0..n-1: if i >= len(a): trap}. Its
-verification condition, $0 \le i \le n{-}1 \wedge \mathrm{Inv}(H)
-\Rightarrow i < \mathrm{len}(H, a)$, factors into four obligations:
-\textbf{O1}, the loop invariant $0 \le i < n$ --- solved
-(SCEV/SCEVSYM; it produced the sha256 result); \textbf{O2}, the
-allocation contract $\mathrm{len}(\mathrm{alloc}(n)) = n$ --- a trusted
-axiom of the runtime interface, object-layout knowledge rather than code
-analysis; \textbf{O3}, the \emph{frame condition} --- no intervening store
-aliases the length field, so two loads of it unify (the separation-logic
-frame rule~\cite{reynolds2002separation}); and \textbf{O4}, cross-object
-transfer ($\mathrm{len}(A) = \mathrm{len}(C)$), reachable through guards
-once O3 moves them, shared allocation arguments once O2 lands, or caller
-summaries.
-This factorization was predictive, and the paper's own timeline tests
-it. The frame gap is not hypothetical: we measured it (the zero row of
-Table~\ref{tab:static}) --- Julia's own Base GEMM with its real
-dimension guards restored, where the guard constrains one load of
-\texttt{size(A,1)}, the check consumes a \emph{different} load, and
-nothing connects them. \S\ref{sec:frame} then discharges O3 exactly as
-prescribed here --- one MemorySSA walk per load pair, refusal on
-anything unmodeled, tripwires before features --- and O4's guard-carried
-case follows through the restored guards, closing GEMM completely. What
-remains open is O2 (the allocation contract as a trusted per-runtime
-axiom table) and O3's \emph{call-carried} case: Swift's runtime
-functions declare no memory effects, so nbody's $+410$\% ceiling still
-stands behind a mod/ref axiom table and, for copy-on-write, a
-preservation-style invariant --- the successor program's remaining
-work, with the same discipline: because a wrong frame fact is silent
-unsoundness, the vacuity audit and \textsc{sat} tripwire tests of
-\S\ref{sec:system} are preconditions, not afterthoughts.
-\subsection{Beyond check elimination}
-Nothing in super-analysis is specific to traps. The same
-solve-then-transform discipline can serve range estimation, constant
-generation, and flag inference inside existing passes --- an on-demand
-oracle consulted where heuristics give up (single-threaded, at dialed-down
-budgets, per \S\ref{sec:results-cost}). Moving beyond traps, however,
-means confronting the question \S\ref{sec:intro} deferred: outside check
-elimination the work list is not given, and the payoff is a trade-off
-rather than an unambiguous win, so invoking the solver profitably requires
-a cost model --- deciding \emph{where} precision repays its latency. We
-regard that as the paradigm's central open problem.
-Datalog-style pointer analyses
-offer a cheaper carrier for the O3 alias obligations than raw SMT, and are
-a natural hybrid. Farther out, languages that already carry invariants ---
-Dafny-style contracts~\cite{leino2010dafny}, or annotations lowered to
-LLVM IR --- would let super-analysis consume \emph{stated} facts rather
-than inferred ones, turning verification effort directly into
-optimization. Engineering limitations we state plainly: Julia's JIT
-accepts no external IR --- its \texttt{code\_llvm} dumps thread
-session-absolute runtime addresses and GC state through a Julia-specific
-convention, so they are analyzable but not executable --- hence our
-Julia runtime path is proof-licensed annotation (\S\ref{sec:frame}),
-which we regard as a deployment model rather than a workaround; the
-pass is intraprocedural
-(aggressive inlining is our interprocedural stopgap); and OpenSSL-class
-guard chains motivate query splitting or context pruning.
+
+In this paper we targeted sanitizer removal as a consequential
+optimization; super-analysis, however, is not limited to this
+application. A compiler could host a general super-analysis module
+following a simple recipe: wherever the compiler's conventional
+range and dataflow heuristics fail, formulate the question as an SMT
+decision problem and ask for an answer. Such a compiler would be very
+slow; a faster alternative is to invoke the expensive super-analyzer only
+inside recognized hot loops. 
+
+Verification-aware languages carry assertions, loop invariants, and
+post-conditions that have already been proven at the source level, and
+some of them reach LLVM IR through conventional toolchains: Verus is
+Rust, and so compiles through \texttt{rustc} to LLVM IR directly, while
+Dafny~\cite{leino2010dafny} can reach LLVM IR through its (partial,
+unsupported) C++ backend. A super-analyzer could use these proven
+assertions as an additional rich fact source. 
 %% =====================================================================
 \section{Conclusion}
 \label{sec:conclusion}
-Super-analysis occupies a deliberately asymmetric point between heuristic
-optimization and superoptimization: a solver where precision is the
-bottleneck, conventional machinery everywhere else. Instantiated in
-\tool{}, the paradigm proves \pct{11}--\pct{13.6} of sanitizer checks dead
-across real C libraries and 215 checks in an unmodified Swift library ---
+Super-analysis occupies a deliberately asymmetric point between conventional heuristic-based
+optimization and superoptimization: use a solver where analysis precision is the
+bottleneck, and conventional machinery everywhere else. Instantiated in
+\tool{}, the paradigm proves up to \pct{13.6} of sanitizer checks dead
+across real C libraries and yield hot-loop proofs for kernels ---
 every deletion certified by an unsat core, audited for vacuity, and
 validated by byte-identical output --- and, where proofs gate
-transformations, converts them into \pct{3.7}--\pct{8.8} speedups on two
-ISAs atop fully optimized baselines, recovering up to \pct{98} of the
-unsound checks-off ceiling. The evaluation's shape is itself a contribution: a
-dose--response account of when elimination pays, a replicated
-demonstration that it can also cost, and a latency dial spanning five
-orders of magnitude of query hardness. The unsat cores certify the
+transformations, converts them into up to $4.16\times$ speedups on two
+ISAs. The unsat cores certify the
 paradigm's premise --- the missing reasoning is conjunctive across
-analysis domains, hence a solver's problem --- and the O1--O4 obligations
-chart what stands between today's tool and the $3.4\times$ ceiling behind
-heap invariants. That chart, drawn first as future work, proved
-predictive within the paper itself: a frame-rule fact source and a
-definitional encoding discharge O3 exactly as prescribed, prove all 16
-residual checks in Julia's own stdlib GEMM, and recover
-\pct{96}--\pct{100} of the $3.6$--$4.2\times$ ceiling on both ISAs
-through proof-licensed annotation. The performance cost of memory safety
-is not a fixed tax; it is a provably reducible one, and super-analysis
-is a scalable way to reduce it.
+analysis domains. Speedup results are proven to be robust by running experiments on inputs of different sizes. Super-analysis has been proven to be an online tool, demonstrated by the fact that \tool{}'s SMT latency can be reduced up to $4.8\times$ by parallelization and strict timeout setting.
 %% =====================================================================
 \begin{acks}
 %% Anonymized for review.
@@ -1100,19 +997,23 @@ per-repetition CSVs is prepared for submission.
 \section{Complete Runtime Results}
 \label{sec:app-full}
 Table~\ref{tab:speedups-full} is the unabridged version of
-Table~\ref{tab:speedups}: every benchmark in the study, with its runtime
-result where a harness exists, sorted by speedup. The rows below zstd
+Table~\ref{tab:speedups}: every benchmark with a runtime experiment,
+sorted by speedup. The rows below zstd
 compression are the ones that carry the dose--response argument of
 \S\ref{sec:results-perf} --- flat where proofs land cold, negative where
-non-unlocking elimination loses the re-optimization lottery. Rows marked
-``n/a'' have no runtime experiment: either the benchmark proves zero
-checks (nothing to time), or it has no executable harness (Julia's JIT
-IR, \S\ref{sec:future}; OpenSSL, static-by-design), or its sanitized
-build is dynamically un-runnable under the specification that emits the
-checks (\S\ref{sec:results-static}). Ceilings are checked-vs-unchecked
-for native kernels and measured sanitizer overhead for C libraries; they
-are reported even for zero-proof rows, since an unrecovered ceiling is a
-statement about the residue (\S\ref{sec:future}).
+non-unlocking elimination loses the re-optimization lottery.
+Benchmarks with no runtime experiment split into two further tables.
+Table~\ref{tab:frontier} is the \emph{frontier}: benchmarks with a
+real, measured ceiling that the current fact sources leave entirely (or
+almost entirely) unrecovered --- each row prices a residue class of
+\S\ref{sec:future}, and together they show the residue is not cheap
+checks nobody cares about. Table~\ref{tab:static-only} collects the
+static-only runs, where no ceiling exists to recover --- by measurement
+(a $\leq$noise gap), by construction (OpenSSL's signed spec emits no
+checks), or because the specification that emits the checks is
+dynamically un-runnable in trap mode
+(\S\ref{sec:results-static}). Ceilings are checked-vs-unchecked
+for native kernels and measured sanitizer overhead for C libraries.
 
 \begin{table*}
 \caption{All benchmarks and their runtime results. ``Elim'' is proven
@@ -1130,6 +1031,7 @@ gemm (stdlib) & Julia & 16 & M-series & $4.16\times$ & $4.19\times$ & 99.8\% & v
 gemm (stdlib) & Julia & 16 & x86 & $3.59\times$ & $3.97\times$ & 96.4\% & vec+unroll, via \texttt{@inbounds}\\
 sha256 & Swift & 7 & x86 & $+8.8$\% & 9.0\% & 98\% & unroll\\
 sha256 & Swift & 7 & M-series & $+6.9$\% & 2.8\% & --- & unroll; exceeds checked-vs-unchecked gap\\
+sha256 & Julia & 10 & M-series & $+6.9$\% & $-7.9$\% & --- & \texttt{@inbounds} on 6 of 12 sites; lottery-paid (no arm64 ceiling)\\
 adler32 & Swift & 1 & x86 & $+3.7$\% & 11.6\% & 32\% & DO16 unrolled group\\
 zstd comp.\ (signed) & C & 6 & x86 & $+2.3$\% & 1.2\% & --- & hot group; exceeds overhead ceiling\\
 sha1 & Swift & 7 & M-series & $+2.1$\% & 7.6\% & 27\% & unroll (base encoder: $+6.4/{+}7.3$\%)\\
@@ -1142,27 +1044,12 @@ zlib comp.\ (both spec) & C & 145 & x86 & $+0.1$\% & 5.4\% & $\approx$0 & none (
 lz4 comp. & C & 193$^{\P}$ & x86 & $\approx0$\% & 2.0\% & $\approx$0 & none (cold)\\
 CryptoSwift (library) & Swift & 183 & x86 & $\pm0.3$\% & 10.4\%$^{c}$ & $\approx$0 & none; cold API surface\\
 CryptoSwift (library) & Swift & 215 & M-series & $-0.4$\% & $-0.7$\%$^{c}$ & --- & none; 10\,s budget dose; no ceiling on M-series\\
-sha256 & Julia & 10 & M-series & $+6.9$\% & $-7.9$\% & --- & \texttt{@inbounds} on 6 of 12 sites; no ceiling on arm64 --- lottery\\
 md5 & Swift & 5 & M-series & $+0.2$\% & $-1.4$\% & --- & none; no ceiling on M-series\\
 adler32 & Swift & 1 & M-series & $-1.5$\% & 8.9\% & $<0$ & none; relottery\\
 md5 & Swift & 1 & x86 & $-1.8$\% & 6.0\% & $<0$ & none; relottery\\
 utf8 validator & Swift & 2 & M-series & $-2.9$\% & $-0.8$\% & --- & none; no ceiling on M-series\\
 filt (DSP.jl port) & Julia & 6 & M-series & $-3.7$\% & $-1.6$\% & --- & \texttt{@inbounds} on 2 of 9 sites; no ceiling on arm64\\
 sha1 & Swift & 2 & x86 & $-5.0$\% ($\times4$) & 4.7\% & $<0$ & none; replicated relottery\\
-\midrule
-\multicolumn{8}{l}{\emph{No runtime experiment}}\\
-lz4 decomp. & C & --- & x86 & n/a & $+0.2$\% & --- & ceiling below timer resolution\\
-zlib decomp.\ (both spec) & C & --- & x86 & n/a & --- & --- & traps fire; un-runnable spec\\
-zstd comp.\ (unsigned) & C & --- & x86 & n/a & --- & --- & traps fire; un-runnable spec\\
-OpenSSL sha256 & C & 43 & --- & n/a & 0\%$^{d}$ & --- & static-by-design; asm fast path\\
-crc32 (zlib port) & Swift & 0 & x86 & n/a & 4.6\% & 0 & taxonomy (d)\\
-base64 & Swift & 0 & x86 & n/a & 56.8\% & 0 & taxonomy (d)$+$(b)\\
-lz77 & Swift & 2 & x86 & n/a & 3.3\% & --- & ordinary unreached ceiling\\
-nbody & Swift & 0 & M-series & n/a & $+410$\% & 0 & taxonomy (b), call-carried\\
-sha256 / filt & Julia & 10 / 6 & x86 & n/a & 9.5\% / 58.3\% & --- & x86 emission proves only 2/16, 4/19 edges\\
-poly (Horner) & Julia & 1 & both & n/a & 0.0\% & --- & no ceiling on either ISA\\
-matmul / lz77 & Julia & 0 & x86 & n/a & 14.4\% / 326\% & 0 & checks are the spec (M-series: 1.7\% / 158\%)\\
-matmul / lz77 & Rust & 0 & --- & n/a & --- & --- & taxonomy (b), \texttt{Vec} len\\
 \bottomrule
 \end{tabular}\\
 \raggedright\footnotesize $^{\P}$Marginal over the double-O3 control:
@@ -1170,10 +1057,60 @@ matmul / lz77 & Rust & 0 & --- & n/a & --- & --- & taxonomy (b), \texttt{Vec} le
 $^{c}$Honest ceiling after removing the \texttt{-O}-vs-sandwich
 pipeline gap: on x86, 8.1 points of the raw \pct{19.6}; on M-series the
 raw gap is only \pct{1.1} and the pipeline accounts for all of it
-(sandwich vs.\ \texttt{-Ounchecked}: \pct{-0.7}, 15 interleaved runs).
-$^{d}$Exactly zero by construction: under the signed specification
-OpenSSL's SHA-256 emits no checks at all.\par
+(sandwich vs.\ \texttt{-Ounchecked}: \pct{-0.7}, 15 interleaved runs).\par
 \end{table*}
+
+\begin{table}
+\caption{The frontier: benchmarks with a measured, unrecovered
+checked-vs-unchecked ceiling and no (or unusably few) proofs at the
+current fact sources. Each ceiling prices a residue class of
+\S\ref{sec:future}.}
+\label{tab:frontier}
+\small
+\begin{tabular}{llrlrl}
+\toprule
+Benchmark & Lang & Elim & Platform & Ceiling & Residue\\
+\midrule
+nbody & Swift & 0 & M \& x86 & $+410/411$\% & (b), call-carried\\
+filt (DSP.jl) & Julia & 4/19 & x86 & 58.3\% & partial edge set\\
+base64 & Swift & 0 & x86 & 56.8\% & (d)$+$(b)\\
+lz77 & Julia & 0 & x86 & 326\% & checks are the spec\\
+matmul & Julia & 0 & x86 & 14.4\% & checks are the spec\\
+sha256 & Julia & 2/16 & x86 & 9.5\% & partial edge set\\
+crc32 (zlib port) & Swift & 0 & x86 & 4.6\% & (d)\\
+lz77 & Swift & 2 & x86 & 3.3\% & unreached ceiling\\
+\bottomrule
+\end{tabular}\\
+\raggedright\footnotesize Julia sha256/filt: the x86 emission proves
+only 2 of 16 and 4 of 19 edges (vs.\ 10 and 6 on M-series, where the
+ceiling is $\leq 0$) --- too few to license any hot access. Julia
+matmul/lz77 M-series ceilings: \pct{1.7} / \pct{158}.\par
+\end{table}
+
+\begin{table}
+\caption{Static-only runs: no ceiling exists to recover, by
+measurement or by construction.}
+\label{tab:static-only}
+\small
+\begin{tabular}{llrlrl}
+\toprule
+Benchmark & Lang & Elim & Platform & Ceiling & Why static-only\\
+\midrule
+OpenSSL sha256 & C & 43 & x86 & 0\%$^{d}$ & asm fast path\\
+lz4 decomp. & C & --- & x86 & $+0.2$\% & below noise\\
+poly (Horner) & Julia & 1 & both & 0.0\% & no ceiling, either ISA\\
+zlib decomp.\ (both spec) & C & --- & x86 & n/a & traps fire; un-runnable\\
+zstd comp.\ (unsigned) & C & --- & x86 & n/a & traps fire; un-runnable\\
+\bottomrule
+\end{tabular}\\
+\raggedright\footnotesize $^{d}$Exactly zero by construction: under the
+signed specification OpenSSL's SHA-256 emits no checks at all. The two
+un-runnable rows have no measurable ceiling of any kind: the sanitized
+binary executes an intentional-wraparound trap on its first blocks, so
+a checked-vs-unchecked comparison cannot be run --- their runnable-spec
+counterparts (zlib decomp.\ signed \pct{1.1}, zstd comp.\ signed
+\pct{1.2}) appear in Table~\ref{tab:speedups-full}.\par
+\end{table}
 
 \begin{figure*}
 \centering
