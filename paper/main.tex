@@ -416,19 +416,14 @@ for t in 16..<64 {
 \end{minipage}
 \caption{The simple case: the message-schedule extension of a Swift
 SHA-256 kernel (left; the compiler-injected check shown in red as
-source-level pseudocode) and the same check after lowering (right,
-schematic). Every one of these checks survives
-\texttt{swiftc -O} \emph{and} a second full LLVM O3. The single
-\emph{unsigned} comparison covers both bounds at once: a negative index
-becomes a huge unsigned value and fails the same test. The facts that
+source-level pseudocode) and the same check after lowering (right). Every one of these checks survives
+\texttt{swiftc -O} \emph{and} a second full LLVM O3. The facts that
 jointly refute the trap edge live in \emph{different} analyses:\newline
 $\bullet$~loop bounds (scalar evolution): $t \in [16, 64)$, hence
 $\mathit{idx} = t - 16 \in [0, 48)$ --- exact in
 bit-vectors;\newline
 $\bullet$~allocation (return-value range, refined by LazyValueInfo):
 $\texttt{w.count} = 64$;\newline
-$\bullet$~the guard chain dominating the loop entry, which is what
-makes the scalar-evolution bound applicable on this path.\newline
 The trap requires $\mathit{idx} \geq \texttt{w.count}$; with
 $\mathit{idx} < 48$ and $\texttt{w.count} = 64$ the conjunction is
 absurd --- yet no single fact suffices (drop any one and the query is
@@ -498,28 +493,37 @@ measured $3.4\times$ checked-vs-unchecked ceiling --- checks that
 Julia's own authors discharge by hand, with trusted \texttt{@inbounds}
 annotations, in the shipping standard library.
 
-\begin{figure}
-\small
-\begin{verbatim}
-m, n = size(C); k = size(A, 2)
+\begin{figure*}
+\begin{minipage}[t]{0.47\textwidth}
+\begin{lstlisting}[style=odessy,
+    morekeywords={for,in,end,if},
+    comment={[l]{\#}},
+    moredelim={[is][\color{trapred}\bfseries]{|}{|}}]
+m, n = size(C)  # C is m-by-n: m rows, n columns
+k = size(A, 2)  # 2nd dimension of A = its columns
 size(A, 1) == m || throw(DimensionMismatch())
-...
+                # ... and two more shape guards
 for j in 1:n, l in 1:k
     b = B[l, j]
     for i in 1:m
-        C[i, j] += A[i, l] * b   # 16 trap edges
+        C[i, j] += A[i, l] * b  |# one check per access|
     end
 end
-\end{verbatim}
-after \texttt{-O3}, schematically:
-\begin{verbatim}
-guard:  %n1 = load i64, ptr %A.size     ; == m
-  ...
-loop:   ; vectorized body: stores to C's data
-check:  %n2 = load i64, ptr %A.size     ; fresh
-        %ok = icmp ult i64 %i.frozen, %n2
-        br i1 %ok, %body, %trap
-\end{verbatim}
+\end{lstlisting}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.49\textwidth}
+\begin{lstlisting}[style=odessy,
+    morekeywords={load,icmp,ult,br,label,i64,i1,ptr,freeze},
+    comment={[l]{;}},
+    moredelim={[is][\color{trapred}\bfseries]{|}{|}}]
+; before the loops -- constrained by the guard above:
+%n1 = load i64, ptr %A.size  ; A's row count, == m
+; inside the vectorized inner loop:
+%n2 = load i64, ptr %A.size  ; SAME address, new load
+|%ok = icmp ult i64 %i.frozen, %n2   ; the check|
+|br i1 %ok, label %body, label %trap ; trap if !ok|
+\end{lstlisting}
+\end{minipage}
 \caption{The hard case: Julia stdlib GEMM. The dimension guard
 constrains one load of \texttt{A}'s size field (\texttt{\%n1}); the
 bounds check inside the vectorized loop consumes a \emph{different}
@@ -533,12 +537,15 @@ hence $\texttt{\%n1} = \texttt{\%n2}$. \S\ref{sec:frame-machinery}
 gives the encoding rules that discharge it;
 \S\ref{sec:frame-results} reports the result --- 16 of 16, and
 $3.6$--$4.2\times$ end-to-end.}
-\Description{A Julia source listing of a three-loop GEMM kernel with a
-dimension guard, followed by a schematic LLVM IR listing showing two
-separate loads of the same size field, one constrained by the guard
-and one consumed by the bounds check inside the loop.}
+\Description{Left, a Julia source listing of a three-loop GEMM kernel
+whose first two lines read the matrix dimensions and whose guards
+relate them, with a red comment noting one bounds check per array
+access. Right, a schematic LLVM IR listing showing two separate loads
+of the same size field, one before the loops constrained by the guard
+and one inside the vectorized loop feeding the bounds check, with the
+check and its branch in red.}
 \label{fig:frame-example}
-\end{figure}
+\end{figure*}
 
 The failure is structural, not a missing special case. First, the
 connecting fact is \emph{nonlocal}: the guard and the check are linked
