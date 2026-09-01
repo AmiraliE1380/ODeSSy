@@ -109,6 +109,20 @@
 \acmConference[CGO '27]{IEEE/ACM International Symposium on Code Generation and Optimization}{March 20--24, 2027}{TBD}
 \acmISBN{978-1-4503-XXXX-X/27/03}
 %%\acmSubmissionID{XXX}
+%% Code listings for the worked examples
+\usepackage{listings}
+\definecolor{codecomment}{gray}{0.45}
+\definecolor{codekw}{RGB}{0,90,160}
+\definecolor{trapred}{RGB}{200,20,20}
+\lstdefinestyle{odessy}{
+  basicstyle=\small\ttfamily,
+  keywordstyle=\color{codekw}\bfseries,
+  commentstyle=\color{codecomment}\itshape,
+  columns=fullflexible,
+  keepspaces=true,
+  breaklines=false,
+  xleftmargin=0.5em
+}
 %% Convenience macros
 \newcommand{\odessy}{ODeSSy}
 \newcommand{\tool}{\odessy}
@@ -372,48 +386,60 @@ why super-analysis can run inside the pipeline rather than beside it
 \subsection{Why conjunction necessitates a solver}
 \label{sec:conjunction}
 
-\begin{figure}
-\small
-\begin{verbatim}
+\begin{figure*}
+\begin{minipage}[t]{0.46\textwidth}
+\begin{lstlisting}[style=odessy,
+    morekeywords={var,for,in,let},
+    comment={[l]{//}},
+    moredelim={[l][\color{trapred}\bfseries]{//!}}]
 var w = [UInt32](repeating: 0, count: 64)
-for t in 16..<64 {        // schedule extension
+for t in 16..<64 {
   // s0, s1: rotate-xors of w[t-15], w[t-2]
-  w[t] = w[t-16] &+ s0 &+ w[t-7] &+ s1
-} // &+ = wrapping add: the author already
-  // opted out of overflow checks; the four
-  // BOUNDS checks per iteration remain
-\end{verbatim}
-Each subscript lowers to a compare-and-branch; for \texttt{w[t-16]}:
-\begin{verbatim}
-%n   = load i64, ptr %w.count      ; = 64
-%oob = icmp uge i64 %idx, %n       ; idx = t-16
-br i1 %oob, label %trap, label %ld ; ubsantrap
-\end{verbatim}
-The facts that refute the trap edge live in different analyses:
-\begin{itemize}\setlength\itemsep{1pt}
-\item loop bounds (scalar evolution): $t \in [16, 64)$, hence
-  $\mathit{idx} = t - 16 \in [0, 48)$ --- exact in bit-vectors;
-\item allocation (return-value range, refined by LazyValueInfo):
-  $\texttt{w.count} = 64$;
-\item the guard chain dominating the loop entry.
-\end{itemize}
+  w[t] = w[t-16] + s0 + w[t-7] + s1
+  //! trap if t-16 >= w.count   -- one bounds
+  //! check per subscript, four per iteration
+}
+\end{lstlisting}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.50\textwidth}
+\begin{lstlisting}[style=odessy,
+    morekeywords={load,add,icmp,uge,br,label,i64,i1,ptr},
+    comment={[l]{;}},
+    moredelim={[l][\color{trapred}\bfseries]{;!}}]
+; the check for w[t-16], after swiftc -O + LLVM O3:
+%n   = load i64, ptr %w.count  ; array length: n = 64
+%idx = add i64 %t, -16         ; idx = t - 16
+%oob = icmp uge i64 %idx, %n   ;! oob <=> idx >= n
+br i1 %oob, label %trap, label %ld
+;! %trap: call @llvm.ubsantrap -- program aborts
+\end{lstlisting}
+\end{minipage}
+\caption{The simple case: the message-schedule extension of a Swift
+SHA-256 kernel (left) and the lowered form of one of its four
+per-iteration bounds checks (right). Every one of these checks survives
+\texttt{swiftc -O} \emph{and} a second full LLVM O3. The facts that
+jointly refute the trap edge live in \emph{different} analyses:\newline
+$\bullet$~loop bounds (scalar evolution): $t \in [16, 64)$, hence
+$\mathit{idx} = t - 16 \in [0, 48)$ --- exact in
+bit-vectors;\newline
+$\bullet$~allocation (return-value range, refined by LazyValueInfo):
+$\texttt{w.count} = 64$;\newline
+$\bullet$~the guard chain dominating the loop entry.\newline
 The trap requires $\mathit{idx} \geq \texttt{w.count}$; with
 $\mathit{idx} < 48$ and $\texttt{w.count} = 64$ the conjunction is
-absurd --- but no single fact suffices (drop any one and the query is
-satisfiable), and no fixed pass computes the conjunction.
-\caption{The simple case: the message-schedule extension of a Swift
-SHA-256 kernel. Every one of these bounds checks survives
-\texttt{swiftc -O} \emph{and} a second full LLVM O3; \tool{} conjoins
-the facts, deletes the checks, and the unlocked unrolling is worth
+absurd --- yet no single fact suffices (drop any one and the query is
+satisfiable), and no fixed pass computes the conjunction. \tool{}
+conjoins them, deletes the checks, and the unlocked unrolling is worth
 \pct{8.8} on x86 (\S\ref{sec:results-perf}).}
-\Description{A Swift listing of the SHA-256 message schedule loop
-indexing array w at t minus 16, t minus 7, t minus 15, and t minus 2;
-below it, three lines of LLVM IR showing the load of the array count,
-the unsigned compare of the index against it, and the conditional
-branch to a trap block; then a bulleted list of the three facts whose
-conjunction refutes the trap.}
+\Description{Left, a Swift listing of the SHA-256 message schedule
+loop with a red comment stating the trap condition t minus 16 greater
+or equal to the array count. Right, five lines of LLVM IR showing the
+load of the array count, the index computation, the unsigned compare
+highlighted in red, and the conditional branch to a trap block that
+calls ubsantrap. The caption lists the three facts whose conjunction
+refutes the trap.}
 \label{fig:simple-example}
-\end{figure}
+\end{figure*}
 
 Consider the message-schedule loop of a Swift SHA-256 kernel
 (Figure~\ref{fig:simple-example}), whose inner
