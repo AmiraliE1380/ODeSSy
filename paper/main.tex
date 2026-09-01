@@ -389,48 +389,53 @@ why super-analysis can run inside the pipeline rather than beside it
 \begin{figure*}
 \begin{minipage}[t]{0.46\textwidth}
 \begin{lstlisting}[style=odessy,
-    morekeywords={var,for,in,let},
+    morekeywords={var,for,in,let,if},
     comment={[l]{//}},
-    moredelim={[l][\color{trapred}\bfseries]{//!}}]
+    moredelim={[is][\color{trapred}\bfseries]{|}{|}}]
 var w = [UInt32](repeating: 0, count: 64)
 for t in 16..<64 {
   // s0, s1: rotate-xors of w[t-15], w[t-2]
+  |// implicit check (injected by compiler)|
+  |if t-16 >= w.count { trap() }|
   w[t] = w[t-16] + s0 + w[t-7] + s1
-  //! trap if t-16 >= w.count   -- one bounds
-  //! check per subscript, four per iteration
 }
 \end{lstlisting}
 \end{minipage}\hfill
 \begin{minipage}[t]{0.50\textwidth}
 \begin{lstlisting}[style=odessy,
-    morekeywords={load,add,icmp,uge,br,label,i64,i1,ptr},
+    morekeywords={load,add,icmp,uge,br,label,call,void,i8,i64,i1,ptr},
     comment={[l]{;}},
-    moredelim={[l][\color{trapred}\bfseries]{;!}}]
+    moredelim={[is][\color{trapred}\bfseries]{|}{|}}]
 ; the check for w[t-16], after swiftc -O + LLVM O3:
 %n   = load i64, ptr %w.count  ; array length: n = 64
 %idx = add i64 %t, -16         ; idx = t - 16
-%oob = icmp uge i64 %idx, %n   ;! oob <=> idx >= n
-br i1 %oob, label %trap, label %ld
-;! %trap: call @llvm.ubsantrap -- program aborts
+|%oob = icmp uge i64 %idx, %n   ; oob = (idx >= n)|
+|br i1 %oob, label %trap, label %ld ; trap if oob|
+|trap:  call void @llvm.ubsantrap(i8 18) ; aborts|
 \end{lstlisting}
 \end{minipage}
 \caption{The simple case: the message-schedule extension of a Swift
-SHA-256 kernel (left) and the lowered form of one of its four
-per-iteration bounds checks (right). Every one of these checks survives
-\texttt{swiftc -O} \emph{and} a second full LLVM O3. The facts that
+SHA-256 kernel (left; the compiler-injected check shown in red as
+source-level pseudocode) and the same check after lowering (right,
+schematic). Every one of these checks survives
+\texttt{swiftc -O} \emph{and} a second full LLVM O3. The single
+\emph{unsigned} comparison covers both bounds at once: a negative index
+becomes a huge unsigned value and fails the same test. The facts that
 jointly refute the trap edge live in \emph{different} analyses:\newline
 $\bullet$~loop bounds (scalar evolution): $t \in [16, 64)$, hence
 $\mathit{idx} = t - 16 \in [0, 48)$ --- exact in
 bit-vectors;\newline
 $\bullet$~allocation (return-value range, refined by LazyValueInfo):
 $\texttt{w.count} = 64$;\newline
-$\bullet$~the guard chain dominating the loop entry.\newline
+$\bullet$~the guard chain dominating the loop entry, which is what
+makes the scalar-evolution bound applicable on this path.\newline
 The trap requires $\mathit{idx} \geq \texttt{w.count}$; with
 $\mathit{idx} < 48$ and $\texttt{w.count} = 64$ the conjunction is
 absurd --- yet no single fact suffices (drop any one and the query is
 satisfiable), and no fixed pass computes the conjunction. \tool{}
-conjoins them, deletes the checks, and the unlocked unrolling is worth
-\pct{8.8} on x86 (\S\ref{sec:results-perf}).}
+conjoins them, deletes the checks, and now the simplified control-flow
+graph can be further optimized. Here the unlocked unrolling is worth
+\pct{8.8} speedup on x86 (\S\ref{sec:results-perf}).}
 \Description{Left, a Swift listing of the SHA-256 message schedule
 loop with a red comment stating the trap condition t minus 16 greater
 or equal to the array count. Right, five lines of LLVM IR showing the
