@@ -639,7 +639,7 @@ guard chains are jointly unsatisfiable for the actual constants ---
 likely sound eliminations, conservatively surrendered because the tool
 cannot distinguish that situation from its own bugs. We report vacuous
 counts in every experiment; they are zero except where noted.
-\subsection{Discharging heap invariants: the frame tier}
+\subsection{Proving heap-invariance}
 \label{sec:frame-machinery}
 The \texttt{frame} option implements the requirements of
 \S\ref{sec:frame} as two encoder-level additions.
@@ -739,32 +739,41 @@ eliminations. Per-query solver timeout is 300\,ms in performance builds
 is \pct{96} saturated at 100\,ms on the densest workload, and the
 performance builds' per-platform elimination counts exactly match the
 audit runs', so no proof was lost to the budget.
+\paragraph{Benchmarks, specifications, tiers.}
+Four C libraries (zlib, zstd, lz4, OpenSSL) under UBSan trap-mode
+specifications; nine Swift kernels plus the unmodified CryptoSwift
+library; Julia kernels including the stdlib GEMM of \S\ref{sec:frame};
+and Rust ports that exercise the \texttt{traps=} retargeting. Dynamic
+experiments use only specifications that do not fire at runtime --- a
+firing specification (intentional wraparound in hashing code) is
+reported as an un-runnable finding, never timed
+(\S\ref{sec:results-perf}). Static results are reported at three fact
+tiers (\emph{light}, \emph{heavy}, \emph{full} = heavy + frame,
+\S\ref{sec:system-facts}); every runtime experiment uses the full tier.
 \paragraph{Research questions.}
-Our evaluation is organized around four questions, one per contribution
-that admits measurement:
+Our evaluation is organized around three questions:
 \begin{itemize}
-\item \textbf{RQ1a --- How much can super-analysis prove?}
-  Static elimination across C libraries and three native-check languages,
-  with the unsat cores that attribute each proof to its fact sources
-  (\S\ref{sec:results-static}).
-\item \textbf{RQ1b --- When do proofs become speed?}
-  Checked-vs-unchecked ceilings, the fraction of each ceiling recovered,
-  and the dose--response account relating \emph{where} a proof lands to
-  \emph{whether} it pays (\S\ref{sec:results-perf}).
-\item \textbf{RQ2 --- What does it cost?}
-  Compile latency, parallel scaling, and the per-query timeout dial that
-  makes super-analysis viable in-pipeline (\S\ref{sec:results-cost}).
-\item \textbf{RQ3 --- Can the heap-invariant frontier be crossed?}
-  The GEMM acceptance test of \S\ref{sec:frame} under the frame tier of
-  \S\ref{sec:frame-machinery}: proof yield, end-to-end speedup through
-  proof-licensed annotation, and ride-along gains
-  (\S\ref{sec:frame-results}).
+\item \textbf{RQ1 --- How much does it improve performance?}
+  How many checks can \tool{} prove dead, and --- where proofs land on
+  hot paths --- how much does elimination pay against each machine's
+  own checked-vs-unchecked ceiling? (\S\ref{sec:results-perf})
+\item \textbf{RQ2 --- Why do we have speedup?}
+  Which transformations do hot-path proofs unlock, benchmark by
+  benchmark --- and why does the same dose elsewhere pay nothing, or
+  less than nothing? (\S\ref{sec:results-mech})
+\item \textbf{RQ3 --- What does it cost?}
+  How does \tool{} scale, and does it remain an online compiler pass
+  with a flexible latency budget? (\S\ref{sec:results-cost})
 \end{itemize}
 %% =====================================================================
 \section{Experimental Results}
 \label{sec:results}
-\subsection{RQ1a: Super-analysis as a static analyzer}
+\subsection{RQ1: How much does it improve performance?}
+\label{sec:results-perf}
 \label{sec:results-static}
+RQ1 has a capability half --- how much can be proven --- and a payoff
+half --- what the proofs buy at runtime. Table~\ref{tab:static}
+answers the first, Table~\ref{tab:speedups} the second.
 \begin{table}
 \caption{Static elimination on C libraries and native-language kernels.
 Trap counts are call-site censuses in the sanitized \texttt{-O3} baseline
@@ -803,7 +812,7 @@ default 300\,ms (the budget dose ladder of
 per our reporting convention: \tool{} removes 1027 of 3403, the
 control removes 834. \par
 \end{table}
-Table~\ref{tab:static} answers RQ1a. On real C repositories under the
+On real C repositories under the
 combined integer specification, \tool{} proves \pct{11}--\pct{13.6} of
 checks dead --- 145 of 1298 in zlib, 2619 of 19197 in zstd --- and 215
 checks in the unmodified CryptoSwift library, with the transformed
@@ -836,8 +845,6 @@ of the shift encoding alone drops zlib's signed proofs from 2 to 0 and
 unsigned from 41 to 25 --- the solver's exactness through shift
 compositions is doing attributable work that range/known-bits reasoning
 loses.
-\subsection{RQ1b: When do proofs become speed?}
-\label{sec:results-perf}
 \begin{table*}
 \caption{Genuine speedups: every runtime experiment in which elimination
 paid, sorted by speedup (medians, REPS$\geq$21 shuffled reps, oracle
@@ -878,7 +885,17 @@ proven-only arm's \pct{6.9} is a real, reproducible gain (medians of
 21, bitwise-identical output) that the lottery, not check removal,
 pays for.\par
 \end{table*}
-Table~\ref{tab:speedups} answers RQ1b, and the answer
+Table~\ref{tab:speedups} answers the payoff half: where proofs land on
+a hot path, elimination recovers 27--100\% of each machine's own
+checked-vs-unchecked ceiling --- up to $4.16\times$ end-to-end on
+stdlib GEMM and \pct{98} of the \emph{entire} ceiling on Swift sha256
+--- and where they land cold, it pays nothing: the flat and negative
+rows are in Table~\ref{tab:speedups-full}
+(Appendix~\ref{sec:app-full}), and \emph{why} the same dose pays so
+differently is RQ2.
+\subsection{RQ2: Why do we have speedup?}
+\label{sec:results-mech}
+The answer
 is a \emph{causal account}, not a single number. Elimination buys
 performance exactly when it \emph{gates a further transformation}.
 SHA-256 is the constructive case: seven proofs in the message-schedule
@@ -927,7 +944,79 @@ whose signed checks cost \pct{9} when all present, stays exactly flat
 because its surviving checks' redundancy is precisely what today's
 fact sources cannot establish.
 \FIGURE{dose--response ladder / recovery-vs-ceiling bar chart}
-\subsection{RQ2: What does it cost?}
+\paragraph{Crossing the frontier: GEMM, 0-of-16 to 16-of-16.}
+\label{sec:frame-results}
+The strongest instance of the unlock account is the heap-invariant
+case. On the GEMM acceptance test of \S\ref{sec:frame}, the frame tier
+of \S\ref{sec:frame-machinery} proves \textbf{all 16} trap edges, where
+the base encoder proved zero (both encoders are pinned in the
+artifact): 11 eliminated outright and 5 whose \emph{guard contexts
+alone} are contradictory --- dynamically infeasible loop-version
+selections that the vacuity audit, by doctrine, refuses to convert into
+eliminations (the audit cannot distinguish genuine infeasibility from
+its own bugs; we verified genuineness by hand). Zero \textsc{sat}, zero
+\textsc{unknown}, verdicts byte-deterministic across runs. The unsat
+cores compose exactly as the paradigm predicts: the flagship proof draws
+on \emph{six} fact sources at once ---
+$|\mathrm{SCEVSYM}|\,|\mathrm{KB}|\,|\mathrm{SCEVEQ}|{\times}3\,
+|\mathrm{FRAME}|{\times}3$ plus four guards --- a conjunction no fixed
+pipeline could assemble.
+\begin{table}
+\caption{Proof-licensed \texttt{@inbounds} on Julia stdlib GEMM
+($N{=}512$; medians of 21 rotated reps; outputs bitwise identical
+across arms on both machines). Arm 3 annotates \emph{only} accesses
+whose every emitted check \tool{} proved; at the time of measurement
+that was 2 of 4 accesses --- with 16-of-16 proven, full annotation is
+licensed and recovery equals the ceiling by construction.}
+\label{tab:inbounds}
+\small
+\begin{tabular}{lrr}
+\toprule
+Arm & M-series & Xeon c220g2\\
+\midrule
+1: baseline (all checks) & 0.0601\,s & 0.1771\,s\\
+2: expert (\texttt{@inbounds} all) & $4.185\times$ & $3.965\times$\\
+3: \tool{}-proven only (2 of 4 at meas.) & $4.156\times$ & $3.588\times$\\
+\midrule
+Ceiling recovered by arm 3 & \textbf{\pct{99.8}} & \textbf{\pct{96.4}}\\
+\bottomrule
+\end{tabular}
+\end{table}
+Julia's JIT accepts no external IR (\S\ref{sec:future}), so the proofs
+are deployed through Julia's own sanctioned mechanism: each fully-proven
+access is annotated \texttt{@inbounds}, justified line-by-line by its
+audit cores --- \emph{proof-carrying annotations}. Table~\ref{tab:inbounds}
+shows the three-arm experiment. Annotating only the two accesses proven
+at measurement time recovers \pct{99.8} (M-series) and \pct{96.4} (Xeon)
+of the expert-annotation ceiling --- the two accesses the tool proved
+first turn out to be exactly the performance-critical ones --- and the
+Xeon's residual \pct{3.6} gap independently confirms that the last
+checks standing were worth almost nothing. Today \texttt{@inbounds} is
+trusted; here it is \emph{verified}, at no measurable cost. The gain is
+not an artifact of one problem size: sweeping $(m, n, k)$ over 14
+shapes --- square from $64^3$ to $4096^3$, tall, wide, deep, and inner
+loops as short as $m{=}8$ --- the proof-licensed build is faster at
+\emph{every} shape, by $1.5\times$ to $6.8\times$
+(Figure~\ref{fig:gemm-sweep}, Appendix~\ref{sec:app-full}); the
+speedup tracks the cache residency of the vectorized inner loop, not
+the problem size.
+\paragraph{Ride-along gains.}
+The same encoder additions, none of them GEMM-specific, moved every
+sufficiently-similar benchmark: Swift sha256's statics rise from 5 to 7
+of 38 on \emph{both} platforms, its M-series speedup from
+$+3.5$--$4.7$\% to $\mathbf{+6.9}$\% and its x86 speedup from
+$+4.7$--$5.0$\% to $\mathbf{+8.8}$\% --- \pct{98} of that machine's
+checked-vs-unchecked ceiling (medians of 30, byte-identical gate
+passed); Julia
+sha256 rises from 4 to 10 of 12, a previously zero-yield DSP filter
+kernel to 6 of 19; and CryptoSwift from 183 to 215 proofs (182 to 210
+on x86) as the per-query budget rises from 0.3\,s to 10\,s --- with runtime still flat,
+reproducing the dose--response claim above on the
+real library at maximum proof strength: 215 scattered cold eliminations
+still buy nothing, because count is not value. A full-suite regression
+sweep is strictly monotone --- no benchmark lost a proof, and the
+vacuity audit reports zero on every one.
+\subsection{RQ3: What does it cost?}
 \label{sec:results-cost}
 
 \begin{figure*}[t]
@@ -1026,79 +1115,6 @@ practical reading is favorable: an \emph{online} deployment at
 millisecond budgets gets \pct{96} of zlib-class proofs and silently,
 soundly skips OpenSSL-class queries (\textsc{unknown} keeps the check);
 an offline audit turns the dial up.
-\subsection{RQ3: Crossing the frontier --- 0 to 16-of-16}
-\label{sec:frame-results}
-On the GEMM acceptance test of \S\ref{sec:frame}, the frame tier of
-\S\ref{sec:frame-machinery} proves \textbf{all 16} trap edges, where
-the base encoder proved zero (both encoders are pinned in the
-artifact): 11 eliminated outright and 5 whose \emph{guard contexts
-alone} are contradictory --- dynamically infeasible loop-version
-selections that the vacuity audit, by doctrine, refuses to convert into
-eliminations (the audit cannot distinguish genuine infeasibility from
-its own bugs; we verified genuineness by hand). Zero \textsc{sat}, zero
-\textsc{unknown}, verdicts byte-deterministic across runs. The unsat
-cores compose exactly as the paradigm predicts: the flagship proof draws
-on \emph{six} fact sources at once ---
-$|\mathrm{SCEVSYM}|\,|\mathrm{KB}|\,|\mathrm{SCEVEQ}|{\times}3\,
-|\mathrm{FRAME}|{\times}3$ plus four guards --- a conjunction no fixed
-pipeline could assemble.
-\begin{table}
-\caption{Proof-licensed \texttt{@inbounds} on Julia stdlib GEMM
-($N{=}512$; medians of 21 rotated reps; outputs bitwise identical
-across arms on both machines). Arm 3 annotates \emph{only} accesses
-whose every emitted check \tool{} proved; at the time of measurement
-that was 2 of 4 accesses --- with 16-of-16 proven, full annotation is
-licensed and recovery equals the ceiling by construction.}
-\label{tab:inbounds}
-\small
-\begin{tabular}{lrr}
-\toprule
-Arm & M-series & Xeon c220g2\\
-\midrule
-1: baseline (all checks) & 0.0601\,s & 0.1771\,s\\
-2: expert (\texttt{@inbounds} all) & $4.185\times$ & $3.965\times$\\
-3: \tool{}-proven only (2 of 4 at meas.) & $4.156\times$ & $3.588\times$\\
-\midrule
-Ceiling recovered by arm 3 & \textbf{\pct{99.8}} & \textbf{\pct{96.4}}\\
-\bottomrule
-\end{tabular}
-\end{table}
-\paragraph{From proofs to speed: proof-licensed annotation.}
-Julia's JIT accepts no external IR (\S\ref{sec:future}), so the proofs
-are deployed through Julia's own sanctioned mechanism: each fully-proven
-access is annotated \texttt{@inbounds}, justified line-by-line by its
-audit cores --- \emph{proof-carrying annotations}. Table~\ref{tab:inbounds}
-shows the three-arm experiment. Annotating only the two accesses proven
-at measurement time recovers \pct{99.8} (M-series) and \pct{96.4} (Xeon)
-of the expert-annotation ceiling --- the two accesses the tool proved
-first turn out to be exactly the performance-critical ones --- and the
-Xeon's residual \pct{3.6} gap independently confirms that the last
-checks standing were worth almost nothing. Today \texttt{@inbounds} is
-trusted; here it is \emph{verified}, at no measurable cost. The gain is
-not an artifact of one problem size: sweeping $(m, n, k)$ over 14
-shapes --- square from $64^3$ to $4096^3$, tall, wide, deep, and inner
-loops as short as $m{=}8$ --- the proof-licensed build is faster at
-\emph{every} shape, by $1.5\times$ to $6.8\times$
-(Figure~\ref{fig:gemm-sweep}, Appendix~\ref{sec:app-full}); the
-speedup tracks the cache residency of the vectorized inner loop, not
-the problem size.
-\paragraph{Ride-along gains.}
-The same encoder additions, none of them GEMM-specific, moved every
-sufficiently-similar benchmark: Swift sha256's statics rise from 5 to 7
-of 38 on \emph{both} platforms, its M-series speedup from
-$+3.5$--$4.7$\% to $\mathbf{+6.9}$\% and its x86 speedup from
-$+4.7$--$5.0$\% to $\mathbf{+8.8}$\% --- \pct{98} of that machine's
-checked-vs-unchecked ceiling (medians of 30, byte-identical gate
-passed); Julia
-sha256 rises from 4 to 10 of 12, a previously zero-yield DSP filter
-kernel to 6 of 19; and CryptoSwift from 183 to 215 proofs (182 to 210
-on x86) as the per-query budget rises from 0.3\,s to 10\,s --- with runtime still flat,
-reproducing the dose--response claim of \S\ref{sec:results-perf} on the
-real library at maximum proof strength: 215 scattered cold eliminations
-still buy nothing, because count is not value. A full-suite regression
-sweep is strictly monotone --- no benchmark lost a proof, and the
-vacuity audit reports zero on every one.
-
 %% =====================================================================
 \section{Future Work}
 \label{sec:future}
