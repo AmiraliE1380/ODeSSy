@@ -376,29 +376,42 @@ why super-analysis can run inside the pipeline rather than beside it
 \small
 \begin{verbatim}
 var w = [UInt32](repeating: 0, count: 64)
-...
-for t in 16..<64 {   // schedule extension
-  let s0 = rotr(w[t-15],7) ^ rotr(w[t-15],18)
-           ^ (w[t-15] >> 3)
-  let s1 = rotr(w[t-2],17) ^ rotr(w[t-2],19)
-           ^ (w[t-2] >> 10)
+for t in 16..<64 {        // schedule extension
+  // s0, s1: rotate-xors of w[t-15], w[t-2]
   w[t] = w[t-16] &+ s0 &+ w[t-7] &+ s1
-}
+} // &+ = wrapping add: the author already
+  // opted out of overflow checks; the four
+  // BOUNDS checks per iteration remain
 \end{verbatim}
+Each subscript lowers to a compare-and-branch; for \texttt{w[t-16]}:
+\begin{verbatim}
+%n   = load i64, ptr %w.count      ; = 64
+%oob = icmp uge i64 %idx, %n       ; idx = t-16
+br i1 %oob, label %trap, label %ld ; ubsantrap
+\end{verbatim}
+The facts that refute the trap edge live in different analyses:
+\begin{itemize}\setlength\itemsep{1pt}
+\item loop bounds (scalar evolution): $t \in [16, 64)$, hence
+  $\mathit{idx} = t - 16 \in [0, 48)$ --- exact in bit-vectors;
+\item allocation (return-value range, refined by LazyValueInfo):
+  $\texttt{w.count} = 64$;
+\item the guard chain dominating the loop entry.
+\end{itemize}
+The trap requires $\mathit{idx} \geq \texttt{w.count}$; with
+$\mathit{idx} < 48$ and $\texttt{w.count} = 64$ the conjunction is
+absurd --- but no single fact suffices (drop any one and the query is
+satisfiable), and no fixed pass computes the conjunction.
 \caption{The simple case: the message-schedule extension of a Swift
-SHA-256 kernel. Every subscript is a native bounds check --- a compare
-and a conditional branch to a trap block in the IR --- and every one of
-them survives \texttt{swiftc -O} \emph{and} a second full LLVM O3.
-Proving \texttt{w[t-16]} in range needs \texttt{t} $\in [16, 64)$ (a
-scalar-evolution fact about the loop), \texttt{w.count} $= 64$ (a
-return-value range from the allocation, refined by LazyValueInfo), and
-the dominating guard chain --- facts owned by \emph{different} analyses
-that no fixed pass intersects. \tool{} conjoins them and deletes the
-checks; the unlocked unrolling is worth \pct{8.8} on x86
-(\S\ref{sec:results-perf}).}
-\Description{A nine-line Swift code listing of the SHA-256 message
-schedule loop, indexing the array w at t minus 15, t minus 2, t minus
-16, and t minus 7 inside a loop over t from 16 to 64.}
+SHA-256 kernel. Every one of these bounds checks survives
+\texttt{swiftc -O} \emph{and} a second full LLVM O3; \tool{} conjoins
+the facts, deletes the checks, and the unlocked unrolling is worth
+\pct{8.8} on x86 (\S\ref{sec:results-perf}).}
+\Description{A Swift listing of the SHA-256 message schedule loop
+indexing array w at t minus 16, t minus 7, t minus 15, and t minus 2;
+below it, three lines of LLVM IR showing the load of the array count,
+the unsigned compare of the index against it, and the conditional
+branch to a trap block; then a bulleted list of the three facts whose
+conjunction refutes the trap.}
 \label{fig:simple-example}
 \end{figure}
 
