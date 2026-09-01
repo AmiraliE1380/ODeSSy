@@ -371,7 +371,39 @@ why super-analysis can run inside the pipeline rather than beside it
 
 \subsection{Why conjunction necessitates a solver}
 \label{sec:conjunction}
-Consider the message-schedule loop of a Swift SHA-256 kernel, whose inner
+
+\begin{figure}
+\small
+\begin{verbatim}
+var w = [UInt32](repeating: 0, count: 64)
+...
+for t in 16..<64 {   // schedule extension
+  let s0 = rotr(w[t-15],7) ^ rotr(w[t-15],18)
+           ^ (w[t-15] >> 3)
+  let s1 = rotr(w[t-2],17) ^ rotr(w[t-2],19)
+           ^ (w[t-2] >> 10)
+  w[t] = w[t-16] &+ s0 &+ w[t-7] &+ s1
+}
+\end{verbatim}
+\caption{The simple case: the message-schedule extension of a Swift
+SHA-256 kernel. Every subscript is a native bounds check --- a compare
+and a conditional branch to a trap block in the IR --- and every one of
+them survives \texttt{swiftc -O} \emph{and} a second full LLVM O3.
+Proving \texttt{w[t-16]} in range needs \texttt{t} $\in [16, 64)$ (a
+scalar-evolution fact about the loop), \texttt{w.count} $= 64$ (a
+return-value range from the allocation, refined by LazyValueInfo), and
+the dominating guard chain --- facts owned by \emph{different} analyses
+that no fixed pass intersects. \tool{} conjoins them and deletes the
+checks; the unlocked unrolling is worth \pct{8.8} on x86
+(\S\ref{sec:results-perf}).}
+\Description{A nine-line Swift code listing of the SHA-256 message
+schedule loop, indexing the array w at t minus 15, t minus 2, t minus
+16, and t minus 7 inside a loop over t from 16 to 64.}
+\label{fig:simple-example}
+\end{figure}
+
+Consider the message-schedule loop of a Swift SHA-256 kernel
+(Figure~\ref{fig:simple-example}), whose inner
 16 iterations index a 64-element working array. Swift's bounds checks on
 these accesses survive both \texttt{swiftc -O} and a subsequent full LLVM
 O3. \tool{} proves them dead, and the extracted unsat cores show why no
@@ -407,6 +439,88 @@ unsigned specification (\S\ref{sec:results-static}), and Julia's own
 compiler strands a measured $3.4\times$ behind checks whose redundancy
 requires heap reasoning outside today's fact sources
 (\S\ref{sec:future}).
+%% =====================================================================
+\section{Heap-Invariant Super-Analysis}
+\label{sec:frame}
+The conjunctions of \S\ref{sec:conjunction} range over \emph{scalar}
+facts: ranges, known bits, trip counts, branch conditions. A large and
+expensive class of checks falls outside their reach because the fact
+that discharges them lives in the \emph{heap}. Our acceptance test for
+this class is the kernel of Julia's standard-library GEMM
+(\texttt{generic\_matmatmul!}) with its real dimension guards restored
+(Figure~\ref{fig:frame-example}): a benchmark on which the scalar fact
+sources prove \emph{zero} of 16 residual bounds-check edges against a
+measured $3.4\times$ checked-vs-unchecked ceiling --- checks that
+Julia's own authors discharge by hand, with trusted \texttt{@inbounds}
+annotations, in the shipping standard library.
+
+\begin{figure}
+\small
+\begin{verbatim}
+m, n = size(C); k = size(A, 2)
+size(A, 1) == m || throw(DimensionMismatch())
+...
+for j in 1:n, l in 1:k
+    b = B[l, j]
+    for i in 1:m
+        C[i, j] += A[i, l] * b   # 16 trap edges
+    end
+end
+\end{verbatim}
+after \texttt{-O3}, schematically:
+\begin{verbatim}
+guard:  %n1 = load i64, ptr %A.size     ; == m
+  ...
+loop:   ; vectorized body: stores to C's data
+check:  %n2 = load i64, ptr %A.size     ; fresh
+        %ok = icmp ult i64 %i.frozen, %n2
+        br i1 %ok, %body, %trap
+\end{verbatim}
+\caption{The hard case: Julia stdlib GEMM. The dimension guard
+constrains one load of \texttt{A}'s size field (\texttt{\%n1}); the
+bounds check inside the vectorized loop consumes a \emph{different}
+load of the same address (\texttt{\%n2}), cloned by the vectorizer
+with its aliasing metadata stripped, and its index stabilized by
+\texttt{freeze}. Sound encoding makes \texttt{\%n2} and the frozen
+flag fresh symbols, so every query is trivially satisfiable no matter
+how many scalar facts are supplied. What is missing is a \emph{heap
+invariant}: no store between the two loads can touch the size field,
+hence $\texttt{\%n1} = \texttt{\%n2}$. \S\ref{sec:frame-machinery}
+gives the encoding rules that discharge it;
+\S\ref{sec:frame-results} reports the result --- 16 of 16, and
+$3.6$--$4.2\times$ end-to-end.}
+\Description{A Julia source listing of a three-loop GEMM kernel with a
+dimension guard, followed by a schematic LLVM IR listing showing two
+separate loads of the same size field, one constrained by the guard
+and one consumed by the bounds check inside the loop.}
+\label{fig:frame-example}
+\end{figure}
+
+The failure is structural, not a missing special case. First, the
+connecting fact is \emph{nonlocal}: the guard and the check are linked
+only by the theorem that the loads agree, and that theorem's premise
+--- no intervening write clobbers the location --- quantifies over
+every store in the loop nest. A dataflow analysis propagates facts
+\emph{about values}; this premise is a fact \emph{about memory}, and
+the standard pipeline's owners of memory facts (GVN, alias analysis)
+each see only a fragment: by the time the vectorizer has cloned the
+check-side loads and stripped their scoped-aliasing metadata, LLVM
+itself can no longer justify the unification --- which is precisely
+why the checks survive O3. Second, the proof must \emph{compose} the
+heap fact with the scalar ones: the flagship GEMM edge needs the load
+equality \emph{and} a symbolic trip-count bound \emph{and} known-bits
+\emph{and} three phi-image facts simultaneously
+(\S\ref{sec:frame-results}) --- the same conjunction argument as
+\S\ref{sec:conjunction}, now spanning two theories. The requirements
+for a super-analyzer are therefore: (i) a sound, refusing importer for
+load-equality facts whose premise is discharged by the compiler's own
+memory analyses (the frame rule of separation
+logic~\cite{reynolds2002separation} as a \emph{fact source}); and
+(ii) an encoding in which the stabilized values the vectorizer
+manufactures (\texttt{freeze}, resume indices, remainder-loop starts)
+are pinned by \emph{definitional axioms} rather than left free. Both
+are additions to the encoder, not to the transform --- the
+super-analysis contract is preserved.
 %% =====================================================================
 \section{\tool{}: Design and Implementation}
 \label{sec:system}
@@ -474,6 +588,68 @@ guard chains are jointly unsatisfiable for the actual constants ---
 likely sound eliminations, conservatively surrendered because the tool
 cannot distinguish that situation from its own bugs. We report vacuous
 counts in every experiment; they are zero except where noted.
+\subsection{Discharging heap invariants: the frame tier}
+\label{sec:frame-machinery}
+The \texttt{frame} option implements the requirements of
+\S\ref{sec:frame} as two encoder-level additions.
+\paragraph{FRAME: the frame rule as a fact source.}
+For a candidate pair of loads $L_1$ (guard-side) and $L_2$ (check-side)
+of the same address, the imported fact is
+\[
+\frac{\mathrm{clobber}\bigl(L_2,\ \mathrm{loc}(L_1)\bigr) \ \preceq\
+      \mathrm{def}(L_1)}
+     {\ |\mathrm{FRAME}{:}k|:\ \ \llbracket L_1 \rrbracket =
+      \llbracket L_2 \rrbracket\ }
+\]
+--- if MemorySSA's clobbering access for $L_2$, queried \emph{at
+$L_1$'s own memory location} (address, width, and aliasing metadata),
+is $L_1$'s defining access or one dominating it, the loads agree.
+Querying with $L_1$'s location is the load-bearing choice: the
+check-side loads are vectorizer-cloned and carry no metadata at all
+(which is precisely why LLVM leaves the checks in), while the
+guard-side load carries Julia's scoped no-alias metadata, under which
+stock \textsc{ScopedNoAliasAA} proves every loop-carried store
+harmless. The equality enters the query as a context-side fact labeled
+$|\mathrm{FRAME}{:}k|$ --- vacuity-audited, and guarded by two standing
+\textsc{sat} tripwire tests (a may-alias clobber and a single-arm
+clobber must refuse forever). No new alias analysis is written: the
+walk delegates every disjointness verdict to LLVM's existing stack and
+\emph{refuses} on anything unmodeled, the same posture as every other
+import in \S\ref{sec:system-facts}.
+\paragraph{Definitional encoding of stabilized values.}
+Three successive countermodel inspections --- our standing diagnostic:
+a should-prove query returning \textsc{sat} in microseconds indicates a
+\emph{missing constraint}, not solver hardness --- exposed a chain of
+encoding gaps, each closed by the same principle: replace a free
+variable with the \emph{definitional axiom} of its defining code.
+First, \texttt{freeze}: the vectorizer's multiversioning stabilizes its
+guard flags against poison, and 13 of GEMM's 16 trap conditions were
+freeze-wrapped --- encoded as unconstrained Booleans, their queries
+were trivially satisfiable no matter what facts we supplied. Since
+\texttt{freeze} is the identity on every non-poison operand, the axiom
+$\llbracket \mathit{freeze}(x) \rrbracket = \llbracket x \rrbracket$
+is sound over the encoder's over-approximation (a poisoned operand is
+itself a free variable and can assume the frozen choice). Second,
+trip-count bounds moved to \emph{subtraction form}:
+\[
+\llbracket \phi \rrbracket - \mathit{start} \ \le_u\
+s \cdot \mathrm{BTC}
+\qquad\text{instead of}\qquad
+\llbracket \phi \rrbracket \ \le_u\ \mathit{start} + s \cdot
+\mathrm{BTC},
+\]
+which makes the unit-stride upper bound unconditionally wrap-safe ---
+modular subtraction cancels overflow exactly --- retiring the no-wrap
+side conditions and admitting the \emph{symbolic} starts of remainder
+loops for free. Third, the leaves of those bound expressions (the
+vectorizer's resume indices and the preamble computing them) are
+\emph{pre-encoded} through the ordinary instruction encoder: selects
+become if-then-elses, merge-point phis become unions guarded by their
+encoded branch predicates. No ``trip count $>0$'' is asserted anywhere;
+the countermodels claiming to stand inside zero-trip loops die because
+they violate the definitions. Every addition is true of all executions
+by construction, so the over-approximation --- and hence soundness ---
+is untouched.
 \subsection{Stage 3: transform (serial)}
 After the pool joins, the main thread folds the proven branches in
 discovery order (the only IR mutation in the pass, with a double-fold
@@ -513,7 +689,7 @@ is \pct{96} saturated at 100\,ms on the densest workload, and the
 performance builds' per-platform elimination counts exactly match the
 audit runs', so no proof was lost to the budget.
 \paragraph{Research questions.}
-Our evaluation is organized around three questions, one per contribution
+Our evaluation is organized around four questions, one per contribution
 that admits measurement:
 \begin{itemize}
 \item \textbf{RQ1a --- How much can super-analysis prove?}
@@ -527,6 +703,11 @@ that admits measurement:
 \item \textbf{RQ2 --- What does it cost?}
   Compile latency, parallel scaling, and the per-query timeout dial that
   makes super-analysis viable in-pipeline (\S\ref{sec:results-cost}).
+\item \textbf{RQ3 --- Can the heap-invariant frontier be crossed?}
+  The GEMM acceptance test of \S\ref{sec:frame} under the frame tier of
+  \S\ref{sec:frame-machinery}: proof yield, end-to-end speedup through
+  proof-licensed annotation, and ride-along gains
+  (\S\ref{sec:frame-results}).
 \end{itemize}
 %% =====================================================================
 \section{Experimental Results}
@@ -794,77 +975,12 @@ practical reading is favorable: an \emph{online} deployment at
 millisecond budgets gets \pct{96} of zlib-class proofs and silently,
 soundly skips OpenSSL-class queries (\textsc{unknown} keeps the check);
 an offline audit turns the dial up.
-%% =====================================================================
-\section{Crossing the Frontier: Heap-Invariant Super-Analysis}
-\label{sec:frame}
-The taxonomy of \S\ref{sec:future} was written first and acted on
-second: this section reports the discharge of its dominant class on its
-own acceptance test. The target is the kernel of Julia's standard-library
-GEMM (\texttt{generic\_matmatmul!}) with its \emph{real} dimension guards
-restored --- the benchmark on which \tool{} as evaluated in
-\S\ref{sec:results} proves \emph{zero} of 16 residual bounds-check edges
-against a measured $3.4\times$ checked-vs-unchecked ceiling. Results in
-this section use an extended encoder (three additions below); all
-numbers in \S\ref{sec:results} were produced by the base encoder and are
-unchanged --- both are pinned in the artifact.
-
-\subsection{Three additions}
-\label{sec:frame-machinery}
-\paragraph{FRAME: the frame rule as a fact source.}
-The frame gap has a one-line statement: the guard constrains one load of
-\texttt{size(A,1)}, the check consumes a \emph{different} load of the
-same address, and nothing connects them. The connecting theorem is the
-separation-logic frame rule~\cite{reynolds2002separation}: if no memory
-write between loads $L_1$ and $L_2$ of the same pointer can touch that
-location, the loads agree. We discharge the premise with a single
-MemorySSA walk per candidate pair, asking for the clobbering access of
-$L_2$ \emph{at $L_1$'s own memory location} --- address, width, and
-aliasing metadata. Querying with $L_1$'s location is the load-bearing
-choice: the check-side loads are vectorizer-cloned and carry no metadata
-at all (which is precisely why LLVM itself leaves the checks in), while
-the guard-side load carries Julia's scoped no-alias metadata, under which
-stock \textsc{ScopedNoAliasAA} proves every loop-carried store harmless.
-If the walk returns $L_1$'s defining access (or one dominating it), the
-equality $L_1 = L_2$ enters the query as a fact labeled
-$|\mathrm{FRAME}{:}k|$ --- context-side, vacuity-audited, and guarded by
-two standing \textsc{sat} tripwire tests (a may-alias clobber and a
-single-arm clobber must refuse forever). No new alias analysis is
-written: the walk delegates every disjointness verdict to LLVM's
-existing stack and \emph{refuses} on anything unmodeled, the same
-posture as every other import in \S\ref{sec:system-facts}.
-\paragraph{Definitional encoding of stabilized values.}
-Three successive countermodel inspections --- our standing diagnostic:
-a should-prove query returning \textsc{sat} in microseconds indicates a
-\emph{missing constraint}, not solver hardness --- exposed a chain of
-encoding gaps, each closed by the same principle: replace a free
-variable with the \emph{definitional axiom} of its defining code.
-First, \texttt{freeze}: the vectorizer's multiversioning stabilizes its
-guard flags against poison, and 13 of GEMM's 16 trap conditions were
-freeze-wrapped --- encoded as unconstrained Booleans, their queries were
-trivially satisfiable no matter what facts we supplied. Since
-\texttt{freeze} is the identity on every non-poison operand, encoding
-$\mathit{freeze}(x) = x$ is sound over the encoder's
-over-approximation (a poisoned operand is itself a free variable and can
-assume the frozen choice). Second, trip-count bounds moved to
-\emph{subtraction form}: asserting $\phi - \mathit{start} \le_u
-s{\cdot}\mathrm{BTC}$ instead of $\phi \le_u \mathit{start} +
-s{\cdot}\mathrm{BTC}$ makes the unit-stride upper bound unconditionally
-wrap-safe --- modular subtraction cancels overflow exactly --- which
-retires the no-wrap side conditions and admits the \emph{symbolic}
-starts of remainder loops for free. Third, the leaves of those bound
-expressions (the vectorizer's resume indices and the preamble computing
-them) are \emph{pre-encoded} through the ordinary instruction encoder:
-selects become if-then-elses, merge-point phis become unions guarded by
-their encoded branch predicates. No ``trip count $>0$'' is asserted
-anywhere; the countermodels claiming to stand inside zero-trip loops die
-because they violate the definitions. Every addition is
-true of all executions by construction, so the over-approximation ---
-and hence soundness --- is untouched.
-
-\subsection{Results: 0 to 16-of-16}
+\subsection{RQ3: Crossing the frontier --- 0 to 16-of-16}
 \label{sec:frame-results}
-On the GEMM acceptance test the extended encoder proves \textbf{all 16}
-trap edges: 11 eliminated outright and 5 whose \emph{guard contexts
+On the GEMM acceptance test of \S\ref{sec:frame}, the frame tier of
+\S\ref{sec:frame-machinery} proves \textbf{all 16} trap edges, where
+the base encoder proved zero (both encoders are pinned in the
+artifact): 11 eliminated outright and 5 whose \emph{guard contexts
 alone} are contradictory --- dynamically infeasible loop-version
 selections that the vacuity audit, by doctrine, refuses to convert into
 eliminations (the audit cannot distinguish genuine infeasibility from
