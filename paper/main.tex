@@ -207,7 +207,7 @@ with no synthesis, inside the compilation pipeline.}
 \Description{A horizontal axis from online/low-latency on the left to
 offline/high-latency on the right. Three boxes sit along it: Conventional
 Optimization (LLVM -O3) on the left, Super-Analysis (ODeSSy) in the
-middle, and Super-Optimization (Souper, STOKE) on the right.}
+middle, and Superoptimization (Souper, STOKE) on the right.}
 \label{fig:spectrum}
 \end{figure}
 
@@ -275,7 +275,7 @@ require.
 This paper makes the following contributions:
 \begin{itemize}
 \item \textbf{Super-analysis} (\S\ref{sec:superanalysis}): an aggressive compilation paradigm
-  positioning between conventional heuristic-based optimization and super-optimization. The general recipe for this paradigm is to use solvers (SMT in particular) as an analysis oracle, while applying cheap conventional rules-based transformation for optimization.
+  positioning between conventional heuristic-based optimization and superoptimization. The general recipe for this paradigm is to use solvers (SMT in particular) as an analysis oracle, while applying cheap conventional rules-based transformation for optimization.
 \item \textbf{\tool{}} (\S\ref{sec:system}): a three-stage LLVM pass
   (serial discovery, parallel solve, serial transform) that eliminates sanitizer checks and optimizes the resulting IR. ODeSSy supports C/C++, Swift, and Julia as frontends and can enable hot-path transformations and speedups.
 \item \textbf{An honest evaluation} (\S\ref{sec:results}): 
@@ -345,15 +345,15 @@ monetizes.
 \centering
 \includegraphics[width=\linewidth]{super-opt_cost.png}\\[0.9em]
 \includegraphics[width=\linewidth]{super-analysis_cost.png}
-\caption{Where the cost goes. \emph{Top:} super-optimization pays twice
+\caption{Where the cost goes. \emph{Top:} superoptimization pays twice
 --- an expensive search over candidate programs, plus an SMT equivalence
 check \emph{per candidate}. \emph{Bottom:} super-analysis drops the search
 entirely; the transformation is a rewrite the compiler already knows, and
 the solver decides one fact per site rather than validating a stream of
-guesses. \textbf{Super-optimization is super-expensive because of synthesis;
+guesses. \textbf{Superoptimization is super-expensive because of synthesis;
 super-analysis is merely expensive.}}
 \Description{Two stacked flow diagrams. The top diagram shows
-Super-Optimization branching into Synthesis (marked triple-dollar) and SMT
+Superoptimization branching into Synthesis (marked triple-dollar) and SMT
 equivalence checking (double-dollar). The bottom diagram shows
 Super-Analysis branching into rules-based transformation (marked one cent)
 and SMT fact proof (double-dollar).}
@@ -454,7 +454,7 @@ single heuristic could. Each proof's minimal core has the shape:
 --- a return-value range (\textsf{RM}), two scalar-evolution facts
 (\textsf{SCEV}), a lattice value range (\textsf{LVI}), and two dominating
 guard conditions ($G_0$, $G_k$), jointly inconsistent with the check
-firing. Four independent analyses and path conditions must be intersected;
+firing (\textsf{Spec}). Four independent analyses and path conditions must be intersected;
 each in isolation is insufficient (removing any core member returns
 \textsc{sat}). LLVM's analyses do not compose this way: each consumes the
 IR and produces facts in its own domain, and no pass computes the
@@ -474,10 +474,15 @@ already contains and the checks a compiler inserts; where that redundancy
 is zero, all-\textsc{sat} is the correct output. Our evaluation treats
 such results as findings, not failures: crypto code whose unsigned
 wraparound \emph{is} the algorithm produces all-\textsc{sat} under the
-unsigned specification (\S\ref{sec:results-static}), and Julia's own
-compiler strands a measured $3.4\times$ behind checks whose redundancy
-requires heap reasoning outside today's fact sources
-(\S\ref{sec:future}).
+unsigned specification (\S\ref{sec:results-static}) --- checks that
+\emph{fire} by design cannot be dead. The bound is always relative to
+the fact vocabulary, however, and this paper measures both sides of
+it. Julia's stdlib GEMM is irreducible to every \emph{scalar}
+conjunction --- its own compiler strands a measured $4\times$ behind
+those checks --- until the heap-invariant facts of \S\ref{sec:frame}
+make all sixteen provable; what survives even that vocabulary is
+priced rather than hidden, benchmark by benchmark, in
+Table~\ref{tab:frontier}.
 %% =====================================================================
 \section{Heap-Invariant Super-Analysis}
 \label{sec:frame}
@@ -755,15 +760,13 @@ Our evaluation is organized around three questions:
 \begin{itemize}
 \item \textbf{RQ1 --- How much does it improve performance?}
   How many checks can \tool{} prove dead, and --- where proofs land on
-  hot paths --- how much does elimination pay against each machine's
-  own checked-vs-unchecked ceiling? (\S\ref{sec:results-perf})
+  hot paths --- how much speedup it gains? (\S\ref{sec:results-perf})
 \item \textbf{RQ2 --- Why do we have speedup?}
   Which transformations do hot-path proofs unlock, benchmark by
-  benchmark --- and why does the same dose elsewhere pay nothing, or
-  less than nothing? (\S\ref{sec:results-mech})
+  benchmark? (\S\ref{sec:results-mech})
 \item \textbf{RQ3 --- What does it cost?}
   How does \tool{} scale, and does it remain an online compiler pass
-  with a flexible latency budget? (\S\ref{sec:results-cost})
+  with a flexible time budget? (\S\ref{sec:results-cost})
 \end{itemize}
 %% =====================================================================
 \section{Experimental Results}
