@@ -143,8 +143,7 @@ but take hours, confining them to small kernels and offline use. We introduce
 \emph{analysis} while transformations remain conventional, avoiding
 synthesis entirely. The key argument for super-analysis is that many simple, yet fruitful transformations require complex reasoning: proving a safety check dead often needs facts from four
 independent LLVM analyses \emph{simultaneously} --- a conjunctive entailment
-problem suited to a solver, not to any single dataflow pass. 
-
+problem suited to a solver, not to any single dataflow pass.
 We instantiate
 super-analysis in \tool{}, an LLVM pass that proves sanitizer traps and
 native-language safety checks unreachable and deletes them.
@@ -195,7 +194,6 @@ analysis \emph{and} transformation --- to an expensive decision procedure
 that aggressively searches for replacement code, achieving precision that heuristics
 cannot match at costs that confine them to peephole windows and offline
 runs.
-
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{spectrum.png}
@@ -210,7 +208,6 @@ Optimization (LLVM -O3) on the left, Super-Analysis (ODeSSy) in the
 middle, and Superoptimization (Souper, STOKE) on the right.}
 \label{fig:spectrum}
 \end{figure}
-
 This paper argues for a middle ground we call \emph{super-analysis}
 (Figure~\ref{fig:spectrum}): use
 the decision procedure for \emph{analysis only}, and leave transformation
@@ -218,12 +215,10 @@ to the conventional machinery that already exists. No code is synthesized;
 no search is performed. The solver answers exactly one kind of question
 --- \emph{is this program point reachable under this context?} --- and a
 standard, trivially correct transformation (deleting an unreachable branch)
-consumes the answer. 
-
+consumes the answer.
 We use an SMT solver as an analysis oracle and feed it with the encoded formula $Context \land Query$ and ask if it is satisfiable. Soundness is preserved by construction: an
 \textsc{unsat} verdict is a proof, a \textsc{sat} or \textsc{unknown}
 verdict changes nothing.
-
 Why should a solver find opportunities that forty years of heuristics
 miss? Our central empirical finding is that the missed opportunities are
 typically not hard to \emph{transform} but hard to \emph{justify}. Proving
@@ -239,7 +234,6 @@ heuristic cannot. Our tool extracts the unsat core of every proof, so this
 claim is not an intuition but a measurement: the cores name the
 contributing analyses, and the majority of our nontrivial proofs draw on
 two to four sources at once (\S\ref{sec:results-static}).
-
 We instantiate super-analysis in \tool{}\footnote{On-Demand SMT System.},
 an LLVM module pass targeting one of the most consequential class of
 provably-dead code in modern software: \emph{safety checks}. Sanitizers
@@ -255,9 +249,7 @@ delete exactly the checks that are provably redundant with the guards,
 contracts, and invariants already present in the program, and keep every
 check that is not --- each deletion certified by an unsat core, audited
 for vacuity, and validated by byte-identical program output.
-
 \tool{} is sandwiched between two LLVM -O3 runs in our pipeline. The first -O3 run injects the sanitizers and performs intial optimizations. \tool{} then eliminated many of the injected traps and sanitizers, followed by the second -O3 run that cleans the IR and performs new transformations enabled by \tool{}. \tool{} eliminates up to \pct{35.0} sanitizers left by a single -O3 run in large scale C repositories, and up to \pct{13.6} of sanitizers left after 2 consecutive -O3 runs. In our experiments we compare \tool{} against $2\times$-O3.
-
 Super-analysis is a general compilation paradigm rather than a single
 optimization, and it carries one open problem we deliberately defer:
 \emph{when is expensive analysis worth invoking?} A solver consulted
@@ -271,76 +263,95 @@ application therefore isolates the paradigm's contribution --- precision
 of analysis --- from the question it defers, and we return in
 \S\ref{sec:future} to what invoking super-analysis elsewhere would
 require.
-
 This paper makes the following contributions:
 \begin{itemize}
 \item \textbf{Super-analysis} (\S\ref{sec:superanalysis}): an aggressive compilation paradigm
   positioning between conventional heuristic-based optimization and superoptimization. The general recipe for this paradigm is to use solvers (SMT in particular) as an analysis oracle, while applying cheap conventional rules-based transformation for optimization.
 \item \textbf{\tool{}} (\S\ref{sec:system}): a three-stage LLVM pass
   (serial discovery, parallel solve, serial transform) that eliminates sanitizer checks and optimizes the resulting IR. ODeSSy supports C/C++, Swift, and Julia as frontends and can enable hot-path transformations and speedups.
-\item \textbf{An honest evaluation} (\S\ref{sec:results}): 
+\item \textbf{An honest evaluation} (\S\ref{sec:results}):
   \tool{} removes up to \pct{13.6} of checks on real repositories.
-  Runtime experiments with 30-repetition medians on two target architectures (x86 and M-series) show \emph{when} elimination pays: removing hot-loop checks has a cascading effect, unlocking further transformations (unrolling, vectorization, etc) that enables up to $4.16\times$ speedups for some widely used kernels. 
+  Runtime experiments with 30-repetition medians on two target architectures (x86 and M-series) show \emph{when} elimination pays: removing hot-loop checks has a cascading effect, unlocking further transformations (unrolling, vectorization, etc) that enables up to $4.16\times$ speedups for some widely used kernels.
 \item \textbf{Flexible Compiler Latency} (\S\ref{sec:results-cost}): \tool{} proofs are generally cheap: \pct{96} of
   zlib's proofs survive a 100\,ms per-query budget. By multi-threading and strict SMT timout budgets \tool{} can compile up to $4.8\times$ faster, making it an online compiler.
 \end{itemize}
 %% =====================================================================
 \section{Background and Related Work}
 \label{sec:related}
-\paragraph{Sanitizers and native checks.}
-Compiler-inserted safety checks come from two sources. Sanitizers
-instrument C/C++ with checks for undefined or suspicious behavior ---
-signed overflow, shifts, array bounds~\cite{serebryany2012asan,
-ubsanDocs}; compiled with \texttt{-fsanitize-trap}, each check lowers to a
-compare, a branch, and a trapping instruction. Memory-safe languages
-insert equivalent checks natively: Swift traps on overflow and
-out-of-bounds access by default, Rust panics on bounds violations
-unconditionally in release builds, Julia bounds-checks array accesses
-under its JIT. In both worlds the checks are semantically identical IR
-patterns --- a conditional branch to a diverging block --- which is what
-lets one tool serve both (\S\ref{sec:system}).
-\paragraph{Superoptimization.}
-From Massalin's exhaustive search~\cite{massalin1987superoptimizer}
-through stochastic search~\cite{schkufza2013stoke} to Souper's
-SMT-verified peepholes over LLVM IR~\cite{sasnauskas2017souper},
-superoptimizers couple a candidate generator with a verifier and
-\emph{synthesize} replacement code. Souper is the closest relative to this
-work: it also queries an SMT solver about LLVM IR. The difference is
-architectural: Souper's solver validates synthesized candidates over
-bounded peephole windows, whereas \tool{} performs no synthesis at all ---
-its solver decides reachability over arbitrarily structured acyclic
-slices, and the ``transformation'' is branch folding that LLVM has
-performed correctly for decades. This is why super-analysis scales to
-whole libraries (156k-line IR modules; 12{,}798 checks in zstd) that no
-synthesizing tool can process, while remaining, like Souper, a
-capability-and-honest-accounting story rather than a raw-speedup one.
+\paragraph{Superoptimization.} A superoptimizer tries to search a large space of programs for a faster or shorter alternative to the initial code.
+Massalin's original superoptimizer~\cite{massalin1987superoptimizer}
+enumerated every instruction sequence up to a length bound and kept the
+shortest one that matched the target on test inputs. Two lines of work
+made the idea provably sound and practical. STOKE~\cite{schkufza2013stoke} replaces
+enumeration with stochastic search: a Markov-chain Monte Carlo walk
+mutates x86-64 kernels, scores each candidate by test-case correctness
+and estimated latency, and hands the survivors to an SMT solver for a
+formal equivalence proof, at costs of hours per loop-free kernel.
+Souper~\cite{sasnauskas2017souper} works at the LLVM IR level: it
+synthesizes replacements for bounded peephole windows and verifies each
+candidate with an SMT solver. Souper is the closest relative to this
+work --- same IR and solver --- and the difference is architectural.
+In every superoptimizer the search proposes code and the solver
+verifies it, so the solver is invoked \emph{per candidate}. \tool{}
+performs no synthesis at all: its solver decides reachability over
+arbitrarily structured acyclic slices, once per check site, and the
+compiler's own machinery performs the rewrite. This is why
+super-analysis scales to whole libraries (156k-line IR modules; 12{,}798
+checks in zstd) that no synthesizing tool can process. Equality
+saturation~\cite{tate2009equality} searches the same kind of space by a
+different route: rather than synthesizing candidates it saturates an
+e-graph with the combinations of a fixed rewrite-rule set and extracts
+the cheapest result, so its search ranges over rules rather than over
+arbitrary programs and no candidate needs a proof of its own.
+\S\ref{sec:design-space} places these paradigms on a common map.
 \paragraph{Solver-aided compilation and validation.}
-Equality saturation~\cite{tate2009equality} replaces destructive phase
-ordering with a saturating rewrite engine; it shares our diagnosis
-(heuristic pipelines miss conjunctions of facts) but attacks the
-transformation side. Alive2~\cite{lopes2021alive2} uses SMT to
-\emph{validate} existing LLVM transformations; \tool{} inverts the
-direction, using SMT to \emph{enable} transformations that the pipeline
-could not itself justify. Work testing LLVM's dataflow analyses against
-SMT ground truth~\cite{taneja2020knownbits} quantifies the precision gap
-we exploit; our fact-import tier (\S\ref{sec:system-facts}) closes the
-loop by asserting those same analyses' results \emph{into} the solver, so
-the proof combines the strengths of both.
-\paragraph{Check-elimination and polyhedral techniques.}
-Classic bounds-check elimination in JITs and ahead-of-time compilers is
-heuristic and local; polyhedral frameworks~\cite{grosser2012polly} decide
-affine questions exactly but are confined to affine loops --- our
-opportunity matrix confirms LLVM already handles the affine case
-(PolyBench emits zero residual traps at O3) while failing on the
-data-dependent loops of compression and cryptography, which is precisely
-where \tool{} operates. Recent empirical work questioning marginal alias
-precision~\cite{relaxingalias2025} supports our strategy of spending
-solver time only at check sites --- the places where precision provably
-monetizes.
+Alive2~\cite{lopes2021alive2} uses SMT to prove that the code LLVM
+emits behaves like the code LLVM was given, acting as a compiler
+validator; \tool{} inverts the direction, using SMT to \emph{enable}
+transformations the pipeline could not itself justify.
+Closest in spirit to our work is Taneja et al.~\cite{taneja2020knownbits},
+who use an SMT solver to test LLVM's dataflow analyses. For each expression they compute the
+\emph{most precise} answer an analysis could possibly give --- the
+exact set of known bits, the tightest integer range --- and compare it
+with LLVM's. LLVM's answers are sound but often imprecise: only \pct{48.7} of its integer ranges and
+\pct{35.0} of its demanded-bits results are as tight as possible. Two of
+their findings bear on super-analysis. First, their solver-based analysis
+is slow --- 9\,s per expression for known bits, 16\,s for integer
+ranges --- and they conclude it is ``too slow to use at compile time.''
+The cost comes from the question they ask. Finding the best abstract
+value is a \emph{search} over the abstract domain: known bits takes
+$2n$ solver queries for an $n$-bit value, and ranges take a binary
+search, so one answer costs dozens of queries. \tool{} asks a different
+and much cheaper question: one yes/no reachability query per check
+site (decision rather than search), which is why our median query
+takes milliseconds (\S\ref{sec:results-cost}). Second, when they compiled
+four programs with the maximally precise analyses installed, three moved
+by a few percent at most; the one clear win (\pct{8}--\pct{22} on bzip2)
+came not from the middle-end, whose optimized IR showed only minor
+differences, but from the backend, whose instruction selection consumes
+known bits. We read this as support for our thesis. Sharpening
+\emph{one} analysis in isolation moves the optimizer little, because
+what the pipeline lacks is not better facts but the ability to
+\emph{conjoin} the facts it already has across analyses; our unsat cores
+measure exactly that --- the nontrivial proofs draw on two to four fact
+sources at once (\S\ref{sec:conjunction}). \tool{} imports LLVM's own
+imprecise results as solver premises
+(\S\ref{sec:system-facts}) and leaves the conjunction to the solver.
+\paragraph{Sanitizers, native checks, and check elimination.}
+Safety checks are the target we chose to instantiate super-analysis on,
+and they come from two sources. Sanitizers instrument C/C++ with checks
+for undefined or suspicious behavior --- signed overflow, shifts, array
+bounds~\cite{serebryany2012asan, ubsanDocs}; compiled with
+\texttt{-fsanitize-trap}, each check lowers to a compare, a branch, and
+a trapping instruction. Memory-safe languages insert equivalent checks
+natively: Swift traps on overflow and out-of-bounds access by default,
+Julia bounds-checks array accesses under its JIT. In both worlds the
+checks are semantically identical IR patterns --- a conditional branch
+to a diverging block --- which is what lets one tool serve every
+frontend (\S\ref{sec:system}).
 %% =====================================================================
 \section{Super-Analysis}
 \label{sec:superanalysis}
-
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{super-opt_cost.png}\\[0.9em]
@@ -359,10 +370,35 @@ Super-Analysis branching into rules-based transformation (marked one cent)
 and SMT fact proof (double-dollar).}
 \label{fig:cost}
 \end{figure}
-
-\subsection{The spectrum}
+\subsection{The design space}
+\label{sec:design-space}
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{quadrants.pdf}
+\caption{Which component pays for precision. Every optimizer is an
+analysis that licenses a rewrite plus a transformation that performs it,
+and each can be cheap or expensive. Conventional optimization keeps both
+cheap; superoptimization makes both expensive. Super-analysis takes one
+asymmetric corner (a solver licenses each rewrite; the compiler applies
+it). Super-transformation takes the other: exhaustive search over
+combinations of rewrites whose soundness was established once, offline.
+Superoptimization is the conjunction of the two. Both asymmetric corners
+are under-explored; this paper develops the first.}
+\Description{A two-by-two matrix. Columns: transformation cost, cheap
+versus expensive. Rows: analysis cost, cheap versus expensive. Cheap/cheap
+is Conventional Optimization (LLVM -O3). Cheap analysis with expensive
+transformation is Super-Transformation (e.g., equality saturation), marked
+under-explored. Expensive analysis with cheap transformation is
+Super-Analysis (ODeSSy). Expensive/expensive is Superoptimization (Souper,
+STOKE).}
+\label{fig:quadrants}
+\end{figure}
 Conventional optimization and superoptimization differ in \emph{which
-component} pays for precision. A conventional pass has cheap analysis and
+component} pays for precision. Every optimizer is two things: an
+\emph{analysis} that establishes the facts licensing a rewrite, and a
+\emph{transformation} that produces the replacement code. Either can be
+cheap or expensive, which gives the four-way design space of
+Figure~\ref{fig:quadrants}. A conventional pass has cheap analysis and
 cheap transformation, and both are heuristic. A superoptimizer makes both
 expensive: the search proposes code, the solver verifies it. Super-analysis
 splits the difference asymmetrically: expensive, precise, \emph{sound}
@@ -371,7 +407,33 @@ design wagers that in mature pipelines the transformations are not the
 bottleneck --- LLVM already knows how to fold a branch, unroll a loop, and
 vectorize a body --- and that what is missing is the \emph{license} to do
 so.
-
+\paragraph{The other asymmetric corner.}
+The remaining cell --- cheap analysis, expensive transformation --- is
+the mirror image of super-analysis, and we call it
+\emph{super-transformation}: an exhaustive search for alternative code.
+Synthesis, as practiced by superoptimizers, is its most aggressive form,
+because the candidates are arbitrary programs. Equality
+saturation~\cite{tate2009equality} is its disciplined form: it exhausts
+the sequences and combinations of a fixed set of rewrite rules, which is
+still an exhaustive search for replacement code, but over a space every
+point of which is correct by construction. That is what keeps equality
+saturation in the cheap-analysis row. Each rule is an equality proven
+sound once, offline, so no candidate requires a proof of its own at
+compile time. The expense is entirely on the transformation side: saturating
+the e-graph and then extracting the cheapest term from it, which the
+original work posed to a pseudo-boolean solver and later systems solve
+greedily or with ILP. Synthesis lands in the superoptimization cell
+precisely because it lacks this guarantee: an arbitrary candidate carries
+no proof, so each one must be verified, and the analysis becomes
+expensive as well.
+The matrix therefore states the thesis of this paper exactly.
+Superoptimization is super-analysis \emph{plus} super-transformation; we
+take the first half and leave the second to the compiler's existing
+rules. Both asymmetric corners are under-explored relative to the two
+diagonal ones, and both are sound: the top row inherits soundness from
+its rules, the bottom row from a per-site or per-candidate proof.
+Super-analysis is the only cell that obtains a \emph{new} semantic fact
+at compile time without paying for a search.
 Figure~\ref{fig:cost} makes the cost consequence concrete. A
 superoptimizer's dominant expense is not the solver but the
 \emph{synthesis loop} that feeds it: a search over candidate programs,
@@ -382,10 +444,46 @@ compiler performs for free. This is why the two paradigms differ by orders
 of magnitude in latency while sharing the same underlying technology, and
 why super-analysis can run inside the pipeline rather than beside it
 (\S\ref{sec:results-cost}).
+\subsection{Encoding program context}
+\label{sec:encoding}
+A super-analyzer decides a property of a single \emph{program point} ---
+here, whether a trap is reachable. But the property is never decided by
+the point itself; it is decided by the \emph{context} that leads there.
+The core machinery of the paradigm is therefore a translation: render
+the context of a program point as a logical formula, and ask the solver
+whether the property is consistent with it.
 
+The translation proceeds \emph{backwards} from the point of interest.
+Starting at the trap condition, it walks the chain of definitions that
+feed it and the branch conditions that dominate it, and renders each
+instruction as an exact equation over bit-vectors --- arithmetic,
+comparisons, shifts, overflow intrinsics, and the control flow
+connecting them. The resulting formula is satisfiable exactly by the
+machine states that can reach the point, so reachability becomes one
+satisfiability query: $\mathit{context} \wedge \mathit{trap}$.
+
+A backward encoding cannot descend forever. It stops at
+\emph{boundaries} --- loop-carried values, function calls, loads:
+boxes whose interior it does not open. What crosses a boundary is a
+\emph{post-condition}: a fact true of the box's result in every
+execution. The weakest post-condition is no constraint at all --- the
+value is a free variable --- and this is the soundness floor: anything
+not understood is over-approximated, so an \textsc{unsat} verdict holds
+for every concrete behavior of the unencoded parts. From that floor,
+post-condition derivation is a precision dial that can in principle be
+turned arbitrarily far: a range, an algebraic relation among boundary
+values, a loop invariant, a full summary. Every notch is sound so long
+as the stated fact holds of all executions, and every notch kills
+countermodels that the floor admits.
+
+This encoded context is the dominant machinery of super-analysis: by
+proof count, most eliminations in this paper are discharged by the
+translated context alone (the \emph{light} tier of
+\S\ref{sec:system-facts}). What remains is the boxes the encoding
+leaves closed --- which post-conditions to import for them, and why
+composing those facts requires a solver.
 \subsection{Why conjunction necessitates a solver}
 \label{sec:conjunction}
-
 \begin{figure*}
 \begin{minipage}[t]{0.46\textwidth}
 \begin{lstlisting}[style=odessy,
@@ -440,7 +538,6 @@ calls ubsantrap. The caption lists the three facts whose conjunction
 refutes the trap.}
 \label{fig:simple-example}
 \end{figure*}
-
 Consider the message-schedule loop of a Swift SHA-256 kernel
 (Figure~\ref{fig:simple-example}), whose inner
 16 iterations index a 64-element working array. Swift's bounds checks on
@@ -497,7 +594,6 @@ sources prove \emph{zero} of 16 residual bounds-check edges against a
 measured $3.4\times$ checked-vs-unchecked ceiling --- checks that
 Julia's own authors discharge by hand, with trusted \texttt{@inbounds}
 annotations, in the shipping standard library.
-
 \begin{figure*}
 \begin{minipage}[t]{0.47\textwidth}
 \begin{lstlisting}[style=odessy,
@@ -551,7 +647,6 @@ and one inside the vectorized loop feeding the bounds check, with the
 check and its branch in red.}
 \label{fig:frame-example}
 \end{figure*}
-
 The failure is structural, not a missing special case. First, the
 connecting fact is \emph{nonlocal}: the guard and the check are linked
 only by the theorem that the loads agree, and that theorem's premise
@@ -1019,9 +1114,25 @@ real library at maximum proof strength: 215 scattered cold eliminations
 still buy nothing, because count is not value. A full-suite regression
 sweep is strictly monotone --- no benchmark lost a proof, and the
 vacuity audit reports zero on every one.
+\paragraph{Not overfitted to GEMM.}
+The frame tier and the definitional encoding of
+\S\ref{sec:frame-machinery} were developed against a single acceptance
+test, so the natural objection is that they are GEMM-specific
+engineering. Three facts say otherwise. They contain nothing about
+matrices: FRAME asks MemorySSA and LLVM's existing alias analyses for a
+verdict they already compute, and the \texttt{freeze} and trip-count
+axioms are facts of IR semantics --- no new analysis was written, and
+the additions are encoder rules that turn cheap, existing LLVM
+heuristics into solver premises. The benchmark chose itself: it is
+Julia's shipping standard library, whose authors discharge the same
+checks by hand with \texttt{@inbounds}, and the gain holds across 14
+problem shapes. And, as the ride-along gains show, the same additions
+raised proof counts and speedups on Swift sha256, Julia sha256, a DSP
+filter, and the CryptoSwift library --- hash, signal-processing, and
+library code in a second language, none of which a matrix-specific
+hack could have touched.
 \subsection{RQ3: What does it cost?}
 \label{sec:results-cost}
-
 \begin{figure*}[t]
 \centering
 \includegraphics[width=0.92\textwidth]{smt_latencies.pdf}
@@ -1043,7 +1154,6 @@ milliseconds with a small tail beyond one second; the UNKNOWN panel is
 empty; the fourth panel overlays the two distributions.}
 \label{fig:latency}
 \end{figure*}
-
 \begin{table}
 \caption{The timeout dial (zlib deflate, unsigned, O1: 457 queries,
 8 workers, x86). \textsc{unsat} yield saturates three decades before
@@ -1121,7 +1231,6 @@ an offline audit turns the dial up.
 %% =====================================================================
 \section{Future Work}
 \label{sec:future}
-
 In this paper we targeted sanitizer removal as a consequential
 optimization; super-analysis, however, is not limited to this
 application. A compiler could host a general super-analysis module
@@ -1129,15 +1238,14 @@ following a simple recipe: wherever the compiler's conventional
 range and dataflow heuristics fail, formulate the question as an SMT
 decision problem and ask for an answer. Such a compiler would be very
 slow; a faster alternative is to invoke the expensive super-analyzer only
-inside recognized hot loops. 
-
+inside recognized hot loops.
 Verification-aware languages carry assertions, loop invariants, and
 post-conditions that have already been proven at the source level, and
 some of them reach LLVM IR through conventional toolchains: Verus is
 Rust, and so compiles through \texttt{rustc} to LLVM IR directly, while
 Dafny~\cite{leino2010dafny} can reach LLVM IR through its (partial,
 unsupported) C++ backend. A super-analyzer could use these proven
-assertions as an additional rich fact source. 
+assertions as an additional rich fact source.
 %% =====================================================================
 \section{Conclusion}
 \label{sec:conclusion}
@@ -1179,7 +1287,6 @@ full specification is published; all timed runs disable turbo and pin to
 one socket; medians over shuffled interleaved repetitions are primary
 throughout. An artifact with the pass, benchmarks, harnesses, and raw
 per-repetition CSVs is prepared for submission.
-
 \section{Complete Runtime Results}
 \label{sec:app-full}
 Table~\ref{tab:speedups-full} is the unabridged version of
@@ -1200,7 +1307,6 @@ checks), or because the specification that emits the checks is
 dynamically un-runnable in trap mode
 (\S\ref{sec:results-static}). Ceilings are checked-vs-unchecked
 for native kernels and measured sanitizer overhead for C libraries.
-
 \begin{table*}
 \caption{All benchmarks and their runtime results. ``Elim'' is proven
 trap edges at the final encoder and full fact tier; speedups are medians
@@ -1245,7 +1351,6 @@ pipeline gap: on x86, 8.1 points of the raw \pct{19.6}; on M-series the
 raw gap is only \pct{1.1} and the pipeline accounts for all of it
 (sandwich vs.\ \texttt{-Ounchecked}: \pct{-0.7}, 15 interleaved runs).\par
 \end{table*}
-
 \begin{table}
 \caption{The frontier: benchmarks with a measured, unrecovered
 checked-vs-unchecked ceiling and no (or unusably few) proofs at the
@@ -1272,7 +1377,6 @@ only 2 of 16 and 4 of 19 edges (vs.\ 10 and 6 on M-series, where the
 ceiling is $\leq 0$) --- too few to license any hot access. Julia
 matmul/lz77 M-series ceilings: \pct{1.7} / \pct{158}.\par
 \end{table}
-
 \begin{table}
 \caption{Static-only runs: no ceiling exists to recover, by
 measurement or by construction.}
@@ -1297,7 +1401,6 @@ a checked-vs-unchecked comparison cannot be run --- their runnable-spec
 counterparts (zlib decomp.\ signed \pct{1.1}, zstd comp.\ signed
 \pct{1.2}) appear in Table~\ref{tab:speedups-full}.\par
 \end{table}
-
 \begin{figure*}
 \centering
 \includegraphics[width=0.92\textwidth]{gemm_sweep.pdf}
