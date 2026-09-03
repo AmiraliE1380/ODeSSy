@@ -127,6 +127,7 @@
 \newcommand{\odessy}{ODeSSy}
 \newcommand{\tool}{\odessy}
 \newcommand{\pct}[1]{#1\%}
+\newcommand{\den}[1]{[\![#1]\!]}
 \newcommand{\FIGURE}[1]{\begin{center}\fbox{\parbox{0.9\linewidth}{\centering\vspace{2em}\textit{[Figure placeholder: #1]}\vspace{2em}}}\end{center}}
 \begin{document}
 \title[Super-Analysis for Compiler Optimization]{Super-Analysis for Aggressive yet Scalable Compiler Optimization}
@@ -561,25 +562,6 @@ conjunctions is the definitional competence of an SMT
 solver~\cite{demoura2008z3}. This is the sense in which super-analysis is
 \emph{necessary} rather than merely convenient: the reasoning is
 entailment over a conjunction of theories, not dataflow over a lattice.
-\subsection{Irreducibility, stated honestly}
-\label{sec:irreducibility}
-The dual claim bounds what any tool can do. If no conjunction of program
-facts implies a check's redundancy, then \emph{no sound tool may remove
-it}: the check is not overhead but specification. \tool{} monetizes
-\emph{redundancy} between the guards, contracts, and invariants a program
-already contains and the checks a compiler inserts; where that redundancy
-is zero, all-\textsc{sat} is the correct output. Our evaluation treats
-such results as findings, not failures: crypto code whose unsigned
-wraparound \emph{is} the algorithm produces all-\textsc{sat} under the
-unsigned specification (\S\ref{sec:results-static}) --- checks that
-\emph{fire} by design cannot be dead. The bound is always relative to
-the fact vocabulary, however, and this paper measures both sides of
-it. Julia's stdlib GEMM is irreducible to every \emph{scalar}
-conjunction --- its own compiler strands a measured $4\times$ behind
-those checks --- until the heap-invariant facts of \S\ref{sec:frame}
-make all sixteen provable; what survives even that vocabulary is
-priced rather than hidden, benchmark by benchmark, in
-Table~\ref{tab:frontier}.
 %% =====================================================================
 \section{Heap-Invariant Super-Analysis}
 \label{sec:frame}
@@ -675,71 +657,155 @@ super-analysis contract is preserved.
 %% =====================================================================
 \section{\tool{}: Design and Implementation}
 \label{sec:system}
-\tool{} is an LLVM module pass of roughly six thousand lines, organized as
-a three-stage pipeline whose structure is dictated by two requirements:
-soundness under aggressive parallelism, and bit-reproducibility of
-verdicts regardless of thread count.
-\subsection{Stage 1: discovery (serial)}
-A \emph{hunter} enumerates trap sites: calls to
-\texttt{llvm.ubsantrap}/\texttt{llvm.trap}, plus --- behind a divergence
-gate that requires the callee to be no-return or followed by
-\texttt{unreachable} --- any callee named in the \texttt{traps=} pass
-parameter. This one mechanism retargets the pass to Swift runtime checks,
-Rust's \texttt{core::panicking} family (\texttt{panic=abort} builds), and
-Julia's outlined \texttt{jl\_bounds\_error}/\texttt{boundserror} thunks
-with zero per-language code. An \emph{anchor} then creates one job per
-\emph{incoming edge} of each trap block, enabling partial elimination of
-error blocks shared by many checks. For each job, discovery collects the
-dominating branch conditions (the guard context), harvests
-\texttt{llvm.assume} facts, and computes a backward slice whose boundary
-values --- loop-header phis, loads, and calls whose semantics we do not
-encode --- become free variables. Free variables are the soundness
-mechanism: anything not understood is over-approximated by an
-unconstrained symbol, so \textsc{unsat} verdicts hold for \emph{every}
-concrete behavior of the unencoded parts.
-\subsection{Stage 2: solve (parallel)}
-Workers claim jobs in discovery-index order. Each job owns a private Z3
-context (contexts are not thread-safe; disjoint contexts on disjoint
-threads are), encodes its slice in reverse post-order --- arithmetic, the
-full overflow-intrinsic family, shifts, spaghetti control flow with
-memoized CFG-reachability encoding --- asserts the guard context, and asks
-whether the trap condition is satisfiable. \textsc{unsat} marks the trap
-provably dead; \textsc{sat} and \textsc{unknown} (solver timeout) leave it
-untouched. Every assertion is tracked, so an \textsc{unsat} verdict yields
-a minimal core naming exactly which guards and facts proved the check
-dead.
-\subsubsection{Fact tiers}
+\tool{} is an LLVM module pass of roughly six thousand lines. Two
+requirements dictate its design: soundness under aggressive
+parallelism, and bit-reproducible verdicts regardless of thread count.
+This section describes the pipeline the pass lives in
+(\S\ref{sec:pipeline}), the encoding machinery at its core
+(\S\ref{sec:encoding-impl}), the heap-invariance extension
+(\S\ref{sec:frame-machinery}), and how proofs are audited before they
+are believed (\S\ref{sec:audit}).
+
+\subsection{Pipeline}
+\label{sec:pipeline}
+\tool{} runs sandwiched between two full \texttt{-O3} pipelines. The
+first produces the optimized, check-laden IR that is the analysis
+input; the second, after elimination, re-optimizes the simplified
+control flow and performs the transformations the deleted checks were
+blocking --- unrolling, vectorization (\S\ref{sec:results-mech}). The
+pass itself changes nothing but the proven branches: the solver
+licenses, the compiler rewrites.
+
+Internally the pass is three stages. \emph{Serial discovery} scans the
+module for trap sites: calls to
+\texttt{llvm.ubsantrap}/\texttt{llvm.trap} plus, behind a divergence
+gate (the callee is no-return, or the call is followed by
+\texttt{unreachable}), any callee named in the \texttt{traps=}
+parameter --- one mechanism that retargets the pass to Swift, Rust,
+and Julia checks with zero per-language code. Each incoming edge of a
+trap block becomes one independent \emph{job}
+(\S\ref{sec:encoding-impl}); the job list spans the whole module, so
+one function with 400 traps and ten with 2 load-balance perfectly.
+\emph{Parallel solve}: workers claim jobs in discovery order, each
+owning a private Z3 context; the IR is read-only throughout. The only
+shared mutable state is LLVM's own analyses, whose internal caches make
+concurrent queries both a data race and a determinism hazard --- so
+every analysis query passes through a ticket turnstile keyed on
+discovery index, serializing them in one canonical order. That single
+mechanism buys thread safety \emph{and} reproducibility: verdicts,
+output IR, and logs are identical for \texttt{threads=1} and
+\texttt{threads=N}, which we verify by \texttt{diff}. \emph{Serial
+transform}: the main thread folds each proven branch to a constant in
+discovery order --- the only IR mutation in the pass --- and standard
+\texttt{simplifycfg}/\texttt{adce} reclaim the dead blocks. Workers
+fence all exceptions and degrade to keeping the trap: every error path
+in the system converges on declining to optimize.
+
+\subsection{Encoding}
+\label{sec:encoding-impl}
+
+\subsubsection{Encoding the context}
+\label{sec:encoding-context}
+
+\begin{table}
+\caption{The encoding rules. $\den{x}$ is the bit-vector term for SSA
+value \texttt{x}, at \texttt{x}'s own width $w$; all arithmetic is
+modulo $2^w$. Instructions not in the table (and non-integer types)
+fall through to the last row --- the soundness floor.}
+\label{tab:encoding}
+\small
+\begin{tabular}{ll}
+\toprule
+LLVM IR (pseudocode) & encoding\\
+\midrule
+\texttt{z = add x, y} & $\den{z} = \den{x} + \den{y}$ \hfill (sub, mul alike)\\
+\texttt{z = udiv x, y} & $\den{z} = \den{x} \div_u \den{y}$ \hfill (sdiv, u/srem alike)\\
+\texttt{z = shl x, y} & $\den{z} = \den{x} \ll \den{y}$ \hfill (lshr, ashr alike)\\
+\texttt{z = and x, y} & bitwise on BV; Boolean on \texttt{i1} \hfill (or, xor alike)\\
+\texttt{b = icmp ult x, y} & $\den{b} = \den{x} <_u \den{y}$ \hfill (all ten predicates)\\
+\texttt{z = zext x} & zero-extend \hfill (sext, trunc: extend/extract)\\
+\texttt{z = select c, x, y} & $\den{z} = \mathrm{ite}(\den{c}, \den{x}, \den{y})$\\
+\texttt{r,o = sadd.overflow(x,y)} & $\den{r} = \den{x}+\den{y}$;\ $\den{o} = \neg\,\mathit{noOvf}(\den{x},\den{y})$\\
+\texttt{z = umax(x, y)} & $\mathrm{ite}(\den{x} >_u \den{y}, \den{x}, \den{y})$ \hfill (min/abs/fshl/bswap alike)\\
+\texttt{z = add nsw x, y} & rule above, plus assert $\mathit{noOvf}_s(\den{x},\den{y})$\\
+\texttt{z = freeze x} & $\den{z} = \den{x}$ \hfill (identity; \S\ref{sec:frame-machinery})\\
+\texttt{z = phi [v$_k$, B$_k$]} & nested $\mathrm{ite}$ over $\mathit{Reach}(B_k) \wedge \mathit{edge}(B_k{\to}B)$\\
+\texttt{br c, S, T} (edge to $S$) & $\mathit{edge} = \den{c}$ \hfill (to $T$: $\neg\den{c}$; switch: case equalities)\\
+loop-header phi, load, call, gep & fresh variable \hfill (boundary; \S\ref{sec:system-facts}, \S\ref{sec:frame-machinery})\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The unit of proof is a trap \emph{edge}, fixed by an \emph{anchor}.
+Frontends merge error blocks, and loop multiversioning clones checks
+around a shared one, so a trap block routinely has many incoming
+edges. Each qualifying edge --- a predecessor $P$ ending in a
+conditional branch with condition $c$ whose one successor is the trap
+block --- is an independent obligation: the trap fires via this edge
+iff control reaches $P$ and $c$ holds. A proof folds only $P$'s
+branch, so \emph{partial} elimination of a shared trap block is sound
+and profitable (one side exit of one loop version disappears).
+
+Encoding a job proceeds backwards from $c$ in three steps.
+\emph{(1)~Guards.} Walk the dominator tree upward from $P$: for every
+dominator ending in a conditional branch with one outgoing edge that
+dominates $P$, every execution reaching $P$ took that edge, so the
+edge's condition is asserted as context --- SSA immutability
+guarantees its operands still denote the same values at the trap.
+Dominating \texttt{llvm.assume} conditions join the same way.
+\emph{(2)~Slice.} A worklist walks operands backwards from $c$ and
+from every guard. It stops at the \emph{boundaries} of
+\S\ref{sec:encoding}: loads, address computations, calls we do not
+encode, and loop-header phis, all of which become free variables. A
+phi at an ordinary merge point is entered instead: its incoming values
+and the branch conditions of its merge region join the slice. Each
+value is visited once, and every cyclic dependence in SSA passes
+through a loop-header phi --- a boundary --- so the walk terminates
+with a slice linear in the function.
+\emph{(3)~Translation.} The slice is encoded in reverse post-order by
+the rules of Table~\ref{tab:encoding}: one exact bit-vector equation
+per instruction, at the instruction's own width. Control flow is
+encoded once per block, not once per path: a merge-point phi becomes
+an if-then-else chain gated by a memoized reachability formula
+\[
+\mathit{Reach}(B) \;=\; \textstyle\bigvee_{P \in \mathrm{preds}(B)}
+\mathit{Reach}(P) \wedge \mathit{edge}(P{\to}B),
+\]
+an $O(\mathit{edges})$ circuit whose shared prefixes are stored once
+(Z3 terms are hash-consed), leaving path enumeration to the SAT
+engine rather than to an exponential DNF.
+
+The query is then $\mathit{guards} \wedge \mathit{definitions} \wedge
+c$: satisfiable exactly by the machine states, consistent with
+everything encoded, in which this edge reaches the trap.
+\textsc{unsat} proves the edge dead in every execution;
+\textsc{sat} and \textsc{unknown} (timeout) keep the check.
+
+\subsubsection{Encoding LLVM's analyses}
 \label{sec:system-facts}
-The \emph{light} tier constrains free variables only by their IR types.
-The \emph{heavy} tier additionally imports LLVM's own conclusions as
-solver constraints at the over-approximation boundary: \texttt{!range}
-metadata (RM), KnownBits (KB), LazyValueInfo ranges (LVI), scalar
-evolution ranges (SCEV), and a symbolic trip-count translation (SCEVSYM)
-that renders loop bounds --- including an exact unsigned-division
-translation and a stride gate behind SCEV's no-wrap facts --- as
-constraints on boundary phis. Each fact is audit-labeled, so cores
-attribute proofs to their sources; the sha256 cores of
-\S\ref{sec:conjunction} are heavy-tier cores. Because LVI and SCEV memoize
-internally (an unsynchronized data race, and worse, a potential source of
-corrupted facts), all heavy-tier queries pass through a \emph{FactGate}: a
-ticket turnstile keyed on discovery index that serializes analysis queries
-in a canonical order. One mechanism thus provides thread safety \emph{and}
-determinism: verdicts, output IR, and logs are identical for
-\texttt{threads=1} and \texttt{threads=N}, a property we verify by
-\texttt{diff} and offer as a reproducibility artifact.
-\subsubsection{The vacuity audit}
-A wrong ``proof'' is the one failure mode this tool must not have. If the
-encoded context is itself inconsistent --- through an encoder bug or a
-genuinely contradictory guard chain --- every trap under it is trivially
-\textsc{unsat}. Under the \texttt{vacuity} option \tool{} re-checks each
-context alone; if the context is unsatisfiable without the trap condition,
-the elimination is \emph{refused} and reported. The audit is deliberately
-self-distrusting: on zstd it refused 61 eliminations on xxHash whose
-guard chains are jointly unsatisfiable for the actual constants ---
-likely sound eliminations, conservatively surrendered because the tool
-cannot distinguish that situation from its own bugs. We report vacuous
-counts in every experiment; they are zero except where noted.
-\subsection{Proving heap-invariance}
+The \emph{light} tier is the machinery above: free variables are
+constrained only by their types. The \emph{heavy} tier strengthens the
+boundaries with post-conditions bought from LLVM's own analyses,
+asserted as labeled constraints on the free variables:
+\texttt{!range} metadata and range attributes (RM), KnownBits (KB),
+LazyValueInfo ranges (LVI), scalar-evolution constant ranges (SCEV),
+and a symbolic trip-count translation (SCEVSYM) that renders loop
+bounds --- including symbolic starts and an exact unsigned-division
+translation --- as constraints on loop-header phis. The import
+discipline is refusal: a fact that is trivial, width-mismatched, or
+self-contradictory (an empty LVI range, conflicting known bits) is
+dropped rather than repaired. The \texttt{ldeq} option adds
+load-equality within a basic block --- two loads of the same pointer
+with no intervening may-write share one variable, exactly GVN's
+theorem replayed at encoding time. Three tiers name the configurations
+used throughout the paper: \emph{light}, \emph{heavy} (analysis facts
++ \texttt{ldeq}), and \emph{full} (heavy + the \texttt{frame} facts of
+\S\ref{sec:frame-machinery}). The remaining knobs are
+\texttt{timeout=} and \texttt{threads=} (the two latency dials of
+\S\ref{sec:results-cost}), \texttt{traps=} (\S\ref{sec:pipeline}), and
+\texttt{vacuity} (\S\ref{sec:audit}).
+
+\subsection{Encoding heap invariance}
 \label{sec:frame-machinery}
 The \texttt{frame} option implements the requirements of
 \S\ref{sec:frame} as two encoder-level additions.
@@ -749,8 +815,7 @@ of the same address, the imported fact is
 \[
 \frac{\mathrm{clobber}\bigl(L_2,\ \mathrm{loc}(L_1)\bigr) \ \preceq\
       \mathrm{def}(L_1)}
-     {\ |\mathrm{FRAME}{:}k|:\ \ \llbracket L_1 \rrbracket =
-      \llbracket L_2 \rrbracket\ }
+     {\ |\mathrm{FRAME}{:}k|:\ \ \den{L_1} = \den{L_2}\ }
 \]
 --- if MemorySSA's clobbering access for $L_2$, queried \emph{at
 $L_1$'s own memory location} (address, width, and aliasing metadata),
@@ -758,8 +823,8 @@ is $L_1$'s defining access or one dominating it, the loads agree.
 Querying with $L_1$'s location is the load-bearing choice: the
 check-side loads are vectorizer-cloned and carry no metadata at all
 (which is precisely why LLVM leaves the checks in), while the
-guard-side load carries Julia's scoped no-alias metadata, under which
-stock \textsc{ScopedNoAliasAA} proves every loop-carried store
+guard-side load carries the frontend's scoped no-alias metadata, under
+which stock \textsc{ScopedNoAliasAA} proves every loop-carried store
 harmless. The equality enters the query as a context-side fact labeled
 $|\mathrm{FRAME}{:}k|$ --- vacuity-audited, and guarded by two standing
 \textsc{sat} tripwire tests (a may-alias clobber and a single-arm
@@ -778,15 +843,15 @@ guard flags against poison, and 13 of GEMM's 16 trap conditions were
 freeze-wrapped --- encoded as unconstrained Booleans, their queries
 were trivially satisfiable no matter what facts we supplied. Since
 \texttt{freeze} is the identity on every non-poison operand, the axiom
-$\llbracket \mathit{freeze}(x) \rrbracket = \llbracket x \rrbracket$
+$\den{\mathit{freeze}(x)} = \den{x}$
 is sound over the encoder's over-approximation (a poisoned operand is
 itself a free variable and can assume the frozen choice). Second,
 trip-count bounds moved to \emph{subtraction form}:
 \[
-\llbracket \phi \rrbracket - \mathit{start} \ \le_u\
+\den{\phi} - \mathit{start} \ \le_u\
 s \cdot \mathrm{BTC}
 \qquad\text{instead of}\qquad
-\llbracket \phi \rrbracket \ \le_u\ \mathit{start} + s \cdot
+\den{\phi} \ \le_u\ \mathit{start} + s \cdot
 \mathrm{BTC},
 \]
 which makes the unit-stride upper bound unconditionally wrap-safe ---
@@ -800,15 +865,30 @@ encoded branch predicates. No ``trip count $>0$'' is asserted anywhere;
 the countermodels claiming to stand inside zero-trip loops die because
 they violate the definitions. Every addition is true of all executions
 by construction, so the over-approximation --- and hence soundness ---
-is untouched.
-\subsection{Stage 3: transform (serial)}
-After the pool joins, the main thread folds the proven branches in
-discovery order (the only IR mutation in the pass, with a double-fold
-guard), and standard \texttt{simplifycfg} and \texttt{adce} reclaim the
-dead blocks. Verdicts are computed on pristine IR; all mutation is
-deferred. Workers fence all exceptions and degrade to ``keep the trap'' ---
-the universal failure posture: every error path in the system converges on
-declining to optimize.
+is untouched. Together these took the GEMM acceptance test from 0 to
+16-of-16 and, being in no way GEMM-specific, moved every sufficiently
+similar benchmark (\S\ref{sec:frame-results}).
+
+\subsection{Auditing the proofs}
+\label{sec:audit}
+A wrong proof is the one failure mode this tool must not have, so no
+\textsc{unsat} is accepted at face value. Under \texttt{vacuity},
+every \textsc{unsat} is re-solved with the trap condition removed: if
+the context alone is already unsatisfiable --- an encoder bug, or a
+genuinely contradictory guard chain --- the elimination is
+\emph{refused} and reported. The audit is deliberately
+self-distrusting: on zstd it surrendered 61 likely-sound eliminations
+whose guard chains are jointly infeasible for the actual constants,
+because the tool cannot distinguish that situation from its own bugs;
+vacuous counts are reported in every experiment and are zero except
+where noted. Independently, every assertion is tracked, so each
+\textsc{unsat} yields a minimal core naming exactly the guards and
+facts that proved it; we inspect the cores of every nontrivial proof
+family by hand before counting it, and six standing \textsc{sat}
+tripwire tests (may-alias clobbers, unrelated bounds) must stay
+\textsc{sat} forever --- one flipping to \textsc{unsat} would mean a
+fact source has become unsoundly strong.
+
 %% =====================================================================
 \section{Experimental Methodology}
 \label{sec:method}
