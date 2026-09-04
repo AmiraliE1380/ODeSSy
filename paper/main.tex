@@ -709,31 +709,32 @@ in the system converges on declining to optimize.
 \subsubsection{Encoding the context}
 \label{sec:encoding-context}
 
-\begin{table*}
+\begin{table*}[t]
 \caption{The encoding rules. $\den{x}$ is the bit-vector term for SSA
 value \texttt{x}, at \texttt{x}'s own width $w$; all arithmetic is
 modulo $2^w$. Instructions not in the table (and non-integer types)
 fall through to the last row --- the soundness floor.}
 \label{tab:encoding}
+\centering
 \small
-\begin{tabular}{llll}
+\begin{tabular}{l@{\hspace{3em}}l@{\hspace{2.5em}}l}
 \toprule
-LLVM IR (pseudocode) & encoding & LLVM IR (pseudocode) & encoding\\
+LLVM IR (pseudocode) & encoding & also covers\\
 \midrule
-\texttt{z = add x, y} & $\den{z} = \den{x} + \den{y}$ \ (sub, mul alike) &
-\texttt{r,o = sadd.ovf(x,y)} & $\den{r} = \den{x}+\den{y}$;\ $\den{o} = \neg\,\mathit{noOvf}_s(\den{x},\den{y})$\\
-\texttt{z = udiv x, y} & $\den{z} = \den{x} \div_u \den{y}$ \ (sdiv, u/srem alike) &
-\texttt{z = umax(x, y)} & $\mathrm{ite}(\den{x} >_u \den{y}, \den{x}, \den{y})$ \ (min/abs/fshl alike)\\
-\texttt{z = shl x, y} & $\den{z} = \den{x} \ll \den{y}$ \ (lshr, ashr alike) &
-\texttt{z = add nsw x, y} & add rule, plus assert $\mathit{noOvf}_s(\den{x},\den{y})$\\
-\texttt{z = and x, y} & bitwise on BV; Boolean on \texttt{i1} &
-\texttt{z = freeze x} & $\den{z} = \den{x}$ \ (identity; \S\ref{sec:frame-machinery})\\
-\texttt{b = icmp ult x, y} & $\den{b} = \den{x} <_u \den{y}$ \ (all ten predicates) &
-\texttt{z = phi [v$_k$, B$_k$]} & nested $\mathrm{ite}$ over $\mathit{Reach}(B_k) \wedge \mathit{edge}(B_k{\to}B)$\\
-\texttt{z = zext x} & zero-extend \ (sext, trunc alike) &
-\texttt{br c, S, T} (edge to $S$) & $\mathit{edge} = \den{c}$ \ (to $T$: $\neg\den{c}$; switch: equalities)\\
-\texttt{z = select c, x, y} & $\den{z} = \mathrm{ite}(\den{c}, \den{x}, \den{y})$ &
-header phi, load, call, gep & fresh variable \ (boundary; \S\ref{sec:system-facts})\\
+\texttt{z = add x, y} & $\den{z} = \den{x} + \den{y}$ & \texttt{sub}, \texttt{mul}\\
+\texttt{z = udiv x, y} & $\den{z} = \den{x} \div_u \den{y}$ & \texttt{sdiv}, \texttt{urem}, \texttt{srem}\\
+\texttt{z = shl x, y} & $\den{z} = \den{x} \ll \den{y}$ & \texttt{lshr}, \texttt{ashr}\\
+\texttt{z = and x, y} & $\den{z} = \den{x} \mathbin{\&} \den{y}$ (Boolean when \texttt{i1}) & \texttt{or}, \texttt{xor}\\
+\texttt{b = icmp ult x, y} & $\den{b} = \den{x} <_u \den{y}$ & all ten predicates\\
+\texttt{z = zext x} & $\den{z} = \mathrm{zeroExtend}_w(\den{x})$ & \texttt{sext}, \texttt{trunc}\\
+\texttt{z = select c, x, y} & $\den{z} = \mathrm{ite}(\den{c}, \den{x}, \den{y})$ & \\
+\texttt{z = umax(x, y)} & $\den{z} = \mathrm{ite}(\den{x} >_u \den{y}, \den{x}, \den{y})$ & \texttt{umin}, \texttt{smax}, \texttt{smin}, \texttt{abs}, \texttt{fshl}, \texttt{bswap}\\
+\texttt{r, o = sadd.with.overflow(x, y)} & $\den{r} = \den{x} + \den{y}$, \quad $\den{o} = \neg\,\mathit{noOvf}_s(\den{x}, \den{y})$ & the six \texttt{\{s,u\}\{add,sub,mul\}} forms\\
+\texttt{z = add nsw x, y} & the \texttt{add} rule, and assert $\mathit{noOvf}_s(\den{x}, \den{y})$ & \texttt{nuw}; \texttt{sub}, \texttt{mul}\\
+\texttt{z = freeze x} & $\den{z} = \den{x}$ & identity (\S\ref{sec:frame-machinery})\\
+\texttt{z = phi [v$_1$, B$_1$], \ldots, [v$_n$, B$_n$]} & $\den{z} = \mathrm{ite}\bigl(\mathit{Reach}(B_n) \wedge \mathit{edge}(B_n{\to}B),\ \den{v_n},\ \ldots\ \den{v_1}\bigr)$ & merge-point phis only\\
+\texttt{br c, S, T} & $\mathit{edge}(B{\to}S) = \den{c}$, \quad $\mathit{edge}(B{\to}T) = \neg \den{c}$ & \texttt{switch}: case equalities\\
+loop-header \texttt{phi}, \texttt{load}, \texttt{call}, \texttt{gep} & fresh variable & every unmodeled instruction\\
 \bottomrule
 \end{tabular}
 \end{table*}
