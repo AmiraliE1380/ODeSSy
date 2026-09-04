@@ -111,6 +111,8 @@
 %%\acmSubmissionID{XXX}
 %% Code listings for the worked examples
 \usepackage{listings}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 \definecolor{codecomment}{gray}{0.45}
 \definecolor{codekw}{RGB}{0,90,160}
 \definecolor{trapred}{RGB}{200,20,20}
@@ -707,34 +709,34 @@ in the system converges on declining to optimize.
 \subsubsection{Encoding the context}
 \label{sec:encoding-context}
 
-\begin{table}
+\begin{table*}
 \caption{The encoding rules. $\den{x}$ is the bit-vector term for SSA
 value \texttt{x}, at \texttt{x}'s own width $w$; all arithmetic is
 modulo $2^w$. Instructions not in the table (and non-integer types)
 fall through to the last row --- the soundness floor.}
 \label{tab:encoding}
 \small
-\begin{tabular}{ll}
+\begin{tabular}{llll}
 \toprule
-LLVM IR (pseudocode) & encoding\\
+LLVM IR (pseudocode) & encoding & LLVM IR (pseudocode) & encoding\\
 \midrule
-\texttt{z = add x, y} & $\den{z} = \den{x} + \den{y}$ \hfill (sub, mul alike)\\
-\texttt{z = udiv x, y} & $\den{z} = \den{x} \div_u \den{y}$ \hfill (sdiv, u/srem alike)\\
-\texttt{z = shl x, y} & $\den{z} = \den{x} \ll \den{y}$ \hfill (lshr, ashr alike)\\
-\texttt{z = and x, y} & bitwise on BV; Boolean on \texttt{i1} \hfill (or, xor alike)\\
-\texttt{b = icmp ult x, y} & $\den{b} = \den{x} <_u \den{y}$ \hfill (all ten predicates)\\
-\texttt{z = zext x} & zero-extend \hfill (sext, trunc: extend/extract)\\
-\texttt{z = select c, x, y} & $\den{z} = \mathrm{ite}(\den{c}, \den{x}, \den{y})$\\
-\texttt{r,o = sadd.overflow(x,y)} & $\den{r} = \den{x}+\den{y}$;\ $\den{o} = \neg\,\mathit{noOvf}(\den{x},\den{y})$\\
-\texttt{z = umax(x, y)} & $\mathrm{ite}(\den{x} >_u \den{y}, \den{x}, \den{y})$ \hfill (min/abs/fshl/bswap alike)\\
-\texttt{z = add nsw x, y} & rule above, plus assert $\mathit{noOvf}_s(\den{x},\den{y})$\\
-\texttt{z = freeze x} & $\den{z} = \den{x}$ \hfill (identity; \S\ref{sec:frame-machinery})\\
+\texttt{z = add x, y} & $\den{z} = \den{x} + \den{y}$ \ (sub, mul alike) &
+\texttt{r,o = sadd.ovf(x,y)} & $\den{r} = \den{x}+\den{y}$;\ $\den{o} = \neg\,\mathit{noOvf}_s(\den{x},\den{y})$\\
+\texttt{z = udiv x, y} & $\den{z} = \den{x} \div_u \den{y}$ \ (sdiv, u/srem alike) &
+\texttt{z = umax(x, y)} & $\mathrm{ite}(\den{x} >_u \den{y}, \den{x}, \den{y})$ \ (min/abs/fshl alike)\\
+\texttt{z = shl x, y} & $\den{z} = \den{x} \ll \den{y}$ \ (lshr, ashr alike) &
+\texttt{z = add nsw x, y} & add rule, plus assert $\mathit{noOvf}_s(\den{x},\den{y})$\\
+\texttt{z = and x, y} & bitwise on BV; Boolean on \texttt{i1} &
+\texttt{z = freeze x} & $\den{z} = \den{x}$ \ (identity; \S\ref{sec:frame-machinery})\\
+\texttt{b = icmp ult x, y} & $\den{b} = \den{x} <_u \den{y}$ \ (all ten predicates) &
 \texttt{z = phi [v$_k$, B$_k$]} & nested $\mathrm{ite}$ over $\mathit{Reach}(B_k) \wedge \mathit{edge}(B_k{\to}B)$\\
-\texttt{br c, S, T} (edge to $S$) & $\mathit{edge} = \den{c}$ \hfill (to $T$: $\neg\den{c}$; switch: case equalities)\\
-loop-header phi, load, call, gep & fresh variable \hfill (boundary; \S\ref{sec:system-facts}, \S\ref{sec:frame-machinery})\\
+\texttt{z = zext x} & zero-extend \ (sext, trunc alike) &
+\texttt{br c, S, T} (edge to $S$) & $\mathit{edge} = \den{c}$ \ (to $T$: $\neg\den{c}$; switch: equalities)\\
+\texttt{z = select c, x, y} & $\den{z} = \mathrm{ite}(\den{c}, \den{x}, \den{y})$ &
+header phi, load, call, gep & fresh variable \ (boundary; \S\ref{sec:system-facts})\\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 The unit of proof is a trap \emph{edge}, fixed by an \emph{anchor}.
 Frontends merge error blocks, and loop multiversioning clones checks
@@ -746,7 +748,35 @@ iff control reaches $P$ and $c$ holds. A proof folds only $P$'s
 branch, so \emph{partial} elimination of a shared trap block is sound
 and profitable (one side exit of one loop version disappears).
 
-Encoding a job proceeds backwards from $c$ in three steps.
+\begin{algorithm}[t]
+\caption{Encoding and deciding one trap edge $(P, c)$}
+\label{alg:encode}
+\begin{algorithmic}[1]
+\State $G \gets \emptyset$ \Comment{dominating context}
+\ForAll{dominators $D$ of $P$ ending in a cond.\ branch}
+  \If{one outgoing edge of $D$ dominates $P$}
+    $G \gets G \cup \{$that edge's condition$\}$
+  \EndIf
+\EndFor
+\State $G \gets G \cup \{$conditions of \texttt{llvm.assume}s dominating $P\}$
+\State $S \gets$ backward worklist walk from $c$ and $G$:
+\Statex \hspace{\algorithmicindent} enter merge-point phis (incoming
+  values $+$ region branch conditions);
+\Statex \hspace{\algorithmicindent} \textbf{stop} at loads, geps,
+  unencoded calls, loop-header phis \Comment{boundaries}
+\ForAll{$I \in S$ in reverse post-order}
+  \State assert $\den{I}$ per Table~\ref{tab:encoding}
+  \Comment{boundaries: fresh variables}
+\EndFor
+\State assert every $g \in G$ (tracked);\ \ [heavy] assert boundary
+  facts (\S\ref{sec:system-facts})
+\State \Return $\mathrm{check\mbox{-}sat}(c)$
+\Comment{\textsc{unsat}: fold edge; \textsc{sat}/\textsc{unknown}: keep}
+\end{algorithmic}
+\end{algorithm}
+
+Encoding a job proceeds backwards from $c$ in three steps
+(Algorithm~\ref{alg:encode}).
 \emph{(1)~Guards.} Walk the dominator tree upward from $P$: for every
 dominator ending in a conditional branch with one outgoing edge that
 dominates $P$, every execution reaching $P$ took that edge, so the
