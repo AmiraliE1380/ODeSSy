@@ -575,51 +575,69 @@ in the shipping standard library.
     morekeywords={for,in,end,if},
     comment={[l]{\#}},
     moredelim={[is][\color{trapred}\bfseries]{|}{|}}]
-m, n = size(C)  # C is m-by-n: m rows, n columns
-k = size(A, 2)  # 2nd dimension of A = its columns
-size(A, 1) == m || throw(DimensionMismatch())
-                # ... and two more shape guards
+# C += A * B      C: m x n,  A: m x k,  B: k x n
+m, n = size(C)    # C has m rows and n columns
+k = size(A, 2)    # 2nd dimension of A: its columns
+size(A, 1) == m || throw(DimensionMismatch())  # [n1]
+size(B, 1) == k || throw(DimensionMismatch())
+size(B, 2) == n || throw(DimensionMismatch())
 for j in 1:n, l in 1:k
     b = B[l, j]
     for i in 1:m
-        C[i, j] += A[i, l] * b  |# one check per access|
+        |# implicit check for A[i, l]; reloads size(A,1):|
+        |if !(1 <= i <= size(A, 1)) { trap() }   # [n2]|
+        C[i, j] += A[i, l] * b   # store into C  [st]
     end
 end
 \end{lstlisting}
 \end{minipage}\hfill
 \begin{minipage}[t]{0.49\textwidth}
 \begin{lstlisting}[style=odessy,
-    morekeywords={load,icmp,ult,br,label,i64,i1,ptr,freeze},
+    morekeywords={load,store,add,icmp,uge,br,label,i64,i1,ptr,freeze,x,double},
     comment={[l]{;}},
     moredelim={[is][\color{trapred}\bfseries]{|}{|}}]
-; before the loops -- constrained by the guard above:
-%n1 = load i64, ptr %A.size  ; A's row count, == m
-; inside the vectorized inner loop:
-%n2 = load i64, ptr %A.size  ; SAME address, new load
-|%ok = icmp ult i64 %i.frozen, %n2   ; the check|
-|br i1 %ok, label %body, label %trap ; trap if !ok|
+; [n1] before the loops -- pinned by the guard:
+%n1 = load i64, ptr %A.size       ; A's row count, == m
+; ... one iteration of the vectorized inner loop:
+store <2 x double> %v, ptr %C.data ; [st] may it hit %A.size?
+%n2 = load i64, ptr %A.size       ; [n2] SAME address, reloaded
+%idx = add i64 %i, -1             ; zero-based index
+|%oob = icmp uge i64 %idx, %n2    ; oob <=> !(1 <= i <= n2)|
+|%oob.fr = freeze i1 %oob         ; vectorizer freezes the flag|
+|br i1 %oob.fr, label %trap, label %body|
 \end{lstlisting}
 \end{minipage}
-\caption{The hard case: Julia stdlib GEMM. The dimension guard
-constrains one load of \texttt{A}'s size field (\texttt{\%n1}); the
-bounds check inside the vectorized loop consumes a \emph{different}
-load of the same address (\texttt{\%n2}), cloned by the vectorizer
-with its aliasing metadata stripped, and its index stabilized by
-\texttt{freeze}. Sound encoding makes \texttt{\%n2} and the frozen
-flag fresh symbols, so every query is trivially satisfiable no matter
-how many scalar facts are supplied. What is missing is a \emph{heap
-invariant}: no store between the two loads can touch the size field,
-hence $\texttt{\%n1} = \texttt{\%n2}$. \S\ref{sec:frame-machinery}
-gives the encoding rules that discharge it;
-\S\ref{sec:frame-results} reports the result --- 16 of 16, and
-$3.6$--$4.2\times$ end-to-end.}
-\Description{Left, a Julia source listing of a three-loop GEMM kernel
-whose first two lines read the matrix dimensions and whose guards
-relate them, with a red comment noting one bounds check per array
-access. Right, a schematic LLVM IR listing showing two separate loads
-of the same size field, one before the loops constrained by the guard
-and one inside the vectorized loop feeding the bounds check, with the
-check and its branch in red.}
+\caption{The hard case: Julia stdlib GEMM (left: the source, with the
+check on \texttt{A[i,l]} spelled out in red; right: the same check
+after lowering; \texttt{[n1]}, \texttt{[n2]}, \texttt{[st]} tie the
+two sides together). Julia's one-based check $1 \le i \le n$ lowers to
+a single unsigned compare on the zero-based index,
+$\mathit{oob} \iff (i{-}1) \ge_u n_2$, since a negative index wraps to
+a huge unsigned value. The guard pins the first load of
+\texttt{A}'s size field ($n_1 = m$); the check consumes a
+\emph{second} load of the same address ($n_2$), and between the two
+sits the loop's store into \texttt{C}'s data. Whether $n_1 = n_2$ is
+therefore an aliasing question --- can that store touch
+\texttt{A}'s size field? --- and the vectorizer has cloned the reload
+without the scoped-aliasing metadata that would answer it, and has
+wrapped the check's flag in \texttt{freeze}. Sound encoding must make
+$n_2$ a fresh symbol and, read naively, the frozen flag a fresh
+Boolean, so every query is trivially satisfiable no matter how many
+scalar facts are supplied. What is missing is a \emph{heap
+invariant} --- no store between the two loads touches the size
+field, hence $n_1 = n_2$ --- plus the axiom that \texttt{freeze} is
+the identity on defined values. \S\ref{sec:frame-machinery} gives the
+encoding rules; \S\ref{sec:frame-results} reports the result --- 16
+of 16, and $3.6$--$4.2\times$ end-to-end.}
+\Description{Left, a Julia source listing of a three-loop GEMM kernel:
+a comment stating C plus-equals A times B with the three matrix
+shapes, two lines reading the dimensions, three shape guards, and the
+loop nest with the implicit bounds check on A written out in red and
+tagged n2, and the accumulate line tagged st. Right, a schematic LLVM
+IR listing: the guard-side load of the size field tagged n1, a
+vectorized store into C tagged st, the reload of the size field tagged
+n2, the zero-based index computation, and in red the unsigned
+compare, its freeze, and the conditional branch to the trap block.}
 \label{fig:frame-example}
 \end{figure*}
 The failure is structural, not a missing special case. The fact that
