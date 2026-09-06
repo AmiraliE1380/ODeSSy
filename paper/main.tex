@@ -571,16 +571,18 @@ discharge them by hand, with trusted \texttt{@inbounds} annotations,
 in the shipping standard library.
 \begin{figure*}
 \begin{minipage}[t]{0.47\textwidth}
-\begin{lstlisting}[style=odessy,
+\begin{lstlisting}[style=odessy,basicstyle=\footnotesize\ttfamily,
     morekeywords={for,in,end,if},
     comment={[l]{\#}},
     moredelim={[is][\color{trapred}\bfseries]{|}{|}}]
 # C += A * B      C: m x n,  A: m x k,  B: k x n
+
 m, n = size(C)    # C has m rows and n columns
 k = size(A, 2)    # 2nd dimension of A: its columns
 size(A, 1) == m || throw(DimensionMismatch())  # [n1]
 size(B, 1) == k || throw(DimensionMismatch())
 size(B, 2) == n || throw(DimensionMismatch())
+
 for j in 1:n, l in 1:k
     b = B[l, j]
     for i in 1:m
@@ -592,52 +594,58 @@ end
 \end{lstlisting}
 \end{minipage}\hfill
 \begin{minipage}[t]{0.49\textwidth}
-\begin{lstlisting}[style=odessy,
-    morekeywords={load,store,add,icmp,uge,br,label,i64,i1,ptr,freeze,x,double},
+\begin{lstlisting}[style=odessy,basicstyle=\footnotesize\ttfamily,
+    morekeywords={load,store,add,icmp,uge,br,label,i64,i1,ptr,x,double},
     comment={[l]{;}},
     moredelim={[is][\color{trapred}\bfseries]{|}{|}}]
-; [n1] before the loops -- pinned by the guard:
-%n1 = load i64, ptr %A.size       ; A's row count, == m
-; ... one iteration of the vectorized inner loop:
-store <2 x double> %v, ptr %C.data ; [st] may it hit %A.size?
-%n2 = load i64, ptr %A.size       ; [n2] SAME address, reloaded
-%idx = add i64 %i, -1             ; zero-based index
-|%oob = icmp uge i64 %idx, %n2    ; oob <=> !(1 <= i <= n2)|
-|%oob.fr = freeze i1 %oob         ; vectorizer freezes the flag|
-|br i1 %oob.fr, label %trap, label %body|
+; the same kernel after -O3 (schematic)
+
+; every size(..) is a load of an array-header field
+; into a fresh SSA register:
+%n1 = load i64, ptr %A.size    ; [n1] == m, by the guard
+; (B's two size loads elided)
+
+
+loop:                          ; vectorized inner loop
+%n2  = load i64, ptr %A.size   ; [n2] same address, new load
+%idx = add i64 %i, -1          ; zero-based i
+|%oob = icmp uge i64 %idx, %n2  ; !(1 <= i <= n2)|
+|br i1 %oob, label %trap, label %body|
+store <2 x double> %v, ptr %C.data      ; [st]
+br label %loop   ; does [st] ever write %A.size?
 \end{lstlisting}
 \end{minipage}
 \caption{The hard case: Julia stdlib GEMM (left: the source, with the
 check on \texttt{A[i,l]} spelled out in red; right: the same check
-after lowering; \texttt{[n1]}, \texttt{[n2]}, \texttt{[st]} tie the
-two sides together). Julia's one-based check $1 \le i \le n$ lowers to
-a single unsigned compare on the zero-based index,
-$\mathit{oob} \iff (i{-}1) \ge_u n_2$, since a negative index wraps to
-a huge unsigned value. The guard pins the first load of
-\texttt{A}'s size field ($n_1 = m$); the check consumes a
-\emph{second} load of the same address ($n_2$), and between the two
-sits the loop's store into \texttt{C}'s data. Whether $n_1 = n_2$ is
-therefore an aliasing question --- can that store touch
-\texttt{A}'s size field? --- and the vectorizer has cloned the reload
-without the scoped-aliasing metadata that would answer it, and has
-wrapped the check's flag in \texttt{freeze}. Sound encoding must make
-$n_2$ a fresh symbol and, read naively, the frozen flag a fresh
-Boolean, so every query is trivially satisfiable no matter how many
-scalar facts are supplied. What is missing is a \emph{heap
-invariant} --- no store between the two loads touches the size
-field, hence $n_1 = n_2$ --- plus the axiom that \texttt{freeze} is
-the identity on defined values. \S\ref{sec:frame-machinery} gives the
-encoding rules; \S\ref{sec:frame-results} reports the result --- 16
-of 16, and $3.6$--$4.2\times$ end-to-end.}
+after lowering, laid out line-for-line; \texttt{[n1]}, \texttt{[n2]},
+\texttt{[st]} tie the two sides together). Every call to
+\texttt{size} becomes a load of a field in the array header into a
+fresh SSA register, so the guard and the check see two \emph{different}
+values, $n_1$ and $n_2$, read from the \emph{same} address. Julia's
+one-based check $1 \le i \le n$ lowers to a single unsigned compare on
+the zero-based index, $\mathit{oob} \iff (i{-}1) \ge_u n_2$ (a
+negative index wraps to a huge unsigned value). The guard pins
+$n_1 = m$; between the two loads sits the loop's store into
+\texttt{C}'s data. Whether $n_1 = n_2$ is therefore an aliasing
+question --- can that store touch \texttt{A}'s size field? --- and
+the vectorizer has cloned the reload without the scoped-aliasing
+metadata that would answer it. Sound encoding must make $n_2$ a fresh
+symbol, so every query is trivially satisfiable no matter how many
+scalar facts are supplied. What is missing is a \emph{heap invariant}:
+no store between the two loads touches the size field, hence
+$n_1 = n_2$. \S\ref{sec:frame-machinery} gives the encoding rules;
+\S\ref{sec:frame-results} reports the result --- 16 of 16, and
+$3.6$--$4.2\times$ end-to-end.}
 \Description{Left, a Julia source listing of a three-loop GEMM kernel:
 a comment stating C plus-equals A times B with the three matrix
 shapes, two lines reading the dimensions, three shape guards, and the
 loop nest with the implicit bounds check on A written out in red and
 tagged n2, and the accumulate line tagged st. Right, a schematic LLVM
-IR listing: the guard-side load of the size field tagged n1, a
-vectorized store into C tagged st, the reload of the size field tagged
-n2, the zero-based index computation, and in red the unsigned
-compare, its freeze, and the conditional branch to the trap block.}
+IR listing aligned line by line with the source: the guard-side load
+of the size field tagged n1, the loop header, the reload of the size
+field tagged n2, the zero-based index computation, in red the unsigned
+compare and the conditional branch to the trap block, then the
+vectorized store into C tagged st and the back edge.}
 \label{fig:frame-example}
 \end{figure*}
 The failure is structural, not a missing special case. The fact that
@@ -1005,8 +1013,7 @@ answers the first, Table~\ref{tab:speedups} the second.
 \begin{table}
 \caption{Static elimination on C libraries and native-language kernels.
 Trap counts are call-site censuses in the sanitized \texttt{-O3} baseline
-IR (edge-counted where noted). ``Prov'': R = unmodified repository or
-faithful port of repository code; O = our implementation of a standard
+IR (edge-counted where noted). ``Prov'': R = unmodified repository; O = our implementation of a standard
 kernel. Vacuity-audited; vacuous $=0$ except zstd (see text).}
 \label{tab:static}
 \small
