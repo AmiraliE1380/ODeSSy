@@ -556,18 +556,18 @@ entailment over a conjunction of theories, not dataflow over a lattice.
 %% =====================================================================
 \section{Heap-Invariant Super-Analysis}
 \label{sec:frame}
+Many of the crucial compiler analysis including alias analysis require heap reasoning. In our particular application, heap facts can be important as the metadata for arrays (e.g. length) often live in the heap, and array index in bound checks cause high performance loss in hot loops. This necessitates super-analysis to perform complex yet fast heap reasoning so it can preserve effectiveness and its status as online analysis at the same time.
+
 The conjunctions of \S\ref{sec:conjunction} range over \emph{scalar}
 facts: ranges, known bits, trip counts, branch conditions. A large and
 expensive class of checks falls outside their reach because the fact
-that discharges them lives in the \emph{heap}. Our acceptance test for
+that discharges them lives in the heap. Our acceptance test for
 this class is the kernel of Julia's standard-library GEMM
 (\texttt{generic\_matmatmul!}) illustrated in Figure~\ref{fig:frame-example}: a benchmark on which the scalar fact
 sources prove \emph{zero} of 16 residual bounds-check edges, while
 turning those same checks off is worth roughly $4\times$
 ($3.97\times$ on x86, $4.19\times$ on Apple Silicon;
-\S\ref{sec:frame-results}). 
-
-The checks are not exotic --- they guard
+\S\ref{sec:frame-results}). The checks are not exotic --- they guard
 an ordinary three-loop matrix multiply, and Julia's own authors
 discharge them by hand, with trusted \texttt{@inbounds} annotations,
 in the shipping standard library.
@@ -650,19 +650,13 @@ vectorized store into C tagged st and the back edge.}
 \end{figure*}
 The failure is structural, and not limited to this special GEMM
 implementation, as the encoder additions this section motivates also
-removed checks in Swift SHA-256 (5 to 7 proofs), Julia SHA-256 (4 to
-10), a filter kernel from the DSP.jl library (0 to 6), and the
-CryptoSwift library (183 to 215) --- not a matrix kernel among them
-(\S\ref{sec:frame-results}). The fact that
-would discharge the check is \emph{nonlocal}: the guard and the check
-are linked only by the theorem that their two loads agree, and that
-theorem's premise --- no intervening write touches the location ---
-quantifies over every store in the loop nest. A dataflow analysis
+removed checks in other benchamrks (Swift SHA-256, Julia SHA-256, the 
+CryptoSwift library, etc.) 
+
+The fact that
+would discharge the check is that certain important metadata of arrays are not overwritten by the stores in the loop. A dataflow analysis
 propagates facts \emph{about values}; this premise is a fact
-\emph{about memory}. The pipeline's owners of memory facts (GVN,
-alias analysis) each see only a fragment, and by the time the
-vectorizer has cloned the check-side loads and stripped their
-scoped-aliasing metadata, LLVM can no longer justify the unification
+\emph{about memory}. The GEMM implementation consists of multiple loads of arrays' dimensions (stored in the array header in the heap) and multiple stores that the compiler has to prove do not overwrite the metadata between two loads. LLVM's dataflow heuristics can no longer justify the unification
 itself --- which is precisely why the checks survive O3, and why a
 sound encoder that reads the same IR is stuck for the same reason.
 
@@ -675,19 +669,21 @@ with the scalar ones: the flagship GEMM edge needs the load equality
 one --- which is why the answer is a new \emph{fact source} for the
 solver rather than a new pass.
 
-Two requirements follow. First, a sound, refusing importer for
-load-equality facts, whose premise is discharged by the compiler's own
-memory analyses --- the frame rule of separation
-logic~\cite{reynolds2002separation} recast as a fact source. Second,
-an encoding in which the stabilized values the vectorizer manufactures
-(\texttt{freeze}, resume indices, remainder-loop starts) are pinned by
-\emph{definitional axioms} instead of being left free, since a free
-variable in the trap condition makes every query satisfiable no matter
-how strong the surrounding facts are. Both are additions to the
-encoder, not to the transform: the solver still only answers
-reachability, and the compiler still performs every rewrite, so the
-super-analysis contract of \S\ref{sec:superanalysis} is preserved.
-\S\ref{sec:frame-machinery} gives the rules.
+Two things are needed. The first is a new fact source: when the
+compiler's own memory analyses can show that no store between two
+loads touches the location, the encoder may state that the two loads
+are equal. This is the frame rule of separation
+logic~\cite{reynolds2002separation}, used as a source of facts rather
+than as a proof system, and it refuses whenever the memory analyses
+cannot answer. The second is a stricter encoding of the values the
+optimizer introduces around a vectorized loop. Left unconstrained,
+each of them is a free variable, and a single free variable in the
+trap condition makes the query satisfiable no matter how strong the
+other facts are; encoding each one by its definition removes that
+escape. Both are changes to the encoder alone. The solver still only
+answers reachability and the compiler still performs every rewrite,
+so the super-analysis contract of \S\ref{sec:superanalysis} holds
+unchanged. \S\ref{sec:frame-machinery} gives the rules.
 %% =====================================================================
 \section{\tool{}: Design and Implementation}
 \label{sec:system}
