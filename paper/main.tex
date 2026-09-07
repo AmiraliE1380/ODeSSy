@@ -273,13 +273,14 @@ of analysis --- from the question it defers: when to use it.
 This paper makes the following contributions:
 \begin{itemize}
 \item \textbf{Super-analysis} (\S\ref{sec:superanalysis}): an aggressive compilation paradigm
-  positioning between conventional heuristic-based optimization and superoptimization in terms of compiler latency and precision. The general recipe for this paradigm is to use solvers (SMT in particular) as an analysis oracle, while applying cheap conventional rules-based transformation for optimization.
+  positioning between conventional heuristic-based optimization and superoptimization in terms of compiler latency and precision. The general recipe for this paradigm is to use solvers as an analysis oracle, while applying cheap conventional rules-based transformation for optimization.  
+\item \textbf{Heap-invariant super-analysis} (\S\ref{sec:frame}):
+We identify a crucial analysis problem 
 \item \textbf{\tool{}} (\S\ref{sec:system}): a three-stage LLVM pass
   (serial discovery, parallel solve, serial transform) that eliminates sanitizer checks and optimizes the resulting IR. ODeSSy supports C/C++, Swift, and Julia as frontends and can enable hot-path transformations and speedups.
-\item \textbf{An honest evaluation} (\S\ref{sec:results}):
+\item \textbf{Robust Performance Improvement} (\S\ref{sec:method} \& \S\ref{sec:results}):
   \tool{} removes up to \pct{13.6} of checks on real repositories.
-  Runtime experiments with 30-repetition medians on two target architectures (x86 and M-series) show \emph{when} elimination pays: removing hot-loop checks has a cascading effect, unlocking further transformations (unrolling, vectorization, etc) that enables up to $4.16\times$ speedups for some widely used kernels.
-\item \textbf{Flexible Compiler Latency} (\S\ref{sec:results-cost}): \tool{} proofs are generally cheap: \pct{96} of
+  Runtime experiments with 30-repetition medians on two target architectures (x86 and M-series) show \emph{when} elimination pays: removing hot-loop checks has a cascading effect, unlocking further transformations (unrolling, vectorization, etc) that enables up to $4.16\times$ speedups for some widely used kernels. \tool{} proofs are generally cheap: \pct{96} of
   zlib's proofs survive a 100\,ms per-query budget. By multi-threading and strict SMT timout budgets \tool{} can compile up to $4.8\times$ faster, making it an online compiler.
 \end{itemize}
 %% =====================================================================
@@ -503,7 +504,7 @@ for t in 16..<64 {
 |trap:  call void @llvm.ubsantrap(i8 18) ; aborts|
 \end{lstlisting}
 \end{minipage}
-\caption{The simple case: the message-schedule extension of a Swift
+\caption{The warm-up: the message-schedule extension of a Swift
 SHA-256 kernel (left; the compiler-injected check shown in red as
 source-level pseudocode) and the same check after lowering (right). Every one of these checks survives
 \texttt{swiftc -O} \emph{and} a second full LLVM O3. The facts that
@@ -512,7 +513,7 @@ $\bullet$~loop bounds (scalar evolution): $t \in [16, 64)$, hence
 $\mathit{idx} = t - 16 \in [0, 48)$ --- exact in
 bit-vectors;\newline
 $\bullet$~allocation (return-value range, refined by LazyValueInfo):
-$\texttt{w.count} = 64$;\newline
+$\texttt{w.count} = 64$.\newline
 The trap requires $\mathit{idx} \geq \texttt{w.count}$; with
 $\mathit{idx} < 48$ and $\texttt{w.count} = 64$ the conjunction is
 absurd --- yet no single fact suffices (drop any one and the query is
@@ -525,7 +526,7 @@ loop with a red comment stating the trap condition t minus 16 greater
 or equal to the array count. Right, five lines of LLVM IR showing the
 load of the array count, the index computation, the unsigned compare
 highlighted in red, and the conditional branch to a trap block that
-calls ubsantrap. The caption lists the three facts whose conjunction
+calls ubsantrap. The caption lists the two facts whose conjunction
 refutes the trap.}
 \label{fig:simple-example}
 \end{figure*}
@@ -603,39 +604,42 @@ end
 ; every size(..) is a load of an array-header field
 ; into a fresh SSA register:
 %n1 = load i64, ptr %A.size    ; [n1] == m, by the guard
-; (B's two size loads elided)
+
 
 
 loop:                          ; vectorized inner loop
 %n2  = load i64, ptr %A.size   ; [n2] same address, new load
-%idx = add i64 %i, -1          ; zero-based i
-|%oob = icmp uge i64 %idx, %n2  ; !(1 <= i <= n2)|
+;...
+|%oob = icmp ugt i64 %i, %n2    ; oob = (i > n2)|
 |br i1 %oob, label %trap, label %body|
 store <2 x double> %v, ptr %C.data      ; [st]
-br label %loop   ; does [st] ever write %A.size?
+; does [st] ever rewrite %A.size?
+br label %loop
 \end{lstlisting}
 \end{minipage}
-\caption{The hard case: Julia stdlib GEMM (left: the source, with the
+\caption{The final boss: Julia stdlib GEMM (left: the source, with the
 check on \texttt{A[i,l]} spelled out in red; right: the same check
-after lowering, laid out line-for-line; \texttt{[n1]}, \texttt{[n2]},
-\texttt{[st]} tie the two sides together). Every call to
+after lowering). Every call to
 \texttt{size} becomes a load of a field in the array header into a
 fresh SSA register, so the guard and the check see two \emph{different}
 values, $n_1$ and $n_2$, read from the \emph{same} address. Julia's
-one-based check $1 \le i \le n$ lowers to a single unsigned compare on
-the zero-based index, $\mathit{oob} \iff (i{-}1) \ge_u n_2$ (a
-negative index wraps to a huge unsigned value). The guard pins
+one-based check $1 \le i \le n$ is shown for its upper half as one
+unsigned compare against the reloaded size,
+$\mathit{oob} \iff i >_u n_2$ (Julia's actual lowering compares
+$i{-}1 \ge_u n_2$, which covers both bounds at once since a
+non-positive $i{-}1$ wraps to a huge unsigned value). The guard pins
 $n_1 = m$; between the two loads sits the loop's store into
 \texttt{C}'s data. Whether $n_1 = n_2$ is therefore an aliasing
 question --- can that store touch \texttt{A}'s size field? --- and
-the vectorizer has cloned the reload without the scoped-aliasing
-metadata that would answer it. Sound encoding must make $n_2$ a fresh
-symbol, so every query is trivially satisfiable no matter how many
-scalar facts are supplied. What is missing is a \emph{heap invariant}:
+the vectorizer has cloned the reload without the aliasing
+metadata that would let alias analysis prove the two loads equal.
+Sound encoding must therefore make $n_2$ a fresh symbol, and the trap
+stays satisfiable no matter how many scalar facts are supplied. What
+is missing is a \emph{heap invariant}:
 no store between the two loads touches the size field, hence
 $n_1 = n_2$. \S\ref{sec:frame-machinery} gives the encoding rules;
 \S\ref{sec:frame-results} reports the result --- 16 of 16, and
-$3.6$--$4.2\times$ end-to-end.}
+$3.6$--$4.2\times$ speedup end-to-end.}
 \Description{Left, a Julia source listing of a three-loop GEMM kernel:
 a comment stating C plus-equals A times B with the three matrix
 shapes, two lines reading the dimensions, three shape guards, and the
@@ -643,7 +647,7 @@ loop nest with the implicit bounds check on A written out in red and
 tagged n2, and the accumulate line tagged st. Right, a schematic LLVM
 IR listing aligned line by line with the source: the guard-side load
 of the size field tagged n1, the loop header, the reload of the size
-field tagged n2, the zero-based index computation, in red the unsigned
+field tagged n2, in red the unsigned
 compare and the conditional branch to the trap block, then the
 vectorized store into C tagged st and the back edge.}
 \label{fig:frame-example}
@@ -1021,20 +1025,20 @@ kernel. Vacuity-audited; vacuous $=0$ except zstd (see text).}
 \toprule
 Benchmark & Lang & Prov & Traps & Proven & \%\\
 \midrule
-zlib (signed+unsigned) & C & R & 1298 & 145 & 11.2\\
-zstd (signed+unsigned) & C & R & 19197 & 2619 & 13.6\\
-zstd (bounds) & C & R & 594 & 56 & 9.4\\
+zlib  & C & R & 1298 & 145 & 11.2\\
+zstd  & C & R & 19197 & 2619 & 13.6\\
+zstd  & C & R & 594 & 56 & 9.4\\
 lz4 & C & R & 3403 & 193$^{\P}$ & 5.7$^{\P}$\\
 OpenSSL sha256 & C & R & 2225 & 43$^{\dagger}$ & 1.9$^{\dagger}$\\
-CryptoSwift (library) & Swift & R & 2807 & 215$^{\S}$ & 7.7$^{\S}$\\
+CryptoSwift  & Swift & R & 2807 & 215$^{\S}$ & 7.7$^{\S}$\\
 sha256 & Swift & O & 38 & 7 & 18\\
 sha1 & Swift & O & 26 & 7 & 27\\
 md5 & Swift & O & 27 & 5 & 19\\
-adler32 (zlib port) & Swift & R & 42 & 1 & 2.4\\
+adler32  & Swift & R & 42 & 1 & 2.4\\
 utf8 validator & Swift & O & 22 & 2 & 9\\
 crc32 / base64 & Swift & R/O & 38/28 & 0 & 0\\
 sha256 & Julia & O & 12 & 10 & 83\\
-gemm (Base port + guards) & Julia & R & 16 edges & 16$^{\ddagger}$ & 100\\
+gemm  & Julia & R & 16 edges & 16$^{\ddagger}$ & 100\\
 matmul / lz77 & Rust & O & 5/3 & 0 & 0\\
 \bottomrule
 \end{tabular}\\
