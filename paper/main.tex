@@ -561,12 +561,13 @@ facts: ranges, known bits, trip counts, branch conditions. A large and
 expensive class of checks falls outside their reach because the fact
 that discharges them lives in the \emph{heap}. Our acceptance test for
 this class is the kernel of Julia's standard-library GEMM
-(\texttt{generic\_matmatmul!}) with its real dimension guards restored
-(Figure~\ref{fig:frame-example}): a benchmark on which the scalar fact
+(\texttt{generic\_matmatmul!}) illustrated in Figure~\ref{fig:frame-example}: a benchmark on which the scalar fact
 sources prove \emph{zero} of 16 residual bounds-check edges, while
 turning those same checks off is worth roughly $4\times$
 ($3.97\times$ on x86, $4.19\times$ on Apple Silicon;
-\S\ref{sec:frame-results}). The checks are not exotic --- they guard
+\S\ref{sec:frame-results}). 
+
+The checks are not exotic --- they guard
 an ordinary three-loop matrix multiply, and Julia's own authors
 discharge them by hand, with trusted \texttt{@inbounds} annotations,
 in the shipping standard library.
@@ -619,26 +620,21 @@ br label %loop
 \end{minipage}
 \caption{The final boss: Julia stdlib GEMM (left: the source, with the
 check on \texttt{A[i,l]} spelled out in red; right: the same check
-after lowering). Every call to
-\texttt{size} becomes a load of a field in the array header into a
-fresh SSA register, so the guard and the check see two \emph{different}
-values, $n_1$ and $n_2$, read from the \emph{same} address. Julia's
-one-based check $1 \le i \le n$ is shown for its upper half as one
-unsigned compare against the reloaded size,
-$\mathit{oob} \iff i >_u n_2$ (Julia's actual lowering compares
-$i{-}1 \ge_u n_2$, which covers both bounds at once since a
-non-positive $i{-}1$ wraps to a huge unsigned value). The guard pins
-$n_1 = m$; between the two loads sits the loop's store into
-\texttt{C}'s data. Whether $n_1 = n_2$ is therefore an aliasing
-question --- can that store touch \texttt{A}'s size field? --- and
-the vectorizer has cloned the reload without the aliasing
-metadata that would let alias analysis prove the two loads equal.
-Sound encoding must therefore make $n_2$ a fresh symbol, and the trap
-stays satisfiable no matter how many scalar facts are supplied. What
-is missing is a \emph{heap invariant}:
-no store between the two loads touches the size field, hence
-$n_1 = n_2$. \S\ref{sec:frame-machinery} gives the encoding rules;
-\S\ref{sec:frame-results} reports the result --- 16 of 16, and
+after lowering). Every call to \texttt{size} becomes a load of an
+array-header field into a fresh SSA register, so the guard reads
+$n_1$ and the check reads $n_2$: two different values, loaded in different locations but from the
+\emph{same} address. Refuting the trap means proving $i \le n_2$.
+Proving $i \le n_1$ would be easy --- the guard gives $n_1 = m$, the
+inner loop header gives $1 \le i \le m$ --- but nothing connects
+$n_2$ to $n_1$. Between the two loads sits the loop's store into
+\texttt{C}'s data, so $n_1 = n_2$ holds only if that store never
+overwrites \texttt{A}'s size field: an aliasing question, and the
+vectorizer has cloned the reload without the metadata that would let
+alias analysis answer it, and the trap stays satisfiable no matter how many
+scalar facts are supplied. What is missing is a \emph{heap
+invariant}: no store between the two loads touches the size field,
+hence $n_1 = n_2$. \S\ref{sec:frame-machinery} gives the encoding
+rules; \S\ref{sec:frame-results} reports the result --- 16 of 16, and
 $3.6$--$4.2\times$ speedup end-to-end.}
 \Description{Left, a Julia source listing of a three-loop GEMM kernel:
 a comment stating C plus-equals A times B with the three matrix
@@ -652,7 +648,12 @@ compare and the conditional branch to the trap block, then the
 vectorized store into C tagged st and the back edge.}
 \label{fig:frame-example}
 \end{figure*}
-The failure is structural, not a missing special case. The fact that
+The failure is structural, and not limited to this special GEMM
+implementation, as the encoder additions this section motivates also
+removed checks in Swift SHA-256 (5 to 7 proofs), Julia SHA-256 (4 to
+10), a filter kernel from the DSP.jl library (0 to 6), and the
+CryptoSwift library (183 to 215) --- not a matrix kernel among them
+(\S\ref{sec:frame-results}). The fact that
 would discharge the check is \emph{nonlocal}: the guard and the check
 are linked only by the theorem that their two loads agree, and that
 theorem's premise --- no intervening write touches the location ---
