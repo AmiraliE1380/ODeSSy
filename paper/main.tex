@@ -274,13 +274,11 @@ This paper makes the following contributions:
 \begin{itemize}
 \item \textbf{Super-analysis} (\S\ref{sec:superanalysis}): an aggressive compilation paradigm
   positioning between conventional heuristic-based optimization and superoptimization in terms of compiler latency and precision. The general recipe for this paradigm is to use solvers as an analysis oracle, while applying cheap conventional rules-based transformation for optimization.  
-\item \textbf{Heap-invariant super-analysis} (\S\ref{sec:frame}):
-We identify a crucial analysis problem 
-\item \textbf{\tool{}} (\S\ref{sec:system}): a three-stage LLVM pass
-  (serial discovery, parallel solve, serial transform) that eliminates sanitizer checks and optimizes the resulting IR. ODeSSy supports C/C++, Swift, and Julia as frontends and can enable hot-path transformations and speedups.
+\item \textbf{Heap-invariant super-analysis} (\S\ref{sec:frame}): a crucial analysis problem we identified: Array optimizations often require heap reasoning to ensure their safety. We formalize the problem and show that super-analysis can more effectively reason over heap and memory safety of certain transformations in hot loops.
+\item \textbf{\tool{}} (\S\ref{sec:system}): an LLVM pass and online optimizer
+  as an instantiation of super-analysis. \tool{} eliminates sanitizers and safety checks and unlocks further optimizations. It supports C/C++, Swift, and Julia as frontends and can enable hot-path transformations and speedups.
 \item \textbf{Robust Performance Improvement} (\S\ref{sec:method} \& \S\ref{sec:results}):
-  \tool{} removes up to \pct{13.6} of checks on real repositories.
-  Runtime experiments with 30-repetition medians on two target architectures (x86 and M-series) show \emph{when} elimination pays: removing hot-loop checks has a cascading effect, unlocking further transformations (unrolling, vectorization, etc) that enables up to $4.16\times$ speedups for some widely used kernels. \tool{} proofs are generally cheap: \pct{96} of
+  our systematic evaluation of \tool{} on two target architectures (x86 and M-series) show removing hot-loop checks has a cascading effect, unlocking further transformations (unrolling, vectorization, etc) that enables up to $4.16\times$ speedups for widely used kernels and libraries. \tool{} proofs are generally cheap: \pct{96} of
   zlib's proofs survive a 100\,ms per-query budget. By multi-threading and strict SMT timout budgets \tool{} can compile up to $4.8\times$ faster, making it an online compiler.
 \end{itemize}
 %% =====================================================================
@@ -669,18 +667,13 @@ with the scalar ones: the flagship GEMM edge needs the load equality
 one --- which is why the answer is a new \emph{fact source} for the
 solver rather than a new pass.
 
-Two things are needed. The first is a new fact source: when the
+To perform heap invariant super-analysis we need a new fact source: when the
 compiler's own memory analyses can show that no store between two
 loads touches the location, the encoder may state that the two loads
 are equal. This is the frame rule of separation
 logic~\cite{reynolds2002separation}, used as a source of facts rather
 than as a proof system, and it refuses whenever the memory analyses
-cannot answer. The second is a stricter encoding of the values the
-optimizer introduces around a vectorized loop. Left unconstrained,
-each of them is a free variable, and a single free variable in the
-trap condition makes the query satisfiable no matter how strong the
-other facts are; encoding each one by its definition removes that
-escape. Both are changes to the encoder alone. The solver still only
+cannot answer. The solver still only
 answers reachability and the compiler still performs every rewrite,
 so the super-analysis contract of \S\ref{sec:superanalysis} holds
 unchanged. \S\ref{sec:frame-machinery} gives the rules.
@@ -1304,7 +1297,7 @@ Budget & \textsc{unsat} & \textsc{sat} & \textsc{unknown} & Wall\\
 \midrule
 1\,ms & 16 & 66 & 375 & 3.95\,s\\
 10\,ms & 43 & 319 & 95 & 4.11\,s\\
-100\,ms & \textbf{50} & 405 & 2 & 4.21\,s\\
+100\,ms & 50 & 405 & 2 & 4.21\,s\\
 3\,s & 52 & 405 & 0 & 4.25\,s\\
 10\,s & 52 & 405 & 0 & 4.32\,s\\
 \bottomrule
@@ -1367,51 +1360,13 @@ millisecond budgets gets \pct{96} of zlib-class proofs and silently,
 soundly skips OpenSSL-class queries (\textsc{unknown} keeps the check);
 an offline audit turns the dial up.
 %% =====================================================================
-\section{Future Work}
-\label{sec:future}
-In this paper we targeted sanitizer removal as a consequential
-optimization; super-analysis, however, is not limited to this
-application. A compiler could host a general super-analysis module
-following a simple recipe: wherever the compiler's conventional
-range and dataflow heuristics fail, formulate the question as an SMT
-decision problem and ask for an answer. Such a compiler would be very
-slow; a faster alternative is to invoke the expensive super-analyzer only
-inside recognized hot loops.
-Verification-aware languages carry assertions, loop invariants, and
-post-conditions that have already been proven at the source level, and
-some of them reach LLVM IR through conventional toolchains: Verus is
-Rust, and so compiles through \texttt{rustc} to LLVM IR directly, while
-Dafny~\cite{leino2010dafny} can reach LLVM IR through its (partial,
-unsupported) C++ backend. A super-analyzer could use these proven
-assertions as an additional rich fact source.
-%% =====================================================================
 \section{Conclusion}
 \label{sec:conclusion}
-Super-analysis occupies a deliberately asymmetric point between conventional heuristic-based
-optimization and superoptimization: use a solver where analysis precision is the
-bottleneck, and conventional machinery everywhere else. Instantiated in
-\tool{}, the paradigm proves up to \pct{13.6} of sanitizer checks dead
-across real C libraries and yield hot-loop proofs for kernels ---
-every deletion certified by an unsat core, audited for vacuity, and
-validated by byte-identical output --- and, where proofs gate
-transformations, converts them into up to $4.16\times$ speedups on two
-ISAs. The unsat cores certify the
-paradigm's premise --- the missing reasoning is conjunctive across
-analysis domains. Speedup results are proven to be robust by running experiments on inputs of different sizes. Super-analysis has been proven to be an online tool, demonstrated by the fact that \tool{}'s SMT latency can be reduced up to $4.8\times$ by parallelization and strict timeout setting.
+We introduced super-analysis, an alternative paradigm of aggressive compilation which uses a solver for analysis only. We show that this paradigm is effective: it can speedup our benchmarks up to $4\times$ on two architectures. Super-analysis can be used online, and the cost of compilation can be controlled by parallelization and strict SMT timeout budgets. Our implementation, \tool{} targeted safety check removal, and further optimizes the simplified IR after the removal. Future work consists of extending this paradigm into other analyses and optimizations.
 %% =====================================================================
 \begin{acks}
 %% Anonymized for review.
 \end{acks}
-\section*{Ethics and Privacy Statement}
-This work removes only program checks that are formally proven unreachable,
-preserving all safety guarantees of the original binaries; every
-elimination carries a machine-checkable certificate and our tool refuses
-proofs it cannot audit. A dual-use consideration is that reachability
-analysis of safety checks could, in principle, help locate reachable
-(buggy) checks; this information is equally available to standard fuzzing
-and static analysis, and our tool neither exploits nor reports it beyond
-keeping such checks intact. No human subjects or personal data are
-involved.
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{odessy}
 %% =====================================================================

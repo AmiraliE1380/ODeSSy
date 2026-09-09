@@ -1,0 +1,6 @@
+outputs identical: true  matches=8
+lz77.jl 64 KiB, window 1024, REPS=21 (medians, s)
+arm1 both @inbounds   : 0.0342   vs arm2: 2.58x
+arm2 neither          : 0.0883
+arm3 A=data[j+len] only: 0.0379   vs arm2: 2.33x
+arm4 B=data[i+len] only: 0.0593   vs arm2: 1.489x

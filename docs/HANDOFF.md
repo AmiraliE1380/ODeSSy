@@ -1020,3 +1020,26 @@ argument, not just code.
 * native_bench/jl_filt_dsp_guarded.jl (F3 variant; committed Sep 8).
 * Mac 60 s filt audit: logs/julia_triage/jl_filt_dsp.log (local, gitignored) — 6/19, 0 UNKNOWN.
 * Guarded filt audit: logs/julia_triage/jl_filt_dsp_guarded.{ll,log} (local).
+
+### 10.7 lz77.jl four-arm @inbounds experiment (Mac, Sep 8 2026)
+Script native_bench/jl_lz77_arms.jl; log results/perf/jl_lz77_arms_mac_0908.log.
+64 KiB LCG corpus, window 1024, REPS=21 rotated, medians; all four arms
+bitwise-identical output (matches=8). A = data[j+len], B = data[i+len]
+(the two inner-loop accesses, line 17).
+    | arm | annotation        | median s | speedup vs arm 2 |
+    |  1  | both @inbounds    | 0.0342   | 2.58x (the ceiling; --check-bounds=no gave 1.58-2.6x on Mac earlier runs) |
+    |  2  | neither (baseline)| 0.0883   | 1.00x |
+    |  3  | A only            | 0.0379   | 2.33x |
+    |  4  | B only            | 0.0593   | 1.49x |
+Reads: the two checks are NOT equal in value. Removing A alone
+recovers ~90% of the ceiling (2.33x of 2.58x); removing B alone
+recovers ~37% (1.49x). Interpretation: A's check is the one whose
+side exit blocks the compiler's transformation of the inner
+comparison loop (j+len is the "moving" pointer of the match scan;
+its check sits on the critical path), while B's index i+len is
+already guarded by the loop condition `i+len <= n` immediately
+before it, so its check is cheaper/better-predicted. Consequence for
+licensing: even a PARTIAL proof (A's 2 edges only) is worth 2.3x;
+4/4 gives 2.6x. The PHIMONO fact (§10.2) supplies the missing lower
+bound for BOTH, so 4/4 is the expected outcome. x86 arms pending
+server access (x86 ceiling 3.26x).
