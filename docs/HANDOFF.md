@@ -1074,3 +1074,95 @@ Reading:
 Hypothesis check: "solver picks i <= 0" was HALF right (it picks j<1 via
 i unbounded below, and i near INT64_MAX for the other pair). Doctrine
 vindicated — coding the lower-bound-only fact would have shipped 2/4.
+
+### 10.9 Session 1.2 — PHIINV specification (Sep 9 2026)
+
+NAME. PHIINV: header-phi interval invariant by 1-induction. Fact source
+(heavy tier), label |PHIINV:k| (split labels |PHIINV-lo:k| / |PHIINV-hi:k|
+so cores attribute which half did the work). NOT benchmark-specific:
+it is a generic rule over loop-header phis; lz77.jl is the acceptance
+test, exactly as GEMM was for FRAME.
+
+SETTING. Loop L (natural, reducible; refuse otherwise), header H, one
+preheader edge, one or more latch edges. Header phi
+    p = phi [v0, preheader], [v1, latch1], ..., [vm, latchm]
+p is a slice BOUNDARY today (free variable). PHIINV asserts, when its
+side conditions are discharged, one or both of:
+    (LO)  p >=s v0                     [and p >=u v0 if v0 >=s 0 is known]
+    (HI)  C[p / (something)]  -- see below; concretely p <=s B for a
+          loop-invariant bound B.
+
+RULE LO (monotone lower bound).
+  Premise: every latch value vk is expressible as vk = p + dk where the
+  expression is followed through phis/selects/casts of matching width
+  (depth <= 4; each leaf must be add(p, dk) or p itself), and each dk
+  satisfies dk >=s 0 by one of: constant; SCEV range; KnownBits sign
+  bit clear; `nuw` add of non-negatives; or a branch condition on the
+  path from H to latchk that implies dk >= 0 (dominance of the edge
+  over latchk).
+  Conclusion: p >=s v0 at H on every iteration.
+  Proof (1-induction on the iteration count): iteration 0: p = v0.
+  Iteration t+1 entered via latchk: p = vk = p_t + dk >= p_t >= v0.
+  Signed overflow: an add that could wrap past INT_MAX would break
+  monotonicity; require dk's range to satisfy v0 + sum-of-increments
+  not wrapping OR restrict to adds carrying `nsw` (LLVM: wrapping is
+  poison, and a poison p feeding a branched-on check is UB, so defined
+  executions reaching the trap have no wrap) — the same trust class as
+  the existing nsw-as-free-fact rule in Z3Encoder. v1: require nsw or
+  a proven upper bound (HI) on p.
+
+RULE HI (latch-implied upper bound).
+  Premise: latchk's terminator is `br (cmp vk, B)` where the back-edge
+  arm is taken iff cmp holds (or the negation — orient by which
+  successor is H), B is loop-invariant (defined outside L or a load
+  that FRAME/M1 proves stable — v1: defined outside L only), and cmp
+  is one of sle/slt/ule/ult (or the mirror with B on the left).
+  Conclusion: for every iteration t >= 1, p_t = vk satisfies cmp(p_t,B)
+  — i.e. the latch condition instantiated on the phi holds at the top
+  of every NON-FIRST iteration. For iteration 0 we need cmp(v0, B)
+  separately: take it from a dominating preheader guard if present
+  (lz77.jl: top guard n >= 2 with v0 = 2), else emit the fact as
+       entry_first  OR  cmp(p, B)
+  with entry_first a fresh Bool — sound and still useful when the
+  first iteration is separately constrained. v1: require the preheader
+  guard (simplest, exact for lz77.jl); the disjunctive form is v2.
+  Proof: p_t for t>=1 is by definition the value vk that was tested
+  at latchk on iteration t-1, and the back edge was taken, so cmp held.
+  Multiple latches: conjoin per-latch conclusions only if EVERY latch
+  yields the same bound B under the same cmp; otherwise take the
+  weakest common bound or refuse.
+
+WHAT PHIINV IS NOT. Not Plan C: no body copy, no !TRAP_prev, no fresh
+previous-iteration variables. It only states the phi's own interval.
+It cannot prove facts about values COMPUTED from p inside the body
+beyond what the interval implies (that is Plan C's job).
+
+REFUSALS (each mandatory). Irreducible loop; phi with an incoming edge
+that is neither preheader nor latch of L; any latch value not of the
+add-of-self form (LO); latch terminator not a conditional branch on a
+simple compare with an invariant bound (HI); B not loop-invariant;
+width mismatch; cmp not in the accepted set.
+
+SOUNDNESS TRIPWIRES (SAT forever), written BEFORE the encoder change:
+  T1 phimono_neg_sat: one latch increments by -1 => no LO fact.
+  T2 phimono_freeinc_sat: increment d is a free value with no
+     sign fact => no LO fact.
+  T3 phihi_unrelated_sat: latch condition tests a value NOT equal to
+     the phi's incoming value (e.g. cmp on a load) => no HI fact.
+  T4 phihi_nofirst_sat: v1 requires the preheader guard; a loop with
+     v0 = 10 but no guard and bound n free must stay SAT for a check
+     that needs p <= n on the first iteration.
+  Positive: phiinv1.ll — the lz77 skeleton (i=2; i += (c?3:1);
+     latch i <= n; guard n >= 2; check needs 1 <= i <= n) => UNSAT.
+  Gate moves to PASS=21 / FAIL=12 (4 new SATs + 1 new UNSAT).
+
+DETERMINISM. Pure IR walk + SCEV/KB queries through the FactGate (same
+as SCEVSYM). No new analysis.
+
+WHERE. FactEncoder.cpp: tryPhiInv(PHINode*, Loop*) called from the
+boundary-fact loop for loop-header phis, after trySCEVSym (both may
+fire; cores tell which mattered).
+
+ACCEPTANCE. lz77.jl 4/4 (LO closes L35 x2; HI closes L54 x2), vacuous 0,
+cores contain |PHIINV-lo| resp. |PHIINV-hi|; sweep_native monotone;
+threads=1 vs 8 diff empty; jl_lz77_arms arm "proven-only" == arm 1.
