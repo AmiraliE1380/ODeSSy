@@ -1183,3 +1183,43 @@ tripwires' SAT is the floor they must hold forever).
 Acceptance after Session 1.4: phiinv1 -> UNSAT under heavy/full with
 |PHIINV-lo| AND |PHIINV-hi| in the core; T1-T4 still SAT; suite still
 PASS=24/FAIL=9 (light is unaffected by a heavy-tier fact source).
+
+### 10.11 Session 1.4 — PHIINV implemented; lz77.jl blocked on a REAL soundness point (Sep 9 2026)
+Landed: FactEncoder::tryPhiInv (HI + LO as specified in §10.9; base block =
+preheader OR unique out-of-loop predecessor — a dedicated preheader is not
+required, and the synthetic test's guard block IS the predecessor).
+Acceptance: test_heavy_phiinv1 UNSAT, core |PHIINV-hi| |PHIINV-lo| G0 TRAP;
+T1-T4 SAT; light gate 24/9 unchanged; GEMM 16/16 unchanged (PHIINV fires 4x
+there harmlessly); Swift sha256 Mac 7 unchanged; threads=1 vs 8 identical.
+
+lz77.jl RESULT: still 0/4. HI fires on the outer phi exactly as designed
+(`i == 2 || i <=s n`) and LO fires on j and len — but LO REFUSES on i,
+because Julia emits the outer increment WITHOUT nsw:
+    %value_phi27.v = select i1 %22, i64 %value_phi4.lcssa, i64 1
+    %value_phi27   = add i64 %value_phi27.v, %value_phi49      ; no nsw
+and the refusal is CORRECT in IR semantics. Argument: with wrapping add,
+p' = p + d can pass INT64_MAX and become negative; the latch `p' <=s n`
+then HOLDS (negative <= n), the loop continues with i < 2, `start`
+becomes 1, and the very next iteration's data[i+len] index is negative
+=> the bounds trap FIRES. So in the abstract semantics the check is
+reachable for n >= 2^63 - 254 (a ~9 EiB array; needs ~2^55 iterations).
+Both A- and B-edges depend on i >= 2 (with HI alone the solver simply
+picks i very negative), so the entire lz77.jl result hinges on this.
+Julia's own @inbounds (and every human) assumes such an array cannot
+exist. Options for the user to decide (recorded, not chosen):
+  (a) Trust-class axiom "array length < 2^63 - 2^k" for Julia size loads
+      (a memory-bound fact the IR does not carry), as an explicit knob
+      (`lenbound`) with the same documentation posture as nsw's poison
+      caveat. Buys lz77.jl 4/4; must be stated in the paper.
+  (b) Prove no-wrap from a bound on d AND on n: d <= 255 is derivable
+      (len < 255 break), so wrap needs n >= INT64_MAX - 254; without a
+      range fact on n this is exactly (a) again.
+  (c) Accept the refusal as a finding: "lz77.jl's checks guard a wrap
+      that only a 9-exabyte array could trigger — the check IS the spec
+      at the IR level; the programmer's @inbounds is an extra-semantic
+      assumption." Zero speedup, honest row.
+  (d) Overflow-checked increments (Swift: sadd.with.overflow + trap)
+      DO license LO soundly by the first-failure argument (a wrapping
+      execution traps at the overflow check first); add that recognizer
+      for Swift kernels (adler32 `i += 16`) — independent of the Julia
+      decision.
