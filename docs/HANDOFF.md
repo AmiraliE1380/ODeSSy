@@ -1043,3 +1043,34 @@ licensing: even a PARTIAL proof (A's 2 edges only) is worth 2.3x;
 4/4 gives 2.6x. The PHIMONO fact (§10.2) supplies the missing lower
 bound for BOTH, so 4/4 is the expected outcome. x86 arms pending
 server access (x86 ceiling 3.26x).
+
+### 10.8 Session 1.1 — lz77.jl countermodels (Sep 9 2026; DebugOracle, threads=1, full tier)
+Four SAT models dumped (scratch lz77_debug.log). Key assignments:
+  job1/2 (L35, data[j+len]):  i=%value_phi49 = 0x0008000000000000 / 0x0800006f00000006,
+        j=%value_phi346 = 0xa000800000000008 / 0xc000000000000006 (NEGATIVE as i64),
+        n = 0x400400000000000a / 0x4000000002000000 (astronomical).
+  job3/4 (L54, data[i+len]):  i = 0x7ffffffffffffe08 / 0x7fffffffffffffff (near INT64_MAX),
+        len ~ 0x1f8/0x130, n = 0x6d96a3f58da53c06 / 0x4000000000000001.
+Reading:
+ * A-edges (data[j+len]) fail on the LOWER bound: i is free, so start =
+   i-window can be anything, j goes negative, j+len < 1. A lower bound
+   i >= 2 (=> start >= 1 => j >= 1) closes them. PHIMONO as specified in
+   §10.2 suffices for these two edges (= arm 3 of §10.7, 2.33x).
+ * B-edges (data[i+len]) fail differently: i ~ INT64_MAX so i+len WRAPS
+   (signed) and the guard `i+len <= n` holds vacuously while the 1-based
+   index is out of range. Needs an UPPER bound on i (i <= n), which is
+   the rotated outer loop's latch condition — not dominating the inner
+   loops, hence absent from the guard set.
+ * Both are ONE missing invariant on the outer header phi: 2 <= i <= n.
+   Base: preheader (i=2, top guard n>=2). Step: i' in {i+best, i+1},
+   back edge taken only if i' <= n (latch), increments > 0. This is
+   Plan C's 1-induction restricted to the header phi's own interval
+   (no body copy): "PHIINV" = PHIMONO (lower, from monotone increments)
+   + latch-implied upper bound (the back-edge condition, instantiated
+   on the phi's incoming value, holds for the phi at the top of every
+   non-first iteration). Spec §10.2 upgraded accordingly; estimate
+   unchanged (3-5 days), tripwires must include a latch condition that
+   does NOT imply a bound on the phi (e.g. tests an unrelated value).
+Hypothesis check: "solver picks i <= 0" was HALF right (it picks j<1 via
+i unbounded below, and i near INT64_MAX for the other pair). Doctrine
+vindicated — coding the lower-bound-only fact would have shipped 2/4.
