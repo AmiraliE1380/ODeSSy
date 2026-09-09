@@ -768,3 +768,255 @@ Rationale: C-first would either re-invent that walk or ship the
 register-only restriction as the headline, and its witnesses
 (base64/crc32/utf8) all have ~0 measured runtime ceilings — class (d)
 is a COVERAGE result, FRAME owns the PERFORMANCE results (3.4x, +410%).
+
+## 10. OOPSLA OPPORTUNITY CAMPAIGN — per-benchmark analysis (Sep 8 2026)
+
+Context: CGO R2 (Sep 10) judged not ready by the coauthor; candidate
+retarget OOPSLA R1 (Oct 14, ~5 weeks). Question asked: which measured
+ceilings can be converted into speedups by ADDING MACHINERY, per
+benchmark, per architecture, with time estimates. Method: read every
+per-trap log we have (Mac logs/{swift,julia}_triage/*.log; server
+results/static/julia_*_server_full_0827.log, cryptoswift_static_full_*,
+zstd_audit.csv), classify each SAT residue by WHY it is SAT (missing
+fact vs solver timeout vs genuinely unprovable), and cost the fix.
+Doctrine unchanged: fast SAT => missing constraint => read the
+countermodel; UNKNOWN => solver hardness, not a fact gap.
+
+### 10.1 Headline findings (new since the paper freeze)
+
+F1. THE x86 JULIA GAP IS SOLVER TIMEOUT, NOT MISSING FACTS. Server
+    audits (10 s cap) vs Mac, per job, identical fact counts:
+    * sha256.jl: server jobs 1-8 UNKNOWN @10 s; Mac same jobs UNSAT in
+      20-133 ms. Both 2/16 proven on server vs 10/16 Mac.
+    * jl_filt_dsp: server jobs 7 and 9 UNKNOWN @10 s; Mac UNSAT in
+      2.62 s and 1.98 s. 4/19 server vs 6/19 Mac.
+    Mechanism (filt, verified in the facts): x86 vectorizes 16-wide
+    (SCEVSYM terms `16*BTC((...)/u 16)`) vs Mac 8-wide (`8*BTC(...)`);
+    nested umin/smax over ~5 size symbols makes the query ~4x harder,
+    crossing the cap. For sha256.jl no width terms appear on either
+    side; the x86 SCEV expressions are simply harder. Consequences:
+    (a) the @inbounds LICENSING run is offline — run it at 60 s+, the
+    300 ms budget is a pipeline constraint, not an audit constraint;
+    (b) an encoding simplification for k*BTC(E /u k) nests (or Z3
+    ctx-solver-simplify before check) would make these fast at
+    production budgets. Estimate for (b): 3-7 days. NEEDS SERVER.
+
+F2. MAC 60 s RERUN (Sep 8): jl_filt_dsp at timeout=60000 => STILL 6/19;
+    all six UNSAT in 49 ms-2.6 s; ZERO UNKNOWN. The 13 Mac SATs are
+    genuine. So on Mac, time buys nothing; on x86 it buys exactly the
+    2 edges that take 2-2.6 s on Mac (=> 6/19 parity).
+
+F3. RESTORING DSP.jl's REAL GUARDS CHANGES filt COMPLETELY. Our port
+    stripped @inbounds but ALSO omitted the validation that DSP.jl's
+    filt! performs before the loop (Filters/filt.jl: length(a) ==
+    length(b) == sz, length(si) == sz-1, output length). New variant
+    native_bench/jl_filt_dsp_guarded.jl adds:
+        length(b) == silen + 1 || throw(DimensionMismatch("b"))
+        length(a) == silen + 1 || throw(DimensionMismatch("a"))
+        length(out) == n       || throw(DimensionMismatch("out"))
+        silen >= 1             || throw(ArgumentError("si"))
+    Mac audit (full tier, 10 s):
+        | variant          | traps | edges | elim | vacuous-refused | SAT |
+        | port as-is       |   9   |  19   |  6   |       0         | 13  |
+        | guards restored  |   6   |  10   |  5   |       3         |  2  |
+    Julia itself drops half the checks given the guards (19->10 edges);
+    ODeSSy proves 8/10 (3 vacuous-refused = infeasible loop-version
+    selections, the GEMM pattern). Edge->source map (jl_filt_dsp_guarded.ll):
+        L62.us250 (1 edge)  line 17  si[1]/b[1]        UNSAT  -> licensed
+        L59       (2 edges) line 16  x[i]              UNSAT x2 -> licensed
+        L135      (2 edges) line 19  inner access #1   VAC + UNSAT -> licensed
+        L154      (2 edges) line 19  inner access #2   VAC + SAT   -> NOT
+        L175      (1 edge)  line 19  inner access #3   SAT         -> NOT
+        L226      (2 edges) line 21  si[silen]/b/a     VAC + UNSAT -> licensed
+    THE TWO SURVIVING SATs (line 19, b[j+1]/a[j+1] in the vectorized
+    inner loop) — diagnosed from the job logs: the guards pin length(b)
+    /length(a) through the guard-side loads (%.size9.0.copyload ==
+    silen+1, %.size6.0.copyload == ...), but the in-loop check consumes
+    a CLONED, FROZEN RELOAD (%.size63.0.copyload.us.us.us.fr) with
+    stores to si's data in between, and NO Frame[...] line appears in
+    either job: the FRAME harvest did not fire. Cause (v1 gate, §8.7):
+    harvestFramePairs requires the IDENTICAL pointer SSA value for L1
+    and L2; the unswitched/vectorized clone recomputes the size-field
+    GEP, so the pointer is a different SSA value. FIX (encoding
+    structuring, no new analysis): pointer equivalence by (base SSA
+    value, constant offset) — or by MemoryLocation equality — instead
+    of Value* identity in the L1 search. Add a SAT tripwire where the
+    two GEPs have DIFFERENT offsets. Estimate 2-4 days. Expected: all
+    three line-19 accesses licensed => fully-@inbounds filt => the x86
+    ceiling (58.3%) becomes reachable; Mac ceiling is -1.6% (nothing
+    to gain there, as measured 0829/0829q).
+    HONESTY NOTE for the paper: ports must be audited against upstream
+    validation code; say so. The GEMM row already uses exactly this
+    framing ("real dimension guards restored").
+
+F4. lz77.jl IS NOT "CHECKS ARE THE SPEC" — PAPER_FACTS/paper row is
+    WRONG for this benchmark (matmul.jl's row is right). Details §10.2.
+
+### 10.2 lz77.jl (Julia) — the cheapest large win
+
+Ceilings (checked vs --check-bounds=no): x86 +326% (0827), Mac +158%
+(0829q). Census: 2 trap blocks, 4 trap edges, BOTH on source line 17
+(the innermost match loop):
+    L35 (preds L23.preloop, L23.postloop) -> data[j + len]
+    L54 (preds L38.preloop, L38.postloop) -> data[i + len]
+i.e. one trap per access, each duplicated by Julia's preloop/postloop
+versioning. Both accesses ARE the hot loop (`while i+len <= n &&
+data[j+len] == data[i+len]`), so proving all 4 edges licenses both
+accesses => the fully @inbounds kernel == the --check-bounds=no
+ceiling. Nothing partial about it: 4/4 == the whole 1.6-3.3x.
+
+Why 0/4 today (all four SAT in 3-14 ms => missing constraint, not
+hardness). Guards present in every job: `i+len <= n` (icmp sgt
+%33/%24, size -> false edge), `j < i` (Guard L8: %value_phi2 slt
+%value_phi49), `n >= 2` (top). The bound n = length(data) is ONE SSA
+load used by guard and check alike — NOT a frame problem, no stores to
+data in the loop (2 stores in the module, GC frame). The upper bounds
+are therefore fully available. What is missing is the LOWER bound of
+the 1-based check (idx >= 1): i+len >= 1 and j+len >= 1. len is the
+inner phi, stride 1, SCEV-bounded ([0,255) etc. — present). i is the
+OUTER header phi with VARIABLE stride (`i += best` or `i += 1`), so
+SCEV returns CouldNotCompute, i is a free variable, and the solver
+picks i <= 0. j's start is `i > window ? i-window : 1` — bounded below
+by 1 only if i's lower bound is known. ONE fact closes all four edges:
+    i >= 2  (initial value 2; every back-edge increment is > 0)
+PROPOSED MACHINERY — "PHIMONO", the monotone-phi fact (a special case
+of Plan C §9 that needs no body copy):
+    For header phi %p = phi [v0, preheader], [v_k, latch_k]...:
+    if every back-edge incoming v_k is (add %p, d_k) [possibly through
+    phis/selects of such adds] with d_k provably >= 0 (SCEV/KB/nsw or
+    a dominating guard on d_k), assert  %p >=s v0  (and >=u when v0>=0).
+    Soundness: 1-induction on the loop iteration count; base = v0,
+    step = p + d >= p >= v0. Label |PHIMONO:k|. Refuse if any incoming
+    is not an add-of-self, if d_k's sign is unknown, or if the loop is
+    irreducible. Add tripwire tests: (SAT) a phi with one negative
+    increment; (SAT) increment sign only path-dependent and unguarded.
+    For lz77.jl: i's latch values are i+best (best >= 3 on that path,
+    from the `best >= 3` branch guard) and i+1 => d >= 1 on both.
+    Determinism: pure IR walk + existing SCEV/KB queries through the
+    FactGate => threads-invariant.
+Estimate: 3-5 days including tripwires and cores audit. Then run
+native_bench arms (write jl_lz77_arms.jl on the gemm/sha256 template:
+arm1 checks / arm2 @inbounds all / arm3 proven-only == arm2 if 4/4).
+Runs on the Mac immediately (158% ceiling there); x86 when server is
+back (326%).
+
+### 10.3 Other benchmarks — residue class, machinery, estimate
+
+nbody (Swift; x86 +411% / Mac +410%; 0/86): unchanged from §8.5: N1
+  (one-level alloc-helper summaries), N2 (trusted mod/ref axiom table
+  for swift_beginAccess/endAccess/isUniquelyReferenced/retain/release
+  — these calls carry NO memory attributes, so today they are
+  clobber-world defs and 88/88 frame pairs are refused), N3 (CoW:
+  buffer pointer is not one SSA value; needs an object invariant
+  count(buffer(load g)) == 5 preserved by every def — induction over
+  defs, shared shape with Plan C's back-edge step). 4-8 weeks; N3 is
+  research risk. Payoff is the largest number in the study and is a
+  REAL Swift runtime via the sandwich (no annotation needed). Not a
+  5-week item; a paper on its own.
+
+base64 (Swift; x86 +56.8%, Mac unmeasured — measure it, ceilings_mac
+  protocol): 0/28. Two residue classes per iteration: 3 data[i+k]
+  reads behind stride-3 `i += 3` (class (d): SCEV CouldNotCompute) and
+  4 tbl[x & 63] lookups. NEW: tbl is a `let` GLOBAL (%TSa @"$s6base643tbl...");
+  its count is a PLAIN header load (load ptr @tbl; gep +16; load i64) —
+  only 2 swift_beginAccess in the module and both are on `final`, so
+  the N2 wall does NOT apply here. The index is KnownBits-provably in
+  [0,63]; what is missing is the fact tbl.count == 64 (or >= 64).
+  Machinery: Plan C for the data reads (§9; 1.5-2 wk, shared with
+  utf8/adler32) + an M2 contract for LITERAL-INITIALIZED IMMUTABLE
+  GLOBAL ARRAYS: the initializer Array("...64 chars...".utf8) runs in
+  main; the literal's byte length is a compile-time constant; a
+  one-level summary of the Array<UInt8>(String.UTF8View) init (count
+  == source utf8 count) or constant-evaluating the literal length gives
+  count == 64. 2-3 weeks incl. soundness argument (immutability of a
+  `let` global after init must be argued: no stores to @tbl after main's
+  init; Swift guarantees it, we must check it in IR). Plan C alone
+  removes 3/7 checks per iteration — the gather-style lookups likely
+  still block vectorization, so partial dose may buy little; the
+  56.8% needs both halves.
+
+adler32 (Swift; x86 11.6% / 32% recovered; Mac 8.9%, -1.5% relottery):
+  1/42 proven (the DO16 group proof). Mac log: 36 SAT jobs with
+  cumulative facts 2->90 (the guard chain grows across the 16 unrolled
+  reads) — the residue is the other buf[i+k] reads of the DO16 group;
+  i is carried across `while len >= NMAX { repeat {16 reads; i += 16}
+  while n > 0 }` so SCEV cannot bound it => class (d)/induction.
+  Machinery: Plan C proper (§9), 1-induction on the repeat loop.
+  Shared 1.5-2 wk. Payoff: up to the remaining ~8 pts on x86; may flip
+  Mac's -1.5% (lottery, no promise).
+
+utf8 (Swift; x86 7.5%, Mac none): 2/22, both guard-only. §9.5's worked
+  class-(d) example, variable stride 1-4. Plan C; x86-only payoff.
+
+CryptoSwift SHA2.process32 (Swift lib; x86 10.4% honest, Mac ~0):
+  0/23 in the hot compression function (cryptoswift_static_full_t10000
+  _0826.log). Contexts are TINY (2 boundary values: an array count in
+  [0, 2^63) and a nonneg index; SAT in 0.45 ms): the checked array is a
+  PARAMETER (currentHash / the schedule buffer allocated in the
+  caller) — class (b) O4, caller contract. Needs interprocedural
+  allocation-count summaries flowing across the call: new machinery
+  class, 3-4 weeks, x86-only payoff, dose-location risk stays.
+
+zstd decompression (C, signed spec; x86 +9.0% overhead): the
+  decompress TUs carry only ~14 signed traps (zstd_audit.csv:
+  huf_decompress 5 traps/1 UNSAT, zstd_decompress_block 6/2,
+  fse_decompress 2, entropy_common 6/2, zstd_decompress 1) yet cost 9%
+  => a handful of extremely hot bit-reader checks. No per-trap signed
+  logs are committed (server-local logs/compilations/zstd.signed.*).
+  Step 1 is attribution (perf annotate on the sanitized build) — 3-5
+  days on the server before any estimate; class (c) value-dependent
+  bit-count arithmetic is plausible and would be irreducible.
+
+sha1 / md5 (Swift; x86 4.7% / 6.0%): Linux proves 2/7 and 1/5 vs Mac
+  7 and 5. Mac UNSATs take 5-30 ms, so the Mac side is not near any
+  cap; the x86 per-trap logs were never committed (logs/tri3 on the
+  server), so the split is undiagnosed — HANDOFF §8.6 attributes it to
+  Linux code-generation shape. 1-2 days of diagnosis once the server is
+  back; low ceilings, low priority.
+
+sha256.jl (Julia; x86 9.5%, Mac -7.9% = no ceiling): 2/16 x86 vs 10/16
+  Mac — F1 (timeout). Rides on the F1 fix; then the Mac arms mapping
+  (jl_sha256_arms.jl header) applies on x86: 6/12 sites licensed.
+
+matmul.jl (Julia; x86 14.4% / Mac 1.7%): 0/3, GENUINELY irreducible as
+  written — no dimension guards, length(a) unrelated to n inside the
+  function (the paper's "checks are the spec" is correct HERE). Only
+  caller facts (O4) or restoring Base's guards to the source would
+  change it. Skip.
+
+crc32 (Swift; x86 4.6%): (d) stride-4 data reads + RUNTIME-BUILT
+  tables behind swift_beginAccess x11 / isUniquelyReferenced x5 => the
+  nbody wall for the table half. Skip. Swift lz77 (3.3%, 2/28), Julia
+  poly (0%), md5/utf8 on Mac (no ceiling): skip.
+
+### 10.4 Paper corrections owed by this analysis
+* tab:frontier row "lz77 | Julia | 0 | x86 | 326% | checks are the
+  spec" is FALSE; correct residue: "lower bound of a variable-stride
+  outer phi (inductive fact missing)". Same row for matmul.jl stays.
+* §7 ride-along paragraph and the Julia filt rows should note that the
+  port omits DSP.jl's validation guards; with them restored the picture
+  is 8/10 (F3). Decide whether the paper's filt numbers stay as-is
+  (faithful to the port) or move to the guarded variant (faithful to
+  the library) — the GEMM precedent is the latter.
+
+### 10.5 Recommended 5-week plan (if OOPSLA R1 Oct 14)
+Week 1: PHIMONO fact (§10.2) -> lz77.jl 4/4 -> jl_lz77_arms.jl on Mac
+        (158%). Restore server access in parallel (HANDOFF §0 setup,
+        ~1-2 h; any c220g2 node reproduces the numbers).
+Week 2: filt reload-pointer-equivalence fix (F3) + licensing runs at
+        60 s on x86 (F1) -> filt arms on x86 (58.3%) and lz77.jl x86
+        (326%); sha256.jl x86 6/12 for free.
+Weeks 3-4: Plan C proper (§9) -> adler32 / utf8 / base64 data half.
+        Measure base64 Mac ceiling on day 1 of week 3.
+Week 5: writing; base64 literal-array contract ONLY if weeks 3-4 landed
+        early. nbody stays the sequel.
+Realistic expectation: two new benchmarks above 10% (lz77.jl on both
+ISAs, filt on x86) with high confidence; adler32/base64 medium.
+Calibration: FRAME M1 (0->16/16) took ~5 intensive days once the
+diagnosis was right; every "week" above contains one new soundness
+argument, not just code.
+
+### 10.6 Artifacts from this session
+* native_bench/jl_filt_dsp_guarded.jl (F3 variant; committed Sep 8).
+* Mac 60 s filt audit: logs/julia_triage/jl_filt_dsp.log (local, gitignored) — 6/19, 0 UNKNOWN.
+* Guarded filt audit: logs/julia_triage/jl_filt_dsp_guarded.{ll,log} (local).
