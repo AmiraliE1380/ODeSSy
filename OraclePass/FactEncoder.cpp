@@ -185,6 +185,7 @@ unsigned FactEncoder::encodeBoundaryFacts(BasicBlock *PredBB) {
         tryLVI(V, PredBB);
         trySCEV(V);
         trySCEVSym(V);
+        tryPhiInv(V);
     }
     processScevLeaves(PredBB);
     return NumFacts;
@@ -698,4 +699,157 @@ bool FactEncoder::trySCEVSym(Value *V) {
     Log << "BTC(" << BS << ") (SCEV symbolic trip count, sub-form)\n";
     ++NumFacts;
     return true;
+}
+
+// =====================================================================
+// PHIINV -- header-phi interval invariant by 1-induction (HANDOFF §10.9;
+// acceptance test lz77.jl, §10.2/§10.8). Two independent facts on a
+// loop-header phi p = phi [v0, preheader], [vL, latch]:
+//
+//   HI (latch-implied bound, EXACT, no side condition):
+//       p == v0  ||  pred(p, B)
+//     where the loop's single latch branches back to the header iff
+//     pred(vL, B) holds (pred oriented by which successor is the
+//     header; vL is the phi's latch incoming value; B is loop-invariant).
+//     Soundness: on iteration 0, p IS v0; on iteration t >= 1, p is the
+//     very value vL that was tested at the latch on iteration t-1, and
+//     the back edge was taken, so pred(p, B) held. Wrap-agnostic: the
+//     compare is asserted on exactly the (possibly wrapped) value that
+//     the machine compared. Any ICmp predicate qualifies.
+//
+//   LO (monotone lower bound):
+//       p >=s v0
+//     when every latch value reaching the phi is `add nsw p, d` (looked
+//     through selects and non-header phis, depth <= 4) with d provably
+//     >=s 0 (constant, or SCEV isKnownNonNegative). Soundness: p_0 = v0;
+//     p_{t+1} = p_t + d >= p_t. The nsw REQUIREMENT is load-bearing: a
+//     wrapping add could take p below v0 while the latch compare still
+//     passes (negative <=s bound), so without nsw the invariant is NOT
+//     inductive in IR semantics (lz77.jl's outer increment lacks nsw --
+//     see §10.11). nsw's poison caveat is the encoder's standing trust
+//     class (wrap => poison => UB once branched on).
+//
+// REFUSALS: not a header phi; loop without a unique preheader or with
+// != 1 latch; phi with incoming blocks other than {preheader, latch};
+// latch terminator not a conditional branch on an ICmp; the ICmp does
+// not compare vL against a loop-invariant operand (HI); any latch value
+// not of the add-nsw-of-self shape or with unknown sign (LO). Pure IR
+// walk + SE queries (FactGate-serialized like every heavy fact).
+// =====================================================================
+static bool collectSelfAdds(Value *V, PHINode *P, unsigned Depth,
+                            SmallVectorImpl<Value *> &Incs) {
+    if (Depth > 4) return false;
+    if (auto *BO = dyn_cast<BinaryOperator>(V)) {
+        if (BO->getOpcode() != Instruction::Add) return false;
+        if (!BO->hasNoSignedWrap()) return false;           // load-bearing
+        if (BO->getOperand(0) == P) { Incs.push_back(BO->getOperand(1)); return true; }
+        if (BO->getOperand(1) == P) { Incs.push_back(BO->getOperand(0)); return true; }
+        return false;
+    }
+    if (auto *Sel = dyn_cast<SelectInst>(V))
+        return collectSelfAdds(Sel->getTrueValue(), P, Depth + 1, Incs) &&
+               collectSelfAdds(Sel->getFalseValue(), P, Depth + 1, Incs);
+    if (auto *Phi = dyn_cast<PHINode>(V)) {
+        for (Value *In : Phi->incoming_values())
+            if (!collectSelfAdds(In, P, Depth + 1, Incs)) return false;
+        return Phi->getNumIncomingValues() > 0;
+    }
+    return false;
+}
+
+bool FactEncoder::tryPhiInv(Value *V) {
+    if (!LI) return false;
+    auto *Phi = dyn_cast<PHINode>(V);
+    if (!Phi || !Phi->getType()->isIntegerTy()) return false;
+    BasicBlock *H = Phi->getParent();
+    Loop *L = LI->getLoopFor(H);
+    if (!L || L->getHeader() != H) return false;
+    // A dedicated preheader is not required: the unique out-of-loop
+    // predecessor (which may branch elsewhere too) is exactly the block
+    // whose incoming value is the induction's base case.
+    BasicBlock *Pre = L->getLoopPreheader();
+    if (!Pre) Pre = L->getLoopPredecessor();
+    BasicBlock *Latch = L->getLoopLatch();          // null if != 1 latch
+    if (!Pre || !Latch) return false;
+    if (Phi->getNumIncomingValues() != 2) return false;
+    Value *V0 = Phi->getIncomingValueForBlock(Pre);
+    Value *VL = Phi->getIncomingValueForBlock(Latch);
+    if (!V0 || !VL) return false;
+    unsigned W = Phi->getType()->getIntegerBitWidth();
+    z3::expr PhiE = Encoder.valueAsBV(Phi, W);
+    z3::expr V0E  = Encoder.valueAsBV(V0, W);
+    bool Any = false;
+
+    // ---------------- HI: latch-implied bound ----------------
+    if (auto *Br = dyn_cast<BranchInst>(Latch->getTerminator())) {
+        if (Br->isConditional() && Br->getSuccessor(0) != Br->getSuccessor(1)) {
+            if (auto *Cmp = dyn_cast<ICmpInst>(Br->getCondition())) {
+                bool BackOnTrue = (Br->getSuccessor(0) == H);
+                ICmpInst::Predicate Pred = Cmp->getPredicate();
+                if (!BackOnTrue) Pred = ICmpInst::getInversePredicate(Pred);
+                Value *A = Cmp->getOperand(0), *Bv = Cmp->getOperand(1);
+                if (Bv == VL) { std::swap(A, Bv); Pred = ICmpInst::getSwappedPredicate(Pred); }
+                if (A == VL && Bv != VL && L->isLoopInvariant(Bv) &&
+                    Bv->getType() == Phi->getType()) {
+                    z3::expr BE = Encoder.valueAsBV(Bv, W);
+                    z3::expr C = (PhiE == BE);
+                    bool OK = true;
+                    switch (Pred) {
+                    case ICmpInst::ICMP_EQ:  C = (PhiE == BE); break;
+                    case ICmpInst::ICMP_NE:  C = (PhiE != BE); break;
+                    case ICmpInst::ICMP_SGT: C = (PhiE >  BE); break;
+                    case ICmpInst::ICMP_SGE: C = (PhiE >= BE); break;
+                    case ICmpInst::ICMP_SLT: C = (PhiE <  BE); break;
+                    case ICmpInst::ICMP_SLE: C = (PhiE <= BE); break;
+                    case ICmpInst::ICMP_UGT: C = z3::ugt(PhiE, BE); break;
+                    case ICmpInst::ICMP_UGE: C = z3::uge(PhiE, BE); break;
+                    case ICmpInst::ICMP_ULT: C = z3::ult(PhiE, BE); break;
+                    case ICmpInst::ICMP_ULE: C = z3::ule(PhiE, BE); break;
+                    default: OK = false;
+                    }
+                    if (OK) {
+                        z3::expr Fact = (PhiE == V0E) || C;
+                        std::string Lbl = mkLabel("PHIINV-hi");
+                        Encoder.assertRawFact(Fact, Audit ? Lbl : std::string());
+                        Log << "    -> Fact[" << Lbl << "] " << valueStr(V)
+                            << " == " << valueStr(V0) << " || "
+                            << ICmpInst::getPredicateName(Pred).str() << "("
+                            << valueStr(V) << ", " << valueStr(Bv)
+                            << ") (latch-implied bound, 1-induction)\n";
+                        ++NumFacts; Any = true;
+                    }
+                }
+            }
+        }
+    }
+
+    // ---------------- LO: monotone lower bound ----------------
+    SmallVector<Value *, 8> Incs;
+    if (collectSelfAdds(VL, Phi, 0, Incs) && !Incs.empty()) {
+        bool AllNonNeg = true;
+        for (Value *D : Incs) {
+            if (auto *CI = dyn_cast<ConstantInt>(D)) {
+                if (CI->getValue().isNegative()) { AllNonNeg = false; break; }
+                continue;
+            }
+            if (SE && SE->isSCEVable(D->getType()) &&
+                SE->isKnownNonNegative(SE->getSCEV(D))) continue;
+            AllNonNeg = false; break;
+        }
+        if (AllNonNeg) {
+            z3::expr Fact = (PhiE >= V0E);
+            bool V0NonNeg = false;
+            if (auto *CI = dyn_cast<ConstantInt>(V0)) V0NonNeg = !CI->getValue().isNegative();
+            else if (SE && SE->isSCEVable(V0->getType()))
+                V0NonNeg = SE->isKnownNonNegative(SE->getSCEV(V0));
+            if (V0NonNeg) Fact = Fact && z3::uge(PhiE, V0E);
+            std::string Lbl = mkLabel("PHIINV-lo");
+            Encoder.assertRawFact(Fact, Audit ? Lbl : std::string());
+            Log << "    -> Fact[" << Lbl << "] " << valueStr(V) << " >=s "
+                << valueStr(V0) << " (monotone nsw increments, "
+                << Incs.size() << " arm(s))\n";
+            ++NumFacts; Any = true;
+        }
+    }
+    return Any;
 }

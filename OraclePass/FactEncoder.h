@@ -82,6 +82,14 @@ private:
     // SCEVSYM: symbolic trip-count bound for an affine {C,+,1} header phi
     // (see the soundness block in FactEncoder.cpp). Requires SE and LI.
     bool trySCEVSym(llvm::Value *V);
+    // PHIINV (HANDOFF §10.9): header-phi interval invariant by 1-induction.
+    //   HI: p == v0  ||  pred(p, B)   where the single latch branches back
+    //       iff pred(v_latch, B) and B is loop-invariant -- exact, no gate.
+    //   LO: p >=s v0  when every latch value is add nsw(p, d) (through
+    //       selects / non-header phis) with d provably >=s 0.
+    // Requires LI (and SE for LO's sign facts). Returns true if any fact
+    // was asserted.
+    bool tryPhiInv(llvm::Value *V);
     // Go 2: drain LeafQueue -- give every free leaf of a translated SCEV
     // expression its own facts (value battery + freeze identity /
     // non-header-phi image / SCEV equality). See soundness block in .cpp.
