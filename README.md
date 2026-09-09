@@ -129,7 +129,7 @@ optionally swiftc 6.x, Julia 1.12, and rustup for the native benchmarks.
 ```bash
 cmake -G Ninja -B build -DCMAKE_BUILD_TYPE=Release   # point LLVM_DIR/Z3 at your installs
 ninja -C build                                      # builds build/OraclePass.so
-bash scripts/run_tests.sh                           # regression gate: expect PASS=20 / FAIL=8
+bash scripts/run_tests.sh                           # regression gate: expect PASS=24 / FAIL=9
 ```
 
 The gate's 8 "fails" are heavy/ldeq/frame/stride/symstart tests run under the

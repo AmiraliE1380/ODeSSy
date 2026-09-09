@@ -23,7 +23,7 @@ tmux. If DNS dies: `echo "nameserver 8.8.8.8" | sudo tee
 **Build + gate (both machines):**
 ```
 ninja -C build
-bash scripts/run_tests.sh          # MUST print PASS=20 / FAIL=8 (17/6 pre-FRAME, 19/7 pre-SCEVSYM-v2)
+bash scripts/run_tests.sh          # MUST print PASS=24 / FAIL=9 (20/8 pre-PHIINV tests, 17/6 pre-FRAME, 19/7 pre-SCEVSYM-v2)
 ```
 The 8 FAILs are heavy/ldeq/stride/frame/symstart tests under the light gate BY
 DESIGN (test_frame1 flips to PASS once FRAME lands, gate becomes 20/6);
@@ -1166,3 +1166,20 @@ fire; cores tell which mattered).
 ACCEPTANCE. lz77.jl 4/4 (LO closes L35 x2; HI closes L54 x2), vacuous 0,
 cores contain |PHIINV-lo| resp. |PHIINV-hi|; sweep_native monotone;
 threads=1 vs 8 diff empty; jl_lz77_arms arm "proven-only" == arm 1.
+
+### 10.10 Session 1.3 — PHIINV tripwires written, baseline taken (Sep 9 2026)
+Five tests added to tests/ (all share one skeleton: i=2; i += select(c,3,1)
+[nsw]; latch inc <= n; check (i-1) <u n; guard n >= 2 unless noted):
+  test_heavy_phiinv1.ll               positive; UNSAT once PHIINV lands
+  test_heavy_phiinv_neg_sat.ll        T1: one increment is -1 (LO must refuse)
+  test_heavy_phiinv_freeinc_sat.ll    T2: increment is an unconstrained argument
+  test_heavy_phiinv_hi_unrelated_sat.ll T3: latch compares a LOAD, not %inc (HI must refuse)
+  test_heavy_phiinv_nofirst_sat.ll    T4: no preheader guard (first iteration unbounded)
+Suite gate (light, knobless): PASS=24 / FAIL=9 — the 4 SAT tests pass
+trivially, phiinv1 is EXPECTED-FAIL under light like all heavy tests.
+FULL-tier baseline BEFORE the encoder change: all five SAT, vacuous 0
+(positive test confirms the machinery is genuinely absent today; the
+tripwires' SAT is the floor they must hold forever).
+Acceptance after Session 1.4: phiinv1 -> UNSAT under heavy/full with
+|PHIINV-lo| AND |PHIINV-hi| in the core; T1-T4 still SAT; suite still
+PASS=24/FAIL=9 (light is unaffected by a heavy-tier fact source).
