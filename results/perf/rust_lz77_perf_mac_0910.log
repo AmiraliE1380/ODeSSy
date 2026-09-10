@@ -1,0 +1,33 @@
+kernel=/Users/ebrah/Project/compiler/ODeSSy/native_bench/lz77_bench.rs args=25 reps=30
+rustc: rustc 1.97.1 (8bab26f4f 2026-07-14)
+passes: oracle-pass<heavy;ldeq;frame;timeout=300;threads=8;traps=panic>
+kernel object: /Users/ebrah/Project/compiler/ODeSSy/perf_test/rust_lz77_bench/checked.lz77_bench.f10358eeb27bed39-cgu.0.rcgu.o
+stat: invalid option -- '%'
+Try 'stat --help' for more information.
+  built base   traps 5   bin  B
+stat: invalid option -- '%'
+Try 'stat --help' for more information.
+  built base2x   traps 5   bin  B
+  oracle eliminated: 0
+0
+0
+0
+1
+0
+0
+0
+stat: invalid option -- '%'
+Try 'stat --help' for more information.
+  built oracle   traps 3   bin  B
+  outputs byte-identical across all configs -- gate passed
+
+config        median       min       avg
+base          0.7702    0.7601    0.7705
+base2x        0.7706    0.7636    0.7715
+oracle        1.0516    1.0476    1.0516
+checked       1.0393    1.0286    1.0484
+unchecked     1.0865    1.0819    1.0863
+oracle vs base  : -26.76% (median)
+oracle vs base2x: -26.72% (median)
+ceiling (checked vs unchecked twin): -4.34%
+recovery: 616.5% of ceiling

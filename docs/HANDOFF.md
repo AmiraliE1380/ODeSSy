@@ -1455,3 +1455,38 @@ eliminated 5, byte-identical):
 3 s rechecks: Rust lz77 heavy/full SAT=2 UNSAT=1 (the 300 ms UNKNOWN is a
   NEW proof at 3 s: 0 -> 1); jl_filt_dsp 6/19 both tiers (unchanged at 3 s);
   jl_filt_dsp_guarded 8/10 (unchanged).
+
+### 10.18 Rust lz77 -- first Rust runtime experiment (Mac, Sep 10 2026): a LOSS
+Census: lz77.rs has 16 core::panicking call sites, 3 of them anchorable
+trap sites (single-pred trap block behind a conditional branch; rustc
+MERGES the others into shared panic blocks -- anchor v2 gap, §8). Before
+PHIINV: 0/3. Now 1/3 at >=1 s (405 ms; 300 ms budget -> UNKNOWN): the
+inner-loop `data[j+len]` bounds check, core |PHIINV-hi| |SCEVSYM| |SCEV|
+|PHIINV-hx| G0 G1 G2 TRAP -- the same two new rules as Swift (§10.17).
+The other two (matches += 1 overflow via `== -1` guard; `i += best`
+overflow) need relational invariants (Plan C).
+New harness scripts/run_rust_perf.sh: rustc -O checked --emit=llvm-ir,obj,
+link --print link-args (-C save-temps keeps the objects); base/base2x/
+oracle = opt pipeline -> llc -> relink with the kernel object swapped in
+rustc's own link line; ceiling arms = rustc-native checked vs the
+get_unchecked twin (lz77_bench_unc.rs). 64 KiB corpus, window 1024,
+RUNARGS=25 (~41 ms/rep), REPS=30, byte-identical gate passed.
+results/perf/rust_lz77_perf_mac_0910.log:
+    base     0.7702   base2x 0.7706   oracle 1.0516   => oracle -26.8% (SLOWER)
+    checked  1.0393   unchecked 1.0865                => ceiling -4.3% (unchecked SLOWER)
+Robust to llc -mcpu=apple-m1, -align-loops=32, -align-loops=4 (all within
+1 pt). Post-O3 IR diff is three lines: the `j+len <u n` compare+branch
+gone, GEP loses `inbounds nuw` and is split into a hoisted base+j pointer
+indexed by len. Inner loop 9 instrs (oracle) vs 12 (base); the per-j
+mismatch path is 14 vs 15 instrs. A 32-byte loop-alignment nop pad on the
+fall-through path was suspected and RULED OUT (-align-loops=4 -> 0 nops,
+same -26%). The loop runs at ~5 IPC (6.7e8 instr / 41 ms), i.e. at the
+front-end limit, where any change in the taken-branch pattern or fetch
+grouping is decisive; without hardware counters (macOS) the cause is
+unresolved. Two independent compilers agree in sign: rustc's own
+get_unchecked build is 4.3% slower than its checked build.
+STATUS: honest two-sided lottery entry (cf. CryptoSwift/sha1 §8): a proven
+check whose removal costs 26% on M-series. Do NOT ship as a speedup row;
+report as the strongest negative example. Re-measure on x86 (server) --
+base vs rustc-native also differ by 35% here, showing how codegen-sensitive
+this kernel is. Rust lz77 stays a static-only row until then.

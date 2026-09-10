@@ -1043,3 +1043,23 @@ REPS=30, 5 traps eliminated, byte-identical
 Against the 36.0% Mac ceiling: ≈70–76% recovered (was 8.5% with 3 traps).
 Suite gate 26/11. Remaining three outer-loop overflow traps need relational
 invariants (out ≤ i, bestLen ≤ n − i): Plan C.
+
+### 11.3 Rust lz77 — static 0/3 → 1/3; runtime is a LOSS on Mac (Sep 10 2026)
+Anchored trap sites 3 (of 16 panic calls). The inner-loop `data[j+len]`
+bounds check is now UNSAT (405 ms; core PHIINV-hi, SCEVSYM, SCEV, PHIINV-hx).
+First Rust runtime harness (scripts/run_rust_perf.sh, O3 sandwich with
+rustc's link line, byte-identical gate). Mac M-series, REPS=30, 25 reps of
+the 64 KiB scan (results/perf/rust_lz77_perf_mac_0910.log):
+
+| config | median s | vs base |
+|---|---|---|
+| base | 0.7702 | |
+| base2x | 0.7706 | |
+| oracle (1 trap removed) | 1.0516 | **−26.8%** |
+| rustc checked | 1.0393 | |
+| rustc `get_unchecked` twin | 1.0865 | ceiling **−4.3%** |
+
+Removing the proven check makes the loop slower; rustc's own unchecked
+build is slower too. Robust to -mcpu and loop-alignment settings; cause not
+resolved (front-end-bound loop, ~5 IPC). Recorded as the strongest negative
+lottery example; not a speedup row. x86 re-measurement pending.
