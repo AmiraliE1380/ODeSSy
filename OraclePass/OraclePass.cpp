@@ -35,6 +35,14 @@
 // wiretaps (raw errs() from encode internals) are only meaningful at
 // threads=1.
 // =====================================================================
+#include "llvm/Transforms/Utils/Cloning.h"
+#include "llvm/Transforms/Utils/LoopUtils.h"
+#include "llvm/Transforms/Utils/BasicBlockUtils.h"
+#include "llvm/Transforms/Utils/LoopSimplify.h"
+#include "llvm/Transforms/Utils/ValueMapper.h"
+#include "llvm/IR/IRBuilder.h"
+#include <map>
+#include <algorithm>
 #include "Scheduler.h"
 #include "TrapDiscovery.h"
 #include "TrapJob.h"
@@ -134,14 +142,19 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
     // ablation). Composes with everything; MemorySSA is requested only
     // when on.
     bool FrameMode = false;
+    // MV knob (oracle-pass<mv>, optional mv-sane=<k>; HANDOFF §10.22):
+    // solver-guided loop multi-versioning. Default OFF; every other
+    // configuration stays byte-identical.
+    bool MultiVersion = false;
+    unsigned MVSaneExp = 62;
 
     OraclePass() = default;
     OraclePass(bool Vacuity, bool Heavy, unsigned TimeoutMs, unsigned NThreads,
                bool LdEq, std::vector<std::string> Traps = {},
-               bool Frame = false)
+               bool Frame = false, bool MV = false, unsigned MVSane = 62)
         : VacuityCheck(Vacuity), HeavyMode(Heavy), QueryTimeoutMs(TimeoutMs),
           Threads(NThreads), LoadEq(LdEq), TrapCallees(std::move(Traps)),
-          FrameMode(Frame) {}
+          FrameMode(Frame), MultiVersion(MV), MVSaneExp(MVSane) {}
 
     PreservedAnalyses run(Module &M, ModuleAnalysisManager &MAM) {
         auto &FAM =
@@ -168,6 +181,8 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
         Cfg.QueryTimeoutMs = QueryTimeoutMs;
         Cfg.LoadEq = LoadEq;
         Cfg.FrameMode = FrameMode;
+        Cfg.MultiVersion = MultiVersion;
+        Cfg.MVSaneExp = MVSaneExp;
 
         // =============================================================
         // STAGE 1: serial discovery (main thread; IR read-only)
@@ -217,7 +232,8 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
                << FCs.size() << " function(s); threads=" << NThreads
                << (HeavyMode ? " [tier: heavy]" : "")
                << (LoadEq ? " [ldeq]" : "")
-               << (FrameMode ? " [frame]" : "");
+               << (FrameMode ? " [frame]" : "")
+               << (MultiVersion ? " [mv]" : "");
         if (!TrapCallees.empty()) {
             errs() << " [traps=";
             for (size_t i = 0; i < TrapCallees.size(); ++i)
@@ -289,6 +305,120 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
         }
 
         // =============================================================
+        // STAGE 3a': MULTI-VERSIONING (serial; oracle-pass<mv>; HANDOFF
+        // §10.22). Jobs that stayed SAT but are DEAD UNDER HYPOTHESIS H
+        // are grouped by the loop H hoists to; each group's loop is
+        // cloned once, the preheader branches on H_L = AND of the group's
+        // conjuncts (all loop-invariant => evaluable there), and the
+        // anchor branches are folded ONLY in the clone. The original
+        // loop keeps every trap: observational equality is by
+        // construction (guard dominates the fast copy; each folded trap
+        // was UNSAT under H_L context-side).
+        // =============================================================
+        int MVEliminated = 0, MVLoops = 0;
+        if (MultiVersion) {
+            const unsigned Budget = 4;                  // clones per function
+            DenseMap<Function *, unsigned> Used;
+            // group: (F, hoist loop) -> jobs
+            std::map<std::pair<Function *, Loop *>, std::vector<size_t>> Groups;
+            for (size_t i = 0; i < Jobs.size(); ++i) {
+                odessy::TrapJob &J = Jobs[i];
+                if (!J.MVEliminate || J.Eliminate || !J.MVLoop) continue;
+                Groups[{J.F, J.MVLoop}].push_back(i);
+            }
+            // INNERMOST FIRST: an inner loop versioned first is then cloned
+            // (already versioned, folds included) inside the outer fast copy,
+            // so nested groups compose; each guard sits at its own level.
+            std::vector<std::pair<Function *, Loop *>> Order;
+            for (auto &G : Groups) Order.push_back(G.first);
+            std::sort(Order.begin(), Order.end(), [&](auto &A, auto &B) {
+                if (A.first != B.first) return A.first < B.first;
+                return A.second->getLoopDepth() > B.second->getLoopDepth();
+            });
+            SmallPtrSet<Loop *, 8> Versioned;
+            for (auto &Key : Order) {
+                Function *F = Key.first; Loop *L = Key.second;
+                auto &Idx = Groups[Key];
+                auto note = [&](const char *Msg) {
+                    for (size_t i : Idx) { raw_string_ostream OS(Jobs[i].LogText); OS << Msg; }
+                };
+                if (Used[F] >= Budget) { note("    -> [mv] SKIP: clone budget exhausted for this function\n"); continue; }
+                odessy::FunctionCtx &FC = FCs[CtxOf.lookup(F)];
+                DominatorTree *DT = FC.DT; LoopInfo *LI = FC.LI;
+                ScalarEvolution *SE = &FAM.getResult<ScalarEvolutionAnalysis>(*F);
+                // Shape: loop-simplify form (preheader, single latch, dedicated
+                // exits) and LCSSA, so the clone's exit values reach outside
+                // uses only through exit phis we can patch.
+                if (!L->isLoopSimplifyForm())
+                    simplifyLoop(L, DT, LI, SE, nullptr, nullptr, /*PreserveLCSSA=*/false);
+                if (!L->isLoopSimplifyForm()) { note("    -> [mv] SKIP: loop not in simplify form\n"); continue; }
+                formLCSSARecursively(*L, *DT, LI, SE);
+                // H_L: distinct conjuncts of the group.
+                std::vector<odessy::TrapJob::MVConjunct> Conj;
+                for (size_t i : Idx)
+                    for (auto &C : Jobs[i].MVHyp) {
+                        bool Dup = false;
+                        for (auto &D : Conj) if (D.V == C.V && D.Pred == C.Pred && D.ConstStr == C.ConstStr) { Dup = true; break; }
+                        if (!Dup) Conj.push_back(C);
+                    }
+                BasicBlock *CheckBB = L->getLoopPreheader();
+                IRBuilder<> B(CheckBB->getTerminator());
+                Value *H = nullptr;
+                for (auto &C : Conj) {
+                    unsigned W = C.V->getType()->getIntegerBitWidth();
+                    APInt K(W, C.ConstStr, 10);
+                    Value *Cmp = B.CreateICmp((ICmpInst::Predicate)C.Pred, C.V,
+                                              ConstantInt::get(C.V->getType(), K), "mv.h");
+                    H = H ? B.CreateAnd(H, Cmp, "mv.h") : Cmp;
+                }
+                // Split: CheckBB | PH(original preheader), clone before PH.
+                BasicBlock *PH = SplitBlock(CheckBB, CheckBB->getTerminator(), DT, LI, nullptr,
+                                            L->getHeader()->getName() + ".mv.ph");
+                ValueToValueMapTy VMap;
+                SmallVector<BasicBlock *, 8> Blocks;
+                SmallVector<BasicBlock *, 4> ExitsDup, Exits;
+                L->getExitBlocks(ExitsDup);              // one entry PER EXITING EDGE
+                { SmallPtrSet<BasicBlock *, 8> Seen;
+                  for (BasicBlock *E : ExitsDup) if (Seen.insert(E).second) Exits.push_back(E); }
+                Loop *Fast = cloneLoopWithPreheader(PH, CheckBB, L, VMap, ".mv.fast", LI, DT, Blocks);
+                remapInstructionsInBlocks(Blocks, VMap);
+                // Exit phis: every LCSSA/exit phi with an incoming edge from
+                // the original loop gets the mapped incoming from the clone.
+                for (BasicBlock *E : Exits)
+                    for (PHINode &PN : E->phis()) {
+                        unsigned N = PN.getNumIncomingValues();
+                        for (unsigned k = 0; k < N; ++k) {
+                            BasicBlock *In = PN.getIncomingBlock(k);
+                            if (!L->contains(In)) continue;
+                            Value *V = PN.getIncomingValue(k);
+                            Value *MV = V; if (auto It = VMap.find(V); It != VMap.end()) MV = It->second;
+                            auto BIt = VMap.find(In);
+                            if (BIt == VMap.end()) continue;
+                            PN.addIncoming(MV, cast<BasicBlock>(BIt->second));
+                        }
+                    }
+                // Guard: H ? fast clone : original (checked).
+                Instruction *OldTerm = CheckBB->getTerminator();
+                BranchInst::Create(Fast->getLoopPreheader(), PH, H, CheckBB);
+                OldTerm->eraseFromParent();
+                // Fold the group's anchor branches in the CLONE only.
+                for (size_t i : Idx) {
+                    odessy::TrapJob &J = Jobs[i];
+                    auto *CBr = dyn_cast_or_null<BranchInst>(VMap.lookup(J.Br));
+                    raw_string_ostream OS(J.LogText);
+                    if (!CBr || !CBr->isConditional()) { OS << "    -> [mv] SKIP: anchor not found in clone\n"; continue; }
+                    if (!Folded.insert(CBr).second) { OS << "    -> [mv] SKIP: clone anchor already folded\n"; continue; }
+                    CBr->setCondition(ConstantInt::get(Type::getInt1Ty(F->getContext()), J.TrapOnTrue ? 0 : 1));
+                    OS << "  => SUCCESS (fast copy): trap folded in the H-guarded clone of loop '"
+                       << L->getHeader()->getName() << "'\n";
+                    ++MVEliminated;
+                }
+                DT->recalculate(*F);
+                Versioned.insert(L); ++Used[F]; ++MVLoops; ++ModuleEliminated;
+            }
+        }
+
+        // =============================================================
         // STAGE 3b: log assembly (discovery order => THREADS-invariant)
         // =============================================================
         for (odessy::FunctionCtx &FC : FCs) {
@@ -317,6 +447,12 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
             }
 
             FOS << "  => Total Traps Eliminated: " << TrapsEliminated << "\n";
+            if (MultiVersion) {
+                int MVFolded = 0;
+                for (size_t ji : FC.JobIndices)
+                    if (Jobs[ji].LogText.find("SUCCESS (fast copy)") != std::string::npos) MVFolded++;
+                FOS << "  => Traps Folded In Fast Copies (mv): " << MVFolded << "\n";
+            }
             FOS << "  => Total Trap Attempts: " << trap_attempts << "\n";
             FOS << "  => Total SMT Queries Executed: " << smt_queries << "\n";
             FOS << "  => Total SMT Query Latency: " << TotalLatency << " ms\n";
@@ -357,6 +493,7 @@ llvmGetPassPluginInfo() {
                         unsigned Threads = 1;             // Level-2 default: serial
                         bool LdEq = false;                // LDEQ default: off
                         bool Frame = false;               // FRAME default: off
+                        bool MV = false; unsigned MVSane = 62;  // MV default: off
                         std::vector<std::string> Traps;   // traps= callees: empty
                         if (!Name.empty()) {              // parse "<a;b;...>"
                             if (!Name.consume_front("<") || !Name.consume_back(">"))
@@ -371,6 +508,13 @@ llvmGetPassPluginInfo() {
                                     LdEq = true;
                                 else if (P == "frame")
                                     Frame = true;
+                                else if (P == "mv")
+                                    MV = true;
+                                else if (P.consume_front("mv-sane=")) {
+                                    if (P.getAsInteger(10, MVSane) || MVSane < 8 || MVSane > 62)
+                                        return false;
+                                    MV = true;
+                                }
                                 else if (P == "light" || P == "heavy") {
                                     if (TierSeen)
                                         return false;   // contradictory tiers
@@ -408,7 +552,8 @@ llvmGetPassPluginInfo() {
                             }
                         }
                         MPM.addPass(OraclePass(Vacuity, Heavy, TimeoutMs, Threads,
-                                               LdEq, std::move(Traps), Frame));
+                                               LdEq, std::move(Traps), Frame,
+                                               MV, MVSane));
                         return true;
                     }
                 );

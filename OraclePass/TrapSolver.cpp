@@ -8,6 +8,9 @@
 #include "llvm/IR/Function.h"
 #include "llvm/IR/Instructions.h"
 #include "llvm/IR/Module.h"
+#include "llvm/Analysis/ValueTracking.h"
+#include "llvm/IR/ConstantRange.h"
+#include "llvm/Analysis/SimplifyQuery.h"
 
 #include <string>
 
@@ -19,7 +22,7 @@ TrapSolver::TrapSolver(const SolverConfig &Cfg, const FunctionCtx &FC,
                        TrapJob &Job)
     : Cfg(Cfg), FC(FC), Job(Job), Encoder(Cfg.QueryTimeoutMs),
       Log(Job.LogText) {
-    if (Cfg.VacuityCheck)
+    if (Cfg.VacuityCheck || Cfg.MultiVersion)   // MV reads cores too
         Encoder.enableUnsatCores();
     if (Cfg.LoadEq)
         Encoder.enableLoadEquivalence();
@@ -161,6 +164,12 @@ void TrapSolver::solvePhase() {
         }
         Job.Eliminate = IsUnsat;
 
+        // PHASE 3.5 (MV only): a SAT verdict may still be dead under a
+        // runtime-checkable hypothesis over loop-invariant values.
+        if (!IsUnsat && Cfg.MultiVersion &&
+            ResultString.find("SAT") != std::string::npos)
+            mvPhase();
+
     } catch (const z3::exception &e) {
         // Sort mismatch or any other Z3 throw: degrade to "can't prove it,
         // keep the trap" instead of std::terminate'ing the whole opt process.
@@ -173,6 +182,193 @@ void TrapSolver::solvePhase() {
         Log << "    -> [Skip] unknown exception during solve\n";
         Job.Eliminate = false;
     }
+}
+
+// =====================================================================
+// PHASE 3.5 -- MV hypothesis mining (HANDOFF §10.22). Runs only after a
+// SAT verdict with the solver still holding  context | push | trap.
+//
+//   T1 length-vs-index : trap <=> idx >=u count (or idx >u count) with
+//        count loop-invariant and idx not -> candidate count >u hi(idx)
+//        (resp. >=u), hi from the index's static unsigned range.
+//   T2 sane range      : every loop-invariant integer free variable v ->
+//        candidates 0 <=s v and v <=s 2^k (k = min(mv-sane, W-2)).
+//
+// All candidates are asserted TRACKED (|MV:i|) on top of the trap scope
+// and the query is re-checked. UNSAT => the core names the minimal H_T;
+// then H_T alone (with the context) must be SAT (a contradictory H would
+// make the fast copy dead code: refuse). SAT/UNKNOWN => not versionable.
+// Every conjunct is an ICmp between a loop-invariant value and a
+// constant, hence evaluable in the loop preheader (Stage 3 hoists it).
+// Uses only LI (read-only) and stateless ValueTracking: no FactGate.
+// =====================================================================
+static std::string predText(ICmpInst::Predicate P) {
+    switch (P) {
+    case ICmpInst::ICMP_UGT: return ">u";  case ICmpInst::ICMP_UGE: return ">=u";
+    case ICmpInst::ICMP_ULT: return "<u";  case ICmpInst::ICMP_ULE: return "<=u";
+    case ICmpInst::ICMP_SGT: return ">s";  case ICmpInst::ICMP_SGE: return ">=s";
+    case ICmpInst::ICMP_SLT: return "<s";  case ICmpInst::ICMP_SLE: return "<=s";
+    default: return "?";
+    }
+}
+
+void TrapSolver::mvPhase() {
+    if (!FC.LI) return;
+    Loop *L = FC.LI->getLoopFor(Job.PredBB);
+    if (!L) { Log << "    -> [mv] trap not inside a loop: not versionable\n"; return; }
+    struct Cand { Value *V; ICmpInst::Predicate P; APInt C; std::string Text; Loop *Outer; };
+    // Outermost loop (containing L) in which V is still invariant: the
+    // level H can be hoisted to. nullptr = invariant in the whole function.
+    auto outerInv = [&](Value *V) -> Loop * {
+        Loop *Best = L;
+        for (Loop *P = L; P; P = P->getParentLoop())
+            if (P->isLoopInvariant(V)) Best = P; else break;
+        if (Best->getParentLoop() == nullptr && Best->isLoopInvariant(V)) {
+            // invariant in the outermost loop: is it defined outside every loop?
+            if (auto *I = dyn_cast<Instruction>(V))
+                if (FC.LI->getLoopFor(I->getParent()) == nullptr) return nullptr;
+            if (!isa<Instruction>(V)) return nullptr;
+        }
+        return Best;
+    };
+    std::vector<Cand> Cands;
+    auto isInv = [&](Value *V) {
+        return V && V->getType()->isIntegerTy() && L->isLoopInvariant(V);
+    };
+    auto nameOf = [](Value *V) {
+        std::string S; raw_string_ostream OS(S); V->printAsOperand(OS, false); return S;
+    };
+    // ---- T1
+    if (auto *IC = dyn_cast<ICmpInst>(Job.TrapCond)) {
+        ICmpInst::Predicate P = IC->getPredicate();
+        if (!Job.TrapOnTrue) P = ICmpInst::getInversePredicate(P);   // trap <=> P(A,B)
+        Value *A = IC->getOperand(0), *B = IC->getOperand(1);
+        Value *Idx = nullptr, *Cnt = nullptr; bool Strict = false;
+        if ((P == ICmpInst::ICMP_UGE || P == ICmpInst::ICMP_UGT) && isInv(B) && !L->isLoopInvariant(A)) {
+            Idx = A; Cnt = B; Strict = (P == ICmpInst::ICMP_UGT);
+        } else if ((P == ICmpInst::ICMP_ULE || P == ICmpInst::ICMP_ULT) && isInv(A) && !L->isLoopInvariant(B)) {
+            Idx = B; Cnt = A; Strict = (P == ICmpInst::ICMP_ULT);
+        }
+        if (Idx) {
+            const DataLayout &DL = Job.F->getParent()->getDataLayout();
+            SimplifyQuery SQ(DL, FC.DT, /*AC=*/nullptr, /*CxtI=*/Job.Br);
+            ConstantRange CR = computeConstantRangeIncludingKnownBits(Idx, /*ForSigned=*/false, SQ);
+            APInt Hi = CR.getUnsignedMax();
+            // A nearly-full index range would demand count > 2^(W-1),
+            // which no length can satisfy: skip (would be refused as vacuous).
+            if (!Hi.isMaxValue() && Hi.getActiveBits() < Idx->getType()->getIntegerBitWidth() - 1) {
+                // trap <=> idx >=u count  ==> dead if count >u hi(idx)
+                // trap <=> idx >u  count  ==> dead if count >=u hi(idx)
+                ICmpInst::Predicate HP = Strict ? ICmpInst::ICMP_UGE : ICmpInst::ICMP_UGT;
+                SmallString<32> HS; Hi.toString(HS, 10, false);
+                Cands.push_back({Cnt, HP, Hi, nameOf(Cnt) + " " + predText(HP) + " " + std::string(HS), outerInv(Cnt)});
+            }
+        }
+    }
+    // ---- T2
+    for (Value *V : Encoder.getFreeVariables()) {
+        if (!isInv(V)) continue;
+        unsigned W = V->getType()->getIntegerBitWidth();
+        if (W < 8) continue;
+        unsigned K = std::min<unsigned>(Cfg.MVSaneExp, W - 2);
+        APInt Lim = APInt::getOneBitSet(W, K);
+        Loop *O = outerInv(V);
+        Cands.push_back({V, ICmpInst::ICMP_SGE, APInt(W, 0), nameOf(V) + " >=s 0", O});
+        Cands.push_back({V, ICmpInst::ICMP_SLE, Lim, nameOf(V) + " <=s 2^" + std::to_string(K), O});
+    }
+    if (Cands.empty()) { Log << "    -> [mv] no loop-invariant hypothesis candidates\n"; return; }
+
+    auto mkExpr = [&](const Cand &C) {
+        unsigned W = C.V->getType()->getIntegerBitWidth();
+        z3::expr V = Encoder.valueAsBV(C.V, W), K = Encoder.apintToBV(C.C);
+        switch (C.P) {
+        case ICmpInst::ICMP_UGT: return z3::ugt(V, K); case ICmpInst::ICMP_UGE: return z3::uge(V, K);
+        case ICmpInst::ICMP_ULT: return z3::ult(V, K); case ICmpInst::ICMP_ULE: return z3::ule(V, K);
+        case ICmpInst::ICMP_SGT: return V > K;         case ICmpInst::ICMP_SGE: return V >= K;
+        case ICmpInst::ICMP_SLT: return V < K;         default:                 return V <= K;
+        }
+    };
+    // Re-solve, hoistability-first: round 0 uses only candidates that are
+    // invariant in the whole function (sizes, globals, arguments) so H can
+    // be hoisted to the outermost loop and paid once; round 1 adds the
+    // candidates invariant only in some enclosing loop (e.g. an outer
+    // induction variable), whose guard is paid per entry of that loop.
+    std::vector<size_t> Keep; double Lat = 0.0; unsigned Round = 0;
+    for (Round = 0; Round < 2 && Keep.empty(); ++Round) {
+        std::vector<size_t> Use;
+        for (size_t i = 0; i < Cands.size(); ++i)
+            if (Round == 1 || Cands[i].Outer == nullptr) Use.push_back(i);
+        if (Use.empty()) continue;
+        if (Round == 1 && Use.size() == Cands.size() && Keep.empty()) {
+            // round 0 already tried exactly this set
+            bool Same = true;
+            for (size_t i = 0; i < Cands.size(); ++i) if (Cands[i].Outer) { Same = false; break; }
+            if (Same) break;
+        }
+        Encoder.push();
+        for (size_t i : Use)
+            Encoder.assertRawFact(mkExpr(Cands[i]), "MV:" + std::to_string(i));
+        auto [Res, L1] = Encoder.checkSatisfiability();
+        Lat += L1; Job.LatencyMs += L1;
+        if (Res.find("UNSAT") != std::string::npos) {
+            std::string Core = Encoder.getUnsatCore();
+            for (size_t i : Use) {
+                std::string Tok = "|MV:" + std::to_string(i) + "|", Tok2 = "MV:" + std::to_string(i) + " ";
+                if (Core.find(Tok) != std::string::npos || Core.find(Tok2) != std::string::npos) Keep.push_back(i);
+            }
+            Encoder.pop();
+            if (Keep.empty()) {
+                Log << "    -> [mv] UNSAT but no hypothesis in core (" << Core << "): refusing\n";
+                return;
+            }
+            break;
+        }
+        Encoder.pop();
+        if (Round == 1 || Use.size() == Cands.size()) {
+            Log << "    -> [mv] still " << (Res.find("UNKNOWN") != std::string::npos ? "UNKNOWN" : "SAT")
+                << " under " << Use.size() << " hypothesis candidate(s): not versionable\n";
+            return;
+        }
+    }
+    if (Keep.empty()) { Log << "    -> [mv] no usable hypothesis: not versionable\n"; return; }
+    // Vacuity of H: context + H alone must be satisfiable.
+    Encoder.pop();                      // drop the trap condition
+    Encoder.push();
+    for (size_t i : Keep) Encoder.assertRawFact(mkExpr(Cands[i]), std::string());
+    auto [HRes, HLat] = Encoder.checkSatisfiability();
+    Job.LatencyMs += HLat;
+    Encoder.pop();
+    if (HRes.find("UNSAT") != std::string::npos) {
+        Log << "    -> [mv] hypothesis contradicts the context: refusing (H vacuous): {";
+        for (size_t k = 0; k < Keep.size(); ++k) Log << (k ? ", " : "") << Cands[Keep[k]].Text;
+        Log << "}\n";
+        return;
+    }
+    // Hoist level: innermost of the conjuncts' outer-invariance levels.
+    Loop *Hoist = nullptr; bool HoistFn = true;
+    for (size_t i : Keep) {
+        if (Cands[i].Outer == nullptr) continue;
+        HoistFn = false;
+        if (!Hoist || Cands[i].Outer->contains(Hoist) == false) {
+            // choose the DEEPEST (most nested) level among conjunct levels
+            if (!Hoist || Hoist->contains(Cands[i].Outer)) Hoist = Cands[i].Outer;
+        }
+    }
+    if (HoistFn) { Hoist = L; while (Hoist->getParentLoop()) Hoist = Hoist->getParentLoop(); }
+    for (size_t i : Keep) {
+        TrapJob::MVConjunct MC;
+        MC.V = Cands[i].V; MC.Pred = Cands[i].P;
+        SmallString<32> CS; Cands[i].C.toString(CS, 10, false); MC.ConstStr = std::string(CS);
+        MC.Text = Cands[i].Text;
+        Job.MVHyp.push_back(MC);
+    }
+    Job.MVLoop = Hoist;
+    Job.MVEliminate = true;
+    Log << "    -> [mv] DEAD UNDER HYPOTHESIS H = {";
+    for (size_t k = 0; k < Job.MVHyp.size(); ++k) Log << (k ? ", " : "") << Job.MVHyp[k].Text;
+    Log << "} (" << Keep.size() << " of " << Cands.size() << " candidates in core, round " << Round
+        << "; re-solve " << Lat << " ms; trap loop depth " << L->getLoopDepth()
+        << ", hoist to depth " << Hoist->getLoopDepth() << ")\n";
 }
 
 } // namespace odessy

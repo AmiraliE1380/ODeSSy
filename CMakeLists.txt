@@ -19,6 +19,13 @@ set_target_properties(OraclePass PROPERTIES
     PREFIX ""
     SUFFIX ".so"
 )
+# Match opt's ABI: LLVM is built without RTTI, and LLVM value-handle
+# templates (ValueToValueMapTy, used by the mv loop cloning) derive from
+# CallbackVH whose typeinfo opt does not export. Z3's C++ API needs only
+# exceptions, not RTTI.
+if(NOT LLVM_ENABLE_RTTI)
+    target_compile_options(OraclePass PRIVATE -fno-rtti)
+endif()
 # 4. Link the Z3 Theorem Prover (portable: Homebrew on macOS, system on Linux)
 find_path(Z3_INCLUDE_DIR z3++.h
     HINTS /opt/homebrew/include /usr/local/include /usr/include)

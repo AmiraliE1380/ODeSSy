@@ -31,6 +31,7 @@ class DominatorTree;
 class Function;
 class LazyValueInfo;
 class LoopInfo;
+class Loop;
 class ScalarEvolution;
 class Value;
 } // namespace llvm
@@ -56,6 +57,20 @@ struct TrapJob {
     // location. Stage 2 asserts val(L1) == val(L2) context-side as
     // FRAME:k. Harvested serially in Stage 1; Stage 2 only reads.
     std::vector<std::pair<llvm::Value *, llvm::Value *>> FramePairs;
+
+    // MV (oracle-pass<mv>, HANDOFF §10.22): one hypothesis conjunct
+    //   pred(V, C)  with V loop-invariant in the trap's loop, C constant.
+    // Pred is an llvm::CmpInst::Predicate stored as unsigned to keep this
+    // header free of IR includes.
+    struct MVConjunct {
+        llvm::Value *V = nullptr;
+        unsigned Pred = 0;
+        std::string ConstStr;            // decimal constant (APInt printed)
+        std::string Text;                // log form "n <=s 2^62"
+    };
+    std::vector<MVConjunct> MVHyp;       // minimal H_T (unsat-core conjuncts)
+    bool MVEliminate = false;            // UNSAT under MVHyp (H satisfiable)
+    llvm::Loop *MVLoop = nullptr;        // the loop the hypothesis is invariant in
 
     // --- filled by Stage 2 (TrapSolver, one worker) ---
     bool Eliminate = false;              // UNSAT (and vacuity-clean, if audited)

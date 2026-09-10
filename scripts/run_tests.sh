@@ -26,6 +26,7 @@ printf '\n%-20s %-8s %6s %6s %8s %8s %6s  %s\n' \
   test expect unsat sat unknown vacuous skips result
 
 for ll in tests/*.ll; do
+  case "$ll" in tests/test_mv_*) continue ;; esac   # MV gate: scripts/run_mv_tests.sh
   stem=$(basename "$ll" .ll)
   vlog="logs/compilations/${stem}.txt"
   rm -f "$vlog"

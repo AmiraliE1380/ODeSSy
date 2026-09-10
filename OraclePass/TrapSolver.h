@@ -44,6 +44,13 @@ struct SolverConfig {
     // unsat cores attribute proofs to the fact source. Off by default.
     bool FrameMode = false;
     unsigned QueryTimeoutMs = 10000;
+    // MV: solver-guided loop multi-versioning (oracle-pass<mv>; HANDOFF
+    // §10.22). After a SAT verdict the solver re-checks under hypothesis
+    // candidates over LOOP-INVARIANT free values (T1 length-vs-index,
+    // T2 sane range); an UNSAT's core is the minimal H under which the
+    // trap is dead. Stage 3 versions the loop on H. Off by default.
+    bool MultiVersion = false;
+    unsigned MVSaneExp = 62;        // T2: 0 <=s v <=s 2^k
 };
 
 class TrapSolver {
@@ -62,6 +69,10 @@ public:
     void solvePhase();
 
 private:
+    // PHASE 3.5 (MV only, after a SAT verdict, solver still holding the
+    // context|trap scope): hypothesis mining + re-solve. Fills Job.MVHyp
+    // and Job.MVEliminate. See HANDOFF §10.22.
+    void mvPhase();
     const SolverConfig &Cfg;
     const FunctionCtx &FC;
     TrapJob &Job;
