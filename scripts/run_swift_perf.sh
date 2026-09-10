@@ -56,7 +56,7 @@ swiftc -O -wmo -emit-ir "$KERNEL" ${EXTRA_SRCS:-} -o "$W/$stem.ll" \
 traps0=$(grep -cE 'call void @llvm\.(ubsan)?trap' "$W/$stem.ll")
 
 build_one() {  # $1=config
-  local cfg=$1 ll="$W/$stem.$1.ll" elim=0
+  local cfg=$1 ll="$W/$stem.$1.ll" elim=0 MVNOTE=""
   # CLEANUP runs in EVERY config (symmetric exposure) and is a FULL O3:
   # the value of an eliminated check is what the optimizer can do once
   # the branch is gone (unroll/vectorize/schedule), so the oracle must
@@ -72,6 +72,8 @@ build_one() {  # $1=config
             opt -load-pass-plugin="$ROOT/build/OraclePass.so" \
                 -passes="$ORACLE_PASSES,$CLEANUP" -S "$W/$stem.ll" -o "$ll" \
                 2>"$W/$stem.oracle.err" || return 1
+            mvf=$(grep -oE 'Folded In Fast Copies \(mv\): [0-9]+' "$W/$stem.oracle.err" | awk '{s+=$NF} END{print s+0}')
+            [ "$mvf" -gt 0 ] && MVNOTE=" (+$mvf folded in mv fast copies)" || MVNOTE=""
             elim=$(grep -oE 'Total Traps Eliminated: [0-9]+' "$W/$stem.oracle.err" \
                    | awk '{s+=$4} END{print s+0}') ;;
   esac
@@ -83,8 +85,8 @@ build_one() {  # $1=config
   llc -O2 -relocation-model=pic -filetype=obj "$ll" -o "$W/$stem.$cfg.o" || return 1
   swiftc -O "$W/$stem.$cfg.o" -o "$W/$stem.$cfg" || return 1
   local t1; t1=$(grep -cE 'call void @llvm\.(ubsan)?trap' "$ll")
-  printf '  built %-8s traps %4s->%-4s bin %8s B  eliminated %s\n' \
-    "$cfg" "$traps0" "$t1" "$(wc -c < "$W/$stem.$cfg" | tr -d ' ')" "$elim"
+  printf '  built %-8s traps %4s->%-4s bin %8s B  eliminated %s%s\n' \
+    "$cfg" "$traps0" "$t1" "$(wc -c < "$W/$stem.$cfg" | tr -d ' ')" "$elim" "${MVNOTE:-}"
 }
 for cfg in base base2x oracle; do
   build_one $cfg || { echo "[FATAL] build $cfg failed"; exit 1; }

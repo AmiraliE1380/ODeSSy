@@ -1721,3 +1721,80 @@ ACCEPTANCE PREDICTIONS (falsifiable, stated now):
 DELIVERY: knob + templates + re-solve/core (4.2), clone + guard + fold
 (4.3), tests and tripwires (4.4), lz77.jl / base64 / crc32 static
 acceptance and Mac perf (4.5), HANDOFF/PAPER_FACTS.
+
+### 10.23 Session 4.2-4.4 -- multi-versioning IMPLEMENTED (Sep 10 2026)
+Code map:
+  TrapSolver::mvPhase (TrapSolver.cpp): runs after a SAT verdict when
+    Cfg.MultiVersion, solver still at context|push|trap. Candidates:
+    T1 from Job.TrapCond (ICmp normalized to "trap <=> idx >=u count",
+       count L-invariant, idx not; hi from computeConstantRangeIncludingKnownBits
+       at Job.Br; skipped if hi >= 2^(W-1) -- would be vacuous);
+    T2 for every L-invariant integer free variable v: v >=s 0, v <=s 2^k,
+       k = min(mv-sane, W-2).
+    Each candidate records the OUTERMOST loop in which v is invariant
+    (nullptr = whole function). Round 0 asserts only function-invariant
+    candidates (hoistable to the outermost loop, guard paid once); round 1
+    adds the rest (e.g. an outer induction variable: guard per outer
+    iteration). Tracked |MV:i| labels; core -> Keep; then context + H alone
+    must be SAT (else "H vacuous", refused). Job.MVHyp / MVLoop (hoist
+    level = deepest of the conjuncts' invariance levels) / MVEliminate.
+  OraclePass.cpp Stage 3a': groups MV jobs by (F, hoist loop), INNERMOST
+    FIRST (an inner versioned loop is then cloned, folds included, inside
+    the outer fast copy); budget 4 clones/function. Per group: simplifyLoop
+    if needed, formLCSSARecursively, build H_L (distinct conjuncts, ICmp +
+    and chain, names mv.h*) in the preheader, SplitBlock (check | ph),
+    cloneLoopWithPreheader(".mv.fast"), remapInstructionsInBlocks, patch
+    every exit phi (exits DEDUPED: getExitBlocks lists one per exiting
+    edge) with the mapped incoming from the clone, CondBr(H, fast.ph, ph),
+    fold VMap[J.Br] in the clone only, DT->recalculate. Log line
+    "SUCCESS (fast copy)" per job; per-function "Traps Folded In Fast
+    Copies (mv): n". ModuleEliminated counts a versioned loop so
+    PreservedAnalyses::none() is returned.
+  Build: -fno-rtti (CMakeLists): ValueToValueMapTy derives from CallbackVH
+    whose typeinfo opt (built without RTTI) does not export.
+Knobs: mv, mv-sane=<k> (8..62, default 62). Off by default: byte-identical
+  behaviour otherwise (probe: 60 cells unchanged with mv off).
+Tests: tests/test_mv_tbl.ll (T1, fold 1, clone), test_mv_wrap.ll (T2),
+  test_mv_noninv_sat.ll (R1: bound would be on a phi -> no H, no clone),
+  test_mv_realloc_sat.ll (R4: count reloaded in the loop -> no H).
+  Gate: scripts/run_mv_tests.sh -> MV PASS=4 FAIL=0 (verify + fold count +
+  clone presence). run_tests.sh skips test_mv_* (stays 27/12).
+Static acceptance (predictions of §10.22, all met):
+  lz77.jl UNMODIFIED source, 60 s: 4/4 folded in the fast copy of the
+    outer loop L8, H = {n <=s 2^62, window >=s 0, window <=s 2^62}
+    (A edges re-solve 8.9 s / 9.3 s in round 0; B edges 10 ms).
+  base64: 2 UNSAT + 5 fast-copy folds = 7/27; H = {tbl.count >u 63,
+    n <=s 2^62}; tbl.count is loaded inside the outer (iters) loop, so its
+    conjunct hoists to the inner loop and the n conjunct to the outer:
+    two nested versionings, inner first.
+  crc32: 6 fast-copy folds (0/36 before); H = {count_k >u 255 for the four
+    table loads, n <=s 2^62}; 5 further T1 candidates correctly refused as
+    vacuous (index range nearly full -> count > 2^63 impossible).
+  All three output modules pass `opt -passes=verify`.
+
+### 10.24 Multi-versioning runtime (Mac, Sep 10 2026) and the nested-fold bug
+First base64 run with mv: -13.4% (results/perf/swift_mv_perf_mac_0910.log).
+Diagnosis (trap-instrumented variants of the post-O3 IR: only the
+fast-fast copy executes, so the guards were right): the fast-fast inner
+loop still carried the i+5 overflow check as its back edge (adds/b.vc) and
+its four accumulator adds were a linear depth-4 chain, vs a depth-3 tree in
+both -O and -Ounchecked (whose loop is 20 instrs / 7 loads / 1 branch).
+Cause: the overflow trap's job hoists to the OUTER loop; the inner loop had
+been versioned first, so the outer clone holds two inner copies, and only
+VMap[J.Br] (the checked-inner image) was folded -- the clone-of-clone kept
+the check. Fix: PriorClones per function records orig->clone anchor images
+of every versioning; a later outer fold also folds VMap[image]. Now "trap
+folded in 2 copies". After the fix (swift_base64_mv2_perf_mac_0910.log,
+REPS=30, byte-identical, 2 elim + 5 mv folds):
+    base 0.1995  base2x 0.1996  oracle 0.1734  => +13.1% / +13.1%
+  vs +7.0% without mv (§10.20) and the 22.6% Mac ceiling: 58% recovered.
+  Fast-fast loop: 21 instrs, 7 loads, 1 branch (== -Ounchecked shape).
+crc32 with mv (6 table-lookup folds, guard count_k > 255): +4.28% / +5.74%
+  (swift_mv_perf_mac_0910.log) against a Mac ceiling of only 0.71%
+  (ceilings_mac_0910.log): ABOVE CEILING -> report as lottery/noise-class
+  until the x86 server run (x86 ceiling 4.6%).
+lz77.jl: 4/4 folded from the unmodified source, static only (Julia JIT
+  cannot consume the pass output; the hand-written MV arms of §10.14 are
+  the runtime proxy: 2.625x / 1.515x).
+Probe with mv OFF vs the pre-MV plugin (60 cells): identical except 300 ms
+  latency flips (Swift lz77 UNKNOWN<->UNSAT, filt shuffles). No UNSAT->SAT.

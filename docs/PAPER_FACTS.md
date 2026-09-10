@@ -1080,14 +1080,15 @@ or expert `@inbounds`; Rust `get_unchecked` twin). "none" = ceiling ≤ 0.
 | sha256 | Swift | 7/36 | **+6.9%** | 2.8% | >100% | §9.2 |
 | sha1 | Swift | 7/24 | **+2.1%** | 7.6% | 27% | §9.2 |
 | sha256.jl (partial @inbounds) | Julia | 10/16 | +6.9% | none (−7.2%) | — | §9.2 |
-| base64 | Swift | 2/27 | **+7.0%** (300 ms) / +6.5% (1 s) | 22.6% | ≈31% | §11.5 |
+| base64 | Swift | 2/27 (+5 mv folds = 7/27) | **+13.1%** with `mv` (+7.0% without) | 22.6% | ≈58% | §11.5, §11.8 |
+| crc32 | Swift | 0/36 (+6 mv folds) | +4.3% with `mv` | 0.7% | above ceiling (lottery) | §11.8 |
 | adler32 | Swift | 1/37 | −1.5% | 8.9% (6.3% on 0910) | 0 | §9.2 |
 | md5 | Swift | 5/25 | −0.65% | none (−1.4%) | — | §9.2 |
 | utf8 | Swift | 2/20 | −2.7% | none (−0.8%) | — | §9.2 |
 | filt.jl (partial @inbounds) | Julia | 6/19 (8/10 guarded) | −3.7% | none (−1.1%) | — | §9.1/9.2 |
 | CryptoSwift (library) | Swift | 215 elim | −0.4% | ≈0 (−0.7% honest) | — | §9.3 |
 | lz77 | Rust | 1/3 | **−26.8%** | none (−4.3%) | — | §11.3 |
-Not yet timed on Mac: crc32, nbody (Swift, 0 proofs each), matmul.rs
+Not yet timed on Mac: nbody (Swift, 0 proofs), matmul.rs
 (0/5), poly.jl (1/1, trivial). Whole-library C rows (zlib/zstd/lz4/OpenSSL)
 are server-only (§8).
 
@@ -1197,3 +1198,24 @@ its Mac ceiling).
 
 ### 11.7 Pointer
 Solver-guided loop multi-versioning is specified in HANDOFF §10.22 (knob `mv`, templates T1 length-vs-index / T2 sane range, core-minimal H, soundness, tripwires, acceptance predictions lz77.jl 4/4 unmodified, base64 7/27, crc32 first proofs).
+
+### 11.8 Solver-guided loop multi-versioning — implemented (Sep 10 2026)
+Knob `mv` (HANDOFF §10.22–10.24). The pass mines a hypothesis H over
+loop-invariant values from two templates (length-vs-index `count > hi(idx)`,
+sane range `0 ≤ v ≤ 2^62`), validates it by re-solving and keeps the
+unsat-core-minimal conjuncts, audits H's satisfiability, then clones the
+hoist loop with the guard `if (H) fast else checked`, folding the trap only
+in the fast copy. Tests: 4 (2 positives, 2 tripwires), `run_mv_tests.sh` 4/4;
+main gate 27/12; 60-cell probe unchanged with `mv` off.
+
+| kernel | H mined | static | Mac runtime (mv) | Mac ceiling |
+|---|---|---|---|---|
+| lz77.jl (unmodified) | n ≤ 2^62 ∧ 0 ≤ window ≤ 2^62 | **4/4** fast-copy folds | n/a (JIT); hand-MV proxy 2.625× | 2.63× |
+| base64 Swift | tbl.count > 63 ∧ n ≤ 2^62 | 2 UNSAT + 5 folds = **7/27** | **+13.1%** vs base and base2x (was +7.0%) | 22.6% (58%) |
+| crc32 Swift | count_k > 255 (×4) ∧ n ≤ 2^62 | 6 folds (0/36 before) | +4.3% / +5.7% | 0.7% → above ceiling, treat as lottery |
+
+Logs: results/perf/swift_base64_mv2_perf_mac_0910.log,
+swift_mv_perf_mac_0910.log, ceilings_mac_0910.log. All outputs byte-identical.
+A first run was −13.4% because a fold did not propagate into a clone-of-clone
+inner copy (fixed; HANDOFF §10.24) — the fast loop had a depth-4 add chain
+and a residual overflow branch; after the fix it matches `-Ounchecked`'s loop.

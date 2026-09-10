@@ -336,6 +336,11 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
                 return A.second->getLoopDepth() > B.second->getLoopDepth();
             });
             SmallPtrSet<Loop *, 8> Versioned;
+            // Earlier versionings' branch clones per function: when an outer
+            // loop is versioned after an inner one, the outer clone contains
+            // BOTH inner copies; a job anchored in the inner loop must be
+            // folded in every copy that lies inside the outer fast clone.
+            DenseMap<Function *, std::vector<std::pair<BranchInst *, BranchInst *>>> PriorClones;
             for (auto &Key : Order) {
                 Function *F = Key.first; Loop *L = Key.second;
                 auto &Idx = Groups[Key];
@@ -401,18 +406,40 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
                 Instruction *OldTerm = CheckBB->getTerminator();
                 BranchInst::Create(Fast->getLoopPreheader(), PH, H, CheckBB);
                 OldTerm->eraseFromParent();
-                // Fold the group's anchor branches in the CLONE only.
+                // Fold the group's anchor branches in the CLONE only -- in
+                // every copy of the anchor that the clone contains (the
+                // direct image of J.Br, plus images of its earlier clones).
+                auto &Prior = PriorClones[F];
+                std::vector<std::pair<BranchInst *, BranchInst *>> NewPairs;
                 for (size_t i : Idx) {
                     odessy::TrapJob &J = Jobs[i];
-                    auto *CBr = dyn_cast_or_null<BranchInst>(VMap.lookup(J.Br));
+                    SmallVector<BranchInst *, 4> Targets;
+                    if (auto *CBr = dyn_cast_or_null<BranchInst>(VMap.lookup(J.Br))) Targets.push_back(CBr);
+                    for (auto &PC : Prior)
+                        if (PC.first == J.Br)
+                            if (auto *CC = dyn_cast_or_null<BranchInst>(VMap.lookup(PC.second))) Targets.push_back(CC);
                     raw_string_ostream OS(J.LogText);
-                    if (!CBr || !CBr->isConditional()) { OS << "    -> [mv] SKIP: anchor not found in clone\n"; continue; }
-                    if (!Folded.insert(CBr).second) { OS << "    -> [mv] SKIP: clone anchor already folded\n"; continue; }
-                    CBr->setCondition(ConstantInt::get(Type::getInt1Ty(F->getContext()), J.TrapOnTrue ? 0 : 1));
-                    OS << "  => SUCCESS (fast copy): trap folded in the H-guarded clone of loop '"
-                       << L->getHeader()->getName() << "'\n";
+                    unsigned N = 0;
+                    for (BranchInst *CBr : Targets) {
+                        if (!CBr->isConditional() || !Folded.insert(CBr).second) continue;
+                        CBr->setCondition(ConstantInt::get(Type::getInt1Ty(F->getContext()), J.TrapOnTrue ? 0 : 1));
+                        ++N;
+                    }
+                    if (N == 0) { OS << "    -> [mv] SKIP: anchor not found in clone\n"; continue; }
+                    OS << "  => SUCCESS (fast copy): trap folded in " << N << " cop" << (N == 1 ? "y" : "ies")
+                       << " inside the H-guarded clone of loop '" << L->getHeader()->getName() << "'\n";
                     ++MVEliminated;
                 }
+                // Record orig->clone images of every anchor (all jobs of F) for
+                // later, outer versionings.
+                for (size_t ji : FC.JobIndices) {
+                    BranchInst *O = Jobs[ji].Br;
+                    if (auto *C = dyn_cast_or_null<BranchInst>(VMap.lookup(O))) NewPairs.push_back({O, C});
+                    for (auto &PC : Prior)
+                        if (PC.first == O)
+                            if (auto *CC = dyn_cast_or_null<BranchInst>(VMap.lookup(PC.second))) NewPairs.push_back({O, CC});
+                }
+                Prior.insert(Prior.end(), NewPairs.begin(), NewPairs.end());
                 DT->recalculate(*F);
                 Versioned.insert(L); ++Used[F]; ++MVLoops; ++ModuleEliminated;
             }

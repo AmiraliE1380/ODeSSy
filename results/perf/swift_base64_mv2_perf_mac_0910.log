@@ -1,0 +1,12 @@
+  built base     traps   28->26   bin    55576 B  eliminated 0
+  built base2x   traps   28->26   bin    55584 B  eliminated 0
+  built oracle   traps   28->24   bin    55584 B  eliminated 2
+==== PHASE B: output equivalence gate ====
+  outputs byte-identical across all configs -- gate passed
+==== PHASE C: 30 shuffled reps x 3 configs ====
+config      median       min       avg  audit
+base        0.1995    0.1941    0.2006  OUTLIER(min<98%med)
+base2x      0.1996    0.1957    0.2002  ok
+oracle      0.1734    0.1703    0.1743  ok
+oracle vs base: +13.07% (median)
+oracle vs base2x: +13.11% (median)
