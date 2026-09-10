@@ -1080,13 +1080,14 @@ or expert `@inbounds`; Rust `get_unchecked` twin). "none" = ceiling ≤ 0.
 | sha256 | Swift | 7/36 | **+6.9%** | 2.8% | >100% | §9.2 |
 | sha1 | Swift | 7/24 | **+2.1%** | 7.6% | 27% | §9.2 |
 | sha256.jl (partial @inbounds) | Julia | 10/16 | +6.9% | none (−7.2%) | — | §9.2 |
-| adler32 | Swift | 1/37 | −1.5% | 8.9% | 0 | §9.2 |
+| base64 | Swift | 2/27 | **+7.0%** (300 ms) / +6.5% (1 s) | 22.6% | ≈31% | §11.5 |
+| adler32 | Swift | 1/37 | −1.5% | 8.9% (6.3% on 0910) | 0 | §9.2 |
 | md5 | Swift | 5/25 | −0.65% | none (−1.4%) | — | §9.2 |
 | utf8 | Swift | 2/20 | −2.7% | none (−0.8%) | — | §9.2 |
 | filt.jl (partial @inbounds) | Julia | 6/19 (8/10 guarded) | −3.7% | none (−1.1%) | — | §9.1/9.2 |
 | CryptoSwift (library) | Swift | 215 elim | −0.4% | ≈0 (−0.7% honest) | — | §9.3 |
 | lz77 | Rust | 1/3 | **−26.8%** | none (−4.3%) | — | §11.3 |
-Not yet timed on Mac: crc32, base64, nbody (Swift, 0 proofs each), matmul.rs
+Not yet timed on Mac: crc32, nbody (Swift, 0 proofs each), matmul.rs
 (0/5), poly.jl (1/1, trivial). Whole-library C rows (zlib/zstd/lz4/OpenSSL)
 are server-only (§8).
 
@@ -1100,3 +1101,26 @@ are server-only (§8).
 Note the Swift `data[j+l]` query is 425 ms serial but 163 ms in the
 threads=8 run at the 1 s budget and 302 ms (timeout) at 300 ms: Z3 latency
 varies run to run near the budget; verdicts do not (HANDOFF §10.13 contract).
+
+### 11.5 Swift base64 — 0/27 → 2/27, Mac +7.0% (Sep 10 2026)
+Mac ceilings measured this day (results/perf/ceilings_mac_0910.log): base64
+**22.6%**, adler32 **6.3%**. Static verdicts are identical at 300 ms and 60 s
+for both kernels (base64 0/27, adler32 1/37 before; base64 2/27 after).
+Cause (HANDOFF §10.20): swiftc splits the counter into two header phis, `i`
+and `i+2`, and the latch bounds only the second; no fact related them. New
+rule PHIINV-rel (`q == p + c`, constant-difference phi pair, wrap-agnostic
+modular induction) proves `data[i]` (439 ms) and `data[i+1]` (18 ms); the
+`data[i+2]` access had no check. The four `tbl[...]` lookups compare against
+`tbl.count`, a runtime load from a global (unprovable without a literal-array
+contract or a multi-version guard); the `i += 3` overflow is a genuine wrap
+at n ≈ 2^63. Runtime, Mac, full tier, REPS=30, 2 traps eliminated,
+byte-identical (results/perf/swift_base64_perf_mac_0910.log):
+
+| budget | base | base2x | oracle | vs base | vs base2x |
+|---|---|---|---|---|---|
+| 300 ms | 0.2025 | 0.2027 | 0.1883 | **+7.0%** | +7.1% |
+| 1 s | 0.2029 | 0.2046 | 0.1897 | +6.5% | +7.3% |
+
+≈31% of the 22.6% Mac ceiling. adler32: the 16 DO16 checks need the
+three-variable linear invariant `i + 16·n + len == count` (Plan C); no fix,
+no runtime change (stays 1/37, −1.5%). Suite gate 27/12.

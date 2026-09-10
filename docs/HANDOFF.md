@@ -23,7 +23,7 @@ tmux. If DNS dies: `echo "nameserver 8.8.8.8" | sudo tee
 **Build + gate (both machines):**
 ```
 ninja -C build
-bash scripts/run_tests.sh          # MUST print PASS=26 / FAIL=11 (20/8 pre-PHIINV tests, 17/6 pre-FRAME, 19/7 pre-SCEVSYM-v2)
+bash scripts/run_tests.sh          # MUST print PASS=27 / FAIL=12 (20/8 pre-PHIINV tests, 17/6 pre-FRAME, 19/7 pre-SCEVSYM-v2)
 ```
 The 8 FAILs are heavy/ldeq/stride/frame/symstart tests under the light gate BY
 DESIGN (test_frame1 flips to PASS once FRAME lands, gate becomes 20/6);
@@ -1497,3 +1497,62 @@ Mac ceiling, recovery, compile-time cost) for every kernel touched in the
 OOPSLA campaign; §8 remains the server (x86) record. Update §11.4 whenever
 a Mac row moves. Pass wall times: Swift lz77 0.2-0.4 s, Rust lz77 0.25 s,
 lz77.jl 21 s serial at 60 s budget (A edges 9-11 s each).
+
+### 10.20 Session 2.2a -- Swift base64 + adler32 (Sep 10 2026, Mac)
+Mac ceilings (-O vs -Ounchecked, 15 interleaved, 1 MiB input,
+results/perf/ceilings_mac_0910.log): base64 **22.6%** (700 it), adler32
+**6.25%** (1500 it). (x86: 56.8% / 11.6%.)
+Static before, 300 ms AND 60 s identical: base64 0/27, adler32 1/37 -- no
+timeout-dependent proofs, so no per-timeout perf runs were warranted.
+
+base64 diagnosis (main, hot loop lines 19-30; ODESSY_DEBUG + instnamer):
+  i=%i236 (base 0, latch add nuw nsw i,3), q=%i237 (base 2, latch value
+  extractvalue 0 of sadd.with.overflow(i,5)), n=%i213 (!range), tbl.count
+  =%i226 (a LOAD from the global `tbl` -- free).
+  swiftc rotated `while i+2 < n` so the latch tests q's next value and the
+  header check `i <u n` (data[i], trap bb301) has NO fact linking i to q.
+    | edge | check                | countermodel                    | class |
+    | 6 | data[i]   i <u n         | i == n                          | MISSING INVARIANT q == i+2 -> UNSAT 439 ms |
+    | 7 | data[i+1] i+1 <u n       | i+1 == n                        | same -> UNSAT 18 ms |
+    | -- data[i+2] has no check (swiftc folded it against the latch) --   |
+    | 8-11 | tbl[idx] idx < count  | count = 0x1f / 5 (free load)    | UNPROVABLE without the literal-array contract (tbl = Array("..64 chars..".utf8) is a runtime global); MV candidate: guard tbl.count == 64 |
+    | 12 | i += 3 overflow (sadd i,5) | i = INT_MAX-4, n = INT_MAX-1 | GENUINE WRAP (n ~ 2^63): multi-versioning |
+  Fix: PHIINV-rel (constant-difference header-phi pair):
+     q == p + c  when q0 == p0 + c (constant bases) and both latch values
+     are affine in p (p + k, through add and extractvalue-0 of
+     {s,u}add.with.overflow) with kq == kp + c. Induction in Z/2^W: pure
+     modular equality, NO wrap side condition. The partner phi is pushed
+     on the leaf queue and tryPhiInv now runs in the leaf battery, so q
+     receives its own HI (q == 2 || q <s n). PhiInvDone set makes PHIINV
+     once-per-phi-per-query. Cores: edge 6 = |RM(n)| |SCEV(i)| |PHIINV-rel|
+     |SCEV(q)| |PHIINV-hi(q)| G0 TRAP.
+  Tests: test_heavy_phiinv_rel.ll (bounds trap UNSAT with rel in core; the
+     in-loop overflow trap stays SAT = genuine wrap), test_heavy_phiinv_rel_
+     stride_sat.ll (kq != kp + c tripwire, SAT). Gate PASS=27 FAIL=12.
+  Static after: base64 2/27 at 300 ms, 1 s and 60 s (threads=8).
+  NOTE on the rel test: with n a free argument the positive is SAT --
+  correctly: i >= 0 and q <s n do not exclude q wrapping (i = INT_MAX-1,
+  q = INT_MIN). The kernel is UNSAT because SCEV bounds q's range from
+  the !range on n; the test therefore loads n with !range like swiftc.
+
+adler32 diagnosis (function $s7adler32..., 37 edges, 1 UNSAT pre-existing):
+  DO16 group (lines 25-40): 16 checks buf[i+k] <u count, k=0..15, each
+  guarded only by the previous one. The needed invariant is the 3-phi
+  linear relation  i + 16*n_groups + len == count  (i += 16, n -= 1 per
+  group; len -= NMAX, i += NMAX per outer iteration with i's outer latch
+  value coming out of the inner loop). Tail loop buf[i] needs
+  i + len == count. Both are RELATIONAL across loops: Plan C (§9), not an
+  interval or pair rule. PHIINV-hi already gives len == count || len >= NMAX.
+  Classified; no fix attempted. Remaining edges: adler/sum2 &+ are wrapping
+  (no traps); the traps are the 17 bounds checks + setup.
+Runtime (run_swift_perf.sh, full tier, threads=8, REPS=30, "700
+perf_test/sha_input.bin" ~0.2 s/run, byte-identical, traps 28->24 vs
+28->26, eliminated 2; results/perf/swift_base64_perf_mac_0910.log):
+    300 ms: base 0.2025 base2x 0.2027 oracle 0.1883  => +7.0% / +7.1%
+    1 s   : base 0.2029 base2x 0.2046 oracle 0.1897  => +6.5% / +7.3%
+  vs Mac ceiling 22.6%: ~31% recovered from the two data-array checks.
+  The other 70% sits in the four tbl[] lookups (literal-array contract or
+  MV guard on tbl.count == 64) -- the next base64 step.
+Probe vs §10.17 column (60 cells, 300 ms): base64 +2 UNSAT; Swift lz77
+  UNKNOWN->UNSAT (latency); jl_filt_dsp SAT/UNKNOWN shuffles at 300 ms only
+  (6/19 at 3 s unchanged). No UNSAT -> SAT anywhere.

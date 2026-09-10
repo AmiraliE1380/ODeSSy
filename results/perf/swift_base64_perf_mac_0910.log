@@ -1,0 +1,26 @@
+=== budget 300
+  built base     traps   28->26   bin    55576 B  eliminated 0
+  built base2x   traps   28->26   bin    55584 B  eliminated 0
+  built oracle   traps   28->24   bin    55584 B  eliminated 2
+==== PHASE B: output equivalence gate ====
+  outputs byte-identical across all configs -- gate passed
+==== PHASE C: 30 shuffled reps x 3 configs ====
+config      median       min       avg  audit
+base        0.2025    0.2004    0.2036  ok
+base2x      0.2027    0.2013    0.2040  ok
+oracle      0.1883    0.1867    0.1894  ok
+oracle vs base: +7.01% (median)
+oracle vs base2x: +7.11% (median)
+=== budget 1000
+  built base     traps   28->26   bin    55576 B  eliminated 0
+  built base2x   traps   28->26   bin    55584 B  eliminated 0
+  built oracle   traps   28->24   bin    55584 B  eliminated 2
+==== PHASE B: output equivalence gate ====
+  outputs byte-identical across all configs -- gate passed
+==== PHASE C: 30 shuffled reps x 3 configs ====
+config      median       min       avg  audit
+base        0.2029    0.2008    0.2037  ok
+base2x      0.2046    0.2019    0.2053  ok
+oracle      0.1897    0.1876    0.1899  ok
+oracle vs base: +6.51% (median)
+oracle vs base2x: +7.31% (median)

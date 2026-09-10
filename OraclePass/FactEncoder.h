@@ -62,6 +62,10 @@ class FactEncoder {
     // leaves those facts introduce. Seen-set + budget bound the walk.
     std::vector<llvm::Value *> LeafQueue;
     llvm::SmallPtrSet<llvm::Value *, 16> LeafSeen;
+    // PHIINV: header phis already given their interval/relation facts in
+    // this query (tryPhiInv is reached both from the boundary walk and
+    // from the leaf battery; facts must be asserted once).
+    llvm::SmallPtrSet<llvm::PHINode *, 8> PhiInvDone;
 
 public:
     FactEncoder(Z3Encoder &Enc, llvm::LazyValueInfo *LVI,

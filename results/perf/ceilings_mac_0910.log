@@ -1,0 +1,2 @@
+Mac ceiling base64 (700 it): -O 0.2102  -Ounchecked 0.1715  ceiling 22.58%  outputs-identical=True
+Mac ceiling adler32 (1500 it): -O 0.3883  -Ounchecked 0.3655  ceiling 6.25%  outputs-identical=True

@@ -185,6 +185,7 @@ void FactEncoder::preEncodeScevLeafClosure() {
 }
 
 unsigned FactEncoder::encodeBoundaryFacts(BasicBlock *PredBB) {
+    PhiInvDone.clear();
     preEncodeScevLeafClosure();
     // NOTE: iterate by index -- assertRange/assertKnownBits only look up
     // existing exprs so FreeVars cannot grow mid-walk, but stay defensive.
@@ -247,6 +248,7 @@ void FactEncoder::processScevLeaves(BasicBlock *PredBB) {
         tryLVI(V, PredBB);
         trySCEV(V);
         trySCEVSym(V);
+        tryPhiInv(V);   // header phis reached via a PHIINV-rel / SCEV leaf
         unsigned W = I->getType()->getIntegerBitWidth();
         // Structural fact.
         if (auto *FI = dyn_cast<FreezeInst>(I)) {
@@ -835,10 +837,47 @@ static bool nonNegOf(Value *V, ScalarEvolution *SE, unsigned Depth) {
     return false;
 }
 
+// Affine-in-P recognizer for PHIINV-rel: V == P + K (mod 2^W), exactly.
+//   P itself (K=0); add(A, const) with A affine; extractvalue 0 of
+//   {s,u}add.with.overflow(A, const) -- its first result IS the wrapping
+//   sum, so equality holds regardless of the overflow flag. Depth <= 4.
+static bool affineOfPhi(Value *V, PHINode *P, unsigned Depth, APInt &K) {
+    unsigned W = P->getType()->getIntegerBitWidth();
+    if (Depth > 4) return false;
+    if (V == P) { K = APInt(W, 0); return true; }
+    if (auto *BO = dyn_cast<BinaryOperator>(V)) {
+        if (BO->getOpcode() != Instruction::Add) return false;
+        auto *C = dyn_cast<ConstantInt>(BO->getOperand(1));
+        Value *A = BO->getOperand(0);
+        if (!C) { C = dyn_cast<ConstantInt>(BO->getOperand(0)); A = BO->getOperand(1); }
+        if (!C) return false;
+        APInt K0(W, 0);
+        if (!affineOfPhi(A, P, Depth + 1, K0)) return false;
+        K = K0 + C->getValue(); return true;
+    }
+    if (auto *EV = dyn_cast<ExtractValueInst>(V)) {
+        if (EV->getNumIndices() != 1 || EV->getIndices()[0] != 0) return false;
+        auto *Call = dyn_cast<CallInst>(EV->getAggregateOperand());
+        if (!Call || !Call->getCalledFunction()) return false;
+        StringRef Name = Call->getCalledFunction()->getName();
+        if (!Name.starts_with("llvm.sadd.with.overflow") &&
+            !Name.starts_with("llvm.uadd.with.overflow")) return false;
+        auto *C = dyn_cast<ConstantInt>(Call->getArgOperand(1));
+        Value *A = Call->getArgOperand(0);
+        if (!C) { C = dyn_cast<ConstantInt>(Call->getArgOperand(0)); A = Call->getArgOperand(1); }
+        if (!C) return false;
+        APInt K0(W, 0);
+        if (!affineOfPhi(A, P, Depth + 1, K0)) return false;
+        K = K0 + C->getValue(); return true;
+    }
+    return false;
+}
+
 bool FactEncoder::tryPhiInv(Value *V) {
     if (!LI) return false;
     auto *Phi = dyn_cast<PHINode>(V);
     if (!Phi || !Phi->getType()->isIntegerTy()) return false;
+    if (!PhiInvDone.insert(Phi).second) return false;   // once per query
     BasicBlock *H = Phi->getParent();
     Loop *L = LI->getLoopFor(H);
     if (!L || L->getHeader() != H) return false;
@@ -927,6 +966,42 @@ bool FactEncoder::tryPhiInv(Value *V) {
                         ++NumFacts; Any = true;
                     }
                 }
+            }
+        }
+    }
+
+    // ---------------- REL: constant-difference phi pair ----------------
+    //   q == p + c   for another header phi q of the same loop when
+    //   q0 == p0 + c (constant bases) and qL == p + kq, pL == p + kp with
+    //   kq == kp + c (both latch values affine in p; see affineOfPhi).
+    // Soundness: induction in Z/2^W: base by the constant check; step
+    // q' = p + kq = (p + kp) + c = p' + c. Pure modular equality, so no
+    // wrap side condition at all. This is the shape swiftc emits when it
+    // splits `while i + 2 < n` into phis for i (base 0) and i+2 (base 2)
+    // with strides 3 (HANDOFF §10.20, Swift base64). The partner phi is
+    // enqueued as a leaf so it receives its own HI/LO facts.
+    {
+        APInt KP(W, 0);
+        auto *P0C = dyn_cast<ConstantInt>(V0);
+        if (P0C && affineOfPhi(VL, Phi, 0, KP)) {
+            for (PHINode &Q : H->phis()) {
+                if (&Q == Phi || Q.getType() != Phi->getType()) continue;
+                if (Q.getNumIncomingValues() != 2) continue;
+                auto *Q0C = dyn_cast_or_null<ConstantInt>(Q.getIncomingValueForBlock(Pre));
+                Value *QL = Q.getIncomingValueForBlock(Latch);
+                if (!Q0C || !QL) continue;
+                APInt KQ(W, 0);
+                if (!affineOfPhi(QL, Phi, 0, KQ)) continue;
+                APInt C = Q0C->getValue() - P0C->getValue();
+                if (KQ != KP + C) continue;
+                z3::expr QE = Encoder.valueAsBV(&Q, W);
+                z3::expr Fact = (QE == PhiE + Encoder.apintToBV(C));
+                std::string Lbl = mkLabel("PHIINV-rel");
+                Encoder.assertRawFact(Fact, Audit ? Lbl : std::string());
+                Log << "    -> Fact[" << Lbl << "] " << valueStr(&Q) << " == "
+                    << valueStr(V) << " + " << C << " (constant-difference phi pair, 1-induction)\n";
+                ++NumFacts; Any = true;
+                if (LeafSeen.insert(&Q).second) LeafQueue.push_back(&Q);
             }
         }
     }
