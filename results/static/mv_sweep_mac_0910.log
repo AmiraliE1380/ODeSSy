@@ -1,0 +1,84 @@
+swift  adler32                t=300   edges=37  UNSAT=1   MV=1   SAT=36  UNKNOWN=0  
+      1 HYPOTHESIS H = {%3 >=s 0}
+      1 [mv] hypothesis contradicts the context
+swift  adler32                t=3000  edges=37  UNSAT=1   MV=1   SAT=36  UNKNOWN=0  
+      1 HYPOTHESIS H = {%3 >=s 0}
+      1 [mv] hypothesis contradicts the context
+swift  base64                 t=300   edges=27  UNSAT=2   MV=5   SAT=25  UNKNOWN=0  
+      1 HYPOTHESIS H = {%215 <=s 2^62}
+      4 HYPOTHESIS H = {%228 >u 63}
+      1 [mv] hypothesis contradicts the context
+swift  base64                 t=3000  edges=27  UNSAT=2   MV=5   SAT=25  UNKNOWN=0  
+      1 HYPOTHESIS H = {%215 <=s 2^62}
+      4 HYPOTHESIS H = {%228 >u 63}
+      1 [mv] hypothesis contradicts the context
+swift  crc32                  t=300   edges=36  UNSAT=0   MV=6   SAT=36  UNKNOWN=0  
+      1 HYPOTHESIS H = {%19 >u 255}
+      1 HYPOTHESIS H = {%2 <=s 2^62}
+      1 HYPOTHESIS H = {%20 >u 255}
+      1 HYPOTHESIS H = {%21 >u 255}
+      1 HYPOTHESIS H = {%22 >u 255}
+      1 HYPOTHESIS H = {%91 >u 255}
+      1 [mv] hypothesis contradicts the context
+swift  crc32                  t=3000  edges=36  UNSAT=0   MV=6   SAT=36  UNKNOWN=0  
+      1 HYPOTHESIS H = {%19 >u 255}
+      1 HYPOTHESIS H = {%2 <=s 2^62}
+      1 HYPOTHESIS H = {%20 >u 255}
+      1 HYPOTHESIS H = {%21 >u 255}
+      1 HYPOTHESIS H = {%22 >u 255}
+      1 HYPOTHESIS H = {%91 >u 255}
+      1 [mv] hypothesis contradicts the context
+swift  lz77                   t=300   edges=25  UNSAT=4   MV=1   SAT=20  UNKNOWN=1  
+      1 HYPOTHESIS H = {%224 <=s 2^62}
+      1 [mv] hypothesis contradicts the context
+swift  lz77                   t=3000  edges=25  UNSAT=5   MV=1   SAT=20  UNKNOWN=0  
+      1 HYPOTHESIS H = {%224 <=s 2^62}
+      1 [mv] hypothesis contradicts the context
+swift  md5                    t=300   edges=25  UNSAT=5   MV=0   SAT=20  UNKNOWN=0  
+      1 [mv] hypothesis contradicts the context
+swift  md5                    t=3000  edges=25  UNSAT=5   MV=0   SAT=20  UNKNOWN=0  
+      1 [mv] hypothesis contradicts the context
+swift  nbody                  t=300   edges=84  UNSAT=0   MV=0   SAT=84  UNKNOWN=0  
+      1 [mv] hypothesis contradicts the context
+swift  nbody                  t=3000  edges=84  UNSAT=0   MV=0   SAT=84  UNKNOWN=0  
+      1 [mv] hypothesis contradicts the context
+swift  sha1                   t=300   edges=24  UNSAT=7   MV=0   SAT=17  UNKNOWN=0  
+      1 [mv] hypothesis contradicts the context
+swift  sha1                   t=3000  edges=24  UNSAT=7   MV=0   SAT=17  UNKNOWN=0  
+      1 [mv] hypothesis contradicts the context
+swift  sha256                 t=300   edges=36  UNSAT=7   MV=0   SAT=29  UNKNOWN=0  
+      1 [mv] hypothesis contradicts the context
+swift  sha256                 t=3000  edges=36  UNSAT=7   MV=0   SAT=29  UNKNOWN=0  
+      1 [mv] hypothesis contradicts the context
+swift  utf8                   t=300   edges=20  UNSAT=2   MV=2   SAT=18  UNKNOWN=0  
+      2 HYPOTHESIS H = {%2 <=s 2^62}
+      1 [mv] hypothesis contradicts the context
+swift  utf8                   t=3000  edges=20  UNSAT=2   MV=2   SAT=18  UNKNOWN=0  
+      2 HYPOTHESIS H = {%2 <=s 2^62}
+      1 [mv] hypothesis contradicts the context
+rust   lz77                   t=300   edges=3   UNSAT=0   MV=0   SAT=2   UNKNOWN=1  
+rust   lz77                   t=3000  edges=3   UNSAT=1   MV=0   SAT=2   UNKNOWN=0  
+rust   matmul                 t=300   edges=5   UNSAT=0   MV=0   SAT=5   UNKNOWN=0  
+rust   matmul                 t=3000  edges=5   UNSAT=0   MV=0   SAT=5   UNKNOWN=0  
+julia  jl_filt_dsp            t=300   edges=19  UNSAT=2   MV=0   SAT=12  UNKNOWN=5  
+julia  jl_filt_dsp            t=3000  edges=19  UNSAT=6   MV=0   SAT=13  UNKNOWN=0  
+julia  jl_filt_dsp_guarded    t=300   edges=10  UNSAT=7   MV=0   SAT=2   UNKNOWN=1  
+julia  jl_filt_dsp_guarded    t=3000  edges=10  UNSAT=8   MV=0   SAT=2   UNKNOWN=0  
+julia  jl_gemm_base           t=300   edges=16  UNSAT=14  MV=0   SAT=0   UNKNOWN=2  
+julia  jl_gemm_base           t=3000  edges=16  UNSAT=16  MV=0   SAT=0   UNKNOWN=0  
+julia  jl_poly                t=300   edges=1   UNSAT=1   MV=0   SAT=0   UNKNOWN=0  
+julia  jl_poly                t=3000  edges=1   UNSAT=1   MV=0   SAT=0   UNKNOWN=0  
+julia  lz77                   t=300   edges=4   UNSAT=0   MV=2   SAT=4   UNKNOWN=0  
+      2 HYPOTHESIS H = {%"data::Array.size.0.copyload" >=s 0, %"data::Array.size.0.copyload" <=s 2^62, %"window::Int64" >=s 0}
+julia  lz77                   t=3000  edges=4   UNSAT=0   MV=2   SAT=4   UNKNOWN=0  
+      2 HYPOTHESIS H = {%"data::Array.size.0.copyload" >=s 0, %"data::Array.size.0.copyload" <=s 2^62, %"window::Int64" >=s 0}
+      1 [mv] hypothesis contradicts the context
+julia  lz77_bounded           t=300   edges=4   UNSAT=2   MV=0   SAT=2   UNKNOWN=0  
+julia  lz77_bounded           t=3000  edges=4   UNSAT=2   MV=0   SAT=2   UNKNOWN=0  
+      1 [mv] hypothesis contradicts the context
+julia  lz77_bounded2          t=300   edges=4   UNSAT=2   MV=0   SAT=0   UNKNOWN=2  
+julia  lz77_bounded2          t=3000  edges=4   UNSAT=2   MV=0   SAT=0   UNKNOWN=2  
+julia  matmul                 t=300   edges=3   UNSAT=0   MV=0   SAT=3   UNKNOWN=0  
+julia  matmul                 t=3000  edges=3   UNSAT=0   MV=0   SAT=3   UNKNOWN=0  
+julia  sha256                 t=300   edges=16  UNSAT=10  MV=0   SAT=6   UNKNOWN=0  
+julia  sha256                 t=3000  edges=16  UNSAT=10  MV=0   SAT=6   UNKNOWN=0  

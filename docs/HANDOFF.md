@@ -1880,3 +1880,39 @@ context (audit); index ranges so wide that no length could satisfy T1
 (pruned). Cost: one extra solver query per SAT edge per round plus one audit
 query per versioned trap; one guard evaluation per entry of the hoist loop;
 code size of one loop clone per versioned loop.
+
+### 10.26 MV sweep over all local kernels, benchmarks FROZEN (Mac, Sep 10 2026)
+scripts/run_mv_sweep.sh; log results/static/mv_sweep_mac_0910.log. Full tier,
+threads=8, budgets 300 ms and 3 s (identical except latency flips). No source
+was touched; "unsolved" means unsolved.
+| kernel | edges | UNSAT | MV folds | left | mined H (per loop) |
+|---|---|---|---|---|---|
+| base64 Swift | 27 | 2 | **5** | 20 | tbl.count >u 63; n <=s 2^62 |
+| crc32 Swift | 36 | 0 | **6** | 30 | count_k >u 255 (x5); n <=s 2^62 |
+| utf8 Swift | 20 | 2 | **2** (new) | 16 | n <=s 2^62 (two overflow traps) |
+| adler32 Swift | 37 | 1 | **1** (new) | 35 | buf.count >=s 0 (one overflow trap) |
+| lz77 Swift | 25 | 5 | **1** (new) | 19 | n <=s 2^62 (i += bestLen overflow) |
+| lz77.jl (unmodified) | 4 | 0 | 2 @3 s / **4 @60 s** | 0 | n in [0,2^62]; window in [0,2^62] |
+| sha256 / sha1 / md5 Swift | 36/24/25 | 7/7/5 | 0 | 29/17/20 | none: "still SAT under 12-52 candidates" |
+| nbody Swift | 84 | 0 | 0 | 84 | none (FP kernel) |
+| matmul.jl (unmodified) | 3 | 0 | **0** | 3 | none: "still SAT under 6-10 candidates" |
+| matmul.rs | 5 | 0 | 0 | 5 | none |
+| lz77.rs | 3 | 1 @3 s | 0 | 2 | none (bound needed on matches / i: R1) |
+| jl_gemm_base / sha256.jl / filt.jl / poly.jl | 16/16/19/1 | 16/10/6/1 | 0 | 0/6/13/0 | none mined |
+PREDICTION FAILED -- matmul.jl: the guards were `idx <u a.size` with
+idx = (i-1)*n + k SYMBOLIC (i, k <= n), so T1 (constant hi from known bits)
+has no candidate and T2 (sane sizes) is irrelevant: the needed hypothesis is
+a.size >=u n*n, i.e. length vs a SYMBOLIC index bound. Current templates
+cannot express it. Same for matmul.rs. The "we added guards" caveat on the
+GEMM flagship therefore STANDS. Candidate machinery (not implemented, to be
+predicted first): template T3 "length-vs-symbolic-index": for a bounds trap
+idx <u count with count invariant, take hi := SCEV's symbolic maximum of idx
+over the loop nest (product/sum of invariant trip counts) and propose
+count >u hi as a runtime guard; the guard is then an expression, not a
+constant (still evaluable in the preheader).
+Hash kernels: no template applies (their remaining checks are relative
+indices w[t-k] against invariant lengths with t bounded by the loop; these
+are interval/induction facts, not runtime hypotheses); one T1 candidate per
+kernel refused as vacuous (index range 2^48 wide). Unsolved by mv.
+New folds are all T2 overflow traps (utf8 x2, adler32, Swift lz77): cheap,
+cold-ish; runtime not measured (utf8/adler32 have no or small Mac ceilings).
