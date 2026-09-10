@@ -1,0 +1,7 @@
+outputs identical: true  matches=8
+lz77.jl 64 KiB, window 1024, REPS=21 (medians, s)
+arm1 checked (baseline) : 0.0899
+arm2 multi-versioned    : 0.0342   speedup vs arm1: 2.625x
+arm3 @inbounds ceiling  : 0.0342   speedup vs arm1: 2.63x
+arm4 MV, B only (300ms) : 0.0593   speedup vs arm1: 1.515x   recovery: 31.6%
+ceiling recovered by multi-versioning: 99.7%

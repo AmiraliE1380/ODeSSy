@@ -1006,3 +1006,11 @@ ceiling. Deployment form is loop MULTI-VERSIONING on the proven-under-
 hypothesis condition — a second conventional transformation licensed by
 the same reachability oracle. x86 ceiling 3.26x pending server access.
 Earlier four-arm data (§10.7 HANDOFF): A-only 2.33x, B-only 1.49x.
+
+**Budget-consistent variant (Sep 10, Mac M-series, REPS=21).** Only trap B
+(`data[i+len]`) is provable within the paper's 300 ms budget (16 ms / 225 ms
+under the single size guard `n <= 2^62`); trap A needs the window guard as
+well and 9-11 s. Multi-versioning on the size guard with B-only `@inbounds`:
+checked 0.0899 s -> 0.0593 s = **1.515x (+51.5%)**, 31.6% of the 2.63x
+ceiling. Full A+B multi-version (60 s budget): 0.0342 s = 2.625x, 99.7% of
+ceiling. Log: results/perf/jl_lz77_mv_arms_mac_0910.log.

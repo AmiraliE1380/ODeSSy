@@ -1325,3 +1325,48 @@ relies on; H is the negation of that region. This turns "checks are the
 spec" rows into "checks hoisted to one loop-entry test": exactly what
 Julia Base does by hand (checkbounds once, then @inbounds). Campaign
 task: a SAT-model sweep over all kernels to mine candidate H per trap.
+
+### 10.14 Budget-consistent deployment: B-only multi-versioning (Sep 10 2026, Mac)
+Verdicts by budget (full tier, serial):
+    | IR             | budget | A post | A pre | B post | B pre |
+    | lz77 (no guard)| any    | SAT    | SAT   | SAT    | SAT   |  (W1 wrap of i kills B too)
+    | lz77_bounded   | 300 ms | SAT    | SAT   | UNSAT 16 ms | UNSAT 225 ms |
+    | lz77_bounded2  | 300 ms | UNKNOWN| UNKNOWN | UNSAT 6 ms | UNSAT 12 ms |
+    | lz77_bounded2  | 10 s   | UNKNOWN| UNSAT 9.2 s | UNSAT | UNSAT |
+    | lz77_bounded2  | 60 s   | UNSAT 11.4 s | UNSAT 9.2 s | UNSAT | UNSAT |
+=> B needs ONLY the size guard (n <= 2^62) and fits the paper's 300 ms
+   budget; A needs the window guard too and 9-11 s (F1 target, §10.13).
+Perf (native_bench/jl_lz77_mv_arms.jl, REPS=21, 64 KiB, window 1024,
+results/perf/jl_lz77_mv_arms_mac_0910.log):
+    arm1 checked            0.0899 s
+    arm2 MV, A+B (60 s)     0.0342 s   2.625x   99.7% of ceiling
+    arm3 @inbounds ceiling  0.0342 s   2.63x
+    arm4 MV, B only (300ms) 0.0593 s   1.515x   31.6% of ceiling
+Reading: the 300 ms-consistent deployment is a +51.5% speedup from a
+single proof (trap B) plus one runtime guard. Removing A as well is worth
+another 1.73x on top; that is the value of bringing the A query under
+budget (§10.13 short-circuit fact `start >= 1`, or a 10 s dial row).
+
+### 10.15 Session 1.6 -- PHIINV generalization probe (Sep 10 2026, Mac, 300 ms, threads=1)
+Method: A/B of two plugins built from the same LLVM -- baseline = tag
+v5.1-cgo-draft-freeze (pre-PHIINV), new = HEAD -- over every local kernel
+IR (9 Swift, 2 Rust, 10 Julia) x 3 tiers. Log: results/static/phiinv_probe_mac_0910.log.
+Result: 66 (kernel,tier) cells; 58 byte-identical verdict multisets; 8 differ:
+  * Swift lz77 heavy/full: UNSAT 2 -> 3. NEW PROOF: the `i += 1` sadd
+    overflow trap (lz77.swift:29, outer loop, non-match path), core
+    |PHIINV-hi:7| TRAP  (i == 0 || i <s n, n in [0,INT_MAX) from !range).
+    Cold-ish (outer loop); Swift lz77 0-elim ceiling is 3.3% (x86), so low
+    runtime payoff -- but it is the first PHIINV proof outside its target.
+  * Julia lz77_bounded / lz77_bounded2 heavy+full: expected (§10.12/10.14).
+  * jl_filt_dsp full: UNKNOWN 4 -> 3, UNSAT 2 -> 3 at 300 ms (a query got
+    faster); at 3 s both plugins give SAT=13 UNSAT=6 -- no verdict change.
+  * jl_gemm_base heavy 300 ms: UNSAT 4 -> 3 (+1 UNKNOWN); full 300 ms:
+    UNSAT 15 -> 14 (+1 UNKNOWN). LATENCY, not precision: at 3 s both
+    plugins give 16/16 (max query 1008 -> 1054 ms). The flipped query went
+    268 ms -> 374 ms: PHIINV adds facts to every boundary header phi and
+    the 300 ms cell is the one place the extra clauses cross the budget.
+    Paper's "50 of 52 at 100 ms" dial claim should be re-measured with
+    PHIINV on (server dial row) before reuse.
+No SAT -> UNSAT flip anywhere except the three explained above; no
+UNSAT -> SAT anywhere (that would be a soundness alarm). Suite gate 24/9.
+Verdict: PHIINV is robust; cost is ~+100 ms on the densest GEMM query.

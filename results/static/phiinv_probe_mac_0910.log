@@ -1,0 +1,61 @@
+kernel                       tier   | baseline                                 | phiinv                                  
+adler32                      light  | SAT=36 UNSAT=1                           | SAT=36 UNSAT=1                          
+adler32                      heavy  | SAT=36 UNSAT=1                           | SAT=36 UNSAT=1                          
+adler32                      heavy  | SAT=36 UNSAT=1                           | SAT=36 UNSAT=1                          
+base64                       light  | SAT=27                                   | SAT=27                                  
+base64                       heavy  | SAT=27                                   | SAT=27                                  
+base64                       heavy  | SAT=27                                   | SAT=27                                  
+crc32                        light  | SAT=36                                   | SAT=36                                  
+crc32                        heavy  | SAT=36                                   | SAT=36                                  
+crc32                        heavy  | SAT=36                                   | SAT=36                                  
+lz77                         light  | SAT=24 UNSAT=1                           | SAT=24 UNSAT=1                          
+lz77                         heavy  | SAT=23 UNSAT=2                           | SAT=22 UNSAT=3                            <-- DIFF
+lz77                         heavy  | SAT=23 UNSAT=2                           | SAT=22 UNSAT=3                            <-- DIFF
+md5                          light  | SAT=25                                   | SAT=25                                  
+md5                          heavy  | SAT=20 UNSAT=5                           | SAT=20 UNSAT=5                          
+md5                          heavy  | SAT=20 UNSAT=5                           | SAT=20 UNSAT=5                          
+nbody                        light  | SAT=84                                   | SAT=84                                  
+nbody                        heavy  | SAT=84                                   | SAT=84                                  
+nbody                        heavy  | SAT=84                                   | SAT=84                                  
+sha1                         light  | SAT=24                                   | SAT=24                                  
+sha1                         heavy  | SAT=17 UNSAT=7                           | SAT=17 UNSAT=7                          
+sha1                         heavy  | SAT=17 UNSAT=7                           | SAT=17 UNSAT=7                          
+sha256                       light  | SAT=36                                   | SAT=36                                  
+sha256                       heavy  | SAT=29 UNSAT=7                           | SAT=29 UNSAT=7                          
+sha256                       heavy  | SAT=29 UNSAT=7                           | SAT=29 UNSAT=7                          
+utf8                         light  | SAT=19 UNSAT=1                           | SAT=19 UNSAT=1                          
+utf8                         heavy  | SAT=18 UNSAT=2                           | SAT=18 UNSAT=2                          
+utf8                         heavy  | SAT=18 UNSAT=2                           | SAT=18 UNSAT=2                          
+lz77                         light  | SAT=3                                    | SAT=3                                   
+lz77                         heavy  | SAT=3                                    | SAT=3                                   
+lz77                         heavy  | SAT=3                                    | SAT=3                                   
+matmul                       light  | SAT=5                                    | SAT=5                                   
+matmul                       heavy  | SAT=5                                    | SAT=5                                   
+matmul                       heavy  | SAT=5                                    | SAT=5                                   
+jl_filt_dsp                  light  | SAT=19                                   | SAT=19                                  
+jl_filt_dsp                  heavy  | SAT=13 UNKNOWN=3 UNSAT=3                 | SAT=13 UNKNOWN=3 UNSAT=3                
+jl_filt_dsp                  heavy  | SAT=13 UNKNOWN=4 UNSAT=2                 | SAT=13 UNKNOWN=3 UNSAT=3                  <-- DIFF
+jl_filt_dsp_guarded          light  | SAT=5 UNSAT=5                            | SAT=5 UNSAT=5                           
+jl_filt_dsp_guarded          heavy  | SAT=2 UNKNOWN=1 UNSAT=7                  | SAT=2 UNKNOWN=1 UNSAT=7                 
+jl_filt_dsp_guarded          heavy  | SAT=2 UNKNOWN=1 UNSAT=7                  | SAT=2 UNKNOWN=1 UNSAT=7                 
+jl_gemm_base                 light  | SAT=16                                   | SAT=16                                  
+jl_gemm_base                 heavy  | SAT=12 UNSAT=4                           | SAT=12 UNKNOWN=1 UNSAT=3                  <-- DIFF
+jl_gemm_base                 heavy  | UNKNOWN=1 UNSAT=15                       | UNKNOWN=2 UNSAT=14                        <-- DIFF
+jl_poly                      light  | SAT=1                                    | SAT=1                                   
+jl_poly                      heavy  | UNSAT=1                                  | UNSAT=1                                 
+jl_poly                      heavy  | UNSAT=1                                  | UNSAT=1                                 
+lz77                         light  | SAT=4                                    | SAT=4                                   
+lz77                         heavy  | SAT=4                                    | SAT=4                                   
+lz77                         heavy  | SAT=4                                    | SAT=4                                   
+lz77_bounded                 light  | SAT=4                                    | SAT=4                                   
+lz77_bounded                 heavy  | SAT=4                                    | SAT=2 UNSAT=2                             <-- DIFF
+lz77_bounded                 heavy  | SAT=4                                    | SAT=2 UNSAT=2                             <-- DIFF
+lz77_bounded2                light  | SAT=4                                    | SAT=4                                   
+lz77_bounded2                heavy  | SAT=4                                    | UNKNOWN=2 UNSAT=2                         <-- DIFF
+lz77_bounded2                heavy  | SAT=4                                    | UNKNOWN=2 UNSAT=2                         <-- DIFF
+matmul                       light  | SAT=3                                    | SAT=3                                   
+matmul                       heavy  | SAT=3                                    | SAT=3                                   
+matmul                       heavy  | SAT=3                                    | SAT=3                                   
+sha256                       light  | SAT=16                                   | SAT=16                                  
+sha256                       heavy  | SAT=6 UNSAT=10                           | SAT=6 UNSAT=10                          
+sha256                       heavy  | SAT=6 UNSAT=10                           | SAT=6 UNSAT=10                          
