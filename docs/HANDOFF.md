@@ -1556,3 +1556,73 @@ perf_test/sha_input.bin" ~0.2 s/run, byte-identical, traps 28->24 vs
 Probe vs §10.17 column (60 cells, 300 ms): base64 +2 UNSAT; Swift lz77
   UNKNOWN->UNSAT (latency); jl_filt_dsp SAT/UNKNOWN shuffles at 300 ms only
   (6/19 at 3 s unchanged). No UNSAT -> SAT anywhere.
+
+### 10.21 The machinery program (decided Sep 10 2026): four general mechanisms, each with a falsifiable prediction
+Method (Popper): a mechanism is adopted only with a prediction over the WHOLE
+kernel set stated before implementation; the per-kernel PHIINV rules of
+§10.9-10.20 are observations, kept as the regression oracle, to be demoted
+once mechanism 1 reproduces them. No hand-written source edits count as
+machinery results (the lz77.jl / base64 guards are ceiling probes only).
+
+1. INDUCTIVE BODY ENCODING (formerly Plan C; k-induction with k = 1).
+   Hypothesis: at iteration t the header phis are free, the latch condition
+   held and no trap fired; encode ONE body copy; ask whether a trap is
+   reachable at t+1. Base case = the existing query with phis at their
+   entry values. Subsumes PHIINV-hi/lo/hx/rel (all are single-phi
+   projections of the body). k > 1 would assume k trap-free iterations of
+   history; not needed by any current kernel.
+   PREDICTION: with PHIINV disabled, reproduces all current PHIINV proofs
+   (Swift lz77 5/25, lz77.jl 4/4 bounded, lz77.rs 1/3, base64 2/27, tests);
+   adds utf8's multi-byte reads (s[i+1..3] under i+3 < n) if their
+   invariant is inductive as stated. Does NOT cover invariants that need
+   strengthening (adler32) or inequalities between two phis (Swift lz77
+   out <= i, lz77.rs matches/i overflow). 4-6 sessions.
+2. AFFINE EQUALITY INVARIANTS (Karr 1976 / Muller-Olm-Seidl): all linear
+   equalities among header phis and loop-invariant values, by linear
+   algebra over the update matrix; inner loops summarized by constant trip
+   counts. PHIINV-rel is the 2-variable case.
+   PREDICTION: adler32 i + 16n + len == count -> 16 DO16 checks + tail
+   (1/37 -> 18/37); any "relational" class from the countermodel sweep.
+   3-4 sessions.
+3. FRAME v2 POINTER EQUIVALENCE: load equality when the two pointers are
+   SCEV/GEP-equal (same base, same offset expression), not only the same
+   SSA value, with no clobber between (MemorySSA walk as today).
+   PREDICTION: filt.jl b[j+1]/a[j+1] -> guarded 10/10 (x86 ceiling 58.3%).
+   2-3 sessions.
+4. AUTOMATED MULTI-VERSIONING on loop-invariant hypotheses mined from
+   countermodels: if every trap-reaching model of a loop needs a region of
+   LOOP-INVARIANT free variables (array sizes, global lengths), version the
+   loop on the negated region: fast copy with the trap folded, checked copy
+   otherwise. A transformation: needs its own soundness argument (guard
+   dominates the fast copy; both copies observationally equal), |MV:H|
+   labels, byte-identical gate.
+   PREDICTION: lz77.jl 4/4 with no source edit; base64 tbl[] 4 traps
+   (H: tbl.count >= 64) + its i+3 overflow (H: n <= 2^62) -> 7/27;
+   crc32 table lookups (H: table.count >= 256); every "genuine wrap"
+   overflow trap (H: n <= 2^62). 3 sessions.
+(5. not machinery: F1 SOLVER HARDNESS -- sha256.jl x86 8 timeouts, filt.jl
+   jobs 7/9, lz77.jl A under 300 ms. Profiling / derived short-circuit
+   facts / bit-width reduction. Orthogonal to 1-4.)
+
+Prediction table (ceilings: Mac = this M-series, x86 = c220g2 server, §8/§11.4):
+| kernel | now UNSAT/total | Mac ceil | x86 ceil | 1 IBE | 2 Karr | 3 FRAME2 | 4 MV | 5 F1 |
+|---|---|---|---|---|---|---|---|---|
+| base64 Swift | 2/27 | 22.6% | 56.8% | reproduce 2 | - | - | +5 (tbl x4, ovf) -> 7/27 | - |
+| adler32 Swift | 1/37 | 6.3% | 11.6% | - | +17 -> 18/37 | - | - | - |
+| filt.jl (guarded) | 8/10 | none | 58.3% | - | - | +2 -> 10/10 | - | jobs 7/9 latency |
+| lz77.jl | 4/4 bounded (0/4 raw) | 2.63x | 3.26x | reproduce | - | - | 4/4 no source edit | A edges < 300 ms |
+| lz77 Swift | 5/25 | 36.0% | 3.3% | reproduce 5 | - | - | - | - |
+| lz77.rs | 1/3 | -4.3% | ? | reproduce 1 | - | - | - | - |
+| utf8 Swift | 2/20 | none | 7.5% | + multi-byte reads (predicted) | maybe | - | - | - |
+| crc32 Swift | 0/36 | ? | 4.6% | - | - | - | table lookups (H: count >= 256) | - |
+| sha1 Swift | 7/24 | 7.6% | 4.7% | sweep needed | sweep needed | - | - | - |
+| sha256 Swift | 7/36 | 2.8% | 9.0% | sweep needed | sweep needed | - | - | - |
+| md5 Swift | 5/25 | none | 6.0% | sweep needed | - | - | - | - |
+| sha256.jl | 10/16 | none | 9.5% | - | - | - | - | 6 timeouts -> 16/16 |
+| GEMM.jl | 16/16 | 4.17x | 3.72x | done | - | - | - | - |
+| nbody Swift | 0/84 | ? | ~0 | - | - | - | - | - (FP; no target) |
+| CryptoSwift / zlib / zstd / lz4 / OpenSSL | see §8 | ~0 / server | server | unknown: needs the countermodel sweep | | | | |
+Swift lz77's 3 outer overflow traps and lz77.rs's 2 need an INEQUALITY
+invariant between two phis (out <= i): covered by none of 1-4 (would need
+polyhedral/octagon invariants); low value (Swift lz77 already at ~76% of
+its Mac ceiling).
