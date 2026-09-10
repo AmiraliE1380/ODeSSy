@@ -1921,3 +1921,15 @@ cold-ish; runtime not measured (utf8/adler32 have no or small Mac ceilings).
 utf8 −2.8% (was −2.7%), adler32 −1.5% (unchanged), Swift lz77 +27.2% at
 300 ms (was +24.7% at 300 ms / +27.3% at 1 s): the mv folds there are cold
 overflow traps; no runtime effect, as expected. Table: PAPER_FACTS §11.11.
+
+### 10.28 Naming and status after the mv campaign (Sep 10 2026)
+Terminology fixed: "fold" = anchor branch set to a constant (trap edge dead);
+"UNSAT fold" = unconditional, in the original loop; "MV fold" = inside the
+H-guarded fast copy only, licensed by UNSAT-under-H. Literature name: loop
+(multi-)versioning (LLVM LoopVersioning, GCC alias versioning) -- the
+transformation is standard; the novelty is SOLVER-GUIDED predicate discovery
+(countermodel-mined hypotheses, core-minimal, re-solve certified). Paper term:
+"solver-guided loop versioning"; cite loop versioning as prior art.
+Payoff so far: base64 +6.1 pts (hot table lookups); lz77.jl 4/4 automatic;
+cold overflow folds move nothing. Unsolved by mv: matmul.jl/.rs (symbolic
+length-vs-index, template T3 not implemented), hash kernels, adler32 DO16.
