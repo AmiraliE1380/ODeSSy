@@ -1014,3 +1014,12 @@ well and 9-11 s. Multi-versioning on the size guard with B-only `@inbounds`:
 checked 0.0899 s -> 0.0593 s = **1.515x (+51.5%)**, 31.6% of the 2.63x
 ceiling. Full A+B multi-version (60 s budget): 0.0342 s = 2.625x, 99.7% of
 ceiling. Log: results/perf/jl_lz77_mv_arms_mac_0910.log.
+
+### 11.2 Swift lz77 — PHIINV adds a proof; Mac runtime (Sep 10 2026)
+Static: heavy/full 2/25 → **3/25** trap edges (new: `i += 1` overflow trap,
+core `|PHIINV-hi|` alone). Runtime, Mac M-series, full tier 300 ms, REPS=30,
+2 iterations over 1 MiB (results/perf/swift_lz77_perf_mac_0910.log):
+base 1.4841 s, base2x 1.4839 s, oracle 1.4389 s → **+3.05% vs base, +3.04%
+vs base2x**, noise floor 0.01%, byte-identical output, 3 traps eliminated
+(27→22 vs 27→23 for base). Mac ceiling −O vs −Ounchecked: 1.4842 vs 1.0916 =
+**36.0%** (x86 ceiling 3.3%, §8). Recovery 8.5% of Mac ceiling.

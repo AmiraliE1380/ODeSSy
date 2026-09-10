@@ -1370,3 +1370,19 @@ Result: 66 (kernel,tier) cells; 58 byte-identical verdict multisets; 8 differ:
 No SAT -> UNSAT flip anywhere except the three explained above; no
 UNSAT -> SAT anywhere (that would be a soundness alarm). Suite gate 24/9.
 Verdict: PHIINV is robust; cost is ~+100 ms on the densest GEMM query.
+
+### 10.16 Swift lz77 -- PHIINV runtime effect on Mac (Sep 10 2026)
+Proof count: light 1/25, heavy/full 2/25 before PHIINV -> 3/25 now (the
+new one is the `i += 1` sadd-overflow trap, lz77.swift:29). Perf harness
+(run_swift_perf.sh, full tier, 300 ms, REPS=30, "2 perf_test/sha_input.bin",
+results/perf/swift_lz77_perf_mac_0910.log): traps 27->22 in oracle
+(base 27->23), eliminated 3.
+    base 1.4841  base2x 1.4839  oracle 1.4389   => +3.05% / +3.04%
+    noise floor (base vs base2x) 0.01%; outputs identical.
+Mac ceiling (-O vs -Ounchecked, 15 interleaved): 1.4842 vs 1.0916 =
+**35.97%** (x86 server ceiling was 3.3%, §8 0827b) -- the M-series
+codegen pays far more for the inner-loop checks. Recovery 8.5% of ceiling.
+=> Swift lz77 is now a prime target: same loop shape as lz77.jl (inner
+`data[j+l] == data[i+l]`), 22 traps left, 36% Mac ceiling, no @inbounds
+deployment needed (pass removes traps directly). Next: countermodel
+diagnosis of the inner-loop bounds/overflow traps, as in §10.8 for Julia.
