@@ -1301,3 +1301,27 @@ proposal, recorded for the campaign):
  Fit with the paper: super-analysis now licenses TWO transformations
  (branch folding and loop versioning), both conventional, both compiler-
  owned; the solver still only answers reachability (twice).
+
+### 10.13 lz77_bounded2 — per-edge cores and latencies (serial, 60 s, Sep 9 2026)
+    | edge | access        | version  | verdict | latency | core |
+    | 1 | data[j+len] (A) | postloop | UNSAT | 11.44 s | PHIINV-hi(i) SCEVSYM(j-start<=BTC) PHIINV-lo(j>=start) SCEV(len<765) G0-G4 |
+    | 2 | data[j+len] (A) | preloop  | UNSAT |  9.23 s | same shape, SCEV(len<255) |
+    | 3 | data[i+len] (B) | postloop | UNSAT |  0.01 s | PHIINV-hi(i) SCEV(len<765) G1-G5 |
+    | 4 | data[i+len] (B) | preloop  | UNSAT |  0.01 s | PHIINV-hi(i) SCEV(len<255) G1,G3-G6 |
+Reading: B is cheap (one interval fact + guards). A is 1000x harder: it
+needs the j-chain (SCEVSYM relative to start, LO j>=start, start's
+definitional ite over the window branch) AND the i interval, and the
+solver spends ~10 s in the bit-vector arithmetic of the j-start-window
+relations. Concrete F1 target: profile the A query (Z3 statistics), try
+asserting `start >= 1` directly as a derived fact (it follows from
+1 <= window and HI on i in one step) to short-circuit the search.
+
+GENERALIZATION NOTED (user's MV idea, extended): multi-versioning is
+sound for ANY cheap loop-invariant hypothesis H, not only "sanity"
+bounds -- H may be a genuine missing PRECONDITION (e.g. matmul.jl's
+length(a) >= n*n, which the kernel never states). The solver's SAT
+model tells us which loop-invariant free variables the counterexample
+relies on; H is the negation of that region. This turns "checks are the
+spec" rows into "checks hoisted to one loop-entry test": exactly what
+Julia Base does by hand (checkbounds once, then @inbounds). Campaign
+task: a SAT-model sweep over all kernels to mine candidate H per trap.
