@@ -1626,3 +1626,98 @@ Swift lz77's 3 outer overflow traps and lz77.rs's 2 need an INEQUALITY
 invariant between two phis (out <= i): covered by none of 1-4 (would need
 polyhedral/octagon invariants); low value (Swift lz77 already at ~76% of
 its Mac ceiling).
+
+### 10.22 Session 4.1 -- SPEC: solver-guided loop multi-versioning (knob `mv`)
+Status: specification, written before code (§10.21 discipline).
+
+GOAL. For a trap T inside loop L whose SAT countermodels rely only on
+LOOP-INVARIANT free values (array sizes, global lengths, parameters),
+find a hypothesis H over those values such that T is UNSAT under H, then
+emit two copies of L: `if (H) L_fast else L_checked`, with T (and every
+other trap of L proven under H) folded only in L_fast. The solver both
+DISCOVERS the version predicate and CERTIFIES the fast copy.
+
+KNOB. `mv` (off by default; `mv=<limit>` optional clone budget per function,
+default 4; `mv-sane=<k>` sets the sane-range exponent, default 62). With
+`mv` off the pass behaves exactly as today.
+
+INPUTS per trap edge (after the ordinary query returns SAT):
+  M      : the model;
+  Inv(L) : the free variables of the query that are loop-invariant in L
+           (defined outside L, or loads whose pointer is defined outside L
+           and not clobbered in L per MemorySSA -- reuse the FRAME walk);
+  Idx    : for a bounds trap `idx <u count`, the index value and its static
+           range (KnownBits / SCEV / LVI) and whether count in Inv(L).
+
+HYPOTHESIS TEMPLATES (the only shapes H may contain):
+  T1 length-vs-index : count >u hi(idx)         (count in Inv(L), hi from
+                       the index's static unsigned range; e.g. tbl.count >
+                       63, table.count > 255)
+  T2 sane range      : 0 <=s v  &&  v <=s 2^k    (v in Inv(L) that feeds an
+                       add/sub/mul the model wraps, i.e. appears in the
+                       slice of a wrapping operation; k = mv-sane)
+  Each conjunct is an ICmp between an Inv(L) value and a CONSTANT, hence
+  evaluable in L's preheader. No non-invariant value may appear (tripwire).
+
+PROCEDURE per loop L (all trap edges of L that are SAT/UNKNOWN):
+  1. Candidates C = union of T1/T2 conjuncts over the loop's SAT edges.
+  2. For each SAT edge: re-solve with all of C asserted as labelled
+     assumptions |MV:i|. UNSAT -> keep the conjuncts named in the unsat
+     core as H_T (minimal per trap); SAT/UNKNOWN -> trap not versionable.
+  3. H_L = conjunction of all H_T over versionable traps of L. If empty,
+     no versioning. Vacuity: H_L must be satisfiable (audit), otherwise
+     refuse (a contradictory H would make L_fast dead code, sound but
+     useless and a sign of a wrong template).
+  4. Hoisting: choose the OUTERMOST loop L' containing L such that every
+     conjunct of H_L is invariant in L' (paid once, one clone).
+  5. Transform: clone L' (llvm::cloneLoopWithPreheader), preheader branch
+     on H_L computed from the invariant values, fold the versionable traps
+     ONLY in the clone (same fold as the ordinary UNSAT path, discovery
+     order), leave the original untouched, simplifycfg/adce as today.
+  6. Budget: at most `mv` clones per function; largest expected gain first
+     (deepest loop nest, then most traps folded). Log every decision.
+
+SOUNDNESS. (i) H_L's conjuncts are loop-invariant, so their value in the
+preheader equals their value at every point of L'_fast. (ii) The guard
+dominates L'_fast, so every execution of L'_fast satisfies H_L. (iii) Each
+folded trap was UNSAT with H_L asserted context-side, i.e. unreachable in
+every execution satisfying H_L, under the same trust class as today's
+proofs (facts + guards + nsw/poison caveat). (iv) L'_checked is the
+original code. Hence the versioned program is observationally equal to
+the original. The sane constant 2^k never enters as an axiom: it is
+checked at runtime, so soundness does not depend on its value; only the
+probability of taking the fast path does.
+
+WHAT IT REFUSES (tripwires, each a test that must keep its trap):
+  R1 a candidate involving a NON-invariant value (e.g. `out` in Swift lz77's
+     overflow traps) -- no template applies, trap kept;
+  R2 H unsatisfiable with the context -> refuse (vacuity of H);
+  R3 an edge that stays SAT under C -> not folded in the fast copy either;
+  R4 count not loop-invariant (reallocated inside L) -> T1 not applicable.
+
+TESTS (to write with the implementation):
+  test_mv_tbl.ll        : tbl[idx & 63] with free count -> UNSAT under
+                          |MV: count >u 63|, clone + guard emitted, trap
+                          folded in the clone only;
+  test_mv_wrap.ll       : lz77.jl skeleton -> UNSAT under |MV: n <=s 2^62|;
+  test_mv_noninv_sat.ll : R1 tripwire (the wrapping operand is a phi);
+  test_mv_realloc_sat.ll: R4 tripwire (count stored inside the loop).
+  Gate: every existing test unchanged with `mv` off.
+
+ACCEPTANCE PREDICTIONS (falsifiable, stated now):
+  lz77.jl  : 4/4 folded in the fast copy from the UNMODIFIED source with
+             H = {n <=s 2^62, 0 <=s window <=s 2^62} (60 s budget; B-only
+             at 300 ms), Mac perf = the hand-written arm within noise
+             (2.63x / 1.52x).
+  base64   : 7/27 (2 today + 4 tbl + 1 overflow) with
+             H = {tbl.count >u 63, n <=s 2^62}; Mac perf above +7%,
+             ceiling 22.6%.
+  crc32    : table lookups folded with H = {table.count >u 255}; first
+             crc32 proofs (0/36 today).
+  Swift lz77 outer overflows, lz77.rs overflows: NOT versionable (R1).
+  Byte-identical outputs in every perf run; suite gate unchanged with mv
+  off; no UNSAT -> SAT in the 60-cell probe with mv on.
+
+DELIVERY: knob + templates + re-solve/core (4.2), clone + guard + fold
+(4.3), tests and tripwires (4.4), lz77.jl / base64 / crc32 static
+acceptance and Mac perf (4.5), HANDOFF/PAPER_FACTS.

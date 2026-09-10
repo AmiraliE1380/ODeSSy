@@ -1194,3 +1194,6 @@ Swift lz77's 3 outer overflow traps and lz77.rs's 2 need an INEQUALITY
 invariant between two phis (out <= i): covered by none of 1-4 (would need
 polyhedral/octagon invariants); low value (Swift lz77 already at ~76% of
 its Mac ceiling).
+
+### 11.7 Pointer
+Solver-guided loop multi-versioning is specified in HANDOFF §10.22 (knob `mv`, templates T1 length-vs-index / T2 sane range, core-minimal H, soundness, tripwires, acceptance predictions lz77.jl 4/4 unmodified, base64 7/27, crc32 first proofs).
