@@ -129,11 +129,11 @@ optionally swiftc 6.x, Julia 1.12, and rustup for the native benchmarks.
 ```bash
 cmake -G Ninja -B build -DCMAKE_BUILD_TYPE=Release   # point LLVM_DIR/Z3 at your installs
 ninja -C build                                      # builds build/OraclePass.so
-bash scripts/run_tests.sh                           # regression gate: expect PASS=24 / FAIL=9
+bash scripts/run_tests.sh                           # regression gate: expect PASS=26 / FAIL=11
 ```
 
-The gate's 9 "fails" are heavy/ldeq/frame/stride/symstart/phiinv tests run under the
-light configuration by design, plus ten SAT soundness tripwires that must stay
+The gate's 11 "fails" are heavy/ldeq/frame/stride/symstart/phiinv tests run under the
+light configuration by design, plus twelve SAT soundness tripwires that must stay
 SAT forever — a tripwire flipping to UNSAT means a fact source has become
 wrong-strong, and nothing else in the suite can catch that.
 

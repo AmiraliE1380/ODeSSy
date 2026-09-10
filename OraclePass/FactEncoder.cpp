@@ -744,12 +744,27 @@ bool FactEncoder::trySCEVSym(Value *V) {
 //     see §10.11). nsw's poison caveat is the encoder's standing trust
 //     class (wrap => poison => UB once branched on).
 //
+//   HX (header-exit equality bound, HANDOFF §10.17):
+//       (v0 <=u B) -> p <=u B
+//     when the header exits iff p == B (B loop-invariant) and every latch
+//     value is p + 1. Base by antecedent; step: body ran so p != B, with
+//     p <=u B that is p <u B, so p + 1 <=u B without wrap. Unit step is
+//     load-bearing (stride >= 2 can jump over B).
+//
+// The latch (HI) condition may be a conjunction (`select A, B, false`,
+// `and`) taken on true, or a disjunction (`select A, true, B`, `or`)
+// taken on false: every operand then holds (resp. fails) on the back
+// edge, so each ICmp operand comparing vL contributes a HI fact.
+//
 // REFUSALS: not a header phi; loop without a unique preheader or with
 // != 1 latch; phi with incoming blocks other than {preheader, latch};
-// latch terminator not a conditional branch on an ICmp; the ICmp does
-// not compare vL against a loop-invariant operand (HI); any latch value
-// not of the add-nsw-of-self shape or with unknown sign (LO). Pure IR
-// walk + SE queries (FactGate-serialized like every heavy fact).
+// latch terminator not a conditional branch on an ICmp (or on a
+// conjunction/disjunction of ICmps with the right polarity); the ICmp
+// does not compare vL against a loop-invariant operand (HI); any latch
+// value not of the add-nsw-of-self shape or with unknown sign (LO); the
+// header exit not an equality on p against an invariant, or a non-unit
+// step (HX). Pure IR walk + SE queries (FactGate-serialized like every
+// heavy fact).
 // =====================================================================
 static bool collectSelfAdds(Value *V, PHINode *P, unsigned Depth,
                             SmallVectorImpl<Value *> &Incs, bool &AllNSW) {
@@ -847,10 +862,37 @@ bool FactEncoder::tryPhiInv(Value *V) {
     // ---------------- HI: latch-implied bound ----------------
     if (auto *Br = dyn_cast<BranchInst>(Latch->getTerminator())) {
         if (Br->isConditional() && Br->getSuccessor(0) != Br->getSuccessor(1)) {
-            if (auto *Cmp = dyn_cast<ICmpInst>(Br->getCondition())) {
-                bool BackOnTrue = (Br->getSuccessor(0) == H);
+            bool BackOnTrue = (Br->getSuccessor(0) == H);
+            // The back-edge condition may be a conjunction (Swift/Julia emit
+            // `select i1 A, i1 B, false` or `and i1 A, B` for `A && B`): on
+            // the back edge every conjunct holds, so any conjunct comparing
+            // vL qualifies. Symmetrically a disjunction whose FALSE edge is
+            // the back edge (`select A, true, B` / `or`) makes every disjunct
+            // false. Collect (ICmp, holds) pairs; depth-bounded.
+            SmallVector<std::pair<ICmpInst *, bool>, 4> Conj;
+            std::function<void(Value *, bool, unsigned)> Decomp =
+                [&](Value *C, bool Holds, unsigned D) {
+                    if (D > 3) return;
+                    if (auto *IC = dyn_cast<ICmpInst>(C)) { Conj.push_back({IC, Holds}); return; }
+                    Value *X = nullptr, *Y = nullptr;
+                    if (auto *Sel = dyn_cast<SelectInst>(C)) {
+                        auto *T = dyn_cast<ConstantInt>(Sel->getTrueValue());
+                        auto *F = dyn_cast<ConstantInt>(Sel->getFalseValue());
+                        if (Holds && F && F->isZero()) { X = Sel->getCondition(); Y = Sel->getTrueValue(); }
+                        else if (!Holds && T && T->isOne()) { X = Sel->getCondition(); Y = Sel->getFalseValue(); }
+                    } else if (auto *BO = dyn_cast<BinaryOperator>(C)) {
+                        if ((Holds && BO->getOpcode() == Instruction::And) ||
+                            (!Holds && BO->getOpcode() == Instruction::Or)) {
+                            X = BO->getOperand(0); Y = BO->getOperand(1);
+                        }
+                    }
+                    if (X && Y) { Decomp(X, Holds, D + 1); Decomp(Y, Holds, D + 1); }
+                };
+            Decomp(Br->getCondition(), BackOnTrue, 0);
+            for (auto &CH : Conj) {
+                ICmpInst *Cmp = CH.first;
                 ICmpInst::Predicate Pred = Cmp->getPredicate();
-                if (!BackOnTrue) Pred = ICmpInst::getInversePredicate(Pred);
+                if (!CH.second) Pred = ICmpInst::getInversePredicate(Pred);
                 Value *A = Cmp->getOperand(0), *Bv = Cmp->getOperand(1);
                 if (Bv == VL) { std::swap(A, Bv); Pred = ICmpInst::getSwappedPredicate(Pred); }
                 if (A == VL && Bv != VL && L->isLoopInvariant(Bv) &&
@@ -892,7 +934,53 @@ bool FactEncoder::tryPhiInv(Value *V) {
     // ---------------- LO: monotone lower bound ----------------
     SmallVector<Value *, 8> Incs;
     bool AllNSW = true;
-    if (collectSelfAdds(VL, Phi, 0, Incs, AllNSW) && !Incs.empty()) {
+    bool HaveIncs = collectSelfAdds(VL, Phi, 0, Incs, AllNSW) && !Incs.empty();
+
+    // ---------------- HX: header-exit equality bound ----------------
+    //   (v0 <=u B)  ->  p <=u B
+    // when the HEADER's terminator exits the loop iff p == B (B loop-
+    // invariant; body runs on the != edge) and EVERY latch value is
+    // `add p, 1` (unit step, wrap flags irrelevant). Soundness: base
+    // p_0 = v0 <=u B by the antecedent; step: the body ran, so p != B, and
+    // with p <=u B that is p <u B <= 2^W-1, hence p+1 <=u B without wrap.
+    // The unit step is load-bearing: a stride >= 2 can jump over B (see
+    // tripwire test_heavy_phiinv_hx_stride_sat.ll). This is the shape the
+    // Swift frontend emits for `while l < maxMatch && i + l < n` after
+    // it turns the bound into a trip count (HANDOFF §10.17, Swift lz77).
+    if (HaveIncs) {
+        bool Unit = true;
+        for (Value *D : Incs) {
+            auto *CI = dyn_cast<ConstantInt>(D);
+            if (!CI || !CI->isOne()) { Unit = false; break; }
+        }
+        auto *HBr = dyn_cast<BranchInst>(H->getTerminator());
+        if (Unit && HBr && HBr->isConditional() && HBr->getSuccessor(0) != HBr->getSuccessor(1)) {
+            if (auto *Cmp = dyn_cast<ICmpInst>(HBr->getCondition())) {
+                if (Cmp->isEquality()) {
+                    // Which successor leaves the loop on p == B?
+                    BasicBlock *OnTrue = HBr->getSuccessor(0), *OnFalse = HBr->getSuccessor(1);
+                    BasicBlock *EqSucc = Cmp->getPredicate() == ICmpInst::ICMP_EQ ? OnTrue : OnFalse;
+                    BasicBlock *NeSucc = EqSucc == OnTrue ? OnFalse : OnTrue;
+                    Value *A = Cmp->getOperand(0), *Bv = Cmp->getOperand(1);
+                    if (Bv == Phi) std::swap(A, Bv);
+                    if (A == Phi && Bv != Phi && L->isLoopInvariant(Bv) &&
+                        Bv->getType() == Phi->getType() &&
+                        !L->contains(EqSucc) && L->contains(NeSucc)) {
+                        z3::expr BE = Encoder.valueAsBV(Bv, W);
+                        z3::expr Fact = z3::implies(z3::ule(V0E, BE), z3::ule(PhiE, BE));
+                        std::string Lbl = mkLabel("PHIINV-hx");
+                        Encoder.assertRawFact(Fact, Audit ? Lbl : std::string());
+                        Log << "    -> Fact[" << Lbl << "] (" << valueStr(V0) << " <=u "
+                            << valueStr(Bv) << ") -> " << valueStr(V) << " <=u "
+                            << valueStr(Bv) << " (header-exit eq bound, unit step, 1-induction)\n";
+                        ++NumFacts; Any = true;
+                    }
+                }
+            }
+        }
+    }
+
+    if (HaveIncs) {
         bool AllNonNeg = true;
         for (Value *D : Incs)
             if (!nonNegOf(D, SE, 0)) { AllNonNeg = false; break; }

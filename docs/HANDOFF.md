@@ -23,7 +23,7 @@ tmux. If DNS dies: `echo "nameserver 8.8.8.8" | sudo tee
 **Build + gate (both machines):**
 ```
 ninja -C build
-bash scripts/run_tests.sh          # MUST print PASS=24 / FAIL=9 (20/8 pre-PHIINV tests, 17/6 pre-FRAME, 19/7 pre-SCEVSYM-v2)
+bash scripts/run_tests.sh          # MUST print PASS=26 / FAIL=11 (20/8 pre-PHIINV tests, 17/6 pre-FRAME, 19/7 pre-SCEVSYM-v2)
 ```
 The 8 FAILs are heavy/ldeq/stride/frame/symstart tests under the light gate BY
 DESIGN (test_frame1 flips to PASS once FRAME lands, gate becomes 20/6);
@@ -1386,3 +1386,72 @@ codegen pays far more for the inner-loop checks. Recovery 8.5% of ceiling.
 `data[j+l] == data[i+l]`), 22 traps left, 36% Mac ceiling, no @inbounds
 deployment needed (pass removes traps directly). Next: countermodel
 diagnosis of the inner-loop bounds/overflow traps, as in §10.8 for Julia.
+
+### 10.17 Session 2.0/2.1 -- Swift lz77 countermodel diagnosis and fixes (Sep 10 2026, Mac)
+Setup: `ODESSY_DEBUG=1` now enables the SMT-LIB + countermodel dump (was a
+compile-time constant). Numeric SSA values are anonymous in the dump, so
+run `opt -passes=instnamer` on the IR first (names %iNNN survive). Dumps
+are written unbuffered and therefore precede the per-function log; they
+appear in SAT order and the vacuity audit of every UNSAT also dumps one.
+Named hot-loop map (main, lz77.swift:12-31): i=%i235 n=%i222 j=%i248
+l=%i250 start=%.ph out=%i234 bestLen=%i270 (phi %i247)
+n-i = %i242 (smax(i,n)-i) = %i243 (usub.sat(n,i)).
+IMPORTANT SHAPE DIFFERENCE vs lz77.jl: swiftc has already turned
+`while l < 255 && i + l < n` into a HEADER EXIT `l == n-i` with the latch
+`l+1 != 255`; the bounds checks are `j+l <u n` (trap 312) and
+`l == usub.sat(n,i)` (trap 313, i.e. i+l < n via l < n-i).
+
+Classification of main's 13 traps (15 edges; 25 in the module):
+    | trap | source (line)          | before | countermodel / cause                         | class              | after |
+    | 303  | args count (2)         | SAT    | setup, argv                                  | not a target       | SAT   |
+    | 304  | Int(arg) parse (2)     | SAT x2 | setup                                        | not a target       | SAT   |
+    | 305  | file read (3)          | SAT    | setup                                        | not a target       | SAT   |
+    | 306  | 0..<iters (7)          | SAT    | iters sign                                   | not a target       | SAT   |
+    | 307  | out += 1 ovf (28)      | SAT    | out free, ~INT_MAX                           | relational out<=i  | SAT   |
+    | 308  | i += 1 ovf (29)        | UNSAT  | PHIINV-hi(i) (§10.15)                        | proven             | UNSAT |
+    | 309  | out += 3 ovf (24)      | SAT    | out free                                     | relational out<=i  | SAT   |
+    | 310  | i += bestLen ovf (25)  | SAT    | bestLen phi = 0x7ffffffffffffc42 (free)      | relational: needs bestLen <= n-i (l<=n-i lcssa) | SAT |
+    | 311  | i - j ovf (19)         | UNSAT  | (already)                                    | proven             | UNSAT |
+    | 312  | data[j+l] bounds (18)  | SAT    | n-i=0x80 but l=0xb0: l NOT bounded by n-i    | MISSING INVARIANT: header-exit bound on l; j<i via select latch | UNSAT 425 ms |
+    | 313  | data[i+l] bounds (18)  | SAT    | usub.sat(n,i)=0 with n=0x7fffff,i=0x109      | MISSING ENCODING: llvm.usub.sat havoced | UNSAT 41 ms |
+    | 314/315 setup (Array init)  | SAT    | setup                                        | not a target       | SAT   |
+Fixes landed (three, all general):
+  F-a  Z3Encoder: llvm.usub.sat / uadd.sat / ssub.sat / sadd.sat encoded
+       exactly (ite). usub.sat is Swift's lowering of `n - i` in bounds
+       arithmetic; leaving it free lost trap 313 outright.
+  F-b  PHIINV-hx (header-exit equality bound): (v0 <=u B) -> p <=u B for
+       unit-step p with header exit `p == B`. Kills trap 312 together with:
+  F-c  PHIINV-hi through conjunctive/disjunctive latch conditions
+       (`select A,B,false` / `and` on true; `select A,true,B` / `or` on
+       false). Gives j == start || j <s i on the middle loop.
+Cores: 313 = |RM(n)| |SCEV| |PHIINV-lo(j)| |SCEV| |PHIINV-hx(l)| G1 TRAP.
+       312 = |RM| |PHIINV-hi(i)| |SCEV| |SCEVSYM| |PHIINV-hi(j,select)|
+             |PHIINV-lo(j)| |SCEV| |PHIINV-hx(l)| G0 G1 TRAP   (9 facts, 425 ms)
+Tests: test_heavy_phiinv_hx.ll (UNSAT, core |SCEV| |PHIINV-hx| G0 G1),
+  test_heavy_phiinv_hx_stride_sat.ll (stride 2 tripwire, SAT),
+  test_heavy_phiinv_selatch.ll (UNSAT, core G0 |PHIINV-hi|),
+  test_heavy_phiinv_selatch_or_sat.ll (or-on-true tripwire, SAT).
+  Suite gate now PASS=26 FAIL=11 (two more heavy positives under the light
+  gate, two more SAT tripwires).
+Static: Swift lz77 main 3/13 -> 5/13 traps (module 3/25 -> 5/25 at >=1 s;
+  4/25 + 1 UNKNOWN at 300 ms because trap 312 takes 425 ms).
+Probe vs §10.15 column (60 cells, 300 ms): only Swift lz77 (+1 UNSAT,
+  +1 UNKNOWN), Rust lz77 (1 SAT -> UNKNOWN, latency) and jl_filt_dsp
+  (heavy +1 UNSAT, full +2 UNSAT, some SAT->UNKNOWN latency shifts)
+  change; no UNSAT -> SAT anywhere. lz77.jl bounded2 unchanged (10 s:
+  A-post UNKNOWN, A-pre 9.4 s, B x2 ms).
+Remaining Swift lz77 targets: 307/309/310 need the RELATIONAL invariant
+  out <= i (resp. bestLen <= n-i): Plan C territory (§9), not PHIINV.
+Runtime after fixes (run_swift_perf.sh, full tier, threads=8, REPS=30,
+results/perf/swift_lz77_perf_mac_0910b.log; traps 27->20 in oracle,
+eliminated 5, byte-identical):
+    budget 300 ms : base 1.5030  base2x 1.5178  oracle 1.1319  => +24.7% / +25.4%
+    budget 1 s    : base 1.5813  base2x 1.5824  oracle 1.1494  => +27.3% / +27.4%
+  (base drifted 1.48 -> 1.58 across the day's runs: Mac not pinned; the
+  ratio is the number. Both budgets eliminated the same 5 traps -- the
+  425 ms query fit under 300 ms with threads=8 parallel warm-up.)
+  vs Mac ceiling 36.0% (§10.16): ~70-76% recovered, up from 8.5%.
+  From +3.05% to +27% in one session, by two hot inner-loop proofs.
+3 s rechecks: Rust lz77 heavy/full SAT=2 UNSAT=1 (the 300 ms UNKNOWN is a
+  NEW proof at 3 s: 0 -> 1); jl_filt_dsp 6/19 both tiers (unchanged at 3 s);
+  jl_filt_dsp_guarded 8/10 (unchanged).

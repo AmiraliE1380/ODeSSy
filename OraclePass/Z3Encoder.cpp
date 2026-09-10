@@ -582,6 +582,32 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo
                 } else if (Name.starts_with("llvm.smin.")) {
                     z3::expr a = Arg(0), b = Arg(1);
                     res = z3::ite(a < b, a, b);
+                } else if (Name.starts_with("llvm.usub.sat.")) {
+                    // Unsigned saturating subtract: a >=u b ? a - b : 0.
+                    // Swift lowers `n - i` bounds arithmetic to this (HANDOFF
+                    // §10.17); leaving it free lost the data[i+l] proof.
+                    z3::expr a = Arg(0), b = Arg(1);
+                    res = z3::ite(z3::uge(a, b), a - b, Ctx.bv_val(0, W));
+                } else if (Name.starts_with("llvm.uadd.sat.")) {
+                    z3::expr a = Arg(0), b = Arg(1);
+                    z3::expr s = a + b;
+                    res = z3::ite(z3::ult(s, a), Ctx.bv_val(-1, W), s);
+                } else if (Name.starts_with("llvm.ssub.sat.")) {
+                    z3::expr a = Arg(0), b = Arg(1);
+                    z3::expr s = a - b;
+                    z3::expr Ovf = !z3::bvsub_no_overflow(a, b) ||
+                                   !z3::bvsub_no_underflow(a, b, true);
+                    z3::expr Sat = z3::ite(b < 0, Ctx.bv_val(APInt::getSignedMaxValue(W).getSExtValue(), W),
+                                           Ctx.bv_val(APInt::getSignedMinValue(W).getSExtValue(), W));
+                    res = z3::ite(Ovf, Sat, s);
+                } else if (Name.starts_with("llvm.sadd.sat.")) {
+                    z3::expr a = Arg(0), b = Arg(1);
+                    z3::expr s = a + b;
+                    z3::expr Ovf = !z3::bvadd_no_overflow(a, b, true) ||
+                                   !z3::bvadd_no_underflow(a, b);
+                    z3::expr Sat = z3::ite(b < 0, Ctx.bv_val(APInt::getSignedMinValue(W).getSExtValue(), W),
+                                           Ctx.bv_val(APInt::getSignedMaxValue(W).getSExtValue(), W));
+                    res = z3::ite(Ovf, Sat, s);
                 } else if (Name.starts_with("llvm.abs.")) {
                     z3::expr a = Arg(0);
                     res = z3::ite(a < 0, -a, a);

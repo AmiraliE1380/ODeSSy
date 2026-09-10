@@ -68,8 +68,9 @@
 
 using namespace llvm;
 
-// --- THE DEBUG FLAG ---
-bool DebugOracle = false;
+// --- THE DEBUG FLAG --- (set ODESSY_DEBUG=1 in the environment; dumps the
+// SMT-LIB query and the countermodel of every SAT verdict, threads=1 only)
+bool DebugOracle = std::getenv("ODESSY_DEBUG") != nullptr;
 
 namespace {
 

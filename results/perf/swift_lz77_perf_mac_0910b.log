@@ -1,0 +1,24 @@
+=== budget 300
+  built base     traps   27->23   bin    55224 B  eliminated 0
+  built base2x   traps   27->23   bin    55224 B  eliminated 0
+  built oracle   traps   27->20   bin    55224 B  eliminated 5
+  outputs byte-identical across all configs -- gate passed
+==== PHASE C: 30 shuffled reps x 3 configs ====
+config      median       min       avg  audit
+base        1.5030    1.4851    1.5648  ok
+base2x      1.5178    1.4723    1.5703  OUTLIER(min<98%med)
+oracle      1.1319    1.0637    1.1709  OUTLIER(min<98%med)
+oracle vs base: +24.69% (median)
+oracle vs base2x: +25.42% (median)
+=== budget 1000
+  built base     traps   27->23   bin    55224 B  eliminated 0
+  built base2x   traps   27->23   bin    55224 B  eliminated 0
+  built oracle   traps   27->20   bin    55224 B  eliminated 5
+  outputs byte-identical across all configs -- gate passed
+==== PHASE C: 30 shuffled reps x 3 configs ====
+config      median       min       avg  audit
+base        1.5813    1.5347    1.5799  OUTLIER(min<98%med)
+base2x      1.5824    1.5366    1.5885  OUTLIER(min<98%med)
+oracle      1.1494    1.0978    1.1668  OUTLIER(min<98%med)
+oracle vs base: +27.32% (median)
+oracle vs base2x: +27.36% (median)

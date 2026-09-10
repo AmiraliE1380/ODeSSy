@@ -1023,3 +1023,23 @@ base 1.4841 s, base2x 1.4839 s, oracle 1.4389 s → **+3.05% vs base, +3.04%
 vs base2x**, noise floor 0.01%, byte-identical output, 3 traps eliminated
 (27→22 vs 27→23 for base). Mac ceiling −O vs −Ounchecked: 1.4842 vs 1.0916 =
 **36.0%** (x86 ceiling 3.3%, §8). Recovery 8.5% of Mac ceiling.
+
+**Sep 10, session 2.0/2.1 — Swift lz77 inner loop proven.** Countermodel
+diagnosis (HANDOFF §10.17) found two causes: `llvm.usub.sat` was havoced
+(Swift's lowering of `n − i`), and the inner counter `l` lacked the
+header-exit bound `l ≤ n − i`. Fixes: saturating intrinsics encoded exactly;
+new PHIINV-hx rule (header-exit equality bound, unit step); PHIINV-hi
+through `select`-conjunction latches. Static: main 3/13 → **5/13** traps
+(module 5/25), including both inner-loop bounds checks `data[j+l]` (425 ms,
+9-fact core) and `data[i+l]` (41 ms). Runtime, Mac M-series, full tier,
+REPS=30, 5 traps eliminated, byte-identical
+(results/perf/swift_lz77_perf_mac_0910b.log):
+
+| budget | base | base2x | oracle | vs base | vs base2x |
+|---|---|---|---|---|---|
+| 300 ms | 1.5030 | 1.5178 | 1.1319 | **+24.7%** | +25.4% |
+| 1 s | 1.5813 | 1.5824 | 1.1494 | **+27.3%** | +27.4% |
+
+Against the 36.0% Mac ceiling: ≈70–76% recovered (was 8.5% with 3 traps).
+Suite gate 26/11. Remaining three outer-loop overflow traps need relational
+invariants (out ≤ i, bestLen ≤ n − i): Plan C.
