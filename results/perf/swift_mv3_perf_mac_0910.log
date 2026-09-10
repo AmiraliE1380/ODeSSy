@@ -1,0 +1,27 @@
+=== utf8 mv 300 ms
+  built oracle   traps   22->19   bin    55160 B  eliminated 2 (+2 folded in mv fast copies)
+==== PHASE B: output equivalence gate ====
+  outputs byte-identical across all configs -- gate passed
+base        6.0146    5.9649    6.0732  ok
+base2x      6.0155    5.9664    6.0748  ok
+oracle      6.1824    6.1246    6.2115  ok
+oracle vs base: -2.79% (median)
+oracle vs base2x: -2.77% (median)
+=== adler32 mv 300 ms
+  built oracle   traps   39->37   bin    55296 B  eliminated 1 (+1 folded in mv fast copies)
+==== PHASE B: output equivalence gate ====
+  outputs byte-identical across all configs -- gate passed
+base        0.3883    0.3857    0.3886  ok
+base2x      0.3880    0.3855    0.3883  ok
+oracle      0.3940    0.3908    0.3942  ok
+oracle vs base: -1.46% (median)
+oracle vs base2x: -1.53% (median)
+=== lz77 mv 300 ms
+  built oracle   traps   27->20   bin    55224 B  eliminated 5 (+1 folded in mv fast copies)
+==== PHASE B: output equivalence gate ====
+  outputs byte-identical across all configs -- gate passed
+base        1.5264    1.5157    1.5316  ok
+base2x      1.5242    1.5143    1.5283  ok
+oracle      1.1113    1.0811    1.1426  OUTLIER(min<98%med)
+oracle vs base: +27.20% (median)
+oracle vs base2x: +27.09% (median)

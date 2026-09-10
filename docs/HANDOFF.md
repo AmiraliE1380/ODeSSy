@@ -1916,3 +1916,8 @@ are interval/induction facts, not runtime hypotheses); one T1 candidate per
 kernel refused as vacuous (index range 2^48 wide). Unsolved by mv.
 New folds are all T2 overflow traps (utf8 x2, adler32, Swift lz77): cheap,
 cold-ish; runtime not measured (utf8/adler32 have no or small Mac ceilings).
+
+### 10.27 MV runtime for the three new-fold kernels (Sep 10 2026)
+utf8 −2.8% (was −2.7%), adler32 −1.5% (unchanged), Swift lz77 +27.2% at
+300 ms (was +24.7% at 300 ms / +27.3% at 1 s): the mv folds there are cold
+overflow traps; no runtime effect, as expected. Table: PAPER_FACTS §11.11.

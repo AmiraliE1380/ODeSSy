@@ -1337,3 +1337,20 @@ are interval/induction facts, not runtime hypotheses); one T1 candidate per
 kernel refused as vacuous (index range 2^48 wide). Unsolved by mv.
 New folds are all T2 overflow traps (utf8 x2, adler32, Swift lz77): cheap,
 cold-ish; runtime not measured (utf8/adler32 have no or small Mac ceilings).
+
+### 11.11 Multi-versioning runtime table (Mac, Sep 10 2026, REPS=30, 300 ms, byte-identical)
+"MV fold" = a trap whose anchor branch is folded ONLY inside the H-guarded
+fast copy (licensed by UNSAT under H); "UNSAT" = folded unconditionally in
+the original loop. Δmv = speedup with `mv` minus speedup without.
+| kernel | UNSAT | MV folds | mined H | speedup w/o mv | speedup with mv | Δmv | Mac ceiling |
+|---|---|---|---|---|---|---|---|
+| base64 | 2/27 | 5 | tbl.count > 63; n ≤ 2^62 | +7.0% | **+13.1%** | **+6.1 pts** | 22.6% |
+| crc32 | 0/36 | 6 | count_k > 255; n ≤ 2^62 | 0 (no proofs) | +4.3% | +4.3 pts (above 0.7% ceiling: lottery) | 0.7% |
+| lz77 Swift | 5/25 | 1 | n ≤ 2^62 (i += bestLen ovf) | +27.3% (1 s) / +24.7% (300 ms) | +27.2% (300 ms) | ≈0 (cold outer trap) | 36.0% |
+| utf8 | 2/20 | 2 | n ≤ 2^62 (two overflow traps) | −2.7% (0829) | −2.8% | ≈0 | none (−0.8%) |
+| adler32 | 1/37 | 1 | buf.count ≥ 0 (overflow trap) | −1.5% (0829) | −1.5% | 0 | 6.3% |
+| lz77.jl unmodified | 0/4 | 4 (60 s) | n, window ∈ [0, 2^62] | — | JIT: not deployable; hand-MV proxy 2.63× | — | 2.63× |
+Log: results/perf/swift_mv3_perf_mac_0910.log (utf8 6.01→6.18 s, adler32
+0.388→0.394 s, lz77 1.526→1.111 s). Reading: mv pays where the folded traps
+are in the HOT loop (base64's table lookups); folding cold overflow traps
+(utf8, adler32, Swift lz77 outer loop) moves nothing, as expected.
