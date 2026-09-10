@@ -112,6 +112,21 @@ void FactEncoder::preEncodeScevLeafClosure() {
         Collect(BTC);
         Collect(AR->getStart());
     }
+    // PHIINV's base value: the header phi's incoming value from the loop's
+    // unique out-of-loop predecessor (often a non-header phi / select such
+    // as lz77's `start`); encode its definition so the LO fact p >= v0 is
+    // not anchored to a free variable (first-wins ValueMap).
+    for (Value *V : Encoder.getFreeVariables()) {
+        auto *Phi = dyn_cast<PHINode>(V);
+        if (!Phi) continue;
+        Loop *L = LI->getLoopFor(Phi->getParent());
+        if (!L || L->getHeader() != Phi->getParent()) continue;
+        BasicBlock *Pre = L->getLoopPreheader();
+        if (!Pre) Pre = L->getLoopPredecessor();
+        if (!Pre) continue;
+        if (auto *I = dyn_cast<Instruction>(Phi->getIncomingValueForBlock(Pre)))
+            Seeds.insert(I);
+    }
     if (Seeds.empty()) return;
     // ---- def-closure with slicer boundary rules.
     SmallPtrSet<Instruction *, 32> Closure;
@@ -737,21 +752,69 @@ bool FactEncoder::trySCEVSym(Value *V) {
 // walk + SE queries (FactGate-serialized like every heavy fact).
 // =====================================================================
 static bool collectSelfAdds(Value *V, PHINode *P, unsigned Depth,
-                            SmallVectorImpl<Value *> &Incs) {
+                            SmallVectorImpl<Value *> &Incs, bool &AllNSW) {
     if (Depth > 4) return false;
     if (auto *BO = dyn_cast<BinaryOperator>(V)) {
         if (BO->getOpcode() != Instruction::Add) return false;
-        if (!BO->hasNoSignedWrap()) return false;           // load-bearing
+        if (!BO->hasNoSignedWrap()) AllNSW = false;        // see LO-wrap below
         if (BO->getOperand(0) == P) { Incs.push_back(BO->getOperand(1)); return true; }
         if (BO->getOperand(1) == P) { Incs.push_back(BO->getOperand(0)); return true; }
         return false;
     }
     if (auto *Sel = dyn_cast<SelectInst>(V))
-        return collectSelfAdds(Sel->getTrueValue(), P, Depth + 1, Incs) &&
-               collectSelfAdds(Sel->getFalseValue(), P, Depth + 1, Incs);
+        return collectSelfAdds(Sel->getTrueValue(), P, Depth + 1, Incs, AllNSW) &&
+               collectSelfAdds(Sel->getFalseValue(), P, Depth + 1, Incs, AllNSW);
     if (auto *Phi = dyn_cast<PHINode>(V)) {
         for (Value *In : Phi->incoming_values())
-            if (!collectSelfAdds(In, P, Depth + 1, Incs)) return false;
+            if (!collectSelfAdds(In, P, Depth + 1, Incs, AllNSW)) return false;
+        return Phi->getNumIncomingValues() > 0;
+    }
+    return false;
+}
+
+
+// Universal (all-iterations) signed maximum of an increment value, via
+// SCEV signed ranges, looked through selects / non-header phis (depth<=4).
+// Returns false if any leaf is unbounded (signed max == INT_MAX).
+static bool signedMaxOf(Value *V, ScalarEvolution *SE, unsigned Depth, APInt &Max) {
+    if (Depth > 4) return false;
+    unsigned W = V->getType()->getIntegerBitWidth();
+    if (auto *CI = dyn_cast<ConstantInt>(V)) { Max = CI->getValue(); return true; }
+    if (auto *Sel = dyn_cast<SelectInst>(V)) {
+        APInt A(W, 0), B(W, 0);
+        if (!signedMaxOf(Sel->getTrueValue(), SE, Depth + 1, A) ||
+            !signedMaxOf(Sel->getFalseValue(), SE, Depth + 1, B)) return false;
+        Max = A.sgt(B) ? A : B; return true;
+    }
+    if (SE && SE->isSCEVable(V->getType())) {
+        APInt M = SE->getSignedRange(SE->getSCEV(V)).getSignedMax();
+        if (!M.isMaxSignedValue()) { Max = M; return true; }
+    }
+    if (auto *Phi = dyn_cast<PHINode>(V)) {
+        APInt Acc = APInt::getSignedMinValue(W);
+        for (Value *In : Phi->incoming_values()) {
+            APInt A(W, 0);
+            if (!signedMaxOf(In, SE, Depth + 1, A)) return false;
+            if (A.sgt(Acc)) Acc = A;
+        }
+        Max = Acc; return Phi->getNumIncomingValues() > 0;
+    }
+    return false;
+}
+
+// Universal non-negativity of an increment value: constant, SCEV signed
+// range, or every arm of a select / non-header phi (depth <= 4).
+static bool nonNegOf(Value *V, ScalarEvolution *SE, unsigned Depth) {
+    if (Depth > 4) return false;
+    if (auto *CI = dyn_cast<ConstantInt>(V)) return !CI->getValue().isNegative();
+    if (SE && SE->isSCEVable(V->getType()) && SE->isKnownNonNegative(SE->getSCEV(V)))
+        return true;
+    if (auto *Sel = dyn_cast<SelectInst>(V))
+        return nonNegOf(Sel->getTrueValue(), SE, Depth + 1) &&
+               nonNegOf(Sel->getFalseValue(), SE, Depth + 1);
+    if (auto *Phi = dyn_cast<PHINode>(V)) {
+        for (Value *In : Phi->incoming_values())
+            if (!nonNegOf(In, SE, Depth + 1)) return false;
         return Phi->getNumIncomingValues() > 0;
     }
     return false;
@@ -779,6 +842,7 @@ bool FactEncoder::tryPhiInv(Value *V) {
     z3::expr PhiE = Encoder.valueAsBV(Phi, W);
     z3::expr V0E  = Encoder.valueAsBV(V0, W);
     bool Any = false;
+    std::optional<z3::expr> HiBound;   // B when HI fired with a <=s / <s bound
 
     // ---------------- HI: latch-implied bound ----------------
     if (auto *Br = dyn_cast<BranchInst>(Latch->getTerminator())) {
@@ -808,6 +872,8 @@ bool FactEncoder::tryPhiInv(Value *V) {
                     default: OK = false;
                     }
                     if (OK) {
+                        if (Pred == ICmpInst::ICMP_SLE) HiBound = BE;
+                        else if (Pred == ICmpInst::ICMP_SLT) HiBound = BE - Encoder.apintToBV(APInt(W, 1));
                         z3::expr Fact = (PhiE == V0E) || C;
                         std::string Lbl = mkLabel("PHIINV-hi");
                         Encoder.assertRawFact(Fact, Audit ? Lbl : std::string());
@@ -825,30 +891,52 @@ bool FactEncoder::tryPhiInv(Value *V) {
 
     // ---------------- LO: monotone lower bound ----------------
     SmallVector<Value *, 8> Incs;
-    if (collectSelfAdds(VL, Phi, 0, Incs) && !Incs.empty()) {
+    bool AllNSW = true;
+    if (collectSelfAdds(VL, Phi, 0, Incs, AllNSW) && !Incs.empty()) {
         bool AllNonNeg = true;
-        for (Value *D : Incs) {
-            if (auto *CI = dyn_cast<ConstantInt>(D)) {
-                if (CI->getValue().isNegative()) { AllNonNeg = false; break; }
-                continue;
-            }
-            if (SE && SE->isSCEVable(D->getType()) &&
-                SE->isKnownNonNegative(SE->getSCEV(D))) continue;
-            AllNonNeg = false; break;
-        }
+        for (Value *D : Incs)
+            if (!nonNegOf(D, SE, 0)) { AllNonNeg = false; break; }
         if (AllNonNeg) {
-            z3::expr Fact = (PhiE >= V0E);
+            z3::expr Lo = (PhiE >= V0E);
             bool V0NonNeg = false;
             if (auto *CI = dyn_cast<ConstantInt>(V0)) V0NonNeg = !CI->getValue().isNegative();
             else if (SE && SE->isSCEVable(V0->getType()))
                 V0NonNeg = SE->isKnownNonNegative(SE->getSCEV(V0));
-            if (V0NonNeg) Fact = Fact && z3::uge(PhiE, V0E);
-            std::string Lbl = mkLabel("PHIINV-lo");
-            Encoder.assertRawFact(Fact, Audit ? Lbl : std::string());
-            Log << "    -> Fact[" << Lbl << "] " << valueStr(V) << " >=s "
-                << valueStr(V0) << " (monotone nsw increments, "
-                << Incs.size() << " arm(s))\n";
-            ++NumFacts; Any = true;
+            if (V0NonNeg) Lo = Lo && z3::uge(PhiE, V0E);
+            if (AllNSW) {
+                std::string Lbl = mkLabel("PHIINV-lo");
+                Encoder.assertRawFact(Lo, Audit ? Lbl : std::string());
+                Log << "    -> Fact[" << Lbl << "] " << valueStr(V) << " >=s "
+                    << valueStr(V0) << " (monotone nsw increments, "
+                    << Incs.size() << " arm(s))\n";
+                ++NumFacts; Any = true;
+            } else if (HiBound) {
+                // LO-WRAP: the adds may wrap, so p >= v0 is inductive only
+                // when p + d cannot pass INT_MAX. With HI (p <=s B) that is
+                // guaranteed if B <=s INT_MAX - dmax, dmax a UNIVERSAL bound
+                // on every increment (SCEV signed ranges hold on all
+                // iterations), and v0 <=s B for the base case. Emitted as
+                // an implication: harmless unless the context proves the
+                // antecedent (e.g. a `length(a) <= 2^62` guard or a
+                // multi-versioning condition).
+                APInt DMax(W, 0), Acc = APInt::getSignedMinValue(W);
+                bool Bounded = true;
+                for (Value *D : Incs) {
+                    if (!signedMaxOf(D, SE, 0, DMax)) { Bounded = false; break; }
+                    if (DMax.sgt(Acc)) Acc = DMax;
+                }
+                if (Bounded && Acc.isNonNegative()) {
+                    APInt Lim = APInt::getSignedMaxValue(W) - Acc;   // INT_MAX - dmax
+                    z3::expr Ante = (*HiBound <= Encoder.apintToBV(Lim)) && (V0E <= *HiBound);
+                    z3::expr Fact = z3::implies(Ante, Lo);
+                    std::string Lbl = mkLabel("PHIINV-lo");
+                    Encoder.assertRawFact(Fact, Audit ? Lbl : std::string());
+                    Log << "    -> Fact[" << Lbl << "] (B <=s INT_MAX-" << Acc
+                        << " && v0 <=s B) -> " << valueStr(V) << " >=s "
+                        << valueStr(V0) << " (monotone WRAPPING increments; conditional)\n";
+                    ++NumFacts; Any = true;
+                }
+            }
         }
     }
     return Any;

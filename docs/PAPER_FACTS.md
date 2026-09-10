@@ -977,3 +977,32 @@ kernel perf reruns at full tier; Mac ceilings refresh if any row moved.
 Scope per HANDOFF plan: zlib ANF + sha256 + sha1 only; median-primary
 with noise floor beside every delta; fixed power profile, interleaved
 reps. Claim template ships ONLY after these runs land.
+
+## 11. OOPSLA CAMPAIGN DATA (branch oopsla-research; additive; Sep 2026)
+
+### 11.1 lz77.jl — first new result (Sep 9 2026)
+Machinery added: PHIINV fact source (header-phi interval invariant by
+1-induction: latch-implied upper bound + monotone lower bound, with a
+wrap-conditional lower bound for non-nsw increments). HANDOFF §10.9-10.12.
+
+Static: lz77.jl has 2 trap blocks / 4 edges, both on the inner match
+line (`data[j+len]`, `data[i+len]`). As written: 0/4 — and CORRECTLY so:
+the solver exhibits two genuine IR-semantic wraps (i+best past INT64_MAX
+for a ~9 EiB array; i-window for a hugely negative window). Under the
+sanity bounds n <= 2^62 and 1 <= window <= 2^62 (added as guards in
+lz77_bounded2.jl): **4/4 UNSAT, vacuous 0** (licensed at 60 s; the two
+A-edge queries take 9.4-10 s). Cores: |PHIINV-hi| |PHIINV-lo| |SCEVSYM|
+|SCEV| + guards.
+
+Runtime (Mac, 64 KiB, window 1024, REPS=21 medians, outputs identical;
+jl_lz77_mv_arms_mac_0909.log):
+| arm | | median | vs baseline |
+|---|---|---|---|
+| 1 | checked baseline | 0.0891 s | 1.00x |
+| 2 | **multi-versioned** (guard -> @inbounds loop, else checked) | 0.0343 s | **2.60x** |
+| 3 | @inbounds ceiling | 0.0343 s | 2.60x |
+Recovery = 100%: the runtime guard is free and the fast path IS the
+ceiling. Deployment form is loop MULTI-VERSIONING on the proven-under-
+hypothesis condition — a second conventional transformation licensed by
+the same reachability oracle. x86 ceiling 3.26x pending server access.
+Earlier four-arm data (§10.7 HANDOFF): A-only 2.33x, B-only 1.49x.

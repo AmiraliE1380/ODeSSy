@@ -1223,3 +1223,81 @@ exist. Options for the user to decide (recorded, not chosen):
       execution traps at the overflow check first); add that recognizer
       for Swift kernels (adler32 `i += 16`) — independent of the Julia
       decision.
+
+### 10.12 Session 1.5 — lz77.jl PROVEN 4/4 under sanity bounds; multi-versioning recovers 100% of the ceiling (Sep 9 2026)
+
+ENCODER CHANGES (FactEncoder.cpp, all committed):
+ * LO-WRAP: for increments WITHOUT nsw, LO is emitted as an implication
+     (B <=s INT_MAX - dmax  &&  v0 <=s B)  ->  p >=s v0
+   where B is HI's latch bound and dmax is a UNIVERSAL signed max of every
+   increment arm (constants / SCEV signed ranges, through select and
+   non-header phis, depth <= 4). Sound: under HI (p <=s B) and the
+   antecedent, p + d cannot pass INT_MAX, so the 1-induction goes through
+   without nsw. Harmless unless the context proves the antecedent (a size
+   guard, or a multi-versioning condition). Synthetic check: a copy of the
+   positive test with `add` (no nsw) + guard n <= 2^62 is UNSAT with core
+   |PHIINV-hi| |PHIINV-lo|; without the guard it stays SAT.
+ * nonNegOf(): non-negativity through select / phi arms via SCEV.
+ * Go 3 seeds now include each boundary header phi's BASE value (the
+   preheader incoming), so PHIINV's v0 (e.g. the `start` phi) is encoded
+   by definition instead of being frozen as a free variable (first-wins
+   ValueMap). Without this, j >= start was anchored to a free `start`.
+ * Known gap (not needed here): the increment recognizer does not look
+   through llvm.smax/smin/umax/umin intrinsics (lz77's `best` chain has
+   an smax), so LO-wrap does not fire on i itself. Two-line extension.
+ Regression: suite 24/9; phiinv1 UNSAT; T1-T4 SAT; GEMM 16/16; sha256.jl
+ 10/16; Swift sha256 7.
+
+THE TWO WRAPS THE SOLVER FOUND (both genuine in IR semantics, both
+impossible in practice, both fixed by a runtime guard):
+ W1 (B-edges, data[i+len]): i + best wraps past INT64_MAX when n is
+    within 255 of INT64_MAX (a ~9 EiB array). Guard: n <= 2^62.
+ W2 (A-edges, data[j+len]): start = i - window wraps when window is a
+    huge NEGATIVE argument (model: window = 0x800000ffffffff8f), so j
+    starts negative and data[j+len] is genuinely out of bounds -- a real
+    latent bug in our kernel for absurd inputs. Guard: 1 <= window <= 2^62.
+ lz77.jl is OUR implementation (mirror of lz77.rs/.swift), so W2 is not
+ a library bug discovery; it is the same idiom real Julia code uses.
+
+RESULTS (native_bench/lz77_bounded.jl = W1 guard; lz77_bounded2.jl = W1+W2):
+    | variant            | edges | UNSAT @10 s | UNSAT @60 s |
+    | lz77.jl (as-is)    |   4   |     0       |     0       |
+    | + n <= 2^62        |   4   |     2 (B)   |     2       |
+    | + 1 <= window <= 2^62 | 4  |  2-4 (flaky)|     4       |
+ Cores (bounded2): A-edges |PHIINV-hi| |SCEVSYM| |PHIINV-lo| |SCEV| + 5
+ guards; B-edges |PHIINV-hi| |SCEV| + 5 guards. Vacuous 0.
+ BUDGET NOTE: the A-edge queries take 9.4-10 s serially -- right at the
+ 10 s default -- so at 10 s they flip UNSAT/UNKNOWN by timing noise and
+ threads=1 vs 8 can differ (contract: verdicts invariant MODULO timeout).
+ At timeout=60000 all four are UNSAT deterministically. License at 60 s;
+ the hardness of these two queries is an F1-class item (§10.1).
+
+PERFORMANCE (jl_lz77_mv_arms.jl, Mac, 64 KiB, window 1024, REPS=21, medians,
+outputs identical; results/perf/jl_lz77_mv_arms_mac_0909.log):
+    arm1 checked baseline     0.0891 s
+    arm2 MULTI-VERSIONED      0.0343 s   2.599x   <- proof-licensed
+    arm3 @inbounds ceiling    0.0343 s   2.597x
+ Multi-versioning recovers 100.1% of the ceiling: the guard costs nothing
+ measurable and the fast path is the ceiling. The x86 ceiling is 3.26x
+ (pending server).
+
+MULTI-VERSIONING AS PASS MACHINERY (design, not implemented; the user's
+proposal, recorded for the campaign):
+ 1. When a trap query is SAT, inspect the model for "sanity-violating"
+    assignments: a loop-invariant bound (array size load, argument) taking
+    a value beyond a configurable LARGE (2^62), or a parameter with an
+    absurd sign. Candidates = the loop-invariant free variables in the
+    unsat-core-adjacent facts (HI's B, LO-wrap's B, PHIINV bases).
+ 2. Re-solve with the sanity hypothesis H (bound < LARGE etc.) added.
+ 3. If UNSAT under H: multi-version the enclosing loop --
+       if (H) { LOOP without the proven traps } else { LOOP_WITH_CHECKS }
+    i.e. clone the loop nest (LLVM LoopVersioning utility / manual
+    clone), fold the proven branches in the clone only, branch on H at
+    the preheader. Sound by construction (the checked copy handles the
+    complement); the cost is code size + one compare per loop entry.
+ 4. Report H in the log and core ("|MV:H|"), so the paper can say exactly
+    which assumption each versioned loop rests on. This is the honest
+    replacement for a global axiom: the assumption is CHECKED at runtime.
+ Fit with the paper: super-analysis now licenses TWO transformations
+ (branch folding and loop versioning), both conventional, both compiler-
+ owned; the solver still only answers reachability (twice).
