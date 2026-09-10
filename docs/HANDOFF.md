@@ -1490,3 +1490,10 @@ check whose removal costs 26% on M-series. Do NOT ship as a speedup row;
 report as the strongest negative example. Re-measure on x86 (server) --
 base vs rustc-native also differ by 35% here, showing how codegen-sensitive
 this kernel is. Rust lz77 stays a static-only row until then.
+
+### 10.19 Where the numbers live (Sep 10 2026)
+PAPER_FACTS §11.4 is the consolidated Mac table (speedup, UNSAT/total,
+Mac ceiling, recovery, compile-time cost) for every kernel touched in the
+OOPSLA campaign; §8 remains the server (x86) record. Update §11.4 whenever
+a Mac row moves. Pass wall times: Swift lz77 0.2-0.4 s, Rust lz77 0.25 s,
+lz77.jl 21 s serial at 60 s budget (A edges 9-11 s each).

@@ -1063,3 +1063,40 @@ Removing the proven check makes the loop slower; rustc's own unchecked
 build is slower too. Robust to -mcpu and loop-alignment settings; cause not
 resolved (front-end-bound loop, ~5 IPC). Recorded as the strongest negative
 lottery example; not a speedup row. x86 re-measurement pending.
+
+### 11.4 Consolidated Mac (Apple M-series) reference table — as of Sep 10 2026
+All runtime rows: medians, byte-identical outputs, base2x control within the
+noise floor unless noted. UNSAT/total = trap edges proven / anchored trap
+edges in the timed module (Julia: edges licensed as `@inbounds`). Ceiling =
+this Mac's own checks-off gap (−O vs −Ounchecked; Julia `--check-bounds=no`
+or expert `@inbounds`; Rust `get_unchecked` twin). "none" = ceiling ≤ 0.
+
+| benchmark | lang | UNSAT/total | Mac speedup | Mac ceiling | recovery | source |
+|---|---|---|---|---|---|---|
+| GEMM (Julia stdlib shape) | Julia | 16/16 | **4.16×** | ≈4.17× | 99.8% | §9.4, README |
+| lz77.jl, multi-versioned A+B (60 s) | Julia | 4/4 (under bounds) | **2.625×** | 2.63× | 99.7% | §11.1 |
+| lz77.jl, multi-versioned B only (300 ms) | Julia | 2/4 | **1.515×** | 2.63× | 31.6% | §11.1 |
+| lz77 | Swift | 5/25 | **+27.3%** (1 s) / +24.7% (300 ms) | 36.0% | ≈76% | §11.2 |
+| sha256 | Swift | 7/36 | **+6.9%** | 2.8% | >100% | §9.2 |
+| sha1 | Swift | 7/24 | **+2.1%** | 7.6% | 27% | §9.2 |
+| sha256.jl (partial @inbounds) | Julia | 10/16 | +6.9% | none (−7.2%) | — | §9.2 |
+| adler32 | Swift | 1/37 | −1.5% | 8.9% | 0 | §9.2 |
+| md5 | Swift | 5/25 | −0.65% | none (−1.4%) | — | §9.2 |
+| utf8 | Swift | 2/20 | −2.7% | none (−0.8%) | — | §9.2 |
+| filt.jl (partial @inbounds) | Julia | 6/19 (8/10 guarded) | −3.7% | none (−1.1%) | — | §9.1/9.2 |
+| CryptoSwift (library) | Swift | 215 elim | −0.4% | ≈0 (−0.7% honest) | — | §9.3 |
+| lz77 | Rust | 1/3 | **−26.8%** | none (−4.3%) | — | §11.3 |
+Not yet timed on Mac: crc32, base64, nbody (Swift, 0 proofs each), matmul.rs
+(0/5), poly.jl (1/1, trivial). Whole-library C rows (zlib/zstd/lz4/OpenSSL)
+are server-only (§8).
+
+**Compile-time cost (Mac, threads=8, full tier, whole module):**
+| module | budget | pass wall | queries | max query | Σ query |
+|---|---|---|---|---|---|
+| lz77.swift (25 edges) | 300 ms | 0.42 s | 4 UNSAT / 20 SAT / 1 UNKNOWN | 302 ms | 516 ms |
+| lz77.swift | 1 s | 0.21 s | 5 UNSAT / 20 SAT | 163 ms | 341 ms |
+| lz77_bench.rs (3 edges) | 300 ms / 1 s | 0.25 s | 1 UNSAT / 2 SAT | 235 ms | 254 ms |
+| lz77_bounded2.jl (4 edges, serial) | 60 s | ≈21 s | 4 UNSAT | 11.4 s | 20.7 s |
+Note the Swift `data[j+l]` query is 425 ms serial but 163 ms in the
+threads=8 run at the 1 s budget and 302 ms (timeout) at 300 ms: Z3 latency
+varies run to run near the budget; verdicts do not (HANDOFF §10.13 contract).
