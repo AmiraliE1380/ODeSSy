@@ -1219,3 +1219,85 @@ swift_mv_perf_mac_0910.log, ceilings_mac_0910.log. All outputs byte-identical.
 A first run was −13.4% because a fold did not propagate into a clone-of-clone
 inner copy (fixed; HANDOFF §10.24) — the fast loop had a depth-4 add chain
 and a residual overflow branch; after the fix it matches `-Ounchecked`'s loop.
+
+### 11.9 Automated multi-versioning: how it is implemented (reference, with pseudocode)
+Files: OraclePass/TrapSolver.cpp (`mvPhase`, hypothesis mining + validation),
+OraclePass/OraclePass.cpp (Stage 3a', transformation), OraclePass/TrapJob.h
+(`MVConjunct`, `MVHyp`, `MVLoop`, `MVEliminate`), tests/test_mv_*.ll,
+scripts/run_mv_tests.sh. Knobs: `mv`, `mv-sane=<k>` (default 62).
+
+**Idea.** A trap T in loop L stays SAT because the solver can pick absurd
+values for loop-INVARIANT inputs (an array length near 2^63, a table length
+of 5). If a runtime-checkable predicate H over those inputs makes T UNSAT,
+emit `if (H) L_fast else L_checked` and fold T only in L_fast. The solver
+discovers H (hypothesis mining), certifies the fast copy (re-solve under H),
+and the transformation preserves observable behaviour by construction: H is
+evaluated once at loop entry, dominates L_fast, and L_checked is the original.
+
+**1. Hypothesis generation** (after the ordinary query returns SAT; solver
+still holds context | push | trap):
+```
+mine(T, L):
+  Inv := { v free in the query : v integer, L.isLoopInvariant(v) }
+  C := ∅                                   # candidate conjuncts pred(v, const)
+  # T1 length-vs-index
+  if T.cond ≡ ICmp(P, A, B) normalized so that "trap ⇔ P(A,B)":
+     if P ∈ {UGE, UGT} and B ∈ Inv and A ∉ Inv:  idx := A, count := B
+     if P ∈ {ULE, ULT} and A ∈ Inv and B ∉ Inv:  idx := B, count := A
+     hi := unsignedMax(constantRange(idx) ∪ knownBits(idx))
+     if hi < 2^(W-1):  C += (count >u hi)   # strict form: count >=u hi
+  # T2 sane range, for every invariant input
+  for v in Inv:  k := min(mv-sane, W-2);  C += (v >=s 0);  C += (v <=s 2^k)
+  each c ∈ C carries outer(c) := outermost loop ⊇ L in which v is invariant
+                                 (⊥ = invariant in the whole function)
+  return C
+```
+**2. Hypothesis verification** (core-minimal H, hoistability-first,
+vacuity-audited):
+```
+verify(T, C):
+  for round in {0, 1}:                      # 0: only outer(c) = ⊥ ; 1: all
+     U := { c ∈ C : round = 1 or outer(c) = ⊥ }
+     push; assert each c ∈ U as tracked |MV:i|
+     r := check()
+     if r = UNSAT:  H := { c ∈ U : |MV:i| ∈ unsat_core };  pop;  break
+     pop
+  if no H: return NOT-VERSIONABLE
+  pop (drop trap); push; assert H; if check() = UNSAT: refuse (H vacuous); pop
+  T.MVHyp := H;  T.MVLoop := deepest of { outer(c) : c ∈ H } (⊥ ⇒ outermost loop)
+```
+Soundness of the certificate: T is UNSAT with H asserted on the SAME context
+(facts, guards, nsw/poison trust class) as an ordinary proof; the core makes
+H minimal and attributable; the audit guarantees the fast copy is reachable.
+
+**3. Transformation** (Stage 3, serial, after ordinary folds):
+```
+version(F):
+  groups := jobs with MVHyp, keyed by (F, MVLoop); process INNERMOST FIRST
+  for (L, jobs) in groups (budget 4 clones per function):
+     simplifyLoop(L); formLCSSA(L)               # preheader, single latch, exit phis
+     H_L := AND of distinct conjuncts of all jobs  # built in L's preheader (IRBuilder)
+     PH  := SplitBlock(preheader)                 # check block | original preheader
+     Fast, VMap := cloneLoopWithPreheader(L, ".mv.fast"); remap(Fast)
+     for each exit block E of L (deduplicated), each phi p in E, each incoming
+         (v, B) with B ∈ L:  p.addIncoming(VMap[v], VMap[B])
+     terminator(check) := br H_L, Fast.preheader, PH
+     for job in jobs:                              # fold ONLY inside the clone
+        for br in { VMap[job.Br] } ∪ { VMap[c] : (job.Br → c) ∈ PriorClones }:
+            br.condition := const(!trapOnTrue)
+     PriorClones += { (o → VMap[o]) and (o → VMap[c]) for every anchor o of F }
+     DT.recalculate(F)
+```
+`PriorClones` is what makes nested versionings compose: when an outer loop is
+versioned after an inner one, the outer clone contains both inner copies and
+every copy of an anchor inside the fast clone is folded (the −13.4% → +13.1%
+bug of §11.8). The original loop is never modified; `simplifycfg`/`adce`
+afterwards delete the dead trap blocks in the clone.
+
+**What it refuses** (tests): a bound that would have to be on a loop-carried
+value (no template applies, test_mv_noninv_sat); a length reloaded inside the
+loop (not invariant, test_mv_realloc_sat); a hypothesis contradicting the
+context (audit); index ranges so wide that no length could satisfy T1
+(pruned). Cost: one extra solver query per SAT edge per round plus one audit
+query per versioned trap; one guard evaluation per entry of the hoist loop;
+code size of one loop clone per versioned loop.
