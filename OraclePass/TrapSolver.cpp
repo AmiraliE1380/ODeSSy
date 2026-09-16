@@ -94,7 +94,7 @@ bool TrapSolver::factPhase() {
         unsigned NFacts = Facts.encodeBoundaryFacts(Job.PredBB);
         Log << "    -> [heavy] " << NFacts << " analysis fact(s) on "
             << Encoder.getFreeVariables().size() << " boundary value(s)\n";
-        if (Cfg.MultiVersion) prepareT3();   // SE queries: gate is held here
+        if (Cfg.MultiVersion && Cfg.MVT3) prepareT3();   // SE queries: gate is held here
         return true;
     } catch (const z3::exception &e) {
         Log << "    -> [Skip] Z3 exception: " << e.msg() << "\n";

@@ -51,7 +51,8 @@ struct SolverConfig {
     // candidates over LOOP-INVARIANT free values (T1 length-vs-index,
     // T2 sane range); an UNSAT's core is the minimal H under which the
     // trap is dead. Stage 3 versions the loop on H. Off by default.
-    bool MultiVersion = false;
+    bool MultiVersion = false;      // mv-light and mv
+    bool MVT3 = false;              // mv only: template T3 (symbolic index bound)
     unsigned MVSaneExp = 62;        // T2: 0 <=s v <=s 2^k
 };
 

@@ -146,16 +146,18 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
     // MV knob (oracle-pass<mv>, optional mv-sane=<k>; HANDOFF §10.22):
     // solver-guided loop multi-versioning. Default OFF; every other
     // configuration stays byte-identical.
-    bool MultiVersion = false;
+    bool MultiVersion = false;      // mv-light (T1+T2) and mv
+    bool MVT3 = false;              // mv: adds T3 (symbolic index bound)
     unsigned MVSaneExp = 62;
 
     OraclePass() = default;
     OraclePass(bool Vacuity, bool Heavy, unsigned TimeoutMs, unsigned NThreads,
                bool LdEq, std::vector<std::string> Traps = {},
-               bool Frame = false, bool MV = false, unsigned MVSane = 62)
+               bool Frame = false, bool MV = false, unsigned MVSane = 62,
+               bool T3 = false)
         : VacuityCheck(Vacuity), HeavyMode(Heavy), QueryTimeoutMs(TimeoutMs),
           Threads(NThreads), LoadEq(LdEq), TrapCallees(std::move(Traps)),
-          FrameMode(Frame), MultiVersion(MV), MVSaneExp(MVSane) {}
+          FrameMode(Frame), MultiVersion(MV), MVT3(T3), MVSaneExp(MVSane) {}
 
     PreservedAnalyses run(Module &M, ModuleAnalysisManager &MAM) {
         auto &FAM =
@@ -183,6 +185,7 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
         Cfg.LoadEq = LoadEq;
         Cfg.FrameMode = FrameMode;
         Cfg.MultiVersion = MultiVersion;
+        Cfg.MVT3 = MVT3;
         Cfg.MVSaneExp = MVSaneExp;
 
         // =============================================================
@@ -234,7 +237,7 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
                << (HeavyMode ? " [tier: heavy]" : "")
                << (LoadEq ? " [ldeq]" : "")
                << (FrameMode ? " [frame]" : "")
-               << (MultiVersion ? " [mv]" : "");
+               << (MultiVersion ? (MVT3 ? " [mv]" : " [mv-light]") : "");
         if (!TrapCallees.empty()) {
             errs() << " [traps=";
             for (size_t i = 0; i < TrapCallees.size(); ++i)
@@ -528,7 +531,7 @@ llvmGetPassPluginInfo() {
                         unsigned Threads = 1;             // Level-2 default: serial
                         bool LdEq = false;                // LDEQ default: off
                         bool Frame = false;               // FRAME default: off
-                        bool MV = false; unsigned MVSane = 62;  // MV default: off
+                        bool MV = false, MVT3 = false; unsigned MVSane = 62;  // MV default: off
                         std::vector<std::string> Traps;   // traps= callees: empty
                         if (!Name.empty()) {              // parse "<a;b;...>"
                             if (!Name.consume_front("<") || !Name.consume_back(">"))
@@ -543,7 +546,9 @@ llvmGetPassPluginInfo() {
                                     LdEq = true;
                                 else if (P == "frame")
                                     Frame = true;
-                                else if (P == "mv")
+                                else if (P == "mv")            // full: T1+T2+T3
+                                    MV = true, MVT3 = true;
+                                else if (P == "mv-light")      // T1+T2 only
                                     MV = true;
                                 else if (P.consume_front("mv-sane=")) {
                                     if (P.getAsInteger(10, MVSane) || MVSane < 8 || MVSane > 62)
@@ -588,7 +593,7 @@ llvmGetPassPluginInfo() {
                         }
                         MPM.addPass(OraclePass(Vacuity, Heavy, TimeoutMs, Threads,
                                                LdEq, std::move(Traps), Frame,
-                                               MV, MVSane));
+                                               MV, MVSane, MVT3));
                         return true;
                     }
                 );

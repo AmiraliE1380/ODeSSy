@@ -1324,8 +1324,9 @@ PREDICTION FAILED -- matmul.jl: the guards were `idx <u a.size` with
 idx = (i-1)*n + k SYMBOLIC (i, k <= n), so T1 (constant hi from known bits)
 has no candidate and T2 (sane sizes) is irrelevant: the needed hypothesis is
 a.size >=u n*n, i.e. length vs a SYMBOLIC index bound. Current templates
-cannot express it. Same for matmul.rs. The "we added guards" caveat on the
-GEMM flagship therefore STANDS. Candidate machinery (not implemented, to be
+cannot express it. Same for matmul.rs. (CORRECTION Sep 16: the GEMM flagship jl_gemm_base.jl carries Julia Base's OWN
+dimension checks from generic_matmatmul!, not guards we added; the unsolved
+kernel is our naive matmul.jl, which has no dimension checks at all.) Candidate machinery (not implemented, to be
 predicted first): template T3 "length-vs-symbolic-index": for a bounds trap
 idx <u count with count invariant, take hi := SCEV's symbolic maximum of idx
 over the loop nest (product/sum of invariant trip counts) and propose
@@ -1389,7 +1390,43 @@ Results (frozen sources):
     re-solve is UNKNOWN at 10 s, 30 s and 120 s (240 s solver time per trap).
     64-bit nonlinear bit-vector multiplication (n*n vs (i-1)*n + k) is
     decidable but beyond the budget. PREDICTION FAILED, on solver hardness,
-    not on hypothesis generation. The GEMM "we added guards" caveat STANDS.
+    not on hypothesis generation. (See the Sep 16 correction: the GEMM flagship uses Base's own dimension
+checks; matmul.jl is our guard-free naive kernel and stays unsolved.)
     Next lever is F1 (solver hardness): e.g. bit-width reduction under the
     n <= 2^31 hypothesis (rewrite the query at 32 bits), or linearization
     (introduce m = n*n as a fresh variable with m >= (i-1)*n + k facts).
+
+### 11.13 Sep 16 2026: knob split, benchmark-freeze assurance, drift, Rust matmul
+ASSURANCE: no benchmark source has been modified in the OOPSLA campaign.
+The only hand-edited files are designated Julia variants under their own
+names (lz77_bounded*.jl, jl_filt_dsp_guarded.jl, jl_*_arms.jl), used as
+ceiling probes / runtime proxies because the Julia JIT cannot consume the
+pass output. Permitted exception (user, Sep 16): a clearly separate Julia
+copy may be multi-versioned by hand or have @inbounds added/removed for a
+runtime arm; the original stays frozen; never presented as machinery.
+GEMM WORDING CORRECTED: jl_gemm_base.jl is a transcription of Julia Base's
+generic_matmatmul! INCLUDING Base's own three dimension checks (an early
+transcription had omitted them and was fixed). The flagship rests on facts
+in the original library. The unsolved kernel is matmul.jl, our naive
+3-loop kernel with no dimension checks (T3 mines size >= n*n, solver
+UNKNOWN). Earlier "we added guards" phrasing (§10.26/10.30) was wrong.
+KNOBS: `mv-light` = templates T1 (constant length-vs-index) + T2 (sane
+range); `mv` = full, adds T3 (symbolic index bound via SCEV). Header line
+prints [mv-light] / [mv]. run_rust_perf.sh gained ORACLE_PASSES2 ->
+config "oracle2" so two knobs are timed in one interleaved run.
+DRIFT: Swift sha256 +6.9% (Aug 22) vs +4.2% (Sep 16, no mv): same script,
+same args (200 it, 1 MiB), same REPS; swiftc was upgraded in between (IR
+has 35 traps now vs 37), and the Mac is unpinned (base moved 1.2%). Only
+same-session pairs are comparable; paper numbers come from the pinned server.
+RUST MATMUL (matmul_bench.rs, n=512, RUNARGS=4, REPS=30, byte-identical;
+results/perf/rust_matmul_perf_mac_0916.log):
+    base 0.4973  base2x 0.5136  oracle(mv-light) 0.5123  oracle2(mv) 0.5187
+    rustc checked 0.5121  unchecked (get_unchecked) 0.5163
+  mv-light: 0 folds; mv: 2 T3 folds (Vec len > n*n-1 class).
+  ceiling (checked vs unchecked) = -0.8%: NONE -- rustc/LLVM already hoist
+  or amortize these bounds checks in a 512^3 FP kernel. Deltas: mv-light
+  -2.9% vs base / +0.3% vs base2x; mv -4.1% / -1.0%. The base-vs-base2x gap
+  is 3.3%, i.e. the noise floor of this run swallows everything: no
+  measurable effect of MV on matmul.rs, as the zero ceiling predicts.
+  Static: matmul.rs 0/5 UNSAT, mv 2/5 versioned (H = len >u 4095 on the
+  64-dim triage IR; n*n-1 form on the bench IR).

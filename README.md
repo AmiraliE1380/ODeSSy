@@ -108,7 +108,7 @@ opt -load-pass-plugin=build/OraclePass.so \
 | `vacuity` | unsat cores + context-satisfiability audit on every UNSAT |
 | `timeout=<ms>` / `threads=<n>` | the two orthogonal latency dials |
 | `traps=<sym1>:<sym2>` | accept calls to named symbols as trap sites (Rust `panic`, Julia `boundserror`), behind a divergence gate |
-| `mv` / `mv-sane=<k>` | solver-guided loop multi-versioning: a trap that stays SAT but is dead under a runtime-checkable hypothesis over loop-invariant values (array/table lengths, sane sizes ≤ 2^k) gets a guarded fast copy of its loop with the trap folded; the original loop keeps every check |
+| `mv-light` / `mv` / `mv-sane=<k>` | solver-guided loop multi-versioning (`mv-light`: constant length-vs-index and sane-range hypotheses; `mv`: adds the symbolic index-bound template T3): a trap that stays SAT but is dead under a runtime-checkable hypothesis over loop-invariant values (array/table lengths, sane sizes ≤ 2^k) gets a guarded fast copy of its loop with the trap folded; the original loop keeps every check |
 
 Three tiers are used throughout the evaluation: **light**, **heavy**
 (`heavy;ldeq`), and **full** (`heavy;ldeq;frame`).
