@@ -1350,6 +1350,10 @@ the original loop. Δmv = speedup with `mv` minus speedup without.
 | utf8 | 2/20 | 2 | n ≤ 2^62 (two overflow traps) | −2.7% (0829) | −2.8% | ≈0 | none (−0.8%) |
 | adler32 | 1/37 | 1 | buf.count ≥ 0 (overflow trap) | −1.5% (0829) | −1.5% | 0 | 6.3% |
 | lz77.jl unmodified | 0/4 | 4 (60 s) | n, window ∈ [0, 2^62] | — | JIT: not deployable; hand-MV proxy 2.63× | — | 2.63× |
+| sha256 Swift (T3) | 7/36 | 1 | K/w table count > 63 | +4.2% (same session) | +3.8% | ≈0 | 2.8% |
+| sha256.jl (T3) | 10/16 | 6 → **16/16 under H** | w.count > 63, K.count > 63 | — | JIT: static only | — | none (Mac) / 9.5% (x86) |
+| matmul.rs (T3) | 0/5 | 2 | Vec len > 4095 | not timed | not timed | — | unmeasured |
+| matmul.jl (T3) | 0/3 | 0 | bound n·n−1 mined, re-solve UNKNOWN at 120 s | — | — | — | 4.17× |
 Log: results/perf/swift_mv3_perf_mac_0910.log (utf8 6.01→6.18 s, adler32
 0.388→0.394 s, lz77 1.526→1.111 s). Reading: mv pays where the folded traps
 are in the HOT loop (base64's table lookups); folding cold overflow traps

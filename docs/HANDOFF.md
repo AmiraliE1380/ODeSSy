@@ -1998,3 +1998,25 @@ Results (frozen sources):
     Next lever is F1 (solver hardness): e.g. bit-width reduction under the
     n <= 2^31 hypothesis (rewrite the query at 32 bits), or linearization
     (introduce m = n*n as a fresh variable with m >= (i-1)*n + k facts).
+
+### 10.31 T3 side effect: sha256.jl 16/16 under H; Swift sha256 +1 (Sep 16 2026)
+T3 also yields CONSTANT bounds when the index is bounded by a constant trip
+count (t <= 64) rather than by known bits -- exactly the message-schedule
+accesses w[t], w[t-2], w[t-7], w[t-15], w[t-16], K[t] that T1 could not
+touch. sha256.jl (frozen): 10 UNSAT + 6 MV folds = 16/16 under
+H = {w.count >u 63, K.count >u 63, new.count >u ...} (per-loop hoisted).
+Static only (Julia JIT); no hand-written proxy will be made (frozen rule).
+Swift sha256: 7 UNSAT + 1 MV fold (K/w table, count > 63).
+Runtime, Swift sha256, same session (REPS=30, 300 ms, byte-identical):
+    without mv: base 0.4879 oracle 0.4676  => +4.2% / +4.0%   (7 UNSAT)
+    with mv   : base 0.4869 oracle 0.4685  => +3.8% / +3.9%   (7 UNSAT + 1 fold)
+  => the one T3 fold (table count > 63, hoisted to the outer loop) moves
+  nothing (Δ −0.4 pt, within noise). NOTE the same kernel measured +6.9% on
+  0822: day-to-day drift on the unpinned Mac is ~3 pts; only same-session
+  pairs are comparable. Logs: swift_sha256_{mv,nomv}_perf_mac_0916.log.
+Bug fixed on the way: T3's hoist level took only the bound's invariance
+  level (a constant => whole function) and ignored where `count` is
+  defined; on Swift sha256 the count load lives in an outer loop, so the
+  guard referenced a non-dominating load ("Instruction does not dominate
+  all uses"). Level is now the deeper of the two. All versioned kernels
+  (Swift sha256/base64/crc32, sha256.jl, lz77.jl, matmul.rs) verify.

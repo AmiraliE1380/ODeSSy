@@ -1,0 +1,8 @@
+  built oracle   traps   35->27   bin    55792 B  eliminated 7
+==== PHASE B: output equivalence gate ====
+  outputs byte-identical across all configs -- gate passed
+base        0.4879    0.4784    0.4884  ok
+base2x      0.4869    0.4797    0.4872  ok
+oracle      0.4676    0.4560    0.4666  OUTLIER(min<98%med)
+oracle vs base: +4.16% (median)
+oracle vs base2x: +3.96% (median)
