@@ -41,6 +41,7 @@
 #include "llvm/Transforms/Utils/LoopSimplify.h"
 #include "llvm/Transforms/Utils/ValueMapper.h"
 #include "llvm/IR/IRBuilder.h"
+#include "llvm/Transforms/Utils/ScalarEvolutionExpander.h"
 #include <map>
 #include <algorithm>
 #include "Scheduler.h"
@@ -363,17 +364,24 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
                 for (size_t i : Idx)
                     for (auto &C : Jobs[i].MVHyp) {
                         bool Dup = false;
-                        for (auto &D : Conj) if (D.V == C.V && D.Pred == C.Pred && D.ConstStr == C.ConstStr) { Dup = true; break; }
+                        for (auto &D : Conj) if (D.V == C.V && D.Pred == C.Pred && D.ConstStr == C.ConstStr && D.Bound == C.Bound) { Dup = true; break; }
                         if (!Dup) Conj.push_back(C);
                     }
                 BasicBlock *CheckBB = L->getLoopPreheader();
                 IRBuilder<> B(CheckBB->getTerminator());
                 Value *H = nullptr;
+                SCEVExpander Exp(*SE, "mv.t3");
                 for (auto &C : Conj) {
                     unsigned W = C.V->getType()->getIntegerBitWidth();
-                    APInt K(W, C.ConstStr, 10);
-                    Value *Cmp = B.CreateICmp((ICmpInst::Predicate)C.Pred, C.V,
-                                              ConstantInt::get(C.V->getType(), K), "mv.h");
+                    Value *RHS;
+                    if (C.Bound) {
+                        RHS = Exp.expandCodeFor(C.Bound, C.V->getType(), CheckBB->getTerminator());
+                        B.SetInsertPoint(CheckBB->getTerminator());
+                    } else {
+                        APInt K(W, C.ConstStr, 10);
+                        RHS = ConstantInt::get(C.V->getType(), K);
+                    }
+                    Value *Cmp = B.CreateICmp((ICmpInst::Predicate)C.Pred, C.V, RHS, "mv.h");
                     H = H ? B.CreateAnd(H, Cmp, "mv.h") : Cmp;
                 }
                 // Split: CheckBB | PH(original preheader), clone before PH.

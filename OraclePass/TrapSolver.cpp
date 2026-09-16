@@ -11,8 +11,13 @@
 #include "llvm/Analysis/ValueTracking.h"
 #include "llvm/IR/ConstantRange.h"
 #include "llvm/Analysis/SimplifyQuery.h"
+#include "llvm/Analysis/ScalarEvolution.h"
+#include "llvm/Analysis/ScalarEvolutionExpressions.h"
+#include "llvm/Transforms/Utils/ScalarEvolutionExpander.h"
 
 #include <string>
+#include <optional>
+#include <functional>
 
 using namespace llvm;
 
@@ -89,6 +94,7 @@ bool TrapSolver::factPhase() {
         unsigned NFacts = Facts.encodeBoundaryFacts(Job.PredBB);
         Log << "    -> [heavy] " << NFacts << " analysis fact(s) on "
             << Encoder.getFreeVariables().size() << " boundary value(s)\n";
+        if (Cfg.MultiVersion) prepareT3();   // SE queries: gate is held here
         return true;
     } catch (const z3::exception &e) {
         Log << "    -> [Skip] Z3 exception: " << e.msg() << "\n";
@@ -212,11 +218,185 @@ static std::string predText(ICmpInst::Predicate P) {
     }
 }
 
+// T3 preparation (HANDOFF §10.29), under the FactGate: for a bounds trap
+// `trap <=> idx >=u count` (count loop-invariant, idx not) compute SCEV's
+// symbolic maximum of idx over the loop nest: replace each AddRec
+// (innermost first, step provably non-negative) by its value at the last
+// iteration. Result must be invariant in some enclosing loop and safe to
+// expand there. Stored on the job; no Z3 work here.
+void TrapSolver::prepareT3() {
+    if (!FC.SE || !FC.LI) return;
+    Loop *L = FC.LI->getLoopFor(Job.PredBB);
+    auto *IC = dyn_cast<ICmpInst>(Job.TrapCond);
+    if (!L || !IC) { if (Cfg.MultiVersion && L) Log << "    -> [mv] T3: trap condition not an ICmp\n"; return; }
+    ICmpInst::Predicate P = IC->getPredicate();
+    if (!Job.TrapOnTrue) P = ICmpInst::getInversePredicate(P);
+    Value *A = IC->getOperand(0), *B = IC->getOperand(1);
+    Value *Idx = nullptr, *Cnt = nullptr; bool Strict = false;
+    auto inv = [&](Value *V) { return V->getType()->isIntegerTy() && L->isLoopInvariant(V); };
+    if ((P == ICmpInst::ICMP_UGE || P == ICmpInst::ICMP_UGT) && inv(B) && !L->isLoopInvariant(A)) {
+        Idx = A; Cnt = B; Strict = (P == ICmpInst::ICMP_UGT);
+    } else if ((P == ICmpInst::ICMP_ULE || P == ICmpInst::ICMP_ULT) && inv(A) && !L->isLoopInvariant(B)) {
+        Idx = B; Cnt = A; Strict = (P == ICmpInst::ICMP_ULT);
+    }
+    if (!Idx) { Log << "    -> [mv] T3: not a bounds shape (idx vs invariant count)\n"; return; }
+    if (!FC.SE->isSCEVable(Idx->getType())) return;
+    ScalarEvolution &SE = *FC.SE;
+    const SCEV *S = SE.getSCEV(Idx);
+    // Peel AddRecs innermost-first, at most nest depth + 2 rounds.
+    for (unsigned Round = 0; Round < 6; ++Round) {
+        // find the innermost AddRec in S
+        const SCEVAddRecExpr *Inner = nullptr;
+        SmallVector<const SCEV *, 16> WL{S}; SmallPtrSet<const SCEV *, 32> Seen;
+        while (!WL.empty()) {
+            const SCEV *C = WL.pop_back_val();
+            if (!Seen.insert(C).second) continue;
+            if (auto *AR = dyn_cast<SCEVAddRecExpr>(C))
+                if (!Inner || AR->getLoop()->getLoopDepth() > Inner->getLoop()->getLoopDepth()) Inner = AR;
+            for (const SCEV *Op : C->operands()) WL.push_back(Op);
+        }
+        if (!Inner) break;
+        // Affine only. The step's SIGN is NOT required: S is a hypothesis
+        // candidate, not a fact -- soundness rests on the re-solve under H
+        // (the solver proves the trap dead itself; if S is not the true
+        // maximum the re-solve simply stays SAT). T2's `step >=s 0` is
+        // available as a conjunct when the proof needs it.
+        if (!Inner->isAffine()) {
+            std::string T; raw_string_ostream O(T); Inner->print(O);
+            Log << "    -> [mv] T3: refused, AddRec not affine: " << T << "\n"; return; }
+        // Trip count through the LATCH edge only: the loop's own bound.
+        // The generic symbolic-max BTC mixes in the trap exits (a bounds
+        // check is a loop exit), which makes H circular (count > ... umax count).
+        const Loop *IL0 = Inner->getLoop();
+        const SCEV *BTC = SE.getCouldNotCompute();
+        if (BasicBlock *LB = IL0->getLoopLatch())
+            BTC = SE.getExitCount(IL0, LB, ScalarEvolution::SymbolicMaximum);
+        if (isa<SCEVCouldNotCompute>(BTC)) {
+            // Fallback (hypothesis-grade, like PHIINV-hi): read the latch
+            // compare. If the back edge is taken iff  V pred B  with V an
+            // affine unit-step AddRec {v0,+,1} of this loop and B invariant,
+            // then the back-edge count is <= B - v0 (<=) or B - 1 - v0 (<).
+            // Approximate is fine: soundness rests on the re-solve under H.
+            const Loop *IL = Inner->getLoop();
+            BasicBlock *Latch = IL->getLoopLatch();
+            auto *Br = Latch ? dyn_cast<BranchInst>(Latch->getTerminator()) : nullptr;
+            auto *Cmp = (Br && Br->isConditional()) ? dyn_cast<ICmpInst>(Br->getCondition()) : nullptr;
+            if (Cmp) {
+                ICmpInst::Predicate P = Cmp->getPredicate();
+                if (Br->getSuccessor(0) != IL->getHeader()) P = ICmpInst::getInversePredicate(P);
+                Value *A = Cmp->getOperand(0), *Bv = Cmp->getOperand(1);
+                if (IL->isLoopInvariant(A) && !IL->isLoopInvariant(Bv)) { std::swap(A, Bv); P = ICmpInst::getSwappedPredicate(P); }
+                if (!IL->isLoopInvariant(A) && IL->isLoopInvariant(Bv) && SE.isSCEVable(A->getType())) {
+                    auto *AR = dyn_cast<SCEVAddRecExpr>(SE.getSCEV(A));
+                    if (AR && AR->getLoop() == IL && AR->isAffine() && AR->getStepRecurrence(SE)->isOne()) {
+                        const SCEV *BS = SE.getSCEV(Bv);
+                        if (BS->getType() == AR->getType()) {
+                            const SCEV *Lim = nullptr;
+                            switch (P) {
+                            case ICmpInst::ICMP_SLE: case ICmpInst::ICMP_ULE: Lim = BS; break;
+                            case ICmpInst::ICMP_SLT: case ICmpInst::ICMP_ULT: Lim = SE.getMinusSCEV(BS, SE.getOne(BS->getType())); break;
+                            default: break;
+                            }
+                            // back edge at iteration t iff v0 + t <= Lim  =>  last
+                            // iteration index (= back-edge count) is Lim - v0 + 1
+                            if (Lim) BTC = SE.getAddExpr(SE.getMinusSCEV(Lim, AR->getStart()), SE.getOne(Lim->getType()));
+                        }
+                    }
+                }
+            }
+            if (isa<SCEVCouldNotCompute>(BTC)) BTC = SE.getSymbolicMaxBackedgeTakenCount(IL);
+            if (isa<SCEVCouldNotCompute>(BTC)) { Log << "    -> [mv] T3: refused, no symbolic trip count for loop depth " << IL->getLoopDepth() << "\n"; return; }
+            std::string T; raw_string_ostream O(T); BTC->print(O);
+            Log << "    -> [mv] T3: latch-derived trip-count bound for loop depth " << IL->getLoopDepth()
+                << " (latch " << (Latch ? Latch->getName() : "?") << "): " << T << "\n";
+        }
+        const SCEV *Last = Inner->evaluateAtIteration(BTC, SE);
+        // substitute Inner -> Last everywhere in S
+        struct Rewriter : public SCEVRewriteVisitor<Rewriter> {
+            const SCEV *From, *To;
+            Rewriter(ScalarEvolution &SE, const SCEV *F, const SCEV *T) : SCEVRewriteVisitor(SE), From(F), To(T) {}
+            const SCEV *visitAddRecExpr(const SCEVAddRecExpr *E) { return E == From ? To : SCEVRewriteVisitor::visitAddRecExpr(E); }
+        };
+        Rewriter R(SE, Inner, Last);
+        S = R.visit(S);
+    }
+    if (isa<SCEVCouldNotCompute>(S)) { Log << "    -> [mv] T3: refused, bound not computable\n"; return; }
+    // Outermost loop in which S is invariant.
+    Loop *Hoist = L;
+    if (!SE.isLoopInvariant(S, L)) { std::string T; raw_string_ostream O(T); S->print(O); Log << "    -> [mv] T3: refused, bound not invariant in the trap loop: " << T << "\n"; return; }
+    for (Loop *Pp = L->getParentLoop(); Pp && SE.isLoopInvariant(S, Pp); Pp = Pp->getParentLoop()) Hoist = Pp;
+    bool FnInv = (Hoist->getParentLoop() == nullptr);
+    SCEVExpander Exp(SE, "mv.t3");
+    if (!Exp.isSafeToExpandAt(S, Hoist->getLoopPreheader() ? Hoist->getLoopPreheader()->getTerminator()
+                                                             : Hoist->getHeader()->getTerminator())) { Log << "    -> [mv] T3: refused, bound not safe to expand\n"; return; }
+    Job.MVIdxMax = S; Job.MVCount = Cnt; Job.MVStrict = Strict; Job.MVIdxHoist = FnInv ? nullptr : Hoist;
+    std::string SS; raw_string_ostream OS(SS); S->print(OS);
+    Log << "    -> [mv] T3 symbolic index bound: max(idx) = " << SS << "\n";
+}
+
+// Minimal SCEV -> Z3 bit-vector translator for T3 hypotheses. Refuses
+// (OK=false) on any node kind not listed. Leaves become the query's own
+// variables (free if not encoded -- H then only relates count to them).
+z3::expr TrapSolver::scevToBV(const SCEV *S, bool &OK, unsigned W) {
+    z3::expr Bad = Encoder.apintToBV(APInt(W, 0));
+    if (!OK) return Bad;
+    auto Cast = [&](z3::expr E, unsigned FromW) {
+        if (FromW == W) return E;
+        if (FromW < W) return z3::zext(E, W - FromW);
+        return E.extract(W - 1, 0);
+    };
+    if (auto *C = dyn_cast<SCEVConstant>(S)) return Encoder.apintToBV(C->getAPInt().zextOrTrunc(W));
+    if (auto *U = dyn_cast<SCEVUnknown>(S)) {
+        unsigned FW = U->getType()->getIntegerBitWidth();
+        return Cast(Encoder.valueAsBV(U->getValue(), FW), FW);
+    }
+    if (auto *A = dyn_cast<SCEVAddExpr>(S)) {
+        z3::expr R = scevToBV(A->getOperand(0), OK, W);
+        for (unsigned i = 1; i < A->getNumOperands(); ++i) R = R + scevToBV(A->getOperand(i), OK, W);
+        return R;
+    }
+    if (auto *M = dyn_cast<SCEVMulExpr>(S)) {
+        z3::expr R = scevToBV(M->getOperand(0), OK, W);
+        for (unsigned i = 1; i < M->getNumOperands(); ++i) R = R * scevToBV(M->getOperand(i), OK, W);
+        return R;
+    }
+    if (auto *Z = dyn_cast<SCEVZeroExtendExpr>(S)) {
+        unsigned FW = Z->getOperand()->getType()->getIntegerBitWidth();
+        z3::expr In = scevToBV(Z->getOperand(), OK, FW);
+        return FW < W ? z3::zext(In, W - FW) : Cast(In, FW);
+    }
+    if (auto *X = dyn_cast<SCEVSignExtendExpr>(S)) {
+        unsigned FW = X->getOperand()->getType()->getIntegerBitWidth();
+        z3::expr In = scevToBV(X->getOperand(), OK, FW);
+        return FW < W ? z3::sext(In, W - FW) : Cast(In, FW);
+    }
+    if (auto *T = dyn_cast<SCEVTruncateExpr>(S)) {
+        unsigned FW = T->getOperand()->getType()->getIntegerBitWidth();
+        return Cast(scevToBV(T->getOperand(), OK, FW), FW);
+    }
+    if (auto *MM = dyn_cast<SCEVMinMaxExpr>(S)) {
+        z3::expr R = scevToBV(MM->getOperand(0), OK, W);
+        for (unsigned i = 1; i < MM->getNumOperands(); ++i) {
+            z3::expr O = scevToBV(MM->getOperand(i), OK, W);
+            switch (S->getSCEVType()) {
+            case scUMaxExpr: R = z3::ite(z3::ugt(R, O), R, O); break;
+            case scUMinExpr: R = z3::ite(z3::ult(R, O), R, O); break;
+            case scSMaxExpr: R = z3::ite(R > O, R, O); break;
+            case scSMinExpr: R = z3::ite(R < O, R, O); break;
+            default: OK = false;
+            }
+        }
+        return R;
+    }
+    OK = false; return Bad;
+}
+
 void TrapSolver::mvPhase() {
     if (!FC.LI) return;
     Loop *L = FC.LI->getLoopFor(Job.PredBB);
     if (!L) { Log << "    -> [mv] trap not inside a loop: not versionable\n"; return; }
-    struct Cand { Value *V; ICmpInst::Predicate P; APInt C; std::string Text; Loop *Outer; };
+    struct Cand { Value *V; ICmpInst::Predicate P; APInt C; std::string Text; Loop *Outer;
+                  const SCEV *Bound = nullptr; std::optional<z3::expr> BoundE; };
     // Outermost loop (containing L) in which V is still invariant: the
     // level H can be hoisted to. nullptr = invariant in the whole function.
     auto outerInv = [&](Value *V) -> Loop * {
@@ -275,12 +455,32 @@ void TrapSolver::mvPhase() {
         Loop *O = outerInv(V);
         Cands.push_back({V, ICmpInst::ICMP_SGE, APInt(W, 0), nameOf(V) + " >=s 0", O});
         Cands.push_back({V, ICmpInst::ICMP_SLE, Lim, nameOf(V) + " <=s 2^" + std::to_string(K), O});
+        // Half-width sane bound: a product of two such values cannot wrap
+        // (needed when the trap index is quadratic, e.g. (i-1)*n + k).
+        unsigned K2 = W / 2 - 1;
+        if (K2 < K) {
+            APInt Lim2 = APInt::getOneBitSet(W, K2);
+            Cands.push_back({V, ICmpInst::ICMP_SLE, Lim2, nameOf(V) + " <=s 2^" + std::to_string(K2), O});
+        }
+    }
+    // ---- T3 (symbolic bound prepared in factPhase)
+    if (Job.MVIdxMax && Job.MVCount && isInv(Job.MVCount)) {
+        bool OK = true;
+        unsigned W = Job.MVCount->getType()->getIntegerBitWidth();
+        z3::expr BE = scevToBV(Job.MVIdxMax, OK, W);
+        if (OK) {
+            std::string SS; raw_string_ostream OS(SS); Job.MVIdxMax->print(OS);
+            ICmpInst::Predicate HP = Job.MVStrict ? ICmpInst::ICMP_UGE : ICmpInst::ICMP_UGT;
+            Cand C{Job.MVCount, HP, APInt(W, 0), nameOf(Job.MVCount) + " " + predText(HP) + " (" + SS + ")", Job.MVIdxHoist};
+            C.Bound = Job.MVIdxMax; C.BoundE = BE;
+            Cands.push_back(C);
+        } else Log << "    -> [mv] T3 bound not translatable to bit-vectors: skipped\n";
     }
     if (Cands.empty()) { Log << "    -> [mv] no loop-invariant hypothesis candidates\n"; return; }
 
     auto mkExpr = [&](const Cand &C) {
         unsigned W = C.V->getType()->getIntegerBitWidth();
-        z3::expr V = Encoder.valueAsBV(C.V, W), K = Encoder.apintToBV(C.C);
+        z3::expr V = Encoder.valueAsBV(C.V, W), K = C.BoundE ? *C.BoundE : Encoder.apintToBV(C.C);
         switch (C.P) {
         case ICmpInst::ICMP_UGT: return z3::ugt(V, K); case ICmpInst::ICMP_UGE: return z3::uge(V, K);
         case ICmpInst::ICMP_ULT: return z3::ult(V, K); case ICmpInst::ICMP_ULE: return z3::ule(V, K);
@@ -331,6 +531,27 @@ void TrapSolver::mvPhase() {
         }
     }
     if (Keep.empty()) { Log << "    -> [mv] no usable hypothesis: not versionable\n"; return; }
+    // Greedy core minimization: Z3 cores are not minimal, and a spurious
+    // conjunct (typically an UPPER bound on a length) needlessly shrinks the
+    // fast path's domain. Try dropping each conjunct (upper bounds first);
+    // keep the drop if the query is still UNSAT. <= |Keep| extra queries.
+    {
+        std::vector<size_t> Order(Keep);
+        std::stable_sort(Order.begin(), Order.end(), [&](size_t a, size_t b) {
+            auto isUpper = [&](size_t i) { return Cands[i].P == ICmpInst::ICMP_SLE || Cands[i].P == ICmpInst::ICMP_ULE; };
+            return isUpper(a) && !isUpper(b);
+        });
+        for (size_t Drop : Order) {
+            if (Keep.size() <= 1) break;
+            Encoder.push();
+            for (size_t i : Keep) if (i != Drop) Encoder.assertRawFact(mkExpr(Cands[i]), std::string());
+            auto [R2, L2] = Encoder.checkSatisfiability();
+            Job.LatencyMs += L2;
+            Encoder.pop();
+            if (R2.find("UNSAT") != std::string::npos)
+                Keep.erase(std::find(Keep.begin(), Keep.end(), Drop));
+        }
+    }
     // Vacuity of H: context + H alone must be satisfiable.
     Encoder.pop();                      // drop the trap condition
     Encoder.push();
@@ -360,6 +581,7 @@ void TrapSolver::mvPhase() {
         MC.V = Cands[i].V; MC.Pred = Cands[i].P;
         SmallString<32> CS; Cands[i].C.toString(CS, 10, false); MC.ConstStr = std::string(CS);
         MC.Text = Cands[i].Text;
+        MC.Bound = Cands[i].Bound;
         Job.MVHyp.push_back(MC);
     }
     Job.MVLoop = Hoist;

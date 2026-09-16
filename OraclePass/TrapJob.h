@@ -32,6 +32,7 @@ class Function;
 class LazyValueInfo;
 class LoopInfo;
 class Loop;
+class SCEV;
 class ScalarEvolution;
 class Value;
 } // namespace llvm
@@ -67,7 +68,18 @@ struct TrapJob {
         unsigned Pred = 0;
         std::string ConstStr;            // decimal constant (APInt printed)
         std::string Text;                // log form "n <=s 2^62"
+        // T3 (HANDOFF §10.29): when set, the right-hand side is this SCEV
+        // (symbolic bound over loop-invariant values), expanded by
+        // SCEVExpander in the check block; ConstStr is then unused.
+        const llvm::SCEV *Bound = nullptr;
     };
+    // T3 preparation, computed in factPhase (needs ScalarEvolution under the
+    // FactGate) for a bounds-shaped trap: the symbolic maximum of the index
+    // over the loop nest, the invariant count operand, and the strictness.
+    const llvm::SCEV *MVIdxMax = nullptr;
+    llvm::Value *MVCount = nullptr;
+    bool MVStrict = false;               // trap <=> idx >u count (else >=u)
+    llvm::Loop *MVIdxHoist = nullptr;    // outermost loop where MVIdxMax is invariant (null: function)
     std::vector<MVConjunct> MVHyp;       // minimal H_T (unsat-core conjuncts)
     bool MVEliminate = false;            // UNSAT under MVHyp (H satisfiable)
     llvm::Loop *MVLoop = nullptr;        // the loop the hypothesis is invariant in

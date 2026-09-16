@@ -28,6 +28,8 @@
 
 #include "llvm/Support/raw_ostream.h"
 
+namespace llvm { class SCEV; }
+
 namespace odessy {
 
 struct SolverConfig {
@@ -73,6 +75,9 @@ private:
     // context|trap scope): hypothesis mining + re-solve. Fills Job.MVHyp
     // and Job.MVEliminate. See HANDOFF §10.22.
     void mvPhase();
+    // T3 (HANDOFF §10.29): symbolic index bound, computed under the gate.
+    void prepareT3();
+    z3::expr scevToBV(const llvm::SCEV *S, bool &OK, unsigned W);
     const SolverConfig &Cfg;
     const FunctionCtx &FC;
     TrapJob &Job;
