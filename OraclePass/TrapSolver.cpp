@@ -471,7 +471,11 @@ void TrapSolver::mvPhase() {
         if (OK) {
             std::string SS; raw_string_ostream OS(SS); Job.MVIdxMax->print(OS);
             ICmpInst::Predicate HP = Job.MVStrict ? ICmpInst::ICMP_UGE : ICmpInst::ICMP_UGT;
-            Cand C{Job.MVCount, HP, APInt(W, 0), nameOf(Job.MVCount) + " " + predText(HP) + " (" + SS + ")", Job.MVIdxHoist};
+            // Hoist level: the DEEPER of where `count` is invariant and where
+            // the bound S is invariant (both must dominate the check block).
+            Loop *OC = outerInv(Job.MVCount), *OB = Job.MVIdxHoist, *O = nullptr;
+            if (!OC) O = OB; else if (!OB) O = OC; else O = OC->contains(OB) ? OB : OC;
+            Cand C{Job.MVCount, HP, APInt(W, 0), nameOf(Job.MVCount) + " " + predText(HP) + " (" + SS + ")", O};
             C.Bound = Job.MVIdxMax; C.BoundE = BE;
             Cands.push_back(C);
         } else Log << "    -> [mv] T3 bound not translatable to bit-vectors: skipped\n";
