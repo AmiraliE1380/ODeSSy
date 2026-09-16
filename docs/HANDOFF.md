@@ -1933,3 +1933,33 @@ transformation is standard; the novelty is SOLVER-GUIDED predicate discovery
 Payoff so far: base64 +6.1 pts (hot table lookups); lz77.jl 4/4 automatic;
 cold overflow folds move nothing. Unsolved by mv: matmul.jl/.rs (symbolic
 length-vs-index, template T3 not implemented), hash kernels, adler32 DO16.
+
+### 10.29 Session 5.1 -- SPEC: MV template T3, length-vs-SYMBOLIC-index (Sep 16 2026)
+Written before code. Extends §10.22 with one hypothesis template; the
+verification (re-solve, core, audit) and the transformation are unchanged.
+T3: for a bounds trap normalized to  trap <=> idx >=u count  with count
+loop-invariant and idx NOT, when T1 has no constant bound: let S(idx) be
+SCEV's SYMBOLIC maximum of idx over the loop nest -- replace every AddRec
+{start,+,step}<L'> (innermost first, step provably >=s 0) by its value at
+the last iteration, evaluateAtIteration(symbolicMaxBackedgeTakenCount(L')).
+If the result S is invariant in the hoist loop and safe to expand, propose
+   H3 :=  count >u S
+as a conjunct whose right-hand side is an EXPRESSION over invariant values
+(sums/products of trip counts and strides, e.g. n*n - 1), materialized in
+the preheader by SCEVExpander. Arithmetic is the same modular 2^W
+arithmetic in the solver (bvmul) and at runtime, so wrap of n*n cannot
+make the guard pass where the proof failed.
+Plumbing: S is computed in factPhase (SE needs the FactGate) and stashed on
+the job; mvPhase translates S to Z3 with a small SCEV->BV translator
+(const / unknown / add / mul / zext / sext / trunc / umin / umax / smin /
+smax; anything else refuses); Stage 3 expands S in the check block.
+REFUSES: no AddRec structure or unknown-sign step; S not invariant in the
+hoist loop; SCEV node kinds outside the translator; SCEVExpander says not
+safe to expand; solver UNKNOWN (bit-vector multiplication is decidable but
+may hit the budget -- then simply not versioned).
+PREDICTION (falsifiable): matmul.jl UNMODIFIED 3/3 traps folded in a fast
+copy with H = {a.size >u n*n-1 (or equivalent), b.size ..., c.size ...};
+matmul.rs bounds traps likewise; no change on any kernel already handled;
+tripwire: a non-monotone index (step sign unknown) or an index with a
+non-AddRec component stays unversioned. Query count per SAT edge unchanged
+(§ answer of Sep 16: 2-4 queries).
