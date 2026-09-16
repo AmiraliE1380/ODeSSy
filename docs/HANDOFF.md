@@ -1963,3 +1963,38 @@ matmul.rs bounds traps likewise; no change on any kernel already handled;
 tripwire: a non-monotone index (step sign unknown) or an index with a
 non-AddRec component stays unversioned. Query count per SAT edge unchanged
 (§ answer of Sep 16: 2-4 queries).
+
+### 10.30 Session 5.2 -- T3 implemented; matmul.jl prediction FAILED on solver hardness (Sep 16 2026)
+Implementation (TrapSolver::prepareT3 under the FactGate; scevToBV;
+SCEVExpander in Stage 3a'):
+  * bound S = SCEV of idx with every affine AddRec (innermost first)
+    replaced by its value at the last iteration. Trip count = exit count
+    through the LATCH edge only (SE.getExitCount(L, latch, SymbolicMaximum));
+    the generic symbolic-max BTC mixes in the trap exits and made H
+    circular (count > ... umax count). Fallback when SE has none: read the
+    latch compare `V pred B` with V = {v0,+,1}: last index = B - v0 + 1
+    (<=) or B - v0 (<). Step sign is NOT required (S is a hypothesis; the
+    re-solve is the judge).
+  * candidate `count >u S` (>=u when the trap is strict) translated to Z3
+    (const/unknown/add/mul/zext/sext/trunc/min/max); guard expanded in the
+    check block with SCEVExpander ("mv.t3").
+  * T2 gained a half-width candidate v <=s 2^(W/2-1) so products cannot
+    wrap; greedy core minimization drops spurious conjuncts (upper bounds
+    first), <= |core| extra queries. Per SAT edge now 2-4 + |core| queries.
+  * tests: test_mv_symbolic.ll (32-bit a[(i-1)*n+(k-1)], H = {len >u n*n-1,
+    n <=s 2^15, ...}, 1 fold, expansion present), test_mv_symbolic_
+    nonaffine_sat.ll (idx = i*i -> "AddRec not affine" refusal). MV gate 6/6,
+    main gate 27/12, 300 ms sweep unchanged for every other kernel.
+Results (frozen sources):
+  matmul.rs: T3 bound max(idx) = 4095 (constant 64x64 dims) -> a and b
+    bounds traps folded in a fast copy, H = {len >u 4095}: 2/5 (0/5 before);
+    the other three are overflow traps (non-ICmp condition) and one setup.
+  matmul.jl: T3 mines EXACTLY the right bound, max(idx) = n*n - 1 for all
+    three traps (a, b, c), with n <=s 2^31 available -- but the certifying
+    re-solve is UNKNOWN at 10 s, 30 s and 120 s (240 s solver time per trap).
+    64-bit nonlinear bit-vector multiplication (n*n vs (i-1)*n + k) is
+    decidable but beyond the budget. PREDICTION FAILED, on solver hardness,
+    not on hypothesis generation. The GEMM "we added guards" caveat STANDS.
+    Next lever is F1 (solver hardness): e.g. bit-width reduction under the
+    n <= 2^31 hypothesis (rewrite the query at 32 bits), or linearization
+    (introduce m = n*n as a fresh variable with m >= (i-1)*n + k facts).
