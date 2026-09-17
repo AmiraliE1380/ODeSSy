@@ -2360,3 +2360,34 @@ Reading: the pass's proof is complete (3/3) and the transformation recovers
 the whole ceiling wherever the guard holds; the remaining loss is the
 guard's domain (arrays <= 32768 elements), i.e. the unfinished loosening
 of §10.41, not the proofs.
+
+### 10.43 FRAME v2 session 1 -- premise FALSIFIED for filt.jl (Sep 17 2026)
+Plan (§ strategy of Sep 17): FRAME v2 = load equality via SCEV/GEP-equal
+pointers; prediction filt.jl guarded 8/10 -> 10/10.
+Countermodels of the two SAT edges (jl_filt_dsp_guarded, edges 7 and 8):
+the solver frees %.size63.0.copyload.us.us.us (and %.size76...), reloads
+of the b/a array SIZE fields inside the unswitched loops. Their pointer
+operands are %.size_ptr3 / %.size_ptr5 -- the SAME SSA values as the
+entry loads %.size4.0.copyload / %.size6.0.copyload. So there is NO
+pointer-equivalence gap: v1's identity gate already matches.
+Why v1 never fired: the reloads are reached only through SCEV leaf
+pre-encoding (Go 3), not through the slice, so harvestFramePairs (which
+scanned Job.Visited) never considered them. Fix kept (general, harmless):
+candidate L2 may also be a same-pointer sibling of a slice load; an
+unused equality costs nothing, MemorySSA still judges. Refusal lines now
+name the clobbering access.
+With the pair considered, MemorySSA REFUSES: the clobber is a MemoryPhi,
+i.e. on the loop back edge a def may write loc(L1): the `store double`s
+into the arrays' DATA buffers (pointers loaded from the array objects).
+BasicAA cannot separate the size field (header object + 16) from a store
+through a loaded data pointer, and Julia emitted NO !tbaa on these
+copyload size reads (the stores carry jtbaa_arraybuf and noalias scopes;
+the loads carry nothing), so neither TBAA nor ScopedNoAlias applies.
+Conclusion: filt.jl's last two edges need an ALIAS fact (array header vs
+data buffer never alias), which in this IR is a Julia memory-model
+assumption the frontend did not annotate -- not general machinery.
+Encoding it as a pass rule would be language-specific and unfalsifiable
+inside our framework; refused. FRAME v2 (pointer equivalence) has no
+remaining known target in the kernel set; parked.
+Regression: gates 27/12 and 8/8; probe vs 0916 differs only by 300 ms
+UNKNOWN flips (results/static/probe_mac_0917_frame_siblings.log).

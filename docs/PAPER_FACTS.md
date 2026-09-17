@@ -1526,3 +1526,14 @@ frozen `matmul.jl` untouched). n=128, guard passes: checked 0.0165 s, MV
 guard fails (arrays > 32768 elements): MV = checked by construction, and the
 checks-off ceiling there is only 2.1% (memory-bound regime). Log:
 results/perf/jl_matmul_mv_arms_mac_0917.log.
+
+**FRAME v2 (Sep 17 2026): premise falsified.** filt.jl's two remaining
+edges do not need pointer equivalence: the freed size reloads use the same
+pointer SSA value as the entry loads. The pairs were never considered
+because the reloads enter the query through SCEV leaf pre-encoding rather
+than the slice (harvest widened to same-pointer siblings; no verdict
+changed). Once considered, MemorySSA refuses them: the loop's stores into
+the arrays' data buffers may alias the size field for BasicAA, and Julia
+emits no TBAA on these size loads. The missing fact is a Julia memory-model
+assumption (header vs buffer), not general machinery; not encoded.
+filt.jl stays 8/10 guarded / 6/19 unguarded.

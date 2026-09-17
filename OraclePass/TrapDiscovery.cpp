@@ -225,9 +225,20 @@ static void harvestFramePairs(TrapJob &Job, DominatorTree &DT,
     for (BasicBlock &BB2 : *Job.F) {
         for (Instruction &I2 : BB2) {
             auto *L2 = dyn_cast<LoadInst>(&I2);
-            if (!L2 || !Job.Visited.count(L2)) continue;
+            if (!L2) continue;
             if (!L2->isSimple() || !L2->getType()->isIntegerTy()) continue;
             Value *Ptr = L2->getPointerOperand();
+            // Candidate L2: in the slice, OR a same-pointer sibling of a slice
+            // load (FRAME v2 probe, HANDOFF §10.43): loads reached only through
+            // SCEV leaf pre-encoding are query variables too, but not slice
+            // members, so v1 never paired them. An unused equality is harmless.
+            if (!Job.Visited.count(L2)) {
+                bool Sibling = false;
+                for (Value *V : Job.Visited)
+                    if (auto *LV = dyn_cast<LoadInst>(V))
+                        if (LV->getPointerOperand() == Ptr && LV->getType() == L2->getType()) { Sibling = true; break; }
+                if (!Sibling) continue;
+            }
             // Earliest dominating same-pointer load = L1.
             LoadInst *L1 = nullptr;
             for (BasicBlock &BB1 : *Job.F) {
@@ -260,8 +271,11 @@ static void harvestFramePairs(TrapJob &Job, DominatorTree &DT,
                     << "] held (cross-BB, no intervening clobber):"
                     << S1 << "  ==" << S2 << "\n";
             } else {
+                std::string SC;
+                if (auto *D = dyn_cast<MemoryDef>(Clob)) { raw_string_ostream OC(SC); if (D->getMemoryInst()) D->getMemoryInst()->print(OC); else OC << "(live-on-entry)"; }
+                else if (isa<MemoryPhi>(Clob)) SC = "(MemoryPhi: clobber on some incoming arm)";
                 Log << "    -> Frame refused (clobber between loads):"
-                    << S1 << "  vs" << S2 << "\n";
+                    << S1 << "  vs" << S2 << "\n         clobber: " << SC << "\n";
             }
         }
     }
