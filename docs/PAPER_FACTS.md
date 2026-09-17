@@ -1430,3 +1430,37 @@ results/perf/rust_matmul_perf_mac_0916.log):
   measurable effect of MV on matmul.rs, as the zero ceiling predicts.
   Static: matmul.rs 0/5 UNSAT, mv 2/5 versioned (H = len >u 4095 on the
   64-dim triage IR; n*n-1 form on the bench IR).
+
+### 11.14 Swift toolchain pin (Sep 16 2026)
+FACTS. macOS installed "Command Line Tools for Xcode 27.0" automatically on
+Sep 15 2026 02:12 (softwareupdate --history); nobody asked for it. Compilers
+seen in the logs:
+  * Apple Swift 6.3.3 (swiftlang-6.3.3.1.3, CLT 26.5/26.6): ALL Mac Swift
+    numbers up to Sep 10 (sha256 IR: 36 traps after -wmo).
+  * Apple Swift 6.4 (swiftlang-6.4.0.34.1, CLT 27.0): Sep 16 runs (36 traps;
+    different codegen -> not comparable).
+  * swift.org "Swift version 6.3.3 (swift-6.3.3-RELEASE)": the SERVER's
+    compiler for every x86 Swift row (§8).
+DONE. Installed the swift.org 6.3.3-RELEASE toolchain per-user (no admin):
+  ~/Library/Developer/Toolchains/swift-6.3.3-RELEASE.xctoolchain. Its driver
+  rejects the macOS 27 SDK ("unknown argument -target-arch-variant"), so it
+  is used with the still-present MacOSX26.5.sdk. run_swift_perf.sh and
+  swift_triage.sh now: put that toolchain first in PATH when present
+  (SWIFTC overrides), pass -sdk (SWIFT_SDK overrides), print the version
+  and SDK, and REFUSE to run unless `swiftc --version` contains
+  EXPECT_SWIFT (default 6.3.3; EXPECT_SWIFT= disables). Smoke run OK
+  (sha256: 40 traps in this build's IR, 7 eliminated, byte-identical).
+WHAT THIS BUYS. The Mac now compiles with the SAME compiler as the server
+  (swift.org 6.3.3), immune to further CLT updates. It does NOT reproduce
+  the pre-Sep-15 Mac baseline bit-for-bit: that was Apple's 6.3.3 build
+  (36 traps) and the swift.org build differs (40-41 traps: different
+  stdlib inlining). Reproducing Apple 6.3.3 needs CLT 26.6 reinstalled
+  (admin): `sudo softwareupdate --install "Command Line Tools for
+  Xcode-26.6"` or the dmg from developer.apple.com/download/all. Mac rows
+  measured from now on are a new series; same-session comparisons only.
+AUTO-UPDATE OFF (admin, not done by the agent):
+  sudo softwareupdate --schedule off
+  sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled -bool false
+  sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticDownload -bool false
+  sudo defaults write /Library/Preferences/com.apple.commerce AutoUpdate -bool false
+  (System Settings > General > Software Update > Automatic Updates: all off.)

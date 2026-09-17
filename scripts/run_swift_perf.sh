@@ -8,7 +8,7 @@
 # does deleting 3-of-5 hot-loop checks actually recover?
 #
 # Pipeline (identical for every config; only the middle opt differs):
-#   swiftc -O -emit-ir  ->  opt <config>  ->  llc -O2  ->  swiftc link
+#   "$SWIFTC" -O -emit-ir  ->  opt <config>  ->  llc -O2  ->  "$SWIFTC" link
 #
 # Configs (attribution doctrine -- report oracle vs base AND vs base2x):
 #   base    : opt round-trip with -passes=verify        (control for the
@@ -28,6 +28,24 @@
 # Output: evaluation/perf_swift.csv (append-aware) + summary table
 #         (median primary; min/avg shown; outlier audit min<98%median).
 # =============================================================================
+# ---- Swift toolchain pin (HANDOFF §10.33) ----------------------------
+# macOS auto-updated the Command Line Tools to Swift 6.4 on Sep 15 2026;
+# every Mac/x86 number before that is Swift 6.3.3. Prefer the swift.org
+# 6.3.3 toolchain (installed per-user) and refuse silently different
+# versions unless EXPECT_SWIFT is overridden (set to "" to disable).
+SWIFT_TC_DEFAULT="$HOME/Library/Developer/Toolchains/swift-6.3.3-RELEASE.xctoolchain/usr/bin"
+if [ -z "${SWIFTC:-}" ] && [ -x "$SWIFT_TC_DEFAULT/swiftc" ]; then export PATH="$SWIFT_TC_DEFAULT:$PATH"; fi
+SWIFTC="${SWIFTC:-swiftc}"
+# The swift.org toolchain rejects the macOS 27 SDK's driver flags; use the
+# 26.5 SDK that shipped with CLT 26.x when present (SWIFT_SDK overrides).
+SWIFT_SDK_DEFAULT="/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk"
+if [ -z "${SWIFT_SDK:-}" ] && [ -d "$SWIFT_SDK_DEFAULT" ] && "$SWIFTC" --version 2>&1 | grep -q "RELEASE"; then SWIFT_SDK="$SWIFT_SDK_DEFAULT"; fi
+SWIFT_SDKFLAG=""; [ -n "${SWIFT_SDK:-}" ] && SWIFT_SDKFLAG="-sdk $SWIFT_SDK"
+EXPECT_SWIFT="${EXPECT_SWIFT-6.3.3}"
+if [ -n "$EXPECT_SWIFT" ] && ! "$SWIFTC" --version 2>&1 | grep -q "Swift version $EXPECT_SWIFT"; then
+  echo "[FATAL] swiftc is: $("$SWIFTC" --version 2>&1 | head -1) -- EXPECT_SWIFT=$EXPECT_SWIFT (set EXPECT_SWIFT= to override)"; exit 1
+fi
+
 set -u
 ROOT="${ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 NB="${NB:-$ROOT/native_bench}"
@@ -39,10 +57,10 @@ REPS="${REPS:-3}"
 RUNARGS="${RUNARGS:-}"
 ORACLE_PASSES="${ORACLE_PASSES:-oracle-pass<heavy;ldeq;timeout=300;threads=8>}"
 
-for t in swiftc opt llc python3; do
+for t in "$SWIFTC" opt llc python3; do
   command -v $t >/dev/null || { echo "[FATAL] $t not on PATH"; exit 1; }
 done
-echo "swiftc: $(swiftc --version 2>&1 | head -1)"
+echo "swiftc: $("$SWIFTC" --version 2>&1 | head -1)  sdk: ${SWIFT_SDK:-default}"
 echo "opt   : $(opt --version | head -1)"
 echo "reps  : $REPS   kernel: $stem   runargs: '${RUNARGS}'"
 echo ""
@@ -51,8 +69,8 @@ echo ""
 echo "==== PHASE A: building ===="
 # EXTRA_SRCS: additional .swift files compiled whole-module with the
 # kernel (library rows, e.g. CryptoSwift). Empty => single-file as before.
-swiftc -O -wmo -emit-ir "$KERNEL" ${EXTRA_SRCS:-} -o "$W/$stem.ll" \
-  || { echo "[FATAL] swiftc emit-ir"; exit 1; }
+"$SWIFTC" $SWIFT_SDKFLAG -O -wmo -emit-ir "$KERNEL" ${EXTRA_SRCS:-} -o "$W/$stem.ll" \
+  || { echo "[FATAL] swiftc emit-ir failed"; exit 1; }
 traps0=$(grep -cE 'call void @llvm\.(ubsan)?trap' "$W/$stem.ll")
 
 build_one() {  # $1=config
@@ -60,7 +78,7 @@ build_one() {  # $1=config
   # CLEANUP runs in EVERY config (symmetric exposure) and is a FULL O3:
   # the value of an eliminated check is what the optimizer can do once
   # the branch is gone (unroll/vectorize/schedule), so the oracle must
-  # be SANDWICHED: swiftc -O -> oracle -> O3 -> llc. base gets the same
+  # be SANDWICHED: "$SWIFTC" -O -> oracle -> O3 -> llc. base gets the same
   # post-O3 (one round-trip), base2x gets it twice (round-trip control),
   # so deltas attribute to the eliminations, not to extra optimization.
   local CLEANUP="default<O3>"
@@ -83,7 +101,7 @@ build_one() {  # $1=config
   # methodology (binaries lack stack-clash probes vs stock swiftc).
   perl -pi -e 's/"probe-stack"="[^"]*"\s*//g' "$ll"
   llc -O2 -relocation-model=pic -filetype=obj "$ll" -o "$W/$stem.$cfg.o" || return 1
-  swiftc -O "$W/$stem.$cfg.o" -o "$W/$stem.$cfg" || return 1
+  "$SWIFTC" $SWIFT_SDKFLAG -O "$W/$stem.$cfg.o" -o "$W/$stem.$cfg" || return 1
   local t1; t1=$(grep -cE 'call void @llvm\.(ubsan)?trap' "$ll")
   printf '  built %-8s traps %4s->%-4s bin %8s B  eliminated %s%s\n' \
     "$cfg" "$traps0" "$t1" "$(wc -c < "$W/$stem.$cfg" | tr -d ' ')" "$elim" "${MVNOTE:-}"

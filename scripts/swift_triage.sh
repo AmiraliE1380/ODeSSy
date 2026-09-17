@@ -15,9 +15,27 @@
 #   4. LDEQ RELEVANCE: how often the reloaded-bound unification fires.
 #
 # Usage : bash swift_triage.sh [nbody.swift ...]   (default: all three)
-# Needs : swiftc + pinned opt on PATH; run from repo root (build/ present).
+# Needs : "$SWIFTC" + pinned opt on PATH; run from repo root (build/ present).
 # Output: logs/swift_triage/<stem>.{ll,log} + a per-kernel summary table.
 # =============================================================================
+# ---- Swift toolchain pin (HANDOFF §10.33) ----------------------------
+# macOS auto-updated the Command Line Tools to Swift 6.4 on Sep 15 2026;
+# every Mac/x86 number before that is Swift 6.3.3. Prefer the swift.org
+# 6.3.3 toolchain (installed per-user) and refuse silently different
+# versions unless EXPECT_SWIFT is overridden (set to "" to disable).
+SWIFT_TC_DEFAULT="$HOME/Library/Developer/Toolchains/swift-6.3.3-RELEASE.xctoolchain/usr/bin"
+if [ -z "${SWIFTC:-}" ] && [ -x "$SWIFT_TC_DEFAULT/swiftc" ]; then export PATH="$SWIFT_TC_DEFAULT:$PATH"; fi
+SWIFTC="${SWIFTC:-swiftc}"
+# The swift.org toolchain rejects the macOS 27 SDK's driver flags; use the
+# 26.5 SDK that shipped with CLT 26.x when present (SWIFT_SDK overrides).
+SWIFT_SDK_DEFAULT="/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk"
+if [ -z "${SWIFT_SDK:-}" ] && [ -d "$SWIFT_SDK_DEFAULT" ] && "$SWIFTC" --version 2>&1 | grep -q "RELEASE"; then SWIFT_SDK="$SWIFT_SDK_DEFAULT"; fi
+SWIFT_SDKFLAG=""; [ -n "${SWIFT_SDK:-}" ] && SWIFT_SDKFLAG="-sdk $SWIFT_SDK"
+EXPECT_SWIFT="${EXPECT_SWIFT-6.3.3}"
+if [ -n "$EXPECT_SWIFT" ] && ! "$SWIFTC" --version 2>&1 | grep -q "Swift version $EXPECT_SWIFT"; then
+  echo "[FATAL] swiftc is: $("$SWIFTC" --version 2>&1 | head -1) -- EXPECT_SWIFT=$EXPECT_SWIFT (set EXPECT_SWIFT= to override)"; exit 1
+fi
+
 set -u
 ROOT="${ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 NB="${NB:-$ROOT/native_bench}"
@@ -26,9 +44,9 @@ mkdir -p "$OUT"
 KERNELS=("$@")
 [ ${#KERNELS[@]} -gt 0 ] || KERNELS=("$NB/nbody.swift" "$NB/sha256.swift" "$NB/lz77.swift")
 
-command -v swiftc >/dev/null || { echo "[FATAL] swiftc not on PATH"; exit 1; }
+command -v "$SWIFTC" >/dev/null || { echo "[FATAL] "$SWIFTC" not on PATH"; exit 1; }
 command -v opt    >/dev/null || { echo "[FATAL] opt not on PATH"; exit 1; }
-echo "swiftc: $(swiftc --version 2>&1 | head -1)"
+echo "swiftc: $("$SWIFTC" --version 2>&1 | head -1)  sdk: ${SWIFT_SDK:-default}"
 echo "opt   : $(opt --version | head -1)"
 echo ""
 printf '%-12s %8s %8s %8s %6s %6s %8s %6s %6s  %s\n' \
@@ -40,7 +58,7 @@ for SRC in "${KERNELS[@]}"; do
   log="$OUT/$stem.log"
 
   # --- gate 1: emit + parse ---
-  swiftc -O -emit-ir "$SRC" -o "$ll" 2>"$OUT/$stem.swiftc.err" || {
+  "$SWIFTC" -O -emit-ir "$SRC" -o "$ll" 2>"$OUT/$stem.swiftc.err" || {
     printf '%-12s %8s %8s %8s %6s %6s %8s %6s %6s  %s\n' \
       "$stem" - - - - - - - - "SWIFTC_FAIL (see $OUT/$stem.swiftc.err)"
     continue
