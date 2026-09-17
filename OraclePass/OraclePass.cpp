@@ -149,15 +149,17 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
     bool MultiVersion = false;      // mv-light (T1+T2) and mv
     bool MVT3 = false;              // mv: adds T3 (symbolic index bound)
     unsigned MVSaneExp = 62;
+    unsigned ProfileMs = 0;         // profile[=ms] knob (F1)
 
     OraclePass() = default;
     OraclePass(bool Vacuity, bool Heavy, unsigned TimeoutMs, unsigned NThreads,
                bool LdEq, std::vector<std::string> Traps = {},
                bool Frame = false, bool MV = false, unsigned MVSane = 62,
-               bool T3 = false)
+               bool T3 = false, unsigned Profile = 0)
         : VacuityCheck(Vacuity), HeavyMode(Heavy), QueryTimeoutMs(TimeoutMs),
           Threads(NThreads), LoadEq(LdEq), TrapCallees(std::move(Traps)),
-          FrameMode(Frame), MultiVersion(MV), MVT3(T3), MVSaneExp(MVSane) {}
+          FrameMode(Frame), MultiVersion(MV), MVT3(T3), MVSaneExp(MVSane),
+          ProfileMs(Profile) {}
 
     PreservedAnalyses run(Module &M, ModuleAnalysisManager &MAM) {
         auto &FAM =
@@ -187,6 +189,8 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
         Cfg.MultiVersion = MultiVersion;
         Cfg.MVT3 = MVT3;
         Cfg.MVSaneExp = MVSaneExp;
+        Cfg.ProfileMs = ProfileMs;
+        if (ProfileMs) sys::fs::create_directories("logs/profile");
 
         // =============================================================
         // STAGE 1: serial discovery (main thread; IR read-only)
@@ -532,6 +536,7 @@ llvmGetPassPluginInfo() {
                         bool LdEq = false;                // LDEQ default: off
                         bool Frame = false;               // FRAME default: off
                         bool MV = false, MVT3 = false; unsigned MVSane = 62;  // MV default: off
+                        unsigned Profile = 0;
                         std::vector<std::string> Traps;   // traps= callees: empty
                         if (!Name.empty()) {              // parse "<a;b;...>"
                             if (!Name.consume_front("<") || !Name.consume_back(">"))
@@ -550,6 +555,11 @@ llvmGetPassPluginInfo() {
                                     MV = true, MVT3 = true;
                                 else if (P == "mv-light")      // T1+T2 only
                                     MV = true;
+                                else if (P == "profile")
+                                    Profile = 1000;
+                                else if (P.consume_front("profile=")) {
+                                    if (P.getAsInteger(10, Profile) || Profile == 0) return false;
+                                }
                                 else if (P.consume_front("mv-sane=")) {
                                     if (P.getAsInteger(10, MVSane) || MVSane < 8 || MVSane > 62)
                                         return false;
@@ -593,7 +603,7 @@ llvmGetPassPluginInfo() {
                         }
                         MPM.addPass(OraclePass(Vacuity, Heavy, TimeoutMs, Threads,
                                                LdEq, std::move(Traps), Frame,
-                                               MV, MVSane, MVT3));
+                                               MV, MVSane, MVT3, Profile));
                         return true;
                     }
                 );

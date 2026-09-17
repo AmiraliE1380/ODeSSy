@@ -8,6 +8,8 @@
 #include "llvm/IR/Function.h"
 #include "llvm/IR/Instructions.h"
 #include "llvm/IR/Module.h"
+#include "llvm/Support/FileSystem.h"
+#include "llvm/Support/raw_ostream.h"
 #include "llvm/Analysis/ValueTracking.h"
 #include "llvm/IR/ConstantRange.h"
 #include "llvm/Analysis/SimplifyQuery.h"
@@ -108,6 +110,18 @@ bool TrapSolver::factPhase() {
     }
 }
 
+// F1 profiling: after a check slower than Cfg.ProfileMs, log Z3 statistics
+// and dump the assertion set to logs/profile/<function>_<job>_<tag>.smt2.
+void TrapSolver::profileQuery(const char *Tag, const std::string &Res, double Ms) {
+    if (!Cfg.ProfileMs || Ms < Cfg.ProfileMs) return;
+    Log << "    -> [profile:" << Tag << "] " << Ms << " ms " << (Res.find("UNSAT") != std::string::npos ? "UNSAT" : Res.find("UNKNOWN") != std::string::npos ? "UNKNOWN" : "SAT")
+        << " stats: " << Encoder.getStatistics() << "\n";
+    std::string Name = "logs/profile/" + Job.F->getName().str().substr(0, 40) + "_" + std::to_string(Job.Index) + "_" + Tag + ".smt2";
+    std::error_code EC;
+    raw_fd_ostream OS(Name, EC, sys::fs::OF_Text);
+    if (!EC) { OS << Encoder.toSMT2() << "\n"; Log << "    -> [profile] dumped " << Name << "\n"; }
+}
+
 void TrapSolver::solvePhase() {
     try {
         // PHASE 2.75 (FRAME only): cross-BB load unification facts from
@@ -152,6 +166,7 @@ void TrapSolver::solvePhase() {
         Job.Queried = true;
         Job.LatencyMs = QueryLatency;
         Log << "    -> " << ResultString << "\n";
+        profileQuery("main", ResultString, QueryLatency);
         bool IsUnsat = (ResultString.find("UNSAT") != std::string::npos);
         if (IsUnsat && Cfg.VacuityCheck) {
             Log << "    -> Unsat core: " << Encoder.getUnsatCore() << "\n";
@@ -523,6 +538,7 @@ void TrapSolver::mvPhase() {
             Encoder.assertRawFact(mkExpr(Cands[i]), "MV:" + std::to_string(i));
         auto [Res, L1] = Encoder.checkSatisfiability();
         Lat += L1; Job.LatencyMs += L1;
+        profileQuery(Round == 0 ? "mv0" : "mv1", Res, L1);
         if (Res.find("UNSAT") != std::string::npos) {
             std::string Core = Encoder.getUnsatCore();
             for (size_t i : Use) {

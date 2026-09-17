@@ -54,6 +54,9 @@ struct SolverConfig {
     bool MultiVersion = false;      // mv-light and mv
     bool MVT3 = false;              // mv only: template T3 (symbolic index bound)
     unsigned MVSaneExp = 62;        // T2: 0 <=s v <=s 2^k
+    // F1 profiling (HANDOFF §10.35): queries slower than ProfileMs log Z3
+    // statistics and dump their SMT-LIB to logs/profile/. 0 = off.
+    unsigned ProfileMs = 0;
 };
 
 class TrapSolver {
@@ -78,6 +81,7 @@ private:
     void mvPhase();
     // T3 (HANDOFF §10.29): symbolic index bound, computed under the gate.
     void prepareT3();
+    void profileQuery(const char *Tag, const std::string &Res, double Ms);
     z3::expr scevToBV(const llvm::SCEV *S, bool &OK, unsigned W);
     const SolverConfig &Cfg;
     const FunctionCtx &FC;

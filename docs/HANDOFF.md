@@ -2136,3 +2136,19 @@ CryptoSwift (library, driver main.swift + 59 sources, RUNARGS "300
   Static census on logs/cryptoswift.ll (2807 edges, 300 ms, threads=8):
     none 208 UNSAT / 28 UNKNOWN; mv-light 208 + 102 folds; mv 208 + 106 folds
     (results/static/cryptoswift_mv_census_mac_0916.txt).
+
+### 10.35 F1 solver hardness -- PLAN (Sep 16 2026; predictions before code)
+Step 0 profile knob (`profile[=ms]`): Z3 statistics + SMT-LIB dump for any
+  query slower than ms. Prediction: matmul.jl dominated by bit-blasted 64-bit
+  mul; lz77.jl A by search over the j-start-window chain.
+Step 1 derived short-circuit facts (|DERIV:k|): one-step consequences of
+  existing facts/guards. Prediction: lz77.jl A edges < 300 ms; no verdict
+  change in the 60-cell probe.
+Step 2 bit-width narrowing under the mv hypothesis (k < W/2 => re-encode the
+  certifying query at 2k+2 bits; sound only under H = the runtime guard).
+  Prediction: matmul.jl 3/3 within 10 s. Tripwire: wrap-is-the-bug stays SAT.
+Step 3 product linearization (fresh m for x*y + range-derived facts; SAT
+  re-checked with real mul). Prediction: matmul.jl/.rs < 1 s. Only if 2 fails.
+Step 4 adaptive budgets (small for the ordinary query, larger for the mv
+  re-solve). Acceptance: matmul.jl 3/3 @10 s, lz77.jl 4/4 @300 ms, gates
+  unchanged, probe no UNSAT->SAT. Benchmarks frozen.

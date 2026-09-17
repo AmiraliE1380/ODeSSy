@@ -24,6 +24,35 @@ void Z3Encoder::assertConditionTracked(Value *Cond, bool IsTrue, const std::stri
     z3::expr c = asBool(getOrCreateZ3Expr(Cond));
     if (!IsTrue) c = !c;
     Solver.add(c, Label.c_str());     // tracked: eligible for the core
+    TrackedLabels.push_back(Label);
+}
+
+std::string Z3Encoder::toSMT2() {
+    std::string out = Solver.to_smt2();
+    // to_smt2 ends with "(check-sat)"; the tracked facts are guarded by
+    // answer literals, so a plain check-sat makes them optional. Replace
+    // with check-sat-assuming over every tracked label.
+    size_t pos = out.rfind("(check-sat)");
+    if (pos != std::string::npos && !TrackedLabels.empty()) {
+        std::string asm_ = "(check-sat-assuming (";
+        for (auto &L : TrackedLabels) asm_ += "|" + L + "| ";
+        asm_ += "))";
+        out = out.substr(0, pos) + asm_ + out.substr(pos + 11);
+    }
+    return out;
+}
+
+std::string Z3Encoder::getStatistics() {
+    try {
+        z3::stats st = Solver.statistics();
+        std::string out;
+        for (unsigned i = 0; i < st.size(); ++i) {
+            out += st.key(i) + "=";
+            out += st.is_uint(i) ? std::to_string(st.uint_value(i)) : std::to_string(st.double_value(i));
+            out += " ";
+        }
+        return out;
+    } catch (...) { return "(no statistics)"; }
 }
 
 std::string Z3Encoder::getUnsatCore() {
@@ -43,7 +72,7 @@ z3::expr Z3Encoder::bvConst(const llvm::APInt &A) {
 
 void Z3Encoder::addFact(const z3::expr &Fact, const std::string &Label) {
     if (Label.empty()) Solver.add(Fact);
-    else               Solver.add(Fact, Label.c_str());
+    else             { Solver.add(Fact, Label.c_str()); TrackedLabels.push_back(Label); }
 }
 
 bool Z3Encoder::assertRange(Value *V, const ConstantRange &CR,

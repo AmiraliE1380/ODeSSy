@@ -69,6 +69,11 @@ public:
     void enableUnsatCores();
     void assertConditionTracked(llvm::Value *Cond, bool IsTrue, const std::string &Label);
     std::string getUnsatCore();
+    // F1 profiling (HANDOFF §10.35): Z3 statistics of the last check and the
+    // current assertion set in SMT-LIB 2 text.
+    std::string getStatistics();
+    std::string toSMT2();          // includes check-sat-assuming over tracked labels
+    std::vector<std::string> TrackedLabels;   // answer literals of tracked assertions
     // --- HEAVY-tier fact plumbing (mechanism only; policy = FactEncoder) ---
     // The boundary set: every Value that was given a free variable.
     const std::vector<llvm::Value*> &getFreeVariables() const { return FreeVars; }
