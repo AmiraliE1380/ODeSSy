@@ -58,7 +58,7 @@ for SRC in "${KERNELS[@]}"; do
   log="$OUT/$stem.log"
 
   # --- gate 1: emit + parse ---
-  "$SWIFTC" -O -emit-ir "$SRC" -o "$ll" 2>"$OUT/$stem.swiftc.err" || {
+  "$SWIFTC" $SWIFT_SDKFLAG -O -emit-ir "$SRC" -o "$ll" 2>"$OUT/$stem.swiftc.err" || {
     printf '%-12s %8s %8s %8s %6s %6s %8s %6s %6s  %s\n' \
       "$stem" - - - - - - - - "SWIFTC_FAIL (see $OUT/$stem.swiftc.err)"
     continue
