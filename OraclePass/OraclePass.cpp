@@ -150,16 +150,19 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
     bool MVT3 = false;              // mv: adds T3 (symbolic index bound)
     unsigned MVSaneExp = 62;
     unsigned ProfileMs = 0;         // profile[=ms] knob (F1)
+    bool NarrowMul = false;         // narrow[=bits] knob (F1 step 2, HANDOFF §10.37)
+    unsigned NarrowBits = 16;
 
     OraclePass() = default;
     OraclePass(bool Vacuity, bool Heavy, unsigned TimeoutMs, unsigned NThreads,
                bool LdEq, std::vector<std::string> Traps = {},
                bool Frame = false, bool MV = false, unsigned MVSane = 62,
-               bool T3 = false, unsigned Profile = 0)
+               bool T3 = false, unsigned Profile = 0, bool Narrow = false,
+               unsigned NBits = 16)
         : VacuityCheck(Vacuity), HeavyMode(Heavy), QueryTimeoutMs(TimeoutMs),
           Threads(NThreads), LoadEq(LdEq), TrapCallees(std::move(Traps)),
           FrameMode(Frame), MultiVersion(MV), MVT3(T3), MVSaneExp(MVSane),
-          ProfileMs(Profile) {}
+          ProfileMs(Profile), NarrowMul(Narrow), NarrowBits(NBits) {}
 
     PreservedAnalyses run(Module &M, ModuleAnalysisManager &MAM) {
         auto &FAM =
@@ -190,6 +193,8 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
         Cfg.MVT3 = MVT3;
         Cfg.MVSaneExp = MVSaneExp;
         Cfg.ProfileMs = ProfileMs;
+        Cfg.Narrow = NarrowMul;
+        Cfg.NarrowBits = NarrowBits;
         if (ProfileMs) sys::fs::create_directories("logs/profile");
 
         // =============================================================
@@ -288,6 +293,28 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
             J.WorkerMs = msSince(T0);
         };
         odessy::runJobs(NThreads, Jobs.size(), WorkerBody);
+
+        // =============================================================
+        // STAGE 2b: NARROW-MUL RETRY (serial, main thread; F1 step 2,
+        // HANDOFF §10.37). For mv candidates still SAT/UNKNOWN whose slice
+        // has a 64-bit mul, re-solve on the narrow encoding; mvPhase adds
+        // the side-condition certificate. Main thread: SE/LVI need no gate.
+        // =============================================================
+        if (MultiVersion && NarrowMul) {
+            for (odessy::TrapJob &J : Jobs) {
+                if (!J.SliceOK || J.Eliminate || J.MVEliminate) continue;
+                bool HasMul = false;
+                for (Value *V : J.Visited)
+                    if (auto *BO = dyn_cast<BinaryOperator>(V))
+                        if (BO->getOpcode() == Instruction::Mul && BO->getType()->isIntegerTy(64)) { HasMul = true; break; }
+                if (!HasMul) continue;
+                raw_string_ostream OS(J.LogText);
+                OS << "    -> [narrow] retry on the narrow-mul encoding\n";
+                const odessy::FunctionCtx &FC = FCs[CtxOf.lookup(J.F)];
+                odessy::TrapSolver S(Cfg, FC, J, /*Narrow=*/true);
+                if (S.encodePhase() && S.factPhase()) S.solvePhase();
+            }
+        }
 
         // =============================================================
         // STAGE 3a: THE KILL (serial, discovery order -- the only IR
@@ -536,7 +563,7 @@ llvmGetPassPluginInfo() {
                         bool LdEq = false;                // LDEQ default: off
                         bool Frame = false;               // FRAME default: off
                         bool MV = false, MVT3 = false; unsigned MVSane = 62;  // MV default: off
-                        unsigned Profile = 0;
+                        unsigned Profile = 0; bool Narrow = false; unsigned NBits = 16;
                         std::vector<std::string> Traps;   // traps= callees: empty
                         if (!Name.empty()) {              // parse "<a;b;...>"
                             if (!Name.consume_front("<") || !Name.consume_back(">"))
@@ -555,6 +582,12 @@ llvmGetPassPluginInfo() {
                                     MV = true, MVT3 = true;
                                 else if (P == "mv-light")      // T1+T2 only
                                     MV = true;
+                                else if (P == "narrow")
+                                    Narrow = true;
+                                else if (P.consume_front("narrow=")) {
+                                    if (P.getAsInteger(10, NBits) || NBits < 8 || NBits > 32) return false;
+                                    Narrow = true;
+                                }
                                 else if (P == "profile")
                                     Profile = 1000;
                                 else if (P.consume_front("profile=")) {
@@ -603,7 +636,7 @@ llvmGetPassPluginInfo() {
                         }
                         MPM.addPass(OraclePass(Vacuity, Heavy, TimeoutMs, Threads,
                                                LdEq, std::move(Traps), Frame,
-                                               MV, MVSane, MVT3, Profile));
+                                               MV, MVSane, MVT3, Profile, Narrow, NBits));
                         return true;
                     }
                 );

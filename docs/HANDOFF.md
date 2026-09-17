@@ -2182,3 +2182,43 @@ DECISION after step 0: narrowing (step 2) is the general lever for both
   all intermediate values fit W' (products of two 2^k values < 2^(2k)), so
   the W' model of the program is exact -- to be argued per operation class
   (add/sub/mul/shift/compare/ext/trunc) in §10.37 before code.
+
+### 10.37 F1 step 2 -- SPEC: operation-local narrowing of 64-bit multiplication (Sep 16 2026)
+Why not whole-query narrowing: exactness at W' needs every intermediate
+value to fit W', which requires an interval analysis over the slice with
+symbolic bounds on loop phis (i <= n <= 2^k) -- a second analysis to trust.
+Step 0 showed the cost is the 64-bit bvmul (bit-blasted 64x64 multiplier);
+so narrow THAT, and let the solver certify the precondition.
+REWRITE (knob `narrow`, effective only in the mv retry): every `mul i64 a, b`
+in the slice is encoded as
+    mul64(a, b)  :=  zext64(a[31:0]) * zext64(b[31:0])
+which equals the true product whenever a <u 2^32 and b <u 2^32 (the product
+of two 32-bit values fits 64 bits; Z3's bit-blaster drops the 32 constant
+zero columns, so the multiplier is ~1/4 the size). Each rewritten mul
+records a SIDE CONDITION  small(a,b) := a <u 2^32 && b <u 2^32.
+CERTIFICATE (two queries, both must be UNSAT):
+  Q2  context && facts && guards && H && trap            (narrow encoding)
+  Q1  context && facts && guards && H && trap && !AND(small)   (no mul cost)
+Soundness: suppose an execution satisfying H reaches the trap. By Q1's
+UNSAT its mul operands are all small, so on it every narrow mul equals the
+true mul and the execution is a model of Q2's formula -- contradiction
+with Q2's UNSAT. Hence no execution under H reaches the trap. H is the
+runtime guard, exactly as in §10.22. Ordinary (non-mv) verdicts are NEVER
+taken from the narrow encoding: GEMM's operands are not provably small
+without a hypothesis, so its 16 proofs stay on the exact encoder.
+PIPELINE: Stage 2b (serial, main thread, after the worker pool): for every
+job that is still SAT/UNKNOWN, has no H yet, and whose slice contains a
+64-bit mul, build a fresh TrapSolver in narrow mode, encode + facts (SE/LVI
+on the main thread need no FactGate) + solve; its mvPhase adds the Q1 check
+before accepting a core. Log tag [narrow].
+REFUSES: Q1 SAT/UNKNOWN (operands not provably small under H); no 64-bit
+mul in the slice (nothing to gain); mul.with.overflow intrinsics stay exact.
+TESTS: test_mv_narrow.ll = the 64-bit twin of test_mv_symbolic.ll (expected:
+not versioned without `narrow` at 3 s, versioned with it);
+test_mv_narrow_bigops_sat.ll = a mul whose operands H does not bound (Q1
+must be SAT -> refused; trap kept).
+PREDICTIONS: matmul.jl 3/3 folded under H = {n <= 2^31, size >u n*n-1, ...}
+at a 10 s budget (offline: 0.36 s); matmul.rs unchanged (2/5); GEMM 16/16
+unchanged (exact path); gates and the 60-cell probe unchanged with `narrow`
+off; lz77.jl unchanged (its cost is not the mul; whole-query narrowing gave
+5.5x offline but is out of scope for this step).

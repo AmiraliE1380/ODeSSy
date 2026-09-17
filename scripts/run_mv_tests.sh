@@ -14,7 +14,7 @@ for t in "$ROOT"/tests/test_mv_*.ll; do
   stem=$(basename "$t" .ll)
   out=$(mktemp); err=$(mktemp)
   opt -load-pass-plugin="$ROOT/build/OraclePass.so" \
-      -passes="oracle-pass<vacuity;heavy;ldeq;frame;mv;timeout=3000;threads=1>" \
+      -passes="oracle-pass<vacuity;heavy;ldeq;frame;mv;narrow;timeout=3000;threads=1>" \
       -S "$t" -o "$out" 2>"$err"
   rc=$?
   folds=$(grep -oE 'Folded In Fast Copies \(mv\): [0-9]+' "$err" | awk '{s+=$NF} END{print s+0}')

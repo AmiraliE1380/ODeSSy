@@ -57,11 +57,15 @@ struct SolverConfig {
     // F1 profiling (HANDOFF §10.35): queries slower than ProfileMs log Z3
     // statistics and dump their SMT-LIB to logs/profile/. 0 = off.
     unsigned ProfileMs = 0;
+    // F1 step 2 (HANDOFF §10.37): Stage 2b narrow-mul retry for mv candidates.
+    bool Narrow = false;
+    unsigned NarrowBits = 16;
 };
 
 class TrapSolver {
 public:
-    TrapSolver(const SolverConfig &Cfg, const FunctionCtx &FC, TrapJob &Job);
+    TrapSolver(const SolverConfig &Cfg, const FunctionCtx &FC, TrapJob &Job,
+               bool Narrow = false);
 
     // PHASE 2. False => aborted (unsupported instruction / exception):
     // keep the trap, skip the query.
@@ -87,6 +91,7 @@ private:
     const FunctionCtx &FC;
     TrapJob &Job;
     Z3Encoder Encoder;
+    bool NarrowMode = false;
     llvm::raw_string_ostream Log;   // appends to Job.LogText
 };
 

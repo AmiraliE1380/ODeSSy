@@ -74,6 +74,9 @@ public:
     std::string getStatistics();
     std::string toSMT2();          // includes check-sat-assuming over tracked labels
     std::vector<std::string> TrackedLabels;   // answer literals of tracked assertions
+    unsigned NarrowMulWidth = 0;              // 0 = exact multiplication
+    unsigned NarrowOpBits = 16;               // operand width of the narrowed multiplier
+    std::vector<z3::expr> NarrowSideConds;
     // --- HEAVY-tier fact plumbing (mechanism only; policy = FactEncoder) ---
     // The boundary set: every Value that was given a free variable.
     const std::vector<llvm::Value*> &getFreeVariables() const { return FreeVars; }
@@ -89,6 +92,13 @@ public:
                          const std::string &Label = "");
     // --- LDEQ knob + stats (see field comment above) ---
     void enableLoadEquivalence() { LoadEqEnabled = true; }
+    // F1 step 2 (HANDOFF §10.37): encode `mul iW` (W = NarrowMulWidth) as
+    // zext(lo32(a)) * zext(lo32(b)) and record small(a,b) side conditions.
+    void enableNarrowMul(unsigned W = 64, unsigned OperandBits = 16) { NarrowMulWidth = W; NarrowOpBits = OperandBits; }
+    const std::vector<z3::expr> &narrowSideConds() const { return NarrowSideConds; }
+    // Multiply two W-bit exprs; in narrow mode (W == NarrowMulWidth) use the
+    // 32-bit-operand form and record the side condition.
+    z3::expr mulMaybeNarrow(const z3::expr &A, const z3::expr &B);
     unsigned getNumLoadEquivs() const { return NumLoadEquivs; }
     // --- SCEV-SYM mechanism hooks (policy lives in FactEncoder) ---
     // Public bridges so FactEncoder can BUILD facts about SSA values and

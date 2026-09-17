@@ -27,6 +27,19 @@ void Z3Encoder::assertConditionTracked(Value *Cond, bool IsTrue, const std::stri
     TrackedLabels.push_back(Label);
 }
 
+// Narrow multiplication (HANDOFF §10.37): a*b == zext(a[K-1:0]) * zext(b[K-1:0])
+// whenever both operands are < 2^K (K = NarrowOpBits, default 16, so the
+// bit-blasted multiplier is KxK instead of WxW); the side condition is
+// recorded and certified separately by the caller (Q1).
+z3::expr Z3Encoder::mulMaybeNarrow(const z3::expr &A, const z3::expr &B) {
+    unsigned W = A.get_sort().bv_size();
+    if (!NarrowMulWidth || W != NarrowMulWidth || W < 64) return A * B;
+    unsigned K = NarrowOpBits;                       // a,b < 2^K  =>  a*b < 2^(2K) <= 2^W exact
+    z3::expr Lim = Ctx.bv_val((uint64_t)1 << K, W);
+    NarrowSideConds.push_back(z3::ult(A, Lim) && z3::ult(B, Lim));
+    return z3::zext(A.extract(K - 1, 0), W - K) * z3::zext(B.extract(K - 1, 0), W - K);
+}
+
 std::string Z3Encoder::toSMT2() {
     std::string out = Solver.to_smt2();
     // to_smt2 ends with "(check-sat)"; the tracked facts are guarded by
@@ -360,7 +373,7 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo
         switch (BinOp->getOpcode()) {
             case Instruction::Add:  res = asBV(op1, W) + asBV(op2, W); break;
             case Instruction::Sub:  res = asBV(op1, W) - asBV(op2, W); break;
-            case Instruction::Mul:  res = asBV(op1, W) * asBV(op2, W); break;
+            case Instruction::Mul:  res = mulMaybeNarrow(asBV(op1, W), asBV(op2, W)); break;
             case Instruction::SDiv: res = asBV(op1, W) / asBV(op2, W); break;
             case Instruction::UDiv: res = z3::udiv(asBV(op1, W), asBV(op2, W)); break;
             case Instruction::SRem: res = z3::srem(asBV(op1, W), asBV(op2, W)); break;

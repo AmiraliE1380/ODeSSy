@@ -26,11 +26,12 @@ using namespace llvm;
 namespace odessy {
 
 TrapSolver::TrapSolver(const SolverConfig &Cfg, const FunctionCtx &FC,
-                       TrapJob &Job)
-    : Cfg(Cfg), FC(FC), Job(Job), Encoder(Cfg.QueryTimeoutMs),
+                       TrapJob &Job, bool Narrow)
+    : Cfg(Cfg), FC(FC), Job(Job), Encoder(Cfg.QueryTimeoutMs), NarrowMode(Narrow),
       Log(Job.LogText) {
     if (Cfg.VacuityCheck || Cfg.MultiVersion)   // MV reads cores too
         Encoder.enableUnsatCores();
+    if (Narrow) Encoder.enableNarrowMul(64, Cfg.NarrowBits);
     if (Cfg.LoadEq)
         Encoder.enableLoadEquivalence();
 }
@@ -183,11 +184,16 @@ void TrapSolver::solvePhase() {
             }
             Log << "    -> [vacuity-ok] context alone is satisfiable\n";
         }
-        Job.Eliminate = IsUnsat;
+        if (NarrowMode) {
+            // Narrow encoding: ordinary verdicts are NOT taken from it (the
+            // operands' smallness is only certifiable under a hypothesis).
+            if (IsUnsat) Log << "    -> [narrow] UNSAT on the narrow encoding without H: ignored (exact verdict stands)\n";
+        } else
+            Job.Eliminate = IsUnsat;
 
         // PHASE 3.5 (MV only): a SAT verdict may still be dead under a
         // runtime-checkable hypothesis over loop-invariant values.
-        if (!IsUnsat && Cfg.MultiVersion &&
+        if (Cfg.MultiVersion && (NarrowMode || !IsUnsat) &&
             ResultString.find("SAT") != std::string::npos)
             mvPhase();
 
@@ -372,7 +378,7 @@ z3::expr TrapSolver::scevToBV(const SCEV *S, bool &OK, unsigned W) {
     }
     if (auto *M = dyn_cast<SCEVMulExpr>(S)) {
         z3::expr R = scevToBV(M->getOperand(0), OK, W);
-        for (unsigned i = 1; i < M->getNumOperands(); ++i) R = R * scevToBV(M->getOperand(i), OK, W);
+        for (unsigned i = 1; i < M->getNumOperands(); ++i) R = Encoder.mulMaybeNarrow(R, scevToBV(M->getOperand(i), OK, W));
         return R;
     }
     if (auto *Z = dyn_cast<SCEVZeroExtendExpr>(S)) {
@@ -486,6 +492,18 @@ void TrapSolver::mvPhase() {
             APInt Lim2 = APInt::getOneBitSet(W, K2);
             Cands.push_back({V, ICmpInst::ICMP_SLE, Lim2, nameOf(V) + " <=s 2^" + std::to_string(K2), O});
         }
+        if (NarrowMode && Cfg.NarrowBits - 1 < K2) {
+            // narrow-mul mode: a bound that makes mul operands provably < 2^NarrowBits,
+            // and the product-sized bound 2^(2K-2) for lengths (the loosening rung
+            // between 2^(K-1) and 2^(W/2-1)).
+            unsigned K3 = Cfg.NarrowBits - 1, K4 = 2 * Cfg.NarrowBits - 2;
+            APInt Lim3 = APInt::getOneBitSet(W, K3);
+            Cands.push_back({V, ICmpInst::ICMP_SLE, Lim3, nameOf(V) + " <=s 2^" + std::to_string(K3), O});
+            if (K4 < K2) {
+                APInt Lim4 = APInt::getOneBitSet(W, K4);
+                Cands.push_back({V, ICmpInst::ICMP_SLE, Lim4, nameOf(V) + " <=s 2^" + std::to_string(K4), O});
+            }
+        }
     }
     // ---- T3 (symbolic bound prepared in factPhase)
     if (Job.MVIdxMax && Job.MVCount && isInv(Job.MVCount)) {
@@ -560,15 +578,39 @@ void TrapSolver::mvPhase() {
         }
     }
     if (Keep.empty()) { Log << "    -> [mv] no usable hypothesis: not versionable\n"; return; }
+    if (NarrowMode && !Encoder.narrowSideConds().empty()) {
+        // Q1 (HANDOFF §10.37): under H, every narrowed multiplication's
+        // operands must be < 2^32 on trap-reaching executions.
+        Encoder.push();
+        for (size_t i : Keep) Encoder.assertRawFact(mkExpr(Cands[i]), std::string());
+        z3::expr All = Encoder.narrowSideConds()[0];
+        for (size_t k = 1; k < Encoder.narrowSideConds().size(); ++k) All = All && Encoder.narrowSideConds()[k];
+        Encoder.assertRawFact(!All, std::string());
+        auto [RS, LS] = Encoder.checkSatisfiability();
+        Job.LatencyMs += LS;
+        Encoder.pop();
+        if (RS.find("UNSAT") == std::string::npos) {
+            Log << "    -> [narrow] side condition (mul operands < 2^" << Cfg.NarrowBits << " under H) not certified ("
+                << (RS.find("UNKNOWN") != std::string::npos ? "UNKNOWN" : "SAT") << "): refusing\n";
+            return;
+        }
+        Log << "    -> [narrow] side condition certified for " << Encoder.narrowSideConds().size() << " multiplication(s)\n";
+    }
     // Greedy core minimization: Z3 cores are not minimal, and a spurious
     // conjunct (typically an UPPER bound on a length) needlessly shrinks the
     // fast path's domain. Try dropping each conjunct (upper bounds first);
     // keep the drop if the query is still UNSAT. <= |Keep| extra queries.
     {
         std::vector<size_t> Order(Keep);
+        // Upper bounds first, and among them the TIGHTEST first: dropping a
+        // tight bound while a looser one on the same value still stands keeps
+        // the query easy, so the surviving bound is the loose (harmless) one.
         std::stable_sort(Order.begin(), Order.end(), [&](size_t a, size_t b) {
             auto isUpper = [&](size_t i) { return Cands[i].P == ICmpInst::ICMP_SLE || Cands[i].P == ICmpInst::ICMP_ULE; };
-            return isUpper(a) && !isUpper(b);
+            bool ua = isUpper(a), ub = isUpper(b);
+            if (ua != ub) return ua;
+            if (ua && ub && !Cands[a].Bound && !Cands[b].Bound) return Cands[a].C.ult(Cands[b].C);
+            return false;
         });
         for (size_t Drop : Order) {
             if (Keep.size() <= 1) break;
@@ -577,8 +619,39 @@ void TrapSolver::mvPhase() {
             auto [R2, L2] = Encoder.checkSatisfiability();
             Job.LatencyMs += L2;
             Encoder.pop();
-            if (R2.find("UNSAT") != std::string::npos)
-                Keep.erase(std::find(Keep.begin(), Keep.end(), Drop));
+            bool Dropped = R2.find("UNSAT") != std::string::npos;
+            Log << "    -> [mv] minimize: without {" << Cands[Drop].Text << "} -> "
+                << (Dropped ? "UNSAT, dropped" : (R2.find("UNKNOWN") != std::string::npos ? "UNKNOWN, kept" : "SAT, kept"))
+                << " (" << L2 << " ms)\n";
+            if (Dropped) Keep.erase(std::find(Keep.begin(), Keep.end(), Drop));
+        }
+    }
+    // Loosening: an upper bound in the core may be tighter than needed (the
+    // core is whatever Z3 found first). For each kept upper bound on V, try
+    // the looser candidates on the same V (ascending constant); adopt the
+    // loosest that keeps the query UNSAT. A tight `size <= 2^15` would
+    // confine the fast path to tiny inputs for no reason.
+    for (size_t idx = 0; idx < Keep.size(); ++idx) {
+        size_t Cur = Keep[idx];
+        if (Cands[Cur].Bound) continue;
+        if (Cands[Cur].P != ICmpInst::ICMP_SLE && Cands[Cur].P != ICmpInst::ICMP_ULE) continue;
+        std::vector<size_t> Looser;
+        for (size_t j = 0; j < Cands.size(); ++j)
+            if (j != Cur && !Cands[j].Bound && Cands[j].V == Cands[Cur].V && Cands[j].P == Cands[Cur].P && Cands[j].C.ugt(Cands[Cur].C))
+                Looser.push_back(j);
+        std::sort(Looser.begin(), Looser.end(), [&](size_t a, size_t b) { return Cands[a].C.ult(Cands[b].C); });
+        for (size_t j : Looser) {
+            Encoder.push();
+            for (size_t i : Keep) Encoder.assertRawFact(mkExpr(Cands[i == Cur ? j : i]), std::string());
+            auto [R3, L3] = Encoder.checkSatisfiability();
+            Job.LatencyMs += L3;
+            profileQuery("loosen", R3, L3);
+            Encoder.pop();
+            bool OK3 = R3.find("UNSAT") != std::string::npos;
+            Log << "    -> [mv] loosen: {" << Cands[Cur].Text << "} -> {" << Cands[j].Text << "}: "
+                << (OK3 ? "UNSAT, adopted" : "kept tight") << " (" << L3 << " ms)\n";
+            if (!OK3) break;
+            Keep[idx] = j; Cur = j;
         }
     }
     // Vacuity of H: context + H alone must be satisfiable.
