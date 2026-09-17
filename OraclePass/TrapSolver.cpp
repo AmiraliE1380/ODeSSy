@@ -397,12 +397,21 @@ void TrapSolver::mvPhase() {
     if (!L) { Log << "    -> [mv] trap not inside a loop: not versionable\n"; return; }
     struct Cand { Value *V; ICmpInst::Predicate P; APInt C; std::string Text; Loop *Outer;
                   const SCEV *Bound = nullptr; std::optional<z3::expr> BoundE; };
+    // A hypothesis operand must be evaluable in the hoist loop's preheader:
+    // loop-invariant AND its definition must dominate the loop header (the
+    // query's free variables include SCEV leaves pre-encoded for facts,
+    // which need not dominate the trap's loop at all).
+    auto domHeader = [&](Value *V, const Loop *P) {
+        auto *I = dyn_cast<Instruction>(V);
+        if (!I) return true;                         // arguments, constants
+        return FC.DT->dominates(I->getParent(), P->getHeader()) && !P->contains(I->getParent());
+    };
     // Outermost loop (containing L) in which V is still invariant: the
     // level H can be hoisted to. nullptr = invariant in the whole function.
     auto outerInv = [&](Value *V) -> Loop * {
         Loop *Best = L;
         for (Loop *P = L; P; P = P->getParentLoop())
-            if (P->isLoopInvariant(V)) Best = P; else break;
+            if (P->isLoopInvariant(V) && domHeader(V, P)) Best = P; else break;
         if (Best->getParentLoop() == nullptr && Best->isLoopInvariant(V)) {
             // invariant in the outermost loop: is it defined outside every loop?
             if (auto *I = dyn_cast<Instruction>(V))
@@ -413,7 +422,7 @@ void TrapSolver::mvPhase() {
     };
     std::vector<Cand> Cands;
     auto isInv = [&](Value *V) {
-        return V && V->getType()->isIntegerTy() && L->isLoopInvariant(V);
+        return V && V->getType()->isIntegerTy() && L->isLoopInvariant(V) && domHeader(V, L);
     };
     auto nameOf = [](Value *V) {
         std::string S; raw_string_ostream OS(S); V->printAsOperand(OS, false); return S;
