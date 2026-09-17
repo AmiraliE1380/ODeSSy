@@ -1490,3 +1490,21 @@ but also above the ceiling, so it is recorded, not claimed, pending the server.
 Logs: results/perf/jl_sha256_mv_arms_mac_0916.log,
 results/perf/cryptoswift_mv_perf_mac_0916.log,
 results/static/cryptoswift_mv_census_mac_0916.txt.
+
+### 11.16 F1 solver hardness, step 2 — bit-width narrowing (Sep 16 2026)
+Profiling (knob `profile`) showed matmul.jl's certifying query is dominated
+by bit-blasted 64-bit multiplication (35k–52k conflicts, UNKNOWN at 120 s);
+the same query narrowed to 32 bits offline is UNSAT in 0.36 s. Implemented
+(knob `narrow`, HANDOFF §10.37–10.39): whole-query 64→32 bit-width
+reduction with per-operation overflow flags, certified by two 32-bit
+queries (Q_A: trap unreachable with all flags false; Q_B: no flag can be set
+under the hypothesis and the input facts), with a 16-bit-operand
+multiplication rewrite as fallback. Soundness by the prefix argument
+(HANDOFF §10.38). Result on the frozen matmul.jl: **3/3 traps versioned at a
+3 s budget** (UNKNOWN at 120 s before), verifier clean, H = {n ≤ 2^15,
+size > n·n − 1, size ≤ 2^15 or 2^30, …}: the fast path covers n ≤ 32768 but,
+for two of the three traps, only arrays up to 32768 elements (loosening that
+bound is a genuinely 20 s query). matmul.rs 2/5 unchanged; lz77.jl 3/4 at 3 s
+(was 2/4); all other kernels unchanged; MV gate 8/8, main gate 27/12, mv-off
+probe unchanged (§10.40). Runtime not yet measured (Julia: proxy arm needed;
+fast-path domain currently too small for the 512-class GEMM workloads).

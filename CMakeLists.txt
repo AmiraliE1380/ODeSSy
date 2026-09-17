@@ -12,6 +12,7 @@ add_library(OraclePass MODULE
     OraclePass/Scheduler.cpp
     OraclePass/Z3Encoder.cpp
     OraclePass/FactEncoder.cpp
+    OraclePass/Narrow.cpp
 )
 # 3. Force it to be a .so file without the "lib" prefix
 # (so it outputs OraclePass.so instead of libOraclePass.so)

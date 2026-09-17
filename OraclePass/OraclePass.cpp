@@ -309,10 +309,13 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
                         if (BO->getOpcode() == Instruction::Mul && BO->getType()->isIntegerTy(64)) { HasMul = true; break; }
                 if (!HasMul) continue;
                 raw_string_ostream OS(J.LogText);
-                OS << "    -> [narrow] retry on the narrow-mul encoding\n";
                 const odessy::FunctionCtx &FC = FCs[CtxOf.lookup(J.F)];
-                odessy::TrapSolver S(Cfg, FC, J, /*Narrow=*/true);
-                if (S.encodePhase() && S.factPhase()) S.solvePhase();
+                OS << "    -> [narrow] retry: whole-query 64->32 with overflow flags\n";
+                { odessy::TrapSolver S(Cfg, FC, J, /*Narrow=*/1); if (S.encodePhase() && S.factPhase()) S.solvePhase(); }
+                if (!J.MVEliminate) {
+                    OS << "    -> [narrow] retry: mul-only " << NarrowBits << "-bit-operand encoding\n";
+                    odessy::TrapSolver S(Cfg, FC, J, /*Narrow=*/2); if (S.encodePhase() && S.factPhase()) S.solvePhase();
+                }
             }
         }
 

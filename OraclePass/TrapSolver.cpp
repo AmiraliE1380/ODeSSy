@@ -1,5 +1,8 @@
 #include "TrapSolver.h"
 #include "FactEncoder.h"
+#include "Narrow.h"
+#include <chrono>
+#include <memory>
 
 #include "llvm/ADT/PostOrderIterator.h"
 #include "llvm/Analysis/LoopInfo.h"
@@ -26,12 +29,12 @@ using namespace llvm;
 namespace odessy {
 
 TrapSolver::TrapSolver(const SolverConfig &Cfg, const FunctionCtx &FC,
-                       TrapJob &Job, bool Narrow)
+                       TrapJob &Job, unsigned Narrow)
     : Cfg(Cfg), FC(FC), Job(Job), Encoder(Cfg.QueryTimeoutMs), NarrowMode(Narrow),
       Log(Job.LogText) {
     if (Cfg.VacuityCheck || Cfg.MultiVersion)   // MV reads cores too
         Encoder.enableUnsatCores();
-    if (Narrow) Encoder.enableNarrowMul(64, Cfg.NarrowBits);
+    if (Narrow == 2) Encoder.enableNarrowMul(64, Cfg.NarrowBits);   // mul-only fallback
     if (Cfg.LoadEq)
         Encoder.enableLoadEquivalence();
 }
@@ -56,6 +59,7 @@ bool TrapSolver::encodePhase() {
                 }
             }
         }
+        if (NarrowMode == 1) Defs64 = Encoder.snapshotAssertions();   // §10.38: definitions
         // LDEQ visibility: only ever printed when the knob is on, so
         // default-mode logs stay byte-identical to the pre-LDEQ pass.
         if (Cfg.LoadEq && Encoder.getNumLoadEquivs() > 0) {
@@ -414,6 +418,38 @@ z3::expr TrapSolver::scevToBV(const SCEV *S, bool &OK, unsigned W) {
 
 void TrapSolver::mvPhase() {
     if (!FC.LI) return;
+    // Whole-query narrowing (§10.38): rewrite defs/guards/trap once; on
+    // refusal fall back to the exact solver path (this solver's encoding is
+    // exact in mode 1, so the fallback is just "no narrowing").
+    bool Whole = false;
+    if (NarrowMode == 1) {
+        try {
+            WholeN = std::make_unique<Narrower>(Encoder.context(), 64, 32, /*FreshInputs=*/true);
+            Defs32.clear(); Guards32.clear();
+            for (auto &D : Defs64) Defs32.push_back(WholeN->rewrite(D));
+            for (auto &G : Job.Guards) {
+                try { Guards32.push_back(WholeN->rewrite(Encoder.condExpr(G.first, G.second))); }
+                catch (const NarrowRefused &R) { Log << "    -> [narrow] guard dropped (" << R.Why << ")\n"; }
+            }
+            Trap32 = WholeN->rewrite(Encoder.condExpr(Job.TrapCond, Job.TrapOnTrue));
+            Facts32.clear();
+            for (auto &F : Encoder.factExprs()) { try { Facts32.push_back(WholeN->rewrite(F)); } catch (const NarrowRefused &) {} }
+            Guards64NoMul.clear();
+            std::function<bool(const z3::expr &)> hasMul = [&](const z3::expr &E) -> bool {
+                if (!E.is_app()) return false;
+                if (E.decl().decl_kind() == Z3_OP_BMUL) return true;
+                for (unsigned i = 0; i < E.num_args(); ++i) if (hasMul(E.arg(i))) return true;
+                return false;
+            };
+            for (auto &G : Job.Guards) { z3::expr GE = Encoder.condExpr(G.first, G.second); if (!hasMul(GE)) Guards64NoMul.push_back(GE); }
+            Whole = true;
+            Log << "    -> [narrow] whole-query 64->32 rewrite: " << Defs32.size() << " definitions, "
+                << WholeN->flags().size() << " overflow flags, " << WholeN->numInputs() << " 64-bit inputs\n";
+        } catch (const NarrowRefused &R) {
+            Log << "    -> [narrow] whole-query narrowing refused: " << R.Why << " (exact solver used)\n";
+            Whole = false;
+        }
+    }
     Loop *L = FC.LI->getLoopFor(Job.PredBB);
     if (!L) { Log << "    -> [mv] trap not inside a loop: not versionable\n"; return; }
     struct Cand { Value *V; ICmpInst::Predicate P; APInt C; std::string Text; Loop *Outer;
@@ -534,53 +570,162 @@ void TrapSolver::mvPhase() {
         case ICmpInst::ICMP_SLT: return V < K;         default:                 return V <= K;
         }
     };
+    // ---------------------------------------------------------------------
+    // One check of "trap dead under the candidate set Use", mode-aware.
+    //   exact / mul-narrow : push, assert Use (tracked), check, core, pop
+    //   whole-narrow (§10.38): Q_A on the 32-bit instrumented query and
+    //                          Q_B (no guards/trap) ruling out every flag
+    // ---------------------------------------------------------------------
+    struct CheckResult { bool Unsat = false, Unknown = false; double Ms = 0; std::vector<size_t> Core; };
+    auto coreOf = [&](const std::string &Core, const std::vector<size_t> &Use) {
+        std::vector<size_t> K;
+        for (size_t i : Use) {
+            std::string Tok = "|MV:" + std::to_string(i) + "|", Tok2 = "MV:" + std::to_string(i) + " ";
+            if (Core.find(Tok) != std::string::npos || Core.find(Tok2) != std::string::npos) K.push_back(i);
+        }
+        return K;
+    };
+    // Whole mode: candidate conjuncts are rewritten to 32 bits as well (a T3
+    // bound carries the product); a candidate whose constant does not fit is
+    // unusable at 32 bits and is dropped from every Use set.
+    std::map<size_t, std::optional<z3::expr>> CandW;
+    auto candW = [&](size_t i) -> std::optional<z3::expr> {
+        auto It = CandW.find(i);
+        if (It != CandW.end()) return It->second;
+        std::optional<z3::expr> R;
+        try { R = WholeN->rewrite(mkExpr(Cands[i])); }
+        catch (const NarrowRefused &X) { R.reset(); Log << "    -> [narrow] candidate dropped at 32 bits: {" << Cands[i].Text << "}: " << X.Why << "\n"; }
+        CandW[i] = R; return R;
+    };
+    auto check = [&](const std::vector<size_t> &UseIn, bool Tracked) -> CheckResult {
+        CheckResult CR;
+        std::vector<size_t> Use;
+        for (size_t i : UseIn) if (!Whole || !Cands[i].Bound || candW(i)) Use.push_back(i);   // T3 must be rewritable
+        if (Whole && Tracked) { Log << "    -> [narrow] Q_A/Q_B hypothesis set:"; for (size_t i : Use) Log << " {" << Cands[i].Text << "}"; Log << "\n"; }
+        if (Whole) {
+            z3::context &C = Encoder.context();
+            auto mk = [&](bool QA) {
+                z3::solver S(C);
+                S.set("timeout", (unsigned)Encoder.timeoutMs());
+                if (Tracked) S.set("unsat_core", true);
+                if (QA) {
+                    // Q_A: PURE 32-bit query. Inputs are fresh 32-bit consts;
+                    // facts and constant-compare hypotheses are rewritten
+                    // (exact whenever the inputs fit, which Q_B certifies);
+                    // anything the rewriter refuses is simply omitted
+                    // (weakening the assumptions keeps UNSAT sound).
+                    for (auto &D : Defs32) S.add(D);
+                    for (auto &F : Facts32) S.add(F);
+                    for (size_t i : Use) {
+                        auto CE = candW(i); if (!CE) continue;
+                        if (Tracked) S.add(*CE, ("MV:" + std::to_string(i)).c_str()); else S.add(*CE);
+                    }
+                    for (auto &G : Guards32) S.add(G);
+                    S.add(*Trap32);
+                } else {
+                    // Q_B: 64-bit inputs exactly (facts, T1/T2 hypotheses,
+                    // multiplication-free guards), linked to their 32-bit
+                    // images so the operation flags are evaluated on them.
+                    for (auto &F : Encoder.factExprs()) if (F.is_bool()) S.add(F);
+                    for (size_t i : Use) {
+                        if (Cands[i].Bound) continue;
+                        if (Tracked) S.add(mkExpr(Cands[i]), ("MV:" + std::to_string(i)).c_str()); else S.add(mkExpr(Cands[i]));
+                    }
+                    for (auto &G : Guards64NoMul) S.add(G);
+                    for (auto &L : WholeN->links()) S.add(L);
+                }
+                return S;
+            };
+            auto run = [&](z3::solver &S, const z3::expr &Extra) {
+                S.add(Extra);
+                auto T0 = std::chrono::steady_clock::now();
+                z3::check_result R = S.check();
+                CR.Ms += std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - T0).count();
+                return R;
+            };
+            z3::solver SA = mk(true);
+            z3::check_result RA = run(SA, WholeN->noFlag());
+            if (Cfg.ProfileMs && CR.Ms >= Cfg.ProfileMs) {
+                static unsigned Seq = 0;
+                std::string Name = "logs/profile/" + Job.F->getName().str().substr(0, 40) + "_" + std::to_string(Job.Index) + "_QA" + std::to_string(Seq++) + ".smt2";
+                std::error_code EC; raw_fd_ostream OS(Name, EC, sys::fs::OF_Text);
+                if (!EC) { OS << SA.to_smt2() << "\n"; Log << "    -> [profile] dumped narrow Q_A (" << CR.Ms << " ms, " << (RA == z3::unsat ? "UNSAT" : RA == z3::unknown ? "UNKNOWN" : "SAT") << ") " << Name << "\n"; }
+            }
+            if (RA != z3::unsat) {
+                CR.Unknown = (RA == z3::unknown);
+                if (RA == z3::sat) {
+                    z3::model M = SA.get_model();
+                    Log << "    -> [narrow] Q_A SAT model, inputs:";
+                    for (auto &I : WholeN->inputs()) Log << " " << I.to_string() << "=" << M.eval(I, true).to_string();
+                    Log << "\n         trap32 = " << M.eval(*Trap32, true).to_string() << ", H conjuncts: " << Use.size() << "\n";
+                }
+                return CR;
+            }
+            std::string CoreA; if (Tracked) { z3::expr_vector c = SA.unsat_core(); for (unsigned i = 0; i < c.size(); ++i) CoreA += c[i].to_string() + " "; }
+            z3::solver SB = mk(false);
+            z3::check_result RB = run(SB, WholeN->anyFlag());
+            if (RB != z3::unsat) {
+                CR.Unknown = (RB == z3::unknown);
+                Log << "    -> [narrow] Q_B: some 64-bit value may leave 32 bits under H (" << (RB == z3::unknown ? "UNKNOWN" : "SAT") << ")";
+                if (RB == z3::sat) {
+                    z3::model M = SB.get_model(); unsigned Shown = 0;
+                    for (size_t k = 0; k < WholeN->flags().size() && Shown < 3; ++k) {
+                        z3::expr V = M.eval(WholeN->flags()[k], true);
+                        if (V.is_true()) { Log << "\n         flag set: " << WholeN->flagTexts()[k]; ++Shown; }
+                    }
+                    Log << "\n         inputs:"; for (auto &I : WholeN->inputs()) Log << " " << I.to_string() << "=" << M.eval(I, true).to_string();
+                    Log << "\n         SB assertions: " << SB.assertions().size() << ", facts: " << Encoder.factExprs().size() << ", H in Q_B:";
+                    for (size_t i : Use) if (!Cands[i].Bound) Log << " {" << Cands[i].Text << "=" << M.eval(mkExpr(Cands[i]), true).to_string() << "}";
+                }
+                Log << "\n"; return CR;
+            }
+            std::string CoreB; if (Tracked) { z3::expr_vector c = SB.unsat_core(); for (unsigned i = 0; i < c.size(); ++i) CoreB += c[i].to_string() + " "; }
+            CR.Unsat = true;
+            if (Tracked) {
+                std::vector<size_t> KA = coreOf(CoreA, Use), KB = coreOf(CoreB, Use);
+                for (size_t i : Use) if (std::find(KA.begin(), KA.end(), i) != KA.end() || std::find(KB.begin(), KB.end(), i) != KB.end()) CR.Core.push_back(i);
+            }
+            return CR;
+        }
+        Encoder.push();
+        for (size_t i : Use) Encoder.assertRawFact(mkExpr(Cands[i]), Tracked ? "MV:" + std::to_string(i) : std::string());
+        auto [Res, L1] = Encoder.checkSatisfiability();
+        CR.Ms = L1;
+        if (Res.find("UNSAT") != std::string::npos) { CR.Unsat = true; if (Tracked) CR.Core = coreOf(Encoder.getUnsatCore(), Use); }
+        else CR.Unknown = Res.find("UNKNOWN") != std::string::npos;
+        Encoder.pop();
+        return CR;
+    };
+
     // Re-solve, hoistability-first: round 0 uses only candidates that are
     // invariant in the whole function (sizes, globals, arguments) so H can
     // be hoisted to the outermost loop and paid once; round 1 adds the
-    // candidates invariant only in some enclosing loop (e.g. an outer
-    // induction variable), whose guard is paid per entry of that loop.
+    // candidates invariant only in some enclosing loop.
     std::vector<size_t> Keep; double Lat = 0.0; unsigned Round = 0;
     for (Round = 0; Round < 2 && Keep.empty(); ++Round) {
         std::vector<size_t> Use;
         for (size_t i = 0; i < Cands.size(); ++i)
             if (Round == 1 || Cands[i].Outer == nullptr) Use.push_back(i);
         if (Use.empty()) continue;
-        if (Round == 1 && Use.size() == Cands.size() && Keep.empty()) {
-            // round 0 already tried exactly this set
-            bool Same = true;
-            for (size_t i = 0; i < Cands.size(); ++i) if (Cands[i].Outer) { Same = false; break; }
-            if (Same) break;
-        }
-        Encoder.push();
-        for (size_t i : Use)
-            Encoder.assertRawFact(mkExpr(Cands[i]), "MV:" + std::to_string(i));
-        auto [Res, L1] = Encoder.checkSatisfiability();
-        Lat += L1; Job.LatencyMs += L1;
-        profileQuery(Round == 0 ? "mv0" : "mv1", Res, L1);
-        if (Res.find("UNSAT") != std::string::npos) {
-            std::string Core = Encoder.getUnsatCore();
-            for (size_t i : Use) {
-                std::string Tok = "|MV:" + std::to_string(i) + "|", Tok2 = "MV:" + std::to_string(i) + " ";
-                if (Core.find(Tok) != std::string::npos || Core.find(Tok2) != std::string::npos) Keep.push_back(i);
-            }
-            Encoder.pop();
-            if (Keep.empty()) {
-                Log << "    -> [mv] UNSAT but no hypothesis in core (" << Core << "): refusing\n";
-                return;
-            }
+        if (Round == 1) { bool Same = true; for (auto &C : Cands) if (C.Outer) { Same = false; break; } if (Same) break; }
+        CheckResult CR = check(Use, true);
+        Lat += CR.Ms; Job.LatencyMs += CR.Ms;
+        profileQuery(Round == 0 ? "mv0" : "mv1", CR.Unsat ? "UNSAT" : (CR.Unknown ? "UNKNOWN" : "SAT"), CR.Ms);
+        if (CR.Unsat) {
+            Keep = CR.Core;
+            if (Keep.empty()) { Log << "    -> [mv] UNSAT but no hypothesis in core: refusing\n"; return; }
             break;
         }
-        Encoder.pop();
         if (Round == 1 || Use.size() == Cands.size()) {
-            Log << "    -> [mv] still " << (Res.find("UNKNOWN") != std::string::npos ? "UNKNOWN" : "SAT")
-                << " under " << Use.size() << " hypothesis candidate(s): not versionable\n";
+            Log << "    -> [mv] still " << (CR.Unknown ? "UNKNOWN" : "SAT") << " under " << Use.size()
+                << " hypothesis candidate(s): not versionable\n";
             return;
         }
     }
     if (Keep.empty()) { Log << "    -> [mv] no usable hypothesis: not versionable\n"; return; }
-    if (NarrowMode && !Encoder.narrowSideConds().empty()) {
-        // Q1 (HANDOFF §10.37): under H, every narrowed multiplication's
-        // operands must be < 2^32 on trap-reaching executions.
+    if (NarrowMode && !Whole && !Encoder.narrowSideConds().empty()) {
+        // Q1 (HANDOFF §10.37, mul-only fallback): under H, every narrowed
+        // multiplication's operands must be < 2^K on trap-reaching executions.
         Encoder.push();
         for (size_t i : Keep) Encoder.assertRawFact(mkExpr(Cands[i]), std::string());
         z3::expr All = Encoder.narrowSideConds()[0];
@@ -598,13 +743,9 @@ void TrapSolver::mvPhase() {
     }
     // Greedy core minimization: Z3 cores are not minimal, and a spurious
     // conjunct (typically an UPPER bound on a length) needlessly shrinks the
-    // fast path's domain. Try dropping each conjunct (upper bounds first);
-    // keep the drop if the query is still UNSAT. <= |Keep| extra queries.
+    // fast path's domain. Upper bounds first, tightest first.
     {
         std::vector<size_t> Order(Keep);
-        // Upper bounds first, and among them the TIGHTEST first: dropping a
-        // tight bound while a looser one on the same value still stands keeps
-        // the query easy, so the surviving bound is the loose (harmless) one.
         std::stable_sort(Order.begin(), Order.end(), [&](size_t a, size_t b) {
             auto isUpper = [&](size_t i) { return Cands[i].P == ICmpInst::ICMP_SLE || Cands[i].P == ICmpInst::ICMP_ULE; };
             bool ua = isUpper(a), ub = isUpper(b);
@@ -614,23 +755,17 @@ void TrapSolver::mvPhase() {
         });
         for (size_t Drop : Order) {
             if (Keep.size() <= 1) break;
-            Encoder.push();
-            for (size_t i : Keep) if (i != Drop) Encoder.assertRawFact(mkExpr(Cands[i]), std::string());
-            auto [R2, L2] = Encoder.checkSatisfiability();
-            Job.LatencyMs += L2;
-            Encoder.pop();
-            bool Dropped = R2.find("UNSAT") != std::string::npos;
+            std::vector<size_t> Try; for (size_t i : Keep) if (i != Drop) Try.push_back(i);
+            CheckResult CR = check(Try, false);
+            Job.LatencyMs += CR.Ms;
             Log << "    -> [mv] minimize: without {" << Cands[Drop].Text << "} -> "
-                << (Dropped ? "UNSAT, dropped" : (R2.find("UNKNOWN") != std::string::npos ? "UNKNOWN, kept" : "SAT, kept"))
-                << " (" << L2 << " ms)\n";
-            if (Dropped) Keep.erase(std::find(Keep.begin(), Keep.end(), Drop));
+                << (CR.Unsat ? "UNSAT, dropped" : (CR.Unknown ? "UNKNOWN, kept" : "SAT, kept")) << " (" << CR.Ms << " ms)\n";
+            if (CR.Unsat) Keep = Try;
         }
     }
-    // Loosening: an upper bound in the core may be tighter than needed (the
-    // core is whatever Z3 found first). For each kept upper bound on V, try
-    // the looser candidates on the same V (ascending constant); adopt the
-    // loosest that keeps the query UNSAT. A tight `size <= 2^15` would
-    // confine the fast path to tiny inputs for no reason.
+    // Loosening: an upper bound in the core may be tighter than needed; try
+    // the looser candidates on the same value (ascending) and adopt the
+    // loosest that still certifies.
     for (size_t idx = 0; idx < Keep.size(); ++idx) {
         size_t Cur = Keep[idx];
         if (Cands[Cur].Bound) continue;
@@ -641,16 +776,13 @@ void TrapSolver::mvPhase() {
                 Looser.push_back(j);
         std::sort(Looser.begin(), Looser.end(), [&](size_t a, size_t b) { return Cands[a].C.ult(Cands[b].C); });
         for (size_t j : Looser) {
-            Encoder.push();
-            for (size_t i : Keep) Encoder.assertRawFact(mkExpr(Cands[i == Cur ? j : i]), std::string());
-            auto [R3, L3] = Encoder.checkSatisfiability();
-            Job.LatencyMs += L3;
-            profileQuery("loosen", R3, L3);
-            Encoder.pop();
-            bool OK3 = R3.find("UNSAT") != std::string::npos;
+            std::vector<size_t> Try(Keep); Try[idx] = j;
+            CheckResult CR = check(Try, false);
+            Job.LatencyMs += CR.Ms;
+            profileQuery("loosen", CR.Unsat ? "UNSAT" : (CR.Unknown ? "UNKNOWN" : "SAT"), CR.Ms);
             Log << "    -> [mv] loosen: {" << Cands[Cur].Text << "} -> {" << Cands[j].Text << "}: "
-                << (OK3 ? "UNSAT, adopted" : "kept tight") << " (" << L3 << " ms)\n";
-            if (!OK3) break;
+                << (CR.Unsat ? "UNSAT, adopted" : "kept tight") << " (" << CR.Ms << " ms)\n";
+            if (!CR.Unsat) break;
             Keep[idx] = j; Cur = j;
         }
     }

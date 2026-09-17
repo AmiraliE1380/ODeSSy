@@ -73,7 +73,20 @@ public:
     // current assertion set in SMT-LIB 2 text.
     std::string getStatistics();
     std::string toSMT2();          // includes check-sat-assuming over tracked labels
-    std::vector<std::string> TrackedLabels;   // answer literals of tracked assertions
+    // F1 step 2b (HANDOFF §10.38): assertion classes for the narrowing rewriter.
+    std::vector<z3::expr> snapshotAssertions() {
+        std::vector<z3::expr> V; z3::expr_vector A = Solver.assertions();
+        for (unsigned i = 0; i < A.size(); ++i) V.push_back(A[i]);
+        return V;
+    }
+    const std::vector<z3::expr> &factExprs() const { return FactExprs; }
+    z3::context &context() { return Ctx; }
+    z3::expr condExpr(llvm::Value *Cond, bool IsTrue) { z3::expr c = asBool(getOrCreateZ3Expr(Cond)); return IsTrue ? c : !c; }
+    unsigned timeoutMs() const { return TimeoutMsStored; }
+    std::vector<std::string> TrackedLabels;   // answer literals of tracked assertions (scope-aware)
+    std::vector<size_t> TrackedScopes;        // TrackedLabels.size() at each push
+    std::vector<z3::expr> FactExprs;          // every fact asserted via addFact
+    unsigned TimeoutMsStored = 10000;
     unsigned NarrowMulWidth = 0;              // 0 = exact multiplication
     unsigned NarrowOpBits = 16;               // operand width of the narrowed multiplier
     std::vector<z3::expr> NarrowSideConds;

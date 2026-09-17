@@ -29,6 +29,9 @@
 #include "llvm/Support/raw_ostream.h"
 
 namespace llvm { class SCEV; }
+#include <memory>
+#include <optional>
+#include "Narrow.h"
 
 namespace odessy {
 
@@ -64,8 +67,10 @@ struct SolverConfig {
 
 class TrapSolver {
 public:
+    // Narrow: 0 exact, 1 whole-query 64->32 with overflow flags (§10.38),
+    // 2 mul-only 16-bit-operand rewrite (§10.37 fallback).
     TrapSolver(const SolverConfig &Cfg, const FunctionCtx &FC, TrapJob &Job,
-               bool Narrow = false);
+               unsigned Narrow = 0);
 
     // PHASE 2. False => aborted (unsupported instruction / exception):
     // keep the trap, skip the query.
@@ -91,7 +96,10 @@ private:
     const FunctionCtx &FC;
     TrapJob &Job;
     Z3Encoder Encoder;
-    bool NarrowMode = false;
+    unsigned NarrowMode = 0;
+    std::vector<z3::expr> Defs64, Defs32, Guards32, Guards64NoMul, Facts32;
+    std::optional<z3::expr> Trap32;
+    std::unique_ptr<Narrower> WholeN;
     llvm::raw_string_ostream Log;   // appends to Job.LogText
 };
 

@@ -13,10 +13,14 @@ Z3Encoder::Z3Encoder(unsigned TimeoutMs) : Solver(Ctx) {
     // Per-query safety net: a pathological query returns UNKNOWN after
     // TimeoutMs (handled like SAT downstream) instead of hanging the run.
     Solver.set("timeout", TimeoutMs);
+    TimeoutMsStored = TimeoutMs;
 }
 
-void Z3Encoder::push() { Solver.push(); }
-void Z3Encoder::pop()  { Solver.pop(); }
+void Z3Encoder::push() { Solver.push(); TrackedScopes.push_back(TrackedLabels.size()); }
+void Z3Encoder::pop()  {
+    Solver.pop();
+    if (!TrackedScopes.empty()) { TrackedLabels.resize(TrackedScopes.back()); TrackedScopes.pop_back(); }
+}
 
 void Z3Encoder::enableUnsatCores() { Solver.set("unsat_core", true); }
 
@@ -84,6 +88,7 @@ z3::expr Z3Encoder::bvConst(const llvm::APInt &A) {
 }
 
 void Z3Encoder::addFact(const z3::expr &Fact, const std::string &Label) {
+    FactExprs.push_back(Fact);
     if (Label.empty()) Solver.add(Fact);
     else             { Solver.add(Fact, Label.c_str()); TrackedLabels.push_back(Label); }
 }

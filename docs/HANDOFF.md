@@ -2222,3 +2222,96 @@ at a 10 s budget (offline: 0.36 s); matmul.rs unchanged (2/5); GEMM 16/16
 unchanged (exact path); gates and the 60-cell probe unchanged with `narrow`
 off; lz77.jl unchanged (its cost is not the mul; whole-query narrowing gave
 5.5x offline but is out of scope for this step).
+
+### 10.38 F1 step 2b -- SPEC: whole-query bit-width reduction with overflow instrumentation
+Evidence (offline, faithful dumps of the pass's own queries):
+  operation-local narrow-mul (16-bit operands, §10.37): matmul.jl 3/3 at
+  10 s BUT only with size <= 2^15 in H; loosening to size <= 2^30 is
+  UNKNOWN at 10 s / UNSAT 54 s offline / 14.7 s with a product-monotonicity
+  lemma. Whole-query narrowing to 32 bits: UNSAT 0.36 s (matmul), 0.64 s
+  (lz77 A). Fits-certificate on the exact encoding: timeout (the exact
+  mul is in it); on the narrow-mul encoding: 11 s. => certificates on wide
+  encodings are the wrong tool; instrument the narrow one instead.
+DESIGN (knob `narrow` now means this; the mul-only rewrite stays as the
+fallback when the 32-bit form is refused):
+  Rewriter over the FINISHED Z3 assertions (no encoder change): every
+  64-bit term is rebuilt at 32 bits; 64-bit free constants v64 stay
+  64-bit, their uses become extract(31,0,v64); constants that fit are
+  truncated. Each rewritten op o with 32-bit result gets a flag ovf(o):
+    add/sub/mul : signed 32-bit overflow (Z3 bv*_no_overflow/underflow)
+    shl         : (result ashr c) != operand
+    udiv/urem/lshr: operand negative (unsigned semantics differ on negatives)
+    zext i32->i64 : source top bit set (value >= 2^31 does not fit)
+    free input v64: !fits32(v64)  (fits32(x) := sext(extract(31,0,x)) == x)
+  compares (signed AND unsigned), and/or/xor/not, select, sext, trunc,
+  extract-from-64 need no flag: on values that fit, their 32-bit result
+  equals the 64-bit one (unsigned order is preserved by v -> v mod 2^32 on
+  [-2^31, 2^31)). Any other 64-bit op => refuse narrowing.
+  Assertion classes: DEFS (SSA/CFG definitions), FACTS (fact battery, on
+  free values: kept exact at 64 bits on v64), GUARDS, H (kept 64-bit on
+  inputs), TRAP.
+  Q_A : defs32 && facts64 && H64 && guards32 && trap32 && AND(!ovf)  -> UNSAT
+  Q_B : defs32 && facts64 && H64 && OR(ovf)                          -> UNSAT
+  (Q_B deliberately excludes guards: a path condition on a post-overflow
+  value could be garbage in the 32-bit model; facts are about free inputs
+  and stay exact.)
+SOUNDNESS. Let E be a real execution under H reaching the trap. Walk E's
+ops in dependence order. If some op (or input) leaves the 32-bit range,
+take the FIRST such o: all its inputs fit, so the 32-bit model computes
+them exactly and ovf(o) is true on E's prefix; E's inputs satisfy facts64
+and H64 exactly; hence E's prefix is a model of Q_B -- contradiction. So
+every value of E fits, the 32-bit model equals E on every value, all flags
+are false, guards32 and trap32 hold on it: a model of Q_A -- contradiction.
+Hence no execution under H reaches the trap; H is the runtime guard.
+COST: two 32-bit queries; Q_B is over input facts + definitions only.
+REFUSES: unsupported 64-bit op; a non-fitting constant inside a DEF or
+TRAP assertion (inside a FACT/GUARD the assertion is dropped: weakening the
+context is sound for an UNSAT proof); Q_A or Q_B not UNSAT.
+PREDICTION: matmul.jl 3/3 with H = {n <= 2^15, size in [.., 2^30] , size >u
+n*n-1} (fast path for n up to 32768) at a 3 s budget; lz77.jl unchanged
+(its H has n <= 2^62, which does not fit 32 bits => refused; a 48-bit
+variant is a later option); gates unchanged; probe unchanged.
+
+### 10.39 F1 step 2 -- RESULTS (Sep 16 2026): narrowing implemented; matmul.jl 3/3 versioned
+Implemented (knob `narrow[=bits]`, effective in the Stage 2b mv retry;
+mul-only 16-bit rewrite of §10.37 kept as fallback):
+  OraclePass/Narrow.{h,cpp}: the whole-query rewriter of §10.38 over
+  finished Z3 assertions -- fresh 32-bit input constants (Q_A) linked to
+  the 64-bit inputs (Q_B), per-operation overflow flags, compares against
+  non-fitting constants folded to their constant truth value, memo keyed by
+  live expression (Z3 reuses AST ids of freed terms -- first bug), numerals
+  via is_numeral_u64 (second bug), multiplication-free mul flag (Z3 encodes
+  bvmul_no_overflow with a doubled-width multiply -- third bug; the flag is
+  now "both operands within +-2^15", conservative and sound).
+  TrapSolver: mode-aware check() (exact / mul-only / whole), Q_A = pure
+  32-bit query (rewritten facts, T1/T2/T3 hypotheses, guards, trap, all
+  flags false); Q_B = 64-bit inputs + exact facts + T1/T2 hypotheses +
+  multiplication-free guards + links + some flag true. Both UNSAT => fold.
+  Greedy minimization tightest-first and loosening of upper bounds.
+  Diagnostics: [narrow] lines report the hypothesis set, Q_B's satisfied
+  flags with input values, minimize/loosen outcomes; profile dumps Q_A.
+RESULT matmul.jl (frozen, 3 s budget, threads=3): 3/3 traps folded in the
+  fast copy, verifier clean. Mined H (per trap; guard hoisted to the outer
+  loop): {n <= 2^15, a.size >= 0, a.size <= 2^15 (trap 1) / <= 2^30 (trap 2),
+  a.size > n*n-1, c.size > n*n-1, b.size ...}. Fast path applies to
+  n <= 32768 and (trap 1 / trap 3 via mul-only fallback) a.size <= 32768,
+  i.e. n <= 181 for those two -- the loosening query for those bounds is
+  genuinely hard: UNSAT in 17-25 s offline at 32 bits WITH flags, SAT
+  without flags (flags load-bearing); trap 2's identical step took 0.2 s.
+  PREDICTION of §10.38 met on certifiability (3/3 at 3 s vs UNKNOWN at
+  120 s before) and on the machinery; NOT fully met on the fast-path domain
+  (size <= 2^30 reached for one of three traps). Follow-up F1: why two
+  structurally identical Q_A's differ 100x (solver variance vs structure).
+Regression: MV gate 8/8 (test_mv_narrow 64-bit twin, bigops tripwire),
+  main gate 27/12; lz77.jl 3 folds at 3 s (was 2), matmul.rs 2, base64 5,
+  crc32 6, sha256.jl 6 -- all verify. mv-off probe: see §10.40.
+Cost: Stage 2b is serial (main thread); matmul.jl total solver time 22 s at
+  a 3 s budget (3 traps x {exact rounds, whole rounds, minimize, loosen}).
+
+### 10.40 Regression probe (mv OFF, narrow OFF) vs the Sep 10 PHIINV column
+scripts/run_verdict_probe.sh (new, replaces the scratch probe); log
+results/static/probe_mac_0916_mvoff.log. 60 cells; 8 differ, all known:
+base64 heavy/full +2 UNSAT (PHIINV-rel, §10.20); Swift lz77 +1/+2 UNSAT
+(PHIINV-hx / usub.sat, §10.17); Rust lz77 1 SAT->UNKNOWN at 300 ms (latency,
+UNSAT at 3 s); jl_filt_dsp full and jl_gemm_base heavy one UNSAT->UNKNOWN at
+300 ms (latency; 6/19 and 16/16 at 3 s). No UNSAT -> SAT anywhere.
