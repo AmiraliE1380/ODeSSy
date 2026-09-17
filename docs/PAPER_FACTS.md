@@ -1518,3 +1518,11 @@ Product-monotonicity lemmas did not help (31 s) and were removed. matmul.jl
 therefore remains a static 3/3 with a fast path that real GEMM inputs would
 not take; no runtime arm was made. Next lever would be a linearization step
 (HANDOFF §10.41).
+
+### 11.17 matmul.jl — designated MV arms (Sep 17 2026, Mac)
+Hand transcription of the pass's mined guard (`jl_matmul_mv_arms.jl`;
+frozen `matmul.jl` untouched). n=128, guard passes: checked 0.0165 s, MV
+0.0135 s = **1.22×**, all-`@inbounds` ceiling 1.218× → 100% recovered. n=512,
+guard fails (arrays > 32768 elements): MV = checked by construction, and the
+checks-off ceiling there is only 2.1% (memory-bound regime). Log:
+results/perf/jl_matmul_mv_arms_mac_0917.log.

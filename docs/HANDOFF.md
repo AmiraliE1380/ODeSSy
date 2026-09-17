@@ -2344,3 +2344,19 @@ the derived linear facts (X<=Y-1 -> m_X <= m - n), or handing the
 refutation to Z3's nonlinear integer engine on the narrowed 32-bit values.
 Both are the "linearization" step 3 of §10.35, now with the exact target
 query on disk (logs/profile/julia_matmul!_145_0_QA*.smt2).
+
+### 10.42 matmul.jl designated MV arms (Sep 17 2026, Mac; frozen source untouched)
+native_bench/jl_matmul_mv_arms.jl transcribes the mined H literally:
+n <= 32768 && len(a),len(b),len(c) > n*n-1 && len(a),len(b) <= 32768
+(the last two are the tight bounds loosening could not certify).
+results/perf/jl_matmul_mv_arms_mac_0917.log (medians; 21 x 20 reps / 15 x 1):
+    n=128 (guard passes): checked 0.0165 | mv 0.0135 = 1.22x | ceiling 0.0135 = 1.218x
+          => 100% of a 21.8% ceiling recovered; all 3 checks gone in the fast copy.
+    n=512 (guard fails, GEMM class): checked 0.1255 | mv 0.1255 = 1.00x |
+          ceiling 0.1230 = 1.021x  => the fast copy is never taken (by
+          construction) and the ceiling itself is only 2.1% here (memory
+          bound; cf. the GEMM sweep §9.4 for the same regime).
+Reading: the pass's proof is complete (3/3) and the transformation recovers
+the whole ceiling wherever the guard holds; the remaining loss is the
+guard's domain (arrays <= 32768 elements), i.e. the unfinished loosening
+of §10.41, not the proofs.
