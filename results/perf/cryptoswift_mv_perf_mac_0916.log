@@ -2,7 +2,32 @@
 swiftc: Apple Swift version 6.3.3 (swift-6.3.3-RELEASE)  sdk: /Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk
   built base     traps 2651->2962 bin  1013048 B  eliminated 0
   built base2x   traps 2651->3319 bin  1029560 B  eliminated 0
-[FATAL] build oracle failed
+  built oracle   traps 2651->2749 bin  1046280 B  eliminated 211 (+98 folded in mv fast copies)
+==== PHASE B: output equivalence gate ====
+  outputs byte-identical across all configs -- gate passed
+base        0.9283    0.9186    0.9300  ok
+base2x      0.9219    0.9161    0.9230  ok
+oracle      0.9150    0.9081    0.9156  ok
+oracle vs base: +1.43% (median)
+oracle vs base2x: +0.76% (median)
 === CryptoSwift mv (300 ms)
 swiftc: Apple Swift version 6.3.3 (swift-6.3.3-RELEASE)  sdk: /Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk
   built base     traps 2651->2962 bin  1013048 B  eliminated 0
+  built base2x   traps 2651->3319 bin  1029560 B  eliminated 0
+  built oracle   traps 2651->2749 bin  1046280 B  eliminated 211 (+101 folded in mv fast copies)
+==== PHASE B: output equivalence gate ====
+  outputs byte-identical across all configs -- gate passed
+base        0.9329    0.9228    0.9337  ok
+base2x      0.9292    0.9266    0.9305  ok
+oracle      0.9149    0.9090    0.9166  ok
+oracle vs base: +1.92% (median)
+oracle vs base2x: +1.53% (median)
+DONE
+  built oracle   traps 2651->2749 bin  1013256 B  eliminated 210
+==== PHASE B: output equivalence gate ====
+  outputs byte-identical across all configs -- gate passed
+base        0.9317    0.9206    0.9299  ok
+base2x      0.9292    0.9164    0.9274  ok
+oracle      0.9303    0.9131    0.9323  ok
+oracle vs base: +0.14% (median)
+oracle vs base2x: -0.12% (median)

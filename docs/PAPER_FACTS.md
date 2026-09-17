@@ -1466,3 +1466,27 @@ AUTO-UPDATE OFF (admin, not done by the agent):
   (System Settings > General > Software Update > Automatic Updates: all off.)
 Reproduction under the pin (Sep 16): Swift sha256, 7 UNSAT, +7.68% vs base /
 +6.77% vs base2x (Aug 22: +6.86% / +6.24%), base medians 0.4943 vs 0.4939 s.
+
+### 11.15 sha256.jl and CryptoSwift under mv-light / mv (Mac, Sep 16 2026; pinned swift.org 6.3.3)
+No benchmark source modified; sha256.jl runtime via the designated copy
+native_bench/jl_sha256_mv_arms.jl (HANDOFF §10.34).
+
+| benchmark | mode | UNSAT / edges | fraction | + MV folds | folds fraction | speedup (Mac) |
+|---|---|---|---|---|---|---|
+| sha256.jl | none | 10/16 | 62.5% | 0 | — | proxy 1.065× (10 proven @inbounds) |
+| sha256.jl | mv-light | 10/16 | 62.5% | 0 | — | same as none |
+| sha256.jl | mv | 10/16 | 62.5% | +6 → 16/16 under H | 100% | proxy 0.946× (H-guarded all-@inbounds); ceiling arm 0.923× |
+| CryptoSwift | none | 210/2651 (harness IR) | 7.9% | 0 | — | +0.14% / −0.12% |
+| CryptoSwift | mv-light | 211/2651 | 8.0% | +98 | 11.7% | **+1.43% / +0.76%** |
+| CryptoSwift | mv | 211/2651 | 8.0% | +101 | 11.8% | **+1.92% / +1.53%** |
+| CryptoSwift census | none / mv-light / mv | 208/2807 | 7.4% | 0 / +102 / +106 | 7.4% / 11.0% / 11.2% | (static, logs/cryptoswift.ll) |
+
+Speedups are oracle vs base / vs base2x, medians of 10 reps (CryptoSwift) or
+21 (Julia), byte-identical outputs. sha256.jl has no M-series ceiling (all
+@inbounds is 7.7% slower), so the mv proxy is slower too; its value is an
+x86 question (ceiling 9.5%). CryptoSwift's honest Mac ceiling was ≈0 (§9.3);
+the +1–2% under both knobs is small, positive, above the 0.3–0.7% noise floor
+but also above the ceiling, so it is recorded, not claimed, pending the server.
+Logs: results/perf/jl_sha256_mv_arms_mac_0916.log,
+results/perf/cryptoswift_mv_perf_mac_0916.log,
+results/static/cryptoswift_mv_census_mac_0916.txt.

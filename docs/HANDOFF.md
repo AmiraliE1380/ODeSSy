@@ -2099,3 +2099,40 @@ REPRODUCTION under the pin (Sep 16, REPS=30, 300 ms, same args as Aug 22):
   within 0.8 pt of the reference, base median within 0.1%: the pinned
   toolchain reproduces the flagship Swift row. Log:
   results/perf/swift_sha256_pinned633_perf_mac_0916.log.
+
+### 10.34 Sep 16 2026: sha256.jl and CryptoSwift under mv-light / mv (Mac, pinned swift.org 6.3.3)
+No benchmark source was modified. sha256.jl runtime uses the DESIGNATED
+copy native_bench/jl_sha256_mv_arms.jl (permitted exception), mirroring by
+hand what the pass does to the frozen kernel's IR under each knob.
+sha256.jl (frozen IR logs/julia_triage/sha256.ll, 16 edges, 3 s):
+    none / mv-light : 10 UNSAT, 6 SAT, 0 folds  (mv-light adds nothing)
+    mv (T3)         : 10 UNSAT + 6 folds = 16/16 under H = {w.count > 63, K.count > 63}
+  Proxy arms (jl_sha256_mv_arms.jl, 1 MiB x 40, REPS=21, outputs identical;
+  results/perf/jl_sha256_mv_arms_mac_0916.log):
+    checked 0.0962 | ceiling(all @inbounds) 0.1042 = 0.923x | mv-light proxy
+    (10 proven @inbounds) 0.0904 = 1.065x | mv proxy (guard + all @inbounds)
+    0.1016 = 0.946x.
+  Reading: on M-series sha256.jl has NO checks-off ceiling (-7.7%): removing
+  all checks is SLOWER, so the full-H fast path (mv) is slower too, while
+  the partial set (mv-light) is +6.5% -- the two-sided lottery seen before
+  (§9.1). The x86 ceiling is 9.5%; the mv row's value is a server question.
+CryptoSwift (library, driver main.swift + 59 sources, RUNARGS "300
+  perf_test/sha_input.bin", REPS=10, 300 ms, byte-identical, same session;
+  results/perf/cryptoswift_mv_perf_mac_0916.log):
+    | knob     | UNSAT | mv folds | oracle vs base | vs base2x |
+    | none     | 210   | 0        | +0.14%         | -0.12%    |
+    | mv-light | 211   | 98       | +1.43%         | +0.76%    |
+    | mv       | 211   | 101      | +1.92%         | +1.53%    |
+  (harness IR: 2651 trap sites). Noise floor (base vs base2x) 0.3-0.7%.
+  Honest Mac ceiling for CryptoSwift was ~0 (§9.3, -0.7%), so +1-2% is
+  above-ceiling class: small, positive under both knobs, but not a
+  claimable recovery on this machine. Hypotheses mined are mostly T2
+  `count >=s 0` on Array sizes (50+34 of ~100), a few `count >u 255`
+  table bounds, and T3 `count >u n-1` forms.
+  Bug fixed on the way: T2/T1 operands must DOMINATE the hoist loop header
+  (free variables include SCEV leaves pre-encoded for facts that need not
+  dominate the trap loop); the first CryptoSwift build failed the
+  verifier on such a guard.
+  Static census on logs/cryptoswift.ll (2807 edges, 300 ms, threads=8):
+    none 208 UNSAT / 28 UNKNOWN; mv-light 208 + 102 folds; mv 208 + 106 folds
+    (results/static/cryptoswift_mv_census_mac_0916.txt).
