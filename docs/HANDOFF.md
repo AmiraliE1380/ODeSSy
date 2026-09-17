@@ -2450,3 +2450,60 @@ Tests: test_mv_narrow_sqfallback.ll (n*n <u n dead but not by the linear
 Regression: verdict probe (mv off) vs the FRAME-siblings run differs only
   by 300 ms UNKNOWN flips; lz77.jl 4 folds at 3 s (was 3), matmul.rs 2,
   base64 5, crc32 6, sha256.jl 6 -- all verify.
+
+### 10.46 Item 1 -- SPEC: inductive body encoding (knob `ind`; Sep 17 2026)
+Two obligations per trap edge T in loop L (header H, unique latch, preheader P):
+  BASE : phis := their P-incoming values; context := P's dominating guards
+         (+ the usual facts); ask "T on lap 0". UNSAT required.
+  STEP : phis at t-1 FREE (fresh symbols s); one body copy B(s) encoded
+         under the hypothesis "lap t-1 completed normally":
+            latch(s) holds  &&  for every trap edge T' of L: !T'(s)
+         phis at t := latch values of B(s); context := guards of T that
+         dominate H, instantiated at t (path conditions inside L belong to
+         the body copy); ask "T on lap t". UNSAT required.
+  Both UNSAT (and both vacuity-clean) => T unreachable on every lap, by
+  induction on the iteration count -- the count itself is never encoded.
+  Labels |IND-base| / |IND-step| in cores.
+What stays free: loads in B(s) (unless FRAME ties them), the s symbols,
+values defined outside L that are not slice members. Nothing about memory
+is assumed across laps.
+Subsumption claim (the falsification test): every PHIINV proof is a
+projection of STEP onto one phi -- hi (latch(s) in the hypothesis), lo
+(add-nsw self-update in B), hx (header exit test in B plus !T' for the
+exit), rel (two phi definitions in B). So with the four rules DISABLED
+(knob `nophiinv`) and `ind` on, all PHIINV-attributed proofs must
+reappear. Beyond them: relations between any values B defines (phi vs
+temporary, accumulator vs input) come for free.
+Known limit: properties not inductive as stated (adler32's three-phi sum)
+still fail; that is item 2's strengthening hook: item 2 emits equalities
+as facts on s, STEP consumes them.
+REFUSES: T not in a loop; L without unique latch or preheader; body with a
+call the encoder cannot model; irreducible CFG. Refusal = today's verdict.
+Cost: one body copy per STEP query (measured in session 4 at 300 ms/3 s).
+Sessions: 1 spec+baseline (this), 2 encoder instantiation, 3 obligations +
+falsification run, 4 out-of-sample sweep (CryptoSwift, zlib/zstd/lz4,
+rules-only vs ind-only vs both), 5 consolidation.
+
+### 10.47 Item 1 session 1 -- frozen baseline and FALSIFICATION LIST (Sep 17 2026)
+Knobs added: `ind` (no-op until session 3) and `nophiinv` (disables PHIINV
+hi/lo/hx/rel in FactEncoder; the code stays). Probe rules-on vs rules-off
+(results/static/probe_mac_0917_linear.log vs probe_mac_0917_nophiinv.log),
+plus targeted budgets. Proofs that EXIST ONLY because of the four rules --
+the list `ind` alone must reproduce in session 3:
+  Swift lz77       full 300 ms : 5 -> 2 UNSAT      (3 proofs: i+=1 overflow,
+                                                     data[j+l], data[i+l])
+  base64 Swift     full 300 ms : 2 -> 0 UNSAT      (2 proofs: data[i], data[i+1])
+  lz77.jl bounded2 full 60 s   : 4 -> 0 UNSAT      (4 proofs, A and B edges)
+  lz77_bounded     full 300 ms : 2 -> 0            (the two B edges)
+  tests            heavy       : test_heavy_phiinv1, test_heavy_phiinv_rel
+                                  (UNSAT -> SAT with rules off)
+NOT attributable to the rules (already proven by SCEV/LVI facts when the
+rules are off): test_heavy_phiinv_hx, test_heavy_phiinv_selatch (UNSAT
+either way -- their PHIINV labels were in the core but not necessary);
+filt.jl 6/19 at 3 s either way (the 300 ms differences are latency);
+jl_gemm_base heavy 300 ms: 3 -> 4 with rules OFF (PHIINV facts cost a
+query its budget; a latency effect, cf. §10.15).
+So the falsification list is 11 kernel proofs + 2 tests, all interval /
+pair invariants on loop counters. Session 3 acceptance: `heavy;ldeq;frame;
+ind;nophiinv` re-proves all 13 (lz77.jl at 60 s), with no UNSAT -> SAT
+elsewhere and the suite gate unchanged.

@@ -23,9 +23,9 @@ using namespace llvm;
 
 FactEncoder::FactEncoder(Z3Encoder &Enc, LazyValueInfo *LVI, ScalarEvolution *SE,
                          LoopInfo *LI, DominatorTree &DT, const DataLayout &DL,
-                         bool Audit, raw_ostream &Log)
+                         bool Audit, raw_ostream &Log, bool PhiInv)
     : Encoder(Enc), LVI(LVI), SE(SE), LI(LI), DT(DT), DL(DL), Audit(Audit),
-      Log(Log) {}
+      Log(Log), PhiInvEnabled(PhiInv) {}
 
 std::string FactEncoder::mkLabel(const char *Src) const {
     return std::string(Src) + ":" + std::to_string(NumFacts);
@@ -874,7 +874,7 @@ static bool affineOfPhi(Value *V, PHINode *P, unsigned Depth, APInt &K) {
 }
 
 bool FactEncoder::tryPhiInv(Value *V) {
-    if (!LI) return false;
+    if (!LI || !PhiInvEnabled) return false;
     auto *Phi = dyn_cast<PHINode>(V);
     if (!Phi || !Phi->getType()->isIntegerTy()) return false;
     if (!PhiInvDone.insert(Phi).second) return false;   // once per query

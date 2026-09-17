@@ -152,17 +152,20 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
     unsigned ProfileMs = 0;         // profile[=ms] knob (F1)
     bool NarrowMul = false;         // narrow[=bits] knob (F1 step 2, HANDOFF §10.37)
     unsigned NarrowBits = 16;
+    bool Inductive = false;         // ind knob (item 1, HANDOFF §10.46)
+    bool NoPhiInv = false;          // nophiinv knob (PHIINV ablation)
 
     OraclePass() = default;
     OraclePass(bool Vacuity, bool Heavy, unsigned TimeoutMs, unsigned NThreads,
                bool LdEq, std::vector<std::string> Traps = {},
                bool Frame = false, bool MV = false, unsigned MVSane = 62,
                bool T3 = false, unsigned Profile = 0, bool Narrow = false,
-               unsigned NBits = 16)
+               unsigned NBits = 16, bool Ind = false, bool NoPI = false)
         : VacuityCheck(Vacuity), HeavyMode(Heavy), QueryTimeoutMs(TimeoutMs),
           Threads(NThreads), LoadEq(LdEq), TrapCallees(std::move(Traps)),
           FrameMode(Frame), MultiVersion(MV), MVT3(T3), MVSaneExp(MVSane),
-          ProfileMs(Profile), NarrowMul(Narrow), NarrowBits(NBits) {}
+          ProfileMs(Profile), NarrowMul(Narrow), NarrowBits(NBits),
+          Inductive(Ind), NoPhiInv(NoPI) {}
 
     PreservedAnalyses run(Module &M, ModuleAnalysisManager &MAM) {
         auto &FAM =
@@ -195,6 +198,8 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
         Cfg.ProfileMs = ProfileMs;
         Cfg.Narrow = NarrowMul;
         Cfg.NarrowBits = NarrowBits;
+        Cfg.Inductive = Inductive;
+        Cfg.NoPhiInv = NoPhiInv;
         if (ProfileMs) sys::fs::create_directories("logs/profile");
 
         // =============================================================
@@ -246,7 +251,8 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
                << (HeavyMode ? " [tier: heavy]" : "")
                << (LoadEq ? " [ldeq]" : "")
                << (FrameMode ? " [frame]" : "")
-               << (MultiVersion ? (MVT3 ? " [mv]" : " [mv-light]") : "");
+               << (MultiVersion ? (MVT3 ? " [mv]" : " [mv-light]") : "")
+               << (NarrowMul ? " [narrow]" : "") << (Inductive ? " [ind]" : "") << (NoPhiInv ? " [nophiinv]" : "");
         if (!TrapCallees.empty()) {
             errs() << " [traps=";
             for (size_t i = 0; i < TrapCallees.size(); ++i)
@@ -567,6 +573,7 @@ llvmGetPassPluginInfo() {
                         bool Frame = false;               // FRAME default: off
                         bool MV = false, MVT3 = false; unsigned MVSane = 62;  // MV default: off
                         unsigned Profile = 0; bool Narrow = false; unsigned NBits = 16;
+                        bool Ind = false, NoPI = false;
                         std::vector<std::string> Traps;   // traps= callees: empty
                         if (!Name.empty()) {              // parse "<a;b;...>"
                             if (!Name.consume_front("<") || !Name.consume_back(">"))
@@ -587,6 +594,10 @@ llvmGetPassPluginInfo() {
                                     MV = true;
                                 else if (P == "narrow")
                                     Narrow = true;
+                                else if (P == "ind")
+                                    Ind = true;
+                                else if (P == "nophiinv")
+                                    NoPI = true;
                                 else if (P.consume_front("narrow=")) {
                                     if (P.getAsInteger(10, NBits) || NBits < 8 || NBits > 32) return false;
                                     Narrow = true;
@@ -639,7 +650,7 @@ llvmGetPassPluginInfo() {
                         }
                         MPM.addPass(OraclePass(Vacuity, Heavy, TimeoutMs, Threads,
                                                LdEq, std::move(Traps), Frame,
-                                               MV, MVSane, MVT3, Profile, Narrow, NBits));
+                                               MV, MVSane, MVT3, Profile, Narrow, NBits, Ind, NoPI));
                         return true;
                     }
                 );

@@ -63,6 +63,10 @@ struct SolverConfig {
     // F1 step 2 (HANDOFF §10.37): Stage 2b narrow-mul retry for mv candidates.
     bool Narrow = false;
     unsigned NarrowBits = 16;
+    // Item 1 (HANDOFF §10.46): inductive body encoding, and the ablation
+    // switch that disables the four PHIINV rules (hi/lo/hx/rel).
+    bool Inductive = false;
+    bool NoPhiInv = false;
 };
 
 class TrapSolver {

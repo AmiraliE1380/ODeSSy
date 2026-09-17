@@ -71,7 +71,8 @@ public:
     FactEncoder(Z3Encoder &Enc, llvm::LazyValueInfo *LVI,
                 llvm::ScalarEvolution *SE, llvm::LoopInfo *LI,
                 llvm::DominatorTree &DT, const llvm::DataLayout &DL,
-                bool Audit, llvm::raw_ostream &Log);
+                bool Audit, llvm::raw_ostream &Log, bool PhiInv = true);
+    bool PhiInvEnabled = true;     // false under oracle-pass<nophiinv> (item 1 ablation)
 
     // Walk every boundary (free) value and assert its facts.
     // Returns the number of fact assertions added to the solver.

@@ -97,7 +97,7 @@ bool TrapSolver::factPhase() {
         // identical to the THREADS=1 run).
         FactEncoder Facts(Encoder, FC.LVI, FC.SE, FC.LI, *FC.DT,
                           Job.F->getParent()->getDataLayout(),
-                          Cfg.VacuityCheck, Log);
+                          Cfg.VacuityCheck, Log, /*PhiInv=*/!Cfg.NoPhiInv);
         unsigned NFacts = Facts.encodeBoundaryFacts(Job.PredBB);
         Log << "    -> [heavy] " << NFacts << " analysis fact(s) on "
             << Encoder.getFreeVariables().size() << " boundary value(s)\n";
