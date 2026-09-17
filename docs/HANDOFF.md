@@ -2091,3 +2091,11 @@ AUTO-UPDATE OFF (admin, not done by the agent):
   sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticDownload -bool false
   sudo defaults write /Library/Preferences/com.apple.commerce AutoUpdate -bool false
   (System Settings > General > Software Update > Automatic Updates: all off.)
+REPRODUCTION under the pin (Sep 16, REPS=30, 300 ms, same args as Aug 22):
+    Aug 22 (Apple 6.3.3): 7 UNSAT, base 0.4939, oracle vs base +6.86% / base2x +6.24%
+    Sep 16 (swift.org 6.3.3 + SDK 26.5): 7 UNSAT (of 40 trap sites in this
+      build's IR), base 0.4943, oracle 0.4563 => +7.68% / +6.77%
+  Same proof count, same seven message-schedule eliminations, speedup
+  within 0.8 pt of the reference, base median within 0.1%: the pinned
+  toolchain reproduces the flagship Swift row. Log:
+  results/perf/swift_sha256_pinned633_perf_mac_0916.log.

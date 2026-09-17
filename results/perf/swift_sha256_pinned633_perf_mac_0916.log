@@ -1,0 +1,11 @@
+swiftc: Apple Swift version 6.3.3 (swift-6.3.3-RELEASE)  sdk: /Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk
+  built base     traps   40->40   bin    55832 B  eliminated 0
+  built base2x   traps   40->40   bin    55840 B  eliminated 0
+  built oracle   traps   40->33   bin    55840 B  eliminated 7
+==== PHASE B: output equivalence gate ====
+  outputs byte-identical across all configs -- gate passed
+base        0.4943    0.4888    0.4941  ok
+base2x      0.4895    0.4834    0.4905  ok
+oracle      0.4563    0.4497    0.4573  ok
+oracle vs base: +7.68% (median)
+oracle vs base2x: +6.77% (median)

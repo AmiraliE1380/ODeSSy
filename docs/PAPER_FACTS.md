@@ -1077,7 +1077,7 @@ or expert `@inbounds`; Rust `get_unchecked` twin). "none" = ceiling ≤ 0.
 | lz77.jl, multi-versioned A+B (60 s) | Julia | 4/4 (under bounds) | **2.625×** | 2.63× | 99.7% | §11.1 |
 | lz77.jl, multi-versioned B only (300 ms) | Julia | 2/4 | **1.515×** | 2.63× | 31.6% | §11.1 |
 | lz77 | Swift | 5/25 | **+27.3%** (1 s) / +24.7% (300 ms) | 36.0% | ≈76% | §11.2 |
-| sha256 | Swift | 7/36 | **+6.9%** | 2.8% | >100% | §9.2 |
+| sha256 | Swift | 7/36 | **+6.9%** (Aug 22, Apple 6.3.3); **+7.7%** (Sep 16, pinned swift.org 6.3.3) | 2.8% | >100% | §9.2, §11.14 |
 | sha1 | Swift | 7/24 | **+2.1%** | 7.6% | 27% | §9.2 |
 | sha256.jl (partial @inbounds) | Julia | 10/16 | +6.9% | none (−7.2%) | — | §9.2 |
 | base64 | Swift | 2/27 (+5 mv folds = 7/27) | **+13.1%** with `mv` (+7.0% without) | 22.6% | ≈58% | §11.5, §11.8 |
@@ -1464,3 +1464,5 @@ AUTO-UPDATE OFF (admin, not done by the agent):
   sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticDownload -bool false
   sudo defaults write /Library/Preferences/com.apple.commerce AutoUpdate -bool false
   (System Settings > General > Software Update > Automatic Updates: all off.)
+Reproduction under the pin (Sep 16): Swift sha256, 7 UNSAT, +7.68% vs base /
++6.77% vs base2x (Aug 22: +6.86% / +6.24%), base medians 0.4943 vs 0.4939 s.
