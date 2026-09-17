@@ -1,0 +1,15 @@
+== mv-light: UNSAT=209 SAT=2570 UNKNOWN=28 MVfolds=103
+== mv: UNSAT=209 SAT=2570 UNKNOWN=28 MVfolds=107
+     50 DEAD UNDER HYPOTHESIS H = {V >=s 0}
+     34 DEAD UNDER HYPOTHESIS H = {V >=s 0, V >=s 0}
+      5 DEAD UNDER HYPOTHESIS H = {V <=s 2^31}
+      4 DEAD UNDER HYPOTHESIS H = {V >u 255}
+      3 DEAD UNDER HYPOTHESIS H = {V >=s 0, V <=s 2^31, V <=s 2^31}
+      3 DEAD UNDER HYPOTHESIS H = {V <=s 2^31, V <=s 2^31}
+      2 DEAD UNDER HYPOTHESIS H = {V <=s 2^31, V >u ((-1 + V)<nsw>)}
+      1 DEAD UNDER HYPOTHESIS H = {V >u (16)}
+      1 DEAD UNDER HYPOTHESIS H = {V >u ((-1 + V)<nsw>)}
+      1 DEAD UNDER HYPOTHESIS H = {V >=s 0, V >=s 0, V >=s 0, V >=s 0}
+      1 DEAD UNDER HYPOTHESIS H = {V <=s 2^62}
+      1 DEAD UNDER HYPOTHESIS H = {V <=s 2^31, V >=s 0}
+      1 DEAD UNDER HYPOTHESIS H = {V <=s 2^31, V <=s 2^31, V <=s 2^31, V >=s 0}

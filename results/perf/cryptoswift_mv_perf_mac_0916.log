@@ -1,0 +1,8 @@
+=== CryptoSwift mv-light (300 ms)
+swiftc: Apple Swift version 6.3.3 (swift-6.3.3-RELEASE)  sdk: /Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk
+  built base     traps 2651->2962 bin  1013048 B  eliminated 0
+  built base2x   traps 2651->3319 bin  1029560 B  eliminated 0
+[FATAL] build oracle failed
+=== CryptoSwift mv (300 ms)
+swiftc: Apple Swift version 6.3.3 (swift-6.3.3-RELEASE)  sdk: /Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk
+  built base     traps 2651->2962 bin  1013048 B  eliminated 0
