@@ -2152,3 +2152,33 @@ Step 3 product linearization (fresh m for x*y + range-derived facts; SAT
 Step 4 adaptive budgets (small for the ordinary query, larger for the mv
   re-solve). Acceptance: matmul.jl 3/3 @10 s, lz77.jl 4/4 @300 ms, gates
   unchanged, probe no UNSAT->SAT. Benchmarks frozen.
+
+### 10.36 F1 step 0 -- profiling results (Sep 16 2026)
+Knob `profile[=ms]`: Z3 statistics per slow query + faithful SMT-LIB dump
+(logs/profile/<fn>_<job>_<tag>.smt2; tracked facts are behind answer
+literals, so the dump ends in check-sat-assuming over every label -- a
+plain check-sat made every dump trivially SAT, first bug of the step).
+matmul.jl, mv (T3) re-solve, round 1, 10 s budget, threads=1:
+  UNKNOWN x3; 35k-52k conflicts, 30k-48k boolean vars, 2 bvmul at 64 bits,
+  16 asserts / 20 declares (small query, hard arithmetic). z3 CLI on the
+  dump: timeout at 120 s. OFFLINE NARROWING: same dump rewritten to 32-bit
+  sorts (2^62 -> 2^30, 2^31 -> 2^15 sane bounds) => UNSAT in 0.36 s.
+  => Step 2 (bit-width narrowing under the mv hypothesis) is the lever;
+     prediction confirmed offline before any encoder change.
+lz77.jl A edges, mv-light re-solve (round 0), 60 s budget: UNSAT in
+  3.0 s / 2.7 s (110k / 98k conflicts; 29 asserts, 45 declares, 1 bvmul,
+  11 ite). z3 CLI: 3.5 s. Derived fact `start >= 1` asserted offline:
+  2.9 s (-17%): Step 1 is NOT the lever for lz77 (prediction weakened).
+  32-bit narrowing result: see below.
+  lz77.jl A dump narrowed to 32 bits offline (overflow idiom extract 64 64
+  -> 32 32 remapped): UNSAT 3.5 s -> 0.64 s (5.5x). Still above 300 ms;
+  16-bit under a tighter sane bound is the next offline check.
+DECISION after step 0: narrowing (step 2) is the general lever for both
+  hard kernels; derived facts (step 1) demoted (-17% only). Step 2 design:
+  in the mv re-solve, when H bounds every input |v| <= 2^k with k <= W/2-2,
+  re-encode the certifying query at width W' = 2k+2 (all integer values of
+  width W in the slice; constants truncated/sign-mapped; overflow idioms
+  remapped), and certify at W'. Soundness: H is the runtime guard; under H
+  all intermediate values fit W' (products of two 2^k values < 2^(2k)), so
+  the W' model of the program is exact -- to be argued per operation class
+  (add/sub/mul/shift/compare/ext/trunc) in §10.37 before code.
