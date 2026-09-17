@@ -29,6 +29,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <optional>
 
 namespace odessy {
 
@@ -39,8 +40,14 @@ public:
     // FreshInputs: every From-bit free constant v is represented by a fresh
     // To-bit constant v~To (the pure-narrow query, §10.38 Q_A); links()
     // returns v~To == extract(To-1,0,v) for the wide side (Q_B).
-    Narrower(z3::context &C, unsigned From = 64, unsigned To = 32, bool FreshInputs = true)
-        : Ctx(C), From(From), To(To), Fresh(FreshInputs) {}
+    // Linearize: products of two non-constant To-bit operands become fresh
+    // constants m_{X,Z} (one per unordered pair); linearFacts() returns the
+    // theorems N0/N1/M1/M2 of HANDOFF §10.44 that hold in Q_A's no-overflow
+    // regime. Q_A' (relaxed) over-approximates Q_A.
+    Narrower(z3::context &C, unsigned From = 64, unsigned To = 32, bool FreshInputs = true, bool Linearize = false)
+        : Ctx(C), From(From), To(To), Fresh(FreshInputs), Linear(Linearize) {}
+    std::vector<z3::expr> linearFacts();
+    unsigned numLinearized() const { return (unsigned)Products.size(); }
     const std::vector<z3::expr> &links() const { return Links; }
     // Rewrite one assertion. Flags produced along the way accumulate in
     // flags(); memoization spans calls (same term => same rewrite/flags).
@@ -48,19 +55,30 @@ public:
     const std::vector<z3::expr> &flags() const { return Flags; }
     const std::vector<std::string> &flagTexts() const { return FlagText; }
     const std::vector<z3::expr> &inputs() const { return InputsSeenExprs; }
+    // Fresh To-bit image of a From-bit input (nullopt if never seen).
+    std::optional<z3::expr> imageOf(const z3::expr &In64) const {
+        for (size_t i = 0; i < InputsSeenExprs.size(); ++i) if (z3::eq(InputsSeenExprs[i], In64)) return InputImages[i];
+        return std::nullopt;
+    }
+    // Does E mention any of the given To-bit input images (or From-bit inputs)?
+    static bool mentionsAny(const z3::expr &E, const std::vector<z3::expr> &Consts);
     z3::expr anyFlag();       // OR of all flags (false if none)
     z3::expr noFlag();        // AND of !flag (true if none)
     unsigned numInputs() const { return NumInputs; }
 
 private:
     z3::context &Ctx;
-    unsigned From, To; bool Fresh;
+    unsigned From, To; bool Fresh, Linear;
+    struct Prod { z3::expr A, B, M; };
+    std::vector<Prod> Products;               // linearized products (A*B -> M)
+    z3::expr productVar(const z3::expr &A, const z3::expr &B);
     std::vector<z3::expr> Links;
     // Memo keyed by structural hash with equality check; the stored key
     // keeps the input AST alive (Z3 reuses ids of freed ASTs, so ids alone
     // are not stable keys).
     std::map<unsigned, std::vector<std::pair<z3::expr, z3::expr>>> Memo;
     std::vector<z3::expr> InputsSeenExprs;
+    std::vector<z3::expr> InputImages;        // parallel: the fresh To-bit const (or extract)
     std::vector<z3::expr> Flags;
     std::vector<std::string> FlagText;
     void flag(const z3::expr &F, const std::string &Why, const z3::expr &Term) {

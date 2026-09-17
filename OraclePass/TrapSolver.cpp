@@ -424,16 +424,25 @@ void TrapSolver::mvPhase() {
     bool Whole = false;
     if (NarrowMode == 1) {
         try {
-            WholeN = std::make_unique<Narrower>(Encoder.context(), 64, 32, /*FreshInputs=*/true);
-            Defs32.clear(); Guards32.clear();
-            for (auto &D : Defs64) Defs32.push_back(WholeN->rewrite(D));
-            for (auto &G : Job.Guards) {
-                try { Guards32.push_back(WholeN->rewrite(Encoder.condExpr(G.first, G.second))); }
-                catch (const NarrowRefused &R) { Log << "    -> [narrow] guard dropped (" << R.Why << ")\n"; }
+            for (int v = 0; v < 2; ++v) {
+                NarrowSet &S = NS[v];
+                S.N = std::make_unique<Narrower>(Encoder.context(), 64, 32, /*FreshInputs=*/true, /*Linearize=*/v == 0);
+                S.Defs32.clear(); S.Guards32.clear(); S.Facts32.clear();
+                for (auto &D : Defs64) S.Defs32.push_back(S.N->rewrite(D));
+                for (auto &G : Job.Guards) {
+                    try { S.Guards32.push_back(S.N->rewrite(Encoder.condExpr(G.first, G.second))); }
+                    catch (const NarrowRefused &R) { if (v == 1) Log << "    -> [narrow] guard dropped (" << R.Why << ")\n"; }
+                }
+                S.Trap32 = S.N->rewrite(Encoder.condExpr(Job.TrapCond, Job.TrapOnTrue));
+                for (auto &F : Encoder.factExprs()) { try { S.Facts32.push_back(S.N->rewrite(F)); } catch (const NarrowRefused &) {} }
             }
-            Trap32 = WholeN->rewrite(Encoder.condExpr(Job.TrapCond, Job.TrapOnTrue));
-            Facts32.clear();
-            for (auto &F : Encoder.factExprs()) { try { Facts32.push_back(WholeN->rewrite(F)); } catch (const NarrowRefused &) {} }
+            WholeN = std::make_unique<Narrower>(Encoder.context(), 64, 32, true, false);
+            { // WholeN mirrors NS[1] for flags/links/inputs (same rewrite, exact products)
+                for (auto &D : Defs64) WholeN->rewrite(D);
+                for (auto &G : Job.Guards) { try { WholeN->rewrite(Encoder.condExpr(G.first, G.second)); } catch (const NarrowRefused &) {} }
+                WholeN->rewrite(Encoder.condExpr(Job.TrapCond, Job.TrapOnTrue));
+                for (auto &F : Encoder.factExprs()) { try { WholeN->rewrite(F); } catch (const NarrowRefused &) {} }
+            }
             Guards64NoMul.clear();
             std::function<bool(const z3::expr &)> hasMul = [&](const z3::expr &E) -> bool {
                 if (!E.is_app()) return false;
@@ -443,8 +452,8 @@ void TrapSolver::mvPhase() {
             };
             for (auto &G : Job.Guards) { z3::expr GE = Encoder.condExpr(G.first, G.second); if (!hasMul(GE)) Guards64NoMul.push_back(GE); }
             Whole = true;
-            Log << "    -> [narrow] whole-query 64->32 rewrite: " << Defs32.size() << " definitions, "
-                << WholeN->flags().size() << " overflow flags, " << WholeN->numInputs() << " 64-bit inputs\n";
+            Log << "    -> [narrow] whole-query 64->32 rewrite: " << WholeN->flags().size() << " overflow flags, "
+                << WholeN->numInputs() << " 64-bit inputs, " << NS[0].N->numLinearized() << " product(s) linearized\n";
         } catch (const NarrowRefused &R) {
             Log << "    -> [narrow] whole-query narrowing refused: " << R.Why << " (exact solver used)\n";
             Whole = false;
@@ -513,7 +522,11 @@ void TrapSolver::mvPhase() {
     }
     // ---- T2
     for (Value *V : Encoder.getFreeVariables()) {
-        if (!isInv(V)) continue;
+        if (!isInv(V)) {
+            if (Cfg.ProfileMs && V->getType()->isIntegerTy())
+                Log << "    -> [mv] T2 skip " << nameOf(V) << ": " << (L->isLoopInvariant(V) ? "invariant but def does not dominate header / lies in loop" : "not loop-invariant in trap loop depth " + std::to_string(L->getLoopDepth())) << "\n";
+            continue;
+        }
         unsigned W = V->getType()->getIntegerBitWidth();
         if (W < 8) continue;
         unsigned K = std::min<unsigned>(Cfg.MVSaneExp, W - 2);
@@ -585,18 +598,42 @@ void TrapSolver::mvPhase() {
         }
         return K;
     };
+    // Whole mode: EXEMPT inputs (HANDOFF §10.45): a 64-bit input with no
+    // hypothesis candidate and no fact cannot be bounded, so its 32-bit image
+    // may be garbage. Everything depending on it (guards, facts, flags) is
+    // dropped from Q_A/Q_B -- a weakening, hence sound; if the trap itself
+    // depends on it, whole-query narrowing is refused for this job.
+    std::vector<z3::expr> ExemptC;   // 64-bit inputs and their 32-bit images (both narrowers)
+    if (Whole) {
+        for (auto &In : WholeN->inputs()) {
+            // Bounded = has a hypothesis candidate. Inputs the trap condition
+            // itself mentions are never exempt (their facts carry the proof);
+            // an unbounded input that occurs only in guards/facts is exempt.
+            bool Bounded = false;
+            for (auto &C : Cands) if (z3::eq(Encoder.valueAsBV(C.V, C.V->getType()->getIntegerBitWidth()), In)) { Bounded = true; break; }
+            if (Bounded) continue;
+            if (Narrower::mentionsAny(Encoder.condExpr(Job.TrapCond, Job.TrapOnTrue), {In})) continue;
+            ExemptC.push_back(In);
+            for (int v = 0; v < 2; ++v) if (auto Im = NS[v].N->imageOf(In)) ExemptC.push_back(*Im);
+            if (auto Im = WholeN->imageOf(In)) ExemptC.push_back(*Im);
+            Log << "    -> [narrow] exempt input (unbounded, guards/facts/flags over it dropped): " << In.to_string() << "\n";
+        }
+
+    }
+    auto keep = [&](const z3::expr &E) { return ExemptC.empty() || !Narrower::mentionsAny(E, ExemptC); };
     // Whole mode: candidate conjuncts are rewritten to 32 bits as well (a T3
     // bound carries the product); a candidate whose constant does not fit is
     // unusable at 32 bits and is dropped from every Use set.
-    std::map<size_t, std::optional<z3::expr>> CandW;
-    auto candW = [&](size_t i) -> std::optional<z3::expr> {
-        auto It = CandW.find(i);
-        if (It != CandW.end()) return It->second;
+    std::map<size_t, std::optional<z3::expr>> CandWv[2];
+    auto candWv = [&](size_t i, int v) -> std::optional<z3::expr> {
+        auto It = CandWv[v].find(i);
+        if (It != CandWv[v].end()) return It->second;
         std::optional<z3::expr> R;
-        try { R = WholeN->rewrite(mkExpr(Cands[i])); }
-        catch (const NarrowRefused &X) { R.reset(); Log << "    -> [narrow] candidate dropped at 32 bits: {" << Cands[i].Text << "}: " << X.Why << "\n"; }
-        CandW[i] = R; return R;
+        try { R = NS[v].N->rewrite(mkExpr(Cands[i])); }
+        catch (const NarrowRefused &X) { R.reset(); if (v == 1) Log << "    -> [narrow] candidate dropped at 32 bits: {" << Cands[i].Text << "}: " << X.Why << "\n"; }
+        CandWv[v][i] = R; return R;
     };
+    auto candW = [&](size_t i) { return candWv(i, 1); };
     auto check = [&](const std::vector<size_t> &UseIn, bool Tracked) -> CheckResult {
         CheckResult CR;
         std::vector<size_t> Use;
@@ -604,24 +641,28 @@ void TrapSolver::mvPhase() {
         if (Whole && Tracked) { Log << "    -> [narrow] Q_A/Q_B hypothesis set:"; for (size_t i : Use) Log << " {" << Cands[i].Text << "}"; Log << "\n"; }
         if (Whole) {
             z3::context &C = Encoder.context();
-            auto mk = [&](bool QA) {
+            auto mk = [&](int QA) {   // QA: -1 = Q_B, 0 = Q_A' (linearized), 1 = Q_A (exact products)
                 z3::solver S(C);
                 S.set("timeout", (unsigned)Encoder.timeoutMs());
                 if (Tracked) S.set("unsat_core", true);
-                if (QA) {
+                if (QA >= 0) {
                     // Q_A: PURE 32-bit query. Inputs are fresh 32-bit consts;
                     // facts and constant-compare hypotheses are rewritten
                     // (exact whenever the inputs fit, which Q_B certifies);
                     // anything the rewriter refuses is simply omitted
-                    // (weakening the assumptions keeps UNSAT sound).
-                    for (auto &D : Defs32) S.add(D);
-                    for (auto &F : Facts32) S.add(F);
+                    // (weakening the assumptions keeps UNSAT sound). Version 0
+                    // replaces variable products by fresh constants with the
+                    // linear facts of §10.44 (relaxation; UNSAT still sound).
+                    NarrowSet &V = NS[QA];
+                    for (auto &D : V.Defs32) if (keep(D)) S.add(D);
+                    for (auto &F : V.Facts32) if (keep(F)) S.add(F);
                     for (size_t i : Use) {
-                        auto CE = candW(i); if (!CE) continue;
+                        auto CE = candWv(i, QA); if (!CE) continue;
                         if (Tracked) S.add(*CE, ("MV:" + std::to_string(i)).c_str()); else S.add(*CE);
                     }
-                    for (auto &G : Guards32) S.add(G);
-                    S.add(*Trap32);
+                    for (auto &G : V.Guards32) if (keep(G)) S.add(G);
+                    S.add(*V.Trap32);
+                    if (QA == 0) for (auto &LF : V.N->linearFacts()) if (keep(LF)) S.add(LF);
                 } else {
                     // Q_B: 64-bit inputs exactly (facts, T1/T2 hypotheses,
                     // multiplication-free guards), linked to their 32-bit
@@ -631,8 +672,8 @@ void TrapSolver::mvPhase() {
                         if (Cands[i].Bound) continue;
                         if (Tracked) S.add(mkExpr(Cands[i]), ("MV:" + std::to_string(i)).c_str()); else S.add(mkExpr(Cands[i]));
                     }
-                    for (auto &G : Guards64NoMul) S.add(G);
-                    for (auto &L : WholeN->links()) S.add(L);
+                    for (auto &G : Guards64NoMul) if (keep(G)) S.add(G);
+                    for (auto &L : WholeN->links()) if (keep(L)) S.add(L);
                 }
                 return S;
             };
@@ -643,8 +684,17 @@ void TrapSolver::mvPhase() {
                 CR.Ms += std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - T0).count();
                 return R;
             };
-            z3::solver SA = mk(true);
-            z3::check_result RA = run(SA, WholeN->noFlag());
+            // Q_A' (linearized) first; on SAT/UNKNOWN fall back to exact Q_A.
+            auto noFlagK = [&](Narrower &N) { z3::expr R = C.bool_val(true); for (auto &F : N.flags()) if (keep(F)) R = R && !F; return R; };
+            auto anyFlagK = [&](Narrower &N) { z3::expr R = C.bool_val(false); for (auto &F : N.flags()) if (keep(F)) R = R || F; return R; };
+            z3::solver SA = mk(0);
+            z3::check_result RA = run(SA, noFlagK(*NS[0].N));
+            if (RA == z3::unsat) Log << "    -> [narrow] Q_A' (linearized products) UNSAT in " << CR.Ms << " ms\n";
+            else {
+                Log << "    -> [narrow] Q_A' (linearized) " << (RA == z3::unknown ? "UNKNOWN" : "SAT") << " (" << CR.Ms << " ms): exact Q_A\n";
+                SA = mk(1);
+                RA = run(SA, noFlagK(*WholeN));
+            }
             if (Cfg.ProfileMs && CR.Ms >= Cfg.ProfileMs) {
                 static unsigned Seq = 0;
                 std::string Name = "logs/profile/" + Job.F->getName().str().substr(0, 40) + "_" + std::to_string(Job.Index) + "_QA" + std::to_string(Seq++) + ".smt2";
@@ -657,13 +707,13 @@ void TrapSolver::mvPhase() {
                     z3::model M = SA.get_model();
                     Log << "    -> [narrow] Q_A SAT model, inputs:";
                     for (auto &I : WholeN->inputs()) Log << " " << I.to_string() << "=" << M.eval(I, true).to_string();
-                    Log << "\n         trap32 = " << M.eval(*Trap32, true).to_string() << ", H conjuncts: " << Use.size() << "\n";
+                    Log << "\n         trap32 = " << M.eval(*NS[1].Trap32, true).to_string() << ", H conjuncts: " << Use.size() << "\n";
                 }
                 return CR;
             }
             std::string CoreA; if (Tracked) { z3::expr_vector c = SA.unsat_core(); for (unsigned i = 0; i < c.size(); ++i) CoreA += c[i].to_string() + " "; }
-            z3::solver SB = mk(false);
-            z3::check_result RB = run(SB, WholeN->anyFlag());
+            z3::solver SB = mk(-1);
+            z3::check_result RB = run(SB, anyFlagK(*WholeN));
             if (RB != z3::unsat) {
                 CR.Unknown = (RB == z3::unknown);
                 Log << "    -> [narrow] Q_B: some 64-bit value may leave 32 bits under H (" << (RB == z3::unknown ? "UNKNOWN" : "SAT") << ")";

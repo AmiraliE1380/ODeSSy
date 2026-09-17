@@ -2391,3 +2391,62 @@ inside our framework; refused. FRAME v2 (pointer equivalence) has no
 remaining known target in the kernel set; parked.
 Regression: gates 27/12 and 8/8; probe vs 0916 differs only by 300 ms
 UNKNOWN flips (results/static/probe_mac_0917_frame_siblings.log).
+
+### 10.44 F1 step 3 -- SPEC: linearization of variable products in Q_A (Sep 17 2026)
+Target: the loosening query of §10.41 (own-array bound 2^15 -> 2^30), UNSAT
+in 16-30 s because the SAT core must refute (i-1)*n + k - 1 >= n*n bitwise.
+Design (inside the whole-query narrowing, Q_A only): every 32-bit product of
+two NON-constant operands X*Z is replaced by a fresh 32-bit constant m_{X,Z}
+(one per unordered operand pair), and these LINEAR facts are asserted:
+  N0  X >= 0 && Z >= 0  ->  m >= 0
+  N1  X == 0 || Z == 0  ->  m == 0
+  M1  for products m1 = X*Z, m2 = Y*Z sharing an operand:
+        X <= Y && X >= 0 && Z >= 0  ->  m1 <= m2
+  M2    X <  Y && X >= 0 && Z >  0  ->  m1 + Z <= m2
+Constant*variable products stay as bvmul (cheap: shifts and adds).
+Soundness: Q_A' (relaxed) over-approximates Q_A: any model of Q_A extends to
+Q_A' by m := the true 32-bit product, and under Q_A's no-overflow regime
+(operands within +-2^15, products <= 2^30) N0, N1, M1, M2 are theorems of
+integer multiplication that hold in 32-bit signed arithmetic. Hence
+UNSAT(Q_A') => UNSAT(Q_A). If Q_A' is SAT (relaxation too weak) the exact
+Q_A is run as today, so nothing is lost. Q_B is untouched (flags are over
+operands only). Cores taken from whichever Q_A succeeded.
+Prediction: matmul.jl loosens size <= 2^15 to 2^30 on all three traps at a
+3 s budget (offline analogue: 20 s -> sub-second); fast path then covers
+GEMM-class inputs; designated arm at n=512 shows ~the 2.1% ceiling of that
+regime, n=128 unchanged at 1.22x; no other kernel changes; gates unchanged.
+Tripwire: a check that genuinely depends on the product's VALUE beyond
+the facts (e.g. parity of n*n) must fall back to the exact Q_A and keep
+its verdict.
+
+### 10.45 F1 step 3 -- RESULTS: linearization + exempt inputs; matmul.jl guard loosened (Sep 17 2026)
+Implemented (§10.44 design): in whole-query narrowing, Q_A' first --
+variable products replaced by fresh 32-bit constants with facts N0/N1/M1/M2
+(Narrower Linearize mode; one fresh const per unordered operand pair) --
+then the exact 32-bit Q_A only if Q_A' is not UNSAT. Two rewriters are
+built per job (linear / exact); Q_B unchanged.
+Second general fix found on the way -- EXEMPT INPUTS: a 64-bit input with
+no hypothesis candidate (not loop-invariant in the trap loop, e.g. b.size
+reloaded per outer iteration in matmul.jl's c-check) that the trap
+condition does not mention is exempt: guards, facts, flags and links that
+depend on it are dropped from Q_A and Q_B (weakening: sound). Inputs the
+trap mentions are never exempt (their facts carry the proof).
+RESULT matmul.jl (frozen; 3 s budget, threads=3): 3/3 versioned with
+  H = { n <= 2^15, a.size in [0,2^30], a.size > n*n-1, c.size in [0,2^30],
+        c.size > n*n-1, (trap 2: b.size in [0,2^30], b.size > n*n-1) }
+  Loosening to 2^30 now certifies in 50-150 ms per bound via Q_A'
+  (was UNKNOWN at 3 s, 17-30 s offline). PREDICTION of §10.44 MET: the
+  fast path covers every n <= 32768.
+Designated arm (jl_matmul_mv_arms.jl, guard transcribed; frozen source
+untouched; results/perf/jl_matmul_mv_arms_mac_0917b.log):
+    n=128: checked 0.0171 | mv 0.0141 = 1.21x | ceiling 1.212x (21.2%)  -> 100%
+    n=256: checked 0.0393 | mv 0.0380 = 1.035x | ceiling 1.037x (3.7%)  -> ~95%
+    n=512: checked 0.1319 | mv 0.1288 = 1.024x | ceiling 1.024x (2.4%)  -> 100%
+  Reading: the guard now holds at every size; the pass recovers the whole
+  checks-off ceiling at each n; the ceiling itself is 21% cache-resident
+  and 2-4% memory-bound (same regime picture as the GEMM sweep §9.4).
+Tests: test_mv_narrow_sqfallback.ll (n*n <u n dead but not by the linear
+  facts: Q_A' SAT -> exact Q_A certifies; fold 1). MV gate 9/9, main 27/12.
+Regression: verdict probe (mv off) vs the FRAME-siblings run differs only
+  by 300 ms UNKNOWN flips; lz77.jl 4 folds at 3 s (was 3), matmul.rs 2,
+  base64 5, crc32 6, sha256.jl 6 -- all verify.

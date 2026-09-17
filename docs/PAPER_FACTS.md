@@ -1537,3 +1537,19 @@ the arrays' data buffers may alias the size field for BasicAA, and Julia
 emits no TBAA on these size loads. The missing fact is a Julia memory-model
 assumption (header vs buffer), not general machinery; not encoded.
 filt.jl stays 8/10 guarded / 6/19 unguarded.
+
+### 11.18 matmul.jl — fast path reaches GEMM-class sizes (Sep 17 2026)
+F1 step 3 (linearization of variable products inside the narrowed proof,
+plus exemption of unbounded inputs the trap does not mention; HANDOFF
+§10.44–10.45) loosens every size bound in matmul.jl's mined guard to 2^30 at
+a 3 s budget. Guard: `n ≤ 32768 ∧ size(a,b,c) ∈ [0, 2^30] ∧ size(a,b,c) >
+n·n − 1`. Designated arm (frozen source untouched), Mac:
+
+| n | checked | MV (guard as mined) | all-`@inbounds` ceiling | recovery |
+|---|---|---|---|---|
+| 128 | 0.0171 s | **1.21×** | 1.212× (21.2%) | 100% |
+| 256 | 0.0393 s | 1.035× | 1.037× (3.7%) | ≈95% |
+| 512 | 0.1319 s | 1.024× | 1.024× (2.4%) | 100% |
+
+Log: results/perf/jl_matmul_mv_arms_mac_0917b.log. lz77.jl also gains its
+4th automatic fold at 3 s under `mv;narrow`.

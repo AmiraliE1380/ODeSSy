@@ -4,13 +4,12 @@
 # §10.39/10.41): the guard is the H the pass mined, transcribed literally.
 #   arm1 checked : the kernel as shipped (three bounds checks per inner step)
 #   arm2 mv      : if H(n, a, b, c) then all-@inbounds body else checked body
-#                  H = n <= 32768 && length(a) > n*n-1 && length(b) > n*n-1 &&
-#                      length(c) > n*n-1 && length(a) <= 32768 && length(b) <= 32768
-#                  (the two "<= 32768" conjuncts are the tight bounds loosening
-#                  could not certify in budget; they hold only for n <= 181)
+#                  H = n <= 32768 && length(a,b,c) > n*n-1 && length(a,b,c) <= 2^30
+#                  (after F1 step 3, §10.45: the size bounds loosened to 2^30,
+#                  so the guard holds for every n <= 32768)
 #   arm3 ceiling : all-@inbounds unconditionally (unsound in general)
-# Sizes: n=128 (guard passes -> fast copy runs) and n=512 (guard fails ->
-# arm2 == arm1 by construction; GEMM-class input).
+# Sizes: n=128, 256, 512 -- the guard now passes for all of them; the
+# checks-off ceiling shrinks with n as the kernel becomes memory-bound.
 macro body(ib)
     r(e) = ib ? :(@inbounds $e) : e
     quote
@@ -37,7 +36,7 @@ function mm_inbounds(c::Vector{Int64}, a::Vector{Int64}, b::Vector{Int64}, n::In
 function mm_mv(c::Vector{Int64}, a::Vector{Int64}, b::Vector{Int64}, n::Int)
     nn = n * n
     if n <= 32768 && length(a) > nn - 1 && length(b) > nn - 1 && length(c) > nn - 1 &&
-       length(a) <= 32768 && length(b) <= 32768                 # H as mined (§10.39)
+       length(a) <= 1 << 30 && length(b) <= 1 << 30 && length(c) <= 1 << 30   # H as mined after F1 step 3 (§10.45)
         return mm_inbounds(c, a, b, n)
     else
         return mm_checked(c, a, b, n)
@@ -46,12 +45,12 @@ end
 
 using Random
 med(x) = sort(x)[div(length(x) + 1, 2)]
-for (n, reps, REPS) in ((128, 20, 21), (512, 1, 15))
+for (n, reps, REPS) in ((128, 20, 21), (256, 4, 15), (512, 1, 15))
     Random.seed!(1)
     a = rand(Int64(-3):Int64(3), n * n); b = rand(Int64(-3):Int64(3), n * n); c = zeros(Int64, n * n)
     arms = [("checked", mm_checked), ("mv (as mined)", mm_mv), ("ceiling", mm_inbounds)]
     outs = [copy(f(zeros(Int64, n * n), a, b, n)) for (_, f) in arms]
-    println("n=$n  outputs identical: ", all(==(outs[1]), outs), "   mined guard passes: ", n * n <= 32768)
+    println("n=$n  outputs identical: ", all(==(outs[1]), outs), "   mined guard passes: ", n <= 32768 && n * n <= 1 << 30)
     t = [Float64[] for _ in arms]
     for rep in 1:REPS
         for (k, (_, f)) in circshift(collect(enumerate(arms)), rep)

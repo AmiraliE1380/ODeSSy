@@ -97,9 +97,12 @@ private:
     TrapJob &Job;
     Z3Encoder Encoder;
     unsigned NarrowMode = 0;
-    std::vector<z3::expr> Defs64, Defs32, Guards32, Guards64NoMul, Facts32;
-    std::optional<z3::expr> Trap32;
-    std::unique_ptr<Narrower> WholeN;
+    std::vector<z3::expr> Defs64, Guards64NoMul;
+    // Whole-query narrowing state, one set per rewriter: [0] linearized
+    // (Q_A' first), [1] exact products (fallback).
+    struct NarrowSet { std::unique_ptr<Narrower> N; std::vector<z3::expr> Defs32, Guards32, Facts32; std::optional<z3::expr> Trap32; };
+    NarrowSet NS[2];
+    std::unique_ptr<Narrower> WholeN;   // = NS[1].N (flags/links/inputs for Q_B and diagnostics)
     llvm::raw_string_ostream Log;   // appends to Job.LogText
 };
 

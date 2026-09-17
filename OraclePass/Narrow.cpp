@@ -19,6 +19,48 @@ z3::expr Narrower::noFlag() {
 
 z3::expr Narrower::rewrite(const z3::expr &E) { return go(E); }
 
+bool Narrower::mentionsAny(const z3::expr &E, const std::vector<z3::expr> &Consts) {
+    if (!E.is_app()) return false;
+    if (E.num_args() == 0) { for (auto &C : Consts) if (z3::eq(C, E)) return true; return false; }
+    for (unsigned i = 0; i < E.num_args(); ++i) if (mentionsAny(E.arg(i), Consts)) return true;
+    return false;
+}
+
+// One fresh constant per unordered operand pair (X*Z and Z*X share it).
+z3::expr Narrower::productVar(const z3::expr &A, const z3::expr &B) {
+    for (auto &P : Products)
+        if ((z3::eq(P.A, A) && z3::eq(P.B, B)) || (z3::eq(P.A, B) && z3::eq(P.B, A))) return P.M;
+    std::string Nm = "mul~" + std::to_string(Products.size());
+    z3::expr M = Ctx.bv_const(Nm.c_str(), To);
+    Products.push_back({A, B, M});
+    return M;
+}
+
+std::vector<z3::expr> Narrower::linearFacts() {
+    std::vector<z3::expr> F;
+    z3::expr Zero = Ctx.bv_val(0, To);
+    for (auto &P : Products) {
+        F.push_back(z3::implies((P.A >= Zero) && (P.B >= Zero), P.M >= Zero));          // N0
+        F.push_back(z3::implies((P.A == Zero) || (P.B == Zero), P.M == Zero));          // N1
+    }
+    for (size_t i = 0; i < Products.size(); ++i)
+        for (size_t j = 0; j < Products.size(); ++j) {
+            if (i == j) continue;
+            const Prod &P = Products[i], &Q = Products[j];
+            // shared operand Z; X from P, Y from Q
+            std::vector<std::tuple<z3::expr, z3::expr, z3::expr>> Cases;
+            if (z3::eq(P.B, Q.B)) Cases.push_back({P.A, Q.A, P.B});
+            if (z3::eq(P.B, Q.A)) Cases.push_back({P.A, Q.B, P.B});
+            if (z3::eq(P.A, Q.B)) Cases.push_back({P.B, Q.A, P.A});
+            if (z3::eq(P.A, Q.A)) Cases.push_back({P.B, Q.B, P.A});
+            for (auto &[X, Y, Z] : Cases) {
+                F.push_back(z3::implies((X <= Y) && (X >= Zero) && (Z >= Zero), P.M <= Q.M));            // M1
+                F.push_back(z3::implies((X < Y) && (X >= Zero) && (Z > Zero), (P.M + Z) <= Q.M));         // M2
+            }
+        }
+    return F;
+}
+
 z3::expr Narrower::go(const z3::expr &E) {
     auto &Bucket = Memo[E.hash()];
     for (auto &KV : Bucket) if (z3::eq(KV.first, E)) return KV.second;
@@ -41,7 +83,7 @@ z3::expr Narrower::go(const z3::expr &E) {
                 R = Ctx.bv_const(Nm.c_str(), To);
                 if (!Seen) Links.push_back(R == E.extract(To - 1, 0));
             } else R = E.extract(To - 1, 0);
-            if (!Seen) { InputsSeenExprs.push_back(E); flag(!fits(E), "input !fits", E); ++NumInputs; }
+            if (!Seen) { InputsSeenExprs.push_back(E); InputImages.push_back(R); flag(!fits(E), "input !fits", E); ++NumInputs; }
         } else R = E;
         return remember(R);
     }
@@ -140,7 +182,8 @@ z3::expr Narrower::go(const z3::expr &E) {
                 auto small = [&](const z3::expr &X) { return (X >= Lo) && (X <= Hi); };
                 flag(!(small(R) && small(A[i])), "mul operands beyond half width", E);
             }
-            R = R * A[i];
+            if (WasFrom && Linear && !R.is_numeral() && !A[i].is_numeral()) R = productVar(R, A[i]);
+            else R = R * A[i];
         }
         break;
     }
