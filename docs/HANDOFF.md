@@ -2315,3 +2315,32 @@ base64 heavy/full +2 UNSAT (PHIINV-rel, §10.20); Swift lz77 +1/+2 UNSAT
 (PHIINV-hx / usub.sat, §10.17); Rust lz77 1 SAT->UNKNOWN at 300 ms (latency,
 UNSAT at 3 s); jl_filt_dsp full and jl_gemm_base heavy one UNSAT->UNKNOWN at
 300 ms (latency; 6/19 and 16/16 at 3 s). No UNSAT -> SAT anywhere.
+
+### 10.41 F1-2c -- loosening variance resolved: STRUCTURAL, not luck (Sep 17 2026)
+Question: why does loosening `size <= 2^15` to `size <= 2^30` certify in
+0.2 s for one matmul.jl trap and time out (3 s budget) for the other two?
+Method: both Q_A queries dumped (profile=100 captures the fast one too);
+each run offline with 5 seeds and 3 tactic variants; SMT-LIB diffed.
+Result: seeds/tactics change nothing (slow: 16-30 s on every variant; fast:
+0.13-0.24 s on every variant) => not solver variance. The diff of the
+prints was a red herring (Z3 prints the UNKNOWN solver's PRE-PROCESSED
+state, with k!-variables, and the UNSAT solver's original state).
+The real pattern: loosening a trap's OWN array bound is the hard query for
+every trap (trap 1's own bound b.size -> 2^30: 29 s; trap 0's a.size: 18 s;
+trap 1 loosening SOMEONE ELSE's a.size: 0.2 s). With size <= 2^15 the
+hypothesis size > n*n-1 forces n <= 181 and the search collapses; with
+size <= 2^30 the solver must refute (i-1)*n + k - 1 >= n*n over 16-bit
+n, i, k -- a nonlinear inequality rediscovered bit by bit.
+Tried: product-monotonicity lemmas (X<=Y -> X*Z<=Y*Z, X<Y -> X*Z+Z<=Y*Z)
+asserted in Q_A: present in the query, still 31 s offline. Removed again
+(prediction failed; no unmeasured complexity kept).
+DECISION: stop here as planned. matmul.jl stays a STATIC result: 3/3
+versioned, fast path for n <= 32768 but arrays <= 32768 elements on two
+traps (n <= 181) -- not a GEMM-class domain, so NO runtime arm is made
+(a designated Julia copy would only measure a path real inputs never take).
+What would fix it (not now): a real nonlinear step -- either a linear
+relaxation that names m = n*n and the two products as fresh variables with
+the derived linear facts (X<=Y-1 -> m_X <= m - n), or handing the
+refutation to Z3's nonlinear integer engine on the narrowed 32-bit values.
+Both are the "linearization" step 3 of §10.35, now with the exact target
+query on disk (logs/profile/julia_matmul!_145_0_QA*.smt2).

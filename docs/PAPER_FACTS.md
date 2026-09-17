@@ -1508,3 +1508,13 @@ bound is a genuinely 20 s query). matmul.rs 2/5 unchanged; lz77.jl 3/4 at 3 s
 (was 2/4); all other kernels unchanged; MV gate 8/8, main gate 27/12, mv-off
 probe unchanged (§10.40). Runtime not yet measured (Julia: proxy arm needed;
 fast-path domain currently too small for the 512-class GEMM workloads).
+
+**F1-2c (Sep 17 2026).** The 100× spread between matmul.jl's loosening
+queries is structural, not solver variance: 5 seeds and 3 tactics leave the
+slow query at 16–30 s and the fast one at 0.2 s. Loosening a trap's own
+array bound to 2^30 forces the solver to refute `(i−1)·n + k − 1 ≥ n²` over
+16-bit operands; with `size ≤ 2^15` the hypothesis collapses n to ≤ 181.
+Product-monotonicity lemmas did not help (31 s) and were removed. matmul.jl
+therefore remains a static 3/3 with a fast path that real GEMM inputs would
+not take; no runtime arm was made. Next lever would be a linearization step
+(HANDOFF §10.41).
