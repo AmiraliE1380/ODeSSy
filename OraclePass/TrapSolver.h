@@ -103,8 +103,7 @@ private:
     // N/Skipped. Leaves primed mode OFF.
     // LinksOut != nullptr: return the link equalities instead of asserting them.
     unsigned buildPrimedCopy(llvm::Loop *L, llvm::BasicBlock *Latch, const std::string &Tag, unsigned &N, unsigned &Skipped, const std::string &LabelPrefix, std::vector<z3::expr> *LinksOut = nullptr);
-    // Session 4b (§10.51): assert LAP(C) = first lap OR previous lap completed, as a context fact.
-    bool assertLapFact(llvm::Loop *C, unsigned Depth);
+
     // One loop level of indPhase. Solver: context | guards on entry/exit.
     bool indAtLoop(llvm::Loop *L, unsigned Depth);
     z3::expr scevToBV(const llvm::SCEV *S, bool &OK, unsigned W);

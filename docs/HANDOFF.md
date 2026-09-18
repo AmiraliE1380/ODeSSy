@@ -2749,3 +2749,17 @@ Controls with LAP facts: falsification table identical to §10.49
 (results/static/item1_s4b_falsification.log); `;ind` probe identical to
 session 4a up to UNKNOWN jitter (verdict_probe_item1_s4b_both.log);
 gates 27/12, 9/9. No benchmark source was changed.
+
+### 10.52 Item 1 session 5 -- consolidation: LAP facts removed (Sep 17 2026)
+
+Per the user's complexity concern: the §10.51 LAP facts (a primed copy
+per enclosing loop, asserted as context) bought nothing measurable and
+are removed; `ind` is again the §10.49 core: per-level BASE/STEP with
+the two §10.51 corrections kept (reach'(latch) in the STEP hypothesis;
+guard-excluded BASE = discharge after the context+guards audit) and the
+§10.50 pointer links. Item 1 machinery work stops here; the rules stay
+active and `ind` is an additional knob used together with them.
+Controls: falsification table identical to §10.49
+(results/static/item1_s5_falsification.log); gates 27/12, 9/9; `;ind`
+probe identical to 4b up to jitter (verdict_probe_item1_s5_both.log).
+No benchmark source was changed.
