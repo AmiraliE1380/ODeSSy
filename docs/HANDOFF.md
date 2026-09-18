@@ -2669,3 +2669,28 @@ inducting at an outer level, or a nested induction -- this is where item
 header phis are still unlinked; (c) out-of-sample sweep per §10.47 plan
 (CryptoSwift, zlib/zstd/lz4) at 300 ms / 3 s; (d) recompose with mv /
 narrow (ind is skipped on the narrow retry).
+
+### 10.50 Item 1 session 4a -- pointer header phis linked: PREDICTION HELD, NO GAIN (Sep 17 2026)
+
+No benchmark source was changed. Prediction stated before code: the
+loops logged "3 phi(s) primed, 2 link(s)" (§10.48) gain the third link;
+consistency stays SAT; no verdict worsens; any new proof must name the
+pointer link in its core. Refined before running, after reading the
+encoder: GEP and ptrtoint are havoced (Z3Encoder.cpp "FINAL CATCH-ALL"),
+so every pointer is an opaque 64-bit fresh symbol and a pointer link can
+only equate two fresh symbols -- expected: links up, verdicts unchanged,
+ZERO new proofs.
+
+Change (TrapSolver::buildPrimedCopy / indAtLoop): header phis of pointer
+type are linked (STEP) and fixed to their entry value (BASE) as the
+encoder's 64-bit stand-ins. Swift lz77 now shows 3 links on every 3-phi
+loop.
+
+Result: falsification table byte-identical to §10.49
+(results/static/item1_s4a_falsification.log); gates 27/12, 9/9; `;ind`
+and `;ind;nophiinv` probes identical to session 3 up to UNKNOWN jitter
+(Swift lz77's 420 ms query, Rust lz77's budget-edge trap, filt/gemm).
+Zero new proofs, as refined-predicted. Conclusion: the pointer gap is in
+the POINTER MODEL (no GEP arithmetic), not in the induction encoding;
+encoding `gep p, i` as p + i*size would be a separate mechanism with its
+own prediction (Swift/Julia cursor loops), not part of item 1.

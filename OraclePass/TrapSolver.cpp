@@ -143,14 +143,18 @@ unsigned TrapSolver::buildPrimedCopy(Loop *L, BasicBlock *Latch, const std::stri
     // side must be fetched OUTSIDE primed mode (§10.48 bug 2).
     Encoder.endPrimed();
     std::vector<std::pair<PHINode *, z3::expr>> CurVars;
+    // Session 4a (§10.50): pointer phis are linked too, as the 64-bit
+    // stand-ins the encoder uses for every pointer.
+    auto phiW = [](PHINode &P) -> unsigned { return P.getType()->isIntegerTy() ? P.getType()->getIntegerBitWidth() : P.getType()->isPointerTy() ? 64 : 0; };
     for (PHINode &P : L->getHeader()->phis())
-        if (P.getType()->isIntegerTy()) CurVars.push_back({&P, Encoder.valueAsBV(&P, P.getType()->getIntegerBitWidth())});
+        if (unsigned W = phiW(P)) CurVars.push_back({&P, Encoder.valueAsBV(&P, W)});
     Encoder.beginPrimed(L, Tag);
     unsigned Links = 0;
     for (auto &[PP, Cur] : CurVars) {
         Value *LV = PP->getIncomingValueForBlock(Latch);
-        unsigned W = PP->getType()->getIntegerBitWidth();
+        unsigned W = phiW(*PP);
         z3::expr Nxt = Encoder.primedExpr(LV);
+        if (Nxt.is_bv() && Nxt.get_sort().bv_size() != W) Nxt = Encoder.asBVPublic(Nxt, W);
         z3::expr NxtBV = Nxt.is_bool() ? z3::ite(Nxt, Encoder.apintToBV(APInt(W, 1)), Encoder.apintToBV(APInt(W, 0))) : Nxt;
         Encoder.assertRawFact(Cur == NxtBV, LabelPrefix + "link:" + std::to_string(Links));
         ++Links;
@@ -189,8 +193,8 @@ bool TrapSolver::indAtLoop(Loop *L, unsigned Depth) {
     Encoder.push();
     unsigned NB = 0;
     for (PHINode &P : Header->phis()) {
-        if (!P.getType()->isIntegerTy()) continue;
-        unsigned W = P.getType()->getIntegerBitWidth();
+        unsigned W = P.getType()->isIntegerTy() ? P.getType()->getIntegerBitWidth() : P.getType()->isPointerTy() ? 64 : 0;
+        if (!W) continue;
         Encoder.assertRawFact(Encoder.valueAsBV(&P, W) == Encoder.valueAsBV(P.getIncomingValueForBlock(Entry), W), Pfx + "base:" + std::to_string(NB++));
     }
     auto [BA, BAms] = Encoder.checkSatisfiability(); Job.LatencyMs += BAms;

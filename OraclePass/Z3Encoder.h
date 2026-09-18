@@ -164,6 +164,7 @@ public:
     }
     z3::expr edgeCond(llvm::BasicBlock *Pred, llvm::BasicBlock *Succ) { return getEdgeCond(Pred, Succ); }
     z3::expr asBoolPublic(const z3::expr &E) { return asBool(E); }
+    z3::expr asBVPublic(const z3::expr &E, unsigned W) { return asBV(E, W); }
 
 private:
     // Encodes the branch/switch constraint attached to a single CFG edge
