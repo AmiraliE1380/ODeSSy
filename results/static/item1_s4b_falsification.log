@@ -1,0 +1,30 @@
+== tests/test_heavy_phiinv1.ll @ 3000ms
+  rules        :       1 UNSAT 
+  nophiinv     :       1 SAT 
+  ind;nophiinv :       1 UNSAT 
+  rules+ind    :       1 UNSAT 
+== tests/test_heavy_phiinv_rel.ll @ 3000ms
+  rules        :       1 SAT       1 UNSAT 
+  nophiinv     :       2 SAT 
+  ind;nophiinv :       1 SAT       1 UNSAT 
+  rules+ind    :       1 SAT       1 UNSAT 
+== logs/swift_triage/lz77.ll @ 3000ms
+  rules        :      20 SAT       5 UNSAT 
+  nophiinv     :      23 SAT       2 UNSAT 
+  ind;nophiinv :      21 SAT       4 UNSAT 
+  rules+ind    :      20 SAT       5 UNSAT 
+== logs/swift_triage/base64.ll @ 3000ms
+  rules        :      25 SAT       2 UNSAT 
+  nophiinv     :      27 SAT 
+  ind;nophiinv :      25 SAT       2 UNSAT 
+  rules+ind    :      25 SAT       2 UNSAT 
+== logs/julia_triage/lz77_bounded.ll @ 3000ms
+  rules        :       2 SAT       2 UNSAT 
+  nophiinv     :       4 SAT 
+  ind;nophiinv :       2 SAT       2 UNSAT 
+  rules+ind    :       2 SAT       2 UNSAT 
+== logs/julia_triage/lz77_bounded2.ll @ 60000ms
+  rules        :       4 UNSAT 
+  nophiinv     :       4 SAT 
+  ind;nophiinv :       4 UNSAT 
+  rules+ind    :       4 UNSAT 

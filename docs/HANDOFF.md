@@ -2694,3 +2694,58 @@ Zero new proofs, as refined-predicted. Conclusion: the pointer gap is in
 the POINTER MODEL (no GEP arithmetic), not in the induction encoding;
 encoding `gep p, i` as p + i*size would be a separate mechanism with its
 own prediction (Swift/Julia cursor loops), not part of item 1.
+
+### 10.51 Item 1 session 4b -- cross-level composition (Sep 17 2026)
+
+PREDICTION (before code). Mechanism: for every loop C containing the
+trap block (all nesting levels), assert ONE context fact
+  LAP(C) :=  (∧_P P == entry_P)                                 -- first lap
+           ∨ (∧_P P == latch'(P~) ∧ latchcond'(P~) ∧ ¬fire'(C))  -- previous lap completed
+built from a primed copy of C's body over fresh P~ (with the copy's
+value facts), then run the §10.49 BASE/STEP obligations per level on
+top. Sound: at any lap, either it is the first or the previous one
+completed through the latch and did not trap. It is the semantic form of
+PHIINV-hi (p == v0 || pred(stepped, B)) with no syntactic candidate, and
+because every level's LAP fact sits in the same query the invariants
+compose. Predicted: Swift lz77 main #10 recovered under `ind;nophiinv`
+(13/13 of §10.47), Rust lz77's rules proof recovered (14/14); no verdict
+worsens; gates 27/12 and 9/9; probes no UNSAT -> SAT; solver latency may
+rise (extra copies) -- to be measured on the 300 ms probe.
+
+RESULT: PREDICTION FALSIFIED for both targets; mechanism kept (sound,
+composes, no cost measured).
+
+Implemented as predicted (TrapSolver::assertLapFact; LAP<d> facts for
+every loop containing the trap block, asserted in one scope around the
+per-level obligations). Two corrections found on the way, both kept:
+ (1) "previous lap completed" must include reach'(Latch), not only the
+     latch's back-edge condition -- otherwise header/body exits of lap
+     t-1 are not excluded (STEP and LAP both fixed);
+ (2) a BASE whose first-lap hypothesis contradicts the guards is a valid
+     discharge (the first lap cannot reach the trap block under these
+     guards) once context+guards alone were audited SAT at indPhase
+     entry; previously refused as vacuous.
+
+Swift lz77 main #10 (trap: %250 + %252 <u %224 fails; loops i=%237 /
+j=%250 / k=%252, m=%244 = max(0, n-i)): the L0 BASE core now names LAP1
+and LAP2, so cross-level facts DO compose -- composition was not the
+blocker. L0 STEP stays SAT because the proof needs k <= m, which the
+rules state syntactically (PHIINV-hx: unit step from 0, header exit on
+k == m) and which trap-only 1-induction cannot derive: "no trap on lap
+t-1" bounds i+k~, never k~ against m, and LAP0 gives only k_t = k~+1 with
+k~ != m. Rust lz77's rules core likewise names PHIINV-hx:13
+(len <= bound). Both misses have ONE cause: an AUXILIARY invariant about
+a header phi that the trap condition does not mention. 1-induction on
+the trap property alone (any k) cannot supply it; a candidate invariant
+discharged by BASE/STEP can. That is exactly item 2's role, and it is
+also what the four PHIINV rules are: a syntactic candidate generator
+whose discharge is done by pattern (not by the solver). Design
+consequence for session 5: turn the rules into CANDIDATES discharged by
+the item 1 obligations (candidate asserted as fact only if its own
+BASE/STEP are UNSAT), which removes the syntactic trust and lets item 2
+add candidates through the same channel.
+
+Controls with LAP facts: falsification table identical to §10.49
+(results/static/item1_s4b_falsification.log); `;ind` probe identical to
+session 4a up to UNKNOWN jitter (verdict_probe_item1_s4b_both.log);
+gates 27/12, 9/9. No benchmark source was changed.
