@@ -28,7 +28,24 @@ FactEncoder::FactEncoder(Z3Encoder &Enc, LazyValueInfo *LVI, ScalarEvolution *SE
       Log(Log), PhiInvEnabled(PhiInv) {}
 
 std::string FactEncoder::mkLabel(const char *Src) const {
-    return std::string(Src) + ":" + std::to_string(NumFacts);
+    return LabelPrefix + std::string(Src) + ":" + std::to_string(NumFacts);
+}
+
+unsigned FactEncoder::encodeFactsFor(BasicBlock *PredBB, const std::vector<Value *> &Vals, const std::string &Prefix) {
+    LabelPrefix = Prefix;
+    PhiInvDone.clear();
+    for (size_t i = 0; i < Vals.size(); ++i) {     // by index: Vals may grow
+        Value *V = Vals[i];
+        if (!V->getType()->isIntegerTy()) continue;
+        tryRangeMetadata(V);
+        tryRangeAttr(V);
+        tryKnownBits(V);
+        trySCEV(V);
+        trySCEVSym(V);
+        tryPhiInv(V);
+    }
+    processScevLeaves(PredBB);
+    return NumFacts;
 }
 
 // Short printable form of a boundary value for the log ("i32 %x").

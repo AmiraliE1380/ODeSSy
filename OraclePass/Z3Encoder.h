@@ -95,6 +95,13 @@ public:
     // Primed instantiation controls (item 1).
     void beginPrimed(llvm::Loop *L, const std::string &Tag) { PrimedLoop = L; PrimeTag = Tag; }
     void endPrimed() { PrimedLoop = nullptr; PrimeTag.clear(); }
+    // Forget the copy (its definitions live in a popped scope): call
+    // after the STEP scope is popped, before another loop level.
+    void resetPrimed() { endPrimed(); PrimedMap.clear(); PrimedHeaderPhis.clear(); PrimedFreeVars.clear(); }
+    // In-loop values that became FRESH symbols in the copy (header phis,
+    // loads, calls...): the copy's boundaries, for FactEncoder.
+    std::vector<llvm::Value*> PrimedFreeVars;
+    const std::vector<llvm::Value*> &primedFreeVars() const { return PrimedFreeVars; }
     bool inPrimed() const { return PrimedLoop != nullptr; }
     // The primed copy of V (must have been encoded in primed mode, or be a
     // header phi / outside value); creates it on demand like getOrCreateZ3Expr.
@@ -149,6 +156,14 @@ public:
     void assertRawFact(const z3::expr &F, const std::string &Label) {
         addFact(F, Label);
     }
+    // Item 1 (HANDOFF §10.46): public bridges for the inductive phase.
+    // reachWithinLap: "control reaches BB from Header within one lap"
+    // (back edges are not walked; alien edges are free booleans).
+    z3::expr reachWithinLap(llvm::BasicBlock *BB, llvm::BasicBlock *Header, llvm::DominatorTree *DT) {
+        return getBlockReachCond(BB, Header, nullptr, DT);
+    }
+    z3::expr edgeCond(llvm::BasicBlock *Pred, llvm::BasicBlock *Succ) { return getEdgeCond(Pred, Succ); }
+    z3::expr asBoolPublic(const z3::expr &E) { return asBool(E); }
 
 private:
     // Encodes the branch/switch constraint attached to a single CFG edge

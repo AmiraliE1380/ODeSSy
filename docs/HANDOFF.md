@@ -2575,3 +2575,97 @@ Session 3 (next, on `go`): replace the smoke with the two obligations
 BASE and STEP of §10.46 (labels |IND-base|/|IND-step|), hypothesis "latch
 held and no trap on lap t-1", and run the falsification list of §10.47
 under `heavy;ldeq;frame;ind;nophiinv`.
+
+### 10.49 Item 1 session 3 -- BASE/STEP obligations live; falsification list 12/13 + 1 (Sep 17 2026)
+
+No benchmark source was changed. Scope: replace the §10.48 smoke by the
+two obligations of §10.46, run the §10.47 falsification list, control
+verdicts. Commit: this section's commit.
+
+Mechanism (TrapSolver::indPhase / indAtLoop, Z3Encoder primed mode,
+FactEncoder::encodeFactsFor). Runs under `ind` after the direct query
+when it did not close (SAT/UNKNOWN), exact encoding only (never on the
+narrow retry). Solver holds context | guards; the trap is popped, the
+phase runs, the trap is re-asserted (MV sees the same shape as before).
+For the trap's loop L0, then each enclosing loop L1, L2, ...:
+  BASE  push; assert phi_t == entry value for every integer header phi
+        (labels |INDk-base:i|); audit (must be SAT with context+guards);
+        push trap; check; pop; pop.  Not UNSAT => this level fails.
+  STEP  push; instantiate the primed copy of the loop body (RPO; header
+        phis fresh `~pk`; inner loops' header phis and loads/calls fresh
+        too); value facts for the copy's fresh symbols with the boundary
+        battery minus LVI (labels |pk.RM:i| etc.; LVI is a point fact at
+        PredBB, and lap t-1 need not have reached PredBB); links
+        phi_t == latch'(phi_{t-1}) (|INDk-link:i|); the latch's back-edge
+        condition on the copy (|INDk-latch|); NOT(reach'(PredBB) && trap')
+        (|INDk-notrap|: lap t-1 completed, i.e. did not trap); audit; push
+        trap; check; pop; pop; resetPrimed.
+Both UNSAT => verdict "UNSAT ... [ind]", Job.Eliminate. Soundness of
+the hypotheses: the trap's first firing at lap t means lap t-1 completed
+through the latch (if t>=1) or t=0 (BASE). reach' uses the encoder's
+block-reach machinery within one lap (alien edges are free booleans,
+which only weakens the hypothesis). Copy facts are the same value facts
+the normal encoding asserts for its boundaries. `ind` forces threads=1
+because the copy's SCEV facts are asserted outside the FactGate window.
+
+Falsification run (results/static/item1_s3_falsification.log; heavy;
+ldeq;frame, Mac, 3 s unless noted). Prediction (§10.47): `ind;nophiinv`
+re-proves the 11 kernel proofs + 2 tests attributable to PHIINV.
+
+| input | rules | nophiinv | ind;nophiinv | rules+ind |
+|---|---|---|---|---|
+| test_heavy_phiinv1 | 1 UNSAT | 0 | 1 | 1 |
+| test_heavy_phiinv_rel | 1 UNSAT | 0 | 1 | 1 |
+| Swift lz77 | 5 UNSAT | 2 | 4 | 5 |
+| Swift base64 | 2 UNSAT | 0 | 2 | 2 |
+| lz77_bounded.jl | 2 UNSAT | 0 | 2 | 2 |
+| lz77_bounded2.jl (60 s) | 4 UNSAT | 0 | 4 | 4 |
+
+Per-trap identity check on Swift lz77: the induction set is a strict
+subset of the rules set (no new UNSAT there). 12 of 13 recovered. The
+miss is Swift lz77 `main #10`: the rules core names PHIINV facts on
+three phis at three nesting levels at once (%237, %250, %252); one-level
+1-induction leaves the other levels' phis free, so L0 STEP is SAT and
+L1..L3 BASE are SAT. This is the composition limit of the encoding (a
+conjunction of invariants across levels), not a bug; rules+ind still
+proves it. A 14th attributable proof surfaced outside the §10.47 list:
+Rust lz77's single UNSAT (rules at 3 s) is NOT recovered by `ind;nophiinv`
+at 3 s. So: PREDICTION PARTIALLY FALSIFIED -- 12/13 listed + 0/1 extra.
+
+lz77.jl (bounded2, designated copy) budget profile:
+  rules          300 ms: 2 UNSAT 2 UNKNOWN; 3 s: same; 60 s: 4 UNSAT
+  ind;nophiinv   300 ms: 2 UNSAT 2 SAT;      3 s: same; 60 s: 4 UNSAT
+  The two ind proofs come from level L2 (the outer loop) in ~15 ms; the
+  two slow ones are L2 STEP UNKNOWN at 3 s, UNSAT at 60 s.
+
+Out-of-sample (probe with `;ind`, 300 ms, results/static/
+verdict_probe_item1_s3_both.log and _indonly.log vs baseline
+probe_mac_0917_linear.log), inspected per trap:
+  * Swift crc32: 0 -> 4 UNSAT (both probes). The four bounds checks of
+    the BYFOUR loop (buf[i..i+3] behind `i + 4 <= n`), the benchmark's
+    declared proof targets; step 4 is outside the unit-step PHIINV rules.
+    Cores: |p0.SCEV:1| (copy's phi range), link, latch (+ notrap on one).
+    Runtime validation (results/perf/swift_crc32_ind_mac.log; 1 MiB random
+    input, 3703 iters, REPS=7, threads=1): 41->37 traps, outputs
+    byte-identical, oracle vs base +0.27% (noise; Mac ceiling <1%).
+  * Swift utf8: 2 -> 3 UNSAT (both probes; rules+ind). Trap #1 of
+    validate; STEP core uses PHIINV-hi (state t) + IND0-notrap.
+  * jl_filt_dsp_guarded (designated copy): UNKNOWN -> UNSAT (rules+ind).
+  * Rust lz77: UNKNOWN -> UNSAT at 300 ms in 1 of 2 reruns (budget edge;
+    rules alone prove it at 3 s).
+  * jl_gemm_base / jl_filt_dsp: UNKNOWN jitter only (today's standard
+    probe already differs from baseline on those cells).
+  * No UNSAT -> SAT anywhere in any probe.
+
+Controls: run_tests.sh 27/12, run_mv_tests.sh 9/9, standard 60-cell
+probe (results/static/verdict_probe_item1_s3.log): only filt/gemm
+UNKNOWN jitter vs baseline. Non-`ind` code paths touched: FactEncoder
+label prefix (empty by default), Z3Encoder primed bookkeeping (inactive).
+
+Open for session 4/5: (a) cross-level composition (the main #10 shape):
+either assert the inner levels' BASE/STEP-provable bounds as facts when
+inducting at an outer level, or a nested induction -- this is where item
+2 (affine relations) would plug in as a strengthening hook; (b) pointer
+header phis are still unlinked; (c) out-of-sample sweep per §10.47 plan
+(CryptoSwift, zlib/zstd/lz4) at 300 ms / 3 s; (d) recompose with mv /
+narrow (ind is skipped on the narrow retry).

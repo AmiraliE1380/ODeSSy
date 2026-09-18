@@ -77,6 +77,11 @@ public:
     // Walk every boundary (free) value and assert its facts.
     // Returns the number of fact assertions added to the solver.
     unsigned encodeBoundaryFacts(llvm::BasicBlock *PredBB);
+    // Item 1 (HANDOFF §10.49): value facts for the primed copy's fresh
+    // symbols (call with the encoder in primed mode). Same battery minus
+    // LVI: LVI facts hold at PredBB, and lap t-1 need not have reached it.
+    // Labels get Prefix ("p.") so cores tell copy facts from state-t facts.
+    unsigned encodeFactsFor(llvm::BasicBlock *PredBB, const std::vector<llvm::Value *> &Vals, const std::string &Prefix);
 
 private:
     bool tryRangeMetadata(llvm::Value *V);
@@ -109,4 +114,5 @@ private:
     z3::expr scevToZ3(const llvm::SCEV *S, bool &OK, unsigned &W);
     // "RM:<n>" etc.; n = running fact counter, so labels are unique.
     std::string mkLabel(const char *Src) const;
+    std::string LabelPrefix;
 };

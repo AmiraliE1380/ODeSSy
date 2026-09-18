@@ -229,6 +229,7 @@ z3::expr Z3Encoder::getOrCreateZ3Expr(Value *Val) {
             else E = Ctx.bv_const(name.c_str(), 64);
             PrimedMap.insert({Val, E});
             PrimedHeaderPhis.push_back({Phi, E});
+            PrimedFreeVars.push_back(Val);
             return E;
         }
         // Any other in-loop value reached before its definition (loads,
@@ -239,6 +240,7 @@ z3::expr Z3Encoder::getOrCreateZ3Expr(Value *Val) {
         else if (I->getType()->isIntegerTy()) E = Ctx.bv_const(name.c_str(), I->getType()->getIntegerBitWidth());
         else E = Ctx.bv_const(name.c_str(), 64);
         PrimedMap.insert({Val, E});
+        PrimedFreeVars.push_back(Val);
         return E;
     }
     auto it = ValueMap.find(Val);

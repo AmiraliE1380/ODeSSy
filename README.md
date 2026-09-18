@@ -109,6 +109,7 @@ opt -load-pass-plugin=build/OraclePass.so \
 | `timeout=<ms>` / `threads=<n>` | the two orthogonal latency dials |
 | `traps=<sym1>:<sym2>` | accept calls to named symbols as trap sites (Rust `panic`, Julia `boundserror`), behind a divergence gate |
 | `mv-light` / `mv` / `mv-sane=<k>` | solver-guided loop multi-versioning (`mv-light`: constant length-vs-index and sane-range hypotheses; `mv`: adds the symbolic index-bound template T3): a trap that stays SAT but is dead under a runtime-checkable hypothesis over loop-invariant values (array/table lengths, sane sizes ≤ 2^k) gets a guarded fast copy of its loop with the trap folded; the original loop keeps every check |
+| `ind` / `nophiinv` | inductive body encoding (HANDOFF §10.46/10.49): when the direct query does not close, prove the trap dead by 1-induction over its loop and each enclosing loop (BASE: header phis = entry values; STEP: a primed copy of the body for lap t−1 that completed via the latch without trapping). `nophiinv` deactivates the four PHIINV rules (code kept) for ablation. `ind` forces `threads=1`. |
 
 Three tiers are used throughout the evaluation: **light**, **heavy**
 (`heavy;ldeq`), and **full** (`heavy;ldeq;frame`).

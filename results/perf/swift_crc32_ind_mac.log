@@ -1,0 +1,27 @@
+swiftc: Apple Swift version 6.3.3 (swift-6.3.3-RELEASE)  sdk: /Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk
+opt   : LLVM (http://llvm.org/):
+reps  : 7   kernel: crc32   runargs: '3703 /private/tmp/claude-501/-Users-ebrah-Project-compiler-ODeSSy/4878395e-803a-4ec3-b782-fc7747c0fd83/scratchpad/crc32_input_1MiB.bin'
+
+==== PHASE A: building ====
+  built base     traps   41->41   bin    56280 B  eliminated 0
+  built base2x   traps   41->41   bin    56288 B  eliminated 0
+  built oracle   traps   41->37   bin    56288 B  eliminated 4
+==== PHASE B: output equivalence gate ====
+  outputs byte-identical across all configs -- gate passed
+==== PHASE C: 7 shuffled reps x 3 configs ====
+  rep 1/7
+  rep 2/7
+  rep 3/7
+  rep 4/7
+  rep 5/7
+  rep 6/7
+  rep 7/7
+
+config      median       min       avg  audit
+base        2.1599    2.1547    2.1624  ok
+base2x      2.1569    2.1541    2.1625  ok
+oracle      2.1541    2.1503    2.1580  ok
+oracle vs base: +0.27% (median)
+oracle vs base2x: +0.13% (median)
+
+CSV appended: /Users/ebrah/Project/compiler/ODeSSy/evaluation/perf_swift.csv   (rerun with REPS=15 on the server for the real number)

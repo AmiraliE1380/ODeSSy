@@ -127,56 +127,136 @@ void TrapSolver::profileQuery(const char *Tag, const std::string &Res, double Ms
     if (!EC) { OS << Encoder.toSMT2() << "\n"; Log << "    -> [profile] dumped " << Name << "\n"; }
 }
 
-void TrapSolver::indSmoke() {
-    if (!FC.LI) return;
-    Loop *L = FC.LI->getLoopFor(Job.PredBB);
-    if (!L) { Log << "    -> [ind] trap not in a loop\n"; return; }
+unsigned TrapSolver::buildPrimedCopy(Loop *L, BasicBlock *Latch, const std::string &Tag, unsigned &N, unsigned &Skipped, const std::string &LabelPrefix) {
+    N = Skipped = 0;
+    Encoder.beginPrimed(L, Tag);
+    ReversePostOrderTraversal<Function *> RPOT(Job.F);
+    for (BasicBlock *BB : RPOT) {
+        if (!L->contains(BB)) continue;
+        for (Instruction &I : *BB) {
+            if (I.isTerminator() || isa<DbgInfoIntrinsic>(&I)) continue;
+            if (I.getType()->isVoidTy()) continue;
+            if (!Encoder.encodeInstruction(&I, FC.DT, FC.LI)) ++Skipped; else ++N;
+        }
+    }
+    // Links: state t (normal header phi) == copy's latch value. The state-t
+    // side must be fetched OUTSIDE primed mode (§10.48 bug 2).
+    Encoder.endPrimed();
+    std::vector<std::pair<PHINode *, z3::expr>> CurVars;
+    for (PHINode &P : L->getHeader()->phis())
+        if (P.getType()->isIntegerTy()) CurVars.push_back({&P, Encoder.valueAsBV(&P, P.getType()->getIntegerBitWidth())});
+    Encoder.beginPrimed(L, Tag);
+    unsigned Links = 0;
+    for (auto &[PP, Cur] : CurVars) {
+        Value *LV = PP->getIncomingValueForBlock(Latch);
+        unsigned W = PP->getType()->getIntegerBitWidth();
+        z3::expr Nxt = Encoder.primedExpr(LV);
+        z3::expr NxtBV = Nxt.is_bool() ? z3::ite(Nxt, Encoder.apintToBV(APInt(W, 1)), Encoder.apintToBV(APInt(W, 0))) : Nxt;
+        Encoder.assertRawFact(Cur == NxtBV, LabelPrefix + "link:" + std::to_string(Links));
+        ++Links;
+    }
+    Encoder.endPrimed();
+    return Links;
+}
+
+// Item 1 session 3 (HANDOFF §10.49). One loop level L (the trap's loop or
+// an enclosing one). Solver holds context | guards on entry and exit.
+//
+//   BASE : phi_t == entry value for every integer header phi of L (lap 0)
+//   STEP : primed copy of L's body over fresh phi_{t-1} (inner loops'
+//          header phis become fresh symbols too), value facts for the
+//          copy's fresh symbols (same battery as the boundaries, minus
+//          LVI), links phi_t == latch'(phi_{t-1}), the latch took the
+//          back edge on lap t-1, and the trap did NOT fire on lap t-1
+//          (!(reach'(PredBB) && trap')): lap t-1 completed.
+// Each obligation is audited (hypothesis + context + guards SAT) and then
+// checked with the trap; both UNSAT => trap dead by 1-induction.
+bool TrapSolver::indAtLoop(Loop *L, unsigned Depth) {
+    BasicBlock *Header = L->getHeader();
     BasicBlock *Latch = L->getLoopLatch();
-    // BASE needs the header's unique outside predecessor (the phis' entry
-    // edge); a dedicated preheader is not required.
     BasicBlock *Entry = nullptr;
-    if (Latch) for (BasicBlock *P : predecessors(L->getHeader())) if (P != Latch) { if (Entry) { Entry = nullptr; break; } Entry = P; }
-    if (!Latch || !Entry) { Log << "    -> [ind] refused: loop needs a unique latch and a unique entry edge\n"; return; }
-    try {
-        Encoder.push();
-        Encoder.beginPrimed(L, "p");
-        unsigned N = 0, Skipped = 0;
-        ReversePostOrderTraversal<Function *> RPOT(Job.F);
-        for (BasicBlock *BB : RPOT) {
-            if (!L->contains(BB)) continue;
-            for (Instruction &I : *BB) {
-                if (I.isTerminator() || isa<DbgInfoIntrinsic>(&I)) continue;
-                if (I.getType()->isVoidTy()) continue;
-                if (!Encoder.encodeInstruction(&I, FC.DT, FC.LI)) ++Skipped; else ++N;
-            }
-        }
-        // links: state t (normal header phi) == copy's latch value. The
-        // state-t side must be fetched OUTSIDE primed mode.
-        unsigned Links = 0;
-        Encoder.endPrimed();
-        std::vector<std::pair<PHINode *, z3::expr>> CurVars;
-        for (PHINode &P : L->getHeader()->phis())
-            if (P.getType()->isIntegerTy()) CurVars.push_back({&P, Encoder.valueAsBV(&P, P.getType()->getIntegerBitWidth())});
-        Encoder.beginPrimed(L, "p");
-        for (auto &[PP, Cur] : CurVars) {
-            PHINode &P = *PP;
-            Value *LV = P.getIncomingValueForBlock(Latch);
-            unsigned W = P.getType()->getIntegerBitWidth();
-            z3::expr Nxt = Encoder.primedExpr(LV);            // copy: latch value
-            z3::expr NxtBV = Nxt.is_bool() ? z3::ite(Nxt, Encoder.apintToBV(APInt(W, 1)), Encoder.apintToBV(APInt(W, 0))) : Nxt;
-            Encoder.assertRawFact(Cur == NxtBV, "LINK:" + std::to_string(Links));
-            { std::string A = Cur.to_string(), B = NxtBV.to_string(); if (A.size() > 60) A = A.substr(0, 60) + "..."; if (B.size() > 160) B = B.substr(0, 160) + "...";
-              Log << "    -> [ind] link " << Links << ": " << A << "  ==  " << B << "\n"; }
-            ++Links;
-        }
-        Encoder.endPrimed();
-        auto [Res, Ms] = Encoder.checkSatisfiability();
-        if (Res.find("UNSAT") != std::string::npos) Log << "    -> [ind] consistency core: " << Encoder.getUnsatCore() << "\n";
-        Log << "    -> [ind] copy: " << N << " instruction(s) instantiated, " << Skipped << " skipped, "
-            << Encoder.primedHeaderPhis().size() << " header phi(s) primed, " << Links << " link(s); consistency check: "
-            << (Res.find("UNSAT") != std::string::npos ? "UNSAT (!)" : Res.find("UNKNOWN") != std::string::npos ? "UNKNOWN" : "SAT") << " (" << Ms << " ms)\n";
+    if (Latch) for (BasicBlock *P : predecessors(Header)) if (P != Latch) { if (Entry) { Entry = nullptr; break; } Entry = P; }
+    std::string Lv = "[ind L" + std::to_string(Depth) + "]";
+    if (!Latch || !Entry) { Log << "    -> " << Lv << " refused: loop needs a unique latch and a unique entry edge\n"; return false; }
+    auto trapTracked = [&]() {
+        if (Cfg.VacuityCheck) Encoder.assertConditionTracked(Job.TrapCond, Job.TrapOnTrue, "TRAP");
+        else Encoder.assertCondition(Job.TrapCond, Job.TrapOnTrue);
+    };
+    auto isUnsat = [](const std::string &R) { return R.find("UNSAT") != std::string::npos; };
+    std::string Tag = "p" + std::to_string(Depth), Pfx = "IND" + std::to_string(Depth) + "-";
+    bool Proved = false;
+    // ---------------- BASE ----------------
+    Encoder.push();
+    unsigned NB = 0;
+    for (PHINode &P : Header->phis()) {
+        if (!P.getType()->isIntegerTy()) continue;
+        unsigned W = P.getType()->getIntegerBitWidth();
+        Encoder.assertRawFact(Encoder.valueAsBV(&P, W) == Encoder.valueAsBV(P.getIncomingValueForBlock(Entry), W), Pfx + "base:" + std::to_string(NB++));
+    }
+    auto [BA, BAms] = Encoder.checkSatisfiability(); Job.LatencyMs += BAms;
+    std::string BaseRes = "skipped";
+    if (isUnsat(BA)) Log << "    -> " << Lv << " BASE hypothesis contradicts the context: refusing (vacuous)\n";
+    else {
+        Encoder.push(); trapTracked();
+        auto [R, Ms] = Encoder.checkSatisfiability(); Job.LatencyMs += Ms; BaseRes = R;
+        Log << "    -> " << Lv << " BASE (" << NB << " phi(s) = entry): " << R << "\n";
+        if (isUnsat(R) && Cfg.VacuityCheck) Log << "    -> " << Lv << " BASE core: " << Encoder.getUnsatCore() << "\n";
+        profileQuery("ind-base", R, Ms);
         Encoder.pop();
-    } catch (const z3::exception &e) { Encoder.endPrimed(); Log << "    -> [ind] Z3 exception: " << e.msg() << "\n"; }
+    }
+    Encoder.pop();
+    if (!isUnsat(BaseRes)) return false;
+    // ---------------- STEP ----------------
+    Encoder.push();
+    unsigned N, Skipped;
+    unsigned Links = buildPrimedCopy(L, Latch, Tag, N, Skipped, Pfx);
+    Encoder.beginPrimed(L, Tag);
+    unsigned NF = 0;
+    if (FC.LVI || FC.SE) {   // heavy tier: the copy's fresh symbols get value facts
+        FactEncoder PF(Encoder, nullptr, FC.SE, FC.LI, *FC.DT, Job.F->getParent()->getDataLayout(),
+                       Cfg.VacuityCheck, Log, /*PhiInv=*/!Cfg.NoPhiInv);
+        NF = PF.encodeFactsFor(Job.PredBB, Encoder.primedFreeVars(), "p" + std::to_string(Depth) + ".");
+    }
+    Encoder.assertRawFact(Encoder.edgeCond(Latch, Header), Pfx + "latch");
+    z3::expr Fire = Encoder.reachWithinLap(Job.PredBB, Header, FC.DT) &&
+                    (Encoder.asBoolPublic(Encoder.primedExpr(Job.TrapCond)) == Encoder.context().bool_val(Job.TrapOnTrue));
+    Encoder.assertRawFact(!Fire, Pfx + "notrap");
+    Encoder.endPrimed();
+    auto [SA, SAms] = Encoder.checkSatisfiability(); Job.LatencyMs += SAms;
+    if (isUnsat(SA)) Log << "    -> " << Lv << " STEP hypothesis contradicts the context: refusing (vacuous)\n";
+    else {
+        Encoder.push(); trapTracked();
+        auto [R, Ms] = Encoder.checkSatisfiability(); Job.LatencyMs += Ms;
+        Log << "    -> " << Lv << " STEP (copy: " << N << " instr, " << Skipped << " skipped, " << Encoder.primedFreeVars().size()
+            << " fresh, " << NF << " fact(s), " << Links << " link(s)): " << R << "\n";
+        if (isUnsat(R) && Cfg.VacuityCheck) Log << "    -> " << Lv << " STEP core: " << Encoder.getUnsatCore() << "\n";
+        profileQuery("ind-step", R, Ms);
+        Proved = isUnsat(R);
+        Encoder.pop();
+    }
+    Encoder.pop();
+    Encoder.resetPrimed();
+    return Proved;
+}
+
+// Precondition: solver holds context | guards | push | trap and the main
+// query was not UNSAT. Tries the trap's loop, then each enclosing loop.
+// Postcondition: same solver shape (trap re-asserted).
+bool TrapSolver::indPhase() {
+    if (!FC.LI || !FC.DT) return false;
+    Loop *L = FC.LI->getLoopFor(Job.PredBB);
+    if (!L) { Log << "    -> [ind] trap not in a loop\n"; return false; }
+    bool Proved = false;
+    try {
+        Encoder.pop();                                   // drop the trap (context | guards)
+        unsigned Depth = 0;
+        for (Loop *C = L; C && !Proved; C = C->getParentLoop(), ++Depth) Proved = indAtLoop(C, Depth);
+        Encoder.push();
+        if (Cfg.VacuityCheck) Encoder.assertConditionTracked(Job.TrapCond, Job.TrapOnTrue, "TRAP");
+        else Encoder.assertCondition(Job.TrapCond, Job.TrapOnTrue);
+    } catch (const z3::exception &e) { Encoder.resetPrimed(); Log << "    -> [ind] Z3 exception: " << e.msg() << "\n"; return false; }
+    if (Proved) Log << "    -> [ind] UNSAT by 1-induction (BASE + STEP)\n";
+    return Proved;
 }
 
 void TrapSolver::solvePhase() {
@@ -206,7 +286,6 @@ void TrapSolver::solvePhase() {
         // (facts, no guards/trap yet), instantiate the primed body copy of
         // the trap's loop, link state t to the copy's latch values, and
         // report well-formedness + satisfiability. No verdict.
-        if (Cfg.Inductive) indSmoke();
         // PHASE 3: ASSERT CONTEXT + TRAP CONDITION
         for (unsigned i = 0; i < Job.Guards.size(); ++i) {
             if (Cfg.VacuityCheck)
@@ -227,9 +306,15 @@ void TrapSolver::solvePhase() {
         auto [ResultString, QueryLatency] = Encoder.checkSatisfiability();
         Job.Queried = true;
         Job.LatencyMs = QueryLatency;
-        Log << "    -> " << ResultString << "\n";
         profileQuery("main", ResultString, QueryLatency);
         bool IsUnsat = (ResultString.find("UNSAT") != std::string::npos);
+        // Item 1 (HANDOFF §10.49): two-obligation inductive query when the
+        // direct query did not close. Exact encoding only. Logged before
+        // the verdict line so per-trap counts see one verdict.
+        if (Cfg.Inductive && !IsUnsat && !NarrowMode && indPhase()) {
+            IsUnsat = true; ResultString = "UNSAT (Dead Code / Impossible Path) [ind]";
+        }
+        Log << "    -> " << ResultString << "\n";
         if (IsUnsat && Cfg.VacuityCheck) {
             Log << "    -> Unsat core: " << Encoder.getUnsatCore() << "\n";
 

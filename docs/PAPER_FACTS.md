@@ -1553,3 +1553,28 @@ n·n − 1`. Designated arm (frozen source untouched), Mac:
 
 Log: results/perf/jl_matmul_mv_arms_mac_0917b.log. lz77.jl also gains its
 4th automatic fold at 3 s under `mv;narrow`.
+
+### 11.19 Inductive body encoding (`ind`) -- first results (Sep 17 2026)
+
+Mechanism: HANDOFF §10.46/10.49. Two obligations per loop level (BASE:
+phis = entry values; STEP: primed copy of the body for lap t-1 that
+completed via the latch without trapping), tried at the trap's loop and
+each enclosing loop. No trip counter, no invariant synthesis.
+
+Falsification (rules deactivated, `ind;nophiinv`, heavy;ldeq;frame,
+Mac): recovers 12 of the 13 proofs attributed to the four PHIINV rules
+(2 tests, Swift lz77 2/3, Swift base64 2/2, lz77.jl 6/6 incl. bounded2
+4/4 at 60 s). Miss: Swift lz77 main #10 needs invariants at three
+nesting levels simultaneously. Rust lz77's rules proof (3 s) also not
+recovered. rules+ind never loses a proof.
+
+New proofs at 300 ms (not provable by the rules at any budget tried):
+Swift crc32 4/4 BYFOUR bounds checks (stride-4 loop; outputs
+byte-identical at runtime, Mac speedup +0.27% = noise), Swift utf8 +1
+(rules+ind). lz77.jl: 2 of 4 at 300 ms under ind alone (rules: 0 at
+300 ms, 4 at 60 s).
+
+Controls: gates 27/12 and 9/9 unchanged; standard probe unchanged up to
+known UNKNOWN jitter; no UNSAT->SAT in any configuration.
+Logs: results/static/item1_s3_falsification.log,
+verdict_probe_item1_s3{,_indonly,_both}.log, results/perf/swift_crc32_ind_mac.log.

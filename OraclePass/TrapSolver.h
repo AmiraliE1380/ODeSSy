@@ -95,7 +95,15 @@ private:
     // T3 (HANDOFF §10.29): symbolic index bound, computed under the gate.
     void prepareT3();
     void profileQuery(const char *Tag, const std::string &Res, double Ms);
-    void indSmoke();   // item 1 session 2: primed-copy well-formedness check
+    // Item 1 (HANDOFF §10.46/10.49): two-obligation inductive query.
+    // Returns true iff BASE and STEP are both UNSAT (and non-vacuous).
+    bool indPhase();
+    // Instantiate the primed copy of L's body (RPO), link every integer
+    // header phi (state t == copy's latch value). Returns #links; fills
+    // N/Skipped. Leaves primed mode OFF.
+    unsigned buildPrimedCopy(llvm::Loop *L, llvm::BasicBlock *Latch, const std::string &Tag, unsigned &N, unsigned &Skipped, const std::string &LabelPrefix);
+    // One loop level of indPhase. Solver: context | guards on entry/exit.
+    bool indAtLoop(llvm::Loop *L, unsigned Depth);
     z3::expr scevToBV(const llvm::SCEV *S, bool &OK, unsigned W);
     const SolverConfig &Cfg;
     const FunctionCtx &FC;

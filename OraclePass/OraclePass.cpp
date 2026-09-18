@@ -184,6 +184,9 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
 
         unsigned NThreads =
             Threads ? Threads : std::thread::hardware_concurrency();
+        // `ind` asserts SCEV facts for the primed copy outside the FactGate
+        // window (HANDOFF §10.49): serialize.
+        if (Inductive && NThreads != 1) { errs() << "[ODeSSy] ind: forcing threads=1 (copy facts query SCEV outside the FactGate)\n"; NThreads = 1; }
         if (NThreads == 0) NThreads = 1;
 
         odessy::SolverConfig Cfg;
