@@ -1,0 +1,13 @@
+corpus       arm budget   UNSAT     ind     SAT    UNKN  MVfold
+cryptoswift  A   300        214       0    2573      20       0
+cryptoswift  B   300        259      52    2531      17       0
+cryptoswift  C   300        258      44    2530      19       0
+zlib         A   300         38       0     256       3       0
+zlib         B   300         38       0     258       1       0
+zlib         C   300         38       0     256       3       0
+zstd         A   300         52       0     549       5       0
+zstd         B   300         59       9     542       5       0
+zstd         C   300         63      11     537       6       0
+lz4          A   300         15       0     633       0       0
+lz4          B   300         15       0     633       0       0
+lz4          C   300         15       0     633       0       0

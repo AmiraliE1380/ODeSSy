@@ -1578,3 +1578,25 @@ Controls: gates 27/12 and 9/9 unchanged; standard probe unchanged up to
 known UNKNOWN jitter; no UNSAT->SAT in any configuration.
 Logs: results/static/item1_s3_falsification.log,
 verdict_probe_item1_s3{,_indonly,_both}.log, results/perf/swift_crc32_ind_mac.log.
+
+### 11.20 Inductive body encoding -- out-of-sample sweep (Sep 17 2026)
+
+Arms on existing IR (all vacuity, threads=1): A rules (`heavy;ldeq;frame`),
+B induction only (`+ind;nophiinv`), C both (`+ind`), D both + `mv;narrow`.
+UNSAT counts (first verdict per trap); HANDOFF §10.53 has per-trap checks.
+
+| corpus | budget | A | B | C | D (UNSAT / MV folds) |
+|---|---|---|---|---|---|
+| CryptoSwift (2807 sites) | 300 ms | 214 | 259 | 258 | -- |
+| CryptoSwift | 3 s | 223 | 266 | 266 | 266 / 102 |
+| zlib signed (297) | 300 ms | 38 | 38 | 38 | -- |
+| zstd signed (606) | 3 s | 52 | 59 | 63 | 63 / 20 |
+| lz4 (648) | 300 ms | 15 | 15 | 15 | -- |
+
+Induction never loses a rules proof when combined (C ⊇ A, 3 s, all
+corpora). It adds +43 on CryptoSwift (+19%) and +11 on zstd (+21%),
+nothing on zlib/lz4 (overflow traps needing value ranges). Alone it
+reproduces every CryptoSwift rules proof and all but 2 of zstd's.
+Prediction record: gain predicted +5..+30 on CryptoSwift and ~0 on C
+libraries; observed +43 and +11 (zstd) -- falsified upward; other four
+predictions held. Logs: results/static/ind_sweep_{300,3000}_mac_0917.txt.

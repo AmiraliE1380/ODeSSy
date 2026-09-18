@@ -2784,3 +2784,51 @@ CryptoSwift (byte-indexed loops; predicted +5 to +30) and near zero on
 zlib/zstd/lz4 (overflow traps whose proofs need value ranges, not loop
 invariants). (5) D adds folds only on traps C left SAT. Anything else is
 a failed prediction and is recorded as such.
+
+RESULTS (Sep 17 2026; results/static/ind_sweep_{300,3000}_mac_0917.txt,
+per-file logs results/static/ind_sweep/, recount script
+scripts/ind_sweep_table.sh: first verdict per trap, MV re-solve lines
+ignored). No benchmark source was changed.
+
+| corpus (sites) | budget | A rules | B ind-only (ind) | C both (ind) | D both+mv: UNSAT / folds |
+|---|---|---|---|---|---|
+| CryptoSwift (2807) | 300 ms | 214 | 259 (52) | 258 (44) | -- |
+| CryptoSwift | 3 s | 223 | 266 (53) | 266 (43) | 266 / 102 |
+| zlib signed, 15 TUs (297) | 300 ms | 38 | 38 (0) | 38 (0) | -- |
+| zstd signed, 30 TUs (606) | 300 ms | 52 | 59 (9) | 63 (11) | -- |
+| zstd | 3 s | 52 | 59 (9) | 63 (11) | 63 / 20 |
+| lz4 integer+strict (648) | 300 ms | 15 | 15 (0) | 15 (0) | -- |
+
+Per-trap identity checks (UNSAT sets by function + ordinal):
+  * C ⊇ A on every corpus at 3 s (0 lost). At 300 ms CryptoSwift lost 1:
+    a trap outside any loop that went UNKNOWN at 303 ms (budget edge).
+  * B vs A: CryptoSwift 0 rules-only proofs (B ⊇ A), zstd 2 rules-only
+    proofs (FSE_writeNCount_generic #1, sort_typeBstar #37); zlib/lz4
+    identical.
+  * D = C on CryptoSwift and zstd (0 lost, 0 gained), plus folds.
+Predictions vs outcome:
+  (1) A reproduces CryptoSwift 208 @300 ms: 214 (threads=1 vs 8, UNKNOWN
+      20 vs 28) -- HELD within jitter.
+  (2) B ⊂ A except stride/header-exit loops: HELD on zlib/lz4/zstd (2
+      lost, 9 gained); on CryptoSwift B ⊇ A with +45 -- the rules'
+      CryptoSwift proofs are all reproduced by induction.
+  (3) C ⊇ A: HELD (3 s), one 300 ms budget-edge loss.
+  (4) C gain largest on CryptoSwift, +5..+30 predicted: +43/+45 --
+      FALSIFIED UPWARD (spread over AES en/decrypt 11, OCB/CCM/CTR modes
+      8, ChaCha20 3, SHA2 2, BigUInt shifts 5, chunks/map/xor helpers 7,
+      ...). Near zero on C libraries: HELD for zlib (0) and lz4 (0),
+      FALSIFIED for zstd (+11: FSE_readNCount x4, sort_typeBstar x2,
+      HUF_readDTableX1, HUF_compress_internal, HUF_simpleQuickSort,
+      ZSTD_splitBlock, FSE_writeNCount_generic). Cores: mostly
+      |IND-link| + |IND-latch| + TRAP (the latch condition of lap t-1
+      rules the trap out at lap t), 12 with copy facts |p0.*|, 4 with
+      |IND-notrap|.
+  (5) D adds folds only where C left SAT: HELD (D = C + 102 / +20 folds).
+Bug found by the sweep (not induction-related): mvPhase's tightest-first
+minimization comparator compared APInt candidates of different widths
+(i32 and i64 candidates in one loop) -> assertion in APInt::compare on
+CryptoSwift and zstd/huf_decompress under `mv`. Fixed (zext to the
+wider width); gates 27/12, 9/9. The earlier CryptoSwift mv census
+(§10.34, threads=8, no `narrow`) did not hit it.
+Cost: B/C wall time on CryptoSwift ~1.4x of A at 300 ms (extra BASE/STEP
+queries on the ~2500 SAT traps).

@@ -958,7 +958,11 @@ void TrapSolver::mvPhase() {
             auto isUpper = [&](size_t i) { return Cands[i].P == ICmpInst::ICMP_SLE || Cands[i].P == ICmpInst::ICMP_ULE; };
             bool ua = isUpper(a), ub = isUpper(b);
             if (ua != ub) return ua;
-            if (ua && ub && !Cands[a].Bound && !Cands[b].Bound) return Cands[a].C.ult(Cands[b].C);
+            if (ua && ub && !Cands[a].Bound && !Cands[b].Bound) {
+                // candidates may have different widths (i32 and i64 values in one loop)
+                unsigned W = std::max(Cands[a].C.getBitWidth(), Cands[b].C.getBitWidth());
+                return Cands[a].C.zext(W).ult(Cands[b].C.zext(W));
+            }
             return false;
         });
         for (size_t Drop : Order) {
