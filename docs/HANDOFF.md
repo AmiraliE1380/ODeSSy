@@ -2832,3 +2832,42 @@ wider width); gates 27/12, 9/9. The earlier CryptoSwift mv census
 (§10.34, threads=8, no `narrow`) did not hit it.
 Cost: B/C wall time on CryptoSwift ~1.4x of A at 300 ms (extra BASE/STEP
 queries on the ~2500 SAT traps).
+
+### 10.54 Item 1 runtime experiments, Mac (Sep 17 2026)
+
+No benchmark source was changed. Both harnesses run the O3 sandwich with
+base / base2x / oracle, byte-identity gate, shuffled reps. Each corpus
+was run twice in separate sessions: oracle = `heavy;ldeq;frame;ind`
+(threads=1) and the rules-only control `heavy;ldeq;frame` (threads=1).
+Mac, REPS=10; not the pinned server protocol (REPS=30, numactl).
+
+CryptoSwift (cryptoswift_{ind,rules}_mac_0917.log; 300 iters,
+perf_test/sha_input.bin; harness IR 2651 sites; the Swift emit-ir/opt/llc
+sandwich re-materializes traps, hence 2651->2962 for base):
+| session | eliminated | base | base2x | oracle | oracle vs base / base2x | floor |
+|---|---|---|---|---|---|---|
+| ind   | 261 | 0.9374 | 0.9384 | 0.9276 | **+1.05% / +1.15%** | 0.1% |
+| rules | 213 | 0.9265 | 0.9302 | 0.9289 | -0.26% / +0.13% | 0.4% |
+Within-session the induction build is 10x above its noise floor while
+the rules control is flat, consistent with 48 extra eliminations
+(261 vs 213) landing in loops. Caveat: the two sessions' bases differ by
+1.2% (machine drift between runs), the same order as the effect, so
+the Mac verdict is SUGGESTIVE, not established. Ceiling (server,
+-Ounchecked): 19.6% (§8.3). The server protocol (REPS=30, pinned, both
+oracles in one shuffled session) is the real test.
+
+zstd (zstd_{ind,rules}_mac_0917.log; signed spec, 30 TUs, 233 traps in
+the emitted IR; 128 MB corpus from the harness's repeated seed text):
+| session | traps after oracle | comp vs base / base2x (floor) | decomp vs base / base2x (floor) |
+|---|---|---|---|
+| ind   | 233 -> 220 (13) | -0.91% / -0.77% (0.14%) | +1.74% / +1.16% (0.57%) |
+| rules | 233 -> 224 (9)  | -0.29% / +0.14% (0.43%) | +0.04% / -0.80% (0.85%) |
+Each run takes ~30 ms on this machine (repetitive corpus compresses at
+several GB/s), so process startup dominates and the opposite-sign
+deltas are not interpretable: INCONCLUSIVE on the Mac. The recorded
+server result for the rules tier was comp +2.58% (§ PAPER_FACTS 0827);
+the induction build removes 4 more traps (13 vs 9) and should be rerun
+there with the 512 MB corpus.
+
+Harness note: run_zstd_perf.sh now runs on macOS (corpus dir via SHM,
+BSD stat); logic unchanged.

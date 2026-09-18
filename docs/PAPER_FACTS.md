@@ -1600,3 +1600,15 @@ reproduces every CryptoSwift rules proof and all but 2 of zstd's.
 Prediction record: gain predicted +5..+30 on CryptoSwift and ~0 on C
 libraries; observed +43 and +11 (zstd) -- falsified upward; other four
 predictions held. Logs: results/static/ind_sweep_{300,3000}_mac_0917.txt.
+
+### 11.21 Inductive body encoding -- runtime (Mac, preliminary; Sep 17 2026)
+
+CryptoSwift (300 iters, REPS=10): `heavy;ldeq;frame;ind` removes 261
+traps (rules-only: 213) and runs **+1.05% vs base, +1.15% vs base2x**
+(session floor 0.1%); the rules-only control in its own session is flat
+(-0.26% / +0.13%). Cross-session base drift 1.2% -> suggestive; server
+confirmation pending. Ceiling 19.6%.
+zstd (signed, 128 MB, REPS=10): 233 -> 220 traps (rules 224); deltas
+within ±2% with opposite signs on a 30 ms workload -> inconclusive on
+the Mac; server rerun needed (rules tier there: comp +2.58%).
+Logs: results/perf/{cryptoswift,zstd}_{ind,rules}_mac_0917.log.
