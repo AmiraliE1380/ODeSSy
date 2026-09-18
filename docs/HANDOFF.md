@@ -2763,3 +2763,24 @@ Controls: falsification table identical to §10.49
 (results/static/item1_s5_falsification.log); gates 27/12, 9/9; `;ind`
 probe identical to 4b up to jitter (verdict_probe_item1_s5_both.log).
 No benchmark source was changed.
+
+### 10.53 Item 1 out-of-sample sweep -- PREDICTIONS (Sep 17 2026, before the run)
+
+Corpus (existing IR only; no source changed): CryptoSwift
+(logs/cryptoswift.ll, 2807 sites), zlib signed-overflow TUs
+(perf_test/signed.<tu>.ll, 15 TUs), zstd signed-overflow TUs
+(perf_zstd_work/ll, 30 TUs), lz4 (lz4_integer_O3.ll 608 sites,
+lz4_strict_O3.ll 40). Arms A rules / B ind-only / C both / D both+mv+narrow,
+all `vacuity`, `threads=1`; 300 ms for A-C on everything, 3 s for A-D on
+CryptoSwift and zstd. Script scripts/run_ind_sweep.sh; per-file logs in
+results/static/ind_sweep/.
+Predictions: (1) A reproduces the recorded CryptoSwift 208 UNSAT at
+300 ms within UNKNOWN jitter (threads=1 now vs 8 then). (2) B is a
+subset of A on every corpus except stride-k / header-exit loops of the
+crc32 kind, where it may add proofs; on the C libraries (overflow traps,
+not bounds) I predict B adds at most a handful. (3) C is a superset of A
+on every corpus: zero UNSAT lost. (4) C's gain over A is largest on
+CryptoSwift (byte-indexed loops; predicted +5 to +30) and near zero on
+zlib/zstd/lz4 (overflow traps whose proofs need value ranges, not loop
+invariants). (5) D adds folds only on traps C left SAT. Anything else is
+a failed prediction and is recorded as such.
