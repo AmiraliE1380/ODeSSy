@@ -87,36 +87,38 @@ for cfg in base base2x oracle; do
 done
 
 echo "==== PHASE D: corpus + byte-identity gate ===="
-CORP=/dev/shm/zstd_perf_corpus.txt
+SHM="${SHM:-/dev/shm}"; [ -d "$SHM" ] || SHM="${TMPDIR:-/tmp}"   # Darwin has no /dev/shm
+CORP=$SHM/zstd_perf_corpus.txt
 if [ ! -s "$CORP" ]; then
-  cat "$ROOT"/native_bench/*.swift "$ROOT"/scripts/*.sh "$ROOT"/docs/*.md > /dev/shm/zseed.txt
+  cat "$ROOT"/native_bench/*.swift "$ROOT"/scripts/*.sh "$ROOT"/docs/*.md > $SHM/zseed.txt
   : > "$CORP"
-  while [ "$(stat -c %s "$CORP")" -lt $((CORPUS_MB * 1024 * 1024)) ]; do cat /dev/shm/zseed.txt >> "$CORP"; done
+  while [ "$($(if stat -c %s / >/dev/null 2>&1; then echo "stat -c %s"; else echo "stat -f %z"; fi) "$CORP")" -lt $((CORPUS_MB * 1024 * 1024)) ]; do cat $SHM/zseed.txt >> "$CORP"; done
 fi
 for cfg in base base2x oracle; do
-  "$W/zstd.$cfg" -3 -f -c "$CORP" > "/dev/shm/zout.$cfg" 2>/dev/null
+  "$W/zstd.$cfg" -3 -f -c "$CORP" > "$SHM/zout.$cfg" 2>/dev/null
 done
-cmp -s /dev/shm/zout.base /dev/shm/zout.base2x && cmp -s /dev/shm/zout.base /dev/shm/zout.oracle \
+cmp -s $SHM/zout.base $SHM/zout.base2x && cmp -s $SHM/zout.base $SHM/zout.oracle \
   && echo "  outputs byte-identical across configs -- gate passed" \
   || { echo "[FATAL] OUTPUT MISMATCH -- aborting before timing"; exit 1; }
-cp /dev/shm/zout.base /dev/shm/zcorpus.zst
+cp $SHM/zout.base $SHM/zcorpus.zst
 
 echo "==== PHASE E: $REPS shuffled reps x 3 configs x {comp,decomp} ===="
 python3 - "$W" "$REPS" "$CSV" "$CORP" "$PIN" <<'PYEOF'
 import random, subprocess, sys, statistics, time
 W, REPS, CSV, CORP, PIN = sys.argv[1], int(sys.argv[2]), sys.argv[3], sys.argv[4], sys.argv[5]
+import os; ZST = os.path.join(os.path.dirname(CORP), "zcorpus.zst")
 pin = PIN.split() if PIN else []
 cfgs = ["base", "base2x", "oracle"]
 times = {(c, w): [] for c in cfgs for w in ("comp", "decomp")}
 jobs = [(c, w) for c in cfgs for w in ("comp", "decomp")]
 # warmup
 for c, w in jobs:
-    cmd = [f"{W}/zstd.{c}"] + (["-3", "-f", "-c", CORP] if w == "comp" else ["-d", "-c", "/dev/shm/zcorpus.zst"])
+    cmd = [f"{W}/zstd.{c}"] + (["-3", "-f", "-c", CORP] if w == "comp" else ["-d", "-c", ZST])
     subprocess.run(pin + cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
 for r in range(REPS):
     random.shuffle(jobs)
     for c, w in jobs:
-        cmd = [f"{W}/zstd.{c}"] + (["-3", "-f", "-c", CORP] if w == "comp" else ["-d", "-c", "/dev/shm/zcorpus.zst"])
+        cmd = [f"{W}/zstd.{c}"] + (["-3", "-f", "-c", CORP] if w == "comp" else ["-d", "-c", ZST])
         t0 = time.monotonic()
         subprocess.run(pin + cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
         dt = time.monotonic() - t0
