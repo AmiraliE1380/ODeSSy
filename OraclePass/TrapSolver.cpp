@@ -127,6 +127,58 @@ void TrapSolver::profileQuery(const char *Tag, const std::string &Res, double Ms
     if (!EC) { OS << Encoder.toSMT2() << "\n"; Log << "    -> [profile] dumped " << Name << "\n"; }
 }
 
+void TrapSolver::indSmoke() {
+    if (!FC.LI) return;
+    Loop *L = FC.LI->getLoopFor(Job.PredBB);
+    if (!L) { Log << "    -> [ind] trap not in a loop\n"; return; }
+    BasicBlock *Latch = L->getLoopLatch();
+    // BASE needs the header's unique outside predecessor (the phis' entry
+    // edge); a dedicated preheader is not required.
+    BasicBlock *Entry = nullptr;
+    if (Latch) for (BasicBlock *P : predecessors(L->getHeader())) if (P != Latch) { if (Entry) { Entry = nullptr; break; } Entry = P; }
+    if (!Latch || !Entry) { Log << "    -> [ind] refused: loop needs a unique latch and a unique entry edge\n"; return; }
+    try {
+        Encoder.push();
+        Encoder.beginPrimed(L, "p");
+        unsigned N = 0, Skipped = 0;
+        ReversePostOrderTraversal<Function *> RPOT(Job.F);
+        for (BasicBlock *BB : RPOT) {
+            if (!L->contains(BB)) continue;
+            for (Instruction &I : *BB) {
+                if (I.isTerminator() || isa<DbgInfoIntrinsic>(&I)) continue;
+                if (I.getType()->isVoidTy()) continue;
+                if (!Encoder.encodeInstruction(&I, FC.DT, FC.LI)) ++Skipped; else ++N;
+            }
+        }
+        // links: state t (normal header phi) == copy's latch value. The
+        // state-t side must be fetched OUTSIDE primed mode.
+        unsigned Links = 0;
+        Encoder.endPrimed();
+        std::vector<std::pair<PHINode *, z3::expr>> CurVars;
+        for (PHINode &P : L->getHeader()->phis())
+            if (P.getType()->isIntegerTy()) CurVars.push_back({&P, Encoder.valueAsBV(&P, P.getType()->getIntegerBitWidth())});
+        Encoder.beginPrimed(L, "p");
+        for (auto &[PP, Cur] : CurVars) {
+            PHINode &P = *PP;
+            Value *LV = P.getIncomingValueForBlock(Latch);
+            unsigned W = P.getType()->getIntegerBitWidth();
+            z3::expr Nxt = Encoder.primedExpr(LV);            // copy: latch value
+            z3::expr NxtBV = Nxt.is_bool() ? z3::ite(Nxt, Encoder.apintToBV(APInt(W, 1)), Encoder.apintToBV(APInt(W, 0))) : Nxt;
+            Encoder.assertRawFact(Cur == NxtBV, "LINK:" + std::to_string(Links));
+            { std::string A = Cur.to_string(), B = NxtBV.to_string(); if (A.size() > 60) A = A.substr(0, 60) + "..."; if (B.size() > 160) B = B.substr(0, 160) + "...";
+              Log << "    -> [ind] link " << Links << ": " << A << "  ==  " << B << "\n"; }
+            ++Links;
+        }
+        Encoder.endPrimed();
+        auto [Res, Ms] = Encoder.checkSatisfiability();
+        if (Res.find("UNSAT") != std::string::npos) Log << "    -> [ind] consistency core: " << Encoder.getUnsatCore() << "\n";
+        Log << "    -> [ind] copy: " << N << " instruction(s) instantiated, " << Skipped << " skipped, "
+            << Encoder.primedHeaderPhis().size() << " header phi(s) primed, " << Links << " link(s); consistency check: "
+            << (Res.find("UNSAT") != std::string::npos ? "UNSAT (!)" : Res.find("UNKNOWN") != std::string::npos ? "UNKNOWN" : "SAT") << " (" << Ms << " ms)\n";
+        Encoder.pop();
+    } catch (const z3::exception &e) { Encoder.endPrimed(); Log << "    -> [ind] Z3 exception: " << e.msg() << "\n"; }
+}
+
 void TrapSolver::solvePhase() {
     try {
         // PHASE 2.75 (FRAME only): cross-BB load unification facts from
@@ -150,6 +202,11 @@ void TrapSolver::solvePhase() {
                     << "] cross-BB load pair unified (frame held)\n";
             }
         }
+        // Item 1 session 2 smoke (HANDOFF §10.48): on the context alone
+        // (facts, no guards/trap yet), instantiate the primed body copy of
+        // the trap's loop, link state t to the copy's latch values, and
+        // report well-formedness + satisfiability. No verdict.
+        if (Cfg.Inductive) indSmoke();
         // PHASE 3: ASSERT CONTEXT + TRAP CONDITION
         for (unsigned i = 0; i < Job.Guards.size(); ++i) {
             if (Cfg.VacuityCheck)

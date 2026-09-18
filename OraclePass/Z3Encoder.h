@@ -4,6 +4,7 @@
 #include "llvm/IR/Constants.h"
 #include "llvm/IR/Dominators.h"
 #include "llvm/Analysis/LoopInfo.h"
+#include "llvm/Analysis/LoopInfo.h"
 #include "llvm/IR/ConstantRange.h"
 #include "llvm/Support/KnownBits.h"
 #include <z3++.h>
@@ -21,6 +22,16 @@ class Z3Encoder {
     z3::context Ctx;
     z3::solver Solver;
     std::unordered_map<llvm::Value*, z3::expr> ValueMap;
+    // ---- Inductive body encoding (item 1, HANDOFF §10.46/10.48) ----
+    // Primed mode: a SECOND instantiation of the loop PrimedLoop's body.
+    // Instructions inside the loop map through PrimedMap; the loop's header
+    // phis become fresh symbols "<name>~<tag>" (the state at lap t-1);
+    // everything outside the loop shares ValueMap (loop-invariant terms).
+    // Loads inside the loop are fresh in the copy (no memory carried).
+    llvm::Loop *PrimedLoop = nullptr;
+    std::string PrimeTag;
+    std::unordered_map<llvm::Value*, z3::expr> PrimedMap;
+    std::vector<std::pair<llvm::PHINode*, z3::expr>> PrimedHeaderPhis;
 
     // --- MEMOIZED CFG ENCODING (replaces exponential path enumeration) ---
     // ReachCache[(Root, BB)] = ONE Z3 formula meaning "control reaches BB
@@ -29,7 +40,7 @@ class Z3Encoder {
     // formula stays O(E) in size even when the number of syntactic paths
     // is exponential. Keyed on (Root, BB) so Phis sharing an IDom region
     // reuse each other's work within the same trap query.
-    std::map<std::tuple<llvm::BasicBlock*, llvm::BasicBlock*, llvm::BasicBlock*>, z3::expr> ReachCache;
+    std::map<std::tuple<llvm::BasicBlock*, llvm::BasicBlock*, llvm::BasicBlock*, std::string>, z3::expr> ReachCache;
 
     // Recursion-stack marker used to detect and skip back edges (this
     // reproduces the old simple-path / acyclic semantics without ever
@@ -81,6 +92,18 @@ public:
     }
     const std::vector<z3::expr> &factExprs() const { return FactExprs; }
     z3::context &context() { return Ctx; }
+    // Primed instantiation controls (item 1).
+    void beginPrimed(llvm::Loop *L, const std::string &Tag) { PrimedLoop = L; PrimeTag = Tag; }
+    void endPrimed() { PrimedLoop = nullptr; PrimeTag.clear(); }
+    bool inPrimed() const { return PrimedLoop != nullptr; }
+    // The primed copy of V (must have been encoded in primed mode, or be a
+    // header phi / outside value); creates it on demand like getOrCreateZ3Expr.
+    z3::expr primedExpr(llvm::Value *V) {
+        llvm::Loop *Save = PrimedLoop; std::string T = PrimeTag;
+        z3::expr E = getOrCreateZ3Expr(V);
+        PrimedLoop = Save; PrimeTag = T; return E;
+    }
+    const std::vector<std::pair<llvm::PHINode*, z3::expr>> &primedHeaderPhis() const { return PrimedHeaderPhis; }
     z3::expr condExpr(llvm::Value *Cond, bool IsTrue) { z3::expr c = asBool(getOrCreateZ3Expr(Cond)); return IsTrue ? c : !c; }
     unsigned timeoutMs() const { return TimeoutMsStored; }
     std::vector<std::string> TrackedLabels;   // answer literals of tracked assertions (scope-aware)
@@ -148,6 +171,7 @@ private:
     // string; NEVER casts through unsigned -- the constant-truncation
     // invariant from §4 applies to fact constants too).
     z3::expr bvConst(const llvm::APInt &A);
+    void defineValue(llvm::Value *V, const z3::expr &E);   // ValueMap or PrimedMap
     void addFact(const z3::expr &Fact, const std::string &Label);
     // --- i1 sort-coercion helpers ---
     

@@ -95,6 +95,7 @@ private:
     // T3 (HANDOFF §10.29): symbolic index bound, computed under the gate.
     void prepareT3();
     void profileQuery(const char *Tag, const std::string &Res, double Ms);
+    void indSmoke();   // item 1 session 2: primed-copy well-formedness check
     z3::expr scevToBV(const llvm::SCEV *S, bool &OK, unsigned W);
     const SolverConfig &Cfg;
     const FunctionCtx &FC;

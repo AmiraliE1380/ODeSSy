@@ -162,13 +162,14 @@ llvm::LoadInst *Z3Encoder::findEquivalentLoad(LoadInst *L) {
     auto It = LoadsByPtr.find(Ptr);
     if (It != LoadsByPtr.end()) {
         for (LoadInst *L0 : It->second) {
+            if (L0 == L) continue;   // re-encoding (primed copy): never self-match
             if (L0->getParent() != L->getParent()) continue;  // same-BB fence
             if (L0->getType() != L->getType()) continue;      // same width/type
             if (!L0->isSimple()) continue;
             // Walk the straight-line gap L0..L; any may-write clobbers.
             bool Clobbered = false;
             for (auto I = std::next(L0->getIterator());
-                 &*I != L && I != L->getParent()->end(); ++I) {
+                 I != L->getParent()->end() && &*I != L; ++I) {
                 if (I->mayWriteToMemory() || isa<FenceInst>(&*I)) {
                     Clobbered = true;
                     break;
@@ -177,7 +178,8 @@ llvm::LoadInst *Z3Encoder::findEquivalentLoad(LoadInst *L) {
             if (!Clobbered) { Match = L0; break; }
         }
     }
-    LoadsByPtr[Ptr].push_back(L);   // L is now a candidate for later loads
+    auto &Vec = LoadsByPtr[Ptr];
+    if (std::find(Vec.begin(), Vec.end(), L) == Vec.end()) Vec.push_back(L);   // candidate for later loads (once)
     return Match;
 }
 
@@ -201,7 +203,44 @@ std::string getSafeName(Value *Val) {
     return "unnamed_" + std::to_string(reinterpret_cast<uintptr_t>(Val));
 }
 
+// Primed mode: an instruction inside PrimedLoop is looked up/created in
+// PrimedMap; a header phi of PrimedLoop becomes a fresh "~tag" symbol.
+void Z3Encoder::defineValue(llvm::Value *V, const z3::expr &E) {
+    if (PrimedLoop) { if (auto *I = dyn_cast<Instruction>(V)) if (PrimedLoop->contains(I->getParent())) { PrimedMap.insert({V, E}); return; } }
+    ValueMap.insert({V, E});
+}
+
+static bool insidePrimed(Value *Val, llvm::Loop *L) {
+    auto *I = dyn_cast<Instruction>(Val);
+    return I && L && L->contains(I->getParent());
+}
+
 z3::expr Z3Encoder::getOrCreateZ3Expr(Value *Val) {
+    if (PrimedLoop && insidePrimed(Val, PrimedLoop)) {
+        auto pit = PrimedMap.find(Val);
+        if (pit != PrimedMap.end()) return pit->second;
+        auto *I = cast<Instruction>(Val);
+        if (auto *Phi = dyn_cast<PHINode>(I); Phi && PrimedLoop->getHeader() == Phi->getParent()) {
+            // state at lap t-1: fresh symbol
+            std::string name = getSafeName(Val) + "~" + PrimeTag;
+            z3::expr E(Ctx);
+            if (Phi->getType()->isIntegerTy(1)) E = Ctx.bool_const(name.c_str());
+            else if (Phi->getType()->isIntegerTy()) E = Ctx.bv_const(name.c_str(), Phi->getType()->getIntegerBitWidth());
+            else E = Ctx.bv_const(name.c_str(), 64);
+            PrimedMap.insert({Val, E});
+            PrimedHeaderPhis.push_back({Phi, E});
+            return E;
+        }
+        // Any other in-loop value reached before its definition (loads,
+        // calls, out-of-order uses): a fresh free variable in the copy.
+        std::string name = getSafeName(Val) + "~" + PrimeTag;
+        z3::expr E(Ctx);
+        if (I->getType()->isIntegerTy(1)) E = Ctx.bool_const(name.c_str());
+        else if (I->getType()->isIntegerTy()) E = Ctx.bv_const(name.c_str(), I->getType()->getIntegerBitWidth());
+        else E = Ctx.bv_const(name.c_str(), 64);
+        PrimedMap.insert({Val, E});
+        return E;
+    }
     auto it = ValueMap.find(Val);
     if (it != ValueMap.end()) {
         return it->second; 
@@ -324,7 +363,7 @@ z3::expr Z3Encoder::getBlockReachCond(BasicBlock *BB, BasicBlock *Root,
                                       BasicBlock *PhiBB, DominatorTree *DT) {
     if (BB == Root) return Ctx.bool_val(true);
 
-    auto Key = std::make_tuple(Root, BB, PhiBB);
+    auto Key = std::make_tuple(Root, BB, PhiBB, PrimeTag);
     auto it = ReachCache.find(Key);
     if (it != ReachCache.end()) return it->second; // <-- the memoization
 
@@ -356,12 +395,16 @@ z3::expr Z3Encoder::getBlockReachCond(BasicBlock *BB, BasicBlock *Root,
 
 
 bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo *LI) {
+    // Primed mode: definitions of in-loop instructions land in PrimedMap
+    // (defineValue picks the map); operand lookups go through
+    // getOrCreateZ3Expr, which already routes in-loop values to the copy.
+    if (PrimedLoop && insidePrimed(Inst, PrimedLoop) && PrimedMap.count(Inst)) return true;
     if (DebugOracle) {
         errs() << "    [DEBUG] Visiting Instruction: " << Inst->getOpcodeName() << " (" << getSafeName(Inst) << ")\n";
     }
 
     // If we already encoded it during our slice, skip
-    if (ValueMap.find(Inst) != ValueMap.end()) return true;
+    if (!(PrimedLoop && insidePrimed(Inst, PrimedLoop)) && ValueMap.find(Inst) != ValueMap.end()) return true;
 
     if (auto *BinOp = dyn_cast<BinaryOperator>(Inst)) {
         // Vector / FP binops: over-approximate instead of crashing on
@@ -434,7 +477,7 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo
                 }
             }
         }
-        ValueMap.insert({Inst, res});
+        defineValue(Inst, res);
         return true;
     } 
     else if (auto *Cmp = dyn_cast<ICmpInst>(Inst)) {
@@ -466,7 +509,7 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo
                 getOrCreateZ3Expr(Inst); 
                 return true;
         }
-        ValueMap.insert({Inst, res});
+        defineValue(Inst, res);
         return true;
     }
     else if (auto *Cast = dyn_cast<CastInst>(Inst)) {
@@ -512,7 +555,7 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo
             return true;
         }
         
-        ValueMap.insert({Inst, res});
+        defineValue(Inst, res);
         return true;
     }
     else if (isa<FreezeInst>(Inst)) {
@@ -539,7 +582,7 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo
             getOrCreateZ3Expr(Inst);
             return true;
         }
-        ValueMap.insert({Inst, getOrCreateZ3Expr(Op)});
+        defineValue(Inst, getOrCreateZ3Expr(Op));
         return true;
     }
     else if (auto *ExtVal = dyn_cast<ExtractValueInst>(Inst)) {
@@ -582,7 +625,7 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo
             } else {
                 getOrCreateZ3Expr(Inst); return true;
             }
-            ValueMap.insert({Inst, res});
+            defineValue(Inst, res);
             return true;
         }
         
@@ -667,7 +710,7 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo
                     Encoded = false;
                 }
                 if (Encoded) {
-                    ValueMap.insert({Inst, res});
+                    defineValue(Inst, res);
                     return true;
                 }
             }
@@ -682,7 +725,7 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo
         z3::expr t = getOrCreateZ3Expr(Sel->getTrueValue());
         z3::expr f = getOrCreateZ3Expr(Sel->getFalseValue());
         if (Sel->getType()->isIntegerTy(1)) { t = asBool(t); f = asBool(f); }
-        ValueMap.insert({Inst, z3::ite(c, t, f)});
+        defineValue(Inst, z3::ite(c, t, f));
         return true;
     }
     else if (auto *Phi = dyn_cast<PHINode>(Inst)) {
@@ -723,7 +766,7 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo
             res = z3::ite(gate, IncExpr, res);
         }
 
-        ValueMap.insert({Inst, res});
+        defineValue(Inst, res);
         return true;
     }
     
@@ -733,7 +776,7 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo
         // `i < n` (guard's load) contradict `i >= n'` (check's reload).
         if (LoadInst *Eq = findEquivalentLoad(Load)) {
             z3::expr Same = getOrCreateZ3Expr(Eq);  // already encoded (RPO)
-            ValueMap.insert({Load, Same});
+            defineValue(Load, Same);
             ++NumLoadEquivs;
             if (DebugOracle) {
                 errs() << "    [LDEQ] load " << getSafeName(Load)

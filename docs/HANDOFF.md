@@ -2507,3 +2507,71 @@ So the falsification list is 11 kernel proofs + 2 tests, all interval /
 pair invariants on loop counters. Session 3 acceptance: `heavy;ldeq;frame;
 ind;nophiinv` re-proves all 13 (lz77.jl at 60 s), with no UNSAT -> SAT
 elsewhere and the suite gate unchanged.
+
+### 10.48 Item 1 session 2 -- primed instantiation verified (Sep 17 2026)
+
+Scope (spec §10.46, plan §10.47): make Z3Encoder able to instantiate a
+second, "primed" copy of a loop body over fresh header-phi symbols, and
+verify the instantiation is well-formed and consistent. NO proof
+obligation yet: `ind` still has no effect on verdicts. No benchmark
+source was changed.
+
+Encoder (Z3Encoder.{h,cpp}): `beginPrimed(L, tag)` / `endPrimed()` switch
+`getOrCreateZ3Expr`/`encodeInstruction` into a mode where every value
+defined inside L resolves through `PrimedMap`: header phis become fresh
+`<name>~tag` symbols (recorded in `primedHeaderPhis()`), every other
+in-loop instruction is re-encoded from its (primed) operands, values
+outside L keep their normal encoding. `defineValue` writes to whichever
+map is active; `primedExpr(V)` reads a value in primed mode.
+`ReachCache` keys include the tag.
+
+Bugs found and fixed while making the smoke consistent (all three are in
+the encoder, not in benchmarks):
+ 1. `encodeInstruction` returned early when the instruction was already in
+    `ValueMap`, so in-loop instructions were never re-encoded in the copy.
+    Now bypassed for in-loop instructions while primed.
+ 2. The state-t side of each link (`phi_t == latch'`) was fetched while
+    primed mode was active, so the link read `p~p == p~p + 1` (UNSAT). The
+    state-t symbols are now fetched before re-entering primed mode.
+ 3. Latent crash in `findEquivalentLoad` (LDEQ): the straight-line walk
+    dereferenced the block-end sentinel before testing for it, and a load
+    re-encoded in the copy matched ITSELF as an earlier candidate (walk
+    from next(L) to end). Fixed: never self-match, end test first,
+    register a load once. Normal (unprimed) encoding never reached this
+    path, so verdicts are unaffected (probe below).
+ 4. Smoke required a dedicated preheader; relaxed to "unique entry edge
+    into the header", which is what BASE needs. Both PHIINV tests have a
+    conditional entry block, not a preheader.
+
+Smoke (`indSmoke`, TrapSolver.cpp; runs at the start of PHASE 3 under
+`ind`, context only, inside a push/pop): instantiate the trap's loop in
+RPO, link each integer header phi to the copy's latch value, check-sat.
+Command: `oracle-pass<vacuity;heavy;ldeq;frame;ind;timeout=3000;threads=1>`.
+
+| input                    | loops instantiated (instr / phis primed / links) | consistency |
+|--------------------------|--------------------------------------------------|-------------|
+| Swift lz77 (25 traps)    | 12/1/1 x2, 26/3/3, 36/3/2 x2, 53/3/3 x4; 16 traps not in a loop | SAT all |
+| Swift base64 (27)        | 36/3/2 x2, 51/3/3 x7, 60/2/2; 17 not in a loop   | SAT all     |
+| lz77_bounded2.jl         | 15/1/1 x2 (+2 refused before fix 4, now SAT)     | SAT all     |
+| jl_gemm_base.jl          | 149/2/2 x4, 169/2/2 x2, 20/1/1 x3, 21/1/1, 5/1/1 | SAT all     |
+| test_heavy_phiinv1       | 7/1/1                                            | SAT         |
+| test_heavy_phiinv_rel    | 9/2/2 x2                                         | SAT         |
+
+Zero instructions skipped anywhere. Known limitation to carry into
+session 3: pointer-typed header phis are primed (fresh symbol) but not
+linked (the "3 phis / 2 links" rows); their loads are already boundaries,
+so this loses precision, not soundness.
+
+Gates: run_tests.sh 27/12, run_mv_tests.sh 9/9. 60-cell probe
+(results/static/verdict_probe_item1_s2.log vs the frozen baseline
+probe_mac_0917_linear.log): no UNSAT -> SAT. UNSAT -> UNKNOWN on Swift
+lz77 heavy (1 of 5, both heavy rows) and intermittently base64 heavy (1
+of 2). The lz77 flip reproduces 3/3 on the COMMITTED baseline binary
+(stash test) and the query takes 420 ms at 3 s: machine latency today at
+the 300 ms edge (cf. §10.15), not this session. jl_filt_dsp shows its
+usual UNKNOWN jitter.
+
+Session 3 (next, on `go`): replace the smoke with the two obligations
+BASE and STEP of §10.46 (labels |IND-base|/|IND-step|), hypothesis "latch
+held and no trap on lap t-1", and run the falsification list of §10.47
+under `heavy;ldeq;frame;ind;nophiinv`.
