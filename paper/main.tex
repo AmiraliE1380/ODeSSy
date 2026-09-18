@@ -1521,4 +1521,188 @@ Right, a bar chart of seven non-square shapes with speedups between
 1.9x and 6.3x.}
 \label{fig:gemm-sweep}
 \end{figure*}
+
+% ---------------------------------------------------------------------------
+% DRAFT APPENDICES added Sep 17 2026: machinery and M-series results obtained
+% after the x86 campaign. Numbers are transcribed from docs/PAPER_FACTS.md
+% (\S11) and docs/HANDOFF.md (\S10.9--10.54); nothing above was changed.
+% ---------------------------------------------------------------------------
+\section{Machinery Added After the x86 Campaign}
+\label{sec:app-machinery}
+Four mechanisms were added to \tool{} in September 2026, each behind a
+knob so that every earlier configuration remains reproducible. Every
+mechanism was specified with a prediction before it was implemented; the
+predictions and their outcomes are recorded in \S\ref{sec:app-mseries}.
+No benchmark source was modified for any of them; the only source-level
+artifacts are clearly designated hand-versioned Julia copies used as
+runtime proxies (\S\ref{sec:app-mseries-arms}).
+
+\paragraph{Header-phi interval invariants (\texttt{PHIINV}; knob
+\texttt{nophiinv} deactivates).}
+Four syntactic rules add facts about loop-header $\phi$ nodes to the
+heavy tier's fact battery, each justified by one-step induction on the
+loop: \emph{hi} ($p = v_0 \lor \mathit{pred}(p, B)$ when the single
+latch branches back iff $\mathit{pred}(v_{\mathit{latch}}, B)$ for a
+loop-invariant $B$), \emph{lo} ($p \geq_s v_0$ when every latch value is
+a non-negative \texttt{nsw} increment), \emph{hx} (a header-exit
+equality bound $p \leq_u m$ for unit-step counters that leave the loop
+on $p = m$), and \emph{rel} (a relation between two header $\phi$s of
+the same loop). They unlocked the Swift lz77 proofs (5/25) and the
+lz77.jl proofs (4/4 at 60\,s).
+
+\paragraph{Solver-guided loop multi-versioning (knobs \texttt{mv-light},
+\texttt{mv}, \texttt{mv-sane=$k$}).}
+When a trap query is satisfiable, the pass re-solves it under tracked
+hypothesis candidates over loop-invariant values: T1 length-vs-index
+constants, T2 sane ranges $0 \leq v \leq 2^k$ (with half-width, quarter
+and product rungs), and, under \texttt{mv}, T3 a symbolic index bound
+from SCEV's latch exit count. An unsatisfiable core names a hypothesis
+$H$; it is minimized greedily (tightest first), loosened, and audited
+for vacuity ($H \wedge \mathit{context}$ must be satisfiable). Stage
+3a$'$ then clones the loop (\texttt{cloneLoopWithPreheader}, LCSSA,
+exit-$\phi$ patching, innermost first, folds propagated to enclosing
+clones) and guards the trap-free copy by $H$ evaluated at the hoist
+point. Every proof under $H$ is a \emph{fold}: one trap removed in the
+fast copy. Hypothesis operands must dominate the hoist header; the
+hoist level is the deeper of the count's and the bound's.
+
+\paragraph{Solver hardness: profiling, narrowing, linearization (knobs
+\texttt{profile[=ms]}, \texttt{narrow[=bits]}).}
+Queries slower than a threshold are dumped as SMT-LIB with
+\texttt{check-sat-assuming} over the tracked labels. Under a
+multi-versioning hypothesis that bounds the inputs, the whole query is
+re-encoded from 64 to 32 bits with a per-operation overflow flag (a
+multiply-free flag $|x| \leq 2^{15}$ for products), split into a pure
+32-bit query $Q_A$ and a 64-bit linking query $Q_B$; products of two
+variables are first replaced by fresh symbols with four linear facts
+($Q_A'$), falling back to the exact $Q_A$. This is sound only under
+$H$ and is used only to certify folds. It took matmul.jl from 0/3 to
+3/3 folds at 3\,s and gave lz77.jl its fourth fold at 3\,s.
+
+\paragraph{Inductive body encoding (knob \texttt{ind}).}
+When the direct query $\mathit{context} \wedge \mathit{facts} \wedge
+\mathit{guards} \wedge \mathit{trap}$ is satisfiable and the trap lies
+in a loop, two further obligations are checked, for the trap's loop and
+then each enclosing loop: \textsc{Base}, with every header $\phi$ fixed
+to its entry value, and \textsc{Step}, with a \emph{primed copy} of the
+loop body instantiated over fresh symbols $\phi_{t-1}$, the link
+$\phi_t = \mathit{latch}'(\phi_{t-1})$, the hypothesis that lap $t{-}1$
+reached the latch and took the back edge, and the hypothesis that the
+trap did not fire on lap $t{-}1$. The copy's fresh symbols receive the
+same value facts as ordinary boundaries (minus point-valid LVI facts).
+Both unsatisfiable proves the trap dead by one-step induction with no
+trip counter and no invariant synthesis; the cores carry labels
+\texttt{IND-base}, \texttt{IND-link}, \texttt{IND-latch},
+\texttt{IND-notrap}. The encoding recovers 12 of the 14 proofs
+attributable to the \texttt{PHIINV} rules and adds proofs the rules
+cannot state (stride-$k$ and multi-exit loops); the two misses need an
+auxiliary invariant ($k \leq m$) that trap-only induction cannot supply
+--- the rules stay active and the two mechanisms are used together.
+\texttt{ind} forces \texttt{threads=1}.
+
+\paragraph{Toolchain pin.} All M-series Swift measurements after
+Sep~16 use the swift.org 6.3.3-RELEASE toolchain with MacOSX26.5.sdk;
+an automatic Command Line Tools upgrade to Swift 6.4 changed emitted IR
+and is refused by the harnesses (\texttt{EXPECT\_SWIFT}).
+
+\section{M-series Results with the Added Machinery}
+\label{sec:app-mseries}
+All runs on one Apple M-series laptop (no pinning; medians of shuffled
+interleaved repetitions; byte-identical outputs required). The solver
+budget is per query. Where an x86 number exists it is quoted for
+orientation only; the two machines are not compared directly.
+
+\subsection{Static proofs}
+\begin{table}[h]
+\caption{Static proofs on M-series (UNSAT trap edges / sites; folds are
+traps removed in the multi-versioned fast copy). Budget 3\,s unless
+noted. Sources: PAPER\_FACTS \S11.1--11.20.}
+\label{tab:app-static}
+\small
+\begin{tabular}{llrrl}
+\toprule
+Benchmark & Lang & rules & \texttt{+mv;narrow} & \texttt{+ind} (rules on)\\
+\midrule
+lz77 & Swift & 5/25 & 5/25 & 5/25\\
+base64 & Swift & 2/27 & 7/27 (5 folds) & 2/27\\
+crc32 & Swift & 0/36 & 6 folds & 4/36\\
+utf8 & Swift & 2/20 & --- & 3/20\\
+sha256 & Swift & 7/36 & 7/36 & 7/36\\
+CryptoSwift & Swift & 223/2807 & 211 + 101 folds$^{a}$ & 266/2807 (+102 folds)\\
+lz77.jl & Julia & 4/4 (60\,s); 2/4 (300\,ms) & 4 folds at 3\,s & 4/4 (60\,s)\\
+matmul.jl & Julia & 0/3 & 3/3 folds & 0/3\\
+sha256.jl & Julia & 10/16 & 16/16 under $H$ & 10/16\\
+zstd (signed, 30 TUs) & C & 52/606 & --- & 63/606 (+20 folds)\\
+zlib (signed, 15 TUs) & C & 38/297 & --- & 38/297\\
+lz4 & C & 15/648 & --- & 15/648\\
+\bottomrule
+\end{tabular}\\
+\raggedright\footnotesize $^{a}$300\,ms, \texttt{threads=8}. The
+\texttt{ind} column is the rules$+$induction configuration; per-trap
+identity checks show it never loses a rules proof at 3\,s.\par
+\end{table}
+
+\subsection{Runtime}
+\begin{table}[h]
+\caption{M-series runtime results with the added machinery (oracle vs.\
+base / double-O3 control). Rows marked \emph{arm} are designated
+hand-versioned Julia copies mirroring what the pass does to the frozen
+kernel's IR; they are runtime proxies, not machinery output.}
+\label{tab:app-runtime}
+\small
+\begin{tabular}{llrrl}
+\toprule
+Benchmark & Config & Elim / folds & Speedup & Ceiling\\
+\midrule
+gemm.jl \emph{arm3} (proven blocks only) & frame & 16 & $4.16\times$ & $4.19\times$\\
+lz77.jl \emph{arm} A$+$B & rules, 60\,s & 4/4 & $2.63\times$ & $2.63\times$\\
+lz77.jl \emph{arm} B only & rules, 300\,ms & 2/4 & $1.52\times$ & $2.63\times$\\
+matmul.jl \emph{arm}, $n{=}128$ & \texttt{mv;narrow} & 3/3 & $1.21\times$ & $1.22\times$\\
+matmul.jl \emph{arm}, $n{=}512$ & \texttt{mv;narrow} & 3/3 & $1.02\times$ & $1.02\times$\\
+lz77 & Swift, rules, 1\,s & 5/25 & $+27.3$\% & 36.0\%\\
+base64 & Swift, \texttt{mv} & 7/27 & $+13.1$\% & 22.6\%\\
+sha256 & Swift, rules (pinned 6.3.3) & 7/36 & $+7.7$\% & 2.8\%\\
+crc32 & Swift, \texttt{mv} & 6 folds & $+4.3$\% & 0.7\% (lottery)\\
+CryptoSwift & Swift, \texttt{mv} / \texttt{mv-light} & 211$+$101 / 98 & $+1.9$\% / $+1.4$\% & 19.6\% (x86)\\
+CryptoSwift & Swift, \texttt{ind} & 261 & $+1.05$\%$^{b}$ & 19.6\% (x86)\\
+crc32 & Swift, \texttt{ind} & 4 & $+0.3$\% (noise) & $<1$\%\\
+lz77 & Rust, rules & 1/3 & $-26.8$\% & none\\
+\bottomrule
+\end{tabular}\\
+\raggedright\footnotesize $^{b}$REPS$=$10; the rules-only control in
+its own session is flat ($-0.26$\%), but the two sessions' bases differ
+by 1.2\%, so this is suggestive pending the pinned x86 protocol. zstd
+under \texttt{ind} is inconclusive on M-series (30\,ms workload).\par
+\end{table}
+
+\subsection{Designated arms}
+\label{sec:app-mseries-arms}
+Julia's JIT cannot consume the pass output, so for each Julia kernel a
+separate, clearly named copy (\texttt{jl\_*\_mv\_arms.jl},
+\texttt{lz77\_bounded*.jl}) transcribes by hand exactly the guard $H$
+the pass mined and the \texttt{@inbounds} placement the pass's proofs
+license; the frozen kernel is never edited. For matmul.jl the mined
+guard is $n \leq 32768 \wedge |a|,|b|,|c| > n^2-1 \wedge |a|,|b|,|c|
+\leq 2^{30}$, which holds for every tested size after linearization
+loosened the size bounds.
+
+\subsection{Prediction record}
+Each mechanism's prediction was written before its code. Outcomes:
+PHIINV --- Swift lz77 $0 \to 5$ and lz77.jl $0 \to 4$ as predicted.
+Multi-versioning --- base64 folds and lz77.jl folds as predicted;
+predicted CryptoSwift folds obtained. Narrowing --- matmul.jl 3/3 only
+after the unpredicted linearization step; the monotonicity-lemma
+variant was tried, did not help, and was removed. FRAME~v2 (unifying
+Julia size reloads across blocks) --- premise falsified: the reloads
+carry no alias metadata and MemorySSA reports a clobber; abandoned.
+Inductive encoding --- predicted 13/13 recovered with rules off,
+observed 12/13 plus one further miss (Rust lz77); the shared cause is
+the auxiliary \emph{hx} invariant. Cross-level composition facts ---
+predicted to recover both misses, falsified (composition was not the
+blocker), mechanism removed. Pointer-$\phi$ linking --- predicted no
+gain because pointers are havoced; held. Out-of-sample sweep ---
+predicted $+5$ to $+30$ on CryptoSwift and $\approx 0$ on C libraries;
+observed $+43$ on CryptoSwift and $+11$ on zstd (falsified upward),
+$0$ on zlib and lz4 (held); superset property held on every corpus.
+
 \end{document}
