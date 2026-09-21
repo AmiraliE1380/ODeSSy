@@ -99,20 +99,28 @@
 }
 \end{filecontents*}
 %%
-\documentclass[sigplan,screen,review,anonymous]{acmart}
+\documentclass[acmsmall,screen,review,anonymous]{acmart}
+%% acmsmall defaults to numeric citations; sigplan defaulted to author-year.
+\citestyle{acmauthoryear}
 \AtBeginDocument{\providecommand\BibTeX{{Bib\TeX}}}
 %% Rights placeholders — ACM supplies real values at camera-ready. Do not edit.
 \setcopyright{acmlicensed}
 \copyrightyear{2027}
 \acmYear{2027}
 \acmDOI{XXXXXXX.XXXXXXX}
-\acmConference[CGO '27]{IEEE/ACM International Symposium on Code Generation and Optimization}{March 20--24, 2027}{TBD}
-\acmISBN{978-1-4503-XXXX-X/27/03}
+\acmJournal{PACMPL}
+\acmVolume{11}
+\acmNumber{OOPSLA1}
+\acmArticle{1}
+\acmMonth{4}
 %%\acmSubmissionID{XXX}
 %% Code listings for the worked examples
 \usepackage{listings}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
+%% one-column (acmsmall): landscape floats for tables/figures that were
+%% two-column-spanning in sigplan. `rotating` is on ACM's TAPS whitelist.
+\usepackage{rotating}
 \definecolor{codecomment}{gray}{0.45}
 \definecolor{codekw}{RGB}{0,90,160}
 \definecolor{trapred}{RGB}{200,20,20}
@@ -474,8 +482,8 @@ leaves closed --- which post-conditions to import for them, and why
 composing those facts requires a solver.
 \subsection{Why conjunction necessitates a solver}
 \label{sec:conjunction}
-\begin{figure*}
-\begin{minipage}[t]{0.46\textwidth}
+\begin{sidewaysfigure}
+\begin{minipage}[t]{0.46\linewidth}
 \begin{lstlisting}[style=odessy,
     morekeywords={var,for,in,let,if},
     comment={[l]{//}},
@@ -489,7 +497,7 @@ for t in 16..<64 {
 }
 \end{lstlisting}
 \end{minipage}\hfill
-\begin{minipage}[t]{0.50\textwidth}
+\begin{minipage}[t]{0.50\linewidth}
 \begin{lstlisting}[style=odessy,
     morekeywords={load,add,icmp,uge,br,label,call,void,i8,i64,i1,ptr},
     comment={[l]{;}},
@@ -527,7 +535,7 @@ highlighted in red, and the conditional branch to a trap block that
 calls ubsantrap. The caption lists the two facts whose conjunction
 refutes the trap.}
 \label{fig:simple-example}
-\end{figure*}
+\end{sidewaysfigure}
 Consider the message-schedule loop of a Swift SHA-256 kernel
 (Figure~\ref{fig:simple-example}), whose inner
 16 iterations index a 64-element working array. Swift's bounds checks on
@@ -569,8 +577,8 @@ turning those same checks off is worth roughly $4\times$
 an ordinary three-loop matrix multiply, and Julia's own authors
 discharge them by hand, with trusted \texttt{@inbounds} annotations,
 in the shipping standard library.
-\begin{figure*}
-\begin{minipage}[t]{0.47\textwidth}
+\begin{sidewaysfigure}
+\begin{minipage}[t]{0.47\linewidth}
 \begin{lstlisting}[style=odessy,basicstyle=\footnotesize\ttfamily,
     morekeywords={for,in,end,if},
     comment={[l]{\#}},
@@ -593,7 +601,7 @@ for j in 1:n, l in 1:k
 end
 \end{lstlisting}
 \end{minipage}\hfill
-\begin{minipage}[t]{0.49\textwidth}
+\begin{minipage}[t]{0.49\linewidth}
 \begin{lstlisting}[style=odessy,basicstyle=\footnotesize\ttfamily,
     morekeywords={load,store,add,icmp,uge,br,label,i64,i1,ptr,x,double},
     comment={[l]{;}},
@@ -645,7 +653,7 @@ field tagged n2, in red the unsigned
 compare and the conditional branch to the trap block, then the
 vectorized store into C tagged st and the back edge.}
 \label{fig:frame-example}
-\end{figure*}
+\end{sidewaysfigure}
 The failure is structural, and not limited to this special GEMM
 implementation, as the encoder additions this section motivates also
 removed checks in other benchamrks (Swift SHA-256, Julia SHA-256, the 
@@ -730,7 +738,7 @@ in the system converges on declining to optimize.
 \subsubsection{Encoding the context}
 \label{sec:encoding-context}
 
-\begin{table*}[t]
+\begin{sidewaystable}
 \caption{The encoding rules. $\den{x}$ is the bit-vector term for SSA
 value \texttt{x}, at \texttt{x}'s own width $w$; all arithmetic is
 modulo $2^w$. Instructions not in the table (and non-integer types)
@@ -758,7 +766,7 @@ LLVM IR (pseudocode) & encoding & also covers\\
 loop-header \texttt{phi}, \texttt{load}, \texttt{call}, \texttt{gep} & fresh variable & every unmodeled instruction\\
 \bottomrule
 \end{tabular}
-\end{table*}
+\end{sidewaystable}
 
 The unit of proof is a trap \emph{edge}, fixed by an \emph{anchor}.
 Frontends merge error blocks, and loop multiversioning clones checks
@@ -1074,7 +1082,7 @@ of the shift encoding alone drops zlib's signed proofs from 2 to 0 and
 unsigned from 41 to 25 --- the solver's exactness through shift
 compositions is doing attributable work that range/known-bits reasoning
 loses.
-\begin{table*}
+\begin{table}
 \caption{Genuine speedups: every runtime experiment in which elimination
 paid, sorted by speedup (medians, REPS$\geq$21 shuffled reps, oracle
 vs.\ the double-O3 control, byte-identical-output gate; final encoder,
@@ -1085,6 +1093,8 @@ argument --- is Table~\ref{tab:speedups-full} in
 Appendix~\ref{sec:app-full}.}
 \label{tab:speedups}
 \small
+%% one-column (acmsmall): tighter intercolumn gutter so the row fits
+\setlength{\tabcolsep}{3pt}
 \begin{tabular}{llrlrlrr}
 \toprule
 Benchmark & Lang & Elim & Platform & Speedup & Unlock & Ceiling & Recov.\\
@@ -1113,7 +1123,7 @@ than the baseline (\pct{-7.9}, reproduced in three sessions and by
 proven-only arm's \pct{6.9} is a real, reproducible gain (medians of
 21, bitwise-identical output) that the lottery, not check removal,
 pays for.\par
-\end{table*}
+\end{table}
 Table~\ref{tab:speedups} answers the payoff half: where proofs land on
 a hot path, elimination recovers 27--100\% of each machine's own
 checked-vs-unchecked ceiling --- up to $4.16\times$ end-to-end on
@@ -1264,7 +1274,7 @@ library code in a second language, none of which a matrix-specific
 hack could have touched.
 \subsection{RQ3: What does it cost?}
 \label{sec:results-cost}
-\begin{figure*}[t]
+\begin{figure}[t]
 \centering
 \includegraphics[width=0.92\textwidth]{smt_latencies.pdf}
 \caption{SMT query latency by verdict class (1{,}818 queries over eight
@@ -1284,7 +1294,7 @@ milliseconds; the UNSAT panel shows 174 queries centered near 3
 milliseconds with a small tail beyond one second; the UNKNOWN panel is
 empty; the fourth panel overlays the two distributions.}
 \label{fig:latency}
-\end{figure*}
+\end{figure}
 \begin{table}
 \caption{The timeout dial (zlib deflate, unsigned, O1: 457 queries,
 8 workers, x86). \textsc{unsat} yield saturates three decades before
@@ -1400,7 +1410,7 @@ checks), or because the specification that emits the checks is
 dynamically un-runnable in trap mode
 (\S\ref{sec:results-static}). Ceilings are checked-vs-unchecked
 for native kernels and measured sanitizer overhead for C libraries.
-\begin{table*}
+\begin{sidewaystable}
 \caption{All benchmarks and their runtime results. ``Elim'' is proven
 trap edges at the final encoder and full fact tier; speedups are medians
 of $\geq$21 shuffled interleaved repetitions, oracle vs.\ the double-O3
@@ -1443,7 +1453,7 @@ $^{c}$Honest ceiling after removing the \texttt{-O}-vs-sandwich
 pipeline gap: on x86, 8.1 points of the raw \pct{19.6}; on M-series the
 raw gap is only \pct{1.1} and the pipeline accounts for all of it
 (sandwich vs.\ \texttt{-Ounchecked}: \pct{-0.7}, 15 interleaved runs).\par
-\end{table*}
+\end{sidewaystable}
 \begin{table}
 \caption{The frontier: benchmarks with a measured, unrecovered
 checked-vs-unchecked ceiling and no (or unusably few) proofs at the
@@ -1494,7 +1504,7 @@ a checked-vs-unchecked comparison cannot be run --- their runnable-spec
 counterparts (zlib decomp.\ signed \pct{1.1}, zstd comp.\ signed
 \pct{1.2}) appear in Table~\ref{tab:speedups-full}.\par
 \end{table}
-\begin{figure*}
+\begin{figure}
 \centering
 \includegraphics[width=0.92\textwidth]{gemm_sweep.pdf}
 \caption{GEMM speedup of the proof-licensed build (all four accesses
@@ -1520,7 +1530,7 @@ matrix dimension from 64 to 4096 on a log axis: about 6.8x and 6.2x at
 Right, a bar chart of seven non-square shapes with speedups between
 1.9x and 6.3x.}
 \label{fig:gemm-sweep}
-\end{figure*}
+\end{figure}
 
 % ---------------------------------------------------------------------------
 % DRAFT APPENDICES added Sep 17 2026: machinery and M-series results obtained
