@@ -1,0 +1,22 @@
+# ldeq A/B, 3 s budget, frame ON in BOTH arms (the shipped configuration),
+# so this measures "what does ldeq add ON TOP OF frame".
+corpus       config              UNSAT    SAT   UNKN   wall_s
+zstd (30 TU) heavy;frame            38    463      0        5
+zstd (30 TU) heavy;ldeq;frame       38    463      0        6
+zlib (15 TU) heavy;frame            38    259      0        6
+zlib (15 TU) heavy;ldeq;frame       38    259      0        6
+lz4 (2 files) heavy;frame           15    633      0        4
+lz4 (2 files) heavy;ldeq;frame      15    633      0        5
+# CryptoSwift, 3 runs each (threads=8): the +1 is inside run-to-run jitter
+cryptoswift  heavy;frame         U=223/222/221  K=10/11/12
+cryptoswift  heavy;ldeq;frame    U=223/222/222  K=10/11/11
+
+# Production knobs on CryptoSwift (threads=1, forced by ind):
+#   t=300ms : 257 UNSAT + 102 folds, 21 UNKNOWN, 60 s wall
+#   t=3000ms: 266 UNSAT + 102 folds,  9 UNKNOWN, 110 s wall
+
+# lz77_bounded2 (lz77.jl designated copy) is NONDETERMINISTIC at 10 s:
+#   heavy               : U=3,3,3
+#   heavy;ldeq          : U=4,3,3
+#   production knobs    : U=4,3,4
+# one query straddles the 10 s boundary; 60 s is needed for a stable 4/4.

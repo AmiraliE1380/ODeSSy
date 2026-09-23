@@ -2871,3 +2871,93 @@ there with the 512 MB corpus.
 
 Harness note: run_zstd_perf.sh now runs on macOS (corpus dir via SHM,
 BSD stat); logic unchanged.
+
+### 10.55 Hyperparameter finalization for the OOPSLA campaign (Sep 23 2026)
+
+Question from the PI/author: one consistent knob string and one budget
+for every row of the main speedup table. No benchmark source changed.
+Artifacts: results/static/timeout_dial_prod_mac_0923.txt (20 kernels x
+4 budgets, production knobs), knob_ablation_t10s_mac_0923.txt (20
+kernels x 7 configurations at 10 s), knob_ldeq_ab_mac_0923.txt.
+Scripts: scripts/run_timeout_dial.sh, scripts/run_knob_ablation.sh.
+
+(1) MONOTONICITY OF THE RETRY KNOBS -- proved from the source, not
+measured. `ind` (TrapSolver.cpp, `if (Cfg.Inductive && !IsUnsat ...)`),
+`mv` (`if (Cfg.MultiVersion && (NarrowMode || !IsUnsat) ...)`) and the
+`narrow` retry (OraclePass.cpp, `if (!J.SliceOK || J.Eliminate ||
+J.MVEliminate) continue;`) all run ONLY on traps whose exact query did
+not already close. None can convert an UNSAT into SAT/UNKNOWN. Their
+only cost is latency. So for these three the answer to "is this knob
+good" is structural: always enable. The fact knobs (heavy, ldeq, frame,
+the PHIINV rules) enlarge the formula and CAN push a query past the
+budget, so they need measurement.
+
+(2) TIMEOUT DIAL at the production knob set (native kernels, Mac):
+UNKNOWN count over the 20 kernels is 6 at 300 ms, 3 at 1 s, 2 at 3 s
+and 0 at 10 s. Yield (UNSAT + folds) is 102 / 106 / 110 / 114, so
+300 ms retains 89% of the 10 s yield -- not the 96% of the old zlib
+dial (which was measured without mv/narrow). Proofs lost at 300 ms
+vs 10 s, by kernel: gemm.jl 15 vs 16, filt.jl 5 vs 6, filt.jl guarded
+7 vs 8, lz77.jl folds 2 vs 4, lz77_bounded folds 0 vs 2, lz77_bounded2
+2 vs 4, sha256.jl folds 4 vs 6, Swift lz77 4 vs 5. Twelve of twenty
+kernels are flat. THREE OF THE TOP FOUR SPEEDUP ROWS lose a proof at
+300 ms (gemm.jl 4.16x, lz77.jl 2.63x, Swift lz77 +27.3%).
+
+(3) WALL COST IS NOT FLAT ANY MORE. Over the 20 kernels: 35 s at
+300 ms, 57 s at 1 s, 137 s at 3 s, 242 s at 10 s (7x). The old "wall
+is flat across the dial" result (§ PAPER_FACTS 0826) was measured on
+the plain tier; mv/narrow issue several extra queries per unproved
+trap and each can burn the whole budget. Largest single module,
+CryptoSwift with production knobs at threads=1 (forced by ind): 60 s
+at 300 ms, 110 s at 3 s. The threads=1 restriction is therefore not a
+practical obstacle.
+
+(4) KNOB ABLATION at 10 s, cumulative UNSAT + folds over 20 kernels:
+light 8, heavy 65, +ldeq 64, +frame 77, +ind 81, +mv;narrow 82+32,
+and production-minus-PHIINV 80+27. Readings:
+  * heavy: +57 over light. Essential.
+  * frame: +13, ALL of it gemm.jl (4 -> 16 proofs). Essential, and it
+    never lost a proof on any kernel or corpus measured.
+  * ind: +4 unique (Swift crc32 0 -> 4, Swift utf8 2 -> 3).
+  * mv;narrow: +1 UNSAT and +32 folds; carries base64, crc32,
+    matmul.jl, lz77.jl, sha256.jl.
+  * PHIINV rules: removing them from the production set still costs 2
+    UNSAT and 5 folds even with `ind` on -- all three matmul.jl folds,
+    Swift lz77's 5th proof, Rust lz77's only proof. KEEP (do not pass
+    `nophiinv` outside ablations).
+  * ldeq: ZERO measurable contribution. Native kernels: no gain.
+    zstd/zlib/lz4 at 3 s: identical to the digit (38/38, 38/38, 15/15).
+    CryptoSwift: 223/222/221 without vs 223/222/222 with, i.e. inside
+    run-to-run jitter. NOTE the A/B had `frame` on in both arms, which
+    is the shipped configuration: the honest claim is that ldeq adds
+    nothing ON TOP OF frame, plausibly because frame's cross-block
+    load unification subsumes ldeq's within-block case.
+
+(5) RECOMMENDED SETTING for every row of the main table:
+      oracle-pass<heavy;frame;ind;mv;narrow;timeout=10000;threads=1>
+    (plus `vacuity` for static runs; perf runs drop it per doctrine).
+    10 s because it drives UNKNOWN to zero on every native kernel, it
+    is the only budget that gets all four lz77.jl proofs and gemm.jl's
+    16th, and its worst measured module cost is under two minutes.
+
+(6) A PRE-COMPILE KNOB-SELECTION SCAN IS NOT NEEDED, and a cheap form
+of it already exists. Because the three retry knobs are monotone there
+is nothing to select: they are always on. The pass ALREADY gates them
+per trap with zero-cost syntactic predicates on the slice it has
+computed anyway -- `narrow` only runs when the slice contains a 64-bit
+multiply, `mv` and `ind` only when the trap is inside a loop, T3 only
+when the trap has a bounds shape. That is the lightweight scan, and it
+is per-trap rather than per-module, which is strictly better.
+
+(7) THE UNKNOWN-TRIGGERED RELAXATION LOOP WOULD RECOVER NOTHING.
+Measured: on lz77_bounded2 the rules give 2 UNSAT + 2 UNKNOWN, and
+turning the rules off gives 2 UNSAT + 2 SAT (probe_mac_0917_nophiinv
+vs probe_mac_0917_linear). Removing facts converts UNKNOWN into SAT,
+not into UNSAT. The correct response to an UNKNOWN is more budget, not
+fewer facts -- which is what (5) does.
+
+(8) ONE ROW NEEDS A FOOTNOTE. lz77_bounded2 (the lz77.jl designated
+copy) is nondeterministic at 10 s: three runs gave 4, 3, 4 proofs
+under the production knobs. One query straddles the 10 s boundary. For
+a stable 4/4 that row needs the 60 s budget it was originally measured
+at, or it must be reported as 3-of-4 at 10 s.
