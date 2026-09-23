@@ -33,6 +33,8 @@ SPECS=${SPECS:-"none anf"}
 THREADS=${THREADS:-8}
 TIMEOUT_MS=${TIMEOUT_MS:-300}
 COOLDOWN=${COOLDOWN:-45}
+# Overridable; default reproduces the historical hardcoded string exactly.
+ORACLE_PASSES="${ORACLE_PASSES:-oracle-pass<threads=${THREADS};timeout=${TIMEOUT_MS}>,simplifycfg,adce,verify}"
 W="$ROOT/perf_lz4_test"; rm -rf "$W"; mkdir -p "$W" "$ROOT/evaluation" logs/compilations
 CSV="$ROOT/evaluation/perf_lz4.csv"
 SRCS="lz4 lz4hc"
@@ -129,7 +131,7 @@ for spec in $SPECS; do
         t0=$(now)
         for f in $SRCS; do
           opt -load-pass-plugin=build/OraclePass.so \
-            -passes="oracle-pass<threads=${THREADS};timeout=${TIMEOUT_MS}>,simplifycfg,adce,verify" \
+            -passes="$ORACLE_PASSES" \
             -S "$W/${spec}.${f}.ll" -o "$W/${spec}.${f}.or.ll" \
             > "$W/${spec}.${f}.oracle.log" 2>&1 || { echo "[FATAL] oracle $spec/$f"; exit 1; }
           opt -passes='default<O3>' -S "$W/${spec}.${f}.or.ll" -o "$W/${spec}.${f}.or2.ll" || exit 1

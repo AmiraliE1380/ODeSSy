@@ -2961,3 +2961,78 @@ copy) is nondeterministic at 10 s: three runs gave 4, 3, 4 proofs
 under the production knobs. One query straddles the 10 s boundary. For
 a stable 4/4 that row needs the 60 s budget it was originally measured
 at, or it must be reported as 3-of-4 at 10 s.
+
+### 10.56 FINAL KNOB SETTING FOR THE OOPSLA SERVER CAMPAIGN (Sep 23 2026)
+
+Decided with the author on the evidence of §10.55. ONE knob string and
+ONE budget for every row of the main speedup table, so the table is a
+single configuration rather than a per-benchmark tuning.
+
+    STATIC runs (verdict counts, cores, census):
+      oracle-pass<vacuity;heavy;frame;ind;mv;narrow;timeout=10000;threads=1>
+
+    TIMED runs (all performance experiments):
+      oracle-pass<heavy;frame;ind;mv;narrow;timeout=10000;threads=1>
+
+`vacuity` is DROPPED for every timed run (it adds tracked assertions and
+a second solver call per proof; it is an auditing tool, not a transform).
+`ldeq` is DROPPED: §10.55(4) measured zero contribution on top of `frame`
+across zstd, zlib, lz4, CryptoSwift and the 20 native kernels.
+`nophiinv` is NEVER passed outside ablations: the PHIINV rules are still
+load-bearing under `ind` (all three matmul.jl folds, Swift lz77's 5th
+proof, Rust lz77's only proof).
+
+WHY threads=1: not a solver-quality choice. `ind` forces it
+(OraclePass.cpp prints "[ODeSSy] ind: forcing threads=1") because the
+primed copy's value facts are asserted through a second FactEncoder
+inside indAtLoop, which queries ScalarEvolution OUTSIDE the window in
+which the job holds its FactGate ticket. Concurrent SCEV queries there
+would be neither thread-safe nor deterministic. This is a limitation of
+the item-1 implementation, not of the design: moving the copy-fact
+assertion inside the gate window (or acquiring the gate around
+indPhase) would restore threads=N and cut campaign wall time ~8x. Until
+then every `ind` run is serial. Measured cost of serial operation on the
+largest module, CryptoSwift with the full production string: 60 s at
+300 ms, 110 s at 3 s, so serial is affordable. A secondary benefit is
+that at a wall-clock per-query budget, 8 concurrent queries contend and
+flip marginal verdicts -- CryptoSwift at threads=8 gave 223/222/221
+UNSAT over three identical runs (§10.55).
+
+EXACT COMMANDS (server; PROD is the timed string above):
+
+  PROD='oracle-pass<heavy;frame;ind;mv;narrow;timeout=10000;threads=1>'
+
+  # Swift kernels (one per KERNEL; pinned swift.org 6.3.3 toolchain)
+  KERNEL=native_bench/sha256.swift RUNARGS="..." REPS=30 \
+    ORACLE_PASSES="$PROD" bash scripts/run_swift_perf.sh
+  # CryptoSwift (driver + library sources inline; zsh does not split vars)
+  mkdir -p /tmp/csdrv && cp native_bench/cryptoswift_main.swift /tmp/csdrv/main.swift
+  KERNEL=/tmp/csdrv/main.swift \
+    EXTRA_SRCS="$(find ../CryptoSwift/Sources/CryptoSwift -name '*.swift' | tr '\n' ' ')" \
+    RUNARGS="300 perf_test/sha_input.bin" REPS=30 \
+    ORACLE_PASSES="$PROD" bash scripts/run_swift_perf.sh
+  # Rust (traps=panic must be appended)
+  KERNEL=native_bench/lz77.rs REPS=30 \
+    ORACLE_PASSES='oracle-pass<heavy;frame;ind;mv;narrow;timeout=10000;threads=1;traps=panic>' \
+    bash scripts/run_rust_perf.sh
+  # zstd (whole library)
+  REPS=30 JOBS=4 CORPUS_MB=512 ORACLE_PASSES="$PROD" bash scripts/run_zstd_perf.sh
+  # zlib: use the new TIER=prod (the tier cases hardcode their strings)
+  SPECS="none both anf" RUNS=20 SIZES="8 64 256" TIER=prod bash scripts/run_zlib_perf.sh
+  # lz4: ORACLE_PASSES is now overridable (default unchanged)
+  RUNS=40 ORACLE_PASSES="$PROD,simplifycfg,adce,verify" bash scripts/run_lz4_perf.sh
+  # Julia: no pass in the loop (JIT); run the designated arms directly
+  julia native_bench/jl_gemm_arms.jl ; julia native_bench/jl_lz77_mv_arms.jl
+  julia native_bench/jl_matmul_mv_arms.jl ; julia native_bench/jl_sha256_mv_arms.jl
+
+HARNESS CHANGES made for this section (defaults unchanged, so every
+earlier command still reproduces): run_zlib_perf.sh gains TIER=prod;
+run_lz4_perf.sh now honours an ORACLE_PASSES override whose default is
+byte-identical to the string it previously hardcoded. Note run_lz4_perf.sh
+had been running the LIGHT tier all along (no `heavy`), which explains
+lz4's flat numbers; TIER-equivalent reruns under PROD are a new data
+point, not a reproduction.
+
+KNOWN FOOTNOTE: lz77.jl's designated copy is nondeterministic at 10 s
+(4/3/4 proofs over three runs, §10.55(8)); report it at 60 s or as
+3-of-4 with the jitter stated.
