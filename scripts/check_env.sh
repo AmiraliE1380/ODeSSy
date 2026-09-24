@@ -63,8 +63,14 @@ TC="$HOME/Library/Developer/Toolchains/swift-6.3.3-RELEASE.xctoolchain/usr/bin/s
 [ "$OS" != Linux ] && [ -x "$TC" ] && SWIFTC_H="$TC"
 row swiftc "$("$SWIFTC_H" --version 2>&1 | grep -m1 -oE 'Swift version [0-9.]+[^ ]*')" "$E_SWIFT"
 row  ""    "$(command -v "$SWIFTC_H" 2>/dev/null || echo "$SWIFTC_H")" ""
-row julia  "$(first julia --version)" "$E_JULIA"
+# juliaup can print update notices before the version, so match the version line.
+row julia  "$(julia --version 2>&1 | grep -m1 -oE 'julia version [0-9.]+')" "$E_JULIA"
 row rustc  "$(first rustc --version)" "$E_RUST"
+# A moving channel ("release", "stable") drifts silently: on Sep 24 2026 the
+# server's juliaup moved release from 1.12.6 to 1.13.0 on first launch. Both
+# defaults must be pinned to exact versions (RESURRECTION §7.1).
+row jlpin  "default channel: $(juliaup status 2>/dev/null | awk '$1=="*"{print $2}')" "channel: $E_JULIA"
+row rspin  "default toolchain: $(rustup show active-toolchain 2>/dev/null | awk 'NR==1{print $1}')" "toolchain: ${E_RUST%% *}"
 
 echo "==== solver actually linked into the pass ===="
 if [ "$OS" = Linux ]; then

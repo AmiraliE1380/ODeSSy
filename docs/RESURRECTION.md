@@ -271,3 +271,13 @@ the profile at `:1`.
   IS NFS-mounted and the preserve copies are intact there.
 - Do NOT push from the server. Pull over https needs no credentials; bring
   results back to the Mac with rsync/scp and commit there.
+- **Julia drifted on first launch.** The restored `.juliaup` defaults to the
+  moving `release` channel; on the first `julia` call on the new node juliaup
+  moved it from 1.12.6 to **1.13.0** ("Checking for new Julia versions").
+  August used 1.12.6. Pinned on BOTH machines on Sep 24 2026:
+  `juliaup add 1.12.6 && juliaup default 1.12.6 && juliaup config versionsdbupdateinterval 0`
+  and, for the same reason, Rust off the moving `stable` channel:
+  `rustup toolchain install 1.97.1 --profile minimal && rustup default 1.97.1`.
+  `check_env.sh` now flags an unpinned default (rows `jlpin`, `rspin`).
+- `/opt/llvm` insurance copy made: `/proj/odessy-PG0/odessy-preserve/opt-llvm.tar` (2.3 GB).
+- Final `check_env.sh` on c220g2-010809 with turbo off: no DIFF lines.
