@@ -1612,3 +1612,113 @@ zstd (signed, 128 MB, REPS=10): 233 -> 220 traps (rules 224); deltas
 within ±2% with opposite signs on a 30 ms workload -> inconclusive on
 the Mac; server rerun needed (rules tier there: comp +2.58%).
 Logs: results/perf/{cryptoswift,zstd}_{ind,rules}_mac_0917.log.
+
+### 11.22 OOPSLA server campaign, first pass (c220g2, Sep 24 2026)
+
+**Setup.** CloudLab Wisconsin c220g2 (node c220g2-010809; same hardware type
+as August, different physical node), image `odessy-cgo-full:0` after the
+fstab boot-loop fix (RESURRECTION §7). Toolchain verified identical to August
+by `scripts/check_env.sh`: LLVM 23.0.0git @3cab3bc, C via Swift clang-21,
+**Swift 6.3.3**, Z3 4.8.12, Julia 1.12.6 and Rust 1.97.1 (both pinned; Julia
+had drifted to 1.13.0 on first launch and was reset). Turbo off, socket-0
+pinned, 30 shuffled interleaved reps, medians, byte-identity gate on every
+row. One knob string for every row (HANDOFF §10.56):
+`oracle-pass<heavy;frame;ind;mv;narrow;timeout=10000;threads=1>`.
+Script: `scripts/run_campaign_oopsla.sh`; logs:
+`results/perf/campaign_0924/` (fetched from the server's local commits).
+
+**Unit.** Every number below is a ratio of medians, × (see the memory note on
+this convention): speedup = median base / median ODeSSy; noise floor = median
+base / median base2x (two builds that differ only by one extra O3 round trip,
+so any gap between them is noise); ceiling = checked / all-checks-off.
+
+**Instrument anchor.** sha256 under the AUGUST knobs
+(`heavy;ldeq;frame;timeout=300;threads=8`): base 4.9251 s, oracle 4.4933 s,
+7 eliminated -> **1.096×**. August: 4.9269 -> 4.4923 = 1.097×. The revived
+node is the August instrument; every row below can be read against the record.
+
+**Swift kernels (production knobs).**
+
+| kernel | elim (+folds) | base s | base2x s | oracle s | speedup | noise floor |
+|---|---|---|---|---|---|---|
+| base64 | 2 (+5) | 4.4641 | 4.4707 | 3.1107 | **1.435×** | 0.999× |
+| sha256 | 7 (+1) | 4.9273 | 4.9158 | 4.4525 | **1.107×** | 1.002× |
+| crc32 | 4 (+7) | 4.8616 | 4.8626 | 4.5269 | 1.074× | 1.000× |
+| adler32 | 1 (+1) | 4.9008 | 4.9128 | 4.7530 | 1.031× | 0.998× |
+| utf8 | 3 (+1) | 2.8692 | 2.8692 | 2.7994 | 1.025× | 1.000× |
+| md5 | 1 | 6.9631 | 6.9627 | 7.0848 | 0.983× | 1.000× |
+| sha1 | 2 | 4.6527 | 4.6543 | 4.8678 | 0.956× | 1.000× |
+| CryptoSwift | 264 (+112) | 2.9740 | 3.0066 | 3.2058 | **0.928×** | 0.989× |
+| lz77 | 4 (+3) | 3.5339 | 3.5340 | 4.2594 | **0.830×** | 1.000× |
+
+base64 had NO proofs on x86 in August (frontier table, ceiling 1.568× vs
+plain -O); loop versioning now removes 7 of its checks. md5 (0.983×) and
+sha1 (0.956×) reproduce the August regressions (-1.76%, -5.0%).
+
+**Julia designated arms** (hand-transcribed copies; the frozen kernels are
+unchanged; each script measures its own all-checks-off "ceiling arm" in the
+same run):
+
+| kernel | arm | speedup | ceiling arm |
+|---|---|---|---|
+| lz77 | loop-versioned (60 s mined guard) | **4.013×** | 4.013× (100%) |
+| lz77 | versioned, B only (300 ms guard) | 1.45× | 4.013× |
+| gemm | proven blocks only, N=512 | **3.911×** | 4.174× (97.9%; Aug 3.588×) |
+| matmul | versioned, n=128 | **1.353×** | 1.354× |
+| matmul | versioned, n=256 / n=512 | 1.132× / 1.145× | 1.140× / 1.150× |
+| sha256 | loop-versioned (mv) | 1.107× | 1.128× |
+| sha256 | proven-only @inbounds | 1.071× | 1.145× |
+
+gemm and matmul are different kernels: gemm is the port of Julia's stdlib
+generic GEMM, whose own dimension checks let the pass prove all 16 edges
+dead UNCONDITIONALLY (heap invariance, no guard); matmul is our guard-free
+flat-vector kernel, whose checks die only under a SOLVER-MINED guard
+(n ≤ 32768 ∧ sizes > n²−1 ∧ sizes ≤ 2^30), i.e. loop versioning.
+
+**zstd** (signed spec, whole library, 512 MB): 249 -> 234 traps (15 removed;
+August removed 6), oracle compile 397 s. Compression base 0.3991 / base2x
+0.3985 / oracle 0.3770 -> **1.059×** vs base, 1.057× vs base2x, noise floor
+1.002×. Decompression 1.001× (flat, as in August). August compression: 1.026×.
+
+**Not yet measured** (first pass failures, all HARNESS problems, fixed, rerun
+queued Sep 24 evening): both Rust rows (Linux rustc prints its link line as
+`LC_ALL=... "cc" ...`, not `env ...`; fixed in `run_rust_perf.sh`); zlib (the
+harness's 600 s per-compile cap killed trees.c; on the Mac trees.c takes 338 s
+and deflate.c 10 s under PROD, 33 and 75 UNSAT, 0 UNKNOWN, so the server needs
+~30 min for trees.c; cap lifted to 4 h); lz4 (3,403 sites under anf, stopped
+to free the node; dropped for this node session).
+
+**Ceilings must be re-measured in-pipeline.** The August Swift ceilings are
+plain `swiftc -O` vs `-Ounchecked`; the speedups are against the harness's
+O3-sandwich baseline. The two baselines differ on the same node:
+
+| kernel | plain -O (Aug) | sandwich base | gap |
+|---|---|---|---|
+| sha256 | 5.020 s | 4.927 s | 1.019× |
+| base64 | 4.830 s | 4.464 s | 1.082× |
+| lz77 | 4.390 s | 3.534 s | **1.242×** |
+| crc32 | 4.730 s | 4.862 s | 0.973× |
+| CryptoSwift | 3.220 s | 2.974 s | 1.083× |
+
+So old ceilings cannot be divided into these speedups. `run_swift_perf.sh`
+gained `CEILING=1` (an -Ounchecked build through the same sandwich); the
+`ceil_` campaign jobs measure every Swift ceiling that way and re-time the
+PROD row as an independent replicate. Julia arms and zstd already measure
+their ceilings in-harness.
+
+**Two regressions under diagnosis.**
+- CryptoSwift 0.928×: the ODeSSy binary is 41 KB (3.8%) larger than base,
+  from 112 versioned loop copies. Suspect: loop versioning (code growth).
+- Swift lz77 0.830×: the sandwich BASELINE is 1.242× faster than a plain
+  `swiftc -O` build, and the ODeSSy build (4.259 s) is still faster than
+  plain -O (4.390 s). Suspect: a lucky baseline re-optimization that the
+  ODeSSy build does not get, not a mechanism cost. (Binary sizes are
+  page-padded for small kernels, so they say nothing here.)
+- Queued `abl_` jobs rerun both with one mechanism removed: without loop
+  versioning (`nomv`) and without induction (`noind`).
+
+**Solver speed vs the Mac.** Z3 4.8.12 on Haswell is ~6× slower than Z3 4.16
+on M5 on hard nonlinear queries (test_mv_symbolic re-solve 3.6 s vs 0.6 s),
+enough to flip a verdict at a 3 s budget; at the 10 s campaign budget the
+server finds the same guard as the Mac. Server and Mac latencies must never
+share a table.

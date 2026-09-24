@@ -3036,3 +3036,15 @@ point, not a reproduction.
 KNOWN FOOTNOTE: lz77.jl's designated copy is nondeterministic at 10 s
 (4/3/4 proofs over three runs, §10.55(8)); report it at 60 s or as
 3-of-4 with the jitter stated.
+
+### 10.57 Server campaign Sep 24 2026 -- first pass, harness fixes, ceilings
+
+Full results and interpretation: PAPER_FACTS §11.22. In short: anchor
+reproduces August (1.096× vs 1.097×); new x86 wins base64 1.435×, zstd
+1.059×, lz77.jl arm 4.013×, gemm arm 3.911×; new regressions Swift lz77
+0.830× and CryptoSwift 0.928× under diagnosis (`abl_` jobs). Harness fixes
+found on Linux: Narrow.cpp uint64_t cast (c5e20f4), MV gate TIMEOUT override
+(test_mv_symbolic flips at 3 s on the server's slower Z3), Rust link-line
+capture, zlib compile cap. Old Swift ceilings are unusable against
+in-harness speedups (baseline gap up to 1.242×); `CEILING=1` measures them
+in-pipeline. Referenced from `run_mv_tests.sh` and `run_swift_perf.sh`.
