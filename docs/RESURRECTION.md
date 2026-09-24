@@ -247,3 +247,27 @@ the profile at `:1`.
 - Still true: `/opt/llvm` exists ONLY inside the disk image. Tar it into
   `/proj/odessy-PG0/odessy-preserve/` so losing the image costs minutes,
   not an LLVM rebuild.
+
+### 7.1 First server gate run on the revived node (Sep 24 2026)
+
+- `check_env.sh`: every toolchain row matches August (Ubuntu 24.04.4,
+  kernel 6.8.0-136, E5-2660 v3, LLVM 23.0.0git @3cab3bc, C via Swift
+  clang-21, Swift 6.3.3, Z3 4.8.12-3.1build1). Expected DIFFs: turbo (set
+  it before timing) and Julia/Rust (see below).
+- `run_tests.sh`: 27 PASS / 12 FAIL, the SAME twelve by-design failures as
+  the Mac.
+- `run_mv_tests.sh`: 8/9 at the default 3000 ms. The one failure,
+  test_mv_symbolic, is SOLVER SPEED, not a porting bug: its re-solve under
+  the hypothesis candidates (a 64-bit `n*n` query) takes ~3.6 s here vs
+  ~0.6 s on the Mac, so at 3 s it straddles the budget (it failed in the
+  gate and folded on a manual rerun). At the campaign budget it folds
+  deterministically with the SAME hypothesis and core as the Mac:
+  `TIMEOUT=10000 bash scripts/run_mv_tests.sh` -> 9/9.
+- The pass did not build at first: Narrow.cpp relied on uint64_t being
+  `unsigned long long` (true on macOS, not Linux). Fixed in c5e20f4.
+- HOME IS NOT NFS on this node: `/users/AmiraliE` is on the local root
+  disk, so `.juliaup .cargo .rustup` are absent. Restore them with
+  `tar xzf /opt/odessy-preserve/home-toolchains.tgz -C $HOME`. `/proj/odessy-PG0`
+  IS NFS-mounted and the preserve copies are intact there.
+- Do NOT push from the server. Pull over https needs no credentials; bring
+  results back to the Mac with rsync/scp and commit there.
