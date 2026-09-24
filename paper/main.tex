@@ -118,9 +118,6 @@
 \usepackage{listings}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
-%% one-column (acmsmall): landscape floats for tables/figures that were
-%% two-column-spanning in sigplan. `rotating` is on ACM's TAPS whitelist.
-\usepackage{rotating}
 \definecolor{codecomment}{gray}{0.45}
 \definecolor{codekw}{RGB}{0,90,160}
 \definecolor{trapred}{RGB}{200,20,20}
@@ -1401,14 +1398,20 @@ checks), or because the specification that emits the checks is
 dynamically un-runnable in trap mode
 (\S\ref{sec:results-static}). Ceilings are checked-vs-unchecked
 for native kernels and measured sanitizer overhead for C libraries.
-\begin{sidewaystable}
+\begin{table}[t]
 \caption{All benchmarks and their runtime results. ``Elim'' is proven
 trap edges at the final encoder and full fact tier; speedups are medians
 of $\geq$21 shuffled interleaved repetitions, oracle vs.\ the double-O3
 control, behind a byte-identical-output gate. Ceilings are per-platform.}
 \label{tab:speedups-full}
+%% One column (acmsmall): upright rather than landscape, so the footnotes
+%% below the rule read horizontally. The gutters are tightened and the
+%% "Unlock / note" column wraps; the tabular is scaled to the measure so it
+%% cannot overflow. Every row, number and word is unchanged.
 \small
-\begin{tabular}{llrllrrl}
+\setlength{\tabcolsep}{2pt}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{llrllrr p{0.22\linewidth}}
 \toprule
 Benchmark & Lang & Elim & Platform & Speedup & Ceiling & Recov. & Unlock / note\\
 \midrule
@@ -1437,14 +1440,14 @@ utf8 validator & Swift & 2 & M-series & $-2.9$\% & $-0.8$\% & --- & none; no cei
 filt (DSP.jl port) & Julia & 6 & M-series & $-3.7$\% & $-1.6$\% & --- & \texttt{@inbounds} on 2 of 9 sites; no ceiling on arm64\\
 sha1 & Swift & 2 & x86 & $-5.0$\% ($\times4$) & 4.7\% & $<0$ & none; replicated relottery\\
 \bottomrule
-\end{tabular}\\
+\end{tabular}}\\
 \raggedright\footnotesize $^{\P}$Marginal over the double-O3 control:
 \tool{} removes 1027 of 3403 traps, the control removes 834.
 $^{c}$Honest ceiling after removing the \texttt{-O}-vs-sandwich
 pipeline gap: on x86, 8.1 points of the raw \pct{19.6}; on M-series the
 raw gap is only \pct{1.1} and the pipeline accounts for all of it
 (sandwich vs.\ \texttt{-Ounchecked}: \pct{-0.7}, 15 interleaved runs).\par
-\end{sidewaystable}
+\end{table}
 \begin{table}
 \caption{The frontier: benchmarks with a measured, unrecovered
 checked-vs-unchecked ceiling and no (or unusably few) proofs at the
