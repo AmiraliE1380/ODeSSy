@@ -196,3 +196,54 @@ rows from two hardware types in one table without labelling the type per row.
 - Regardless of the answer: preserve + mirror to `/proj` BEFORE the request, never after.
 - Original experiment: `odessy-cgo`, profile `small-lan`, project ODeSSy,
   started 2026-07-29, node `c220g2-010821` @ wisc.
+
+---
+
+## 7. SEP 24 2026 REVIVAL — the image boot-loops on a fresh node (READ FIRST)
+
+**Symptom.** Experiment state `failed` ("nodes failed to setup"), node stuck
+in `changing / BOOTING`, ssh times out. The serial console log shows the
+image written and booting fine (Ubuntu 24.04.4, kernel 6.8.0-136, network
+online), then systemd waiting 90 s for `/dev/sda4`, "Dependency failed for
+Local File Systems", **emergency mode**, then a CloudLab power-cycle. Forever.
+
+**Cause.** `odessy-cgo-full:0` was captured with a `/dev/sda4 → /mydata`
+line in `/etc/fstab` (the temp-filesystem setup writes one). On a fresh node
+`sda4` does not exist at boot: CloudLab creates the `/mydata` blockstore only
+AFTER the node boots and checks in. The boot waits for a disk that only the
+finished boot can create. Deterministic — a different node fails identically.
+
+**Fix that worked** (node `c220g2-010809`):
+1. Portal → List View → node menu → **Console** (interactive, not Console Log).
+2. Reboot the node from the same menu; press **e** the moment the
+   `GNU GRUB version 2.12` box shows `*Ubuntu` (it stays ~seconds).
+3. Down-arrow to the `linux /boot/vmlinuz-6.8.0-136-generic ...` line,
+   **Control-E**, append ` init=/bin/bash`, **Control-X**.
+4. At `root@(none):/#` paste ONE line (the watchdog can power-cycle mid-typing):
+   `mount -o remount,rw / && sed -i.bak2 '/sda4/d' /etc/fstab && sync && grep -c sda4 /etc/fstab`
+   → must print `0`.
+5. Reboot from the portal; do NOT press e. Boots clean, checks in, ssh works.
+
+**What does NOT work:** Control-D at the emergency prompt only re-enters
+emergency mode (default.target also needs local-fs.target). No root password
+is set in the image.
+
+**Permanent fix:** before imaging again, `grep -nE 'mydata|sda4|emulab' /etc/fstab`
+and delete any `/mydata` line; then snapshot → `odessy-cgo-full:1` and point
+the profile at `:1`.
+
+**Other deltas vs §3 as written:**
+- `small-lan`'s OS-image dropdown cannot select project images. Use the
+  one-node geni-lib profile `ODeSSy/odessy-c220g2` (hardware_type c220g2,
+  disk_image `...odessy-cgo-full:0`, Blockstore `/mydata` size 0GB = all).
+- `/mydata` is now a **2.1 TB LVM volume** (`emulab-bs` over sda4 + sdb),
+  not August's 1.1 TB ext4 partition. No effect on timing.
+- The repo tarball is at the CGO freeze: `git checkout oopsla-research`.
+- Test scripts moved: `bash scripts/run_tests.sh` → **27 PASS / 12 FAIL**
+  (by design), `bash scripts/run_mv_tests.sh` → **9 / 0**. The 17/6 canary
+  in §3 is the CGO-era pass.
+- Verify the toolchain against the August record with
+  `bash scripts/check_env.sh` (flags every DIFF; run after PATH is set).
+- Still true: `/opt/llvm` exists ONLY inside the disk image. Tar it into
+  `/proj/odessy-PG0/odessy-preserve/` so losing the image costs minutes,
+  not an LLVM rebuild.
