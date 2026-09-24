@@ -33,6 +33,7 @@ OUT="results/perf/campaign_$S"; mkdir -p "$OUT"
 
 log()  { echo; echo "=== [$(date +%F\ %H:%M:%S)] $* ==="; echo; }
 want() { [ -z "$ONLY" ] || [[ "$1" =~ $ONLY ]]; }
+want_opt() { [ -n "$ONLY" ] && [[ "$1" =~ $ONLY ]]; }   # opt-in jobs: never part of a plain run
 save() { git add -A "$OUT" evaluation 2>/dev/null; git commit -q -m "server campaign $S: $1" 2>/dev/null || true; }
 cool() { sleep 90; }
 T0=$(date +%s)
@@ -64,7 +65,7 @@ cp -n perf_test/sha_input.bin perf_test/utf8_input.txt /proj/odessy-PG0/odessy-p
 
 swift() {   # name  kernel  runargs  passes  tag  [extra env...]
   local k=$1 kern=$2 args=$3 passes=$4 tag=$5; shift 5
-  want "$k" || return 0
+  [ "${FORCE:-0}" = 1 ] || want "$k" || return 0   # FORCE: caller already filtered (opt-in jobs)
   log "$k [$tag]  runargs='$args'"
   $PIN env KERNEL="$kern" RUNARGS="$args" REPS="$REPS" ORACLE_PASSES="$passes" "$@" \
     bash scripts/run_swift_perf.sh 2>&1 | tee "$OUT/${k}_${tag}.log"
@@ -131,7 +132,10 @@ fi
 # ----------------------------------------------- 7. zlib and lz4 (long, last)
 if want zlib; then
   log "zlib TIER=prod"
-  $PIN env SPECS="none both anf" RUNS=20 SIZES="8 64 256" TIER=prod \
+  # TIMEOUT_SECS is the harness's wall-clock cap per compile; 600 s killed
+  # trees.c under PROD (serial, 10 s per query, all retries). Compile time is
+  # not what zlib measures, so lift the cap.
+  $PIN env SPECS="none both anf" RUNS=20 SIZES="8 64 256" TIER=prod TIMEOUT_SECS="${ZLIB_TIMEOUT_SECS:-14400}" \
     bash scripts/run_zlib_perf.sh 2>&1 | tee "$OUT/zlib.log"
   save "zlib"; elapsed; cool
 fi
@@ -141,5 +145,23 @@ if want lz4; then
     bash scripts/run_lz4_perf.sh 2>&1 | tee "$OUT/lz4.log"
   save "lz4"; elapsed
 fi
+
+# ------------------------------------ 8. regression diagnosis (OPT-IN ONLY)
+# Swift lz77 (0.830x) and CryptoSwift (0.928x) regressed under PROD on Sep 24.
+# Rerun each with one mechanism removed to attribute the slowdown:
+#   nomv  = PROD without loop versioning (mv;narrow): does versioning cause it?
+#   noind = PROD without induction: do the extra induction proofs cause it?
+# Run with e.g.  ONLY='abl_' bash scripts/run_campaign_oopsla.sh
+NOMV='oracle-pass<heavy;frame;ind;timeout=10000;threads=1>'
+NOIND='oracle-pass<heavy;frame;mv;narrow;timeout=10000;threads=1>'
+for v in nomv noind; do
+  P="$NOMV"; [ $v = noind ] && P="$NOIND"
+  want_opt "abl_lz77_$v" && FORCE=1 swift lz77 native_bench/lz77.swift "2 perf_test/sha_input.bin" "$P" "abl-$v"
+  if want_opt "abl_cryptoswift_$v"; then
+    mkdir -p /tmp/csdrv && cp native_bench/cryptoswift_main.swift /tmp/csdrv/main.swift
+    FORCE=1 swift cryptoswift /tmp/csdrv/main.swift "300 perf_test/sha_input.bin" "$P" "abl-$v" \
+      EXTRA_SRCS="$(find /mydata/CryptoSwift/Sources/CryptoSwift -name '*.swift' | tr '\n' ' ')"
+  fi
+done
 
 log "CAMPAIGN $S DONE"; elapsed
