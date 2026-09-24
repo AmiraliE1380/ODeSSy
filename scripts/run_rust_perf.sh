@@ -33,7 +33,10 @@ echo "kernel=$KERNEL args=$RUNARGS reps=$REPS"; echo "rustc: $(rustc --version)"
 
 # ---- emit IR + object + link line ----
 ( cd "$W" && rustc $RFLAGS -C save-temps --emit=llvm-ir,obj,link -o "$W/checked" --print link-args "$KERNEL" 2>&1 \
-    | grep -E '^env |^cc |^clang |^ld ' | tail -1 > "$W/link.txt" ) || { echo "[FATAL] rustc failed"; exit 1; }
+    | grep -E '^env |^cc |^clang |^ld |"cc" |"clang" |"ld" ' | tail -1 > "$W/link.txt" ) || { echo "[FATAL] rustc failed"; exit 1; }
+# macOS rustc prints the link command as `env -u ... "cc" ...`; Linux prints it
+# as `LC_ALL="C" PATH="..." VSLANG="1033" "cc" ...` with no leading `env`, so
+# also accept any line invoking a quoted linker. Both forms are valid shell.
 [ -s "$W/link.txt" ] || { echo "[FATAL] no link line captured"; exit 1; }
 OBJ=$(tr ' ' '\n' < "$W/link.txt" | tr -d '"' | grep '\.o$' | grep -v 'symbols\.o' | grep "$stem\|checked" | head -1)
 [ -n "$OBJ" ] || OBJ=$(tr ' ' '\n' < "$W/link.txt" | tr -d '"' | grep '\.o$' | grep -v 'symbols\.o' | head -1)
