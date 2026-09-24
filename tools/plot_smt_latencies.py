@@ -135,7 +135,8 @@ def main():
         for c in present:
             st = stats(data[c])
             w = (np.ones(st["n"]) / st["n"] * 100.0) if ymode == "share" else None
-            ax.hist(data[c], bins=bins, weights=w, color=COLOR[c], alpha=0.35)
+            # Outline only, no fill: with two overlaid classes a translucent
+            # fill muddies the overlap region and hides the smaller class.
             ax.hist(data[c], bins=bins, weights=w, color=COLOR[c],
                     histtype="step", linewidth=1.6,
                     label=f"{LABEL[c]}  n={st['n']}")
