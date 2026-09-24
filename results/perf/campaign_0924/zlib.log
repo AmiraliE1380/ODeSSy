@@ -1,0 +1,10 @@
+==== rebuilding pass ====
+ninja: no work to do.
+==== oracle-stage parallelism: JOBS=2 x THREADS=8 ====
+==== minigzip driver (unsanitized, shared by every build) ====
+
+==== PHASE A: building all binaries ====
+  built none.base        traps     0->0     bin   195832 B text   181446 B compile    5.333s (smt 0.000s)
+  built both.base        traps  1298->1298  bin   208120 B text   192094 B compile    5.742s (smt 0.000s)
+  built both.base2x      traps  1298->1296  bin   212216 B text   197286 B compile    8.097s (smt 0.000s)
+[FATAL] oracle failed on both/trees (see /mydata/ODeSSy/perf_test/both.trees.oracle.log)
