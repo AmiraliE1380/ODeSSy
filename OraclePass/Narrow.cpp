@@ -211,10 +211,10 @@ z3::expr Narrower::go(const z3::expr &E) {
         if (WasFrom) flag((A[0] < Ctx.bv_val(0, To)) || (A[1] < Ctx.bv_val(0, To)), "urem neg", E);
         R = z3::urem(A[0], A[1]); break;
     case Z3_OP_BSDIV:
-        if (WasFrom) flag((A[0] == IntMin) && (A[1] == Ctx.bv_val((uint64_t)-1 & ((1ULL << To) - 1), To)), "sdiv ovf", E);
+        if (WasFrom) flag((A[0] == IntMin) && (A[1] == Ctx.bv_val((uint64_t)((uint64_t)-1 & ((1ULL << To) - 1)), To)), "sdiv ovf", E);
         R = A[0] / A[1]; break;
     case Z3_OP_BSREM:
-        if (WasFrom) flag((A[0] == IntMin) && (A[1] == Ctx.bv_val((uint64_t)-1 & ((1ULL << To) - 1), To)), "srem ovf", E);
+        if (WasFrom) flag((A[0] == IntMin) && (A[1] == Ctx.bv_val((uint64_t)((uint64_t)-1 & ((1ULL << To) - 1)), To)), "srem ovf", E);
         R = z3::srem(A[0], A[1]); break;
     // ---- comparisons (exact on fitting values)
     case Z3_OP_ULEQ: R = z3::ule(A[0], A[1]); break;
