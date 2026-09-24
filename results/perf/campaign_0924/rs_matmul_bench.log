@@ -1,4 +1,19 @@
 kernel=/mydata/ODeSSy/native_bench/matmul_bench.rs args=4 reps=30
 rustc: rustc 1.97.1 (8bab26f4f 2026-07-14)
 passes: oracle-pass<heavy;frame;ind;mv;narrow;timeout=10000;threads=1;traps=panic>
-[FATAL] no link line captured
+kernel object: /mydata/ODeSSy/perf_test/rust_matmul_bench/checked.matmul_bench.5e18e8e9434cff86-cgu.0.rcgu.o
+  built base   traps 7   bin 4352432 B
+  built base2x   traps 7   bin 4352432 B
+  oracle [oracle-pass<heavy;frame;ind;mv;narrow;timeout=10000;threads=1;traps=panic>]: eliminated 0, mv folds 2 (UNSAT verdicts: 0)
+  built oracle   traps 7   bin 4352608 B
+  outputs byte-identical across all configs -- gate passed
+
+config        median       min       avg
+base          1.8966    1.8722    1.9016
+base2x        1.9131    1.8725    1.9040
+oracle        1.3722    1.2939    1.3784
+checked       1.9062    1.8744    1.9003
+unchecked     1.2834    1.2462    1.2954
+oracle   vs base  : +38.22% (median)   vs base2x: +39.42%
+ceiling (checked vs unchecked twin): 48.53%
+recovery oracle: 78.8% of ceiling
