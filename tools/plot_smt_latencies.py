@@ -6,14 +6,21 @@ Parses the pass's own per-trap verdict logs (every query line carries
 "[Query Latency: X ms]"), classifies by verdict, and produces:
   * a stats table (count / mean / min / max / std / median) per class,
     printed and written to evaluation/smt_latency_stats.csv
-  * one 2x2 figure: SAT, UNSAT, UNKNOWN histograms + all three overlaid,
-    log-scaled latency axis (queries span ~1 ms .. timeout).
+  * ONE overlaid panel (default): every verdict class on a shared
+    log-scaled latency axis, normalised to the share of its own class so
+    the shapes are comparable despite a ~10x count imbalance, with a
+    dashed median line per class. This is the figure the paper uses; the
+    three single-class panels of the old 2x2 layout carried no
+    information the overlay does not.
     Colors: SAT = red, UNSAT = blue, UNKNOWN/timeout = green.
+  * the old 2x2 layout is still available behind --grid.
+Both a .png and a .pdf are written (LaTeX wants the vector form).
 
 Usage:
   python3 plot_smt_latencies.py logs/compilations/*_analysis.txt
   python3 plot_smt_latencies.py                 # default: that same glob
   python3 plot_smt_latencies.py --out myfig.png <logs...>
+  python3 plot_smt_latencies.py --grid          # legacy 2x2
 """
 import csv
 import glob
@@ -46,6 +53,9 @@ def stats(xs):
 
 def main():
     args = sys.argv[1:]
+    grid = "--grid" in args
+    if grid:
+        args.remove("--grid")
     out_png = "logs/smt_latencies.png"
     if "--out" in args:
         i = args.index("--out")
@@ -88,56 +98,97 @@ def main():
                 for k in ("mean", "min", "max", "std", "median")))
     print(f"stats -> {out_csv}")
 
-    # ---- figure: 2x2, shared log-x so panels are visually comparable ----
+    # ---- figure ----
     all_vals = [x for v in data.values() for x in v]
     lo = max(min(all_vals) * 0.8, 0.05)
     hi = max(all_vals) * 1.25
     import numpy as np
     bins = np.logspace(math.log10(lo), math.log10(hi), 40)
+    present = [c for c in CLASSES if data[c]]
 
-    fig, axes = plt.subplots(2, 2, figsize=(11, 7.5), sharex=True)
-    fig.suptitle(f"SMT query latency by verdict  ({total} queries, {len(files)} logs)",
-                 fontsize=13, color="#222222")
-
-    for ax, c in zip(axes.flat[:3], CLASSES):
-        xs = data[c]
-        ax.hist(xs, bins=bins, color=COLOR[c], edgecolor="white", linewidth=0.4)
-        st = stats(xs)
-        ax.set_title(f"{LABEL[c]}  (n={st['n']})", fontsize=10, color="#222222")
-        if st["n"]:
-            ax.axvline(st["median"], color="#555555", linestyle="--", linewidth=1)
-            # Anchor the stat box away from the mass of the distribution.
-            on_right = st["median"] < math.sqrt(lo * hi)
-            ax.annotate(f"median {st['median']:.1f} ms\nmean {st['mean']:.1f} ms\n"
-                        f"max {st['max']:.0f} ms",
-                        xy=(0.98 if on_right else 0.02, 0.95),
-                        xycoords="axes fraction",
-                        ha="right" if on_right else "left",
-                        va="top", fontsize=8, color="#555555")
+    if not grid:
+        # ONE panel. Each class is normalised to its own size, because the
+        # classes differ ~10x in count and the claim is about SHAPE: proofs
+        # are cheaper at the median, and the expense is a thin tail.
+        fig, ax = plt.subplots(figsize=(6.6, 3.4))
+        for c in present:
+            st = stats(data[c])
+            w = np.ones(st["n"]) / st["n"] * 100.0
+            ax.hist(data[c], bins=bins, weights=w, color=COLOR[c], alpha=0.35)
+            ax.hist(data[c], bins=bins, weights=w, color=COLOR[c],
+                    histtype="step", linewidth=1.6,
+                    label=f"{LABEL[c]}  n={st['n']}")
+        top = ax.get_ylim()[1]
+        for i, c in enumerate(present):
+            st = stats(data[c])
+            ax.axvline(st["median"], color=COLOR[c], linestyle="--", linewidth=1.4)
+            ax.annotate(f"median {st['median']:.1f} ms", xy=(st["median"], top),
+                        xytext=(0, -8 - 17 * i), textcoords="offset points",
+                        ha="center", va="top", fontsize=8, color=COLOR[c],
+                        bbox=dict(boxstyle="round,pad=0.18", fc="white",
+                                  ec=COLOR[c], lw=0.6, alpha=0.9))
+        # name the tail: the single fact that motivates a per-query budget
+        tail_c = max(present, key=lambda c: stats(data[c])["max"])
+        tmax = stats(data[tail_c])["max"]
+        ax.annotate(f"{tail_c} tail: max {tmax:.0f} ms",
+                    xy=(tmax, 0), xytext=(-10, 40), textcoords="offset points",
+                    ha="right", va="bottom", fontsize=8, color=COLOR[tail_c],
+                    arrowprops=dict(arrowstyle="->", color=COLOR[tail_c], lw=0.9))
         ax.set_xscale("log")
-
-    ax = axes.flat[3]
-    for c in CLASSES:
-        if data[c]:
-            ax.hist(data[c], bins=bins, color=COLOR[c], histtype="step",
-                    linewidth=1.8, label=LABEL[c])
-    ax.set_xscale("log")
-    ax.set_title("all classes (outline overlay)", fontsize=10, color="#222222")
-    ax.legend(fontsize=8, frameon=False)
-
-    for ax in axes.flat:
-        ax.set_ylabel("queries", fontsize=9, color="#555555")
+        ax.set_xlabel("query latency (ms, log scale)", fontsize=9, color="#555555")
+        ax.set_ylabel("share of class (%)", fontsize=9, color="#555555")
+        # upper right is the empty corner here (both classes die off past ~100 ms);
+        # upper left collides with the median callouts.
+        ax.legend(fontsize=8, frameon=False, loc="upper right")
         ax.grid(True, which="both", axis="x", alpha=0.15)
         ax.tick_params(labelsize=8, colors="#555555")
-        for s in ("top", "right"):
-            ax.spines[s].set_visible(False)
-    for ax in axes[1]:
-        ax.set_xlabel("query latency (ms, log scale)", fontsize=9, color="#555555")
+        for sp in ("top", "right"):
+            ax.spines[sp].set_visible(False)
+    else:
+        fig, axes = plt.subplots(2, 2, figsize=(11, 7.5), sharex=True)
+        fig.suptitle(f"SMT query latency by verdict  ({total} queries, {len(files)} logs)",
+                     fontsize=13, color="#222222")
 
-    fig.tight_layout(rect=(0, 0, 1, 0.96))
+        for ax, c in zip(axes.flat[:3], CLASSES):
+            xs = data[c]
+            ax.hist(xs, bins=bins, color=COLOR[c], edgecolor="white", linewidth=0.4)
+            st = stats(xs)
+            ax.set_title(f"{LABEL[c]}  (n={st['n']})", fontsize=10, color="#222222")
+            if st["n"]:
+                ax.axvline(st["median"], color="#555555", linestyle="--", linewidth=1)
+                on_right = st["median"] < math.sqrt(lo * hi)
+                ax.annotate(f"median {st['median']:.1f} ms\nmean {st['mean']:.1f} ms\n"
+                            f"max {st['max']:.0f} ms",
+                            xy=(0.98 if on_right else 0.02, 0.95),
+                            xycoords="axes fraction",
+                            ha="right" if on_right else "left",
+                            va="top", fontsize=8, color="#555555")
+            ax.set_xscale("log")
+
+        ax = axes.flat[3]
+        for c in CLASSES:
+            if data[c]:
+                ax.hist(data[c], bins=bins, color=COLOR[c], histtype="step",
+                        linewidth=1.8, label=LABEL[c])
+        ax.set_xscale("log")
+        ax.set_title("all classes (outline overlay)", fontsize=10, color="#222222")
+        ax.legend(fontsize=8, frameon=False)
+
+        for ax in axes.flat:
+            ax.set_ylabel("queries", fontsize=9, color="#555555")
+            ax.grid(True, which="both", axis="x", alpha=0.15)
+            ax.tick_params(labelsize=8, colors="#555555")
+            for sp in ("top", "right"):
+                ax.spines[sp].set_visible(False)
+        for ax in axes[1]:
+            ax.set_xlabel("query latency (ms, log scale)", fontsize=9, color="#555555")
+
+    fig.tight_layout(rect=(0, 0, 1, 0.96) if grid else None)
     Path(out_png).parent.mkdir(exist_ok=True)
     fig.savefig(out_png, dpi=160)
-    print(f"figure -> {out_png}")
+    out_pdf = str(Path(out_png).with_suffix(".pdf"))
+    fig.savefig(out_pdf)                      # vector form for LaTeX
+    print(f"figure -> {out_png}\nfigure -> {out_pdf}")
 
 if __name__ == "__main__":
     main()
