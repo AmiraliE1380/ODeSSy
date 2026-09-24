@@ -4418,3 +4418,6 @@ main,oracle,29,3.215330
 main,oracle,30,3.230640
 main,base,30,2.974746
 main,base2x,30,3.002249
+sha256,base,1,4.925753
+sha256,oracle,1,4.449727
+sha256,base2x,1,4.917595

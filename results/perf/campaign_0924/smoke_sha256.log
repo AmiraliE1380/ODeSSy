@@ -8,14 +8,15 @@ reps  : 1   kernel: sha256   runargs: '600 perf_test/sha_input.bin'
   built oracle   traps   40->33   bin    28368 B  eliminated 7 (+1 folded in mv fast copies)
 ==== PHASE B: output equivalence gate ====
   outputs byte-identical across all configs -- gate passed
-==== PHASE C: 1 shuffled reps x 3 configs ====
+==== PHASE C: 1 shuffled reps x configs [base base2x oracle] ====
   rep 1/1
 
 config      median       min       avg  audit
-base        4.9297    4.9297    4.9297  ok
-base2x      4.9161    4.9161    4.9161  ok
-oracle      4.4512    4.4512    4.4512  ok
-oracle vs base: +9.71% (median)
-oracle vs base2x: +9.46% (median)
+base        4.9258    4.9258    4.9258  ok
+base2x      4.9176    4.9176    4.9176  ok
+oracle      4.4497    4.4497    4.4497  ok
+oracle vs base: +9.66% (median)
+oracle vs base2x: +9.51% (median)
+speedup: 1.1070x vs base, 1.1051x vs base2x; noise floor base/base2x 1.0017x
 
 CSV appended: /mydata/ODeSSy/evaluation/perf_swift.csv   (rerun with REPS=15 on the server for the real number)

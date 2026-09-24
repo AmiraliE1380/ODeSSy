@@ -1,4 +1,19 @@
 kernel=/mydata/ODeSSy/native_bench/lz77_bench.rs args=20 reps=30
 rustc: rustc 1.97.1 (8bab26f4f 2026-07-14)
 passes: oracle-pass<heavy;frame;ind;mv;narrow;timeout=10000;threads=1;traps=panic>
-[FATAL] no link line captured
+kernel object: /mydata/ODeSSy/perf_test/rust_lz77_bench/checked.lz77_bench.f10358eeb27bed39-cgu.0.rcgu.o
+  built base   traps 5   bin 4351544 B
+  built base2x   traps 5   bin 4351544 B
+  oracle [oracle-pass<heavy;frame;ind;mv;narrow;timeout=10000;threads=1;traps=panic>]: eliminated 2, mv folds 0 (UNSAT verdicts: 2)
+  built oracle   traps 3   bin 4351440 B
+  outputs byte-identical across all configs -- gate passed
+
+config        median       min       avg
+base          2.1248    2.1228    2.1247
+base2x        2.1247    2.1228    2.1244
+oracle        2.0636    2.0615    2.0633
+checked       2.6409    2.6391    2.6406
+unchecked     2.1286    2.1266    2.1282
+oracle   vs base  : +2.97% (median)   vs base2x: +2.96%
+ceiling (checked vs unchecked twin): 24.07%
+recovery oracle: 12.3% of ceiling
