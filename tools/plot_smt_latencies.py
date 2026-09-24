@@ -22,11 +22,16 @@ Usage:
   python3 plot_smt_latencies.py --out myfig.png <logs...>
   python3 plot_smt_latencies.py --grid          # legacy 2x2
   python3 plot_smt_latencies.py --y count|share|log
+  python3 plot_smt_latencies.py --tail          # add the max-latency callout
 
 --y count (default) puts raw query counts on the y axis, so the panel also
 shows how far SAT outnumbers UNSAT. --y log is the same counts on a log
 axis, which makes the small class legible at the cost of hiding that
 imbalance. --y share normalises each class to itself (shapes only).
+
+The tail-maximum callout is OFF by default: the isolated bars past one
+second already show the tail, the number is stated in the caption, and
+the arrow was redundant with both. --tail puts it back.
 """
 import csv
 import glob
@@ -62,6 +67,9 @@ def main():
     grid = "--grid" in args
     if grid:
         args.remove("--grid")
+    tail_callout = "--tail" in args
+    if tail_callout:
+        args.remove("--tail")
     ymode = "count"
     if "--y" in args:
         i = args.index("--y")
@@ -145,14 +153,17 @@ def main():
                         ha="center", va="top", fontsize=8, color=COLOR[c],
                         bbox=dict(boxstyle="round,pad=0.18", fc="white",
                                   ec=COLOR[c], lw=0.6, alpha=0.9))
-        # name the tail: the single fact that motivates a per-query budget
-        tail_c = max(present, key=lambda c: stats(data[c])["max"])
-        tmax = stats(data[tail_c])["max"]
-        ax.annotate(f"{tail_c} tail: max {tmax:.0f} ms",
-                    xy=(tmax, ax.get_ylim()[0] if ymode == "log" else 0),
-                    xytext=(-10, 40), textcoords="offset points",
-                    ha="right", va="bottom", fontsize=8, color=COLOR[tail_c],
-                    arrowprops=dict(arrowstyle="->", color=COLOR[tail_c], lw=0.9))
+        # Name the tail only on request: the isolated bars past one second
+        # already show it and the caption states the number, so the arrow was
+        # saying a third time what the figure and caption already say.
+        if tail_callout:
+            tail_c = max(present, key=lambda c: stats(data[c])["max"])
+            tmax = stats(data[tail_c])["max"]
+            ax.annotate(f"{tail_c} tail: max {tmax:.0f} ms",
+                        xy=(tmax, ax.get_ylim()[0] if ymode == "log" else 0),
+                        xytext=(-10, 40), textcoords="offset points",
+                        ha="right", va="bottom", fontsize=8, color=COLOR[tail_c],
+                        arrowprops=dict(arrowstyle="->", color=COLOR[tail_c], lw=0.9))
         ax.set_xscale("log")
         ax.set_xlabel("query latency (ms, log scale)", fontsize=9, color="#555555")
         ax.set_ylabel({"count": "queries", "share": "share of class (%)",
