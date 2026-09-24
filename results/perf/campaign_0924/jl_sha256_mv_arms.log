@@ -1,0 +1,7 @@
+outputs identical: true
+sha256.jl  1 MiB x 40 iters, REPS=21 (medians, s)
+checked   0.2921   speedup vs checked: 1.0x
+ceiling   0.259   speedup vs checked: 1.128x
+mv-light  0.277   speedup vs checked: 1.055x
+mv        0.2638   speedup vs checked: 1.107x
+ceiling (checked vs all-inbounds): 12.8%
