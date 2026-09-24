@@ -1,0 +1,24 @@
+==== machine ====
+OK    os         Ubuntu 24.04.4 LTS                                         expect: Ubuntu 24.04.4
+OK    kernel     6.8.0-136-generic                                          expect: 6.8.0-136-generic
+OK    cpu        Intel(R) Xeon(R) CPU E5-2660 v3 @ 2.60GHz                  expect: E5-2660 v3
+OK    turbo      no_turbo=1                                                 expect: no_turbo=1
+--    node       c220g2-010809.wisc.cloudlab.us                             expect: 
+==== compilers (path shown second; PATH ORDER IS PART OF THE EXPERIMENT) ====
+OK    opt        LLVM version 23.0.0git                                     expect: 23.0.0git
+--               /opt/llvm/bin/opt                                          expect: 
+OK    llvmrev    3cab3bc6384b5f58cab7140d00d7a527eade010e                   expect: 3cab3bc6384b5f58cab7140d00d7a527eade010e
+OK    cc         clang version 21.0.0 (https://github.com/swiftlang/llvm-pr expect: clang version 21
+--               /mydata/swift-toolchain/usr/bin/clang                      expect: 
+OK    swiftc     Swift version 6.3.3                                        expect: 6.3.3
+--               /mydata/swift-toolchain/usr/bin/swiftc                     expect: 
+OK    julia      julia version 1.12.6                                       expect: 1.12.6
+OK    rustc      rustc 1.97.1 (8bab26f4f 2026-07-14)                        expect: 1.97.1 (8bab26f4f 2026-07-14)
+OK    jlpin      default channel: 1.12.6                                    expect: channel: 1.12.6
+OK    rspin      default toolchain: 1.97.1-x86_64-unknown-linux-gnu         expect: toolchain: 1.97.1
+==== solver actually linked into the pass ====
+OK    z3         4.8.12-3.1build1                                           expect: 4.8.12
+--               /lib/x86_64-linux-gnu/libz3.so.4                           expect: 
+==== repository ====
+OK    branch     oopsla-research @ 9bec681                                  expect: oopsla-research
+OK    pass       build/OraclePass.so present                                expect: present
