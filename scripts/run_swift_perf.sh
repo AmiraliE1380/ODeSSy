@@ -84,6 +84,11 @@ build_one() {  # $1=config
   local CLEANUP="default<O3>"
   case $cfg in
     base)   opt -passes="$CLEANUP" -S "$W/$stem.ll" -o "$ll" || return 1 ;;
+    # CEILING=1: the SAME pipeline as base, from -Ounchecked IR. The ceiling
+    # must share base's denominator: plain `swiftc -O` differs from this
+    # sandwich by up to 1.24x (lz77, Sep 24), so old -O/-Ounchecked ceilings
+    # cannot be divided into in-harness speedups (HANDOFF §10.57).
+    unchecked) opt -passes="$CLEANUP" -S "$W/$stem.unc.src.ll" -o "$ll" || return 1 ;;
     base2x) opt -passes="$CLEANUP" -S "$W/$stem.ll" -o "$W/.tmp.ll" \
             && opt -passes="$CLEANUP" -S "$W/.tmp.ll" -o "$ll" || return 1 ;;
     oracle) mkdir -p logs/compilations
@@ -106,28 +111,36 @@ build_one() {  # $1=config
   printf '  built %-8s traps %4s->%-4s bin %8s B  eliminated %s%s\n' \
     "$cfg" "$traps0" "$t1" "$(wc -c < "$W/$stem.$cfg" | tr -d ' ')" "$elim" "${MVNOTE:-}"
 }
-for cfg in base base2x oracle; do
+CFGS="base base2x oracle"
+if [ "${CEILING:-0}" = 1 ]; then
+  "$SWIFTC" $SWIFT_SDKFLAG -Ounchecked -wmo -emit-ir "$KERNEL" ${EXTRA_SRCS:-} -o "$W/$stem.unc.src.ll" \
+    || { echo "[FATAL] swiftc -Ounchecked emit-ir failed"; exit 1; }
+  CFGS="$CFGS unchecked"
+fi
+for cfg in $CFGS; do
   build_one $cfg || { echo "[FATAL] build $cfg failed"; exit 1; }
 done
 
 # ---------- PHASE B: soundness gate (byte-identical stdout) ----------
 echo "==== PHASE B: output equivalence gate ===="
-for cfg in base base2x oracle; do
+for cfg in $CFGS; do
   "$W/$stem.$cfg" $RUNARGS > "$W/out.$cfg" 2>/dev/null \
     || { echo "[FATAL] $cfg run failed"; exit 1; }
 done
-cmp -s "$W/out.base" "$W/out.base2x" && cmp -s "$W/out.base" "$W/out.oracle" \
-  || { echo "[FATAL] OUTPUT MISMATCH -- soundness gate tripped. Investigate before timing!"; exit 1; }
+for cfg in $CFGS; do
+  cmp -s "$W/out.base" "$W/out.$cfg" \
+    || { echo "[FATAL] OUTPUT MISMATCH in $cfg -- soundness gate tripped. Investigate before timing!"; exit 1; }
+done
 echo "  outputs byte-identical across all configs -- gate passed"
 
 # ---------- PHASE C: shuffled interleaved timing ----------
-echo "==== PHASE C: $REPS shuffled reps x 3 configs ===="
+echo "==== PHASE C: $REPS shuffled reps x configs [$CFGS] ===="
 [ -f "$CSV" ] || echo "kernel,config,rep,seconds" > "$CSV"
-python3 - "$W" "$stem" "$REPS" "$CSV" "$RUNARGS" <<'PYEOF'
+python3 - "$W" "$stem" "$REPS" "$CSV" "$RUNARGS" "$CFGS" <<'PYEOF'
 import random, subprocess, sys, time
 w, stem, reps, csv, runargs = sys.argv[1], sys.argv[2], int(sys.argv[3]), sys.argv[4], sys.argv[5]
 args = runargs.split() if runargs else []
-cfgs = ["base", "base2x", "oracle"]
+cfgs = sys.argv[6].split()
 rows = []
 for r in range(reps):
     order = cfgs[:]; random.shuffle(order)
@@ -152,6 +165,11 @@ for c in cfgs:
 for ref in ("base", "base2x"):
     d = (med[ref] - med["oracle"]) / med[ref] * 100
     print(f"oracle vs {ref}: {d:+.2f}% (median)")
+# Ratio form (the paper's unit): speedup = median base / median oracle.
+print(f"speedup: {med['base']/med['oracle']:.4f}x vs base, {med['base2x']/med['oracle']:.4f}x vs base2x; "
+      f"noise floor base/base2x {med['base']/med['base2x']:.4f}x")
+if "unchecked" in med:
+    print(f"ceiling (same pipeline): {med['base']/med['unchecked']:.4f}x = median base / median unchecked")
 PYEOF
 echo ""
 echo "CSV appended: $CSV   (rerun with REPS=15 on the server for the real number)"

@@ -164,4 +164,24 @@ for v in nomv noind; do
   fi
 done
 
+# ---------------------- 9. in-pipeline ceilings + PROD replicate (OPT-IN ONLY)
+# CEILING=1 adds an -Ounchecked build through the SAME sandwich as base, so the
+# ceiling shares the speedup's denominator. The August ceilings used plain
+# `swiftc -O`, which differs from the harness baseline by 0.97x-1.24x
+# (Sep 24), so they cannot be divided into in-harness speedups. Each job also
+# re-times base/base2x/oracle: an independent replicate of the PROD row.
+# Run with  ONLY='ceil_' bash scripts/run_campaign_oopsla.sh
+for spec in "sha256:600 perf_test/sha_input.bin" "base64:3225 perf_test/sha_input.bin" \
+            "lz77:2 perf_test/sha_input.bin" "crc32:3703 perf_test/sha_input.bin" \
+            "adler32:7100 perf_test/sha_input.bin" "sha1:900 perf_test/sha_input.bin" \
+            "md5:1200 perf_test/sha_input.bin" "utf8:1500 perf_test/utf8_input.txt"; do
+  k=${spec%%:*}; args=${spec#*:}
+  want_opt "ceil_$k" && FORCE=1 swift "$k" "native_bench/$k.swift" "$args" "$PROD" ceil CEILING=1
+done
+if want_opt ceil_cryptoswift; then
+  mkdir -p /tmp/csdrv && cp native_bench/cryptoswift_main.swift /tmp/csdrv/main.swift
+  FORCE=1 swift cryptoswift /tmp/csdrv/main.swift "300 perf_test/sha_input.bin" "$PROD" ceil CEILING=1 \
+    EXTRA_SRCS="$(find /mydata/CryptoSwift/Sources/CryptoSwift -name '*.swift' | tr '\n' ' ')"
+fi
+
 log "CAMPAIGN $S DONE"; elapsed
