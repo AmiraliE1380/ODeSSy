@@ -359,24 +359,6 @@ arbitrary programs and no candidate needs a proof of its own.
 %% =====================================================================
 \section{Super-Analysis}
 \label{sec:superanalysis}
-\begin{figure}[t]
-\centering
-\includegraphics[width=\linewidth]{super-opt_cost.png}\\[0.9em]
-\includegraphics[width=\linewidth]{super-analysis_cost.png}
-\caption{Where the cost goes. \emph{Top:} superoptimization pays twice
---- an expensive search over candidate programs, plus an SMT equivalence
-check \emph{per candidate}. \emph{Bottom:} super-analysis drops the search
-entirely; the transformation is a rewrite the compiler already knows, and
-the solver decides one fact per site rather than validating a stream of
-guesses. \textbf{Superoptimization is super-expensive because of synthesis;
-super-analysis is merely expensive.}}
-\Description{Two stacked flow diagrams. The top diagram shows
-Superoptimization branching into Synthesis (marked triple-dollar) and SMT
-equivalence checking (double-dollar). The bottom diagram shows
-Super-Analysis branching into rules-based transformation (marked one cent)
-and SMT fact proof (double-dollar).}
-\label{fig:cost}
-\end{figure}
 \subsection{The design space}
 \label{sec:design-space}
 \begin{figure}[t]
@@ -434,7 +416,7 @@ take the first half and leave the second to the compiler's existing
 rules. Both asymmetric corners are under-explored relative to the two
 diagonal ones.
 
-Figure~\ref{fig:cost} makes the cost consequence concrete. A
+The cost consequence is concrete. A
 superoptimizer's dominant expense is not the solver but the
 \emph{synthesis loop} that feeds it: a search over candidate programs,
 each candidate requiring its own equivalence query. Super-analysis deletes
@@ -482,8 +464,9 @@ leaves closed --- which post-conditions to import for them, and why
 composing those facts requires a solver.
 \subsection{Why conjunction necessitates a solver}
 \label{sec:conjunction}
-\begin{sidewaysfigure}
-\begin{minipage}[t]{0.46\linewidth}
+\begin{figure}[t]
+\centering
+\begin{minipage}[t]{\linewidth}
 \begin{lstlisting}[style=odessy,
     morekeywords={var,for,in,let,if},
     comment={[l]{//}},
@@ -496,8 +479,8 @@ for t in 16..<64 {
   w[t] = w[t-16] + s0 + w[t-7] + s1
 }
 \end{lstlisting}
-\end{minipage}\hfill
-\begin{minipage}[t]{0.50\linewidth}
+\end{minipage}\par\vspace{0.7em}
+\begin{minipage}[t]{\linewidth}
 \begin{lstlisting}[style=odessy,
     morekeywords={load,add,icmp,uge,br,label,call,void,i8,i64,i1,ptr},
     comment={[l]{;}},
@@ -511,8 +494,8 @@ for t in 16..<64 {
 \end{lstlisting}
 \end{minipage}
 \caption{The warm-up: the message-schedule extension of a Swift
-SHA-256 kernel (left; the compiler-injected check shown in red as
-source-level pseudocode) and the same check after lowering (right). Every one of these checks survives
+SHA-256 kernel (top; the compiler-injected check shown in red as
+source-level pseudocode) and the same check after lowering (bottom). Every one of these checks survives
 \texttt{swiftc -O} \emph{and} a second full LLVM O3. The facts that
 jointly refute the trap edge live in \emph{different} analyses:\newline
 $\bullet$~loop bounds (scalar evolution): $t \in [16, 64)$, hence
@@ -527,15 +510,15 @@ satisfiable), and no fixed pass computes the conjunction. \tool{}
 conjoins them, deletes the checks, and now the simplified control-flow
 graph can be further optimized. Here the unlocked unrolling is worth
 \pct{8.8} speedup on x86 (\S\ref{sec:results-perf}).}
-\Description{Left, a Swift listing of the SHA-256 message schedule
+\Description{Above, a Swift listing of the SHA-256 message schedule
 loop with a red comment stating the trap condition t minus 16 greater
-or equal to the array count. Right, five lines of LLVM IR showing the
+or equal to the array count. Below, five lines of LLVM IR showing the
 load of the array count, the index computation, the unsigned compare
 highlighted in red, and the conditional branch to a trap block that
 calls ubsantrap. The caption lists the two facts whose conjunction
 refutes the trap.}
 \label{fig:simple-example}
-\end{sidewaysfigure}
+\end{figure}
 Consider the message-schedule loop of a Swift SHA-256 kernel
 (Figure~\ref{fig:simple-example}), whose inner
 16 iterations index a 64-element working array. Swift's bounds checks on
@@ -577,8 +560,9 @@ turning those same checks off is worth roughly $4\times$
 an ordinary three-loop matrix multiply, and Julia's own authors
 discharge them by hand, with trusted \texttt{@inbounds} annotations,
 in the shipping standard library.
-\begin{sidewaysfigure}
-\begin{minipage}[t]{0.47\linewidth}
+\begin{figure}[t]
+\centering
+\begin{minipage}[t]{\linewidth}
 \begin{lstlisting}[style=odessy,basicstyle=\footnotesize\ttfamily,
     morekeywords={for,in,end,if},
     comment={[l]{\#}},
@@ -600,8 +584,8 @@ for j in 1:n, l in 1:k
     end
 end
 \end{lstlisting}
-\end{minipage}\hfill
-\begin{minipage}[t]{0.49\linewidth}
+\end{minipage}\par\vspace{0.7em}
+\begin{minipage}[t]{\linewidth}
 \begin{lstlisting}[style=odessy,basicstyle=\footnotesize\ttfamily,
     morekeywords={load,store,add,icmp,uge,br,label,i64,i1,ptr,x,double},
     comment={[l]{;}},
@@ -624,8 +608,8 @@ store <2 x double> %v, ptr %C.data      ; [st]
 br label %loop
 \end{lstlisting}
 \end{minipage}
-\caption{The final boss: Julia stdlib GEMM (left: the source, with the
-check on \texttt{A[i,l]} spelled out in red; right: the same check
+\caption{The final boss: Julia stdlib GEMM (top: the source, with the
+check on \texttt{A[i,l]} spelled out in red; bottom: the same check
 after lowering). Every call to \texttt{size} becomes a load of an
 array-header field into a fresh SSA register, so the guard reads
 $n_1$ and the check reads $n_2$: two different values, loaded in different locations but from the
@@ -642,18 +626,18 @@ invariant}: no store between the two loads touches the size field,
 hence $n_1 = n_2$. \S\ref{sec:frame-machinery} gives the encoding
 rules; \S\ref{sec:frame-results} reports the result --- 16 of 16, and
 $3.6$--$4.2\times$ speedup end-to-end.}
-\Description{Left, a Julia source listing of a three-loop GEMM kernel:
+\Description{Above, a Julia source listing of a three-loop GEMM kernel:
 a comment stating C plus-equals A times B with the three matrix
 shapes, two lines reading the dimensions, three shape guards, and the
 loop nest with the implicit bounds check on A written out in red and
-tagged n2, and the accumulate line tagged st. Right, a schematic LLVM
+tagged n2, and the accumulate line tagged st. Below, a schematic LLVM
 IR listing aligned line by line with the source: the guard-side load
 of the size field tagged n1, the loop header, the reload of the size
 field tagged n2, in red the unsigned
 compare and the conditional branch to the trap block, then the
 vectorized store into C tagged st and the back edge.}
 \label{fig:frame-example}
-\end{sidewaysfigure}
+\end{figure}
 The failure is structural, and not limited to this special GEMM
 implementation, as the encoder additions this section motivates also
 removed checks in other benchamrks (Swift SHA-256, Julia SHA-256, the 
@@ -738,15 +722,20 @@ in the system converges on declining to optimize.
 \subsubsection{Encoding the context}
 \label{sec:encoding-context}
 
-\begin{sidewaystable}
+\begin{table}[t]
 \caption{The encoding rules. $\den{x}$ is the bit-vector term for SSA
 value \texttt{x}, at \texttt{x}'s own width $w$; all arithmetic is
 modulo $2^w$. Instructions not in the table (and non-integer types)
 fall through to the last row --- the soundness floor.}
 \label{tab:encoding}
 \centering
+%% One column (acmsmall): the natural width of this table exceeds the
+%% measure, so the inter-column gutters are tightened, "also covers" is
+%% allowed to wrap, and the whole tabular is scaled to the measure. Every
+%% row, symbol and word is unchanged.
 \small
-\begin{tabular}{l@{\hspace{3em}}l@{\hspace{2.5em}}l}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{l@{\hspace{1em}}l@{\hspace{1em}}p{0.3\linewidth}}
 \toprule
 LLVM IR (pseudocode) & encoding & also covers\\
 \midrule
@@ -765,8 +754,8 @@ LLVM IR (pseudocode) & encoding & also covers\\
 \texttt{br c, S, T} & $\mathit{edge}(B{\to}S) = \den{c}$, \quad $\mathit{edge}(B{\to}T) = \neg \den{c}$ & \texttt{switch}: case equalities\\
 loop-header \texttt{phi}, \texttt{load}, \texttt{call}, \texttt{gep} & fresh variable & every unmodeled instruction\\
 \bottomrule
-\end{tabular}
-\end{sidewaystable}
+\end{tabular}}
+\end{table}
 
 The unit of proof is a trap \emph{edge}, fixed by an \emph{anchor}.
 Frontends merge error blocks, and loop multiversioning clones checks
@@ -1182,7 +1171,6 @@ speedup, and itself a confirmation of dose location: decompression,
 whose signed checks cost \pct{9} when all present, stays exactly flat
 because its surviving checks' redundancy is precisely what today's
 fact sources cannot establish.
-\FIGURE{dose--response ladder / recovery-vs-ceiling bar chart}
 \paragraph{Crossing the frontier: GEMM, 0-of-16 to 16-of-16.}
 \label{sec:frame-results}
 The strongest instance of the unlock account is the heap-invariant
