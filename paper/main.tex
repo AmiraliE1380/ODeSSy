@@ -1076,7 +1076,8 @@ loses.
 paid, sorted by speedup (medians, REPS$\geq$21 shuffled reps, oracle
 vs.\ the double-O3 control, byte-identical-output gate; final encoder,
 full fact tier). ``Elim'' counts proven trap edges; ``Unlock'' names the
-transformation the proofs gate. The complete table --- every benchmark,
+transformation the proofs gate; recovery against the ceiling is the
+ratio of the last two columns. The complete table --- every benchmark,
 including the flat and negative rows that carry the dose--response
 argument --- is Table~\ref{tab:speedups-full} in
 Appendix~\ref{sec:app-full}.}
@@ -1084,18 +1085,18 @@ Appendix~\ref{sec:app-full}.}
 \small
 %% one-column (acmsmall): tighter intercolumn gutter so the row fits
 \setlength{\tabcolsep}{3pt}
-\begin{tabular}{llrlrlrr}
+\begin{tabular}{llrlrlr}
 \toprule
-Benchmark & Lang & Elim & Platform & Speedup & Unlock & Ceiling & Recov.\\
+Benchmark & Lang & Elim & Platform & Speedup & Unlock & Ceiling\\
 \midrule
-gemm (stdlib)$^{b}$ & Julia & 16 & M-series & $4.16\times$ & vec+unroll & $4.19\times$ & 99.8\%\\
-gemm (stdlib)$^{b}$ & Julia & 16 & x86 & $3.59\times$ & vec+unroll & $3.97\times$ & 96.4\%\\
-sha256 & Swift & 7 & x86 & $+8.8$\% & unroll & 9.0\% & 98\%\\
-sha256 & Swift & 7 & M-series & $+6.9$\% & unroll & 2.8\%$^{a}$ & ---$^{a}$\\
-sha256$^{b}$ & Julia & 10 & M-series & $+6.9$\% & \texttt{@inbounds}, 6/12 sites & $-7.9$\%$^{c}$ & N/A$^{c}$\\
-adler32 & Swift & 1 & x86 & $+3.7$\% & DO16 group & 11.6\% & 32\%\\
-zstd comp. & C & 6 & x86 & $+2.3$\% & hot group & 1.2\%$^{a}$ & ---$^{a}$\\
-sha1 & Swift & 7 & M-series & $+2.1$\% & unroll & 7.6\% & 27\%\\
+gemm (stdlib)$^{b}$ & Julia & 16 & M-series & $4.16\times$ & vec+unroll & $4.19\times$\\
+gemm (stdlib)$^{b}$ & Julia & 16 & x86 & $3.59\times$ & vec+unroll & $3.97\times$\\
+sha256 & Swift & 7 & x86 & $+8.8$\% & unroll & 9.0\%\\
+sha256 & Swift & 7 & M-series & $+6.9$\% & unroll & 2.8\%$^{a}$\\
+sha256$^{b}$ & Julia & 10 & M-series & $+6.9$\% & \texttt{@inbounds}, 6/12 sites & $-7.9$\%$^{c}$\\
+adler32 & Swift & 1 & x86 & $+3.7$\% & DO16 group & 11.6\%\\
+zstd comp. & C & 6 & x86 & $+2.3$\% & hot group & 1.2\%$^{a}$\\
+sha1 & Swift & 7 & M-series & $+2.1$\% & unroll & 7.6\%\\
 \bottomrule
 \end{tabular}\\
 \raggedright\footnotesize $^{a}$C ceilings are measured sanitizer
@@ -1103,8 +1104,7 @@ overhead vs.\ unsanitized (the deployable ceiling the eliminations
 attack). Where a gain \emph{exceeds} its ceiling --- zstd's \pct{2.3}
 over \pct{1.2}, sha256's \pct{6.9} over M-series' \pct{2.8}
 checked-vs-unchecked gap --- eliminations unlocked re-optimization
-worth more than the checks themselves, and no recovery fraction is
-computed. $^{b}$Via proof-licensed \texttt{@inbounds}
+worth more than the checks themselves. $^{b}$Via proof-licensed \texttt{@inbounds}
 (Table~\ref{tab:inbounds}); ceiling is the all-annotated arm.
 $^{c}$For sha256.jl on M-series the all-annotated arm is \emph{slower}
 than the baseline (\pct{-7.9}, reproduced in three sessions and by
@@ -1522,6 +1522,58 @@ Right, a bar chart of seven non-square shapes with speedups between
 1.9x and 6.3x.}
 \label{fig:gemm-sweep}
 \end{figure}
+
+% ---------------------------------------------------------------------------
+% DRAFT: the residue taxonomy. Four call sites in the body and in
+% Table~\ref{tab:frontier} cite \S\ref{sec:future}, and its (a)-(d) labels key
+% that table's last column, but the section itself was never written. This is
+% a minimal definition-only version so the references resolve and the table is
+% readable; it is to be rewritten as proper future work.
+% ---------------------------------------------------------------------------
+\section{Residue: What the Current Fact Sources Cannot Prove}
+\label{sec:future}
+The checks \tool{} leaves behind are not a random remainder. They fall
+into four classes, each defined by the \emph{kind} of fact that is
+missing rather than by the benchmark it appears in. The last column of
+Table~\ref{tab:frontier} labels each unrecovered ceiling with its class.
+
+\paragraph{(a) Symbolic trip counts --- solved.}
+A loop counter bounded by an SSA-valued expression rather than a
+constant. Dominance-based guard collection cannot see the bound, because
+the latch that establishes it does not dominate the check. The
+\textsc{scevsym} fact source (\S\ref{sec:system-facts}) supplies it:
+umin-exact for single-exit loops, a symbolic maximum for multi-exit
+loops, exact division for strided counts. This class is closed.
+
+\paragraph{(b) Heap and interprocedural length invariants.}
+The length that bounds an index lives in memory, not in a register:
+Swift's \texttt{array.count} on a runtime allocation, Rust's \texttt{Vec}
+length behind opaque provenance, Julia's array-header \texttt{size}
+field on an argument. Each load of it is a fresh SMT variable, so a
+guard that constrains one load says nothing about the next. Heap
+invariance (\S\ref{sec:frame}) closes the intraprocedural case where the
+two loads read a provably unclobbered location --- this is what takes
+stdlib GEMM from 0 to 16 of 16 --- but the interprocedural and
+call-carried cases remain, and they own the largest unrecovered
+ceilings in Table~\ref{tab:frontier}.
+
+\paragraph{(c) Anchor gaps --- solved.}
+One check site reached by several predecessors, or several sites sharing
+one error block, so that a single query has to hold on paths with
+incompatible contexts. Splitting the obligation per incoming edge, and
+allowing partial elimination of a shared error block, closes it.
+
+\paragraph{(d) Non-unit and variable stride induction.}
+Scalar evolution computes no trip count at all, in any form, for a loop
+whose latch compares an unsigned counter advancing by a stride greater
+than one --- base64 at stride 3, crc32 at stride 4, UTF-8 validation at
+a data-dependent stride of 1 to 4. No amount of trip-count machinery
+helps, because there is no trip count to translate. The remedy is to
+stop asking for one: encode the induction structurally, as a base case
+plus a step case over a copy of the loop body
+(Appendix~\ref{sec:app-machinery}). That closes crc32's four
+stride-4 bounds checks; base64 and UTF-8 remain, the former because its
+residue is also class~(b).
 
 % ---------------------------------------------------------------------------
 % DRAFT APPENDICES added Sep 17 2026: machinery and M-series results obtained
