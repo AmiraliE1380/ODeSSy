@@ -30,3 +30,4 @@ paper/*.fdb_latexmk
 paper/*.synctex.gz
 paper/main.pdf
 paper/odessy.bib
+concole-log-cloudlabs.txt
