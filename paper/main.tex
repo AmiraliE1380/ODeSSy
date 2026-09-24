@@ -1276,7 +1276,7 @@ hack could have touched.
 \label{sec:results-cost}
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.92\textwidth]{smt_latencies.pdf}
+\includegraphics[width=\textwidth]{smt_latencies_single.pdf}
 \caption{SMT query latency by verdict class (1{,}818 queries over eight
 runs of zlib's \texttt{deflate} module: signed and unsigned
 specifications $\times$ O1 and O3 $\times$ light and heavy tiers, the two
@@ -1288,11 +1288,15 @@ timeout dial of Table~\ref{tab:dial} effective: a tight budget truncates
 the tail while retaining nearly every proof. Note that this workload class
 is the easy end of the spectrum --- the OpenSSL queries discussed below
 sit three decades to the right.}
-\Description{Four panels of histograms of SMT query latency on a
-logarithmic x-axis. The SAT panel shows 1644 queries centered near 5
-milliseconds; the UNSAT panel shows 174 queries centered near 3
-milliseconds with a small tail beyond one second; the UNKNOWN panel is
-empty; the fourth panel overlays the two distributions.}
+\Description{A single histogram panel of SMT query latency on a
+logarithmic x-axis in milliseconds, with query count on the y-axis. Two
+overlaid distributions: SAT in red with 1644 queries, and UNSAT in blue
+with 174 queries, so the red distribution is roughly ten times taller
+throughout. The blue mass sits to the left of the red mass. Dashed
+vertical lines mark the medians at 3.0 milliseconds for UNSAT and 5.5
+milliseconds for SAT. A small isolated group of blue bars appears past
+one second, annotated with an UNSAT maximum of 2238 milliseconds; no
+red bar reaches that far.}
 \label{fig:latency}
 \end{figure}
 \begin{table}

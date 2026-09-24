@@ -21,6 +21,12 @@ Usage:
   python3 plot_smt_latencies.py                 # default: that same glob
   python3 plot_smt_latencies.py --out myfig.png <logs...>
   python3 plot_smt_latencies.py --grid          # legacy 2x2
+  python3 plot_smt_latencies.py --y count|share|log
+
+--y count (default) puts raw query counts on the y axis, so the panel also
+shows how far SAT outnumbers UNSAT. --y log is the same counts on a log
+axis, which makes the small class legible at the cost of hiding that
+imbalance. --y share normalises each class to itself (shapes only).
 """
 import csv
 import glob
@@ -56,6 +62,13 @@ def main():
     grid = "--grid" in args
     if grid:
         args.remove("--grid")
+    ymode = "count"
+    if "--y" in args:
+        i = args.index("--y")
+        ymode = args[i + 1]
+        args = args[:i] + args[i + 2:]
+    if ymode not in ("count", "share", "log"):
+        sys.exit("--y must be one of: count, share, log")
     out_png = "logs/smt_latencies.png"
     if "--out" in args:
         i = args.index("--out")
@@ -113,17 +126,22 @@ def main():
         fig, ax = plt.subplots(figsize=(6.6, 3.4))
         for c in present:
             st = stats(data[c])
-            w = np.ones(st["n"]) / st["n"] * 100.0
+            w = (np.ones(st["n"]) / st["n"] * 100.0) if ymode == "share" else None
             ax.hist(data[c], bins=bins, weights=w, color=COLOR[c], alpha=0.35)
             ax.hist(data[c], bins=bins, weights=w, color=COLOR[c],
                     histtype="step", linewidth=1.6,
                     label=f"{LABEL[c]}  n={st['n']}")
+        if ymode == "log":
+            ax.set_yscale("log")
+            ax.set_ylim(bottom=0.7)
         top = ax.get_ylim()[1]
         for i, c in enumerate(present):
             st = stats(data[c])
             ax.axvline(st["median"], color=COLOR[c], linestyle="--", linewidth=1.4)
-            ax.annotate(f"median {st['median']:.1f} ms", xy=(st["median"], top),
-                        xytext=(0, -8 - 17 * i), textcoords="offset points",
+            anchor = top * (0.55 ** i) if ymode == "log" else top
+            ax.annotate(f"median {st['median']:.1f} ms", xy=(st["median"], anchor),
+                        xytext=(0, -8 if ymode == "log" else -8 - 17 * i),
+                        textcoords="offset points",
                         ha="center", va="top", fontsize=8, color=COLOR[c],
                         bbox=dict(boxstyle="round,pad=0.18", fc="white",
                                   ec=COLOR[c], lw=0.6, alpha=0.9))
@@ -131,12 +149,15 @@ def main():
         tail_c = max(present, key=lambda c: stats(data[c])["max"])
         tmax = stats(data[tail_c])["max"]
         ax.annotate(f"{tail_c} tail: max {tmax:.0f} ms",
-                    xy=(tmax, 0), xytext=(-10, 40), textcoords="offset points",
+                    xy=(tmax, ax.get_ylim()[0] if ymode == "log" else 0),
+                    xytext=(-10, 40), textcoords="offset points",
                     ha="right", va="bottom", fontsize=8, color=COLOR[tail_c],
                     arrowprops=dict(arrowstyle="->", color=COLOR[tail_c], lw=0.9))
         ax.set_xscale("log")
         ax.set_xlabel("query latency (ms, log scale)", fontsize=9, color="#555555")
-        ax.set_ylabel("share of class (%)", fontsize=9, color="#555555")
+        ax.set_ylabel({"count": "queries", "share": "share of class (%)",
+                       "log": "queries (log scale)"}[ymode],
+                      fontsize=9, color="#555555")
         # upper right is the empty corner here (both classes die off past ~100 ms);
         # upper left collides with the median callouts.
         ax.legend(fontsize=8, frameon=False, loc="upper right")
