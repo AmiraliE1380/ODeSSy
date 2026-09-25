@@ -766,17 +766,17 @@ the one that always executes.
 
 \begin{figure}[t]
 \centering
-\begin{minipage}[c]{0.38\linewidth}
-\begin{lstlisting}[style=odessy]
-Slow_Loop_with_Safety_checks
+\begin{minipage}[c]{0.40\linewidth}
+\begin{lstlisting}[style=odessy,comment={[l]{;}}]
+Slow_Loop  ; with safety checks
 \end{lstlisting}
 \end{minipage}\hfill$\Longrightarrow$\hfill
-\begin{minipage}[c]{0.48\linewidth}
-\begin{lstlisting}[style=odessy,morekeywords={if,else}]
+\begin{minipage}[c]{0.50\linewidth}
+\begin{lstlisting}[style=odessy,morekeywords={if,else},comment={[l]{;}}]
 if Synthesized_guard:
-    Fast_Loop
+    Fast_Loop  ; safety checks removed
 else:
-    Slow_Loop_with_Safety_checks
+    Slow_Loop  ; checks in place
 \end{lstlisting}
 \end{minipage}
 \caption{Guard synthesis and loop cloning. A loop whose safety checks
@@ -785,10 +785,11 @@ synthesized guard (right). The guard is tested once, before the loop.
 When it holds, the fast copy runs with its checks removed, because the
 solver has proved every removed check unreachable under the guard. When
 it fails, the original loop runs, with every check intact.}
-\Description{On the left, a single line naming a slow loop with safety
+\Description{On the left, a slow loop, commented as having safety
 checks. An arrow points right, to an if-else: if the synthesized guard
-holds, the fast loop runs; otherwise the original slow loop with safety
-checks runs.}
+holds, the fast loop runs, commented as having its safety checks
+removed; otherwise the slow loop runs, commented as keeping its checks
+in place.}
 \label{fig:guard}
 \end{figure}
 
