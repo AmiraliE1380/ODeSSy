@@ -161,7 +161,7 @@ heuristics that miss opportunities; superoptimizers synthesize faster code
 but take hours, confining them to small kernels and offline use. We introduce
 \emph{super-analysis}, a middle ground that uses an SMT solver purely for
 \emph{analysis} while transformations remain conventional, avoiding
-synthesis entirely. The key argument for super-analysis is that many simple, yet fruitful transformations require complex reasoning: proving a safety check dead often needs facts from four
+program synthesis entirely. The key argument for super-analysis is that many simple, yet fruitful transformations require complex reasoning: proving a safety check dead often needs facts from four
 independent LLVM analyses \emph{simultaneously} --- a conjunctive entailment
 problem suited to a solver, not to any single dataflow pass.
 
@@ -170,7 +170,7 @@ We instantiate
 super-analysis in \tool{}, an LLVM pass that proves sanitizer traps and
 native-language safety checks unreachable and deletes them.
 One mechanism serves three frontends and yields speedups in each:
-\tool{} generates code up to $4.16\times$ faster than LLVM -O3 for a GEMM implemented in Julia, speeds up a Swift SHA-256 kernel by $1.11\times$, and delivers a
+\tool{} generates code up to $3.91\times$ faster than LLVM -O3 for a GEMM implemented in Julia, speeds up a Swift SHA-256 kernel by $1.11\times$, and delivers a
 whole-library runtime win of $1.059\times$ for zstd compression in C.
 A further solver-based optimization, \emph{guard synthesis}, reaches
 checks that are not dead for every input: the solver synthesizes a cheap
@@ -228,7 +228,7 @@ runs.
 optimization. Conventional pipelines are online but heuristic and
 incomplete; superoptimizers are precise but offline. Super-analysis
 occupies the unpopulated middle: on-demand SMT proofs at bounded latency,
-with no synthesis, inside the compilation pipeline.}
+with no program synthesis, inside the compilation pipeline.}
 \Description{A horizontal axis from online/low-latency on the left to
 offline/high-latency on the right. Three boxes sit along it: Conventional
 Optimization (LLVM -O3) on the left, Super-Analysis (ODeSSy) in the
@@ -238,8 +238,8 @@ middle, and Superoptimization (Souper, STOKE) on the right.}
 This paper argues for a middle ground we call \emph{super-analysis}
 (Figure~\ref{fig:spectrum}): use
 the decision procedure for \emph{analysis only}, and leave transformation
-to the conventional machinery that already exists. No code is synthesized;
-no search is performed. The solver answers exactly one kind of question
+to the conventional machinery that already exists. No program is synthesized;
+no search over programs is performed. The solver answers exactly one kind of question
 --- \emph{is this program point reachable under this context?} --- and a
 standard, trivially correct transformation (deleting an unreachable branch)
 consumes the answer.
@@ -270,8 +270,8 @@ provably-dead code in modern software: \emph{safety checks}. Sanitizers
 such as UBSan~\cite{ubsanDocs} and the native checks of memory-safe
 languages (Swift bounds and overflow checks, Rust panics, Julia bounds
 errors) compile to trap-guarded branches whose hot-path cost is the
-standing tax of memory safety --- we measure it at up to \pct{9.0} on
-the fully sanitized zstd library and up to $4$--$5\times$ on native-language kernels (Swift, Julia implementations of nbody, GEMM, respectively).
+standing tax of memory safety --- we measure it at up to $1.090\times$ on
+the fully sanitized zstd library and up to $4.17\times$ and $5.11\times$ on native-language kernels (Julia GEMM and Swift nbody, respectively).
 Today the only recourse on hot paths is to turn checks \emph{off}
 wholesale (\texttt{-Ounchecked}, \texttt{--check-bounds=no}), trading away
 the safety guarantee entirely. \tool{} offers the sound alternative:
@@ -279,7 +279,23 @@ delete exactly the checks that are provably redundant with the guards,
 contracts, and invariants already present in the program, and keep every
 check that is not --- each deletion certified by an unsat core, audited
 for vacuity, and validated by byte-identical program output.
-\tool{} is able to recover up to $4.16\times$ of performance by removing redundant sanitizers and enabling a cascade of further optimizations.
+\tool{} is able to recover up to $3.91\times$ of performance by removing redundant sanitizers and enabling a cascade of further optimizations.
+
+Deleting checks that are already dead is not \tool{}'s only
+optimization. Many hot checks are not dead for every input: they are
+dead only for the well-formed inputs a program actually receives, such
+as arrays of the expected length. For these, \tool{} performs
+\emph{guard synthesis}. The solver synthesizes a guard --- a cheap
+condition over values that do not change inside the loop --- under
+which every check in the loop is provably dead. The loop is then
+specialized: the guard is tested once, outside the loop, and when it
+holds a copy of the loop runs with all its checks removed; otherwise
+the original loop runs unchanged. Because real inputs take the
+specialized copy, the hot loop becomes the fast one. Guard synthesis
+stays within the paradigm: the solver synthesizes a condition, not a
+program, and the transformation is an ordinary loop clone. On x86 it
+speeds up a Swift Base64 encoder by $1.44\times$ and a Julia LZ77
+compressor by $4.01\times$.
 
 Super-analysis is a general compilation paradigm rather than a single
 optimization, and it carries one open problem we deliberately defer:
@@ -296,11 +312,21 @@ This paper makes the following contributions:
 \begin{itemize}
 \item \textbf{Super-analysis} (\S\ref{sec:superanalysis}): an aggressive compilation paradigm
   positioning between conventional heuristic-based optimization and superoptimization in terms of compiler latency and precision. The general recipe for this paradigm is to use solvers as an analysis oracle, while applying cheap conventional rules-based transformation for optimization.  
-\item \textbf{Heap-invariant super-analysis} (\S\ref{sec:frame}): a crucial analysis problem we identified: Array optimizations often require heap reasoning to ensure their safety. We formalize the problem and show that super-analysis can more effectively reason over heap and memory safety of certain transformations in hot loops.
+\item \textbf{Making super-analysis work} (\S\ref{sec:making}): a set of
+  techniques inside the paradigm that make it effective. We encode the
+  compiler's lightweight native analyses as facts that constrain the
+  solver's search (\S\ref{sec:conjunction}). We identify heap reasoning as
+  a crucial analysis problem --- array optimizations often require heap
+  reasoning to ensure their safety --- formalize it, and show that
+  super-analysis can more effectively reason over heap and memory safety
+  of certain transformations in hot loops (\S\ref{sec:frame}). And we
+  introduce guard synthesis and loop specialization, which synthesize a
+  runtime guard under which a loop's checks are dead and clone the loop
+  behind it (\S\ref{sec:guards}).
 \item \textbf{\tool{}} (\S\ref{sec:system}): an LLVM pass and online optimizer
   as an instantiation of super-analysis. \tool{} eliminates sanitizers and safety checks and unlocks further optimizations. It supports C/C++, Swift, and Julia as frontends and can enable hot-path transformations and speedups.
 \item \textbf{Robust Performance Improvement} (\S\ref{sec:method} \& \S\ref{sec:results}):
-  our systematic evaluation of \tool{} on two target architectures (x86 and M-series) show removing hot-loop checks has a cascading effect, unlocking further transformations (unrolling, vectorization, etc) that enables up to $4.16\times$ speedups for widely used kernels and libraries. \tool{} proofs are generally cheap: \pct{96} of
+  our systematic evaluation of \tool{} on two target architectures (x86 and M-series) show removing hot-loop checks has a cascading effect, unlocking further transformations (unrolling, vectorization, etc) that enables up to $4.01\times$ speedups for widely used kernels and libraries. \tool{} proofs are generally cheap: \pct{96} of
   zlib's proofs survive a 100\,ms per-query budget. By multi-threading and strict SMT timout budgets \tool{} can compile up to $4.8\times$ faster, making it an online compiler.
 \end{itemize}
 %% =====================================================================
