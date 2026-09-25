@@ -373,18 +373,6 @@ and much cheaper question: one yes/no reachability query per check
 site (decision rather than search), which is why our median query
 takes milliseconds (\S\ref{sec:results-cost}). 
 
-Taneja et al.~\cite{taneja2020knownbits} compiled
-four programs with the maximally precise analyses installed, three of them showed a few percent of performance improvement at most; the one clear win (\pct{8}--\pct{22} on bzip2)
-came not from the middle-end, whose optimized IR showed only minor
-differences, but from the backend, whose instruction selection consumes
-known bits. We read this as support for our thesis. Sharpening
-\emph{one} analysis in isolation moves the optimizer little,
-\emph{conjoining} the facts from multiple analysis is what significantly improve performance; our unsat cores
-measure exactly that --- the nontrivial proofs draw on two to four fact
-sources at once (\S\ref{sec:conjunction}). \tool{} imports LLVM's own
-imprecise results as solver premises
-(\S\ref{sec:system-facts}) and leaves the conjunction to the solver.
-
 
 \paragraph{Equality Saturation.}
 Equality
@@ -816,10 +804,30 @@ contradict the context --- a contradictory guard would make the fast
 copy dead code.
 
 The idea resembles abductive inference~\cite{dillig2012abductive,
-dillig2013abductive}: given what is known and a goal, find a hypothesis
-that, together with what is known, entails the goal while staying
-consistent with it. Here the goal is that the trap is unreachable, and
-the hypothesis becomes a runtime guard.
+dillig2013abductive}. Given known facts $\Gamma$ and a goal $\varphi$,
+abduction seeks a hypothesis $\psi$ that is \emph{sufficient} and
+\emph{consistent}:
+\[
+\Gamma \wedge \psi \models \varphi
+\qquad\text{and}\qquad
+\Gamma \wedge \psi \not\models \bot .
+\]
+Guard synthesis instantiates this directly. $\Gamma$ is the encoded
+context of the check, with its dominating guards and imported facts; the
+goal is that the trap is unreachable, $\varphi = \neg\,\mathit{trap}$; and
+the hypothesis is the guard $H$, restricted to values that do not change
+inside the loop. Since $\Gamma \wedge H \models \neg\,\mathit{trap}$
+holds exactly when $\Gamma \wedge H \wedge \mathit{trap}$ has no model,
+each condition becomes one solver query:
+\[
+\underbrace{\Gamma \wedge H \wedge \mathit{trap}\ \text{is \textsc{unsat}}}_{\text{sufficient: the fast copy is safe}}
+\qquad\text{and}\qquad
+\underbrace{\Gamma \wedge H\ \text{is \textsc{sat}}}_{\text{consistent: the guard is not vacuous}} .
+\]
+A guard that failed the second query would make the trap unreachable
+only because the fast copy itself could never run. Among the guards that
+pass both, we prefer the weakest, so that it holds on as many real
+inputs as possible.
 %% TODO(related work): cloning a loop behind a runtime check is itself
 %% established -- .NET RyuJIT "loop cloning" (bounds checks, conditions
 %% derived from fixed syntactic patterns) and LLVM LoopVersioning (runtime
