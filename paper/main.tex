@@ -6,6 +6,18 @@
 %% to PDF for camera-ready).
 %%
 \begin{filecontents*}[overwrite]{odessy.bib}
+@inproceedings{dillig2012abductive,
+  author = {Isil Dillig and Thomas Dillig and Alex Aiken},
+  title = {Automated Error Diagnosis Using Abductive Inference},
+  booktitle = {PLDI},
+  year = {2012}
+}
+@inproceedings{dillig2013abductive,
+  author = {Isil Dillig and Thomas Dillig and Boyang Li and Ken McMillan},
+  title = {Inductive Invariant Generation via Abductive Inference},
+  booktitle = {OOPSLA},
+  year = {2013}
+}
 @inproceedings{serebryany2012asan,
   author = {Konstantin Serebryany and Derek Bruening and Alexander Potapenko and Dmitriy Vyukov},
   title = {{AddressSanitizer}: A Fast Address Sanity Checker},
@@ -459,8 +471,44 @@ translated context alone (the \emph{light} tier of
 \S\ref{sec:system-facts}). What remains is the boxes the encoding
 leaves closed --- which post-conditions to import for them, and why
 composing those facts requires a solver.
-\subsection{Why conjunction necessitates a solver}
+%% =====================================================================
+\section{Making Super-Analysis Work}
+\label{sec:making}
+\S\ref{sec:superanalysis} gave the recipe in its purest form:
+encode the program's semantics around a point of interest, and ask the
+solver. The recipe is sound, but on its own it is rarely enough to be
+useful. The facts a proof needs often hide inside boxes the encoding
+does not open; the values that bound a check often live in the heap
+rather than in registers; and some checks are simply not dead for
+every input. This section collects the techniques that make
+super-analysis practical and useful. Like
+\S\ref{sec:superanalysis}, it is a general recipe, independent of
+LLVM and applicable to any compiler: we import the lightweight facts a
+compiler already computes, to constrain the solver's search
+(\S\ref{sec:conjunction}); we add heap invariants, because much of what
+bounds a check lives in memory (\S\ref{sec:frame}); and when a check
+cannot be proved dead for every execution, we synthesize a guard under
+which it is dead and clone the loop behind it (\S\ref{sec:guards}).
+Throughout, every solver query runs under a fixed time budget, so a
+hard query costs a missed proof, never an unbounded compile
+(\S\ref{sec:results-cost}). \S\ref{sec:system} shows how \tool{}
+realizes each technique in LLVM, and the evaluation maps each one to
+its results.
+
+\subsection{Encoding Lightweight Heuristics}
 \label{sec:conjunction}
+Encoding the context alone does not produce every useful proof. The
+encoding stops at boundaries, and a boundary value is free: the solver
+may pick any value for it, including values no execution can produce.
+Yet the compiler has usually learned something about that value
+already. Its lightweight, fast native analyses --- value ranges, known
+bits, loop trip counts --- run in milliseconds, and each describes a
+slice of the truth. Importing their results as facts about the boundary
+values constrains the solver's search space to executions that can
+really happen. No single one of these facts is usually enough, though:
+a proof needs several of them at once, and composing them is exactly
+where a solver becomes necessary.
+
 \begin{figure}[t]
 \centering
 \begin{minipage}[t]{\linewidth}
@@ -540,7 +588,7 @@ solver~\cite{demoura2008z3}. This is the sense in which super-analysis is
 \emph{necessary} rather than merely convenient: the reasoning is
 entailment over a conjunction of theories, not dataflow over a lattice.
 %% =====================================================================
-\section{Heap-Invariant Super-Analysis}
+\subsection{Heap-Invariant Super-Analysis}
 \label{sec:frame}
 Many of the crucial compiler analysis including alias analysis require heap reasoning. In our particular application, heap facts can be important as the metadata for arrays (e.g. length) often live in the heap, and array index in bound checks cause high performance loss in hot loops. This necessitates super-analysis to perform complex yet fast heap reasoning so it can preserve effectiveness and its status as online analysis at the same time.
 
@@ -666,6 +714,86 @@ cannot answer. The solver still only
 answers reachability and the compiler still performs every rewrite,
 so the super-analysis contract of \S\ref{sec:superanalysis} holds
 unchanged. \S\ref{sec:frame-machinery} gives the rules.
+\subsection{Guard Synthesis and Loop Cloning}
+\label{sec:guards}
+Sometimes a check cannot be proved dead for every execution, because it
+is not dead for every execution. Consider the Julia matrix multiply
+\texttt{matmul!} in our benchmarks. It takes three flat arrays and a
+dimension $n$, and indexes them as \texttt{a[(i-1)*n+k]}. Nothing in the
+function ties the lengths of the arrays to $n$: a caller may pass arrays
+that are too short, and then the bounds check fires, exactly as it
+should. No proof of universal deadness exists, because the claim is
+false.
+
+Yet the calls that matter are the well-formed ones, where each array
+holds $n^2$ elements, and for those every bounds check in the loop nest
+is dead. The property is hard to prove for the loop, but easy to prove
+for a \emph{constrained} version of it --- and the constrained version is
+the frequent one, often the only one that ever runs.
+
+Guard synthesis exploits this. Instead of asking whether the check is
+dead, we ask \emph{under what condition} it is dead: a condition over
+values that do not change inside the loop, cheap enough to test once
+before the loop starts. Given such a guard, the loop is cloned
+(Figure~\ref{fig:guard}). The fast copy has its checks removed; the
+original, with every check intact, runs whenever the guard fails. For
+\texttt{matmul!} the solver synthesizes
+\[
+n \le 2^{15} \;\wedge\; |a|, |b|, |c| > n^2 - 1 \;\wedge\;
+|a|, |b|, |c| \le 2^{30},
+\]
+which holds on every correctly sized call we ran, so the fast copy is
+the one that always executes.
+
+\begin{figure}[t]
+\centering
+\begin{minipage}[c]{0.38\linewidth}
+\begin{lstlisting}[style=odessy]
+Slow_Loop_with_Safety_checks
+\end{lstlisting}
+\end{minipage}\hfill$\Longrightarrow$\hfill
+\begin{minipage}[c]{0.48\linewidth}
+\begin{lstlisting}[style=odessy,morekeywords={if,else}]
+if Synthesized_guard:
+    Fast_Loop
+else:
+    Slow_Loop_with_Safety_checks
+\end{lstlisting}
+\end{minipage}
+\caption{Guard synthesis and loop cloning. A loop whose safety checks
+cannot be proved dead for every execution (left) is cloned behind a
+synthesized guard (right). The guard is tested once, before the loop.
+When it holds, the fast copy runs with its checks removed, because the
+solver has proved every removed check unreachable under the guard. When
+it fails, the original loop runs, with every check intact.}
+\Description{On the left, a single line naming a slow loop with safety
+checks. An arrow points right, to an if-else: if the synthesized guard
+holds, the fast loop runs; otherwise the original slow loop with safety
+checks runs.}
+\label{fig:guard}
+\end{figure}
+
+The transformation itself is simple; the hard part is the guard. It must
+be a smart, useful guard: weak enough to hold on the executions we care
+about, and loop-invariant and cheap, so that testing it costs nothing
+measurable. And it must be sufficient: under the guard, the fast copy
+must be provably safe to run. Both are questions about the conjunction
+of the guard, the context, and the trap condition, so, again, they
+necessitate a solver. The solver proposes the guard, verifies that the
+trap is unreachable under it, and verifies that the guard does not
+contradict the context --- a contradictory guard would make the fast
+copy dead code.
+
+The idea resembles abductive inference~\cite{dillig2012abductive,
+dillig2013abductive}: given what is known and a goal, find a hypothesis
+that, together with what is known, entails the goal while staying
+consistent with it. Here the goal is that the trap is unreachable, and
+the hypothesis becomes a runtime guard.
+%% TODO(related work): cloning a loop behind a runtime check is itself
+%% established -- .NET RyuJIT "loop cloning" (bounds checks, conditions
+%% derived from fixed syntactic patterns) and LLVM LoopVersioning (runtime
+%% alias checks). What is new here is how the guard is obtained and verified.
+
 %% =====================================================================
 \section{\tool{}: Design and Implementation}
 \label{sec:system}
@@ -675,8 +803,9 @@ parallelism, and bit-reproducible verdicts regardless of thread count.
 This section describes the pipeline the pass lives in
 (\S\ref{sec:pipeline}), the encoding machinery at its core
 (\S\ref{sec:encoding-impl}), the heap-invariance extension
-(\S\ref{sec:frame-machinery}), and how proofs are audited before they
-are believed (\S\ref{sec:audit}).
+(\S\ref{sec:frame-machinery}), guard synthesis and loop cloning
+(\S\ref{sec:guards-impl}), and how proofs are audited before they are
+believed (\S\ref{sec:audit}).
 
 \subsection{Pipeline}
 \label{sec:pipeline}
@@ -914,6 +1043,104 @@ by construction, so the over-approximation --- and hence soundness ---
 is untouched. Together these took the GEMM acceptance test from 0 to
 16-of-16 and, being in no way GEMM-specific, moved every sufficiently
 similar benchmark (\S\ref{sec:frame-results}).
+
+\subsection{Implementing Guard Synthesis}
+\label{sec:guards-impl}
+\tool{} attempts guard synthesis (pass parameters \texttt{mv} and
+\texttt{narrow}) only for a trap whose direct query returned
+\textsc{sat} or \textsc{unknown}, and only when the trap sits inside a
+loop. A trap that is already proved dead never reaches this step, so
+guard synthesis can add proofs but never lose one. It proceeds in five
+steps (Algorithm~\ref{alg:guards}): generate candidate guards, verify
+that the trap is dead under them, shrink them to a small guard, check
+the guard for vacuity, and transform the loop.
+
+\begin{algorithm}[t]
+\caption{Guard synthesis for one trap edge $(P, c)$ inside loop $L$}
+\label{alg:guards}
+\begin{algorithmic}[1]
+\Require the direct query $\Gamma \wedge c$ returned \textsc{sat} or
+  \textsc{unknown} \Comment{$\Gamma$: context, facts, guards}
+\State $C \gets$ candidates from templates T1--T3 over values
+  invariant in $L$ \Comment{generation}
+\If{$\mathrm{check\mbox{-}sat}(\Gamma \wedge c \wedge \bigwedge C) \neq
+  \textsc{unsat}$} \Comment{verification}
+  \State \Return \textit{keep the trap}
+\EndIf
+\State $H \gets C \cap \mathrm{core}$ \Comment{a sufficient subset}
+\ForAll{$h \in H$, upper bounds first, tightest first}
+  \Comment{minimization}
+  \If{$\mathrm{check\mbox{-}sat}(\Gamma \wedge c \wedge
+    \bigwedge (H \setminus \{h\})) = \textsc{unsat}$}
+    \State $H \gets H \setminus \{h\}$
+  \EndIf
+\EndFor
+\State loosen each upper bound in $H$ while the query stays
+  \textsc{unsat}
+\If{$\mathrm{check\mbox{-}sat}(\Gamma \wedge \bigwedge H) =
+  \textsc{unsat}$} \Comment{vacuity}
+  \State \Return \textit{keep the trap}
+\EndIf
+\If{an operand of $H$ does not dominate the preheader of $L$}
+  \State \Return \textit{keep the trap}
+\EndIf
+\State clone $L$ into $L_{\mathit{fast}}$; in the preheader, branch on
+  $\bigwedge H$ \Comment{transformation}
+\Statex \hspace{\algorithmicindent} to $L_{\mathit{fast}}$ if it holds,
+  to the original $L$ otherwise
+\State in $L_{\mathit{fast}}$, fold the trap edge to its non-trap
+  successor
+\end{algorithmic}
+\end{algorithm}
+
+\paragraph{Templates.} Every candidate is a comparison over values that
+do not change inside the loop, so it can be evaluated once in the loop's
+preheader. Three templates generate the candidates.
+\begin{itemize}
+\item \textbf{T1, length versus index.} When the trap condition is
+  $\mathit{idx} \ge_u \mathit{count}$, with $\mathit{count}$
+  loop-invariant and $\mathit{idx}$ varying, propose
+  $\mathit{count} >_u \mathit{hi}$, where $\mathit{hi}$ is the largest
+  value the index can take according to its static unsigned range.
+\item \textbf{T2, sane range.} For every loop-invariant integer input
+  $v$, propose $0 \le_s v$ and a ladder of upper bounds $v \le_s 2^k$:
+  far above realistic sizes, far below overflow.
+\item \textbf{T3, symbolic index bound.} When the index is an affine
+  function of the loop counters, compute its largest value over the
+  whole loop nest from the loops' trip counts, and propose
+  $\mathit{count} >_u \max(\mathit{idx})$. For \texttt{matmul!} this
+  yields $|a| > n^2 - 1$.
+\end{itemize}
+
+\paragraph{Verification.} All candidates are asserted together, each
+tracked, on top of the context, the facts, and the trap condition. If
+the solver answers \textsc{unsat}, the trap is dead under their
+conjunction, and the unsat core names a sufficient subset $H$. If it
+answers \textsc{sat} or \textsc{unknown}, no guard the templates can
+express suffices, and the trap is kept.
+
+\paragraph{Minimization and loosening.} Cores are not minimal. We drop
+the conjuncts of $H$ one at a time, upper bounds first and tightest
+first, keeping every drop that stays \textsc{unsat}. We then try to
+relax each remaining upper bound, for example from $2^{15}$ to $2^{30}$,
+while the query stays \textsc{unsat}. The result is a guard that holds
+on as many real inputs as the proof allows.
+
+\paragraph{Vacuity.} A guard that contradicts the context makes the trap
+trivially unreachable, and the fast copy dead code. We therefore check
+that $\Gamma \wedge H$ is satisfiable, and refuse the guard otherwise ---
+the same self-distrust as the proof audit of \S\ref{sec:audit}.
+
+\paragraph{Transformation.} Every operand of $H$ must dominate the
+loop's preheader, so that $H$ can be evaluated there. The loop is
+cloned; a branch on $H$ in the preheader selects the fast copy or the
+original; in the fast copy, the proven trap branches are folded. Nested
+loops are handled innermost first, each guard is hoisted to the
+outermost loop in which it is invariant, and later clones inherit the
+folds already made in earlier ones. When a verification query contains
+64-bit multiplications that the solver struggles with, it is re-encoded
+at 32 bits with explicit overflow flags; this is sound only under $H$,
+which bounds the inputs, so it is used only to certify guards.
 
 \subsection{Auditing the proofs}
 \label{sec:audit}
