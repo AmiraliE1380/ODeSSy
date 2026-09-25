@@ -1741,3 +1741,10 @@ LLVM -O3 alone 17 (380); LLVM IRCE + O3 31 (366); ODeSSy guard + LLVM O3
 (mv-nofold) 102 (295); ODeSSy mv 121 (276). Of 34 checks in ODeSSy's
 guard-protected fast copies, LLVM -O3 removes 13 when handed the guard and
 leaves 21, including all 16 Julia ones.
+
+### 11.25 Server campaign 0924, second pass (HANDOFF §10.60)
+Speedup / in-pipeline ceiling (×): base64 1.432/1.437, crc32 1.074/1.074,
+sha256 1.105/1.093, adler32 1.034/1.137, utf8 1.025/0.969, md5 0.983/0.815,
+sha1 0.954/0.976, lz77 0.830/0.831, CryptoSwift 0.930/1.069.
+Rust lz77 1.030×, Rust matmul 1.382× (ceiling 1.478×). zlib prod: null.
+lz4 prod: no data.

@@ -3131,3 +3131,28 @@ fast-copy checks: 34 of them, O3 removes 13 given the guard, 21 survive (all 16
 Julia fast-copy checks; Julia lz77 and matmul get 0 in B). IRCE beats O3 alone by
 14 checks, mostly sha1 (+4), base64 (+2), sha256 Swift (+3).
 Per-kernel table: results/static/guard_competitors/table.txt.
+
+### 10.60 Server campaign 0924: reruns, ablations, in-pipeline ceilings, zlib (x86 c220g2)
+Merged from branch `server-0924-results` (pushed from the server). Raw logs:
+results/server_0924_logs/; per-job logs: results/perf/campaign_0924/.
+All speedups are × = median base / median oracle; ceiling = median base / median
+unchecked, built through the same sandwich (CEILING=1). Floors <= 1.0024× except
+CryptoSwift (0.990×).
+
+Swift speedup vs in-pipeline ceiling: base64 1.432 / 1.437; crc32 1.074 / 1.074;
+sha256 1.105 / 1.093; adler32 1.034 / 1.137; utf8 1.025 / 0.969; md5 0.983 / 0.815;
+sha1 0.954 / 0.976; lz77 0.830 / 0.831; CryptoSwift 0.930 / 1.069.
+Reading: base64 and crc32 recover the whole ceiling. lz77's slowdown is reproduced
+exactly by -Ounchecked, so it comes from removing checks against an anomalously
+fast base (1.24× faster than plain -O), not from anything specific to ODeSSy.
+md5, utf8 and sha256 have ceilings at or below the oracle: -Ounchecked is not an
+upper bound there (it changes codegen beyond removing checks).
+Ablations: lz77 nomv 0.695, noind 0.830 (= prod), so ind is inert and mv mitigates.
+CryptoSwift nomv 0.950, noind 0.903 against prod 0.930 on a 0.990 floor: not
+separable from noise at about 1-2%; the regression remains unexplained.
+Rust (fixed link line): lz77 1.030× (ceiling checked/unchecked twin 1.241×, but
+base ~= unchecked, 2.125 vs 2.129 s); matmul 1.382× (base/unchecked 1.478×; mv folds 2).
+zlib TIER=prod, min run at 256 MB: both-spec oracle 65.73 vs base2x 65.61 s,
+anf 65.86 vs 65.90 s: null (within ±0.2%). ODeSSy removes 207 (both) / 212 (anf)
+more checks than base2x, costing 2563 s / 4314 s of compile time.
+lz4 PROD: did not finish (log ends during the oracle build); no data.
