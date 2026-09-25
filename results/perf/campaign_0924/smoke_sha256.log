@@ -12,11 +12,11 @@ reps  : 1   kernel: sha256   runargs: '600 perf_test/sha_input.bin'
   rep 1/1
 
 config      median       min       avg  audit
-base        4.9258    4.9258    4.9258  ok
-base2x      4.9176    4.9176    4.9176  ok
-oracle      4.4497    4.4497    4.4497  ok
-oracle vs base: +9.66% (median)
-oracle vs base2x: +9.51% (median)
-speedup: 1.1070x vs base, 1.1051x vs base2x; noise floor base/base2x 1.0017x
+base        4.9256    4.9256    4.9256  ok
+base2x      4.9153    4.9153    4.9153  ok
+oracle      4.4549    4.4549    4.4549  ok
+oracle vs base: +9.56% (median)
+oracle vs base2x: +9.37% (median)
+speedup: 1.1057x vs base, 1.1033x vs base2x; noise floor base/base2x 1.0021x
 
 CSV appended: /mydata/ODeSSy/evaluation/perf_swift.csv   (rerun with REPS=15 on the server for the real number)

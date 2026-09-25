@@ -20,5 +20,5 @@ OK    rspin      default toolchain: 1.97.1-x86_64-unknown-linux-gnu         expe
 OK    z3         4.8.12-3.1build1                                           expect: 4.8.12
 --               /lib/x86_64-linux-gnu/libz3.so.4                           expect: 
 ==== repository ====
-OK    branch     oopsla-research @ 3230929                                  expect: oopsla-research
+OK    branch     oopsla-research @ 60aab10                                  expect: oopsla-research
 OK    pass       build/OraclePass.so present                                expect: present

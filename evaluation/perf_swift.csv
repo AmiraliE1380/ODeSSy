@@ -5861,3 +5861,6 @@ main,oracle,30,3.193830
 main,unchecked,30,2.790647
 main,base,30,3.013034
 main,base2x,30,3.008142
+sha256,oracle,1,4.454914
+sha256,base,1,4.925606
+sha256,base2x,1,4.915306
