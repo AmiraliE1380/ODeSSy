@@ -1,0 +1,5 @@
+ninja: no work to do.
+==== PHASE A: builds (specs: none anf) ====
+  built none.base      traps    0->0    smt 0s
+  built anf.base       traps 3403->3403 smt 0s
+  built anf.base2x     traps 3403->2569 smt 0s

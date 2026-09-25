@@ -1,0 +1,70 @@
+==== rebuilding pass ====
+ninja: no work to do.
+==== oracle-stage parallelism: JOBS=2 x THREADS=8 ====
+==== minigzip driver (unsanitized, shared by every build) ====
+
+==== PHASE A: building all binaries ====
+  built none.base        traps     0->0     bin   195832 B text   181446 B compile    5.380s (smt 0.000s)
+  built both.base        traps  1298->1298  bin   208120 B text   192094 B compile    5.790s (smt 0.000s)
+  built both.base2x      traps  1298->1296  bin   212216 B text   197286 B compile    8.155s (smt 0.000s)
+  built both.oracle      traps  1298->1089  bin   224504 B text   207414 B compile 2563.075s (smt 2554.481s)
+  built anf.base         traps  1385->1385  bin   212360 B text   197734 B compile    6.194s (smt 0.000s)
+  built anf.base2x       traps  1385->1372  bin   220552 B text   204878 B compile    8.717s (smt 0.000s)
+  built anf.oracle       traps  1385->1160  bin   228744 B text   214046 B compile 4314.463s (smt 4305.301s)
+
+==== PHASE B: corpora (8 64 256 MB) ====
+  corpus dir: /dev/shm/odessy_corpus.17537
+  corpus 8 MB ready
+  corpus 64 MB ready
+  corpus 256 MB ready
+
+==== cooldown 60s after compile phase (thermal settle) ====
+==== PHASE C: warmup ====  [pin: numactl --cpunodebind=0 --membind=0]
+==== PHASE D: 20 shuffled reps x 21 (binary x size) pairs ====
+  rep 1/20  (22:46:21)
+  rep 2/20  (22:56:14)
+  rep 3/20  (23:06:09)
+  rep 4/20  (23:16:00)
+  rep 5/20  (23:25:54)
+  rep 6/20  (23:35:47)
+  rep 7/20  (23:45:40)
+  rep 8/20  (23:55:35)
+  rep 9/20  (00:05:29)
+  rep 10/20  (00:15:23)
+  rep 11/20  (00:25:15)
+  rep 12/20  (00:35:07)
+  rep 13/20  (00:45:03)
+  rep 14/20  (00:55:03)
+  rep 15/20  (01:04:56)
+  rep 16/20  (01:14:50)
+  rep 17/20  (01:24:43)
+  rep 18/20  (01:34:36)
+  rep 19/20  (01:44:30)
+  rep 20/20  (01:54:24)
+
+spec      config     MB   t_in  t_fin      bin_B    text_B   total_s   min_run   avg_run
+none      base        8      0      0     195832    181446     5.380     1.977     2.088
+none      base       64      0      0     195832    181446     5.380    15.759    16.006
+none      base      256      0      0     195832    181446     5.380    62.887    63.337
+both      base        8   1298   1298     208120    192094     5.790     2.070     2.161
+both      base       64   1298   1298     208120    192094     5.790    16.582    16.718
+both      base      256   1298   1298     208120    192094     5.790    66.202    66.799
+both      base2x      8   1298   1296     212216    197286     8.155     2.057     2.127
+both      base2x     64   1298   1296     212216    197286     8.155    16.428    16.551
+both      base2x    256   1298   1296     212216    197286     8.155    65.605    65.997
+both      oracle      8   1298   1089     224504    207414  2563.075     2.058     2.141
+both      oracle     64   1298   1089     224504    207414  2563.075    16.475    16.637
+both      oracle    256   1298   1089     224504    207414  2563.075    65.726    66.301
+anf       base        8   1385   1385     212360    197734     6.194     2.078     2.190
+anf       base       64   1385   1385     212360    197734     6.194    16.587    16.831
+anf       base      256   1385   1385     212360    197734     6.194    66.314    67.080
+anf       base2x      8   1385   1372     220552    204878     8.717     2.067     2.169
+anf       base2x     64   1385   1372     220552    204878     8.717    16.453    16.679
+anf       base2x    256   1385   1372     220552    204878     8.717    65.901    66.528
+anf       oracle      8   1385   1160     228744    214046  4314.463     2.061     2.184
+anf       oracle     64   1385   1160     228744    214046  4314.463    16.471    16.646
+anf       oracle    256   1385   1160     228744    214046  4314.463    65.864    66.441
+
+CSV: /mydata/ODeSSy/evaluation/perf_zlib.csv   (then: python3 make_perf_report.py)   [oracle stage JOBS=2 x THREADS=8]
+Cold-path check: if %-speedup shrinks 8 -> 64 -> 256 MB, the savings are
+constant-per-invocation (cold path); flat % means a scaled path changed.
