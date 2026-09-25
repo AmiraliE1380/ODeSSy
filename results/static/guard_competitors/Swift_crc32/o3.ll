@@ -1,0 +1,2327 @@
+; ModuleID = 'results/static/guard_competitors/Swift_crc32/tag.ll'
+source_filename = "/Users/ebrah/Project/compiler/ODeSSy/logs/swift_triage/crc32.ll"
+target datalayout = "e-m:o-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-n32:64-S128-Fn32"
+target triple = "arm64-apple-macosx26.0.0"
+
+%TSi = type <{ i64 }>
+%TSa = type <{ %Ts12_ArrayBufferV }>
+%Ts12_ArrayBufferV = type <{ %Ts14_BridgeStorageV }>
+%Ts14_BridgeStorageV = type <{ ptr }>
+%Ts6UInt32V = type <{ i32 }>
+%swift.type = type { i64 }
+%swift.type_descriptor = type opaque
+%struct._SwiftEmptyArrayStorage = type { %struct.HeapObject, %struct._SwiftArrayBodyStorage }
+%struct.HeapObject = type { ptr, %struct.InlineRefCountsPlaceholder }
+%struct.InlineRefCountsPlaceholder = type { i64 }
+%struct._SwiftArrayBodyStorage = type { i64, i64 }
+%Ts6UInt64V = type <{ i64 }>
+%swift.metadata_response = type { ptr, i64 }
+%swift.opaque = type opaque
+%TSS = type <{ %Ts11_StringGutsV }>
+%Ts11_StringGutsV = type <{ %Ts13_StringObjectV }>
+%Ts13_StringObjectV = type <{ %Ts6UInt64V, ptr }>
+%Ts16IndexingIteratorVySs8UTF8ViewVG = type <{ %TSs8UTF8ViewV, %TSS5IndexV }>
+%TSs8UTF8ViewV = type <{ %Ts5SliceVySS8UTF8ViewVG }>
+%Ts5SliceVySS8UTF8ViewVG = type <{ %TSS5IndexV, %TSS5IndexV, %TSS8UTF8ViewV }>
+%TSS8UTF8ViewV = type <{ %Ts11_StringGutsV }>
+%TSS5IndexV = type <{ %Ts6UInt64V }>
+
+@"$s5crc325itersSivp" = hidden local_unnamed_addr global %TSi zeroinitializer, align 8
+@"$s5crc324dataSays5UInt8VGvp" = hidden local_unnamed_addr global %TSa zeroinitializer, align 8
+@"$s5crc322t0Says6UInt32VGvp" = hidden global %TSa zeroinitializer, align 8
+@"$s5crc322t1Says6UInt32VGvp" = hidden global %TSa zeroinitializer, align 8
+@"$s5crc322t2Says6UInt32VGvp" = hidden global %TSa zeroinitializer, align 8
+@"$s5crc322t3Says6UInt32VGvp" = hidden global %TSa zeroinitializer, align 8
+@"$s5crc325finals6UInt32Vvp" = hidden global %Ts6UInt32V zeroinitializer, align 4
+@".str.17.crc32/crc32.swift" = private unnamed_addr constant [18 x i8] c"crc32/crc32.swift\00"
+@"$ss6UInt32VN" = external global %swift.type, align 8
+@"$ss23_ContiguousArrayStorageCMn" = external global %swift.type_descriptor, align 4
+@"got.$ss23_ContiguousArrayStorageCMn" = private unnamed_addr constant ptr @"$ss23_ContiguousArrayStorageCMn"
+@"symbolic _____yypG s23_ContiguousArrayStorageC" = linkonce_odr hidden constant <{ i8, i32, [4 x i8], i8 }> <{ i8 2, i32 trunc (i64 sub (i64 ptrtoint (ptr @"got.$ss23_ContiguousArrayStorageCMn" to i64), i64 ptrtoint (ptr getelementptr inbounds (<{ i8, i32, [4 x i8], i8 }>, ptr @"symbolic _____yypG s23_ContiguousArrayStorageC", i32 0, i32 1) to i64)) to i32), [4 x i8] c"yypG", i8 0 }>, section "__TEXT,__swift5_typeref, regular", no_sanitize_address, align 2
+@"$ss23_ContiguousArrayStorageCyypGMd" = linkonce_odr hidden global { ptr } zeroinitializer, align 8
+@"$ss23_ContiguousArrayStorageCyypGMR" = linkonce_odr hidden constant { i32, i32 } { i32 trunc (i64 sub (i64 ptrtoint (ptr @"symbolic _____yypG s23_ContiguousArrayStorageC" to i64), i64 ptrtoint (ptr @"$ss23_ContiguousArrayStorageCyypGMR" to i64)) to i32), i32 9 }, align 8
+@"\01l_entry_point" = private constant { i32, i32 } { i32 trunc (i64 sub (i64 ptrtoint (ptr @main to i64), i64 ptrtoint (ptr @"\01l_entry_point" to i64)) to i32), i32 0 }, section "__TEXT, __swift5_entry, regular, no_dead_strip", align 4
+@"_swift_FORCE_LOAD_$_swiftFoundation_$_crc32" = weak_odr hidden constant ptr @"_swift_FORCE_LOAD_$_swiftFoundation"
+@"_swift_FORCE_LOAD_$_swift_Builtin_float_$_crc32" = weak_odr hidden constant ptr @"_swift_FORCE_LOAD_$_swift_Builtin_float"
+@"_swift_FORCE_LOAD_$_swiftObjectiveC_$_crc32" = weak_odr hidden constant ptr @"_swift_FORCE_LOAD_$_swiftObjectiveC"
+@"_swift_FORCE_LOAD_$_swiftCoreFoundation_$_crc32" = weak_odr hidden constant ptr @"_swift_FORCE_LOAD_$_swiftCoreFoundation"
+@"_swift_FORCE_LOAD_$_swiftDispatch_$_crc32" = weak_odr hidden constant ptr @"_swift_FORCE_LOAD_$_swiftDispatch"
+@"_swift_FORCE_LOAD_$_swiftXPC_$_crc32" = weak_odr hidden constant ptr @"_swift_FORCE_LOAD_$_swiftXPC"
+@"_swift_FORCE_LOAD_$_swiftIOKit_$_crc32" = weak_odr hidden constant ptr @"_swift_FORCE_LOAD_$_swiftIOKit"
+@"$ss6UInt32VMn" = external global %swift.type_descriptor, align 4
+@"got.$ss6UInt32VMn" = private unnamed_addr constant ptr @"$ss6UInt32VMn"
+@"symbolic _____y_____G s23_ContiguousArrayStorageC s6UInt32V" = linkonce_odr hidden constant <{ i8, i32, [1 x i8], i8, i32, [1 x i8], i8 }> <{ i8 2, i32 trunc (i64 sub (i64 ptrtoint (ptr @"got.$ss23_ContiguousArrayStorageCMn" to i64), i64 ptrtoint (ptr getelementptr inbounds (<{ i8, i32, [1 x i8], i8, i32, [1 x i8], i8 }>, ptr @"symbolic _____y_____G s23_ContiguousArrayStorageC s6UInt32V", i32 0, i32 1) to i64)) to i32), [1 x i8] c"y", i8 2, i32 trunc (i64 sub (i64 ptrtoint (ptr @"got.$ss6UInt32VMn" to i64), i64 ptrtoint (ptr getelementptr inbounds (<{ i8, i32, [1 x i8], i8, i32, [1 x i8], i8 }>, ptr @"symbolic _____y_____G s23_ContiguousArrayStorageC s6UInt32V", i32 0, i32 4) to i64)) to i32), [1 x i8] c"G", i8 0 }>, section "__TEXT,__swift5_typeref, regular", no_sanitize_address, align 2
+@"$ss23_ContiguousArrayStorageCys6UInt32VGMd" = linkonce_odr hidden global { ptr } zeroinitializer, align 8
+@"$ss23_ContiguousArrayStorageCys6UInt32VGMR" = linkonce_odr hidden constant { i32, i32 } { i32 trunc (i64 sub (i64 ptrtoint (ptr @"symbolic _____y_____G s23_ContiguousArrayStorageC s6UInt32V" to i64), i64 ptrtoint (ptr @"$ss23_ContiguousArrayStorageCys6UInt32VGMR" to i64)) to i32), i32 12 }, align 8
+@_swiftEmptyArrayStorage = external global %struct._SwiftEmptyArrayStorage, align 8
+@"$ss5UInt8VMn" = external global %swift.type_descriptor, align 4
+@"got.$ss5UInt8VMn" = private unnamed_addr constant ptr @"$ss5UInt8VMn"
+@"symbolic _____y_____G s23_ContiguousArrayStorageC s5UInt8V" = linkonce_odr hidden constant <{ i8, i32, [1 x i8], i8, i32, [1 x i8], i8 }> <{ i8 2, i32 trunc (i64 sub (i64 ptrtoint (ptr @"got.$ss23_ContiguousArrayStorageCMn" to i64), i64 ptrtoint (ptr getelementptr inbounds (<{ i8, i32, [1 x i8], i8, i32, [1 x i8], i8 }>, ptr @"symbolic _____y_____G s23_ContiguousArrayStorageC s5UInt8V", i32 0, i32 1) to i64)) to i32), [1 x i8] c"y", i8 2, i32 trunc (i64 sub (i64 ptrtoint (ptr @"got.$ss5UInt8VMn" to i64), i64 ptrtoint (ptr getelementptr inbounds (<{ i8, i32, [1 x i8], i8, i32, [1 x i8], i8 }>, ptr @"symbolic _____y_____G s23_ContiguousArrayStorageC s5UInt8V", i32 0, i32 4) to i64)) to i32), [1 x i8] c"G", i8 0 }>, section "__TEXT,__swift5_typeref, regular", no_sanitize_address, align 2
+@"$ss23_ContiguousArrayStorageCys5UInt8VGMd" = linkonce_odr hidden global { ptr } zeroinitializer, align 8
+@"$ss23_ContiguousArrayStorageCys5UInt8VGMR" = linkonce_odr hidden constant { i32, i32 } { i32 trunc (i64 sub (i64 ptrtoint (ptr @"symbolic _____y_____G s23_ContiguousArrayStorageC s5UInt8V" to i64), i64 ptrtoint (ptr @"$ss23_ContiguousArrayStorageCys5UInt8VGMR" to i64)) to i32), i32 12 }, align 8
+@"$sSSN" = external global %swift.type, align 8
+@"$sSSs25LosslessStringConvertiblesWP" = external global ptr, align 8
+@"$sSSSTsWP" = external global ptr, align 8
+@__swift_reflection_version = linkonce_odr hidden constant i16 3
+@llvm.used = appending global [10 x ptr] [ptr @"\01l_entry_point", ptr @__swift_reflection_version, ptr @"_swift_FORCE_LOAD_$_swiftCoreFoundation_$_crc32", ptr @"_swift_FORCE_LOAD_$_swiftDispatch_$_crc32", ptr @"_swift_FORCE_LOAD_$_swiftFoundation_$_crc32", ptr @"_swift_FORCE_LOAD_$_swiftIOKit_$_crc32", ptr @"_swift_FORCE_LOAD_$_swiftObjectiveC_$_crc32", ptr @"_swift_FORCE_LOAD_$_swiftXPC_$_crc32", ptr @"_swift_FORCE_LOAD_$_swift_Builtin_float_$_crc32", ptr @main], section "llvm.metadata"
+
+define noundef i32 @main(i32 %0, ptr readnone captures(none) %1) #0 {
+entry:
+  %swifterror = alloca swifterror ptr, align 8
+  store ptr null, ptr %swifterror, align 8
+  %access-scratch = alloca [24 x i8], align 8
+  %access-scratch16 = alloca [24 x i8], align 8
+  %access-scratch21 = alloca [24 x i8], align 8
+  %access-scratch26 = alloca [24 x i8], align 8
+  %access-scratch29 = alloca [24 x i8], align 8
+  %2 = alloca <{ %Ts6UInt64V, %Ts6UInt64V }>, align 8
+  %3 = tail call swiftcc %swift.metadata_response @"$s10Foundation3URLVMa"(i64 0) #18
+  %4 = extractvalue %swift.metadata_response %3, 0
+  %5 = getelementptr inbounds i8, ptr %4, i64 -8
+  %.valueWitnesses = load ptr, ptr %5, align 8, !invariant.load !41, !dereferenceable !42
+  %6 = getelementptr inbounds nuw i8, ptr %.valueWitnesses, i64 64
+  %size = load i64, ptr %6, align 8, !invariant.load !41
+  %7 = alloca i8, i64 %size, align 16
+  call void @llvm.lifetime.start.p0(ptr nonnull %7)
+  %8 = tail call swiftcc ptr @"$ss11CommandLineO9argumentsSaySSGvgZ"()
+  %9 = getelementptr inbounds nuw i8, ptr %8, i64 16
+  %10 = load i64, ptr %9, align 8, !range !43
+  %11 = icmp samesign ult i64 %10, 2
+  br i1 %11, label %odessy.chk, label %12, !prof !44
+
+12:                                               ; preds = %entry
+  %13 = getelementptr inbounds nuw i8, ptr %8, i64 48
+  %14 = load i64, ptr %13, align 8
+  %._guts._object._object = getelementptr inbounds nuw i8, ptr %8, i64 56
+  %15 = load ptr, ptr %._guts._object._object, align 8
+  %16 = tail call ptr @swift_bridgeObjectRetain(ptr returned %15) #2
+  tail call void @swift_bridgeObjectRelease(ptr nonnull %8) #2
+  %17 = ptrtoint ptr %15 to i64
+  %18 = and i64 %17, 2305843009213693952
+  %.not = icmp eq i64 %18, 0
+  %19 = and i64 %14, 281474976710655
+  %20 = lshr i64 %17, 56
+  %21 = and i64 %20, 15
+  %22 = select i1 %.not, i64 %19, i64 %21
+  %23 = icmp eq i64 %22, 0
+  br i1 %23, label %24, label %25, !prof !44
+
+24:                                               ; preds = %12
+  tail call void @swift_bridgeObjectRelease(ptr %15) #2
+  tail call void asm sideeffect "", "n"(i32 1) #2
+  tail call void @llvm.trap()
+  unreachable
+
+25:                                               ; preds = %12
+  %26 = and i64 %17, 1152921504606846976
+  %.not87 = icmp eq i64 %26, 0
+  br i1 %.not87, label %27, label %.thread, !prof !45
+
+27:                                               ; preds = %25
+  br i1 %.not, label %96, label %28
+
+28:                                               ; preds = %27
+  call void @llvm.lifetime.start.p0(ptr nonnull %2)
+  %.elt37 = getelementptr inbounds nuw i8, ptr %2, i64 8
+  %29 = and i64 %17, 72057594037927935
+  store i64 %14, ptr %2, align 8
+  store i64 %29, ptr %.elt37, align 8
+  %30 = trunc i64 %14 to i8
+  switch i8 %30, label %55 [
+    i8 45, label %31
+    i8 43, label %54
+  ]
+
+31:                                               ; preds = %28
+  switch i64 %21, label %34 [
+    i64 0, label %404
+    i64 1, label %.loopexit118
+  ], !prof !46
+
+.loopexit118:                                     ; preds = %73, %68, %65, %60, %50, %45, %42, %37, %92, %87, %84, %79, %55, %54, %31
+  %32 = phi i64 [ 0, %55 ], [ 0, %31 ], [ 0, %54 ], [ 0, %37 ], [ 0, %79 ], [ 0, %84 ], [ 0, %87 ], [ %93, %92 ], [ 0, %42 ], [ 0, %45 ], [ %51, %50 ], [ 0, %65 ], [ 0, %68 ], [ %74, %73 ], [ 0, %60 ]
+  %33 = phi i8 [ 1, %55 ], [ 1, %31 ], [ 1, %54 ], [ 1, %37 ], [ 1, %79 ], [ 1, %84 ], [ 1, %87 ], [ 0, %92 ], [ 1, %42 ], [ 1, %45 ], [ 0, %50 ], [ 1, %65 ], [ 1, %68 ], [ 0, %73 ], [ 1, %60 ]
+  call void @llvm.lifetime.end.p0(ptr nonnull %2)
+  br label %.thread107
+
+34:                                               ; preds = %31
+  %35 = getelementptr inbounds nuw i8, ptr %2, i64 1
+  %36 = getelementptr i8, ptr %2, i64 %21
+  br label %37
+
+37:                                               ; preds = %50, %34
+  %38 = phi ptr [ %35, %34 ], [ %52, %50 ]
+  %39 = phi i64 [ 0, %34 ], [ %51, %50 ]
+  %40 = load i8, ptr %38, align 1
+  %41 = add i8 %40, -48
+  %or.cond = icmp ult i8 %41, 10
+  br i1 %or.cond, label %42, label %.loopexit118, !prof !47
+
+42:                                               ; preds = %37
+  %43 = call { i64, i1 } @llvm.smul.with.overflow.i64(i64 %39, i64 10)
+  %44 = extractvalue { i64, i1 } %43, 1
+  br i1 %44, label %.loopexit118, label %45
+
+45:                                               ; preds = %42
+  %46 = extractvalue { i64, i1 } %43, 0
+  %47 = zext nneg i8 %41 to i64
+  %48 = call { i64, i1 } @llvm.ssub.with.overflow.i64(i64 %46, i64 %47)
+  %49 = extractvalue { i64, i1 } %48, 1
+  br i1 %49, label %.loopexit118, label %50, !prof !44
+
+50:                                               ; preds = %45
+  %51 = extractvalue { i64, i1 } %48, 0
+  %52 = getelementptr inbounds nuw i8, ptr %38, i64 1
+  %53 = icmp eq ptr %52, %36
+  br i1 %53, label %.loopexit118, label %37
+
+54:                                               ; preds = %28
+  switch i64 %21, label %57 [
+    i64 0, label %403
+    i64 1, label %.loopexit118
+  ], !prof !46
+
+55:                                               ; preds = %28
+  %56 = icmp eq i64 %21, 0
+  br i1 %56, label %.loopexit118, label %77, !prof !44
+
+57:                                               ; preds = %54
+  %58 = getelementptr inbounds nuw i8, ptr %2, i64 1
+  %59 = getelementptr i8, ptr %2, i64 %21
+  br label %60
+
+60:                                               ; preds = %73, %57
+  %61 = phi ptr [ %58, %57 ], [ %75, %73 ]
+  %62 = phi i64 [ 0, %57 ], [ %74, %73 ]
+  %63 = load i8, ptr %61, align 1
+  %64 = add i8 %63, -48
+  %or.cond42 = icmp ult i8 %64, 10
+  br i1 %or.cond42, label %65, label %.loopexit118, !prof !47
+
+65:                                               ; preds = %60
+  %66 = call { i64, i1 } @llvm.smul.with.overflow.i64(i64 %62, i64 10)
+  %67 = extractvalue { i64, i1 } %66, 1
+  br i1 %67, label %.loopexit118, label %68
+
+68:                                               ; preds = %65
+  %69 = extractvalue { i64, i1 } %66, 0
+  %70 = zext nneg i8 %64 to i64
+  %71 = call { i64, i1 } @llvm.sadd.with.overflow.i64(i64 %69, i64 %70)
+  %72 = extractvalue { i64, i1 } %71, 1
+  br i1 %72, label %.loopexit118, label %73, !prof !44
+
+73:                                               ; preds = %68
+  %74 = extractvalue { i64, i1 } %71, 0
+  %75 = getelementptr inbounds nuw i8, ptr %61, i64 1
+  %76 = icmp eq ptr %75, %59
+  br i1 %76, label %.loopexit118, label %60
+
+77:                                               ; preds = %55
+  %78 = getelementptr inbounds nuw i8, ptr %2, i64 %21
+  br label %79
+
+79:                                               ; preds = %92, %77
+  %80 = phi ptr [ %2, %77 ], [ %94, %92 ]
+  %81 = phi i64 [ 0, %77 ], [ %93, %92 ]
+  %82 = load i8, ptr %80, align 1
+  %83 = add i8 %82, -48
+  %or.cond43 = icmp ult i8 %83, 10
+  br i1 %or.cond43, label %84, label %.loopexit118, !prof !47
+
+84:                                               ; preds = %79
+  %85 = call { i64, i1 } @llvm.smul.with.overflow.i64(i64 %81, i64 10)
+  %86 = extractvalue { i64, i1 } %85, 1
+  br i1 %86, label %.loopexit118, label %87
+
+87:                                               ; preds = %84
+  %88 = extractvalue { i64, i1 } %85, 0
+  %89 = zext nneg i8 %83 to i64
+  %90 = call { i64, i1 } @llvm.sadd.with.overflow.i64(i64 %88, i64 %89)
+  %91 = extractvalue { i64, i1 } %90, 1
+  br i1 %91, label %.loopexit118, label %92, !prof !44
+
+92:                                               ; preds = %87
+  %93 = extractvalue { i64, i1 } %90, 0
+  %94 = getelementptr inbounds nuw i8, ptr %80, i64 1
+  %95 = icmp eq ptr %94, %78
+  br i1 %95, label %.loopexit118, label %79
+
+96:                                               ; preds = %27
+  %97 = and i64 %14, 1152921504606846976
+  %.not86 = icmp eq i64 %97, 0
+  br i1 %.not86, label %108, label %105, !prof !44
+
+.thread107:                                       ; preds = %163, %158, %155, %150, %137, %132, %129, %124, %184, %179, %176, %171, %167, %145, %143, %119, %.loopexit118
+  %.sroa.0.1111 = phi i64 [ 0, %119 ], [ 0, %143 ], [ 0, %145 ], [ 0, %167 ], [ %32, %.loopexit118 ], [ 0, %124 ], [ 0, %171 ], [ 0, %176 ], [ 0, %179 ], [ %185, %184 ], [ 0, %129 ], [ 0, %132 ], [ %138, %137 ], [ 0, %155 ], [ 0, %158 ], [ %164, %163 ], [ 0, %150 ]
+  %.sroa.6.1110 = phi i8 [ 1, %119 ], [ 1, %143 ], [ 1, %145 ], [ 0, %167 ], [ %33, %.loopexit118 ], [ 1, %124 ], [ 1, %171 ], [ 1, %176 ], [ 1, %179 ], [ 0, %184 ], [ 1, %129 ], [ 1, %132 ], [ 0, %137 ], [ 1, %155 ], [ 1, %158 ], [ 0, %163 ], [ 1, %150 ]
+  call void @swift_bridgeObjectRelease(ptr %15) #2
+  br label %101
+
+.thread:                                          ; preds = %25
+  %98 = tail call swiftcc { i64, i8 } @"$ss13_parseInteger5ascii5radixq_Sgx_SitSyRzs010FixedWidthB0R_r0_lFSS_SiTg5"(i64 %14, ptr %15, i64 10)
+  tail call void @swift_bridgeObjectRelease(ptr %15) #2
+  %99 = extractvalue { i64, i8 } %98, 0
+  %100 = extractvalue { i64, i8 } %98, 1
+  br label %101
+
+101:                                              ; preds = %.thread, %.thread107
+  %102 = phi i64 [ %99, %.thread ], [ %.sroa.0.1111, %.thread107 ]
+  %103 = phi i8 [ %100, %.thread ], [ %.sroa.6.1110, %.thread107 ]
+  %104 = icmp eq i8 %103, 1
+  br i1 %104, label %odessy.chk1, label %188
+
+105:                                              ; preds = %96
+  %106 = and i64 %17, 1152921504606846975
+  %107 = add nuw nsw i64 %106, 32
+  br label %112
+
+108:                                              ; preds = %96
+  %109 = tail call swiftcc { i64, i64 } @"$ss13_StringObjectV10sharedUTF8SRys5UInt8VGvg"(i64 %14, ptr %15)
+  %110 = extractvalue { i64, i64 } %109, 0
+  %111 = extractvalue { i64, i64 } %109, 1
+  br label %112
+
+112:                                              ; preds = %108, %105
+  %113 = phi i64 [ %110, %108 ], [ %107, %105 ]
+  %114 = phi i64 [ %111, %108 ], [ %19, %105 ]
+  %115 = inttoptr i64 %113 to ptr
+  %116 = load i8, ptr %115, align 1
+  switch i8 %116, label %145 [
+    i8 45, label %117
+    i8 43, label %141
+  ]
+
+117:                                              ; preds = %112
+  %118 = icmp slt i64 %114, 1
+  br i1 %118, label %odessy.chk13, label %119, !prof !44
+
+119:                                              ; preds = %117
+  %120 = icmp eq i64 %114, 1
+  br i1 %120, label %.thread107, label %121, !prof !44
+
+121:                                              ; preds = %119
+  %122 = getelementptr inbounds nuw i8, ptr %115, i64 1
+  %123 = getelementptr i8, ptr %115, i64 %114
+  br label %124
+
+124:                                              ; preds = %137, %121
+  %125 = phi ptr [ %122, %121 ], [ %139, %137 ]
+  %126 = phi i64 [ 0, %121 ], [ %138, %137 ]
+  %127 = load i8, ptr %125, align 1
+  %128 = add i8 %127, -48
+  %or.cond44 = icmp ult i8 %128, 10
+  br i1 %or.cond44, label %129, label %.thread107, !prof !47
+
+129:                                              ; preds = %124
+  %130 = tail call { i64, i1 } @llvm.smul.with.overflow.i64(i64 %126, i64 10)
+  %131 = extractvalue { i64, i1 } %130, 1
+  br i1 %131, label %.thread107, label %132
+
+132:                                              ; preds = %129
+  %133 = extractvalue { i64, i1 } %130, 0
+  %134 = zext nneg i8 %128 to i64
+  %135 = tail call { i64, i1 } @llvm.ssub.with.overflow.i64(i64 %133, i64 %134)
+  %136 = extractvalue { i64, i1 } %135, 1
+  br i1 %136, label %.thread107, label %137, !prof !44
+
+137:                                              ; preds = %132
+  %138 = extractvalue { i64, i1 } %135, 0
+  %139 = getelementptr inbounds nuw i8, ptr %125, i64 1
+  %140 = icmp eq ptr %139, %123
+  br i1 %140, label %.thread107, label %124
+
+141:                                              ; preds = %112
+  %142 = icmp slt i64 %114, 1
+  br i1 %142, label %odessy.chk12, label %143, !prof !44
+
+143:                                              ; preds = %141
+  %144 = icmp eq i64 %114, 1
+  br i1 %144, label %.thread107, label %147, !prof !44
+
+145:                                              ; preds = %112
+  %146 = icmp eq i64 %114, 0
+  br i1 %146, label %.thread107, label %167, !prof !44
+
+147:                                              ; preds = %143
+  %148 = getelementptr inbounds nuw i8, ptr %115, i64 1
+  %149 = getelementptr i8, ptr %115, i64 %114
+  br label %150
+
+150:                                              ; preds = %163, %147
+  %151 = phi ptr [ %148, %147 ], [ %165, %163 ]
+  %152 = phi i64 [ 0, %147 ], [ %164, %163 ]
+  %153 = load i8, ptr %151, align 1
+  %154 = add i8 %153, -48
+  %or.cond45 = icmp ult i8 %154, 10
+  br i1 %or.cond45, label %155, label %.thread107, !prof !47
+
+155:                                              ; preds = %150
+  %156 = tail call { i64, i1 } @llvm.smul.with.overflow.i64(i64 %152, i64 10)
+  %157 = extractvalue { i64, i1 } %156, 1
+  br i1 %157, label %.thread107, label %158
+
+158:                                              ; preds = %155
+  %159 = extractvalue { i64, i1 } %156, 0
+  %160 = zext nneg i8 %154 to i64
+  %161 = tail call { i64, i1 } @llvm.sadd.with.overflow.i64(i64 %159, i64 %160)
+  %162 = extractvalue { i64, i1 } %161, 1
+  br i1 %162, label %.thread107, label %163, !prof !44
+
+163:                                              ; preds = %158
+  %164 = extractvalue { i64, i1 } %161, 0
+  %165 = getelementptr inbounds nuw i8, ptr %151, i64 1
+  %166 = icmp eq ptr %165, %149
+  br i1 %166, label %.thread107, label %150
+
+167:                                              ; preds = %145
+  %168 = icmp eq i64 %113, 0
+  br i1 %168, label %.thread107, label %169
+
+169:                                              ; preds = %167
+  %170 = getelementptr inbounds i8, ptr %115, i64 %114
+  br label %171
+
+171:                                              ; preds = %184, %169
+  %172 = phi ptr [ %115, %169 ], [ %186, %184 ]
+  %173 = phi i64 [ 0, %169 ], [ %185, %184 ]
+  %174 = load i8, ptr %172, align 1
+  %175 = add i8 %174, -48
+  %or.cond46 = icmp ult i8 %175, 10
+  br i1 %or.cond46, label %176, label %.thread107, !prof !47
+
+176:                                              ; preds = %171
+  %177 = tail call { i64, i1 } @llvm.smul.with.overflow.i64(i64 %173, i64 10)
+  %178 = extractvalue { i64, i1 } %177, 1
+  br i1 %178, label %.thread107, label %179
+
+179:                                              ; preds = %176
+  %180 = extractvalue { i64, i1 } %177, 0
+  %181 = zext nneg i8 %175 to i64
+  %182 = tail call { i64, i1 } @llvm.sadd.with.overflow.i64(i64 %180, i64 %181)
+  %183 = extractvalue { i64, i1 } %182, 1
+  br i1 %183, label %.thread107, label %184, !prof !44
+
+184:                                              ; preds = %179
+  %185 = extractvalue { i64, i1 } %182, 0
+  %186 = getelementptr inbounds nuw i8, ptr %172, i64 1
+  %187 = icmp eq ptr %186, %170
+  br i1 %187, label %.thread107, label %171
+
+188:                                              ; preds = %101
+  store i64 %102, ptr @"$s5crc325itersSivp", align 8
+  %189 = call swiftcc ptr @"$ss11CommandLineO9argumentsSaySSGvgZ"()
+  %190 = getelementptr inbounds nuw i8, ptr %189, i64 16
+  %191 = load i64, ptr %190, align 8, !range !43
+  %192 = icmp samesign ult i64 %191, 3
+  br i1 %192, label %odessy.chk2, label %193, !prof !44
+
+193:                                              ; preds = %188
+  %194 = getelementptr inbounds nuw i8, ptr %189, i64 64
+  %195 = load i64, ptr %194, align 8
+  %._guts2._object._object = getelementptr inbounds nuw i8, ptr %189, i64 72
+  %196 = load ptr, ptr %._guts2._object._object, align 8
+  %197 = call ptr @swift_bridgeObjectRetain(ptr returned %196) #2
+  call void @swift_bridgeObjectRelease(ptr nonnull %189) #2
+  call swiftcc void @"$s10Foundation3URLV15fileURLWithPathACSSh_tcfC"(ptr noalias nonnull sret(%swift.opaque) %7, i64 %195, ptr %196)
+  call void @swift_bridgeObjectRelease(ptr %196) #2
+  %198 = call swiftcc { i64, i64 } @"$s10Foundation4DataV10contentsOf7optionsAcA3URLVh_So20NSDataReadingOptionsVtKcfC"(ptr noalias nonnull %7, i64 0, ptr swiftself undef, ptr noalias nonnull swifterror captures(none) dereferenceable(8) %swifterror)
+  %199 = load ptr, ptr %swifterror, align 8
+  %.not88 = icmp eq ptr %199, null
+  br i1 %.not88, label %200, label %401
+
+200:                                              ; preds = %193
+  %201 = extractvalue { i64, i64 } %198, 1
+  %202 = extractvalue { i64, i64 } %198, 0
+  %203 = getelementptr inbounds nuw i8, ptr %.valueWitnesses, i64 8
+  %Destroy3 = load ptr, ptr %203, align 8, !invariant.load !41
+  call void %Destroy3(ptr noalias nonnull %7, ptr %4) #2
+  %204 = call swiftcc ptr @"$sSaySayxGqd__c7ElementQyd__RszSTRd__lufCs5UInt8V_10Foundation4DataVTt0g5"(i64 %202, i64 %201)
+  store ptr %204, ptr @"$s5crc324dataSays5UInt8VGvp", align 8
+  %205 = call swiftcc ptr @"$sSa28_allocateBufferUninitialized15minimumCapacitys06_ArrayB0VyxGSi_tFZ"(i64 256, ptr nonnull @"$ss6UInt32VN")
+  %206 = getelementptr inbounds nuw i8, ptr %205, i64 16
+  store i64 256, ptr %206, align 8
+  %207 = getelementptr i8, ptr %205, i64 32
+  call void @llvm.memset.p0.i64(ptr noundef nonnull align 4 dereferenceable(1024) %207, i8 0, i64 1024, i1 false)
+  store ptr %205, ptr @"$s5crc322t0Says6UInt32VGvp", align 8
+  %208 = call swiftcc ptr @"$sSa28_allocateBufferUninitialized15minimumCapacitys06_ArrayB0VyxGSi_tFZ"(i64 256, ptr nonnull @"$ss6UInt32VN")
+  %209 = getelementptr inbounds nuw i8, ptr %208, i64 16
+  store i64 256, ptr %209, align 8
+  %210 = getelementptr i8, ptr %208, i64 32
+  call void @llvm.memset.p0.i64(ptr noundef nonnull align 4 dereferenceable(1024) %210, i8 0, i64 1024, i1 false)
+  store ptr %208, ptr @"$s5crc322t1Says6UInt32VGvp", align 8
+  %211 = call swiftcc ptr @"$sSa28_allocateBufferUninitialized15minimumCapacitys06_ArrayB0VyxGSi_tFZ"(i64 256, ptr nonnull @"$ss6UInt32VN")
+  %212 = getelementptr inbounds nuw i8, ptr %211, i64 16
+  store i64 256, ptr %212, align 8
+  %213 = getelementptr i8, ptr %211, i64 32
+  call void @llvm.memset.p0.i64(ptr noundef nonnull align 4 dereferenceable(1024) %213, i8 0, i64 1024, i1 false)
+  store ptr %211, ptr @"$s5crc322t2Says6UInt32VGvp", align 8
+  %214 = call swiftcc ptr @"$sSa28_allocateBufferUninitialized15minimumCapacitys06_ArrayB0VyxGSi_tFZ"(i64 256, ptr nonnull @"$ss6UInt32VN")
+  %215 = getelementptr inbounds nuw i8, ptr %214, i64 16
+  store i64 256, ptr %215, align 8
+  %216 = getelementptr i8, ptr %214, i64 32
+  call void @llvm.memset.p0.i64(ptr noundef nonnull align 4 dereferenceable(1024) %216, i8 0, i64 1024, i1 false)
+  store ptr %214, ptr @"$s5crc322t3Says6UInt32VGvp", align 8
+  call void @llvm.lifetime.start.p0(ptr nonnull %access-scratch)
+  call void @swift_beginAccess(ptr nonnull @"$s5crc322t0Says6UInt32VGvp", ptr nonnull %access-scratch, i64 33, ptr null) #2
+  %217 = load ptr, ptr @"$s5crc322t0Says6UInt32VGvp", align 8
+  %218 = call zeroext i1 @swift_isUniquelyReferenced_nonNull_native(ptr %217) #19
+  store ptr %217, ptr @"$s5crc322t0Says6UInt32VGvp", align 8
+  br i1 %218, label %.split, label %219, !prof !45
+
+219:                                              ; preds = %200
+  %220 = call swiftcc ptr @"$ss12_ArrayBufferV20_consumeAndCreateNewAByxGyFs6UInt32V_Tg5"(ptr %217)
+  br label %.split
+
+.split:                                           ; preds = %219, %200
+  %221 = phi ptr [ %220, %219 ], [ %217, %200 ]
+  %222 = getelementptr inbounds nuw i8, ptr %221, i64 16
+  %223 = getelementptr inbounds nuw i8, ptr %221, i64 32
+  %.pre = load i64, ptr %222, align 8, !range !43
+  %min.iters.check = icmp samesign ult i64 %.pre, 4
+  br i1 %min.iters.check, label %scalar.ph.preheader, label %vector.ph
+
+scalar.ph.preheader:                              ; preds = %vector.body, %.split
+  %.ph = phi i64 [ 0, %.split ], [ %n.vec, %vector.body ]
+  br label %scalar.ph
+
+vector.ph:                                        ; preds = %.split
+  %umin = call i64 @llvm.umin.i64(i64 %.pre, i64 255)
+  %224 = add nuw nsw i64 %umin, 1
+  %n.mod.vf = and i64 %224, 3
+  %225 = icmp eq i64 %n.mod.vf, 0
+  %226 = select i1 %225, i64 4, i64 %n.mod.vf
+  %n.vec = sub nsw i64 %224, %226
+  br label %vector.body
+
+vector.body:                                      ; preds = %vector.body, %vector.ph
+  %index = phi i64 [ 0, %vector.ph ], [ %index.next, %vector.body ]
+  %vec.ind = phi <4 x i32> [ <i32 0, i32 1, i32 2, i32 3>, %vector.ph ], [ %vec.ind.next, %vector.body ]
+  %227 = and <4 x i32> %vec.ind, splat (i32 1)
+  %228 = icmp eq <4 x i32> %227, zeroinitializer
+  %229 = lshr <4 x i32> %vec.ind, splat (i32 1)
+  %230 = xor <4 x i32> %229, splat (i32 -306674912)
+  %231 = select <4 x i1> %228, <4 x i32> %229, <4 x i32> %230
+  %232 = and <4 x i32> %231, splat (i32 1)
+  %233 = icmp eq <4 x i32> %232, zeroinitializer
+  %234 = lshr <4 x i32> %231, splat (i32 1)
+  %235 = xor <4 x i32> %234, splat (i32 -306674912)
+  %236 = select <4 x i1> %233, <4 x i32> %234, <4 x i32> %235
+  %237 = and <4 x i32> %236, splat (i32 1)
+  %238 = icmp eq <4 x i32> %237, zeroinitializer
+  %239 = lshr <4 x i32> %236, splat (i32 1)
+  %240 = xor <4 x i32> %239, splat (i32 -306674912)
+  %241 = select <4 x i1> %238, <4 x i32> %239, <4 x i32> %240
+  %242 = and <4 x i32> %241, splat (i32 1)
+  %243 = icmp eq <4 x i32> %242, zeroinitializer
+  %244 = lshr <4 x i32> %241, splat (i32 1)
+  %245 = xor <4 x i32> %244, splat (i32 -306674912)
+  %246 = select <4 x i1> %243, <4 x i32> %244, <4 x i32> %245
+  %247 = and <4 x i32> %246, splat (i32 1)
+  %248 = icmp eq <4 x i32> %247, zeroinitializer
+  %249 = lshr <4 x i32> %246, splat (i32 1)
+  %250 = xor <4 x i32> %249, splat (i32 -306674912)
+  %251 = select <4 x i1> %248, <4 x i32> %249, <4 x i32> %250
+  %252 = and <4 x i32> %251, splat (i32 1)
+  %253 = icmp eq <4 x i32> %252, zeroinitializer
+  %254 = lshr <4 x i32> %251, splat (i32 1)
+  %255 = xor <4 x i32> %254, splat (i32 -306674912)
+  %256 = select <4 x i1> %253, <4 x i32> %254, <4 x i32> %255
+  %257 = and <4 x i32> %256, splat (i32 1)
+  %258 = icmp eq <4 x i32> %257, zeroinitializer
+  %259 = lshr <4 x i32> %256, splat (i32 1)
+  %260 = xor <4 x i32> %259, splat (i32 -306674912)
+  %261 = select <4 x i1> %258, <4 x i32> %259, <4 x i32> %260
+  %262 = and <4 x i32> %261, splat (i32 1)
+  %263 = icmp eq <4 x i32> %262, zeroinitializer
+  %264 = lshr <4 x i32> %261, splat (i32 1)
+  %265 = xor <4 x i32> %264, splat (i32 -306674912)
+  %266 = select <4 x i1> %263, <4 x i32> %264, <4 x i32> %265
+  %267 = getelementptr inbounds nuw [4 x i8], ptr %223, i64 %index
+  store <4 x i32> %266, ptr %267, align 4
+  %index.next = add nuw i64 %index, 4
+  %vec.ind.next = add <4 x i32> %vec.ind, splat (i32 4)
+  %268 = icmp eq i64 %index.next, %n.vec
+  br i1 %268, label %scalar.ph.preheader, label %vector.body, !llvm.loop !48
+
+269:                                              ; preds = %271
+  store ptr %221, ptr @"$s5crc322t0Says6UInt32VGvp", align 8
+  call void @swift_endAccess(ptr nonnull %access-scratch) #2
+  call void @llvm.lifetime.end.p0(ptr nonnull %access-scratch)
+  br label %315
+
+scalar.ph:                                        ; preds = %scalar.ph.preheader, %271
+  %270 = phi i64 [ %272, %271 ], [ %.ph, %scalar.ph.preheader ]
+  %.not97 = icmp samesign ult i64 %270, %.pre
+  br i1 %.not97, label %271, label %odessy.chk3, !prof !45
+
+271:                                              ; preds = %scalar.ph
+  %272 = add nuw nsw i64 %270, 1
+  %273 = trunc i64 %270 to i32
+  %274 = and i32 %273, 1
+  %.not89 = icmp eq i32 %274, 0
+  %275 = lshr i32 %273, 1
+  %276 = xor i32 %275, -306674912
+  %277 = select i1 %.not89, i32 %275, i32 %276
+  %278 = and i32 %277, 1
+  %.not90 = icmp eq i32 %278, 0
+  %279 = lshr i32 %277, 1
+  %280 = xor i32 %279, -306674912
+  %281 = select i1 %.not90, i32 %279, i32 %280
+  %282 = and i32 %281, 1
+  %.not91 = icmp eq i32 %282, 0
+  %283 = lshr i32 %281, 1
+  %284 = xor i32 %283, -306674912
+  %285 = select i1 %.not91, i32 %283, i32 %284
+  %286 = and i32 %285, 1
+  %.not92 = icmp eq i32 %286, 0
+  %287 = lshr i32 %285, 1
+  %288 = xor i32 %287, -306674912
+  %289 = select i1 %.not92, i32 %287, i32 %288
+  %290 = and i32 %289, 1
+  %.not93 = icmp eq i32 %290, 0
+  %291 = lshr i32 %289, 1
+  %292 = xor i32 %291, -306674912
+  %293 = select i1 %.not93, i32 %291, i32 %292
+  %294 = and i32 %293, 1
+  %.not94 = icmp eq i32 %294, 0
+  %295 = lshr i32 %293, 1
+  %296 = xor i32 %295, -306674912
+  %297 = select i1 %.not94, i32 %295, i32 %296
+  %298 = and i32 %297, 1
+  %.not95 = icmp eq i32 %298, 0
+  %299 = lshr i32 %297, 1
+  %300 = xor i32 %299, -306674912
+  %301 = select i1 %.not95, i32 %299, i32 %300
+  %302 = and i32 %301, 1
+  %.not96 = icmp eq i32 %302, 0
+  %303 = lshr i32 %301, 1
+  %304 = xor i32 %303, -306674912
+  %305 = select i1 %.not96, i32 %303, i32 %304
+  %306 = getelementptr inbounds nuw [4 x i8], ptr %223, i64 %270
+  store i32 %305, ptr %306, align 4
+  %307 = icmp eq i64 %272, 256
+  br i1 %307, label %269, label %scalar.ph, !llvm.loop !51
+
+308:                                              ; preds = %384
+  store i32 0, ptr @"$s5crc325finals6UInt32Vvp", align 4
+  %309 = load i64, ptr @"$s5crc325itersSivp", align 8
+  %310 = icmp slt i64 %309, 0
+  br i1 %310, label %odessy.chk11, label %311, !prof !44
+
+311:                                              ; preds = %308
+  %312 = icmp eq i64 %309, 0
+  br i1 %312, label %.loopexit, label %313
+
+313:                                              ; preds = %311
+  %314 = load ptr, ptr @"$s5crc324dataSays5UInt8VGvp", align 8
+  call void @llvm.lifetime.start.p0(ptr nonnull %access-scratch29)
+  call void @swift_beginAccess(ptr nonnull @"$s5crc325finals6UInt32Vvp", ptr nonnull %access-scratch29, i64 1, ptr null) #2
+  br label %394
+
+315:                                              ; preds = %384, %269
+  %316 = phi i64 [ 0, %269 ], [ %317, %384 ]
+  %317 = add nuw nsw i64 %316, 1
+  %318 = load ptr, ptr @"$s5crc322t0Says6UInt32VGvp", align 8
+  %319 = getelementptr inbounds nuw i8, ptr %318, i64 16
+  %320 = load i64, ptr %319, align 8, !range !43
+  %.not98 = icmp samesign ult i64 %316, %320
+  br i1 %.not98, label %321, label %odessy.chk4, !prof !45
+
+321:                                              ; preds = %315
+  %322 = getelementptr inbounds nuw i8, ptr %318, i64 32
+  %323 = getelementptr inbounds nuw [4 x i8], ptr %322, i64 %316
+  %324 = load i32, ptr %323, align 4
+  %325 = and i32 %324, 255
+  %326 = zext nneg i32 %325 to i64
+  %.not99 = icmp samesign ugt i64 %320, %326
+  br i1 %.not99, label %327, label %odessy.chk5, !prof !45
+
+327:                                              ; preds = %321
+  %328 = getelementptr inbounds nuw [4 x i8], ptr %322, i64 %326
+  %329 = load i32, ptr %328, align 4
+  %330 = lshr i32 %324, 8
+  %331 = xor i32 %329, %330
+  call void @llvm.lifetime.start.p0(ptr nonnull %access-scratch16)
+  call void @swift_beginAccess(ptr nonnull @"$s5crc322t1Says6UInt32VGvp", ptr nonnull %access-scratch16, i64 33, ptr null) #2
+  %332 = load ptr, ptr @"$s5crc322t1Says6UInt32VGvp", align 8
+  %333 = call zeroext i1 @swift_isUniquelyReferenced_nonNull_native(ptr %332) #19
+  store ptr %332, ptr @"$s5crc322t1Says6UInt32VGvp", align 8
+  br i1 %333, label %336, label %334, !prof !45
+
+334:                                              ; preds = %327
+  %335 = call swiftcc ptr @"$ss12_ArrayBufferV20_consumeAndCreateNewAByxGyFs6UInt32V_Tg5"(ptr %332)
+  br label %336
+
+336:                                              ; preds = %334, %327
+  %337 = phi ptr [ %335, %334 ], [ %332, %327 ]
+  %338 = getelementptr inbounds nuw i8, ptr %337, i64 16
+  %339 = load i64, ptr %338, align 8, !range !43
+  %.not100 = icmp samesign ult i64 %316, %339
+  br i1 %.not100, label %340, label %odessy.chk6, !prof !45
+
+340:                                              ; preds = %336
+  %341 = getelementptr inbounds nuw i8, ptr %337, i64 32
+  %342 = getelementptr inbounds nuw [4 x i8], ptr %341, i64 %316
+  store i32 %331, ptr %342, align 4
+  store ptr %337, ptr @"$s5crc322t1Says6UInt32VGvp", align 8
+  call void @swift_endAccess(ptr nonnull %access-scratch16) #2
+  call void @llvm.lifetime.end.p0(ptr nonnull %access-scratch16)
+  %343 = and i32 %331, 255
+  %344 = zext nneg i32 %343 to i64
+  %345 = load ptr, ptr @"$s5crc322t0Says6UInt32VGvp", align 8
+  %346 = getelementptr inbounds nuw i8, ptr %345, i64 16
+  %347 = load i64, ptr %346, align 8, !range !43
+  %.not101 = icmp samesign ugt i64 %347, %344
+  br i1 %.not101, label %348, label %odessy.chk7, !prof !45
+
+348:                                              ; preds = %340
+  %349 = getelementptr inbounds nuw i8, ptr %345, i64 32
+  %350 = getelementptr inbounds nuw [4 x i8], ptr %349, i64 %344
+  %351 = load i32, ptr %350, align 4
+  %352 = lshr i32 %331, 8
+  %353 = xor i32 %351, %352
+  call void @llvm.lifetime.start.p0(ptr nonnull %access-scratch21)
+  call void @swift_beginAccess(ptr nonnull @"$s5crc322t2Says6UInt32VGvp", ptr nonnull %access-scratch21, i64 33, ptr null) #2
+  %354 = load ptr, ptr @"$s5crc322t2Says6UInt32VGvp", align 8
+  %355 = call zeroext i1 @swift_isUniquelyReferenced_nonNull_native(ptr %354) #19
+  store ptr %354, ptr @"$s5crc322t2Says6UInt32VGvp", align 8
+  br i1 %355, label %358, label %356, !prof !45
+
+356:                                              ; preds = %348
+  %357 = call swiftcc ptr @"$ss12_ArrayBufferV20_consumeAndCreateNewAByxGyFs6UInt32V_Tg5"(ptr %354)
+  br label %358
+
+358:                                              ; preds = %356, %348
+  %359 = phi ptr [ %357, %356 ], [ %354, %348 ]
+  %360 = getelementptr inbounds nuw i8, ptr %359, i64 16
+  %361 = load i64, ptr %360, align 8, !range !43
+  %.not102 = icmp samesign ult i64 %316, %361
+  br i1 %.not102, label %362, label %odessy.chk8, !prof !45
+
+362:                                              ; preds = %358
+  %363 = getelementptr inbounds nuw i8, ptr %359, i64 32
+  %364 = getelementptr inbounds nuw [4 x i8], ptr %363, i64 %316
+  store i32 %353, ptr %364, align 4
+  store ptr %359, ptr @"$s5crc322t2Says6UInt32VGvp", align 8
+  call void @swift_endAccess(ptr nonnull %access-scratch21) #2
+  call void @llvm.lifetime.end.p0(ptr nonnull %access-scratch21)
+  %365 = and i32 %353, 255
+  %366 = zext nneg i32 %365 to i64
+  %367 = load ptr, ptr @"$s5crc322t0Says6UInt32VGvp", align 8
+  %368 = getelementptr inbounds nuw i8, ptr %367, i64 16
+  %369 = load i64, ptr %368, align 8, !range !43
+  %.not103 = icmp samesign ugt i64 %369, %366
+  br i1 %.not103, label %370, label %odessy.chk9, !prof !45
+
+370:                                              ; preds = %362
+  %371 = getelementptr inbounds nuw i8, ptr %367, i64 32
+  %372 = getelementptr inbounds nuw [4 x i8], ptr %371, i64 %366
+  %373 = load i32, ptr %372, align 4
+  %374 = lshr i32 %353, 8
+  %375 = xor i32 %373, %374
+  call void @llvm.lifetime.start.p0(ptr nonnull %access-scratch26)
+  call void @swift_beginAccess(ptr nonnull @"$s5crc322t3Says6UInt32VGvp", ptr nonnull %access-scratch26, i64 33, ptr null) #2
+  %376 = load ptr, ptr @"$s5crc322t3Says6UInt32VGvp", align 8
+  %377 = call zeroext i1 @swift_isUniquelyReferenced_nonNull_native(ptr %376) #19
+  store ptr %376, ptr @"$s5crc322t3Says6UInt32VGvp", align 8
+  br i1 %377, label %380, label %378, !prof !45
+
+378:                                              ; preds = %370
+  %379 = call swiftcc ptr @"$ss12_ArrayBufferV20_consumeAndCreateNewAByxGyFs6UInt32V_Tg5"(ptr %376)
+  br label %380
+
+380:                                              ; preds = %378, %370
+  %381 = phi ptr [ %379, %378 ], [ %376, %370 ]
+  %382 = getelementptr inbounds nuw i8, ptr %381, i64 16
+  %383 = load i64, ptr %382, align 8, !range !43
+  %.not104 = icmp samesign ult i64 %316, %383
+  br i1 %.not104, label %384, label %odessy.chk10, !prof !45
+
+384:                                              ; preds = %380
+  %385 = getelementptr inbounds nuw i8, ptr %381, i64 32
+  %386 = getelementptr inbounds nuw [4 x i8], ptr %385, i64 %316
+  store i32 %375, ptr %386, align 4
+  store ptr %381, ptr @"$s5crc322t3Says6UInt32VGvp", align 8
+  call void @swift_endAccess(ptr nonnull %access-scratch26) #2
+  call void @llvm.lifetime.end.p0(ptr nonnull %access-scratch26)
+  %387 = icmp eq i64 %317, 256
+  br i1 %387, label %308, label %315
+
+.loopexit:                                        ; preds = %394, %311
+  %388 = phi i32 [ 0, %311 ], [ %399, %394 ]
+  %389 = call ptr @__swift_instantiateConcreteTypeFromMangledNameV2(ptr nonnull @"$ss23_ContiguousArrayStorageCyypGMd", ptr nonnull @"$ss23_ContiguousArrayStorageCyypGMR") #20
+  %390 = call noalias ptr @swift_allocObject(ptr %389, i64 64, i64 7) #2
+  %391 = getelementptr inbounds nuw i8, ptr %390, i64 16
+  store <2 x i64> <i64 1, i64 2>, ptr %391, align 8
+  %392 = getelementptr inbounds nuw i8, ptr %390, i64 32
+  %393 = getelementptr inbounds nuw i8, ptr %390, i64 56
+  store ptr @"$ss6UInt32VN", ptr %393, align 8
+  store i32 %388, ptr %392, align 8
+  call swiftcc void @"$ss5print_9separator10terminatoryypd_S2StF"(ptr %390, i64 32, ptr nonnull inttoptr (i64 -2233785415175766016 to ptr), i64 10, ptr nonnull inttoptr (i64 -2233785415175766016 to ptr))
+  call void @swift_release(ptr %390) #2
+  call void @llvm.lifetime.end.p0(ptr nonnull %7)
+  ret i32 0
+
+394:                                              ; preds = %394, %313
+  %395 = phi i64 [ 0, %313 ], [ %397, %394 ]
+  %396 = phi i32 [ 0, %313 ], [ %399, %394 ]
+  %397 = add nuw nsw i64 %395, 1
+  %398 = call swiftcc i32 @"$s5crc32AAys6UInt32VSays5UInt8VGF"(ptr %314)
+  %399 = add i32 %398, %396
+  store i32 %399, ptr @"$s5crc325finals6UInt32Vvp", align 4
+  %400 = icmp eq i64 %397, %309
+  br i1 %400, label %.loopexit, label %394
+
+401:                                              ; preds = %193
+  %402 = getelementptr inbounds nuw i8, ptr %.valueWitnesses, i64 8
+  %Destroy = load ptr, ptr %402, align 8, !invariant.load !41
+  call void %Destroy(ptr noalias nonnull %7, ptr %4) #2
+  call swiftcc void @swift_unexpectedError(ptr nonnull %199, ptr nonnull @".str.17.crc32/crc32.swift", i64 17, i1 true, i64 14)
+  unreachable
+
+403:                                              ; preds = %54
+  tail call void asm sideeffect "", "n"(i32 20) #2
+  tail call void @llvm.trap()
+  unreachable
+
+404:                                              ; preds = %31
+  tail call void asm sideeffect "", "n"(i32 21) #2
+  tail call void @llvm.trap()
+  unreachable
+
+odessy.chk:                                       ; preds = %entry
+  tail call void @odessy.chk(i32 0)
+  unreachable
+
+odessy.chk1:                                      ; preds = %101
+  call void @odessy.chk(i32 1)
+  unreachable
+
+odessy.chk2:                                      ; preds = %188
+  call void @odessy.chk(i32 2)
+  unreachable
+
+odessy.chk3:                                      ; preds = %scalar.ph
+  call void @odessy.chk(i32 3)
+  unreachable
+
+odessy.chk4:                                      ; preds = %315
+  call void @odessy.chk(i32 4)
+  unreachable
+
+odessy.chk5:                                      ; preds = %321
+  call void @odessy.chk(i32 5)
+  unreachable
+
+odessy.chk6:                                      ; preds = %336
+  call void @odessy.chk(i32 6)
+  unreachable
+
+odessy.chk7:                                      ; preds = %340
+  call void @odessy.chk(i32 7)
+  unreachable
+
+odessy.chk8:                                      ; preds = %358
+  call void @odessy.chk(i32 8)
+  unreachable
+
+odessy.chk9:                                      ; preds = %362
+  call void @odessy.chk(i32 9)
+  unreachable
+
+odessy.chk10:                                     ; preds = %380
+  call void @odessy.chk(i32 10)
+  unreachable
+
+odessy.chk11:                                     ; preds = %308
+  call void @odessy.chk(i32 11)
+  unreachable
+
+odessy.chk12:                                     ; preds = %141
+  tail call void @odessy.chk(i32 12)
+  unreachable
+
+odessy.chk13:                                     ; preds = %117
+  tail call void @odessy.chk(i32 13)
+  unreachable
+}
+
+declare swiftcc %swift.metadata_response @"$s10Foundation3URLVMa"(i64) local_unnamed_addr #0
+
+declare swiftcc ptr @"$ss11CommandLineO9argumentsSaySSGvgZ"() local_unnamed_addr #0
+
+; Function Attrs: cold noreturn nounwind memory(inaccessiblemem: write)
+declare void @llvm.trap() #1
+
+; Function Attrs: nounwind
+declare ptr @swift_bridgeObjectRetain(ptr returned) local_unnamed_addr #2
+
+; Function Attrs: nounwind
+declare void @swift_bridgeObjectRelease(ptr) local_unnamed_addr #2
+
+define linkonce_odr hidden swiftcc ptr @"$sSaySayxGqd__c7ElementQyd__RszSTRd__lufCs5UInt8V_10Foundation4DataVTt0g5"(i64 %0, i64 %1) local_unnamed_addr #0 {
+entry:
+  %2 = tail call swiftcc %swift.metadata_response @"$s10Foundation4DataV8IteratorVMa"(i64 0) #18
+  %3 = extractvalue %swift.metadata_response %2, 0
+  %4 = getelementptr inbounds i8, ptr %3, i64 -8
+  %.valueWitnesses = load ptr, ptr %4, align 8, !invariant.load !41, !dereferenceable !42
+  %5 = getelementptr inbounds nuw i8, ptr %.valueWitnesses, i64 64
+  %size = load i64, ptr %5, align 8, !invariant.load !41
+  %6 = alloca i8, i64 %size, align 16
+  call void @llvm.lifetime.start.p0(ptr nonnull %6)
+  %7 = lshr i64 %1, 62
+  %8 = trunc nuw nsw i64 %7 to i8
+  switch i8 %8, label %default.unreachable1 [
+    i8 0, label %9
+    i8 1, label %12
+    i8 2, label %18
+    i8 3, label %.sink.split
+  ]
+
+default.unreachable1:                             ; preds = %entry
+  unreachable
+
+9:                                                ; preds = %entry
+  %10 = lshr i64 %1, 48
+  %11 = and i64 %10, 255
+  br label %31
+
+12:                                               ; preds = %entry
+  %13 = trunc i64 %0 to i32
+  %14 = lshr i64 %0, 32
+  %15 = trunc nuw i64 %14 to i32
+  %16 = tail call { i32, i1 } @llvm.ssub.with.overflow.i32(i32 %15, i32 %13)
+  %17 = extractvalue { i32, i1 } %16, 1
+  br i1 %17, label %odessy.chk2, label %26, !prof !44
+
+18:                                               ; preds = %entry
+  %19 = inttoptr i64 %0 to ptr
+  %20 = getelementptr inbounds nuw i8, ptr %19, i64 16
+  %.upperBound = getelementptr inbounds nuw i8, ptr %19, i64 24
+  %21 = load i64, ptr %.upperBound, align 8
+  %22 = load i64, ptr %20, align 8
+  %23 = tail call { i64, i1 } @llvm.ssub.with.overflow.i64(i64 %21, i64 %22)
+  %24 = extractvalue { i64, i1 } %23, 0
+  %25 = extractvalue { i64, i1 } %23, 1
+  br i1 %25, label %odessy.chk, label %31, !prof !44
+
+26:                                               ; preds = %12
+  %27 = extractvalue { i32, i1 } %16, 0
+  %28 = sext i32 %27 to i64
+  br label %31
+
+.sink.split:                                      ; preds = %31, %entry
+  tail call void @"$s10Foundation4DataV15_RepresentationOWOe"(i64 %0, i64 %1)
+  br label %29
+
+29:                                               ; preds = %"$ss22_ContiguousArrayBufferV19_uninitializedCount15minimumCapacityAByxGSi_SitcfCs5UInt8V_Tt1gq5.exit", %.sink.split
+  %30 = phi ptr [ %42, %"$ss22_ContiguousArrayBufferV19_uninitializedCount15minimumCapacityAByxGSi_SitcfCs5UInt8V_Tt1gq5.exit" ], [ @_swiftEmptyArrayStorage, %.sink.split ]
+  call void @llvm.lifetime.end.p0(ptr nonnull %6)
+  ret ptr %30
+
+31:                                               ; preds = %26, %18, %9
+  %32 = phi i64 [ %28, %26 ], [ %11, %9 ], [ %24, %18 ]
+  %33 = icmp eq i64 %32, 0
+  br i1 %33, label %.sink.split, label %34
+
+34:                                               ; preds = %31
+  %..i = tail call i64 @llvm.smax.i64(i64 %32, i64 0)
+  %35 = icmp eq i64 %..i, 0
+  br i1 %35, label %"$ss22_ContiguousArrayBufferV19_uninitializedCount15minimumCapacityAByxGSi_SitcfCs5UInt8V_Tt1gq5.exit", label %36
+
+36:                                               ; preds = %34
+  %37 = tail call ptr @__swift_instantiateConcreteTypeFromMangledNameV2(ptr nonnull @"$ss23_ContiguousArrayStorageCys5UInt8VGMd", ptr nonnull @"$ss23_ContiguousArrayStorageCys5UInt8VGMR") #20
+  %38 = add nuw i64 %..i, 32
+  %39 = tail call noalias ptr @swift_allocObject(ptr %37, i64 %38, i64 7) #2
+  %call.i.i = tail call i64 @malloc_size(ptr noundef %39) #21, !clang.arc.no_objc_arc_exceptions !41
+  %gepdiff.i = shl i64 %call.i.i, 1
+  %40 = add i64 %gepdiff.i, -64
+  %41 = getelementptr inbounds nuw i8, ptr %39, i64 16
+  store i64 %32, ptr %41, align 8
+  %._storage1._capacityAndFlags.i = getelementptr inbounds nuw i8, ptr %39, i64 24
+  store i64 %40, ptr %._storage1._capacityAndFlags.i, align 8
+  br label %"$ss22_ContiguousArrayBufferV19_uninitializedCount15minimumCapacityAByxGSi_SitcfCs5UInt8V_Tt1gq5.exit"
+
+"$ss22_ContiguousArrayBufferV19_uninitializedCount15minimumCapacityAByxGSi_SitcfCs5UInt8V_Tt1gq5.exit": ; preds = %34, %36
+  %42 = phi ptr [ %39, %36 ], [ @_swiftEmptyArrayStorage, %34 ]
+  %43 = getelementptr inbounds nuw i8, ptr %42, i64 32
+  %44 = ptrtoint ptr %43 to i64
+  %45 = icmp sgt i64 %32, -1
+  tail call void @llvm.assume(i1 %45)
+  %46 = call swiftcc i64 @"$s10Foundation4DataV13_copyContents12initializingAC8IteratorV_SitSrys5UInt8VG_tF"(ptr noalias nonnull %6, i64 %44, i64 %32, i64 %0, i64 %1)
+  call void @"$s10Foundation4DataV15_RepresentationOWOe"(i64 %0, i64 %1)
+  %47 = getelementptr inbounds nuw i8, ptr %.valueWitnesses, i64 8
+  %Destroy = load ptr, ptr %47, align 8, !invariant.load !41
+  call void %Destroy(ptr noalias nonnull %6, ptr nonnull %3) #2
+  %.not = icmp eq i64 %46, %32
+  br i1 %.not, label %29, label %odessy.chk1, !prof !45
+
+odessy.chk:                                       ; preds = %18
+  tail call void @odessy.chk(i32 14)
+  unreachable
+
+odessy.chk1:                                      ; preds = %"$ss22_ContiguousArrayBufferV19_uninitializedCount15minimumCapacityAByxGSi_SitcfCs5UInt8V_Tt1gq5.exit"
+  call void @odessy.chk(i32 15)
+  unreachable
+
+odessy.chk2:                                      ; preds = %12
+  tail call void @odessy.chk(i32 16)
+  unreachable
+}
+
+; Function Attrs: nounwind
+define hidden swiftcc i32 @"$s5crc32AAys6UInt32VSays5UInt8VGF"(ptr readonly captures(none) %0) local_unnamed_addr #3 {
+entry:
+  %access-scratch = alloca [24 x i8], align 8
+  %access-scratch3 = alloca [24 x i8], align 8
+  %access-scratch4 = alloca [24 x i8], align 8
+  %access-scratch5 = alloca [24 x i8], align 8
+  %access-scratch6 = alloca [24 x i8], align 8
+  %1 = getelementptr inbounds nuw i8, ptr %0, i64 16
+  %2 = load i64, ptr %1, align 8, !range !43
+  %3 = icmp samesign ugt i64 %2, 3
+  br i1 %3, label %5, label %4
+
+4:                                                ; preds = %entry
+  %.not = icmp eq i64 %2, 0
+  br i1 %.not, label %.loopexit, label %67
+
+5:                                                ; preds = %entry
+  %6 = getelementptr inbounds nuw i8, ptr %0, i64 32
+  call void @llvm.lifetime.start.p0(ptr nonnull %access-scratch3)
+  call void @swift_beginAccess(ptr nonnull @"$s5crc322t3Says6UInt32VGvp", ptr nonnull %access-scratch3, i64 0, ptr null) #2
+  call void @llvm.lifetime.start.p0(ptr nonnull %access-scratch4)
+  call void @swift_beginAccess(ptr nonnull @"$s5crc322t2Says6UInt32VGvp", ptr nonnull %access-scratch4, i64 0, ptr null) #2
+  call void @llvm.lifetime.start.p0(ptr nonnull %access-scratch5)
+  call void @swift_beginAccess(ptr nonnull @"$s5crc322t1Says6UInt32VGvp", ptr nonnull %access-scratch5, i64 0, ptr null) #2
+  call void @llvm.lifetime.start.p0(ptr nonnull %access-scratch6)
+  call void @swift_beginAccess(ptr nonnull @"$s5crc322t0Says6UInt32VGvp", ptr nonnull %access-scratch6, i64 0, ptr null) #2
+  %7 = load ptr, ptr @"$s5crc322t3Says6UInt32VGvp", align 8
+  %8 = getelementptr inbounds nuw i8, ptr %7, i64 32
+  %9 = load ptr, ptr @"$s5crc322t2Says6UInt32VGvp", align 8
+  %10 = getelementptr inbounds nuw i8, ptr %9, i64 32
+  %11 = load ptr, ptr @"$s5crc322t1Says6UInt32VGvp", align 8
+  %12 = getelementptr inbounds nuw i8, ptr %11, i64 32
+  %13 = load ptr, ptr @"$s5crc322t0Says6UInt32VGvp", align 8
+  %14 = getelementptr inbounds nuw i8, ptr %13, i64 32
+  %15 = getelementptr inbounds nuw i8, ptr %7, i64 16
+  %16 = getelementptr inbounds nuw i8, ptr %9, i64 16
+  %17 = getelementptr inbounds nuw i8, ptr %11, i64 16
+  %18 = getelementptr inbounds nuw i8, ptr %13, i64 16
+  %19 = load i64, ptr %15, align 8, !range !43
+  %20 = load i64, ptr %16, align 8, !range !43
+  %21 = load i64, ptr %17, align 8, !range !43
+  %22 = load i64, ptr %18, align 8, !range !43
+  %invariant.op = sub nuw i64 %2, 2
+  br label %24
+
+23:                                               ; preds = %51
+  br i1 %65, label %24, label %odessy.chk2, !prof !52
+
+24:                                               ; preds = %5, %23
+  %25 = phi i64 [ 0, %5 ], [ %52, %23 ]
+  %26 = phi i32 [ -1, %5 ], [ %63, %23 ]
+  %27 = or disjoint i64 %25, 1
+  %.not32 = icmp samesign ult i64 %27, %2
+  br i1 %.not32, label %28, label %odessy.chk3, !prof !45
+
+28:                                               ; preds = %24
+  %.not33 = icmp samesign ult i64 %25, %invariant.op
+  br i1 %.not33, label %29, label %odessy.chk4, !prof !45
+
+29:                                               ; preds = %28
+  %30 = or disjoint i64 %25, 3
+  %.not34 = icmp samesign ult i64 %30, %2
+  br i1 %.not34, label %31, label %odessy.chk5, !prof !45
+
+31:                                               ; preds = %29
+  %32 = getelementptr inbounds nuw i8, ptr %6, i64 %25
+  %33 = load i32, ptr %32, align 1
+  %34 = xor i32 %33, %26
+  %35 = and i32 %34, 255
+  %36 = zext nneg i32 %35 to i64
+  %.not35 = icmp samesign ugt i64 %19, %36
+  br i1 %.not35, label %37, label %odessy.chk6, !prof !45
+
+37:                                               ; preds = %31
+  %38 = lshr i32 %34, 8
+  %39 = and i32 %38, 255
+  %40 = zext nneg i32 %39 to i64
+  %.not36 = icmp samesign ugt i64 %20, %40
+  br i1 %.not36, label %41, label %odessy.chk7, !prof !45
+
+41:                                               ; preds = %37
+  %42 = lshr i32 %34, 16
+  %43 = and i32 %42, 255
+  %44 = zext nneg i32 %43 to i64
+  %.not37 = icmp samesign ugt i64 %21, %44
+  br i1 %.not37, label %45, label %odessy.chk8, !prof !45
+
+45:                                               ; preds = %41
+  %46 = lshr i32 %34, 24
+  %47 = zext nneg i32 %46 to i64
+  %.not38 = icmp samesign ugt i64 %22, %47
+  br i1 %.not38, label %48, label %odessy.chk9, !prof !45
+
+48:                                               ; preds = %45
+  %49 = call { i64, i1 } @llvm.sadd.with.overflow.i64(i64 %25, i64 8)
+  %50 = extractvalue { i64, i1 } %49, 1
+  br i1 %50, label %odessy.chk10, label %51, !prof !44
+
+51:                                               ; preds = %48
+  %52 = add nuw nsw i64 %25, 4
+  %53 = getelementptr inbounds nuw [4 x i8], ptr %10, i64 %40
+  %54 = load i32, ptr %53, align 4
+  %55 = getelementptr inbounds nuw [4 x i8], ptr %8, i64 %36
+  %56 = load i32, ptr %55, align 4
+  %57 = xor i32 %56, %54
+  %58 = getelementptr inbounds nuw [4 x i8], ptr %12, i64 %44
+  %59 = load i32, ptr %58, align 4
+  %60 = xor i32 %57, %59
+  %61 = getelementptr inbounds nuw [4 x i8], ptr %14, i64 %47
+  %62 = load i32, ptr %61, align 4
+  %63 = xor i32 %60, %62
+  %64 = extractvalue { i64, i1 } %49, 0
+  %.not39 = icmp slt i64 %2, %64
+  %65 = icmp samesign ult i64 %52, %2
+  br i1 %.not39, label %66, label %23
+
+66:                                               ; preds = %51
+  br i1 %65, label %67, label %.loopexit
+
+67:                                               ; preds = %66, %4
+  %68 = phi i32 [ -1, %4 ], [ %63, %66 ]
+  %69 = phi i64 [ 0, %4 ], [ %52, %66 ]
+  %70 = getelementptr inbounds nuw i8, ptr %0, i64 32
+  call void @llvm.lifetime.start.p0(ptr nonnull %access-scratch)
+  call void @swift_beginAccess(ptr nonnull @"$s5crc322t0Says6UInt32VGvp", ptr nonnull %access-scratch, i64 0, ptr null) #2
+  %71 = load ptr, ptr @"$s5crc322t0Says6UInt32VGvp", align 8
+  %72 = getelementptr inbounds nuw i8, ptr %71, i64 32
+  %73 = getelementptr inbounds nuw i8, ptr %71, i64 16
+  %74 = load i64, ptr %73, align 8, !range !43
+  %umax = call i64 @llvm.umax.i64(i64 %69, i64 %2)
+  br label %75
+
+75:                                               ; preds = %82, %67
+  %76 = phi i32 [ %68, %67 ], [ %87, %82 ]
+  %77 = phi i64 [ %69, %67 ], [ %83, %82 ]
+  %exitcond.not = icmp eq i64 %77, %umax
+  br i1 %exitcond.not, label %odessy.chk, label %78, !prof !44
+
+78:                                               ; preds = %75
+  %79 = getelementptr inbounds nuw i8, ptr %70, i64 %77
+  %80 = load i8, ptr %79, align 1
+  %.tr = trunc i32 %76 to i8
+  %.narrow = xor i8 %80, %.tr
+  %81 = zext i8 %.narrow to i64
+  %.not41 = icmp samesign ugt i64 %74, %81
+  br i1 %.not41, label %82, label %odessy.chk1, !prof !45
+
+82:                                               ; preds = %78
+  %83 = add nuw nsw i64 %77, 1
+  %84 = getelementptr inbounds nuw [4 x i8], ptr %72, i64 %81
+  %85 = load i32, ptr %84, align 4
+  %86 = lshr i32 %76, 8
+  %87 = xor i32 %85, %86
+  %88 = icmp samesign ult i64 %83, %2
+  br i1 %88, label %75, label %.loopexit
+
+.loopexit:                                        ; preds = %82, %66, %4
+  %89 = phi i32 [ %63, %66 ], [ -1, %4 ], [ %87, %82 ]
+  %90 = xor i32 %89, -1
+  ret i32 %90
+
+odessy.chk:                                       ; preds = %75
+  call void @odessy.chk(i32 17)
+  unreachable
+
+odessy.chk1:                                      ; preds = %78
+  call void @odessy.chk(i32 18)
+  unreachable
+
+odessy.chk2:                                      ; preds = %23
+  call void @odessy.chk(i32 19)
+  unreachable
+
+odessy.chk3:                                      ; preds = %24
+  call void @odessy.chk(i32 20)
+  unreachable
+
+odessy.chk4:                                      ; preds = %28
+  call void @odessy.chk(i32 21)
+  unreachable
+
+odessy.chk5:                                      ; preds = %29
+  call void @odessy.chk(i32 22)
+  unreachable
+
+odessy.chk6:                                      ; preds = %31
+  call void @odessy.chk(i32 23)
+  unreachable
+
+odessy.chk7:                                      ; preds = %37
+  call void @odessy.chk(i32 24)
+  unreachable
+
+odessy.chk8:                                      ; preds = %41
+  call void @odessy.chk(i32 25)
+  unreachable
+
+odessy.chk9:                                      ; preds = %45
+  call void @odessy.chk(i32 26)
+  unreachable
+
+odessy.chk10:                                     ; preds = %48
+  call void @odessy.chk(i32 27)
+  unreachable
+}
+
+; Function Attrs: noinline
+define linkonce_odr hidden swiftcc { i64, i8 } @"$ss13_parseInteger5ascii5radixq_Sgx_SitSyRzs010FixedWidthB0R_r0_lFSS_SiTg5"(i64 %0, ptr %1, i64 %2) local_unnamed_addr #4 {
+entry:
+  %3 = alloca %TSS, align 8
+  %swifterror = alloca swifterror ptr, align 8
+  store ptr null, ptr %swifterror, align 8
+  %4 = alloca <{ %Ts6UInt64V, %Ts6UInt64V }>, align 8
+  call void @llvm.lifetime.start.p0(ptr nonnull %3)
+  store i64 %0, ptr %3, align 8
+  %._guts._object._object = getelementptr inbounds nuw i8, ptr %3, i64 8
+  store ptr %1, ptr %._guts._object._object, align 8
+  %5 = tail call ptr @swift_bridgeObjectRetain(ptr returned %1) #2
+  %6 = call swiftcc { i64, ptr } @"$sSSySSxcs25LosslessStringConvertibleRzSTRzSJ7ElementSTRtzlufC"(ptr noalias nonnull %3, ptr nonnull @"$sSSN", ptr nonnull @"$sSSs25LosslessStringConvertiblesWP", ptr nonnull @"$sSSSTsWP")
+  %7 = extractvalue { i64, ptr } %6, 0
+  %8 = extractvalue { i64, ptr } %6, 1
+  call void @llvm.lifetime.end.p0(ptr nonnull %3)
+  %9 = ptrtoint ptr %8 to i64
+  %10 = and i64 %9, 1152921504606846976
+  %11 = icmp eq i64 %10, 0
+  br i1 %11, label %16, label %12, !prof !45
+
+12:                                               ; preds = %entry
+  %13 = call swiftcc { i64, ptr } @"$sSS8_copyingyS2SFZ"(i64 %7, ptr nonnull %8)
+  call void @swift_bridgeObjectRelease(ptr nonnull %8) #2
+  %14 = extractvalue { i64, ptr } %13, 0
+  %15 = extractvalue { i64, ptr } %13, 1
+  %.pre = ptrtoint ptr %15 to i64
+  br label %16
+
+16:                                               ; preds = %12, %entry
+  %.pre-phi = phi i64 [ %9, %entry ], [ %.pre, %12 ]
+  %17 = phi i64 [ %7, %entry ], [ %14, %12 ]
+  %18 = phi ptr [ %8, %entry ], [ %15, %12 ]
+  %19 = and i64 %.pre-phi, 2305843009213693952
+  %.not = icmp eq i64 %19, 0
+  br i1 %.not, label %29, label %20
+
+20:                                               ; preds = %16
+  %21 = lshr i64 %.pre-phi, 56
+  %22 = and i64 %21, 15
+  call void @llvm.lifetime.start.p0(ptr nonnull %4)
+  %.elt2 = getelementptr inbounds nuw i8, ptr %4, i64 8
+  %23 = and i64 %.pre-phi, 72057594037927935
+  store i64 %17, ptr %4, align 8
+  store i64 %23, ptr %.elt2, align 8
+  %24 = ptrtoint ptr %4 to i64
+  %25 = call swiftcc { i64, i8 } @"$ss13_parseInteger5ascii5radixq_Sgx_SitSyRzs010FixedWidthB0R_r0_lFADSRys5UInt8VGXEfU_SS_SiTg5"(i64 %24, i64 %22, i64 %2, ptr swiftself undef, ptr noalias nonnull swifterror captures(none) dereferenceable(8) %swifterror)
+  %26 = load ptr, ptr %swifterror, align 8
+  %.not5 = icmp eq ptr %26, null
+  br i1 %.not5, label %27, label %28
+
+27:                                               ; preds = %20
+  call void @swift_bridgeObjectRelease(ptr %18) #2
+  call void @llvm.lifetime.end.p0(ptr nonnull %4)
+  br label %31
+
+28:                                               ; preds = %20
+  call void @swift_errorRelease(ptr nonnull %26) #2
+  unreachable
+
+29:                                               ; preds = %16
+  %30 = and i64 %17, 1152921504606846976
+  %.not3 = icmp eq i64 %30, 0
+  br i1 %.not3, label %36, label %32, !prof !44
+
+31:                                               ; preds = %40, %27
+  %.pn = phi { i64, i8 } [ %43, %40 ], [ %25, %27 ]
+  ret { i64, i8 } %.pn
+
+32:                                               ; preds = %29
+  %33 = and i64 %.pre-phi, 1152921504606846975
+  %34 = add nuw nsw i64 %33, 32
+  %35 = and i64 %17, 281474976710655
+  br label %40
+
+36:                                               ; preds = %29
+  %37 = call swiftcc { i64, i64 } @"$ss13_StringObjectV10sharedUTF8SRys5UInt8VGvg"(i64 %17, ptr %18)
+  %38 = extractvalue { i64, i64 } %37, 0
+  %39 = extractvalue { i64, i64 } %37, 1
+  br label %40
+
+40:                                               ; preds = %36, %32
+  %41 = phi i64 [ %38, %36 ], [ %34, %32 ]
+  %42 = phi i64 [ %39, %36 ], [ %35, %32 ]
+  %43 = call swiftcc { i64, i8 } @"$ss13_parseInteger5ascii5radixq_Sgx_SitSyRzs010FixedWidthB0R_r0_lFADSRys5UInt8VGXEfU_SS_SiTg5"(i64 %41, i64 %42, i64 %2, ptr swiftself undef, ptr noalias nonnull swifterror captures(none) dereferenceable(8) %swifterror)
+  call void @swift_bridgeObjectRelease(ptr %18) #2
+  br label %31
+}
+
+declare swiftcc void @"$s10Foundation3URLV15fileURLWithPathACSSh_tcfC"(ptr noalias sret(%swift.opaque), i64, ptr) local_unnamed_addr #0
+
+declare swiftcc { i64, i64 } @"$s10Foundation4DataV10contentsOf7optionsAcA3URLVh_So20NSDataReadingOptionsVtKcfC"(ptr noalias, i64, ptr swiftself, ptr noalias swifterror captures(none) dereferenceable(8)) local_unnamed_addr #0
+
+declare swiftcc void @swift_unexpectedError(ptr, ptr, i64, i1, i64) local_unnamed_addr #0
+
+; Function Attrs: noinline
+declare swiftcc ptr @"$sSa28_allocateBufferUninitialized15minimumCapacitys06_ArrayB0VyxGSi_tFZ"(i64, ptr) local_unnamed_addr #4
+
+; Function Attrs: mustprogress nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+declare { i64, i1 } @llvm.sadd.with.overflow.i64(i64, i64) #5
+
+; Function Attrs: nounwind
+declare void @swift_beginAccess(ptr, ptr, i64, ptr) local_unnamed_addr #2
+
+; Function Attrs: mustprogress nounwind willreturn
+declare zeroext i1 @swift_isUniquelyReferenced_nonNull_native(ptr) local_unnamed_addr #6
+
+; Function Attrs: noinline
+define linkonce_odr hidden swiftcc ptr @"$ss12_ArrayBufferV20_consumeAndCreateNewAByxGyFs6UInt32V_Tg5"(ptr %0) local_unnamed_addr #4 {
+entry:
+  %1 = getelementptr inbounds nuw i8, ptr %0, i64 16
+  %2 = load i64, ptr %1, align 8, !range !43
+  %3 = tail call swiftcc ptr @"$ss12_ArrayBufferV20_consumeAndCreateNew14bufferIsUnique15minimumCapacity13growForAppendAByxGSb_SiSbtFs6UInt32V_Tg5"(i1 false, i64 %2, i1 false, ptr %0)
+  ret ptr %3
+}
+
+; Function Attrs: nounwind
+declare void @swift_endAccess(ptr) local_unnamed_addr #2
+
+; Function Attrs: mustprogress nofree noinline nounwind willreturn memory(read)
+define linkonce_odr hidden ptr @__swift_instantiateConcreteTypeFromMangledNameV2(ptr %0, ptr %1) local_unnamed_addr #7 {
+entry:
+  %2 = load atomic ptr, ptr %0 monotonic, align 8
+  %3 = icmp eq ptr %2, null
+  %4 = ptrtoint ptr %2 to i64
+  %5 = trunc i64 %4 to i1
+  %6 = or i1 %3, %5
+  br i1 %6, label %9, label %7
+
+7:                                                ; preds = %9, %entry
+  %8 = phi ptr [ %2, %entry ], [ %16, %9 ]
+  ret ptr %8
+
+9:                                                ; preds = %entry
+  %10 = load i64, ptr %1, align 8
+  %11 = ashr i64 %10, 32
+  %sext = shl i64 %10, 32
+  %12 = ashr exact i64 %sext, 32
+  %13 = ptrtoint ptr %1 to i64
+  %14 = add i64 %12, %13
+  %15 = inttoptr i64 %14 to ptr
+  %16 = tail call swiftcc ptr @swift_getTypeByMangledNameInContext2(ptr %15, i64 %11, ptr null, ptr null) #22
+  store atomic ptr %16, ptr %0 monotonic, align 8
+  br label %7
+}
+
+; Function Attrs: nounwind memory(argmem: readwrite)
+declare swiftcc ptr @swift_getTypeByMangledNameInContext2(ptr, i64, ptr, ptr) local_unnamed_addr #8
+
+; Function Attrs: nounwind
+declare ptr @swift_allocObject(ptr, i64, i64) local_unnamed_addr #2
+
+declare swiftcc void @"$ss5print_9separator10terminatoryypd_S2StF"(ptr, i64, ptr, i64, ptr) local_unnamed_addr #0
+
+; Function Attrs: nounwind
+declare void @swift_release(ptr) local_unnamed_addr #2
+
+; Function Attrs: noinline
+declare swiftcc { i64, i64 } @"$ss13_StringObjectV10sharedUTF8SRys5UInt8VGvg"(i64, ptr) local_unnamed_addr #4
+
+; Function Attrs: mustprogress nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+declare { i64, i1 } @llvm.smul.with.overflow.i64(i64, i64) #5
+
+; Function Attrs: mustprogress nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+declare { i64, i1 } @llvm.ssub.with.overflow.i64(i64, i64) #5
+
+; Function Attrs: mustprogress nocallback nofree nosync nounwind willreturn memory(inaccessiblemem: write)
+declare void @llvm.assume(i1 noundef) #9
+
+declare extern_weak void @"_swift_FORCE_LOAD_$_swiftFoundation"()
+
+declare extern_weak void @"_swift_FORCE_LOAD_$_swift_Builtin_float"()
+
+declare extern_weak void @"_swift_FORCE_LOAD_$_swiftObjectiveC"()
+
+declare extern_weak void @"_swift_FORCE_LOAD_$_swiftCoreFoundation"()
+
+declare extern_weak void @"_swift_FORCE_LOAD_$_swiftDispatch"()
+
+declare extern_weak void @"_swift_FORCE_LOAD_$_swiftXPC"()
+
+declare extern_weak void @"_swift_FORCE_LOAD_$_swiftIOKit"()
+
+; Function Attrs: noinline
+define linkonce_odr hidden swiftcc ptr @"$ss12_ArrayBufferV20_consumeAndCreateNew14bufferIsUnique15minimumCapacity13growForAppendAByxGSb_SiSbtFs6UInt32V_Tg5"(i1 %0, i64 %1, i1 %2, ptr %3) local_unnamed_addr #4 {
+entry:
+  %4 = getelementptr inbounds nuw i8, ptr %3, i64 16
+  br i1 %2, label %5, label %14
+
+5:                                                ; preds = %entry
+  %._storage._capacityAndFlags = getelementptr inbounds nuw i8, ptr %3, i64 24
+  %6 = load i64, ptr %._storage._capacityAndFlags, align 8
+  %7 = lshr i64 %6, 1
+  %8 = icmp slt i64 %7, %1
+  br i1 %8, label %9, label %14
+
+9:                                                ; preds = %5
+  %10 = icmp slt i64 %6, 0
+  br i1 %10, label %odessy.chk, label %11, !prof !44
+
+11:                                               ; preds = %9
+  %12 = and i64 %6, 9223372036854775806
+  %13 = tail call i64 @llvm.umax.i64(i64 %12, i64 %1)
+  br label %14
+
+14:                                               ; preds = %11, %5, %entry
+  %15 = phi i64 [ %1, %entry ], [ %13, %11 ], [ %7, %5 ]
+  %16 = load i64, ptr %4, align 8, !range !43
+  %.4 = tail call i64 @llvm.smax.i64(i64 %15, i64 %16)
+  %17 = icmp eq i64 %.4, 0
+  br i1 %17, label %26, label %18
+
+18:                                               ; preds = %14
+  %19 = tail call ptr @__swift_instantiateConcreteTypeFromMangledNameV2(ptr nonnull @"$ss23_ContiguousArrayStorageCys6UInt32VGMd", ptr nonnull @"$ss23_ContiguousArrayStorageCys6UInt32VGMR") #20
+  %20 = shl i64 %.4, 2
+  %21 = add i64 %20, 32
+  %22 = tail call noalias ptr @swift_allocObject(ptr %19, i64 %21, i64 7) #2
+  %call.i = tail call i64 @malloc_size(ptr noundef %22) #21, !clang.arc.no_objc_arc_exceptions !41
+  %gepdiff = add nsw i64 %call.i, -32
+  %23 = sdiv i64 %gepdiff, 4
+  %24 = shl nsw i64 %23, 1
+  %25 = getelementptr inbounds nuw i8, ptr %22, i64 16
+  store i64 %16, ptr %25, align 8
+  %._storage3._capacityAndFlags = getelementptr inbounds nuw i8, ptr %22, i64 24
+  store i64 %24, ptr %._storage3._capacityAndFlags, align 8
+  br label %26
+
+26:                                               ; preds = %18, %14
+  %27 = phi ptr [ %22, %18 ], [ @_swiftEmptyArrayStorage, %14 ]
+  %28 = getelementptr inbounds nuw i8, ptr %27, i64 32
+  %29 = getelementptr inbounds nuw i8, ptr %3, i64 32
+  br i1 %0, label %30, label %35
+
+30:                                               ; preds = %26
+  %31 = getelementptr inbounds nuw [4 x i8], ptr %29, i64 %16
+  %32 = icmp ult ptr %28, %31
+  %.not = icmp eq ptr %27, %3
+  %or.cond9 = select i1 %.not, i1 %32, i1 false
+  br i1 %or.cond9, label %34, label %.sink.split
+
+.sink.split:                                      ; preds = %30
+  %33 = shl nuw i64 %16, 2
+  tail call void @llvm.memmove.p0.p0.i64(ptr nonnull align 4 %28, ptr nonnull align 4 %29, i64 %33, i1 false)
+  br label %34
+
+34:                                               ; preds = %.sink.split, %30
+  store i64 0, ptr %4, align 8
+  br label %37
+
+35:                                               ; preds = %26
+  %36 = shl nuw i64 %16, 2
+  tail call void @llvm.memcpy.p0.p0.i64(ptr nonnull align 4 %28, ptr nonnull align 4 %29, i64 %36, i1 false)
+  br label %37
+
+37:                                               ; preds = %35, %34
+  tail call void @swift_bridgeObjectRelease(ptr nonnull %3) #2
+  ret ptr %27
+
+odessy.chk:                                       ; preds = %9
+  tail call void @odessy.chk(i32 28)
+  unreachable
+}
+
+; Function Attrs: mustprogress nocallback nofree nounwind willreturn memory(argmem: readwrite)
+declare void @llvm.memcpy.p0.p0.i64(ptr noalias writeonly captures(none), ptr noalias readonly captures(none), i64, i1 immarg) #10
+
+; Function Attrs: mustprogress nocallback nofree nounwind willreturn memory(argmem: readwrite)
+declare void @llvm.memmove.p0.p0.i64(ptr writeonly captures(none), ptr readonly captures(none), i64, i1 immarg) #10
+
+declare swiftcc %swift.metadata_response @"$s10Foundation4DataV8IteratorVMa"(i64) local_unnamed_addr #0
+
+define linkonce_odr hidden swiftcc { i64, i8 } @"$ss13_parseInteger5ascii5radixq_Sgx_SitSyRzs010FixedWidthB0R_r0_lFADSRys5UInt8VGXEfU_SS_SiTg5"(i64 %0, i64 %1, i64 %2, ptr swiftself %3, ptr noalias swifterror captures(none) dereferenceable(8) %4) local_unnamed_addr #0 {
+entry:
+  %5 = inttoptr i64 %0 to ptr
+  %6 = load i8, ptr %5, align 1
+  switch i8 %6, label %51 [
+    i8 45, label %7
+    i8 43, label %90
+  ]
+
+7:                                                ; preds = %entry
+  %8 = icmp slt i64 %1, 1
+  br i1 %8, label %odessy.chk1, label %9, !prof !44
+
+9:                                                ; preds = %7
+  %10 = icmp eq i64 %1, 1
+  br i1 %10, label %.loopexit, label %11, !prof !44
+
+11:                                               ; preds = %9
+  %12 = icmp slt i64 %2, 11
+  %13 = trunc i64 %2 to i8
+  %14 = add i8 %13, 55
+  %15 = add i8 %13, 87
+  %16 = add i8 %13, 48
+  %17 = select i1 %12, i8 97, i8 %15
+  %18 = select i1 %12, i8 65, i8 %14
+  %19 = select i1 %12, i8 %16, i8 58
+  %20 = getelementptr inbounds nuw i8, ptr %5, i64 1
+  %21 = getelementptr i8, ptr %5, i64 %1
+  br label %22
+
+22:                                               ; preds = %37, %11
+  %23 = phi ptr [ %20, %11 ], [ %39, %37 ]
+  %24 = phi i64 [ 0, %11 ], [ %38, %37 ]
+  %25 = load i8, ptr %23, align 1
+  %26 = icmp ugt i8 %25, 47
+  %27 = icmp ult i8 %25, %19
+  %or.cond = select i1 %26, i1 %27, i1 false
+  br i1 %or.cond, label %28, label %41, !prof !47
+
+28:                                               ; preds = %44, %41, %22
+  %.sink = phi i8 [ -55, %41 ], [ -87, %44 ], [ -48, %22 ]
+  %29 = tail call { i64, i1 } @llvm.smul.with.overflow.i64(i64 %24, i64 %2)
+  %30 = extractvalue { i64, i1 } %29, 1
+  br i1 %30, label %.loopexit, label %31
+
+31:                                               ; preds = %28
+  %32 = add i8 %.sink, %25
+  %33 = extractvalue { i64, i1 } %29, 0
+  %34 = zext i8 %32 to i64
+  %35 = tail call { i64, i1 } @llvm.ssub.with.overflow.i64(i64 %33, i64 %34)
+  %36 = extractvalue { i64, i1 } %35, 1
+  br i1 %36, label %.loopexit, label %37, !prof !44
+
+37:                                               ; preds = %31
+  %38 = extractvalue { i64, i1 } %35, 0
+  %39 = getelementptr inbounds nuw i8, ptr %23, i64 1
+  %40 = icmp eq ptr %39, %21
+  br i1 %40, label %.loopexit, label %22
+
+41:                                               ; preds = %22
+  %42 = icmp ugt i8 %25, 64
+  %43 = icmp ult i8 %25, %18
+  %or.cond4 = select i1 %42, i1 %43, i1 false
+  br i1 %or.cond4, label %28, label %44, !prof !47
+
+44:                                               ; preds = %41
+  %45 = icmp ugt i8 %25, 96
+  %46 = icmp ult i8 %25, %17
+  %or.cond5 = select i1 %45, i1 %46, i1 false
+  br i1 %or.cond5, label %28, label %.loopexit, !prof !47
+
+.loopexit:                                        ; preds = %127, %120, %114, %111, %44, %37, %31, %28, %87, %80, %74, %71, %92, %53, %51, %9
+  %47 = phi i64 [ 0, %9 ], [ 0, %51 ], [ 0, %53 ], [ 0, %92 ], [ 0, %44 ], [ 0, %87 ], [ 0, %71 ], [ 0, %74 ], [ %81, %80 ], [ 0, %28 ], [ 0, %31 ], [ %38, %37 ], [ 0, %111 ], [ 0, %114 ], [ %121, %120 ], [ 0, %127 ]
+  %48 = phi i8 [ 1, %9 ], [ 1, %51 ], [ 0, %53 ], [ 1, %92 ], [ 1, %44 ], [ 1, %87 ], [ 1, %71 ], [ 1, %74 ], [ 0, %80 ], [ 1, %28 ], [ 1, %31 ], [ 0, %37 ], [ 1, %111 ], [ 1, %114 ], [ 0, %120 ], [ 1, %127 ]
+  %49 = insertvalue { i64, i8 } undef, i64 %47, 0
+  %50 = insertvalue { i64, i8 } %49, i8 %48, 1
+  ret { i64, i8 } %50
+
+51:                                               ; preds = %entry
+  %52 = icmp eq i64 %1, 0
+  br i1 %52, label %.loopexit, label %53, !prof !44
+
+53:                                               ; preds = %51
+  %54 = icmp slt i64 %2, 11
+  %55 = trunc i64 %2 to i8
+  %56 = add i8 %55, 55
+  %57 = add i8 %55, 87
+  %58 = add i8 %55, 48
+  %59 = select i1 %54, i8 97, i8 %57
+  %60 = select i1 %54, i8 65, i8 %56
+  %61 = select i1 %54, i8 %58, i8 58
+  %62 = icmp eq i64 %0, 0
+  br i1 %62, label %.loopexit, label %63
+
+63:                                               ; preds = %53
+  %64 = getelementptr inbounds i8, ptr %5, i64 %1
+  br label %65
+
+65:                                               ; preds = %80, %63
+  %66 = phi ptr [ %5, %63 ], [ %82, %80 ]
+  %67 = phi i64 [ 0, %63 ], [ %81, %80 ]
+  %68 = load i8, ptr %66, align 1
+  %69 = icmp ugt i8 %68, 47
+  %70 = icmp ult i8 %68, %61
+  %or.cond6 = select i1 %69, i1 %70, i1 false
+  br i1 %or.cond6, label %71, label %84, !prof !47
+
+71:                                               ; preds = %87, %84, %65
+  %.sink55 = phi i8 [ -55, %84 ], [ -87, %87 ], [ -48, %65 ]
+  %72 = tail call { i64, i1 } @llvm.smul.with.overflow.i64(i64 %67, i64 %2)
+  %73 = extractvalue { i64, i1 } %72, 1
+  br i1 %73, label %.loopexit, label %74
+
+74:                                               ; preds = %71
+  %75 = add i8 %.sink55, %68
+  %76 = extractvalue { i64, i1 } %72, 0
+  %77 = zext i8 %75 to i64
+  %78 = tail call { i64, i1 } @llvm.sadd.with.overflow.i64(i64 %76, i64 %77)
+  %79 = extractvalue { i64, i1 } %78, 1
+  br i1 %79, label %.loopexit, label %80, !prof !44
+
+80:                                               ; preds = %74
+  %81 = extractvalue { i64, i1 } %78, 0
+  %82 = getelementptr inbounds nuw i8, ptr %66, i64 1
+  %83 = icmp eq ptr %82, %64
+  br i1 %83, label %.loopexit, label %65
+
+84:                                               ; preds = %65
+  %85 = icmp ugt i8 %68, 64
+  %86 = icmp ult i8 %68, %60
+  %or.cond7 = select i1 %85, i1 %86, i1 false
+  br i1 %or.cond7, label %71, label %87, !prof !47
+
+87:                                               ; preds = %84
+  %88 = icmp ugt i8 %68, 96
+  %89 = icmp ult i8 %68, %59
+  %or.cond8 = select i1 %88, i1 %89, i1 false
+  br i1 %or.cond8, label %71, label %.loopexit, !prof !47
+
+90:                                               ; preds = %entry
+  %91 = icmp slt i64 %1, 1
+  br i1 %91, label %odessy.chk, label %92, !prof !44
+
+92:                                               ; preds = %90
+  %93 = icmp eq i64 %1, 1
+  br i1 %93, label %.loopexit, label %94, !prof !44
+
+94:                                               ; preds = %92
+  %95 = icmp slt i64 %2, 11
+  %96 = trunc i64 %2 to i8
+  %97 = add i8 %96, 55
+  %98 = add i8 %96, 87
+  %99 = add i8 %96, 48
+  %100 = select i1 %95, i8 97, i8 %98
+  %101 = select i1 %95, i8 65, i8 %97
+  %102 = select i1 %95, i8 %99, i8 58
+  %103 = getelementptr inbounds nuw i8, ptr %5, i64 1
+  %104 = getelementptr i8, ptr %5, i64 %1
+  br label %105
+
+105:                                              ; preds = %120, %94
+  %106 = phi ptr [ %103, %94 ], [ %122, %120 ]
+  %107 = phi i64 [ 0, %94 ], [ %121, %120 ]
+  %108 = load i8, ptr %106, align 1
+  %109 = icmp ugt i8 %108, 47
+  %110 = icmp ult i8 %108, %102
+  %or.cond9 = select i1 %109, i1 %110, i1 false
+  br i1 %or.cond9, label %111, label %124, !prof !47
+
+111:                                              ; preds = %127, %124, %105
+  %.sink56 = phi i8 [ -55, %124 ], [ -87, %127 ], [ -48, %105 ]
+  %112 = tail call { i64, i1 } @llvm.smul.with.overflow.i64(i64 %107, i64 %2)
+  %113 = extractvalue { i64, i1 } %112, 1
+  br i1 %113, label %.loopexit, label %114
+
+114:                                              ; preds = %111
+  %115 = add i8 %.sink56, %108
+  %116 = extractvalue { i64, i1 } %112, 0
+  %117 = zext i8 %115 to i64
+  %118 = tail call { i64, i1 } @llvm.sadd.with.overflow.i64(i64 %116, i64 %117)
+  %119 = extractvalue { i64, i1 } %118, 1
+  br i1 %119, label %.loopexit, label %120, !prof !44
+
+120:                                              ; preds = %114
+  %121 = extractvalue { i64, i1 } %118, 0
+  %122 = getelementptr inbounds nuw i8, ptr %106, i64 1
+  %123 = icmp eq ptr %122, %104
+  br i1 %123, label %.loopexit, label %105
+
+124:                                              ; preds = %105
+  %125 = icmp ugt i8 %108, 64
+  %126 = icmp ult i8 %108, %101
+  %or.cond10 = select i1 %125, i1 %126, i1 false
+  br i1 %or.cond10, label %111, label %127, !prof !47
+
+127:                                              ; preds = %124
+  %128 = icmp ugt i8 %108, 96
+  %129 = icmp ult i8 %108, %100
+  %or.cond11 = select i1 %128, i1 %129, i1 false
+  br i1 %or.cond11, label %111, label %.loopexit, !prof !47
+
+odessy.chk:                                       ; preds = %90
+  tail call void @odessy.chk(i32 29)
+  unreachable
+
+odessy.chk1:                                      ; preds = %7
+  tail call void @odessy.chk(i32 30)
+  unreachable
+}
+
+; Function Attrs: noinline
+define linkonce_odr hidden swiftcc { i64, ptr } @"$sSS8_copyingyS2SFZ"(i64 %0, ptr %1) local_unnamed_addr #4 {
+entry:
+  %2 = ptrtoint ptr %1 to i64
+  %3 = and i64 %2, 2305843009213693952
+  %.not.i = icmp eq i64 %3, 0
+  %4 = and i64 %0, 281474976710655
+  %5 = lshr i64 %2, 56
+  %6 = and i64 %5, 15
+  %7 = select i1 %.not.i, i64 %4, i64 %6
+  %8 = shl nuw i64 %7, 16
+  %9 = and i64 %2, 1152921504606846976
+  %10 = icmp eq i64 %9, 0
+  %11 = and i64 %0, 576460752303423488
+  %12 = icmp ne i64 %11, 0
+  %or.cond.i = select i1 %10, i1 true, i1 %12
+  %.v.i = select i1 %or.cond.i, i64 7, i64 11
+  %13 = or disjoint i64 %8, %.v.i
+  %14 = tail call swiftcc { i64, i64, i64, ptr } @"$sSSySsSnySS5IndexVGcig"(i64 15, i64 %13, i64 %0, ptr %1)
+  %15 = extractvalue { i64, i64, i64, ptr } %14, 0
+  %16 = extractvalue { i64, i64, i64, ptr } %14, 1
+  %17 = extractvalue { i64, i64, i64, ptr } %14, 2
+  %18 = extractvalue { i64, i64, i64, ptr } %14, 3
+  %19 = tail call swiftcc { i64, ptr } @"$sSS8_copyingySSSsFZ"(i64 %15, i64 %16, i64 %17, ptr %18)
+  tail call void @swift_bridgeObjectRelease(ptr %18) #2
+  ret { i64, ptr } %19
+}
+
+; Function Attrs: noinline
+define linkonce_odr hidden swiftcc { i64, ptr } @"$sSS8_copyingySSSsFZ"(i64 %0, i64 %1, i64 %2, ptr %3) local_unnamed_addr #4 {
+entry:
+  %4 = alloca %Ts16IndexingIteratorVySs8UTF8ViewVG, align 8
+  %5 = alloca <{ %Ts6UInt64V, %Ts6UInt64V }>, align 8
+  %6 = ptrtoint ptr %3 to i64
+  %7 = and i64 %6, 1152921504606846976
+  %8 = icmp eq i64 %7, 0
+  br i1 %8, label %26, label %9, !prof !45
+
+9:                                                ; preds = %entry
+  %10 = tail call swiftcc i64 @"$sSs8UTF8ViewV8distance4from2toSiSS5IndexV_AGtF"(i64 %0, i64 %1, i64 %0, i64 %1, i64 %2, ptr %3)
+  %11 = icmp eq i64 %10, 0
+  br i1 %11, label %._crit_edge, label %12
+
+12:                                               ; preds = %9
+  %13 = tail call swiftcc ptr @"$ss22_ContiguousArrayBufferV19_uninitializedCount15minimumCapacityAByxGSi_SitcfCs5UInt8V_Tt1gq5"(i64 %10, i64 0)
+  %14 = getelementptr inbounds nuw i8, ptr %13, i64 32
+  %15 = ptrtoint ptr %14 to i64
+  call void @llvm.lifetime.start.p0(ptr nonnull %4)
+  %16 = call swiftcc i64 @"$sSTsE21_copySequenceContents12initializing8IteratorQz_SitSry7ElementQzG_tFSs8UTF8ViewV_Tgq5"(ptr noalias nonnull captures(none) %4, i64 %15, i64 %10, i64 %0, i64 %1, i64 %2, ptr %3)
+  %._elements._slice._base._guts._object._object = getelementptr inbounds nuw i8, ptr %4, i64 24
+  %17 = load ptr, ptr %._elements._slice._base._guts._object._object, align 8
+  %18 = tail call ptr @swift_bridgeObjectRetain(ptr returned %3) #2
+  tail call void @swift_bridgeObjectRelease(ptr %17) #2
+  %.not = icmp eq i64 %16, %10
+  br i1 %.not, label %19, label %odessy.chk, !prof !45
+
+19:                                               ; preds = %12
+  call void @llvm.lifetime.end.p0(ptr nonnull %4)
+  br label %._crit_edge
+
+._crit_edge:                                      ; preds = %9, %19
+  %20 = phi ptr [ %13, %19 ], [ @_swiftEmptyArrayStorage, %9 ]
+  %21 = getelementptr inbounds nuw i8, ptr %20, i64 32
+  %22 = ptrtoint ptr %21 to i64
+  %23 = getelementptr inbounds nuw i8, ptr %20, i64 16
+  %24 = load i64, ptr %23, align 8, !range !43
+  %25 = tail call swiftcc { i64, ptr } @"$sSS18_uncheckedFromUTF8ySSSRys5UInt8VGFZ"(i64 %22, i64 %24), !noalias !53
+  tail call void @swift_release(ptr %20) #2
+  br label %53
+
+26:                                               ; preds = %entry
+  %27 = lshr i64 %0, 16
+  %28 = lshr i64 %1, 16
+  %29 = and i64 %6, 2305843009213693952
+  %.not4 = icmp eq i64 %29, 0
+  br i1 %.not4, label %30, label %46
+
+30:                                               ; preds = %26
+  %31 = and i64 %2, 1152921504606846976
+  %.not5 = icmp eq i64 %31, 0
+  br i1 %.not5, label %32, label %36, !prof !44
+
+32:                                               ; preds = %30
+  %33 = tail call swiftcc { i64, i64 } @"$ss13_StringObjectV10sharedUTF8SRys5UInt8VGvg"(i64 %2, ptr %3)
+  %34 = extractvalue { i64, i64 } %33, 0
+  %35 = icmp eq i64 %34, 0
+  br i1 %35, label %41, label %39
+
+36:                                               ; preds = %30
+  %37 = and i64 %6, 1152921504606846975
+  %38 = add nuw nsw i64 %37, 32
+  br label %39
+
+39:                                               ; preds = %36, %32
+  %.in = phi i64 [ %38, %36 ], [ %34, %32 ]
+  %40 = add nuw i64 %.in, %27
+  br label %41
+
+41:                                               ; preds = %39, %32
+  %42 = phi i64 [ %40, %39 ], [ 0, %32 ]
+  %43 = sub nsw i64 %28, %27
+  %44 = icmp sgt i64 %43, -1
+  tail call void @llvm.assume(i1 %44)
+  %45 = tail call swiftcc { i64, ptr } @"$sSS18_uncheckedFromUTF8ySSSRys5UInt8VGFZ"(i64 %42, i64 %43)
+  br label %53
+
+46:                                               ; preds = %26
+  call void @llvm.lifetime.start.p0(ptr nonnull %5)
+  %.elt1 = getelementptr inbounds nuw i8, ptr %5, i64 8
+  %47 = and i64 %6, 72057594037927935
+  store i64 %2, ptr %5, align 8
+  store i64 %47, ptr %.elt1, align 8
+  %48 = getelementptr inbounds nuw i8, ptr %5, i64 %27
+  %49 = ptrtoint ptr %48 to i64
+  %50 = sub nsw i64 %28, %27
+  %51 = icmp sgt i64 %50, -1
+  call void @llvm.assume(i1 %51)
+  %52 = call swiftcc { i64, ptr } @"$sSS18_uncheckedFromUTF8ySSSRys5UInt8VGFZ"(i64 %49, i64 %50)
+  call void @llvm.lifetime.end.p0(ptr nonnull %5)
+  br label %53
+
+53:                                               ; preds = %46, %41, %._crit_edge
+  %.merged = phi { i64, ptr } [ %25, %._crit_edge ], [ %45, %41 ], [ %52, %46 ]
+  ret { i64, ptr } %.merged
+
+odessy.chk:                                       ; preds = %12
+  tail call void @odessy.chk(i32 32)
+  unreachable
+}
+
+declare swiftcc i64 @"$sSs8UTF8ViewV8distance4from2toSiSS5IndexV_AGtF"(i64, i64, i64, i64, i64, ptr) local_unnamed_addr #0
+
+define linkonce_odr hidden swiftcc ptr @"$ss22_ContiguousArrayBufferV19_uninitializedCount15minimumCapacityAByxGSi_SitcfCs5UInt8V_Tt1gq5"(i64 %0, i64 %1) local_unnamed_addr #0 {
+entry:
+  %. = tail call i64 @llvm.smax.i64(i64 %1, i64 %0)
+  %2 = icmp eq i64 %., 0
+  br i1 %2, label %9, label %3
+
+3:                                                ; preds = %entry
+  %4 = tail call ptr @__swift_instantiateConcreteTypeFromMangledNameV2(ptr nonnull @"$ss23_ContiguousArrayStorageCys5UInt8VGMd", ptr nonnull @"$ss23_ContiguousArrayStorageCys5UInt8VGMR") #20
+  %5 = add i64 %., 32
+  %6 = tail call noalias ptr @swift_allocObject(ptr %4, i64 %5, i64 7) #2
+  %call.i = tail call i64 @malloc_size(ptr noundef %6) #21, !clang.arc.no_objc_arc_exceptions !41
+  %gepdiff = shl i64 %call.i, 1
+  %7 = add i64 %gepdiff, -64
+  %8 = getelementptr inbounds nuw i8, ptr %6, i64 16
+  store i64 %0, ptr %8, align 8
+  %._storage1._capacityAndFlags = getelementptr inbounds nuw i8, ptr %6, i64 24
+  store i64 %7, ptr %._storage1._capacityAndFlags, align 8
+  br label %9
+
+9:                                                ; preds = %3, %entry
+  %10 = phi ptr [ %6, %3 ], [ @_swiftEmptyArrayStorage, %entry ]
+  ret ptr %10
+}
+
+define linkonce_odr hidden swiftcc i64 @"$sSTsE21_copySequenceContents12initializing8IteratorQz_SitSry7ElementQzG_tFSs8UTF8ViewV_Tgq5"(ptr noalias captures(none) %0, i64 %1, i64 %2, i64 %3, i64 %4, i64 %5, ptr %6) local_unnamed_addr #0 {
+entry:
+  %7 = alloca <{ %Ts6UInt64V, %Ts6UInt64V }>, align 8
+  %.fr12 = freeze i64 %5
+  %.fr11 = freeze ptr %6
+  %8 = icmp eq i64 %1, 0
+  br i1 %8, label %.loopexit17, label %9
+
+9:                                                ; preds = %entry
+  %10 = inttoptr i64 %1 to ptr
+  %11 = icmp eq i64 %2, 0
+  br i1 %11, label %.loopexit17, label %12
+
+12:                                               ; preds = %9
+  %13 = icmp slt i64 %2, 0
+  %14 = lshr i64 %4, 14
+  br i1 %13, label %odessy.chk, label %15, !prof !44
+
+15:                                               ; preds = %12
+  %16 = lshr i64 %3, 14
+  %17 = icmp eq i64 %16, %14
+  br i1 %17, label %.loopexit17, label %18
+
+18:                                               ; preds = %15
+  %19 = ptrtoint ptr %.fr11 to i64
+  %20 = and i64 %19, 1152921504606846976
+  %21 = icmp eq i64 %20, 0
+  %22 = and i64 %.fr12, 576460752303423488
+  %23 = icmp ne i64 %22, 0
+  %24 = or i1 %21, %23
+  %25 = zext i1 %24 to i64
+  %26 = shl nuw nsw i64 4, %25
+  %27 = and i64 %19, 2305843009213693952
+  %.not12 = icmp eq i64 %27, 0
+  %.elt6 = getelementptr inbounds nuw i8, ptr %7, i64 8
+  %28 = and i64 %19, 72057594037927935
+  %29 = and i64 %.fr12, 1152921504606846976
+  %.not13 = icmp eq i64 %29, 0
+  %30 = and i64 %19, 1152921504606846975
+  %31 = add nuw nsw i64 %30, 32
+  %32 = and i64 %.fr12, 281474976710655
+  %33 = lshr i64 %19, 56
+  %34 = and i64 %33, 15
+  %35 = select i1 %.not12, i64 %32, i64 %34
+  br i1 %21, label %.split.us.split, label %.split
+
+.split.us.split:                                  ; preds = %18
+  br i1 %.not12, label %.split.us.split.split.us, label %.split.us.split.split
+
+.split.us.split.split.us:                         ; preds = %.split.us.split
+  br i1 %.not13, label %.split.us.split.split.us.split.us, label %.split.us.split.split.us.split, !prof !44
+
+.split.us.split.split.us.split.us:                ; preds = %.split.us.split.split.us, %65
+  %36 = phi ptr [ %67, %65 ], [ %10, %.split.us.split.split.us ]
+  %37 = phi i64 [ %60, %65 ], [ %3, %.split.us.split.split.us ]
+  %38 = phi i64 [ %66, %65 ], [ 1, %.split.us.split.split.us ]
+  %39 = and i64 %37, 12
+  %.not.us.us.us = icmp eq i64 %39, %26
+  br i1 %.not.us.us.us, label %40, label %42, !prof !44
+
+40:                                               ; preds = %.split.us.split.split.us.split.us
+  %41 = tail call swiftcc i64 @"$ss11_StringGutsV27_slowEnsureMatchingEncodingySS5IndexVAEF"(i64 %37, i64 %.fr12, ptr %.fr11)
+  br label %42
+
+42:                                               ; preds = %40, %.split.us.split.split.us.split.us
+  %43 = phi i64 [ %41, %40 ], [ %37, %.split.us.split.split.us.split.us ]
+  %44 = lshr i64 %43, 14
+  %45 = icmp samesign ult i64 %44, %16
+  %46 = icmp samesign uge i64 %44, %14
+  %47 = or i1 %45, %46
+  br i1 %47, label %odessy.chk1, label %48, !prof !44
+
+48:                                               ; preds = %42
+  %49 = tail call swiftcc { i64, i64 } @"$ss13_StringObjectV10sharedUTF8SRys5UInt8VGvg"(i64 %.fr12, ptr %.fr11)
+  %50 = extractvalue { i64, i64 } %49, 0
+  %51 = lshr i64 %43, 16
+  %52 = inttoptr i64 %50 to ptr
+  %53 = getelementptr inbounds nuw i8, ptr %52, i64 %51
+  %54 = load i8, ptr %53, align 1
+  br i1 %.not.us.us.us, label %55, label %57, !prof !44
+
+55:                                               ; preds = %48
+  %56 = tail call swiftcc i64 @"$ss11_StringGutsV27_slowEnsureMatchingEncodingySS5IndexVAEF"(i64 %37, i64 %.fr12, ptr %.fr11)
+  br label %57
+
+57:                                               ; preds = %55, %48
+  %58 = phi i64 [ %56, %55 ], [ %37, %48 ]
+  %59 = and i64 %58, -65536
+  %60 = add i64 %59, 65540
+  store i8 %54, ptr %36, align 1
+  %61 = icmp eq i64 %38, %2
+  br i1 %61, label %.loopexit17, label %62
+
+62:                                               ; preds = %57
+  %63 = lshr i64 %60, 14
+  %64 = icmp eq i64 %63, %14
+  br i1 %64, label %.loopexit17, label %65
+
+65:                                               ; preds = %62
+  %66 = add nuw i64 %38, 1
+  %67 = getelementptr inbounds nuw i8, ptr %36, i64 1
+  br label %.split.us.split.split.us.split.us
+
+.split.us.split.split.us.split:                   ; preds = %.split.us.split.split.us
+  %68 = inttoptr i64 %31 to ptr
+  br label %69
+
+69:                                               ; preds = %101, %.split.us.split.split.us.split
+  %70 = phi ptr [ %10, %.split.us.split.split.us.split ], [ %103, %101 ]
+  %71 = phi i64 [ %3, %.split.us.split.split.us.split ], [ %96, %101 ]
+  %72 = phi i64 [ 1, %.split.us.split.split.us.split ], [ %102, %101 ]
+  %73 = and i64 %71, 12
+  %.not.us.us = icmp eq i64 %73, %26
+  br i1 %.not.us.us, label %74, label %.thread, !prof !44
+
+74:                                               ; preds = %69
+  %75 = tail call swiftcc i64 @"$ss11_StringGutsV27_slowEnsureMatchingEncodingySS5IndexVAEF"(i64 %71, i64 %.fr12, ptr %.fr11)
+  %76 = lshr i64 %75, 14
+  %77 = icmp samesign ult i64 %76, %16
+  %78 = icmp samesign uge i64 %76, %14
+  %79 = or i1 %77, %78
+  br i1 %79, label %odessy.chk1, label %87, !prof !44
+
+.thread:                                          ; preds = %69
+  %80 = lshr i64 %71, 14
+  %81 = icmp samesign ult i64 %80, %16
+  %82 = icmp samesign uge i64 %80, %14
+  %83 = or i1 %81, %82
+  br i1 %83, label %odessy.chk1, label %.thread32, !prof !44
+
+.thread32:                                        ; preds = %.thread
+  %84 = lshr i64 %71, 16
+  %85 = getelementptr inbounds nuw i8, ptr %68, i64 %84
+  %86 = load i8, ptr %85, align 1
+  br label %92
+
+87:                                               ; preds = %74
+  %88 = lshr i64 %75, 16
+  %89 = getelementptr inbounds nuw i8, ptr %68, i64 %88
+  %90 = load i8, ptr %89, align 1
+  %91 = tail call swiftcc i64 @"$ss11_StringGutsV27_slowEnsureMatchingEncodingySS5IndexVAEF"(i64 %71, i64 %.fr12, ptr %.fr11)
+  br label %92
+
+92:                                               ; preds = %.thread32, %87
+  %93 = phi i8 [ %90, %87 ], [ %86, %.thread32 ]
+  %94 = phi i64 [ %91, %87 ], [ %71, %.thread32 ]
+  %95 = and i64 %94, -65536
+  %96 = add i64 %95, 65540
+  store i8 %93, ptr %70, align 1
+  %97 = icmp eq i64 %72, %2
+  br i1 %97, label %.loopexit17, label %98
+
+98:                                               ; preds = %92
+  %99 = lshr i64 %96, 14
+  %100 = icmp eq i64 %99, %14
+  br i1 %100, label %.loopexit17, label %101
+
+101:                                              ; preds = %98
+  %102 = add nuw i64 %72, 1
+  %103 = getelementptr inbounds nuw i8, ptr %70, i64 1
+  br label %69
+
+.split.us.split.split:                            ; preds = %.split.us.split, %130
+  %104 = phi ptr [ %132, %130 ], [ %10, %.split.us.split ]
+  %105 = phi i64 [ %125, %130 ], [ %3, %.split.us.split ]
+  %106 = phi i64 [ %131, %130 ], [ 1, %.split.us.split ]
+  %107 = and i64 %105, 12
+  %.not.us = icmp eq i64 %107, %26
+  br i1 %.not.us, label %108, label %110, !prof !44
+
+108:                                              ; preds = %.split.us.split.split
+  %109 = tail call swiftcc i64 @"$ss11_StringGutsV27_slowEnsureMatchingEncodingySS5IndexVAEF"(i64 %105, i64 %.fr12, ptr %.fr11)
+  br label %110
+
+110:                                              ; preds = %108, %.split.us.split.split
+  %111 = phi i64 [ %109, %108 ], [ %105, %.split.us.split.split ]
+  %112 = lshr i64 %111, 14
+  %113 = icmp samesign ult i64 %112, %16
+  %114 = icmp samesign uge i64 %112, %14
+  %115 = or i1 %113, %114
+  br i1 %115, label %odessy.chk1, label %116, !prof !44
+
+116:                                              ; preds = %110
+  call void @llvm.lifetime.start.p0(ptr nonnull %7)
+  store i64 %.fr12, ptr %7, align 8
+  store i64 %28, ptr %.elt6, align 8
+  %117 = lshr i64 %111, 16
+  %118 = getelementptr inbounds nuw i8, ptr %7, i64 %117
+  %119 = load i8, ptr %118, align 1
+  call void @llvm.lifetime.end.p0(ptr nonnull %7)
+  br i1 %.not.us, label %120, label %122, !prof !44
+
+120:                                              ; preds = %116
+  %121 = tail call swiftcc i64 @"$ss11_StringGutsV27_slowEnsureMatchingEncodingySS5IndexVAEF"(i64 %105, i64 %.fr12, ptr %.fr11)
+  br label %122
+
+122:                                              ; preds = %120, %116
+  %123 = phi i64 [ %121, %120 ], [ %105, %116 ]
+  %124 = and i64 %123, -65536
+  %125 = add i64 %124, 65540
+  store i8 %119, ptr %104, align 1
+  %126 = icmp eq i64 %106, %2
+  br i1 %126, label %.loopexit17, label %127
+
+127:                                              ; preds = %122
+  %128 = lshr i64 %125, 14
+  %129 = icmp eq i64 %128, %14
+  br i1 %129, label %.loopexit17, label %130
+
+130:                                              ; preds = %127
+  %131 = add nuw i64 %106, 1
+  %132 = getelementptr inbounds nuw i8, ptr %104, i64 1
+  br label %.split.us.split.split
+
+.split:                                           ; preds = %18, %158
+  %133 = phi ptr [ %160, %158 ], [ %10, %18 ]
+  %134 = phi i64 [ %153, %158 ], [ %3, %18 ]
+  %135 = phi i64 [ %159, %158 ], [ 1, %18 ]
+  %136 = and i64 %134, 12
+  %.not = icmp eq i64 %136, %26
+  br i1 %.not, label %137, label %139, !prof !44
+
+137:                                              ; preds = %.split
+  %138 = tail call swiftcc i64 @"$ss11_StringGutsV27_slowEnsureMatchingEncodingySS5IndexVAEF"(i64 %134, i64 %.fr12, ptr %.fr11)
+  br label %139
+
+139:                                              ; preds = %137, %.split
+  %140 = phi i64 [ %138, %137 ], [ %134, %.split ]
+  %141 = lshr i64 %140, 14
+  %142 = icmp samesign ult i64 %141, %16
+  %143 = icmp samesign uge i64 %141, %14
+  %144 = or i1 %142, %143
+  br i1 %144, label %odessy.chk1, label %145, !prof !44
+
+145:                                              ; preds = %139
+  %146 = tail call swiftcc i8 @"$sSS8UTF8ViewV17_foreignSubscript8positions5UInt8VSS5IndexV_tF"(i64 %140, i64 %.fr12, ptr %.fr11)
+  br i1 %.not, label %147, label %149, !prof !44
+
+147:                                              ; preds = %145
+  %148 = tail call swiftcc i64 @"$ss11_StringGutsV27_slowEnsureMatchingEncodingySS5IndexVAEF"(i64 %134, i64 %.fr12, ptr %.fr11)
+  br label %149
+
+149:                                              ; preds = %147, %145
+  %150 = phi i64 [ %148, %147 ], [ %134, %145 ]
+  %151 = lshr i64 %150, 16
+  %.not15 = icmp samesign ult i64 %151, %35
+  br i1 %.not15, label %152, label %odessy.chk2, !prof !45
+
+152:                                              ; preds = %149
+  %153 = tail call swiftcc i64 @"$sSS8UTF8ViewV13_foreignIndex5afterSS0D0VAF_tF"(i64 %150, i64 %.fr12, ptr %.fr11)
+  store i8 %146, ptr %133, align 1
+  %154 = icmp eq i64 %135, %2
+  br i1 %154, label %.loopexit17, label %155
+
+155:                                              ; preds = %152
+  %156 = lshr i64 %153, 14
+  %157 = icmp eq i64 %156, %14
+  br i1 %157, label %.loopexit17, label %158
+
+158:                                              ; preds = %155
+  %159 = add nuw i64 %135, 1
+  %160 = getelementptr inbounds nuw i8, ptr %133, i64 1
+  br label %.split
+
+.loopexit17:                                      ; preds = %152, %155, %122, %127, %98, %92, %62, %57, %15, %9, %entry
+  %.sink = phi i64 [ %3, %entry ], [ %3, %15 ], [ %3, %9 ], [ %125, %122 ], [ %96, %98 ], [ %60, %62 ], [ %60, %57 ], [ %96, %92 ], [ %125, %127 ], [ %153, %155 ], [ %153, %152 ]
+  %161 = phi i64 [ 0, %entry ], [ 0, %15 ], [ 0, %9 ], [ %2, %122 ], [ %72, %98 ], [ %38, %62 ], [ %2, %57 ], [ %2, %92 ], [ %106, %127 ], [ %2, %152 ], [ %135, %155 ]
+  store i64 %3, ptr %0, align 8
+  %._elements3._slice._endIndex = getelementptr inbounds nuw i8, ptr %0, i64 8
+  store i64 %4, ptr %._elements3._slice._endIndex, align 8
+  %._elements3._slice._base = getelementptr inbounds nuw i8, ptr %0, i64 16
+  store i64 %.fr12, ptr %._elements3._slice._base, align 8
+  %._elements3._slice._base._guts._object._object = getelementptr inbounds nuw i8, ptr %0, i64 24
+  store ptr %.fr11, ptr %._elements3._slice._base._guts._object._object, align 8
+  %._position4 = getelementptr inbounds nuw i8, ptr %0, i64 32
+  store i64 %.sink, ptr %._position4, align 8
+  ret i64 %161
+
+odessy.chk:                                       ; preds = %12
+  tail call void @odessy.chk(i32 33)
+  unreachable
+
+odessy.chk1:                                      ; preds = %139, %110, %74, %.thread, %42
+  tail call void @odessy.chk(i32 34)
+  unreachable
+
+odessy.chk2:                                      ; preds = %149
+  tail call void @odessy.chk(i32 35)
+  unreachable
+}
+
+; Function Attrs: noinline
+define linkonce_odr hidden swiftcc i64 @"$ss11_StringGutsV27_slowEnsureMatchingEncodingySS5IndexVAEF"(i64 %0, i64 %1, ptr %2) local_unnamed_addr #4 {
+entry:
+  %3 = ptrtoint ptr %2 to i64
+  %4 = and i64 %3, 1152921504606846976
+  %5 = icmp eq i64 %4, 0
+  %6 = and i64 %1, 576460752303423488
+  %7 = icmp ne i64 %6, 0
+  %or.cond = select i1 %5, i1 true, i1 %7
+  %8 = lshr i64 %0, 16
+  %9 = lshr i64 %0, 14
+  %10 = and i64 %9, 3
+  %.not3 = icmp eq i64 %10, 0
+  br i1 %or.cond, label %24, label %11
+
+11:                                               ; preds = %entry
+  %12 = tail call swiftcc i64 @"$sSS8UTF8ViewV13_foreignIndex_8offsetBySS0D0VAF_SitF"(i64 15, i64 %8, i64 %1, ptr %2)
+  br i1 %.not3, label %13, label %17
+
+13:                                               ; preds = %11
+  %14 = and i64 %12, -4
+  %15 = and i64 %0, 3
+  %16 = or disjoint i64 %14, %15
+  br label %21
+
+17:                                               ; preds = %11
+  %18 = shl nuw nsw i64 %10, 16
+  %19 = add i64 %12, %18
+  %20 = and i64 %19, -65536
+  br label %21
+
+21:                                               ; preds = %17, %13
+  %22 = phi i64 [ %16, %13 ], [ %20, %17 ]
+  %23 = or i64 %22, 8
+  br label %37
+
+24:                                               ; preds = %entry
+  %25 = tail call swiftcc i64 @"$sSS9UTF16ViewV5index_8offsetBySS5IndexVAF_SitF"(i64 15, i64 %8, i64 %1, ptr %2)
+  br i1 %.not3, label %26, label %30
+
+26:                                               ; preds = %24
+  %27 = and i64 %25, -4
+  %28 = and i64 %0, 3
+  %29 = or disjoint i64 %27, %28
+  br label %34
+
+30:                                               ; preds = %24
+  %31 = shl nuw nsw i64 %10, 16
+  %32 = add i64 %25, %31
+  %33 = and i64 %32, -65536
+  br label %34
+
+34:                                               ; preds = %30, %26
+  %35 = phi i64 [ %29, %26 ], [ %33, %30 ]
+  %36 = or i64 %35, 4
+  br label %37
+
+37:                                               ; preds = %34, %21
+  %38 = phi i64 [ %23, %21 ], [ %36, %34 ]
+  ret i64 %38
+}
+
+; Function Attrs: sspreq
+declare swiftcc i64 @"$s10Foundation4DataV13_copyContents12initializingAC8IteratorV_SitSrys5UInt8VG_tF"(ptr noalias, i64, i64, i64, i64) local_unnamed_addr #11
+
+; Function Attrs: noinline nounwind
+define linkonce_odr hidden void @"$s10Foundation4DataV15_RepresentationOWOe"(i64 %0, i64 %1) local_unnamed_addr #12 {
+entry:
+  %2 = lshr i64 %1, 62
+  %3 = trunc nuw nsw i64 %2 to i8
+  switch i8 %3, label %7 [
+    i8 1, label %.sink.split
+    i8 2, label %4
+  ]
+
+4:                                                ; preds = %entry
+  %5 = inttoptr i64 %0 to ptr
+  tail call void @swift_release(ptr %5) #2
+  br label %.sink.split
+
+.sink.split:                                      ; preds = %4, %entry
+  %.sink1 = and i64 %1, 4611686018427387903
+  %6 = inttoptr i64 %.sink1 to ptr
+  tail call void @swift_release(ptr %6) #2
+  br label %7
+
+7:                                                ; preds = %.sink.split, %entry
+  ret void
+}
+
+; Function Attrs: mustprogress nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+declare { i32, i1 } @llvm.ssub.with.overflow.i32(i32, i32) #5
+
+declare swiftcc { i64, ptr } @"$sSSySSxcs25LosslessStringConvertibleRzSTRzSJ7ElementSTRtzlufC"(ptr noalias, ptr, ptr, ptr) local_unnamed_addr #0
+
+; Function Attrs: nounwind
+declare void @swift_errorRelease(ptr) local_unnamed_addr #2
+
+declare swiftcc { i64, ptr } @"$sSS18_uncheckedFromUTF8ySSSRys5UInt8VGFZ"(i64, i64) local_unnamed_addr #0
+
+; Function Attrs: noinline
+declare swiftcc i8 @"$sSS8UTF8ViewV17_foreignSubscript8positions5UInt8VSS5IndexV_tF"(i64, i64, ptr) local_unnamed_addr #4
+
+; Function Attrs: noinline
+declare swiftcc i64 @"$sSS8UTF8ViewV13_foreignIndex5afterSS0D0VAF_tF"(i64, i64, ptr) local_unnamed_addr #4
+
+; Function Attrs: noinline
+declare swiftcc i64 @"$sSS8UTF8ViewV13_foreignIndex_8offsetBySS0D0VAF_SitF"(i64, i64, i64, ptr) local_unnamed_addr #4
+
+declare swiftcc i64 @"$sSS9UTF16ViewV5index_8offsetBySS5IndexVAF_SitF"(i64, i64, i64, ptr) local_unnamed_addr #0
+
+declare swiftcc { i64, i64, i64, ptr } @"$sSSySsSnySS5IndexVGcig"(i64, i64, i64, ptr) local_unnamed_addr #0
+
+; Function Attrs: optsize
+declare i64 @malloc_size(ptr noundef) local_unnamed_addr #13
+
+; Function Attrs: mustprogress nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+declare i64 @llvm.smax.i64(i64, i64) #5
+
+; Function Attrs: mustprogress nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+declare i64 @llvm.umax.i64(i64, i64) #5
+
+; Function Attrs: mustprogress nocallback nofree nounwind willreturn memory(argmem: write)
+declare void @llvm.memset.p0.i64(ptr writeonly captures(none), i8, i64, i1 immarg) #14
+
+; Function Attrs: mustprogress nocallback nofree nosync nounwind willreturn memory(argmem: readwrite)
+declare void @llvm.lifetime.start.p0(ptr captures(none)) #15
+
+; Function Attrs: mustprogress nocallback nofree nosync nounwind willreturn memory(argmem: readwrite)
+declare void @llvm.lifetime.end.p0(ptr captures(none)) #15
+
+; Function Attrs: cold noreturn nounwind
+declare void @odessy.chk(i32) local_unnamed_addr #16
+
+; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+declare i64 @llvm.umin.i64(i64, i64) #17
+
+attributes #0 = { "frame-pointer"="non-leaf" "no-trapping-math"="true" "probe-stack"="__chkstk_darwin" "stack-protector-buffer-size"="8" "target-cpu"="apple-m1" "target-features"="+aes,+altnzcv,+bti,+ccdp,+ccidx,+ccpp,+complxnum,+crc,+dit,+dotprod,+flagm,+fp-armv8,+fp16fml,+fptoint,+fullfp16,+jsconv,+lse,+neon,+pauth,+perfmon,+predres,+ras,+rcpc,+rdm,+sb,+sha2,+sha3,+specrestrict,+ssbs,+v8.1a,+v8.2a,+v8.3a,+v8.4a,+v8.5a,+v8a" }
+attributes #1 = { cold noreturn nounwind memory(inaccessiblemem: write) }
+attributes #2 = { nounwind }
+attributes #3 = { nounwind "frame-pointer"="non-leaf" "no-trapping-math"="true" "probe-stack"="__chkstk_darwin" "stack-protector-buffer-size"="8" "target-cpu"="apple-m1" "target-features"="+aes,+altnzcv,+bti,+ccdp,+ccidx,+ccpp,+complxnum,+crc,+dit,+dotprod,+flagm,+fp-armv8,+fp16fml,+fptoint,+fullfp16,+jsconv,+lse,+neon,+pauth,+perfmon,+predres,+ras,+rcpc,+rdm,+sb,+sha2,+sha3,+specrestrict,+ssbs,+v8.1a,+v8.2a,+v8.3a,+v8.4a,+v8.5a,+v8a" }
+attributes #4 = { noinline "frame-pointer"="non-leaf" "no-trapping-math"="true" "probe-stack"="__chkstk_darwin" "stack-protector-buffer-size"="8" "target-cpu"="apple-m1" "target-features"="+aes,+altnzcv,+bti,+ccdp,+ccidx,+ccpp,+complxnum,+crc,+dit,+dotprod,+flagm,+fp-armv8,+fp16fml,+fptoint,+fullfp16,+jsconv,+lse,+neon,+pauth,+perfmon,+predres,+ras,+rcpc,+rdm,+sb,+sha2,+sha3,+specrestrict,+ssbs,+v8.1a,+v8.2a,+v8.3a,+v8.4a,+v8.5a,+v8a" }
+attributes #5 = { mustprogress nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none) }
+attributes #6 = { mustprogress nounwind willreturn }
+attributes #7 = { mustprogress nofree noinline nounwind willreturn memory(read) "frame-pointer"="non-leaf" "no-trapping-math"="true" "probe-stack"="__chkstk_darwin" "stack-protector-buffer-size"="8" "target-cpu"="apple-m1" "target-features"="+aes,+altnzcv,+bti,+ccdp,+ccidx,+ccpp,+complxnum,+crc,+dit,+dotprod,+flagm,+fp-armv8,+fp16fml,+fptoint,+fullfp16,+jsconv,+lse,+neon,+pauth,+perfmon,+predres,+ras,+rcpc,+rdm,+sb,+sha2,+sha3,+specrestrict,+ssbs,+v8.1a,+v8.2a,+v8.3a,+v8.4a,+v8.5a,+v8a" }
+attributes #8 = { nounwind memory(argmem: readwrite) }
+attributes #9 = { mustprogress nocallback nofree nosync nounwind willreturn memory(inaccessiblemem: write) }
+attributes #10 = { mustprogress nocallback nofree nounwind willreturn memory(argmem: readwrite) }
+attributes #11 = { sspreq "frame-pointer"="non-leaf" "no-trapping-math"="true" "probe-stack"="__chkstk_darwin" "stack-protector-buffer-size"="8" "target-cpu"="apple-m1" "target-features"="+aes,+altnzcv,+bti,+ccdp,+ccidx,+ccpp,+complxnum,+crc,+dit,+dotprod,+flagm,+fp-armv8,+fp16fml,+fptoint,+fullfp16,+jsconv,+lse,+neon,+pauth,+perfmon,+predres,+ras,+rcpc,+rdm,+sb,+sha2,+sha3,+specrestrict,+ssbs,+v8.1a,+v8.2a,+v8.3a,+v8.4a,+v8.5a,+v8a" }
+attributes #12 = { noinline nounwind "frame-pointer"="non-leaf" "no-trapping-math"="true" "probe-stack"="__chkstk_darwin" "stack-protector-buffer-size"="8" "target-cpu"="apple-m1" "target-features"="+aes,+altnzcv,+bti,+ccdp,+ccidx,+ccpp,+complxnum,+crc,+dit,+dotprod,+flagm,+fp-armv8,+fp16fml,+fptoint,+fullfp16,+jsconv,+lse,+neon,+pauth,+perfmon,+predres,+ras,+rcpc,+rdm,+sb,+sha2,+sha3,+specrestrict,+ssbs,+v8.1a,+v8.2a,+v8.3a,+v8.4a,+v8.5a,+v8a" }
+attributes #13 = { optsize "frame-pointer"="non-leaf" "no-trapping-math"="true" "probe-stack"="__chkstk_darwin" "stack-protector-buffer-size"="8" "target-cpu"="apple-m1" "target-features"="+aes,+altnzcv,+bti,+ccdp,+ccidx,+ccpp,+complxnum,+crc,+dit,+dotprod,+flagm,+fp-armv8,+fp16fml,+fptoint,+fullfp16,+jsconv,+lse,+neon,+pauth,+perfmon,+predres,+ras,+rcpc,+rdm,+sb,+sha2,+sha3,+specrestrict,+ssbs,+v8.1a,+v8.2a,+v8.3a,+v8.4a,+v8.5a,+v8a" }
+attributes #14 = { mustprogress nocallback nofree nounwind willreturn memory(argmem: write) }
+attributes #15 = { mustprogress nocallback nofree nosync nounwind willreturn memory(argmem: readwrite) }
+attributes #16 = { cold noreturn nounwind }
+attributes #17 = { nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none) }
+attributes #18 = { nounwind memory(none) }
+attributes #19 = { nounwind willreturn }
+attributes #20 = { nounwind memory(read) }
+attributes #21 = { optsize }
+attributes #22 = { nounwind memory(argmem: read) }
+
+!llvm.module.flags = !{!0, !1, !2, !3, !4, !5, !6, !7, !8, !9, !10, !11, !12, !13, !14}
+!swift.module.flags = !{!15}
+!llvm.linker.options = !{!16, !17, !18, !19, !20, !21, !22, !23, !24, !25, !26, !27, !28, !29, !30, !31, !32, !33, !34, !35, !36, !37, !38, !39, !40}
+
+!0 = !{i32 2, !"SDK Version", [2 x i32] [i32 26, i32 5]}
+!1 = !{i32 1, !"Objective-C Version", i32 2}
+!2 = !{i32 1, !"Objective-C Image Info Version", i32 0}
+!3 = !{i32 1, !"Objective-C Image Info Section", !"__DATA,__objc_imageinfo,regular,no_dead_strip"}
+!4 = !{i32 1, !"Objective-C Garbage Collection", i8 0}
+!5 = !{i32 1, !"Objective-C Class Properties", i32 64}
+!6 = !{i32 1, !"Objective-C Enforce ClassRO Pointer Signing", i8 0}
+!7 = !{i32 1, !"wchar_size", i32 4}
+!8 = !{i32 8, !"PIC Level", i32 2}
+!9 = !{i32 7, !"uwtable", i32 1}
+!10 = !{i32 7, !"frame-pointer", i32 1}
+!11 = !{i32 1, !"Swift Version", i32 7}
+!12 = !{i32 1, !"Swift ABI Version", i32 7}
+!13 = !{i32 1, !"Swift Major Version", i8 6}
+!14 = !{i32 1, !"Swift Minor Version", i8 3}
+!15 = !{!"standard-library", i1 false}
+!16 = !{!"-lswiftFoundation"}
+!17 = !{!"-framework", !"Foundation"}
+!18 = !{!"-lswiftCore"}
+!19 = !{!"-lswift_DarwinFoundation3"}
+!20 = !{!"-lswift_DarwinFoundation1"}
+!21 = !{!"-lswift_DarwinFoundation2"}
+!22 = !{!"-lswift_StringProcessing"}
+!23 = !{!"-lswift_Concurrency"}
+!24 = !{!"-lswiftSystem"}
+!25 = !{!"-lswiftDarwin"}
+!26 = !{!"-lswift_Builtin_float"}
+!27 = !{!"-lswiftObservation"}
+!28 = !{!"-lswiftObjectiveC"}
+!29 = !{!"-lswiftCoreFoundation"}
+!30 = !{!"-framework", !"CoreFoundation"}
+!31 = !{!"-lswiftDispatch"}
+!32 = !{!"-framework", !"Combine"}
+!33 = !{!"-framework", !"CoreServices"}
+!34 = !{!"-framework", !"Security"}
+!35 = !{!"-lswiftXPC"}
+!36 = !{!"-framework", !"CFNetwork"}
+!37 = !{!"-framework", !"DiskArbitration"}
+!38 = !{!"-lswiftIOKit"}
+!39 = !{!"-framework", !"IOKit"}
+!40 = !{!"-lobjc"}
+!41 = !{}
+!42 = !{i64 88}
+!43 = !{i64 0, i64 9223372036854775807}
+!44 = !{!"branch_weights", !"expected", i32 1, i32 2000}
+!45 = !{!"branch_weights", !"expected", i32 2000, i32 1}
+!46 = !{!"branch_weights", i32 4000000, i32 2001, i32 2000}
+!47 = !{!"branch_weights", i32 2000, i32 2002}
+!48 = distinct !{!48, !49, !50}
+!49 = !{!"llvm.loop.isvectorized", i32 1}
+!50 = !{!"llvm.loop.unroll.runtime.disable"}
+!51 = distinct !{!51, !50, !49}
+!52 = !{!"branch_weights", i32 1999, i32 1}
+!53 = !{!54}
+!54 = distinct !{!54, !55, !"$sSS8_copyingySSSsFZSSSRys5UInt8VGXEfU0_: argument 0"}
+!55 = distinct !{!55, !"$sSS8_copyingySSSsFZSSSRys5UInt8VGXEfU0_"}

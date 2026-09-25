@@ -161,6 +161,11 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
     // counting surviving ids measures what LLVM itself can prove given the
     // synthesized guard. Semantics are unchanged: the check still traps.
     bool MVNoFold = false;
+    // tag-checks (experiment, HANDOFF §10.59): run discovery ONLY, redirect
+    // every discovered trap edge to its own block calling `odessy.chk(i32 id)`
+    // (ids in discovery order), then stop. Gives every check a stable identity
+    // across competing pipelines (ODeSSy, LLVM -O3, IRCE). Semantics unchanged.
+    bool TagChecks = false;
 
     OraclePass() = default;
     OraclePass(bool Vacuity, bool Heavy, unsigned TimeoutMs, unsigned NThreads,
@@ -168,12 +173,12 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
                bool Frame = false, bool MV = false, unsigned MVSane = 62,
                bool T3 = false, unsigned Profile = 0, bool Narrow = false,
                unsigned NBits = 16, bool Ind = false, bool NoPI = false,
-               bool NoFold = false)
+               bool NoFold = false, bool Tag = false)
         : VacuityCheck(Vacuity), HeavyMode(Heavy), QueryTimeoutMs(TimeoutMs),
           Threads(NThreads), LoadEq(LdEq), TrapCallees(std::move(Traps)),
           FrameMode(Frame), MultiVersion(MV), MVT3(T3), MVSaneExp(MVSane),
           ProfileMs(Profile), NarrowMul(Narrow), NarrowBits(NBits),
-          Inductive(Ind), NoPhiInv(NoPI), MVNoFold(NoFold) {}
+          Inductive(Ind), NoPhiInv(NoPI), MVNoFold(NoFold), TagChecks(Tag) {}
 
     PreservedAnalyses run(Module &M, ModuleAnalysisManager &MAM) {
         auto &FAM =
@@ -264,7 +269,7 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
                << (FrameMode ? " [frame]" : "")
                << (MultiVersion ? (MVT3 ? " [mv]" : " [mv-light]") : "")
                << (NarrowMul ? " [narrow]" : "") << (Inductive ? " [ind]" : "") << (NoPhiInv ? " [nophiinv]" : "")
-               << (MVNoFold ? " [mv-nofold]" : "");
+               << (MVNoFold ? " [mv-nofold]" : "") << (TagChecks ? " [tag-checks]" : "");
         if (!TrapCallees.empty()) {
             errs() << " [traps=";
             for (size_t i = 0; i < TrapCallees.size(); ++i)
@@ -272,6 +277,31 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
             errs() << "]";
         }
         errs() << "\n";
+
+        if (TagChecks) {
+            LLVMContext &Ctx = M.getContext();
+            FunctionCallee CK = M.getOrInsertFunction(
+                "odessy.chk", FunctionType::get(Type::getVoidTy(Ctx), {Type::getInt32Ty(Ctx)}, false));
+            if (auto *CKF = dyn_cast<Function>(CK.getCallee())) {
+                CKF->addFnAttr(Attribute::NoReturn); CKF->addFnAttr(Attribute::NoUnwind);
+                CKF->addFnAttr(Attribute::Cold);
+            }
+            SmallPtrSet<BranchInst *, 32> Done; unsigned Id = 0;
+            for (odessy::TrapJob &J : Jobs) {
+                BranchInst *Br = J.Br;
+                if (!Br || !Br->isConditional() || !Done.insert(Br).second) continue;
+                unsigned TI = J.TrapOnTrue ? 0 : 1;
+                BasicBlock *OldTrap = Br->getSuccessor(TI);
+                BasicBlock *TB = BasicBlock::Create(Ctx, "odessy.chk", Br->getFunction());
+                IRBuilder<> B(TB);
+                B.CreateCall(CK, {B.getInt32(Id++)});
+                B.CreateUnreachable();
+                OldTrap->removePredecessor(Br->getParent());
+                Br->setSuccessor(TI, TB);
+            }
+            errs() << "[ODeSSy] tag-checks: " << Id << " check(s) tagged odessy.chk(0.." << (Id ? Id - 1 : 0) << ")\n";
+            return PreservedAnalyses::none();
+        }
 
         // =============================================================
         // STAGE 2: parallel solve (workers; IR read-only; verdicts only)
@@ -501,8 +531,13 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
                             }
                             BasicBlock *TB = BasicBlock::Create(Ctx, "odessy.fasttrap", F);
                             IRBuilder<> B(TB);
+                            long OrigChk = -1;   // tagged input: which odessy.chk this copy belongs to
+                            for (Instruction &I : *OldTrap)
+                                if (auto *CI = dyn_cast<CallInst>(&I))
+                                    if (Function *Cal = CI->getCalledFunction(); Cal && Cal->getName() == "odessy.chk")
+                                        if (auto *K = dyn_cast<ConstantInt>(CI->getArgOperand(0))) OrigChk = (long)K->getZExtValue();
                             OS << "    -> [mv-nofold] fast-trap id " << FastTrapId
-                               << " (check kept in the H-guarded fast copy)\n";
+                               << " (check kept in the H-guarded fast copy) chk " << OrigChk << "\n";
                             B.CreateCall(FT, {B.getInt32(FastTrapId++)});
                             B.CreateUnreachable();
                             OldTrap->removePredecessor(CBr->getParent());
@@ -608,7 +643,7 @@ llvmGetPassPluginInfo() {
                         bool Frame = false;               // FRAME default: off
                         bool MV = false, MVT3 = false; unsigned MVSane = 62;  // MV default: off
                         unsigned Profile = 0; bool Narrow = false; unsigned NBits = 16;
-                        bool Ind = false, NoPI = false, NoFold = false;
+                        bool Ind = false, NoPI = false, NoFold = false, Tag = false;
                         std::vector<std::string> Traps;   // traps= callees: empty
                         if (!Name.empty()) {              // parse "<a;b;...>"
                             if (!Name.consume_front("<") || !Name.consume_back(">"))
@@ -635,6 +670,8 @@ llvmGetPassPluginInfo() {
                                     NoPI = true;
                                 else if (P == "mv-nofold")
                                     NoFold = true;
+                                else if (P == "tag-checks")
+                                    Tag = true;
                                 else if (P.consume_front("narrow=")) {
                                     if (P.getAsInteger(10, NBits) || NBits < 8 || NBits > 32) return false;
                                     Narrow = true;
@@ -687,7 +724,7 @@ llvmGetPassPluginInfo() {
                         }
                         MPM.addPass(OraclePass(Vacuity, Heavy, TimeoutMs, Threads,
                                                LdEq, std::move(Traps), Frame,
-                                               MV, MVSane, MVT3, Profile, Narrow, NBits, Ind, NoPI, NoFold));
+                                               MV, MVSane, MVT3, Profile, Narrow, NBits, Ind, NoPI, NoFold, Tag));
                         return true;
                     }
                 );

@@ -1,0 +1,14 @@
+irce: looking at loop Loop at depth 1 containing: %23<header><exiting>,%26<exiting>,%28<exiting>,%30<exiting>,%32<exiting>,%54<exiting>,%58<exiting>,%62<exiting>,%65<exiting>,%68<latch><exiting>
+irce: loop has 4 inductive range checks: 
+InductiveRangeCheck:
+  Begin: 0  Step: 4  End: %2
+  CheckUse:   br i1 %.not31, label %26, label %odessy.chk2, !prof !42 Operand: 0
+InductiveRangeCheck:
+  Begin: 1  Step: 4  End: %2
+  CheckUse:   br i1 %.not32, label %28, label %odessy.chk3, !prof !42 Operand: 0
+InductiveRangeCheck:
+  Begin: 2  Step: 4  End: %2
+  CheckUse:   br i1 %.not33, label %30, label %odessy.chk4, !prof !42 Operand: 0
+InductiveRangeCheck:
+  Begin: 3  Step: 4  End: %2
+  CheckUse:   br i1 %.not34, label %32, label %odessy.chk5, !prof !42 Operand: 0

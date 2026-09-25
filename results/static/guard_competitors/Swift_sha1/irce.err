@@ -1,0 +1,36 @@
+irce: looking at loop Loop at depth 3 containing: %246<header><exiting>,%251<exiting>,%253<exiting>,%255<exiting>,%257<exiting>,%258<latch><exiting>
+irce: loop has 5 inductive range checks: 
+InductiveRangeCheck:
+  Begin: {0,+,64}<nuw><nsw><%237>  Step: 4  End: %224
+  CheckUse:   br i1 %.not91, label %251, label %odessy.chk5, !prof !45 Operand: 0
+InductiveRangeCheck:
+  Begin: {1,+,64}<nuw><nsw><%237>  Step: 4  End: %224
+  CheckUse:   br i1 %.not92, label %253, label %odessy.chk6, !prof !45 Operand: 0
+InductiveRangeCheck:
+  Begin: {2,+,64}<nuw><nsw><%237>  Step: 4  End: %224
+  CheckUse:   br i1 %.not93, label %255, label %odessy.chk7, !prof !45 Operand: 0
+InductiveRangeCheck:
+  Begin: {3,+,64}<nuw><nsw><%237>  Step: 4  End: %224
+  CheckUse:   br i1 %.not138, label %257, label %odessy.chk8, !prof !45 Operand: 0
+InductiveRangeCheck:
+  Begin: 0  Step: 1  End: 80
+  CheckUse:   br i1 %.not94, label %258, label %odessy.chk9, !prof !45 Operand: 0
+irce: in function main: constrained Loop at depth 3 containing: %246<header><exiting>,%251<exiting>,%253<exiting>,%255<exiting>,%257<exiting>,%258<latch><exiting>
+irce: looking at loop Loop at depth 3 containing: %.preheader107.preheader<header><exiting>,%281<latch><exiting>
+irce: loop has 1 inductive range checks: 
+InductiveRangeCheck:
+  Begin: 13  Step: 1  End: 80
+  CheckUse:   br i1 %.not95, label %281, label %odessy.chk10, !prof !45 Operand: 0
+irce: in function main: constrained Loop at depth 3 containing: %.preheader107.preheader<header><exiting>,%281<latch><exiting>
+irce: looking at loop Loop at depth 3 containing: %.preheader<header>,%315,%320,%327,%322,%317,%310,%330<latch><exiting>
+irce: loop has 3 inductive range checks: 
+InductiveRangeCheck:
+  Begin: 0  Step: 1  End: 20
+  CheckUse:   br i1 %302, label %310, label %315 Operand: 0
+InductiveRangeCheck:
+  Begin: 0  Step: 1  End: 40
+  CheckUse:   br i1 %316, label %317, label %320 Operand: 0
+InductiveRangeCheck:
+  Begin: 0  Step: 1  End: 60
+  CheckUse:   br i1 %321, label %322, label %327 Operand: 0
+irce: in function main: constrained Loop at depth 3 containing: %.preheader<header>,%315,%320,%327,%322,%317,%310,%330<latch><exiting>

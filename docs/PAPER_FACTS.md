@@ -1734,3 +1734,10 @@ every overflow-excluding "sane range" guard and all 16 Julia checks. None of
 the 34 is removable without a guard. So synthesis is required for all of
 them, and solver verification under the guard for 62%. IRCE (not in -O3)
 fires on the original IR of 7 kernels; not yet compared.
+
+### 11.24 ODeSSy vs LLVM on guard versioning (static, Mac, HANDOFF §10.59)
+397 tagged checks over 20 triage kernels. Proved dead (remaining):
+LLVM -O3 alone 17 (380); LLVM IRCE + O3 31 (366); ODeSSy guard + LLVM O3
+(mv-nofold) 102 (295); ODeSSy mv 121 (276). Of 34 checks in ODeSSy's
+guard-protected fast copies, LLVM -O3 removes 13 when handed the guard and
+leaves 21, including all 16 Julia ones.

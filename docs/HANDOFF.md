@@ -3111,3 +3111,23 @@ lz77, Rust matmul, Julia gemm. LoopPredication needs guard intrinsics or
 widenable branches, which none of these frontends emit. Which checks IRCE
 removes, and at what runtime cost, is NOT yet measured: IRCE is the related
 work a reviewer will name, and the next comparison to run.
+
+### 10.59 Three competitors on the same tagged checks (Sep 25 2026, Mac, static)
+
+New knob `tag-checks`: discovery only, every discovered check redirected to
+`odessy.chk(i32 id)`, then return (semantics unchanged; validated: base64 gives
+2 eliminated + 5 folded tagged and untagged). `mv-nofold` now logs the original
+`chk` id of each fast-copy trap. Script: `scripts/run_guard_competitors.sh`,
+output `results/static/guard_competitors/` (table.txt, per_check.tsv).
+Knobs `heavy;frame;ind;mv;narrow;timeout=10000;threads=1`.
+Arms: A = ODeSSy mv, then O3 (O3 only DCEs folded blocks); B = mv-nofold, then O3
+(LLVM must prove the fast-copy checks); C = `function(irce)`, then O3; ref = O3.
+Dead = id gone from the module, or removed on the hot path (fast copy for A/B,
+IRCE's constrained main loop for C). No benchmark source changed.
+
+TOTAL 397 checks: O3 alone 17 | A mv 121 (276 left) | B nofold+O3 102 (295 left) |
+C IRCE+O3 31 (366 left). A >= B on every kernel. The A-B gap is exactly the
+fast-copy checks: 34 of them, O3 removes 13 given the guard, 21 survive (all 16
+Julia fast-copy checks; Julia lz77 and matmul get 0 in B). IRCE beats O3 alone by
+14 checks, mostly sha1 (+4), base64 (+2), sha256 Swift (+3).
+Per-kernel table: results/static/guard_competitors/table.txt.

@@ -1,0 +1,22 @@
+kernel                   lang  checks |    O3 | mv:dead  left | nofoldO3  left | irceO3  left
+jl_filt_dsp              Julia     19 |     0 |     6    13 |     6    13 |     0    19
+jl_filt_dsp_guarded      Julia     10 |     0 |     8     2 |     8     2 |     0    10
+jl_gemm_base             Julia     14 |     0 |    12     2 |    12     2 |     2    12
+jl_poly                  Julia      1 |     0 |     1     0 |     1     0 |     0     1
+lz77                     Julia      4 |     0 |     4     0 |     0     4 |     0     4
+lz77_bounded             Julia      4 |     0 |     4     0 |     2     2 |     0     4
+lz77_bounded2            Julia      4 |     0 |     4     0 |     4     0 |     0     4
+matmul                   Julia      3 |     0 |     3     0 |     0     3 |     0     3
+sha256                   Julia     16 |     2 |    16     0 |    10     6 |     2    14
+lz77                     Rust       3 |     0 |     1     2 |     1     2 |     1     2
+matmul                   Rust       5 |     0 |     2     3 |     2     3 |     2     3
+adler32                  Swift     37 |     1 |     3    34 |     3    34 |     1    36
+base64                   Swift     27 |     2 |     9    18 |     8    19 |     4    23
+crc32                    Swift     36 |     1 |    11    25 |    10    26 |     1    35
+lz77                     Swift     25 |     4 |     8    17 |     7    18 |     4    21
+md5                      Swift     25 |     1 |     6    19 |     6    19 |     1    24
+nbody                    Swift     84 |     1 |     1    83 |     1    83 |     1    83
+sha1                     Swift     24 |     3 |     8    16 |     8    16 |     7    17
+sha256                   Swift     36 |     1 |     9    27 |     9    27 |     4    32
+utf8                     Swift     20 |     1 |     5    15 |     4    16 |     1    19
+TOTAL 397 checks | O3 17 | mv 121 (left 276) | nofold+O3 102 (left 295) | irce+O3 31 (left 366)

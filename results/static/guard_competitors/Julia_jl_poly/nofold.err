@@ -1,0 +1,42 @@
+[ODeSSy] 1 trap site(s) across 2 function(s); threads=1 [tier: heavy] [frame] [mv] [narrow] [ind] [mv-nofold] [traps=bounds_error,boundserror,odessy.chk]
+
+[Z3 Oracle] Analyzing Function: julia_poly!_145
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of 'L16.preheader'):  %4 = icmp slt i64 %3, 1
+    -> Guard[1] (false edge of 'top'):  %2 = icmp slt i64 %"iters::Int64", 1, !dbg !32
+    -> Collected 2 dominating context guard(s).
+    -> [go3] 13 leaf-closure instruction(s) encoded
+    -> Fact[SCEVSYM:0] i64 %value_phi8 - start(%bc.resume.val) <=u BTC((((-1 * %bc.resume.val) + (0 smax %3)) umin (1 + (-1 * %bc.resume.val) + %3))) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hx:1] (i64 %bc.resume.val <=u i64 %5) -> i64 %value_phi8 <=u i64 %5 (header-exit eq bound, unit step, 1-induction)
+    -> Fact[KB:2] i64 %index known bits zero=0x7 one=0x0
+    -> Fact[SCEV:3] i64 %index in [0,-7) (SCEV unsigned)
+    -> Fact[SCEV:4] i64 %index in [-9223372036854775808,9223372036854775801) (SCEV signed)
+    -> Fact[SCEVSYM:5] i64 %index - start(0) <=u 8*BTC(((-7 + (-1 * %12)<nsw> + ((-1 + (0 smax %3))<nsw> umin %3)) /u 8)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:6] i64 %index == i64 0 || ne(i64 %index, i64 %n.vec) (latch-implied bound, 1-induction)
+    -> Fact[SCEVEQ:7] i64 %bc.resume.val in phi image (3 incoming)
+    -> Fact[KB:8] i64 %12 known bits zero=0x18446744073709551600 one=0x0
+    -> Fact[SCEVEQ:9] i64 %ind.end == SCEV((2 + (-1 * %12)<nsw> + ((-1 + (0 smax %3))<nsw> umin %3)))
+    -> [heavy] 10 analysis fact(s) on 7 boundary value(s)
+    -> [mv] T3: not a bounds shape (idx vs invariant count)
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 125.684959 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  => Total Traps Eliminated: 1
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.256850e+02 ms
+  => Average SMT Query Latency: 1.256850e+02 ms
+  => Total DFS & SMT Execution Time: 1.313654e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: jfptr_poly!_146
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 8.417000e-03 ms
+--------------------------------------------------

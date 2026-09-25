@@ -1,0 +1,271 @@
+[ODeSSy] 5 trap site(s) across 6 function(s); threads=1 [tier: heavy] [frame] [mv] [narrow] [ind] [mv-nofold] [traps=panic,odessy.chk]
+
+[Z3 Oracle] Analyzing Function: _RINvNtCsa9BKTri5B3M_3std2rt10lang_startuECslKexJZJvg6E_6matmul
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 3.720410e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: _RINvNtNtCsa9BKTri5B3M_3std3sys9backtrace28___rust_begin_short_backtraceFEuuECslKexJZJvg6E_6matmul
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 6.666000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: _RNCINvNtCsa9BKTri5B3M_3std2rt10lang_startuE0CslKexJZJvg6E_6matmul
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 6.916000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: _RNSNvYNCINvNtCsa9BKTri5B3M_3std2rt10lang_startuE0INtNtNtCsgtPOCBgevO_4core3ops8function6FnOnceuE9call_once6vtableCslKexJZJvg6E_6matmul
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 4.667000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: _RNvCslKexJZJvg6E_6matmul4main
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of 'vector.body'):  %16 = icmp eq i64 %index.next, 4096
+    -> Guard[1] (false edge of '_RINvXs_NtNtCslJsSqIQKwiA_5alloc3vec14spec_from_elemxNtB5_12SpecFromElem9from_elemNtNtB9_5alloc6GlobalECslKexJZJvg6E_6matmul.exit17'):  %7 = icmp eq ptr %6, null
+    -> Guard[2] (false edge of '_RINvXs_NtNtCslJsSqIQKwiA_5alloc3vec14spec_from_elemxNtB5_12SpecFromElem9from_elemNtNtB9_5alloc6GlobalECslKexJZJvg6E_6matmul.exit'):  %5 = icmp eq ptr %4, null
+    -> Guard[3] (false edge of 'start'):  %3 = icmp eq ptr %2, null
+    -> Collected 4 dominating context guard(s).
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %index known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %index in [0,4095) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %index in [0,4095) (SCEV signed)
+    -> Fact[SCEVSYM:3] i64 %index - start(0) <=u 2*BTC(2047) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:4] i64 %index == i64 0 || ne(i64 %index, i64 4096) (latch-implied bound, 1-induction)
+    -> Fact[KB:5] i64 %i.sroa.0.036.i known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:6] i64 %i.sroa.0.036.i in [0,64) (SCEV unsigned)
+    -> Fact[SCEV:7] i64 %i.sroa.0.036.i in [0,64) (SCEV signed)
+    -> Fact[SCEVSYM:8] i64 %i.sroa.0.036.i - start(0) <=u BTC(63) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:9] i64 %i.sroa.0.036.i == i64 0 || ne(i64 %i.sroa.0.036.i, i64 64) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:10] i64 %i.sroa.0.036.i >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:11] i64 %k.sroa.0.033.i known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:12] i64 %k.sroa.0.033.i in [0,64) (SCEV unsigned)
+    -> Fact[SCEV:13] i64 %k.sroa.0.033.i in [0,64) (SCEV signed)
+    -> Fact[PHIINV-hi:14] i64 %k.sroa.0.033.i == i64 0 || ne(i64 %k.sroa.0.033.i, i64 64) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:15] i64 %k.sroa.0.033.i >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> [heavy] 16 analysis fact(s) on 8 boundary value(s)
+    -> [mv] T3 symbolic index bound: max(idx) = 4095
+    -> [ind L0] BASE (2 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.145916 ms]
+    -> [ind L1] BASE (1 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.124375 ms]
+    -> [ind L2] BASE (2 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.132292 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.257167 ms]
+    -> [mv] DEAD UNDER HYPOTHESIS H = {%_21.1 >u (4095)} (1 of 16 candidates in core, round 0; re-solve 6.216600e-02 ms; trap loop depth 3, hoist to depth 1)
+    -> [mv-nofold] fast-trap id 0 (check kept in the H-guarded fast copy) chk 0
+  => SUCCESS (fast copy): trap folded in 1 copy inside the H-guarded clone of loop 'bb3.preheader.i'
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of 'bb7.i'):  %_24.i = icmp samesign ult i64 %_22.0.i, %_21.1
+    -> Guard[1] (true edge of 'vector.body'):  %16 = icmp eq i64 %index.next, 4096
+    -> Guard[2] (false edge of '_RINvXs_NtNtCslJsSqIQKwiA_5alloc3vec14spec_from_elemxNtB5_12SpecFromElem9from_elemNtNtB9_5alloc6GlobalECslKexJZJvg6E_6matmul.exit17'):  %7 = icmp eq ptr %6, null
+    -> Guard[3] (false edge of '_RINvXs_NtNtCslJsSqIQKwiA_5alloc3vec14spec_from_elemxNtB5_12SpecFromElem9from_elemNtNtB9_5alloc6GlobalECslKexJZJvg6E_6matmul.exit'):  %5 = icmp eq ptr %4, null
+    -> Guard[4] (false edge of 'start'):  %3 = icmp eq ptr %2, null
+    -> Collected 5 dominating context guard(s).
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %index known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %index in [0,4095) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %index in [0,4095) (SCEV signed)
+    -> Fact[SCEVSYM:3] i64 %index - start(0) <=u 2*BTC(2047) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:4] i64 %index == i64 0 || ne(i64 %index, i64 4096) (latch-implied bound, 1-induction)
+    -> Fact[LVI:5] i64 %_21.1 in [1,0) (LVI @ bb9.i)
+    -> Fact[KB:6] i64 %i.sroa.0.036.i known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:7] i64 %i.sroa.0.036.i in [0,64) (SCEV unsigned)
+    -> Fact[SCEV:8] i64 %i.sroa.0.036.i in [0,64) (SCEV signed)
+    -> Fact[SCEVSYM:9] i64 %i.sroa.0.036.i - start(0) <=u BTC(63) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:10] i64 %i.sroa.0.036.i == i64 0 || ne(i64 %i.sroa.0.036.i, i64 64) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:11] i64 %i.sroa.0.036.i >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:12] i64 %j.sroa.0.035.i known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:13] i64 %j.sroa.0.035.i in [0,64) (SCEV unsigned)
+    -> Fact[SCEV:14] i64 %j.sroa.0.035.i in [0,64) (SCEV signed)
+    -> Fact[SCEVSYM:15] i64 %j.sroa.0.035.i - start(0) <=u BTC(63) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:16] i64 %j.sroa.0.035.i == i64 0 || ne(i64 %j.sroa.0.035.i, i64 64) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:17] i64 %j.sroa.0.035.i >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:18] i64 %k.sroa.0.033.i known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:19] i64 %k.sroa.0.033.i in [0,64) (SCEV unsigned)
+    -> Fact[SCEV:20] i64 %k.sroa.0.033.i in [0,64) (SCEV signed)
+    -> Fact[PHIINV-hi:21] i64 %k.sroa.0.033.i == i64 0 || ne(i64 %k.sroa.0.033.i, i64 64) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:22] i64 %k.sroa.0.033.i >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> [heavy] 23 analysis fact(s) on 10 boundary value(s)
+    -> [mv] T3 symbolic index bound: max(idx) = 4095
+    -> [ind L0] BASE (2 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.195333 ms]
+    -> [ind L1] BASE (1 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.159625 ms]
+    -> [ind L2] BASE (2 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.157000 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.270792 ms]
+    -> [mv] DEAD UNDER HYPOTHESIS H = {%_23.1 >u (4095)} (1 of 19 candidates in core, round 0; re-solve 1.263330e-01 ms; trap loop depth 3, hoist to depth 1)
+    -> [mv-nofold] fast-trap id 1 (check kept in the H-guarded fast copy) chk 1
+  => SUCCESS (fast copy): trap folded in 1 copy inside the H-guarded clone of loop 'bb3.preheader.i'
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of 'bb9.i'):  %_33.i = icmp samesign ult i64 %_31.0.i, %_23.1
+    -> Guard[1] (true edge of 'bb7.i'):  %_24.i = icmp samesign ult i64 %_22.0.i, %_21.1
+    -> Guard[2] (true edge of 'vector.body'):  %16 = icmp eq i64 %index.next, 4096
+    -> Guard[3] (false edge of '_RINvXs_NtNtCslJsSqIQKwiA_5alloc3vec14spec_from_elemxNtB5_12SpecFromElem9from_elemNtNtB9_5alloc6GlobalECslKexJZJvg6E_6matmul.exit17'):  %7 = icmp eq ptr %6, null
+    -> Guard[4] (false edge of '_RINvXs_NtNtCslJsSqIQKwiA_5alloc3vec14spec_from_elemxNtB5_12SpecFromElem9from_elemNtNtB9_5alloc6GlobalECslKexJZJvg6E_6matmul.exit'):  %5 = icmp eq ptr %4, null
+    -> Guard[5] (false edge of 'start'):  %3 = icmp eq ptr %2, null
+    -> Collected 6 dominating context guard(s).
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %index known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %index in [0,4095) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %index in [0,4095) (SCEV signed)
+    -> Fact[SCEVSYM:3] i64 %index - start(0) <=u 2*BTC(2047) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:4] i64 %index == i64 0 || ne(i64 %index, i64 4096) (latch-implied bound, 1-induction)
+    -> Fact[LVI:5] i64 %_21.1 in [1,0) (LVI @ bb12.i)
+    -> Fact[LVI:6] i64 %_23.1 in [1,0) (LVI @ bb12.i)
+    -> Fact[KB:7] i64 %i.sroa.0.036.i known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:8] i64 %i.sroa.0.036.i in [0,64) (SCEV unsigned)
+    -> Fact[SCEV:9] i64 %i.sroa.0.036.i in [0,64) (SCEV signed)
+    -> Fact[SCEVSYM:10] i64 %i.sroa.0.036.i - start(0) <=u BTC(63) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:11] i64 %i.sroa.0.036.i == i64 0 || ne(i64 %i.sroa.0.036.i, i64 64) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:12] i64 %i.sroa.0.036.i >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:13] i64 %j.sroa.0.035.i known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:14] i64 %j.sroa.0.035.i in [0,64) (SCEV unsigned)
+    -> Fact[SCEV:15] i64 %j.sroa.0.035.i in [0,64) (SCEV signed)
+    -> Fact[SCEVSYM:16] i64 %j.sroa.0.035.i - start(0) <=u BTC(63) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:17] i64 %j.sroa.0.035.i == i64 0 || ne(i64 %j.sroa.0.035.i, i64 64) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:18] i64 %j.sroa.0.035.i >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:19] i64 %k.sroa.0.033.i known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:20] i64 %k.sroa.0.033.i in [0,64) (SCEV unsigned)
+    -> Fact[SCEV:21] i64 %k.sroa.0.033.i in [0,64) (SCEV signed)
+    -> Fact[PHIINV-hi:22] i64 %k.sroa.0.033.i == i64 0 || ne(i64 %k.sroa.0.033.i, i64 64) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:23] i64 %k.sroa.0.033.i >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> [heavy] 24 analysis fact(s) on 12 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (2 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 16.265750 ms]
+    -> [ind L1] BASE (1 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.102167 ms]
+    -> [ind L2] BASE (2 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.926958 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.554375 ms]
+    -> [mv] still SAT under 18 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of 'bb12.i'):  %_34.1.i = extractvalue { i64, i1 } %23, 1
+    -> Guard[1] (true edge of 'bb9.i'):  %_33.i = icmp samesign ult i64 %_31.0.i, %_23.1
+    -> Guard[2] (true edge of 'bb7.i'):  %_24.i = icmp samesign ult i64 %_22.0.i, %_21.1
+    -> Guard[3] (true edge of 'vector.body'):  %16 = icmp eq i64 %index.next, 4096
+    -> Guard[4] (false edge of '_RINvXs_NtNtCslJsSqIQKwiA_5alloc3vec14spec_from_elemxNtB5_12SpecFromElem9from_elemNtNtB9_5alloc6GlobalECslKexJZJvg6E_6matmul.exit17'):  %7 = icmp eq ptr %6, null
+    -> Guard[5] (false edge of '_RINvXs_NtNtCslJsSqIQKwiA_5alloc3vec14spec_from_elemxNtB5_12SpecFromElem9from_elemNtNtB9_5alloc6GlobalECslKexJZJvg6E_6matmul.exit'):  %5 = icmp eq ptr %4, null
+    -> Guard[6] (false edge of 'start'):  %3 = icmp eq ptr %2, null
+    -> Collected 7 dominating context guard(s).
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %index known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %index in [0,4095) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %index in [0,4095) (SCEV signed)
+    -> Fact[SCEVSYM:3] i64 %index - start(0) <=u 2*BTC(2047) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:4] i64 %index == i64 0 || ne(i64 %index, i64 4096) (latch-implied bound, 1-induction)
+    -> Fact[LVI:5] i64 %_21.1 in [1,0) (LVI @ bb13.i)
+    -> Fact[LVI:6] i64 %_23.1 in [1,0) (LVI @ bb13.i)
+    -> Fact[KB:7] i64 %i.sroa.0.036.i known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:8] i64 %i.sroa.0.036.i in [0,64) (SCEV unsigned)
+    -> Fact[SCEV:9] i64 %i.sroa.0.036.i in [0,64) (SCEV signed)
+    -> Fact[SCEVSYM:10] i64 %i.sroa.0.036.i - start(0) <=u BTC(63) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:11] i64 %i.sroa.0.036.i == i64 0 || ne(i64 %i.sroa.0.036.i, i64 64) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:12] i64 %i.sroa.0.036.i >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:13] i64 %j.sroa.0.035.i known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:14] i64 %j.sroa.0.035.i in [0,64) (SCEV unsigned)
+    -> Fact[SCEV:15] i64 %j.sroa.0.035.i in [0,64) (SCEV signed)
+    -> Fact[SCEVSYM:16] i64 %j.sroa.0.035.i - start(0) <=u BTC(63) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:17] i64 %j.sroa.0.035.i == i64 0 || ne(i64 %j.sroa.0.035.i, i64 64) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:18] i64 %j.sroa.0.035.i >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:19] i64 %k.sroa.0.033.i known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:20] i64 %k.sroa.0.033.i in [0,64) (SCEV unsigned)
+    -> Fact[SCEV:21] i64 %k.sroa.0.033.i in [0,64) (SCEV signed)
+    -> Fact[PHIINV-hi:22] i64 %k.sroa.0.033.i == i64 0 || ne(i64 %k.sroa.0.033.i, i64 64) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:23] i64 %k.sroa.0.033.i >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> [heavy] 24 analysis fact(s) on 13 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (2 phi(s) = entry): UNSAT (Dead Code / Impossible Path) [Query Latency: 1.025375 ms]
+    -> Fact[p0.KB:0] i64 %k.sroa.0.033.i known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[p0.SCEV:1] i64 %k.sroa.0.033.i in [0,64) (SCEV unsigned)
+    -> Fact[p0.SCEV:2] i64 %k.sroa.0.033.i in [0,64) (SCEV signed)
+    -> Fact[p0.PHIINV-hi:3] i64 %k.sroa.0.033.i == i64 0 || ne(i64 %k.sroa.0.033.i, i64 64) (latch-implied bound, 1-induction)
+    -> Fact[p0.PHIINV-lo:4] i64 %k.sroa.0.033.i >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> [ind L0] STEP (copy: 19 instr, 0 skipped, 6 fresh, 5 fact(s), 2 link(s)): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.602625 ms]
+    -> [ind L1] BASE (1 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.010333 ms]
+    -> [ind L2] BASE (2 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.891250 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 12.198125 ms]
+    -> [mv] still SAT under 18 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of 'bb22.i'):  %exitcond46.not.i = icmp eq i64 %_46.0.i, 64
+    -> Guard[1] (true edge of 'bb19.i'):  %exitcond45.not.i = icmp eq i64 %_45.0.i, 64
+    -> Guard[2] (true edge of 'bb15.i'):  %exitcond.not.i = icmp eq i64 %_36.0.i, 64
+    -> Guard[3] (false edge of 'bb13.i'):  %_35.1.i = extractvalue { i64, i1 } %24, 1
+    -> Guard[4] (false edge of 'bb12.i'):  %_34.1.i = extractvalue { i64, i1 } %23, 1
+    -> Guard[5] (true edge of 'bb9.i'):  %_33.i = icmp samesign ult i64 %_31.0.i, %_23.1
+    -> Guard[6] (true edge of 'bb7.i'):  %_24.i = icmp samesign ult i64 %_22.0.i, %_21.1
+    -> Guard[7] (true edge of 'vector.body'):  %16 = icmp eq i64 %index.next, 4096
+    -> Guard[8] (false edge of '_RINvXs_NtNtCslJsSqIQKwiA_5alloc3vec14spec_from_elemxNtB5_12SpecFromElem9from_elemNtNtB9_5alloc6GlobalECslKexJZJvg6E_6matmul.exit17'):  %7 = icmp eq ptr %6, null
+    -> Guard[9] (false edge of '_RINvXs_NtNtCslJsSqIQKwiA_5alloc3vec14spec_from_elemxNtB5_12SpecFromElem9from_elemNtNtB9_5alloc6GlobalECslKexJZJvg6E_6matmul.exit'):  %5 = icmp eq ptr %4, null
+    -> Guard[10] (false edge of 'start'):  %3 = icmp eq ptr %2, null
+    -> Collected 11 dominating context guard(s).
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %index known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %index in [0,4095) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %index in [0,4095) (SCEV signed)
+    -> Fact[SCEVSYM:3] i64 %index - start(0) <=u 2*BTC(2047) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:4] i64 %index == i64 0 || ne(i64 %index, i64 4096) (latch-implied bound, 1-induction)
+    -> Fact[LVI:5] i64 %_21.1 in [1,0) (LVI @ bb21)
+    -> Fact[LVI:6] i64 %_23.1 in [1,0) (LVI @ bb21)
+    -> Fact[KB:7] i64 %i.sroa.0.036.i known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[LVI:8] i64 %i.sroa.0.036.i in [63,64) (LVI @ bb21)
+    -> Fact[SCEV:9] i64 %i.sroa.0.036.i in [0,64) (SCEV unsigned)
+    -> Fact[SCEV:10] i64 %i.sroa.0.036.i in [0,64) (SCEV signed)
+    -> Fact[SCEVSYM:11] i64 %i.sroa.0.036.i - start(0) <=u BTC(63) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:12] i64 %i.sroa.0.036.i == i64 0 || ne(i64 %i.sroa.0.036.i, i64 64) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:13] i64 %i.sroa.0.036.i >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:14] i64 %j.sroa.0.035.i known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[LVI:15] i64 %j.sroa.0.035.i in [63,64) (LVI @ bb21)
+    -> Fact[SCEV:16] i64 %j.sroa.0.035.i in [0,64) (SCEV unsigned)
+    -> Fact[SCEV:17] i64 %j.sroa.0.035.i in [0,64) (SCEV signed)
+    -> Fact[SCEVSYM:18] i64 %j.sroa.0.035.i - start(0) <=u BTC(63) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:19] i64 %j.sroa.0.035.i == i64 0 || ne(i64 %j.sroa.0.035.i, i64 64) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:20] i64 %j.sroa.0.035.i >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:21] i64 %k.sroa.0.033.i known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[LVI:22] i64 %k.sroa.0.033.i in [63,64) (LVI @ bb21)
+    -> Fact[SCEV:23] i64 %k.sroa.0.033.i in [0,64) (SCEV unsigned)
+    -> Fact[SCEV:24] i64 %k.sroa.0.033.i in [0,64) (SCEV signed)
+    -> Fact[PHIINV-hi:25] i64 %k.sroa.0.033.i == i64 0 || ne(i64 %k.sroa.0.033.i, i64 64) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:26] i64 %k.sroa.0.033.i >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> [heavy] 27 analysis fact(s) on 15 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 39.000250 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 2
+  => Total Trap Attempts: 5
+  => Total SMT Queries Executed: 5
+  => Total SMT Query Latency: 1.327547e+02 ms
+  => Average SMT Query Latency: 2.655093e+01 ms
+  => Total DFS & SMT Execution Time: 1.843006e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: main
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 5.166000e-03 ms
+--------------------------------------------------

@@ -1,0 +1,26 @@
+irce: looking at loop Loop at depth 3 containing: %L133<header><exiting>,%L163<exiting>,%L223<exiting>,%L285<latch><exiting>
+irce: loop has 3 inductive range checks: 
+InductiveRangeCheck:
+  Begin: (-1 + %bc.resume.val)  Step: 1  End: %.size39.sroa.0.0.copyload
+  CheckUse:   br i1 %.not1446, label %L163, label %odessy.chk4, !dbg !127 Operand: 0
+InductiveRangeCheck:
+  Begin: (-1 + %bc.resume.val)  Step: 1  End: %.size58.sroa.0.0.copyload.fr
+  CheckUse:   br i1 %.not1447, label %L223, label %odessy.chk9, !dbg !127 Operand: 0
+InductiveRangeCheck:
+  Begin: (-1 + %bc.resume.val)  Step: 1  End: %.size77.sroa.0.0.copyload
+  CheckUse:   br i1 %.not1448, label %L285, label %odessy.chk12, !dbg !140 Operand: 0
+irce: looking at loop Loop at depth 2 containing: %L55<header><exiting>,%L85<exiting>,%L133.preheader.split.split<exiting>,%L133.preheader.split.split.split<exiting>,%L163.peel<exiting>,%L223.peel<exiting>,%L285.peel,%L133.preheader,%vector.scevcheck,%vector.memcheck,%vector.ph,%vector.body,%scalar.ph,%L133<exiting>,%L163<exiting>,%L223<exiting>,%L285,%L311.loopexit<latch><exiting>,%L311.loopexit.loopexit,%scalar.ph.loopexit
+    Loop at depth 3 containing: %vector.body<header><latch><exiting>
+    Loop at depth 3 containing: %L133<header><exiting>,%L163<exiting>,%L223<exiting>,%L285<latch><exiting>
+irce: loop has 1 inductive range checks: 
+InductiveRangeCheck:
+  Begin: 0  Step: 1  End: %.size2.sroa.1.0.copyload
+  CheckUse:   br i1 %.not1442, label %L85, label %odessy.chk, !dbg !80 Operand: 0
+irce: in function japi1_gemm!_145: constrained Loop at depth 2 containing: %L55<header><exiting>,%L85<exiting>,%L133.preheader.split.split<exiting>,%L133.preheader.split.split.split<exiting>,%L163.peel<exiting>,%L223.peel<exiting>,%L285.peel,%L133.preheader,%vector.scevcheck,%vector.memcheck,%vector.ph,%vector.body,%scalar.ph,%L133<exiting>,%L163<exiting>,%L223<exiting>,%L285,%L311.loopexit<latch><exiting>,%L311.loopexit.loopexit,%scalar.ph.loopexit
+    Loop at depth 3 containing: %vector.body<header><latch><exiting>
+    Loop at depth 3 containing: %L133<header><exiting>,%L163<exiting>,%L223<exiting>,%L285<latch><exiting>
+irce: looking at loop Parallel Loop at depth 2 containing: %L55.us662.us<header><exiting>,%L85.us.us<latch><exiting>
+irce: loop has 1 inductive range checks: 
+InductiveRangeCheck:
+  Begin: (-1 + %bc.resume.val1616)<nsw>  Step: 1  End: %.size2.sroa.1.0.copyload
+  CheckUse:   br i1 %.not1449, label %L85.us.us, label %odessy.chk2, !dbg !80 Operand: 0

@@ -1,0 +1,16 @@
+irce: looking at loop Loop at depth 3 containing: %L23.preloop<header><exiting>,%L27.preloop<exiting>,%L42.preloop<exiting>,%L61.preloop<exiting>,%L67.preloop<latch><exiting>
+irce: loop has 2 inductive range checks: 
+InductiveRangeCheck:
+  Begin: {(-1 + %value_phi3),+,1}<nw><%L23.preheader>  Step: 1  End: %"data::Array.size.0.copyload"
+  CheckUse:   br i1 %.not37.preloop, label %L42.preloop, label %odessy.chk1, !dbg !50 Operand: 0
+InductiveRangeCheck:
+  Begin: (-1 + %value_phi53)  Step: 1  End: %"data::Array.size.0.copyload"
+  CheckUse:   br i1 %.not38.preloop, label %L61.preloop, label %odessy.chk3, !dbg !50 Operand: 0
+irce: looking at loop Loop at depth 3 containing: %L23.postloop<header><exiting>,%L27.postloop<exiting>,%L42.postloop<exiting>,%L61.postloop<exiting>,%L67.postloop<latch><exiting>
+irce: loop has 2 inductive range checks: 
+InductiveRangeCheck:
+  Begin: ({(-1 + %value_phi3),+,1}<nw><%L23.preheader> + %value_phi6.copy)  Step: 1  End: %"data::Array.size.0.copyload"
+  CheckUse:   br i1 %.not37.postloop, label %L42.postloop, label %odessy.chk, !dbg !50 Operand: 0
+InductiveRangeCheck:
+  Begin: (-1 + %value_phi53 + %value_phi6.copy)  Step: 1  End: %"data::Array.size.0.copyload"
+  CheckUse:   br i1 %.not38.postloop, label %L61.postloop, label %odessy.chk2, !dbg !50 Operand: 0

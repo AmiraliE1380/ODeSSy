@@ -1,0 +1,9 @@
+irce: looking at loop Loop at depth 2 containing: %236<header><exiting>,%240<exiting>,%244<exiting>,%251<exiting>,%257<exiting>,%263<exiting>,%266<exiting>,%269<latch><exiting>
+irce: loop has 2 inductive range checks: 
+InductiveRangeCheck:
+  Begin: 0  Step: 3  End: %215
+  CheckUse:   br i1 %.not72, label %240, label %odessy.chk5, !prof !45 Operand: 0
+InductiveRangeCheck:
+  Begin: 1  Step: 3  End: %215
+  CheckUse:   br i1 %.not73, label %244, label %odessy.chk6, !prof !45 Operand: 0
+irce: in function main: constrained Loop at depth 2 containing: %240<header><exiting>,%244<exiting>,%248<exiting>,%255<exiting>,%261<exiting>,%267<exiting>,%270<exiting>,%273<latch><exiting>

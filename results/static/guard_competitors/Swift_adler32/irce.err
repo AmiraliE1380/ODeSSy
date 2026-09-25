@@ -1,0 +1,50 @@
+irce: looking at loop Loop at depth 2 containing: %.preheader<header><exiting>,%23<exiting>,%25<exiting>,%27<exiting>,%29<exiting>,%31<exiting>,%33<exiting>,%35<exiting>,%37<exiting>,%39<exiting>,%41<exiting>,%43<exiting>,%45<exiting>,%47<exiting>,%49<exiting>,%51<exiting>,%53<exiting>,%56<latch><exiting>
+irce: loop has 16 inductive range checks: 
+InductiveRangeCheck:
+  Begin: %14  Step: 16  End: %2
+  CheckUse:   br i1 %.not41, label %23, label %odessy.chk4, !prof !43 Operand: 0
+InductiveRangeCheck:
+  Begin: (1 + %14)  Step: 16  End: %2
+  CheckUse:   br i1 %.not42, label %25, label %odessy.chk5, !prof !43 Operand: 0
+InductiveRangeCheck:
+  Begin: (2 + %14)  Step: 16  End: %2
+  CheckUse:   br i1 %.not43, label %27, label %odessy.chk6, !prof !43 Operand: 0
+InductiveRangeCheck:
+  Begin: (3 + %14)  Step: 16  End: %2
+  CheckUse:   br i1 %.not44, label %29, label %odessy.chk7, !prof !43 Operand: 0
+InductiveRangeCheck:
+  Begin: (4 + %14)  Step: 16  End: %2
+  CheckUse:   br i1 %.not45, label %31, label %odessy.chk8, !prof !43 Operand: 0
+InductiveRangeCheck:
+  Begin: (5 + %14)  Step: 16  End: %2
+  CheckUse:   br i1 %.not46, label %33, label %odessy.chk9, !prof !43 Operand: 0
+InductiveRangeCheck:
+  Begin: (6 + %14)  Step: 16  End: %2
+  CheckUse:   br i1 %.not47, label %35, label %odessy.chk10, !prof !43 Operand: 0
+InductiveRangeCheck:
+  Begin: (7 + %14)  Step: 16  End: %2
+  CheckUse:   br i1 %.not48, label %37, label %odessy.chk11, !prof !43 Operand: 0
+InductiveRangeCheck:
+  Begin: (8 + %14)  Step: 16  End: %2
+  CheckUse:   br i1 %.not49, label %39, label %odessy.chk12, !prof !43 Operand: 0
+InductiveRangeCheck:
+  Begin: (9 + %14)  Step: 16  End: %2
+  CheckUse:   br i1 %.not50, label %41, label %odessy.chk13, !prof !43 Operand: 0
+InductiveRangeCheck:
+  Begin: (10 + %14)  Step: 16  End: %2
+  CheckUse:   br i1 %.not51, label %43, label %odessy.chk14, !prof !43 Operand: 0
+InductiveRangeCheck:
+  Begin: (11 + %14)  Step: 16  End: %2
+  CheckUse:   br i1 %.not52, label %45, label %odessy.chk15, !prof !43 Operand: 0
+InductiveRangeCheck:
+  Begin: (12 + %14)  Step: 16  End: %2
+  CheckUse:   br i1 %.not53, label %47, label %odessy.chk16, !prof !43 Operand: 0
+InductiveRangeCheck:
+  Begin: (13 + %14)  Step: 16  End: %2
+  CheckUse:   br i1 %.not54, label %49, label %odessy.chk17, !prof !43 Operand: 0
+InductiveRangeCheck:
+  Begin: (14 + %14)  Step: 16  End: %2
+  CheckUse:   br i1 %.not55, label %51, label %odessy.chk18, !prof !43 Operand: 0
+InductiveRangeCheck:
+  Begin: (15 + %14)  Step: 16  End: %2
+  CheckUse:   br i1 %.not56, label %53, label %odessy.chk19, !prof !43 Operand: 0

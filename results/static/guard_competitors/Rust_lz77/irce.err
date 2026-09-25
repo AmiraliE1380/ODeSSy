@@ -1,0 +1,6 @@
+irce: looking at loop Loop at depth 3 containing: %bb10.i<header><exiting>,%bb12.i<exiting>,%bb13.i<exiting>,%bb17.i<latch><exiting>
+irce: loop has 1 inductive range checks: 
+InductiveRangeCheck:
+  Begin: {((-1 * (1024 umin %i.sroa.0.043.i))<nsw> + %i.sroa.0.043.i),+,1}<%bb9.preheader.i>  Step: 1  End: %_14.1
+  CheckUse:   br i1 %_28.i, label %bb13.i, label %odessy.chk2 Operand: 0
+irce: in function _RNvCs6gprlvleZk8_4lz774main: constrained Loop at depth 3 containing: %bb10.i<header><exiting>,%bb12.i<exiting>,%bb13.i<exiting>,%bb17.i<latch><exiting>
