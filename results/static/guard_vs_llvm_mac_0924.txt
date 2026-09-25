@@ -1,0 +1,23 @@
+kernel                      lang  checks  O3-kills  survive sccp-kill   irce
+jl_filt_dsp                Julia       0         -        -         -      0
+jl_filt_dsp_guarded        Julia       0         -        -         -      0
+jl_gemm_base               Julia       0         -        -         -      1
+jl_poly                    Julia       0         -        -         -      0
+lz77                       Julia       4         0        4         0      0
+lz77_bounded               Julia       2         0        2         0      0
+lz77_bounded2              Julia       0         -        -         -      0
+matmul                     Julia       4         0        4         0      0
+sha256                     Julia       6         0        6         0      0
+lz77                        Rust       0         -        -         -      1
+matmul                      Rust       2         2        0         0      1
+adler32                    Swift       1         1        0         1      0
+base64                     Swift       6         4        2         4      1
+crc32                      Swift       6         5        1         5      0
+lz77                       Swift       1         0        1         0      0
+md5                        Swift       0         -        -         -      1
+nbody                      Swift       0         -        -         -      0
+sha1                       Swift       0         -        -         -      3
+sha256                     Swift       1         1        0         0      1
+utf8                       Swift       1         0        1         0      0
+
+per-check detail: results/static/guard_vs_llvm/per_check.tsv

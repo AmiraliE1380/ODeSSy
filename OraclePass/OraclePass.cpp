@@ -154,18 +154,26 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
     unsigned NarrowBits = 16;
     bool Inductive = false;         // ind knob (item 1, HANDOFF §10.46)
     bool NoPhiInv = false;          // nophiinv knob (PHIINV ablation)
+    // mv-nofold (experiment, HANDOFF §10.58): synthesize, verify and clone
+    // exactly as `mv`, but in the fast copy KEEP each check, redirecting its
+    // trap edge to a uniquely numbered `odessy.fast.trap(i32 id)`. A later
+    // -O3 can remove such a call only by proving that exact branch dead, so
+    // counting surviving ids measures what LLVM itself can prove given the
+    // synthesized guard. Semantics are unchanged: the check still traps.
+    bool MVNoFold = false;
 
     OraclePass() = default;
     OraclePass(bool Vacuity, bool Heavy, unsigned TimeoutMs, unsigned NThreads,
                bool LdEq, std::vector<std::string> Traps = {},
                bool Frame = false, bool MV = false, unsigned MVSane = 62,
                bool T3 = false, unsigned Profile = 0, bool Narrow = false,
-               unsigned NBits = 16, bool Ind = false, bool NoPI = false)
+               unsigned NBits = 16, bool Ind = false, bool NoPI = false,
+               bool NoFold = false)
         : VacuityCheck(Vacuity), HeavyMode(Heavy), QueryTimeoutMs(TimeoutMs),
           Threads(NThreads), LoadEq(LdEq), TrapCallees(std::move(Traps)),
           FrameMode(Frame), MultiVersion(MV), MVT3(T3), MVSaneExp(MVSane),
           ProfileMs(Profile), NarrowMul(Narrow), NarrowBits(NBits),
-          Inductive(Ind), NoPhiInv(NoPI) {}
+          Inductive(Ind), NoPhiInv(NoPI), MVNoFold(NoFold) {}
 
     PreservedAnalyses run(Module &M, ModuleAnalysisManager &MAM) {
         auto &FAM =
@@ -255,7 +263,8 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
                << (LoadEq ? " [ldeq]" : "")
                << (FrameMode ? " [frame]" : "")
                << (MultiVersion ? (MVT3 ? " [mv]" : " [mv-light]") : "")
-               << (NarrowMul ? " [narrow]" : "") << (Inductive ? " [ind]" : "") << (NoPhiInv ? " [nophiinv]" : "");
+               << (NarrowMul ? " [narrow]" : "") << (Inductive ? " [ind]" : "") << (NoPhiInv ? " [nophiinv]" : "")
+               << (MVNoFold ? " [mv-nofold]" : "");
         if (!TrapCallees.empty()) {
             errs() << " [traps=";
             for (size_t i = 0; i < TrapCallees.size(); ++i)
@@ -363,6 +372,7 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
         // was UNSAT under H_L context-side).
         // =============================================================
         int MVEliminated = 0, MVLoops = 0;
+        unsigned FastTrapId = 0;   // mv-nofold: ids of redirected fast-copy checks
         if (MultiVersion) {
             const unsigned Budget = 4;                  // clones per function
             DenseMap<Function *, unsigned> Used;
@@ -476,7 +486,29 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
                     unsigned N = 0;
                     for (BranchInst *CBr : Targets) {
                         if (!CBr->isConditional() || !Folded.insert(CBr).second) continue;
-                        CBr->setCondition(ConstantInt::get(Type::getInt1Ty(F->getContext()), J.TrapOnTrue ? 0 : 1));
+                        if (MVNoFold) {
+                            // Keep the check; give its trap edge a private,
+                            // numbered trap so -O3 can only delete it by
+                            // proving this very branch dead.
+                            unsigned TI = J.TrapOnTrue ? 0 : 1;
+                            BasicBlock *OldTrap = CBr->getSuccessor(TI);
+                            LLVMContext &Ctx = F->getContext();
+                            FunctionCallee FT = M.getOrInsertFunction(
+                                "odessy.fast.trap", FunctionType::get(Type::getVoidTy(Ctx), {Type::getInt32Ty(Ctx)}, false));
+                            if (auto *FTF = dyn_cast<Function>(FT.getCallee())) {
+                                FTF->addFnAttr(Attribute::NoReturn); FTF->addFnAttr(Attribute::NoUnwind);
+                                FTF->addFnAttr(Attribute::Cold);
+                            }
+                            BasicBlock *TB = BasicBlock::Create(Ctx, "odessy.fasttrap", F);
+                            IRBuilder<> B(TB);
+                            OS << "    -> [mv-nofold] fast-trap id " << FastTrapId
+                               << " (check kept in the H-guarded fast copy)\n";
+                            B.CreateCall(FT, {B.getInt32(FastTrapId++)});
+                            B.CreateUnreachable();
+                            OldTrap->removePredecessor(CBr->getParent());
+                            CBr->setSuccessor(TI, TB);
+                        } else
+                            CBr->setCondition(ConstantInt::get(Type::getInt1Ty(F->getContext()), J.TrapOnTrue ? 0 : 1));
                         ++N;
                     }
                     if (N == 0) { OS << "    -> [mv] SKIP: anchor not found in clone\n"; continue; }
@@ -576,7 +608,7 @@ llvmGetPassPluginInfo() {
                         bool Frame = false;               // FRAME default: off
                         bool MV = false, MVT3 = false; unsigned MVSane = 62;  // MV default: off
                         unsigned Profile = 0; bool Narrow = false; unsigned NBits = 16;
-                        bool Ind = false, NoPI = false;
+                        bool Ind = false, NoPI = false, NoFold = false;
                         std::vector<std::string> Traps;   // traps= callees: empty
                         if (!Name.empty()) {              // parse "<a;b;...>"
                             if (!Name.consume_front("<") || !Name.consume_back(">"))
@@ -601,6 +633,8 @@ llvmGetPassPluginInfo() {
                                     Ind = true;
                                 else if (P == "nophiinv")
                                     NoPI = true;
+                                else if (P == "mv-nofold")
+                                    NoFold = true;
                                 else if (P.consume_front("narrow=")) {
                                     if (P.getAsInteger(10, NBits) || NBits < 8 || NBits > 32) return false;
                                     Narrow = true;
@@ -653,7 +687,7 @@ llvmGetPassPluginInfo() {
                         }
                         MPM.addPass(OraclePass(Vacuity, Heavy, TimeoutMs, Threads,
                                                LdEq, std::move(Traps), Frame,
-                                               MV, MVSane, MVT3, Profile, Narrow, NBits, Ind, NoPI));
+                                               MV, MVSane, MVT3, Profile, Narrow, NBits, Ind, NoPI, NoFold));
                         return true;
                     }
                 );

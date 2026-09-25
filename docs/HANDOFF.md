@@ -3048,3 +3048,66 @@ found on Linux: Narrow.cpp uint64_t cast (c5e20f4), MV gate TIMEOUT override
 capture, zlib compile cap. Old Swift ceilings are unusable against
 in-harness speedups (baseline gap up to 1.242×); `CEILING=1` measures them
 in-pipeline. Referenced from `run_mv_tests.sh` and `run_swift_perf.sh`.
+
+### 10.58 Can LLVM prove the fast-copy checks dead once HANDED the synthesized guard? (Sep 24 2026, Mac, static)
+
+Question (PI / author): LLVM has no guard synthesis, so the direct comparison
+is empty. The sharper question: given the guard ODeSSy synthesizes, placed in
+front of the cloned loop, can stock `-O3` remove the fast copy's checks
+itself? Author's prediction: no, LLVM cannot, even with the guard.
+
+Method. New knob `mv-nofold` (default off; gates unchanged 27/12, 9/9):
+guard synthesis, verification and loop cloning exactly as `mv`, but every
+fast-copy check is KEPT, its trap edge redirected to a uniquely numbered
+`odessy.fast.trap(i32 id)` (noreturn, nounwind, cold). -O3 can delete such
+a call only by proving that exact branch dead; the fast loop was verified
+to survive -O3 in every kernel with removals (9-45 fast blocks remain).
+Script `scripts/run_guard_vs_llvm.sh`, knobs
+`heavy;frame;ind;mv;narrow;mv-nofold;timeout=10000;threads=1`, inputs the
+triage IR of every Swift/Julia/Rust kernel. Results
+`results/static/guard_vs_llvm_mac_0924.txt`, per check `.../per_check.tsv`.
+Counts are check COPIES in fast loops (a check in a nested loop cloned
+twice counts twice).
+
+| kernel | fast-copy checks | removed by -O3 | survive -O3 | removed by lone SCCP |
+|---|---|---|---|---|
+| Swift base64 | 6 | 4 | 2 | 4 |
+| Swift crc32 | 6 | 5 | 1 | 5 |
+| Swift adler32 | 1 | 1 | 0 | 1 |
+| Swift sha256 | 1 | 1 | 0 | 0 |
+| Swift lz77 | 1 | 0 | 1 | 0 |
+| Swift utf8 | 1 | 0 | 1 | 0 |
+| Rust matmul | 2 | 2 | 0 | 0 |
+| Julia lz77 (frozen) | 4 | 0 | 4 | 0 |
+| Julia lz77_bounded | 2 | 0 | 2 | 0 |
+| Julia matmul | 4 | 0 | 4 | 0 |
+| Julia sha256 | 6 | 0 | 6 | 0 |
+| **total** | **34** | **13 (38%)** | **21 (62%)** | 10 |
+
+PREDICTION PARTIALLY FALSIFIED. LLVM, handed the guard, removes 13 of 34.
+The split is by guard SHAPE, not by kernel:
+- Removed: guards that are a constant bound on a table length against an
+  index whose range LLVM already knows (base64 `count >u 63`, crc32
+  `count >u 255`), a sign bound (adler32 `v >=s 0`), and three symbolic
+  length bounds (Swift sha256, Rust matmul). SCCP alone does 10 of the 13:
+  it reads range facts off the dominating guard branch.
+- Survive: every guard whose use needs relational or overflow reasoning --
+  all "sane range" bounds `v <=s 2^62` (which rule out wraparound in the
+  index arithmetic: base64 x2, crc32, Swift lz77, utf8, Julia lz77 x6) and
+  every Julia guard (lz77, matmul with n <= 2^15 and sizes > n^2 - 1,
+  sha256): 16 of 16 Julia fast-copy checks survive.
+Without the guard, stock -O3 removes none of these checks: each is
+genuinely reachable for some input (every one is SAT unconditionally).
+
+Reading for the paper: guard synthesis is needed for all 34 (LLVM finds no
+guard); solver VERIFICATION under the guard is additionally needed for 21
+(62%), because LLVM cannot use the guard even once it has it. Guards of the
+simplest shape are ones LLVM could exploit if someone gave them to it.
+
+LLVM's own closest machinery. IRCE (inductive range-check elimination,
+splits a loop's iteration space; NOT in -O3 by default) transforms loops in
+the ORIGINAL IR of 7 kernels: Swift base64, sha1 (x3), md5, sha256, Rust
+lz77, Rust matmul, Julia gemm. LoopPredication needs guard intrinsics or
+widenable branches, which none of these frontends emit. Which checks IRCE
+removes, and at what runtime cost, is NOT yet measured: IRCE is the related
+work a reviewer will name, and the next comparison to run.

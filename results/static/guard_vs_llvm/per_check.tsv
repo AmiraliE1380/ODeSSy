@@ -1,0 +1,34 @@
+lz77	0	SURVIVES -O3	{%"data::Array.size.0.copyload" <=s 2^62, %"window::Int64" >=s 0}
+lz77	1	SURVIVES -O3	{%"data::Array.size.0.copyload" <=s 2^62, %"window::Int64" >=s 0}
+lz77	2	SURVIVES -O3	{%"data::Array.size.0.copyload" <=s 2^62}
+lz77	3	SURVIVES -O3	{%"data::Array.size.0.copyload" <=s 2^62}
+lz77_bounded	0	SURVIVES -O3	{%"window::Int64" >=s 0}
+lz77_bounded	1	SURVIVES -O3	{%"window::Int64" >=s 0}
+matmul	1	SURVIVES -O3	{%"n::Int64" <=s 2^15, %"a::Array.size.0.copyload" >=s 0, %"a::Array.size.0.copyload" <=s 2^30, %"a::Array.size.0.copyload" >u
+matmul	2	SURVIVES -O3	{%"n::Int64" <=s 2^15, %"a::Array.size.0.copyload" >=s 0, %"a::Array.size.0.copyload" <=s 2^30, %"a::Array.size.0.copyload" >u
+matmul	0	SURVIVES -O3	{%"n::Int64" <=s 2^15, %"a::Array.size.0.copyload" >=s 0, %"a::Array.size.0.copyload" <=s 2^30, %"b::Array.size.0.copyload" >=s 0, %"b::Array.size.0.copyload" <=s 2^30, %"b::Array.size.0.copyload" >u
+matmul	3	SURVIVES -O3	{%"n::Int64" <=s 2^15, %"a::Array.size.0.copyload" >=s 0, %"a::Array.size.0.copyload" <=s 2^30, %"c::Array.size.0.copyload" >=s 0, %"c::Array.size.0.copyload" <=s 2^30, %"c::Array.size.0.copyload" >u
+sha256	0	SURVIVES -O3	{%"new::Array.size.0.copyload" >u
+sha256	3	SURVIVES -O3	{%"new::Array.size84.0.copyload" >u
+sha256	4	SURVIVES -O3	{%"new::Array.size84.0.copyload" >u
+sha256	5	SURVIVES -O3	{%"new::Array.size84.0.copyload" >u
+sha256	1	SURVIVES -O3	{%.size.0.copyload >u
+sha256	2	SURVIVES -O3	{%"new::Array.size225.0.copyload" >u
+matmul	0	removed by -O3	{%_21.1 >u
+matmul	1	removed by -O3	{%_23.1 >u
+adler32	0	removed by -O3	{%3 >=s 0}
+base64	0	removed by -O3	{%228 >u 63}
+base64	1	removed by -O3	{%228 >u 63}
+base64	2	removed by -O3	{%228 >u 63}
+base64	3	removed by -O3	{%228 >u 63}
+base64	4	SURVIVES -O3	{%215 <=s 2^62}
+base64	5	SURVIVES -O3	{%215 <=s 2^62}
+crc32	5	removed by -O3	{%91 >u 255}
+crc32	0	removed by -O3	{%19 >u 255}
+crc32	1	removed by -O3	{%20 >u 255}
+crc32	2	removed by -O3	{%21 >u 255}
+crc32	3	removed by -O3	{%22 >u 255}
+crc32	4	SURVIVES -O3	{%2 <=s 2^62}
+lz77	0	SURVIVES -O3	{%224 <=s 2^62}
+sha256	0	removed by -O3	{%264 >u
+utf8	0	SURVIVES -O3	{%2 <=s 2^62}

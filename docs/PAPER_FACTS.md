@@ -1722,3 +1722,15 @@ on M5 on hard nonlinear queries (test_mv_symbolic re-solve 3.6 s vs 0.6 s),
 enough to flip a verdict at a 3 s budget; at the 10 s campaign budget the
 server finds the same guard as the Mac. Server and Mac latencies must never
 share a table.
+
+### 11.23 LLVM handed the synthesized guard (static, Mac, Sep 24 2026)
+
+HANDOFF §10.58. With ODeSSy's guard in front of the cloned loop but the
+fast-copy checks left in, stock -O3 removes 13 of 34 fast-copy checks (38%),
+10 of them via SCCP range propagation, all for guards of the simplest shape
+(a constant table-length bound vs a statically bounded index, a sign bound,
+or a direct length bound). 21 of 34 (62%) survive -O3 even with the guard:
+every overflow-excluding "sane range" guard and all 16 Julia checks. None of
+the 34 is removable without a guard. So synthesis is required for all of
+them, and solver verification under the guard for 62%. IRCE (not in -O3)
+fires on the original IR of 7 kernels; not yet compared.
