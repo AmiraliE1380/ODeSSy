@@ -170,8 +170,13 @@ We instantiate
 super-analysis in \tool{}, an LLVM pass that proves sanitizer traps and
 native-language safety checks unreachable and deletes them.
 One mechanism serves three frontends and yields speedups in each:
-\tool{} generates code up to $4.16\times$ faster than LLVM -O3 for a GEMM implemented in Julia, speeds up a Swift SHA-256 kernel by \pct{8.8}, and delivers a
-whole-library runtime win of \pct{2.6} for zstd compression in C. Latency
+\tool{} generates code up to $4.16\times$ faster than LLVM -O3 for a GEMM implemented in Julia, speeds up a Swift SHA-256 kernel by $1.11\times$, and delivers a
+whole-library runtime win of $1.059\times$ for zstd compression in C.
+A further solver-based optimization, \emph{guard synthesis}, reaches
+checks that are not dead for every input: the solver synthesizes a cheap
+runtime guard under which they are, and the loop is cloned behind it,
+speeding up a Swift Base64 encoder by $1.44\times$ and a Julia LZ77
+compressor by $4.01\times$. Latency
 is controllable:
 \pct{96} of proofs survive a 100\,ms per-query SMT timeout budget, making
 super-analysis viable as an online compiler pass rather than an offline
