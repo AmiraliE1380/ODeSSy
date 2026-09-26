@@ -128,6 +128,14 @@ if want zstd; then
     bash scripts/run_zstd_perf.sh 2>&1 | tee "$OUT/zstd.log"
   save "zstd"; elapsed; cool
 fi
+# opt-in (ONLY=ceil_zstd): the same row plus an unsanitized `unchecked` build
+# through the base pipeline, for the in-pipeline ceiling (HANDOFF §10.61).
+if want_opt ceil_zstd; then
+  log "zstd [ceil] (signed spec + unchecked twin)"
+  $PIN env REPS="$REPS" JOBS=1 CORPUS_MB=512 CEILING=1 ORACLE_PASSES="$PROD" \
+    bash scripts/run_zstd_perf.sh 2>&1 | tee "$OUT/zstd_ceil.log"
+  save "zstd ceil"; elapsed; cool
+fi
 
 # ----------------------------------------------- 7. zlib and lz4 (long, last)
 if want zlib; then

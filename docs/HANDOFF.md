@@ -3156,3 +3156,20 @@ zlib TIER=prod, min run at 256 MB: both-spec oracle 65.73 vs base2x 65.61 s,
 anf 65.86 vs 65.90 s: null (within ±0.2%). ODeSSy removes 207 (both) / 212 (anf)
 more checks than base2x, costing 2563 s / 4314 s of compile time.
 lz4 PROD: did not finish (log ends during the oracle build); no data.
+
+### 10.61 Missing ceilings: derived from existing data where possible; zstd ceiling job
+- Swift sha256 anchor: the same kernel, input and base pipeline as the sha256
+  prod row (base 4.9251 vs 4.9273 s), so it shares that ceiling, 1.093×. The
+  knobs change only the ODeSSy build.
+- Rust lz77: ceiling = base/unchecked = 2.1248/2.1286 = 0.998× (base is already
+  as fast as the unchecked build; the 1.241× checked/unchecked "twin" figure
+  compares two different builds and is not the in-pipeline ceiling).
+- zlib: the `none` spec (no sanitizer, same pipeline) IS the unchecked build.
+  Medians from evaluation/perf_zlib.csv (runs_s column), 256 MB:
+  both: speedup 1.011×, vs base2x 0.999×, floor 1.012×, ceiling 1.053×;
+  anf: speedup 1.008×, vs base2x 1.002×, floor 1.006×, ceiling 1.054×.
+  The speedup equals the noise floor: the gain is the extra O3 round trip,
+  not ODeSSy's eliminations.
+- zstd: its harness had no unchecked build. `run_zstd_perf.sh` gained
+  CEILING=1 (lib compiled without -fsanitize, through opt -O3 as base, byte-
+  identity gated; smoke-tested on the Mac). Campaign job: ONLY=ceil_zstd.

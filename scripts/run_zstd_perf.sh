@@ -13,6 +13,8 @@
 #
 # Knobs: REPS=30 JOBS=4 THREADS=8 ZSTD=/path CORPUS_MB=512
 #        ORACLE_PASSES (default full tier @300ms)
+#        CEILING=1 adds `unchecked`: the same lib compiled WITHOUT the sanitizer
+#        through the same base pipeline (opt -O3); ceiling = base / unchecked.
 # Out  : results log on stdout; evaluation/perf_zstd.csv
 # =============================================================================
 set -u
@@ -23,11 +25,13 @@ REPS=${REPS:-30}
 JOBS=${JOBS:-4}
 THREADS=${THREADS:-8}
 CORPUS_MB=${CORPUS_MB:-512}
+CEILING=${CEILING:-0}
+CFGS="base base2x oracle"; [ "$CEILING" = 1 ] && CFGS="$CFGS unchecked"
 ORACLE_PASSES="${ORACLE_PASSES:-oracle-pass<heavy;ldeq;frame;timeout=300;threads=${THREADS}>}"
 CLEANUP="simplifycfg,adce,verify"
 SAN="-fsanitize=signed-integer-overflow -fsanitize-trap=signed-integer-overflow"
 INC="-I$ZSTD/lib -I$ZSTD/lib/common -DZSTD_LEGACY_SUPPORT=0"
-W="$ROOT/perf_zstd_work"; mkdir -p "$W"/{ll,obj.base,obj.base2x,obj.oracle,progobj}
+W="$ROOT/perf_zstd_work"; mkdir -p "$W"/{ll,ll_uc,obj.base,obj.base2x,obj.oracle,obj.unchecked,progobj}
 CSV="$ROOT/evaluation/perf_zstd.csv"
 [ -f "$CSV" ] || echo "config,workload,rep,seconds" > "$CSV"
 PIN="numactl --cpunodebind=0 --membind=0"; command -v numactl >/dev/null || PIN=""
@@ -41,6 +45,10 @@ for tu in "${TUS[@]}"; do
   stem=$(basename "$tu" .c)
   clang -O3 -S -emit-llvm $SAN $INC "$ZSTD/lib/$tu" -o "$W/ll/$stem.ll" \
     || { echo "[FATAL] clang $tu"; exit 1; }
+  if [ "$CEILING" = 1 ]; then
+    clang -O3 -S -emit-llvm $INC "$ZSTD/lib/$tu" -o "$W/ll_uc/$stem.ll" \
+      || { echo "[FATAL] clang (unchecked) $tu"; exit 1; }
+  fi
   n=$(grep -c 'call void @llvm.ubsantrap' "$W/ll/$stem.ll" || true)
   TRAPS_IN=$((TRAPS_IN + n))
 done
@@ -51,6 +59,7 @@ transform_one() {  # $1=stem $2=cfg
   local ll="$W/ll/$1.ll" out="$W/obj.$2/$1.o" tmp="$W/obj.$2/$1.ll"
   case "$2" in
     base)   opt -O3 -S "$ll" -o "$tmp" ;;
+    unchecked) opt -O3 -S "$W/ll_uc/$1.ll" -o "$tmp" ;;
     base2x) opt -O3 -S "$ll" | opt -O3 -S -o "$tmp" ;;
     oracle) opt -load-pass-plugin=build/OraclePass.so \
               -passes="$ORACLE_PASSES,$CLEANUP" -S "$ll" -o "$tmp.mid" \
@@ -59,7 +68,7 @@ transform_one() {  # $1=stem $2=cfg
   llc -O2 -relocation-model=pic -filetype=obj "$tmp" -o "$out"
 }
 export -f transform_one; export W ORACLE_PASSES CLEANUP
-for cfg in base base2x oracle; do
+for cfg in $CFGS; do
   t0=$(date +%s)
   printf '%s\n' "${TUS[@]}" | sed 's|.*/||; s|\.c$||' \
     | xargs -P "$JOBS" -I{} bash -c "transform_one {} $cfg" \
@@ -81,7 +90,7 @@ while IFS= read -r s; do
   clang -O3 $INC -c "$s" -o "$W/progobj/asm_$(basename "$s" .S).o" \
     || { echo "[FATAL] clang asm $s"; exit 1; }
 done < <(find "$ZSTD/lib" -name '*.S')
-for cfg in base base2x oracle; do
+for cfg in $CFGS; do
   clang "$W/obj.$cfg"/*.o "$W/progobj"/*.o -o "$W/zstd.$cfg" -lpthread \
     || { echo "[FATAL] link $cfg"; exit 1; }
 done
@@ -94,21 +103,22 @@ if [ ! -s "$CORP" ]; then
   : > "$CORP"
   while [ "$($(if stat -c %s / >/dev/null 2>&1; then echo "stat -c %s"; else echo "stat -f %z"; fi) "$CORP")" -lt $((CORPUS_MB * 1024 * 1024)) ]; do cat $SHM/zseed.txt >> "$CORP"; done
 fi
-for cfg in base base2x oracle; do
+for cfg in $CFGS; do
   "$W/zstd.$cfg" -3 -f -c "$CORP" > "$SHM/zout.$cfg" 2>/dev/null
 done
 cmp -s $SHM/zout.base $SHM/zout.base2x && cmp -s $SHM/zout.base $SHM/zout.oracle \
+  && { [ "$CEILING" != 1 ] || cmp -s $SHM/zout.base $SHM/zout.unchecked; } \
   && echo "  outputs byte-identical across configs -- gate passed" \
   || { echo "[FATAL] OUTPUT MISMATCH -- aborting before timing"; exit 1; }
 cp $SHM/zout.base $SHM/zcorpus.zst
 
-echo "==== PHASE E: $REPS shuffled reps x 3 configs x {comp,decomp} ===="
-python3 - "$W" "$REPS" "$CSV" "$CORP" "$PIN" <<'PYEOF'
+echo "==== PHASE E: $REPS shuffled reps x $(echo $CFGS | wc -w | tr -d " ") configs x {comp,decomp} ===="
+python3 - "$W" "$REPS" "$CSV" "$CORP" "$PIN" "$CFGS" <<'PYEOF'
 import random, subprocess, sys, statistics, time
 W, REPS, CSV, CORP, PIN = sys.argv[1], int(sys.argv[2]), sys.argv[3], sys.argv[4], sys.argv[5]
 import os; ZST = os.path.join(os.path.dirname(CORP), "zcorpus.zst")
 pin = PIN.split() if PIN else []
-cfgs = ["base", "base2x", "oracle"]
+cfgs = sys.argv[6].split()
 times = {(c, w): [] for c in cfgs for w in ("comp", "decomp")}
 jobs = [(c, w) for c in cfgs for w in ("comp", "decomp")]
 # warmup
@@ -137,5 +147,8 @@ for c in cfgs:
 for w in ("comp", "decomp"):
     b, b2, o = med[("base", w)], med[("base2x", w)], med[("oracle", w)]
     print(f"{w}: oracle vs base {100*(b/o-1):+.2f}%   vs base2x {100*(b2/o-1):+.2f}%   (noise floor base<->base2x {100*abs(b/b2-1):.2f}%)")
+    line = f"{w}: speedup {b/o:.4f}x vs base, {b2/o:.4f}x vs base2x; noise floor base/base2x {b/b2:.4f}x"
+    if "unchecked" in cfgs: line += f"; ceiling base/unchecked {b/med[('unchecked', w)]:.4f}x"
+    print(line)
 PYEOF
 echo "CSV appended: $CSV"
