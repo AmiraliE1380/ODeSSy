@@ -3194,3 +3194,15 @@ production compile cost, residue (d), appendix: tab:speedups-full is now the
 measurement detail table (medians, vs double-O3, floors, replicates), frontier
 keeps only nbody and filt. Untouched (no new measurement): M-series numbers,
 timeout dial, latency figure, GEMM shape sweep, OpenSSL, lz4 static, Julia static.
+
+### 10.63 RQ3 compile-cost experiment: design (Sep 26 2026)
+Script `scripts/run_compile_cost.sh`; static, run on the x86 server, serial, socket-0 pinned.
+Per module of every runtime-table benchmark (same IR the runtime harnesses feed the pass;
+Julia: the frozen kernels' triage IR): `opt -O3` time (reference), Thorough =
+`heavy;frame;ind;mv;narrow;timeout=10000;threads=1` (the runtime-table configuration, 1 rep),
+Fast = `heavy;frame;mv;narrow;timeout=10;threads=10` (3 reps, median). Fast drops `ind`
+because `ind` forces threads=1; 10 ms not 1 ms because Fig. dial_matrix shows 1 ms x 16
+threads is where yield collapses; 10 threads = one socket. Proofs = eliminated + guarded
+removals per configuration. Repos report total and slowest module. zlib: both spec only.
+Mac smoke (base64, Rust lz77, Julia matmul): base64 Thorough 7 proofs (= campaign 2+5) in
+0.39 s, Fast 5 in 0.09 s; Julia matmul Thorough 3 in 95 s, Fast 0 in 0.25 s.
