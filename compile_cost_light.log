@@ -1,0 +1,65 @@
+sha256,Swift,sha256,36,NA,NA,NA,NA,NA,0.347,0
+base64,Swift,base64,27,NA,NA,NA,NA,NA,0.247,0
+lz77,Swift,lz77,27,NA,NA,NA,NA,NA,0.242,1
+crc32,Swift,crc32,37,NA,NA,NA,NA,NA,0.376,0
+adler32,Swift,adler32,38,NA,NA,NA,NA,NA,0.259,1
+sha1,Swift,sha1,24,NA,NA,NA,NA,NA,0.232,0
+md5,Swift,md5,25,NA,NA,NA,NA,NA,0.237,0
+utf8,Swift,utf8,21,NA,NA,NA,NA,NA,0.164,1
+cryptoswift,Swift,CryptoSwift,2696,NA,NA,NA,NA,NA,21.301,68
+rs_lz77_bench,Rust,lz77_bench,4,NA,NA,NA,NA,NA,0.093,0
+rs_matmul_bench,Rust,matmul_bench,4,NA,NA,NA,NA,NA,0.127,0
+jl_jl_gemm_base,Julia,jl_gemm_base,16,NA,NA,NA,NA,NA,0.152,0
+jl_lz77,Julia,lz77,4,NA,NA,NA,NA,NA,0.077,0
+jl_matmul,Julia,matmul,3,NA,NA,NA,NA,NA,0.149,0
+jl_sha256,Julia,sha256,16,NA,NA,NA,NA,NA,0.378,0
+zstd,C,entropy_common,24,NA,NA,NA,NA,NA,0.241,0
+zstd,C,fse_decompress,4,NA,NA,NA,NA,NA,0.067,4
+zstd,C,fse_compress,12,NA,NA,NA,NA,NA,0.254,0
+zstd,C,huf_compress,205,NA,NA,NA,NA,NA,1.942,16
+zstd,C,zstd_compress,8,NA,NA,NA,NA,NA,0.215,0
+zstd,C,zstd_compress_literals,1,NA,NA,NA,NA,NA,0.043,0
+zstd,C,zstd_double_fast,4,NA,NA,NA,NA,NA,0.104,0
+zstd,C,zstd_lazy,100,NA,NA,NA,NA,NA,0.722,0
+zstd,C,zstdmt_compress,2,NA,NA,NA,NA,NA,0.063,0
+zstd,C,zstd_opt,32,NA,NA,NA,NA,NA,0.534,2
+zstd,C,zstd_preSplit,24,NA,NA,NA,NA,NA,0.755,0
+zstd,C,huf_decompress,22,NA,NA,NA,NA,NA,0.275,1
+zstd,C,zstd_decompress_block,6,NA,NA,NA,NA,NA,0.379,0
+zstd,C,zstd_decompress,1,NA,NA,NA,NA,NA,0.140,0
+zstd,C,cover,4,NA,NA,NA,NA,NA,0.107,1
+zstd,C,divsufsort,151,NA,NA,NA,NA,NA,1.897,2
+zstd,C,fastcover,4,NA,NA,NA,NA,NA,0.094,1
+zstd,C,zdict,2,NA,NA,NA,NA,NA,0.099,0
+zlib,C,adler32,144,NA,NA,NA,NA,NA,4.143,2
+zlib,C,compress,16,NA,NA,NA,NA,NA,0.141,7
+zlib,C,crc32,11,NA,NA,NA,NA,NA,0.244,7
+zlib,C,deflate,491,NA,NA,NA,NA,NA,3.771,28
+zlib,C,gzlib,29,NA,NA,NA,NA,NA,0.192,0
+zlib,C,gzread,186,NA,NA,NA,NA,NA,1.192,0
+zlib,C,gzwrite,151,NA,NA,NA,NA,NA,1.098,0
+zlib,C,infback,44,NA,NA,NA,NA,NA,0.532,4
+zlib,C,inffast,29,NA,NA,NA,NA,NA,0.352,1
+zlib,C,inflate,109,NA,NA,NA,NA,NA,2.025,7
+zlib,C,inftrees,11,NA,NA,NA,NA,NA,0.310,0
+zlib,C,trees,308,NA,NA,NA,NA,NA,33.767,16
+zlib,C,uncompr,24,NA,NA,NA,NA,NA,0.183,8
+zlib,C,zutil,1,NA,NA,NA,NA,NA,0.048,0
+benchmark        lang  mods checks    O3 s | thorough s    (max)   pf |   fast s   (max)   pf |  light s   (max)   pf
+sha256           Swift    1     36    0.11 |       2.72     2.72    8 |     0.42    0.42    1 |     0.35    0.35    0
+base64           Swift    1     27    0.09 |       5.15     5.15    7 |     0.48    0.48    0 |     0.25    0.25    0
+lz77             Swift    1     27    0.10 |      12.85    12.85    7 |     0.28    0.28    3 |     0.24    0.24    1
+crc32            Swift    1     37    0.11 |       4.09     4.09   11 |     0.46    0.46    0 |     0.38    0.38    0
+adler32          Swift    1     38    0.10 |       5.85     5.85    2 |     0.45    0.45    2 |     0.26    0.26    1
+sha1             Swift    1     24    0.11 |       1.93     1.93    2 |     0.26    0.26    2 |     0.23    0.23    0
+md5              Swift    1     25    0.11 |       2.38     2.38    1 |     0.28    0.28    1 |     0.24    0.24    0
+utf8             Swift    1     21    0.08 |       0.90     0.90    4 |     0.22    0.22    2 |     0.16    0.16    1
+cryptoswift      Swift    1   2696    4.88 |     714.96   714.96  376 |    40.42   40.42  160 |    21.30   21.30   68
+rs_lz77_bench    Rust     1      4    0.04 |       5.16     5.16    2 |     0.46    0.46    0 |     0.09    0.09    0
+rs_matmul_bench  Rust     1      4    0.03 |       1.62     1.62    2 |     0.40    0.40    2 |     0.13    0.13    0
+jl_jl_gemm_base  Julia    1     16    0.05 |      14.57    14.57   14 |     0.22    0.22    9 |     0.15    0.15    0
+jl_lz77          Julia    1      4    0.03 |      38.79    38.79    2 |     0.11    0.11    0 |     0.08    0.08    0
+jl_matmul        Julia    1      3    0.02 |     114.84   114.84    3 |     0.48    0.48    0 |     0.15    0.15    0
+jl_sha256        Julia    1     16    0.06 |     282.35   282.35   14 |     1.97    1.97    0 |     0.38    0.38    0
+zstd             C       18    606    8.73 |     353.41   164.03   82 |    31.41   20.66   30 |     7.93    1.94   27
+zlib             C       14   1554    2.23 |    2996.30  2277.15  289 |   436.64  406.93  135 |    48.00   33.77   80
