@@ -194,11 +194,9 @@ We instantiate
 super-analysis in \tool{}, an LLVM pass that proves sanitizer traps and
 native-language safety checks unreachable and deletes them.
 One mechanism serves three frontends and yields speedups in each:
-\tool{} generates code up to $3.91\times$ faster than LLVM -O3 for a GEMM implemented in Julia, speeds up a Swift SHA-256 kernel by $1.11\times$, and delivers a
-whole-library runtime win of $1.065\times$ for zstd compression in C.
-A further solver-based optimization, \emph{guard synthesis}, reaches
-checks that are not dead for every input: the solver synthesizes a cheap
-runtime guard under which they are, and the loop is cloned behind it,
+\tool{} generates code up to $3.91\times$ faster than LLVM -O3 for a GEMM implemented in Julia.
+A further solver-based optimization, \emph{guard synthesis}, handles
+checks that are not dead for every input: the solver synthesizes a cheap invariant safety guard under which a fast check-free loop is cloned,
 speeding up a Swift Base64 encoder by $1.44\times$ and a Julia LZ77
 compressor by $4.01\times$. Latency
 is controllable:
@@ -1258,12 +1256,12 @@ Our evaluation is organized around three questions:
 \item \textbf{RQ1 --- How much does it improve performance?}
   How many checks can \tool{} prove dead, and --- where proofs land on
   hot paths --- how much speedup it gains? (\S\ref{sec:results-perf})
-\item \textbf{RQ2 --- Why do we have speedup?}
-  Which transformations do hot-path proofs unlock, benchmark by
-  benchmark? (\S\ref{sec:results-mech})
-\item \textbf{RQ3 --- What does it cost?}
-  How does \tool{} scale, and does it remain an online compiler pass
-  with a flexible time budget? (\S\ref{sec:results-cost})
+\item \textbf{RQ2 --- What is the source of speedup?}
+  Which transformations do hot-path proofs unlock, and which component
+  of \tool{} makes guard synthesis pay? (\S\ref{sec:results-mech})
+\item \textbf{RQ3 --- Is its overhead low enough for real-world use?}
+  What does \tool{} cost to compile with, and how far can its budget be
+  turned down? (\S\ref{sec:results-cost})
 \end{itemize}
 %% =====================================================================
 \subsection{RQ1: How much does it improve performance?}
@@ -1412,150 +1410,78 @@ ceiling, and zstd, an unmodified C library, recovers most of its
 $1.08\times$, zlib shows no measurable effect, and four regress, by
 $0.83\times$ to $0.98\times$; \emph{why} the same dose of proofs pays so
 differently is RQ2.
-\subsection{RQ2: Why do we have speedup?}
+\subsection{RQ2: What is the source of speedup?}
 \label{sec:results-mech}
-The answer
-is a \emph{causal account}, not a single number. Elimination buys
-performance exactly when it \emph{gates a further transformation}.
-SHA-256 is the constructive case: seven proofs in the message-schedule
-inner loop remove the side exits that block unrolling; the re-optimized
-kernel runs $1.107\times$ faster on Haswell and $1.074\times$ on
-Apple Silicon --- on x86 slightly more than the $1.093\times$ that
-removing \emph{every} check with \texttt{-Ounchecked} buys, recovered
-soundly, after both mature pipelines had finished. The adler32 row
-sharpens the point: a \emph{single} proof inside the sixteen-fold
-unrolled DO16 group, plus one check removed in a guarded copy, buys
-$1.031\times$ of a $1.137\times$ ceiling. Concentration beats count:
-264 scattered proofs and 112 guarded removals in CryptoSwift buy
-nothing --- the library runs at $0.928\times$ --- while two proofs and
-five guarded removals in base64's hot loop buy $1.435\times$, its
-entire ceiling.
-The regressions at the bottom of Table~\ref{tab:speedups} are equally
-load-bearing. Where eliminations do not unlock a transformation,
-re-optimization is a genuine two-sided lottery: the same adler32
-elimination that gains $1.031\times$ on Haswell costs $0.985\times$ on
-M-series, and sha1 on x86 --- where only 2 of its checks are proven ---
-runs at $0.956\times$, a result replicated at $0.954\times$ in an
-independent run of this campaign and at $0.95$--$0.96\times$ in four
-earlier 30-repetition runs on the same node type. Swift lz77 is the
-extreme case: $0.830\times$, but the \texttt{-Ounchecked} build is
-equally slow ($0.831\times$), so removing its checks by any means costs
-time against this baseline. The ceiling is a reference point, not a
-bound: on sha256, utf8, and md5, \tool{}'s build is faster than
-\texttt{-Ounchecked}. We report this as a
-first-class finding: the value of a check is non-uniform in both
-magnitude and \emph{sign}, and microarchitecture is part of the
-experiment. This is also why ceilings matter methodologically: reporting
-each result against the machine's own checked-vs-unchecked ceiling
-makes results portable across microarchitectures in a way raw speedups
-are not.
-Finally, whole-library C: \tool{} removes 207 of zlib's 1298 checks
-beyond the double-O3 control with runtime flat --- $1.011\times$ at
-256\,MB against a $1.012\times$ noise floor, across three corpus sizes
-and two specifications --- while the library's measured sanitizer
-overhead stands at $1.053\times$. The proven checks are cold; the
-overhead is concentrated in hot-loop checks whose redundancy today's
-fact sources cannot establish (\S\ref{sec:future}). The honest summary of the zlib
-story is capability plus accounting, in the tradition of
-Souper~\cite{sasnauskas2017souper}, not raw speedup. One C library
-breaks the pattern: on zstd under the signed specification (the
-unsigned one is un-runnable in trap mode, \S\ref{sec:results-static}),
-16 eliminations buy $1.065\times$ on whole-file compression against a
-$1.013\times$ noise floor, of a $1.075\times$ ceiling, with
-byte-identical output --- the study's only whole-library C speedup.
-Decompression has nothing to recover: its checks cost $1.002\times$
-when all present, and \tool{}'s build runs at $1.001\times$.
-\paragraph{Crossing the frontier: GEMM, 0-of-16 to 16-of-16.}
+A removed check pays exactly when it was blocking a further
+transformation. A check is a side exit; inside a hot loop it prevents
+unrolling and vectorization, and once it is gone the second
+\texttt{-O3} performs them, so a few proofs can cascade into a large
+speedup. SHA-256 is the typical case: seven proofs in the
+message-schedule loop let it unroll, and the kernel runs $1.107\times$
+faster on x86 ($1.074\times$ on Apple Silicon). Where the proofs land
+matters more than how many there are: 264 scattered proofs and 112
+guarded removals buy CryptoSwift nothing ($0.928\times$), while two
+proofs and five guarded removals in base64's hot loop buy its entire
+ceiling ($1.435\times$); 207 cold proofs leave zlib flat
+($1.011\times$), while 16 on zstd's compression path buy $1.065\times$
+of a $1.075\times$ ceiling.
+
+Where a proof unlocks nothing, re-optimizing the simplified code is a
+two-sided lottery. sha1 runs at $0.956\times$ on x86, replicated at
+$0.954\times$ and at $0.95$--$0.96\times$ in four earlier runs, and the
+adler32 proof that gains $1.031\times$ on x86 costs $0.985\times$ on
+M-series. Swift lz77's $0.830\times$ is not caused by \tool{}: the
+\texttt{-Ounchecked} build is equally slow ($0.831\times$). Conversely,
+the ceiling is a reference point rather than a bound: on sha256, utf8,
+and md5, \tool{}'s build beats \texttt{-Ounchecked}. The value of a
+check varies in magnitude and in sign, and the microarchitecture is part
+of the experiment.
+
+\paragraph{Heap invariance.}
 \label{sec:frame-results}
-The strongest instance of the unlock account is the heap-invariant
-case. On the GEMM acceptance test of \S\ref{sec:frame}, the frame tier
-of \S\ref{sec:frame-machinery} proves \textbf{all 16} trap edges, where
-the base encoder proved zero (both encoders are pinned in the
-artifact): 11 eliminated outright and 5 whose \emph{guard contexts
-alone} are contradictory --- dynamically infeasible loop-version
-selections that the vacuity audit, by doctrine, refuses to convert into
-eliminations (the audit cannot distinguish genuine infeasibility from
-its own bugs; we verified genuineness by hand). Zero \textsc{sat}, zero
-\textsc{unknown}, verdicts byte-deterministic across runs. The unsat
-cores compose exactly as the paradigm predicts: the flagship proof draws
-on \emph{six} fact sources at once ---
-$|\mathrm{SCEVSYM}|\,|\mathrm{KB}|\,|\mathrm{SCEVEQ}|{\times}3\,
-|\mathrm{FRAME}|{\times}3$ plus four guards --- a conjunction no fixed
-pipeline could assemble.
-\begin{table}
-\caption{Proof-licensed \texttt{@inbounds} on Julia stdlib GEMM
-($N{=}512$; medians of 21 rotated reps; outputs bitwise identical
-across arms on both machines). Arm 3 annotates \emph{only} accesses
-whose every emitted check \tool{} proved; at the time of measurement
-that was 2 of 4 accesses --- with 16-of-16 proven, full annotation is
-licensed and recovery equals the ceiling by construction.}
-\label{tab:inbounds}
-\small
-\begin{tabular}{lrr}
-\toprule
-Arm & M-series & Xeon c220g2\\
-\midrule
-1: baseline (all checks) & 0.0601\,s & 0.177\,s\\
-2: expert (\texttt{@inbounds} all) & $4.185\times$ & $4.174\times$\\
-3: \tool{}-proven only (2 of 4 at meas.) & $4.156\times$ & $3.911\times$\\
-\midrule
-Ceiling recovered by arm 3 & \textbf{\pct{99.8}} & \textbf{\pct{97.9}}\\
-\bottomrule
-\end{tabular}
-\end{table}
-Julia's JIT accepts no external IR (\S\ref{sec:future}), so the proofs
-are deployed through Julia's own sanctioned mechanism: each fully-proven
-access is annotated \texttt{@inbounds}, justified line-by-line by its
-audit cores --- \emph{proof-carrying annotations}. Table~\ref{tab:inbounds}
-shows the three-arm experiment. Annotating only the two accesses proven
-at measurement time recovers \pct{99.8} (M-series) and \pct{97.9} (Xeon)
-of the expert-annotation ceiling --- the two accesses the tool proved
-first turn out to be exactly the performance-critical ones --- and the
-Xeon's small residual gap ($3.911\times$ against $4.174\times$)
-independently confirms that the last checks standing were worth little. Today \texttt{@inbounds} is
-trusted; here it is \emph{verified}, at no measurable cost. The gain is
-not an artifact of one problem size: sweeping $(m, n, k)$ over 14
-shapes --- square from $64^3$ to $4096^3$, tall, wide, deep, and inner
-loops as short as $m{=}8$ --- the proof-licensed build is faster at
-\emph{every} shape, by $1.5\times$ to $6.8\times$
-(Figure~\ref{fig:gemm-sweep}, Appendix~\ref{sec:app-full}); the
-speedup tracks the cache residency of the vectorized inner loop, not
-the problem size.
-\paragraph{Ride-along gains.}
-The same encoder additions, none of them GEMM-specific, moved every
-sufficiently-similar benchmark: Swift sha256's statics rise from 5 to 7
-of 38 on \emph{both} platforms, its M-series speedup from
-$1.036$--$1.049\times$ to $\mathbf{1.074\times}$ and its x86 speedup from
-$1.049$--$1.053\times$ to $\mathbf{1.107\times}$ in the final campaign
---- above that machine's $1.093\times$ checked-vs-unchecked ceiling
-(medians of 30, byte-identical gate passed); Julia
-sha256 rises from 4 to 10 of 12, a previously zero-yield DSP filter
-kernel to 6 of 19; and CryptoSwift from 183 to 215 proofs (182 to 210
-on x86) as the per-query budget rises from 0.3\,s to 10\,s --- with no
-runtime gain ($0.928\times$ on x86 in the final campaign, with guard
-synthesis adding 112 guarded removals), reproducing the dose--response
-claim above on the real library at maximum proof strength: scattered
-cold eliminations still buy nothing, because count is not value. A full-suite regression
-sweep is strictly monotone --- no benchmark lost a proof, and the
-vacuity audit reports zero on every one.
-\paragraph{Not overfitted to GEMM.}
-The frame tier and the definitional encoding of
-\S\ref{sec:frame-machinery} were developed against a single acceptance
-test, so the natural objection is that they are GEMM-specific
-engineering. Three facts say otherwise. They contain nothing about
-matrices: FRAME asks MemorySSA and LLVM's existing alias analyses for a
-verdict they already compute, and the \texttt{freeze} and trip-count
-axioms are facts of IR semantics --- no new analysis was written, and
-the additions are encoder rules that turn cheap, existing LLVM
-heuristics into solver premises. The benchmark chose itself: it is
-Julia's shipping standard library, whose authors discharge the same
-checks by hand with \texttt{@inbounds}, and the gain holds across 14
-problem shapes. And, as the ride-along gains show, the same additions
-raised proof counts and speedups on Swift sha256, Julia sha256, a DSP
-filter, and the CryptoSwift library --- hash, signal-processing, and
-library code in a second language, none of which a matrix-specific
-hack could have touched.
-\subsection{RQ3: What does it cost?}
+The largest single unlock is stdlib GEMM. With the frame facts of
+\S\ref{sec:frame-machinery}, \tool{} proves all 16 of its trap edges,
+where the scalar facts proved none; the flagship proof's unsat core
+draws on six fact sources at once
+($|\mathrm{SCEVSYM}|\,|\mathrm{KB}|\,|\mathrm{SCEVEQ}|{\times}3\,
+|\mathrm{FRAME}|{\times}3$, plus four guards). Julia's JIT cannot
+consume the pass output, so the proofs are deployed as proof-carrying
+\texttt{@inbounds} annotations: annotating only the accesses proven at
+measurement time gives $3.911\times$ of the $4.174\times$ all-annotated
+ceiling on x86 ($4.156\times$ of $4.185\times$ on M-series), and the
+proof-licensed build is faster at every one of 14 problem shapes, by
+$1.5$--$6.8\times$ (Figure~\ref{fig:gemm-sweep},
+Appendix~\ref{sec:app-full}).
+
+\paragraph{Guard synthesis: which component pays?}
+Most of the other large speedups --- Julia lz77 ($4.01\times$), base64
+($1.44\times$), Rust matmul ($1.38\times$), Julia matmul, crc32 --- come
+from guard synthesis and loop cloning (\S\ref{sec:guards}). Cloning a
+loop behind a runtime test is not new (\S\ref{sec:relwork}): LLVM's own
+inductive range-check elimination (IRCE) versions loops around range
+checks. We therefore ask which part of \tool{}'s version pays: the
+synthesized guard, or the solver's proofs inside the guarded copy. We
+compare four pipelines on the same checks, each check tagged with its
+own identity so it can be followed through every pipeline:
+(i)~\tool{} with guard synthesis, which synthesizes the guard, clones
+the loop, and removes the checks it proves dead in the guarded copy;
+(ii)~\tool{} synthesizing, verifying, and cloning behind the same guard
+but leaving every check in place, so that \texttt{-O3} must prove them
+itself; (iii)~IRCE followed by \texttt{-O3}, where LLVM extracts the
+range and versions the loop; and (iv)~\texttt{-O3} alone.
+
+Over 379 checks in 17 kernels, (i) proves 105 dead, (ii) 88, (iii) 31,
+and (iv) 17, and the sets are nested: no check that any of the other
+pipelines proves dead escapes (i), on any kernel. The gap between (i)
+and (ii) lies entirely in the guarded copies: of the 32 checks \tool{}
+removes there, \texttt{-O3} removes only 13 when handed the same guard,
+and none of the 14 in the Julia kernels. The guard alone is therefore
+not enough. LLVM's analyses cannot exploit it, and it is the solver's
+proofs inside the guarded copy that remove the checks.
+%% TODO(next session, server): runtime ablation table on the kernels
+%% where guard synthesis pays -- (i) mv, (ii) mv-nofold + O3,
+%% IRCE + ODeSSy, (iii) IRCE + O3, (iv) O3; proofs and speedup per arm.
+\subsection{RQ3: Is its overhead low enough for real-world use?}
 \label{sec:results-cost}
 \begin{figure}[t]
 \centering
@@ -1569,7 +1495,7 @@ additions; no query reached the per-query budget). Proofs are
 \emph{cheaper} than refutations at the median (\textsc{unsat} 3.0\,ms vs.\
 \textsc{sat} 5.5\,ms); the expense lives entirely in a thin tail
 (\textsc{unsat} max 2{,}238\,ms). This shape is what makes the timeout
-dial of Table~\ref{tab:dial} (x86) effective: a tight budget truncates
+dial of Figure~\ref{fig:matrix} (x86) effective: a tight budget truncates
 the tail while retaining nearly every proof. Note that this workload class
 is the easy end of the spectrum --- the OpenSSL queries discussed below
 sit three decades to the right.}
@@ -1583,24 +1509,6 @@ milliseconds for SAT. A small isolated group of blue bars appears past
 one second, reaching 2238 milliseconds; no red bar reaches that far.}
 \label{fig:latency}
 \end{figure}
-\begin{table}
-\caption{The timeout dial (zlib deflate, unsigned, O1: 457 queries,
-8 workers, x86). \textsc{unsat} yield saturates three decades before
-the default budget; wall-clock is flat throughout.}
-\label{tab:dial}
-\small
-\begin{tabular}{rrrrr}
-\toprule
-Budget & \textsc{unsat} & \textsc{sat} & \textsc{unknown} & Wall\\
-\midrule
-1\,ms & 16 & 66 & 375 & 3.95\,s\\
-10\,ms & 43 & 319 & 95 & 4.11\,s\\
-100\,ms & 50 & 405 & 2 & 4.21\,s\\
-3\,s & 52 & 405 & 0 & 4.25\,s\\
-10\,s & 52 & 405 & 0 & 4.32\,s\\
-\bottomrule
-\end{tabular}
-\end{table}
 \begin{table}
 \caption{Compile cost of three configurations on every benchmark of
 Table~\ref{tab:speedups} (x86 c220g2, turbo off, one socket; each module
@@ -1696,8 +1604,10 @@ that is no longer changing, buys the proofs behind every speedup in
 Table~\ref{tab:speedups} --- the same trade release builds already make
 with link-time and profile-guided optimization.
 \paragraph{The dial.}
-Table~\ref{tab:dial} is the central cost result: \pct{96} of the provable
-facts (50 of 52) survive a \emph{100\,ms} per-query budget, and the
+Figure~\ref{fig:matrix} is the central cost result (zlib's
+\texttt{deflate} module, unsigned specification, 457 queries): \pct{96}
+of the provable facts (50 of 52) survive a \emph{100\,ms} per-query
+budget, and the
 verdict set is fully saturated by 3\,s --- so the default budgets used
 throughout this paper sit on a plateau where proof yield is
 budget-insensitive. Median \textsc{unsat} latency on this workload is
@@ -1710,10 +1620,11 @@ a per-query budget removes almost losslessly.
 \centering
 \includegraphics[width=\columnwidth]{dial_matrix.pdf}
 \caption{The two dials compose. Oracle-stage wall-clock (median of 3
-pinned runs) for the Table~\ref{tab:dial} workload over worker threads
+pinned runs) for zlib's \texttt{deflate} module (unsigned
+specification, O1, 457 queries, x86) over worker threads
 $\times$ per-query timeout; each cell also shows its \textsc{unsat}
-yield. Proof yield is set by the timeout alone (every column agrees
-with Table~\ref{tab:dial} to the proof, row-independent down to 10\,ms);
+yield. Proof yield is set by the timeout alone (identical in every
+row down to 10\,ms);
 wall-clock is set mostly by threads. Serially, the timeout dial is worth
 $1.5\times$ (16.7\,s $\to$ 11.0\,s); at 8 threads the pool has already
 absorbed the tail and the same dial is worth $1.24\times$. Corner to

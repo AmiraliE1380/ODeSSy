@@ -3231,3 +3231,10 @@ without frame 28.5 s, light tier 3.0 s with 26 proofs vs 30. The cost is fact im
   Thorough 826, Fast 347, Light 178. zlib: Thorough 2996 s (slowest module 2277 s),
   Fast 437 s (407), Light 48 s (34). Julia lz77 Thorough proves 2 at 10 s (the runtime
   row's guard was mined at 60 s).
+
+### 10.65 Guard-competitor numbers for the paper (without hand-edited Julia variants)
+The §10.59 totals (397 checks, 20 kernels) included jl_filt_dsp_guarded, lz77_bounded and
+lz77_bounded2, which are designated hand-edited copies, not benchmarks. Without them: 379
+checks in 17 kernels; proved dead: mv 105, mv-nofold+O3 88, IRCE+O3 31, O3 alone 17; nesting
+still holds. Guarded copies: 32 checks, O3 removes 13 given the guard, 0 of the 14 Julia ones.
+The paper's RQ2 uses these. Next session: runtime ablation incl. IRCE+ODeSSy (server).
