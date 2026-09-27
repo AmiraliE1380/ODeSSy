@@ -3181,3 +3181,16 @@ lz4 PROD: did not finish (log ends during the oracle build); no data.
 - nbody, Julia filt_dsp and poly: kept out of the runtime table (no proofs
   that change the hot path). The August nbody ceiling (+410%, plain -O vs
   -Ounchecked) is future-work motivation only.
+
+### 10.62 Paper: every old x86 runtime number replaced with campaign 0924/0926 data
+Abstract (zstd 1.065×), intro (zstd overhead 1.075×), SHA-256 figure caption
+(1.107×), §frame (x86 ceiling 4.17×, 3.9–4.2×), methodology (10 s budget, one
+thread, production knob string), tab:static (x86 production counts with guarded
+removals for every timed kernel; zlib 207 marginal), RQ1 text, RQ2 rewritten on
+the new numbers (sha1 replicates, lz77 = unchecked, ceiling-not-a-bound, zlib flat
+with +4.5–5.1% .text from loop copies, zstd 1.065/1.075, decomp 1.001/1.002),
+tab:inbounds x86 column (0.177 s, 4.174×, 3.911×, 97.9%), ride-along, RQ3
+production compile cost, residue (d), appendix: tab:speedups-full is now the
+measurement detail table (medians, vs double-O3, floors, replicates), frontier
+keeps only nbody and filt. Untouched (no new measurement): M-series numbers,
+timeout dial, latency figure, GEMM shape sweep, OpenSSL, lz4 static, Julia static.
