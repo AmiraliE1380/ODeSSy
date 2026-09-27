@@ -1396,8 +1396,7 @@ $^{e}$Compression; decompression $1.001\times$ (ceiling $1.002\times$).
 Noise floor $1.013\times$.
 $^{f}$256\,MB input. Equal to the noise floor ($1.012\times$): no
 measurable effect.
-$^{g}$Not explained; the transformed library is \pct{3.8} larger, from
-versioned loop copies. Noise floor $0.99\times$.
+$^{g}$Not explained. Noise floor $0.99\times$.
 $^{h}$Removing the checks by any means slows this kernel: the
 \texttt{-Ounchecked} build is equally slow.
 $^{i}$Noise floor $0.991\times$.\par
@@ -1453,9 +1452,7 @@ beyond the double-O3 control with runtime flat --- $1.011\times$ at
 and two specifications --- while the library's measured sanitizer
 overhead stands at $1.053\times$. The proven checks are cold; the
 overhead is concentrated in hot-loop checks whose redundancy today's
-fact sources cannot establish (\S\ref{sec:future}). Guard synthesis
-also costs code size here: its loop copies grow \texttt{.text} by
-\pct{4.5}--\pct{5.1} over the control. The honest summary of the zlib
+fact sources cannot establish (\S\ref{sec:future}). The honest summary of the zlib
 story is capability plus accounting, in the tradition of
 Souper~\cite{sasnauskas2017souper}, not raw speedup. One C library
 breaks the pattern: on zstd under the signed specification (the
