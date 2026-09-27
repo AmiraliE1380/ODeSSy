@@ -97,6 +97,30 @@
   booktitle = {LPAR},
   year = {2010}
 }
+@inproceedings{bodik2000abcd,
+  author = {Rastislav Bod{\'\i}k and Rajiv Gupta and Vivek Sarkar},
+  title = {{ABCD}: Eliminating Array Bounds Checks on Demand},
+  booktitle = {PLDI},
+  year = {2000}
+}
+@inproceedings{wurthinger2007hotspot,
+  author = {Thomas W{\"u}rthinger and Christian Wimmer and Hanspeter M{\"o}ssenb{\"o}ck},
+  title = {Array Bounds Check Elimination for the {Java HotSpot} Client Compiler},
+  booktitle = {PPPJ},
+  year = {2007}
+}
+@inproceedings{wagner2015asap,
+  author = {Jonas Wagner and Volodymyr Kuznetsov and George Candea and Johannes Kinder},
+  title = {High System-Code Security with Low Overhead},
+  booktitle = {IEEE Symposium on Security and Privacy},
+  year = {2015}
+}
+@inproceedings{zhang2021sanrazor,
+  author = {Jiang Zhang and Shuai Wang and Manuel Rigger and Pinjia He and Zhendong Su},
+  title = {{SANRAZOR}: Reducing Redundant Sanitizer Checks in {C/C++} Programs},
+  booktitle = {OSDI},
+  year = {2021}
+}
 @misc{ubsanDocs,
   author = {{LLVM Project}},
   title = {UndefinedBehaviorSanitizer Documentation},
@@ -311,15 +335,15 @@ of analysis --- from the question it defers: when to use it.
 This paper makes the following contributions:
 \begin{itemize}
 \item \textbf{Super-analysis} (\S\ref{sec:superanalysis}): an aggressive compilation paradigm
-  positioning between conventional heuristic-based optimization and superoptimization in terms of compiler latency and precision. The general recipe for this paradigm is to use solvers as an analysis oracle, while applying cheap conventional rules-based transformation for optimization.  
-\item \textbf{Making super-analysis work} (\S\ref{sec:making}): a set of
-  techniques inside the paradigm that make it effective. We encode the
-  compiler's lightweight native analyses as facts that constrain the
-  solver's search (\S\ref{sec:conjunction}). We identify heap reasoning as
+  positioning between conventional heuristic-based optimization and superoptimization in terms of compiler latency and precision. The general recipe for this paradigm is to use solvers as an analysis oracle, while applying cheap conventional rules-based transformation for optimization. We identify heap reasoning as
   a crucial analysis problem --- array optimizations often require heap
   reasoning to ensure their safety --- formalize it, and show that
   super-analysis can more effectively reason over heap and memory safety
-  of certain transformations in hot loops (\S\ref{sec:frame}). And we
+  of certain transformations in hot loops (\S\ref{sec:frame}).
+\item \textbf{Making super-analysis work} (\S\ref{sec:making}): a set of
+  techniques inside the paradigm that make it effective. We encode the
+  compiler's lightweight native analyses as facts that constrain the
+  solver's search (\S\ref{sec:conjunction}), and we
   introduce guard synthesis and loop specialization, which synthesize a
   runtime guard under which a loop's checks are dead and clone the loop
   behind it (\S\ref{sec:guards}).
@@ -356,24 +380,6 @@ super-analysis scales to whole libraries (156k-line IR modules; 12{,}798
 checks in zstd) that no synthesizing tool can process. 
 
 
-\paragraph{SMT for Compiler Analysis.}
-Closer in spirit to our work is Taneja et al.~\cite{taneja2020knownbits},
-who use an SMT solver to test LLVM's dataflow analyses. For each expression they compute the
-\emph{most precise} answer an analysis could possibly give --- the
-exact set of known bits, the tightest integer range --- and compare it
-with LLVM's. LLVM's answers are sound but often imprecise: only \pct{48.7} of its integer ranges and
-\pct{35.0} of its demanded-bits results are as tight as possible. Their solver-based analysis
-is slow --- 9\,s per expression for known bits, 16\,s for integer
-ranges --- and they conclude it is ``too slow to use at compile time'', and is not viable as an online optimizer.
-The cost comes from the question they ask. Finding the best abstract
-value is a \emph{search} over the abstract domain: known bits takes
-$2n$ solver queries for an $n$-bit value, and ranges take a binary
-search, so one answer costs dozens of queries. \tool{} asks a different
-and much cheaper question: one yes/no reachability query per check
-site (decision rather than search), which is why our median query
-takes milliseconds (\S\ref{sec:results-cost}). 
-
-
 \paragraph{Equality Saturation.}
 Equality
 saturation~\cite{tate2009equality} searches the same kind of space by a
@@ -382,7 +388,15 @@ e-graph with the combinations of a fixed rewrite-rule set and extracts
 the cheapest result, so its search ranges over rules rather than over
 arbitrary programs and no candidate needs a proof of its own.
 
-\S\ref{sec:design-space} places these paradigms on a common map.
+\paragraph{Super-analysis.} This paper introduces a third route. A
+super-analyzer spends the solver on \emph{analysis} alone: the solver
+decides whether a rewrite is licensed --- here, whether a safety check
+can ever fire --- and the compiler's existing, conventional
+transformations perform the rewrite. No replacement code is searched
+for, synthesized, or verified. Figure~\ref{fig:quadrants} places the
+three paradigms on one map, by what each spends on analysis and what it
+spends on transformation; \S\ref{sec:superanalysis} develops the
+paradigm.
 
 %% =====================================================================
 \section{Super-Analysis}
@@ -490,129 +504,13 @@ translated context alone (the \emph{light} tier of
 \S\ref{sec:system-facts}). What remains is the boxes the encoding
 leaves closed --- which post-conditions to import for them, and why
 composing those facts requires a solver.
-%% =====================================================================
-\section{Making Super-Analysis Work}
-\label{sec:making}
-\S\ref{sec:superanalysis} gave the recipe in its purest form:
-encode the program's semantics around a point of interest, and ask the
-solver. The recipe is sound, but on its own it is rarely enough to be
-useful. The facts a proof needs often hide inside boxes the encoding
-does not open; the values that bound a check often live in the heap
-rather than in registers; and some checks are simply not dead for
-every input. This section collects the techniques that make
-super-analysis practical and useful. Like
-\S\ref{sec:superanalysis}, it is a general recipe, independent of
-LLVM and applicable to any compiler: we import the lightweight facts a
-compiler already computes, to constrain the solver's search
-(\S\ref{sec:conjunction}); we add heap invariants, because much of what
-bounds a check lives in memory (\S\ref{sec:frame}); and when a check
-cannot be proved dead for every execution, we synthesize a guard under
-which it is dead and clone the loop behind it (\S\ref{sec:guards}).
-Throughout, every solver query runs under a fixed time budget, so a
-hard query costs a missed proof, never an unbounded compile
-(\S\ref{sec:results-cost}). \S\ref{sec:system} shows how \tool{}
-realizes each technique in LLVM, and the evaluation maps each one to
-its results.
-
-\subsection{Encoding Lightweight Heuristics}
-\label{sec:conjunction}
-Encoding the context alone does not produce every useful proof. The
-encoding stops at boundaries, and a boundary value is free: the solver
-may pick any value for it, including values no execution can produce.
-Yet the compiler has usually learned something about that value
-already. Its lightweight, fast native analyses --- value ranges, known
-bits, loop trip counts --- run in milliseconds, and each describes a
-slice of the truth. Importing their results as facts about the boundary
-values constrains the solver's search space to executions that can
-really happen. No single one of these facts is usually enough, though:
-a proof needs several of them at once, and composing them is exactly
-where a solver becomes necessary.
-
-\begin{figure}[t]
-\centering
-\begin{minipage}[t]{\linewidth}
-\begin{lstlisting}[style=odessy,
-    morekeywords={var,for,in,let,if},
-    comment={[l]{//}},
-    moredelim={[is][\color{trapred}\bfseries]{|}{|}}]
-var w = [UInt32](repeating: 0, count: 64)
-for t in 16..<64 {
-  // s0, s1: rotate-xors of w[t-15], w[t-2]
-  |// implicit check (injected by compiler)|
-  |if t-16 >= w.count { trap() }|
-  w[t] = w[t-16] + s0 + w[t-7] + s1
-}
-\end{lstlisting}
-\end{minipage}\par\vspace{0.7em}
-\begin{minipage}[t]{\linewidth}
-\begin{lstlisting}[style=odessy,
-    morekeywords={load,add,icmp,uge,br,label,call,void,i8,i64,i1,ptr},
-    comment={[l]{;}},
-    moredelim={[is][\color{trapred}\bfseries]{|}{|}}]
-; the check for w[t-16], after swiftc -O + LLVM O3:
-%n   = load i64, ptr %w.count  ; array length: n = 64
-%idx = add i64 %t, -16         ; idx = t - 16
-|%oob = icmp uge i64 %idx, %n   ; oob = (idx >= n)|
-|br i1 %oob, label %trap, label %ld ; trap if oob|
-|trap:  call void @llvm.ubsantrap(i8 18) ; aborts|
-\end{lstlisting}
-\end{minipage}
-\caption{The warm-up: the message-schedule extension of a Swift
-SHA-256 kernel (top; the compiler-injected check shown in red as
-source-level pseudocode) and the same check after lowering (bottom). Every one of these checks survives
-\texttt{swiftc -O} \emph{and} a second full LLVM O3. The facts that
-jointly refute the trap edge live in \emph{different} analyses:\newline
-$\bullet$~loop bounds (scalar evolution): $t \in [16, 64)$, hence
-$\mathit{idx} = t - 16 \in [0, 48)$ --- exact in
-bit-vectors;\newline
-$\bullet$~allocation (return-value range, refined by LazyValueInfo):
-$\texttt{w.count} = 64$.\newline
-The trap requires $\mathit{idx} \geq \texttt{w.count}$; with
-$\mathit{idx} < 48$ and $\texttt{w.count} = 64$ the conjunction is
-absurd --- yet no single fact suffices (drop any one and the query is
-satisfiable), and no fixed pass computes the conjunction. \tool{}
-conjoins them, deletes the checks, and now the simplified control-flow
-graph can be further optimized. Here the unlocked unrolling is worth
-$1.107\times$ on x86 (\S\ref{sec:results-perf}).}
-\Description{Above, a Swift listing of the SHA-256 message schedule
-loop with a red comment stating the trap condition t minus 16 greater
-or equal to the array count. Below, five lines of LLVM IR showing the
-load of the array count, the index computation, the unsigned compare
-highlighted in red, and the conditional branch to a trap block that
-calls ubsantrap. The caption lists the two facts whose conjunction
-refutes the trap.}
-\label{fig:simple-example}
-\end{figure}
-Consider the message-schedule loop of a Swift SHA-256 kernel
-(Figure~\ref{fig:simple-example}), whose inner
-16 iterations index a 64-element working array. Swift's bounds checks on
-these accesses survive both \texttt{swiftc -O} and a subsequent full LLVM
-O3. \tool{} proves them dead, and the extracted unsat cores show why no
-single heuristic could. Each proof's minimal core has the shape:
-\[
-\textsf{Spec} \wedge \textsf{RM} \wedge \textsf{SCEV} \wedge \textsf{LVI}
-\wedge \textsf{SCEV}' \wedge G_0 \wedge G_k \;\vdash\; \bot
-\]
---- a return-value range (\textsf{RM}), two scalar-evolution facts
-(\textsf{SCEV}), a lattice value range (\textsf{LVI}), and two dominating
-guard conditions ($G_0$, $G_k$), jointly inconsistent with the check
-firing (\textsf{Spec}). Four independent analyses and path conditions must be intersected;
-each in isolation is insufficient (removing any core member returns
-\textsc{sat}). LLVM's analyses do not compose this way: each consumes the
-IR and produces facts in its own domain, and no pass computes the
-satisfiability of their conjunction --- nor could a fixed pipeline, since
-which facts matter is different at every check site. Deciding such
-conjunctions is the definitional competence of an SMT
-solver~\cite{demoura2008z3}. This is the sense in which super-analysis is
-\emph{necessary} rather than merely convenient: the reasoning is
-entailment over a conjunction of theories, not dataflow over a lattice.
-%% =====================================================================
 \subsection{Heap-Invariant Super-Analysis}
 \label{sec:frame}
 Many of the crucial compiler analysis including alias analysis require heap reasoning. In our particular application, heap facts can be important as the metadata for arrays (e.g. length) often live in the heap, and array index in bound checks cause high performance loss in hot loops. This necessitates super-analysis to perform complex yet fast heap reasoning so it can preserve effectiveness and its status as online analysis at the same time.
 
-The conjunctions of \S\ref{sec:conjunction} range over \emph{scalar}
-facts: ranges, known bits, trip counts, branch conditions. A large and
+The facts a super-analyzer composes are usually \emph{scalar}:
+ranges, known bits, trip counts, branch conditions
+(\S\ref{sec:conjunction} shows how a compiler supplies them). A large and
 expensive class of checks falls outside their reach because the fact
 that discharges them lives in the heap. Our acceptance test for
 this class is the kernel of Julia's standard-library GEMM
@@ -733,6 +631,119 @@ cannot answer. The solver still only
 answers reachability and the compiler still performs every rewrite,
 so the super-analysis contract of \S\ref{sec:superanalysis} holds
 unchanged. \S\ref{sec:frame-machinery} gives the rules.
+%% =====================================================================
+\section{Making Super-Analysis Work}
+\label{sec:making}
+\S\ref{sec:superanalysis} gave the recipe in its purest form:
+encode the program's semantics around a point of interest, and ask the
+solver. The recipe is sound, but on its own it is rarely enough to be
+useful. The facts a proof needs often hide inside boxes the encoding
+does not open, and some checks are simply not dead for every input. This section collects the techniques that make
+super-analysis practical and useful. Like
+\S\ref{sec:superanalysis}, it is a general recipe, independent of
+LLVM and applicable to any compiler: we import the lightweight facts a
+compiler already computes, to constrain the solver's search
+(\S\ref{sec:conjunction}), and when a check
+cannot be proved dead for every execution, we synthesize a guard under
+which it is dead and clone the loop behind it (\S\ref{sec:guards}).
+Throughout, every solver query runs under a fixed time budget, so a
+hard query costs a missed proof, never an unbounded compile
+(\S\ref{sec:results-cost}). \S\ref{sec:system} shows how \tool{}
+realizes each technique in LLVM, and the evaluation maps each one to
+its results.
+
+\subsection{Encoding Lightweight Heuristics}
+\label{sec:conjunction}
+Encoding the context alone does not produce every useful proof. The
+encoding stops at boundaries, and a boundary value is free: the solver
+may pick any value for it, including values no execution can produce.
+Yet the compiler has usually learned something about that value
+already. Its lightweight, fast native analyses --- value ranges, known
+bits, loop trip counts --- run in milliseconds, and each describes a
+slice of the truth. Importing their results as facts about the boundary
+values constrains the solver's search space to executions that can
+really happen. No single one of these facts is usually enough, though:
+a proof needs several of them at once, and composing them is exactly
+where a solver becomes necessary.
+
+\begin{figure}[t]
+\centering
+\begin{minipage}[t]{\linewidth}
+\begin{lstlisting}[style=odessy,
+    morekeywords={var,for,in,let,if},
+    comment={[l]{//}},
+    moredelim={[is][\color{trapred}\bfseries]{|}{|}}]
+var w = [UInt32](repeating: 0, count: 64)
+for t in 16..<64 {
+  // s0, s1: rotate-xors of w[t-15], w[t-2]
+  |// implicit check (injected by compiler)|
+  |if t-16 >= w.count { trap() }|
+  w[t] = w[t-16] + s0 + w[t-7] + s1
+}
+\end{lstlisting}
+\end{minipage}\par\vspace{0.7em}
+\begin{minipage}[t]{\linewidth}
+\begin{lstlisting}[style=odessy,
+    morekeywords={load,add,icmp,uge,br,label,call,void,i8,i64,i1,ptr},
+    comment={[l]{;}},
+    moredelim={[is][\color{trapred}\bfseries]{|}{|}}]
+; the check for w[t-16], after swiftc -O + LLVM O3:
+%n   = load i64, ptr %w.count  ; array length: n = 64
+%idx = add i64 %t, -16         ; idx = t - 16
+|%oob = icmp uge i64 %idx, %n   ; oob = (idx >= n)|
+|br i1 %oob, label %trap, label %ld ; trap if oob|
+|trap:  call void @llvm.ubsantrap(i8 18) ; aborts|
+\end{lstlisting}
+\end{minipage}
+\caption{The warm-up: the message-schedule extension of a Swift
+SHA-256 kernel (top; the compiler-injected check shown in red as
+source-level pseudocode) and the same check after lowering (bottom). Every one of these checks survives
+\texttt{swiftc -O} \emph{and} a second full LLVM O3. The facts that
+jointly refute the trap edge live in \emph{different} analyses:\newline
+$\bullet$~loop bounds (scalar evolution): $t \in [16, 64)$, hence
+$\mathit{idx} = t - 16 \in [0, 48)$ --- exact in
+bit-vectors;\newline
+$\bullet$~allocation (return-value range, refined by LazyValueInfo):
+$\texttt{w.count} = 64$.\newline
+The trap requires $\mathit{idx} \geq \texttt{w.count}$; with
+$\mathit{idx} < 48$ and $\texttt{w.count} = 64$ the conjunction is
+absurd --- yet no single fact suffices (drop any one and the query is
+satisfiable), and no fixed pass computes the conjunction. \tool{}
+conjoins them, deletes the checks, and now the simplified control-flow
+graph can be further optimized. Here the unlocked unrolling is worth
+$1.107\times$ on x86 (\S\ref{sec:results-perf}).}
+\Description{Above, a Swift listing of the SHA-256 message schedule
+loop with a red comment stating the trap condition t minus 16 greater
+or equal to the array count. Below, five lines of LLVM IR showing the
+load of the array count, the index computation, the unsigned compare
+highlighted in red, and the conditional branch to a trap block that
+calls ubsantrap. The caption lists the two facts whose conjunction
+refutes the trap.}
+\label{fig:simple-example}
+\end{figure}
+Consider the message-schedule loop of a Swift SHA-256 kernel
+(Figure~\ref{fig:simple-example}), whose inner
+16 iterations index a 64-element working array. Swift's bounds checks on
+these accesses survive both \texttt{swiftc -O} and a subsequent full LLVM
+O3. \tool{} proves them dead, and the extracted unsat cores show why no
+single heuristic could. Each proof's minimal core has the shape:
+\[
+\textsf{Spec} \wedge \textsf{RM} \wedge \textsf{SCEV} \wedge \textsf{LVI}
+\wedge \textsf{SCEV}' \wedge G_0 \wedge G_k \;\vdash\; \bot
+\]
+--- a return-value range (\textsf{RM}), two scalar-evolution facts
+(\textsf{SCEV}), a lattice value range (\textsf{LVI}), and two dominating
+guard conditions ($G_0$, $G_k$), jointly inconsistent with the check
+firing (\textsf{Spec}). Four independent analyses and path conditions must be intersected;
+each in isolation is insufficient (removing any core member returns
+\textsc{sat}). LLVM's analyses do not compose this way: each consumes the
+IR and produces facts in its own domain, and no pass computes the
+satisfiability of their conjunction --- nor could a fixed pipeline, since
+which facts matter is different at every check site. Deciding such
+conjunctions is the definitional competence of an SMT
+solver~\cite{demoura2008z3}. This is the sense in which super-analysis is
+\emph{necessary} rather than merely convenient: the reasoning is
+entailment over a conjunction of theories, not dataflow over a lattice.
 \subsection{Guard Synthesis and Loop Cloning}
 \label{sec:guards}
 Sometimes a check cannot be proved dead for every execution, because it
@@ -829,10 +840,6 @@ A guard that failed the second query would make the trap unreachable
 only because the fast copy itself could never run. Among the guards that
 pass both, we prefer the weakest, so that it holds on as many real
 inputs as possible.
-%% TODO(related work): cloning a loop behind a runtime check is itself
-%% established -- .NET RyuJIT "loop cloning" (bounds checks, conditions
-%% derived from fixed syntactic patterns) and LLVM LoopVersioning (runtime
-%% alias checks). What is new here is how the guard is obtained and verified.
 
 %% =====================================================================
 \section{\tool{}: Design and Implementation}
@@ -882,10 +889,8 @@ discovery order --- the only IR mutation in the pass --- and standard
 fence all exceptions and degrade to keeping the trap: every error path
 in the system converges on declining to optimize.
 
-\subsection{Encoding}
+\subsection{Encoding the context}
 \label{sec:encoding-impl}
-
-\subsubsection{Encoding the context}
 \label{sec:encoding-context}
 
 \begin{table}[t]
@@ -996,7 +1001,7 @@ everything encoded, in which this edge reaches the trap.
 \textsc{unsat} proves the edge dead in every execution;
 \textsc{sat} and \textsc{unknown} (timeout) keep the check.
 
-\subsubsection{Encoding LLVM's analyses}
+\subsection{Encoding LLVM's analyses}
 \label{sec:system-facts}
 The \emph{light} tier is the machinery above: free variables are
 constrained only by their types. The \emph{heavy} tier strengthens the
@@ -1352,8 +1357,9 @@ is the checked program through the same \texttt{-O3} pipeline.
 Ceiling is median baseline time over the median time of the same program
 built with every check removed (\texttt{-Ounchecked} for Swift, no
 sanitizer for C, the unchecked twin for Rust), through the same pipeline.
-The noise floor (baseline against a second full \texttt{-O3} round trip)
-is within $1.00\pm0.003\times$ except where noted.}
+Noise floors (baseline against a second full \texttt{-O3} round trip)
+are within $1.3\%$ of $1.00\times$ for every benchmark
+(Table~\ref{tab:speedups-full}).}
 \label{tab:speedups}
 \small
 \begin{tabular}{llrr}
@@ -1363,7 +1369,7 @@ Benchmark & Front end & Speedup & Ceiling\\
 lz77$^{a,b}$ & Julia & $4.013\times$ & $4.013\times$\\
 gemm, $N{=}512^{a}$ & Julia & $3.911\times$ & $4.174\times$\\
 base64 & Swift & $1.435\times$ & $1.437\times$\\
-matmul$^{i}$ & Rust & $1.382\times$ & $1.478\times$\\
+matmul & Rust & $1.382\times$ & $1.478\times$\\
 matmul, $n{=}512^{a,c}$ & Julia & $1.145\times$ & $1.150\times$\\
 sha256$^{d}$ & Swift & $1.107\times$ & $1.093\times$\\
 sha256$^{a}$ & Julia & $1.107\times$ & $1.128\times$\\
@@ -1393,13 +1399,10 @@ $^{d}$Speedup at or above the ceiling: \texttt{-Ounchecked} changes code
 generation beyond removing checks, so it is a reference point here, not
 an upper bound.
 $^{e}$Compression; decompression $1.001\times$ (ceiling $1.002\times$).
-Noise floor $1.013\times$.
-$^{f}$256\,MB input. Equal to the noise floor ($1.012\times$): no
-measurable effect.
-$^{g}$Not explained. Noise floor $0.99\times$.
+$^{f}$256\,MB input; no measurable effect.
+$^{g}$Not explained.
 $^{h}$Removing the checks by any means slows this kernel: the
-\texttt{-Ounchecked} build is equally slow.
-$^{i}$Noise floor $0.991\times$.\par
+\texttt{-Ounchecked} build is equally slow.\par
 \end{table}
 Table~\ref{tab:speedups} answers the payoff half. Seven of seventeen
 benchmarks speed up by $1.10\times$ or more, up to $4.01\times$ on lz77
@@ -1742,9 +1745,73 @@ millisecond budgets gets \pct{96} of zlib-class proofs and silently,
 soundly skips OpenSSL-class queries (\textsc{unknown} keeps the check);
 an offline audit turns the dial up.
 %% =====================================================================
+\section{Related Work}
+\label{sec:relwork}
+\S\ref{sec:related} placed super-analysis among the paradigms of
+aggressive optimization; here we compare it with work that shares its
+tools or its target.
+
+\paragraph{SMT for compiler analysis.}
+Closer in spirit to our work is Taneja et al.~\cite{taneja2020knownbits},
+who use an SMT solver to test LLVM's dataflow analyses. For each expression they compute the
+\emph{most precise} answer an analysis could possibly give --- the
+exact set of known bits, the tightest integer range --- and compare it
+with LLVM's. LLVM's answers are sound but often imprecise: only \pct{48.7} of its integer ranges and
+\pct{35.0} of its demanded-bits results are as tight as possible. Their solver-based analysis
+is slow --- 9\,s per expression for known bits, 16\,s for integer
+ranges --- and they conclude it is ``too slow to use at compile time'', and is not viable as an online optimizer.
+The cost comes from the question they ask. Finding the best abstract
+value is a \emph{search} over the abstract domain: known bits takes
+$2n$ solver queries for an $n$-bit value, and ranges take a binary
+search, so one answer costs dozens of queries. \tool{} asks a different
+and much cheaper question: one yes/no reachability query per check
+site (decision rather than search), which is why our median query
+takes milliseconds (\S\ref{sec:results-cost}).
+Alive2~\cite{lopes2021alive2} applies a solver to compiler
+\emph{correctness} rather than precision: it validates LLVM's
+transformations by checking refinement between the IR before and after
+each pass. Like \tool{}, it treats unencoded behavior as an
+over-approximation, so a solver verdict is only trusted in one
+direction.
+
+\paragraph{Bounds-check elimination.}
+Removing redundant array bounds checks is a classic problem.
+ABCD~\cite{bodik2000abcd} proves checks redundant on demand by solving
+a system of difference constraints over an extended SSA form, and
+production JIT compilers such as HotSpot's client
+compiler~\cite{wurthinger2007hotspot} eliminate checks with range
+analysis and by hoisting them out of loops. LLVM's inductive range-check
+elimination splits a loop into a pre-loop, a check-free main loop, and
+a post-loop when the checked index is an affine function of the
+induction variable. Each of these reasons in a single abstract domain
+chosen in advance; the proofs \tool{} needs combine several domains at
+once (\S\ref{sec:conjunction}) and, for heap-resident lengths, memory
+(\S\ref{sec:frame}).
+
+\paragraph{Reducing sanitizer overhead.}
+Sanitizers such as AddressSanitizer~\cite{serebryany2012asan} and
+UBSan~\cite{ubsanDocs} are the most widely deployed runtime checks.
+ASAP~\cite{wagner2015asap} lowers their cost by removing the checks on
+the hottest code, trading safety for speed under a user-chosen overhead
+budget; \tool{} removes only checks it proves can never fire, so the
+safety guarantee is unchanged. SanRazor~\cite{zhang2021sanrazor}
+removes checks that are redundant with other checks, using a
+combination of static and dynamic (profiling) analysis; \tool{}'s
+removals are static and each is backed by a solver proof.
+
+\paragraph{Guards and loop versioning.}
+Cloning a loop behind a runtime test is established practice: .NET's
+RyuJIT clones loops to remove bounds checks, and LLVM's loop versioning
+guards a copy by runtime alias checks. In both, the guard is taken from a
+fixed syntactic pattern. Guard synthesis (\S\ref{sec:guards}) instead
+obtains the guard from the solver, as an abductive
+hypothesis~\cite{dillig2012abductive,dillig2013abductive}, and verifies
+that it is sufficient and consistent before the loop is cloned.
+
+%% =====================================================================
 \section{Conclusion}
 \label{sec:conclusion}
-We introduced super-analysis, an alternative paradigm of aggressive compilation which uses a solver for analysis only. We show that this paradigm is effective: it can speedup our benchmarks up to $4\times$ on two architectures. Super-analysis can be used online, and the cost of compilation can be controlled by parallelization and strict SMT timeout budgets. Our implementation, \tool{} targeted safety check removal, and further optimizes the simplified IR after the removal. Future work consists of extending this paradigm into other analyses and optimizations.
+We introduced super-analysis, an alternative paradigm of aggressive compilation which uses a solver for analysis only. We show that this paradigm is effective: it can speedup our benchmarks up to $4\times$. Super-analysis can be used online, and the cost of compilation can be controlled by parallelization and strict SMT timeout budgets. Our implementation, \tool{} targeted safety check removal and loop cloning under synthesized guards. Future work consists of extending this paradigm into other analyses and optimizations.
 %% =====================================================================
 \begin{acks}
 %% Anonymized for review.
