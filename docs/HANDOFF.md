@@ -3238,3 +3238,15 @@ lz77_bounded2, which are designated hand-edited copies, not benchmarks. Without 
 checks in 17 kernels; proved dead: mv 105, mv-nofold+O3 88, IRCE+O3 31, O3 alone 17; nesting
 still holds. Guarded copies: 32 checks, O3 removes 13 given the guard, 0 of the 14 Julia ones.
 The paper's RQ2 uses these. Next session: runtime ablation incl. IRCE+ODeSSy (server).
+
+### 10.66 RQ2 guard-synthesis ablation, phase 1 (static + Swift/Rust runtime), prepared Sep 27
+New knob `mv-keep`: clone and guard exactly as `mv`, leave every fast-copy check in place
+(no new symbol, so it links; the pass still counts the guarded proofs as "folds").
+`run_guard_competitors.sh` gained arm D = IRCE, then ODeSSy without guard synthesis
+(`heavy;frame;ind;timeout=10000;threads=1`), then O3; hot path = no copy left outside
+IRCE's .preloop/.postloop clones; plus a nesting check. Mac check on base64: D = IRCE+O3
+(ODeSSy without mv proves only the 2 checks O3 already removes; IRCE removes 2 others).
+`scripts/run_guard_ablation.sh`: Part S = x86 IR for the 17 kernels (Rust: the *_bench
+sources that were timed; Julia: x86 emission) through all five pipelines; Part R = runtime
+arms mv / keep / irce_od / irce_o3 for Swift base64, crc32 and Rust matmul (REPS=30).
+Julia runtime arms are phase 2, built from Part S's per-check results.

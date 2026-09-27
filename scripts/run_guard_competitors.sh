@@ -8,19 +8,36 @@
 #                            LLVM -O3 must prove the fast-copy checks itself.
 #   C. LLVM IRCE, O3:        LLVM extracts the range and versions the loop
 #                            (irce is not in -O3; run first), then -O3.
+#   D. LLVM IRCE, ODeSSy, O3: LLVM's guard and loop versioning, ODeSSy's proofs
+#                            (no guard synthesis) on IRCE's output (HANDOFF §10.66).
 #   ref. O3 alone.
 # A check counts as "dead" for a competitor if its id vanishes from the module
 # (proved everywhere) or it is removed on the hot path: the fast copy (A, B)
-# or IRCE's main loop (C: range checks IRCE reports in a loop it changed).
+# or IRCE's main loop (C: range checks IRCE reports in a loop it changed;
+# D: the same, plus checks with no copy left outside IRCE's .preloop/.postloop
+# clones after ODeSSy and simplifycfg).
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"; cd "$ROOT"
 KN="heavy;frame;ind;mv;narrow;timeout=10000;threads=1"
+KD="heavy;frame;ind;timeout=10000;threads=1"      # arm D: ODeSSy without guard synthesis
 OUT="${OUT:-results/static/guard_competitors}"; mkdir -p "$OUT"; : > "$OUT/per_check.tsv"
 FILES="${*:-$(ls logs/swift_triage/*.ll logs/julia_triage/*.ll logs/rust_triage/*.ll)}"
 P=build/OraclePass.so
 ids() { grep -oE 'call void @odessy\.chk\(i32 [0-9]+\)' "$1" | grep -oE '[0-9]+\)$' | tr -d ')' | sort -un; }
 gone() { comm -23 <(printf "%s\n" $ALL | sort) <(ids "$1" | sort); }   # ids absent from module
 n() { printf "%s\n" "$@" | grep -c '[0-9]'; }
-printf "%-24s %-5s %6s | %5s | %5s %5s | %5s %5s | %5s %5s\n" kernel lang checks O3 mv:dead left nofoldO3 left irceO3 left | tee "$OUT/table.txt"
+# ids whose every remaining call sits in an IRCE pre/post-loop clone (or none remains)
+mainfree() { python3 - "$1" <<'PY'
+import re, sys
+t = open(sys.argv[1]).read(); keep = set(); allids = set()
+for blk in re.split(r'\n(?=[\w.$-]+:)', t):
+    m = re.match(r'([\w.$-]+):', blk); name = m.group(1) if m else ""
+    for i in re.findall(r'call void @odessy\.chk\(i32 (\d+)\)', blk):
+        allids.add(i)
+        if '.preloop' not in name and '.postloop' not in name: keep.add(i)
+print("\n".join(sorted(allids - keep, key=int)))
+PY
+}
+printf "%-24s %-5s %6s | %5s | %5s %5s | %5s %5s | %5s %5s | %5s %5s\n" kernel lang checks O3 mv:dead left nofoldO3 left irceO3 left irceOD left | tee "$OUT/table.txt"
 for f in $FILES; do
   case $f in *rust*) TR="traps=panic:odessy.chk"; L=Rust;; *julia*) TR="traps=bounds_error:boundserror:odessy.chk"; L=Julia;; *) TR="traps=odessy.chk"; L=Swift;; esac
   k=$(basename "$f" .ll); d="$OUT/${L}_$k"; mkdir -p "$d"
@@ -46,7 +63,13 @@ for f in $FILES; do
        | while read b; do grep -A1 "^$b:" "$d/tag.ll" | grep -oE 'odessy\.chk\(i32 [0-9]+' | grep -oE '[0-9]+$'; done | sort -un)
   opt -passes='default<O3>' -S "$d/irce.ll" -o "$d/irce.O3.ll"
   C=$(printf "%s\n" $(gone "$d/irce.O3.ll") $CH | grep '[0-9]' | sort -un)
-  printf "%-24s %-5s %6s | %5s | %5s %5s | %5s %5s | %5s %5s\n" "$k" $L $N $(n $O3) $(n $A) $((N-$(n $A))) $(n $B) $((N-$(n $B))) $(n $C) $((N-$(n $C))) | tee -a "$OUT/table.txt"
-  for i in $ALL; do printf "%s\t%s\t%s\t%s\t%s\t%s\n" "$k" $i $(echo "$O3"|grep -qx $i&&echo 1||echo 0) $(echo "$A"|grep -qx $i&&echo 1||echo 0) $(echo "$B"|grep -qx $i&&echo 1||echo 0) $(echo "$C"|grep -qx $i&&echo 1||echo 0); done >> "$OUT/per_check.tsv"
+  # D: IRCE, then ODeSSy without guard synthesis, then O3
+  opt -load-pass-plugin=$P -passes="oracle-pass<$KD;$TR>,function(simplifycfg)" -S "$d/irce.ll" -o "$d/irce.od.ll" 2> "$d/irce.od.err"
+  opt -passes='default<O3>' -S "$d/irce.od.ll" -o "$d/irce.od.O3.ll"
+  D=$(printf "%s\n" $(gone "$d/irce.od.O3.ll") $CH $(mainfree "$d/irce.od.ll") | grep '[0-9]' | sort -un)
+  printf "%-24s %-5s %6s | %5s | %5s %5s | %5s %5s | %5s %5s | %5s %5s\n" "$k" $L $N $(n $O3) $(n $A) $((N-$(n $A))) $(n $B) $((N-$(n $B))) $(n $C) $((N-$(n $C))) $(n $D) $((N-$(n $D))) | tee -a "$OUT/table.txt"
+  for i in $ALL; do printf "%s\t%s\t%s\t%s\t%s\t%s\t%s\n" "$k" $i $(echo "$O3"|grep -qx $i&&echo 1||echo 0) $(echo "$A"|grep -qx $i&&echo 1||echo 0) $(echo "$B"|grep -qx $i&&echo 1||echo 0) $(echo "$C"|grep -qx $i&&echo 1||echo 0) $(echo "$D"|grep -qx $i&&echo 1||echo 0); done >> "$OUT/per_check.tsv"
 done
-awk -F'\t' '{t++;o+=$3;a+=$4;b+=$5;c+=$6} END{printf "TOTAL %d checks | O3 %d | mv %d (left %d) | nofold+O3 %d (left %d) | irce+O3 %d (left %d)\n",t,o,a,t-a,b,t-b,c,t-c}' "$OUT/per_check.tsv" | tee -a "$OUT/table.txt"
+awk -F'\t' '{t++;o+=$3;a+=$4;b+=$5;c+=$6;e+=$7} END{printf "TOTAL %d checks | O3 %d | mv %d (left %d) | nofold+O3 %d (left %d) | irce+O3 %d (left %d) | irce+ODeSSy %d (left %d)\n",t,o,a,t-a,b,t-b,c,t-c,e,t-e}' "$OUT/per_check.tsv" | tee -a "$OUT/table.txt"
+# nesting check: checks some rival proves dead that mv does not
+awk -F'\t' '$4==0 && ($3||$5||$6||$7){print "NOT NESTED:", $0}' "$OUT/per_check.tsv" | tee -a "$OUT/table.txt"

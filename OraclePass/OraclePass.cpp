@@ -161,6 +161,11 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
     // counting surviving ids measures what LLVM itself can prove given the
     // synthesized guard. Semantics are unchanged: the check still traps.
     bool MVNoFold = false;
+    // mv-keep (runtime ablation, HANDOFF §10.66): clone and guard exactly as
+    // `mv` does, but leave every fast-copy check untouched (it still branches
+    // to its original trap), so only the later -O3 can remove it. Unlike
+    // mv-nofold it introduces no new symbol, so the output links and runs.
+    bool MVKeep = false;
     // tag-checks (experiment, HANDOFF §10.59): run discovery ONLY, redirect
     // every discovered trap edge to its own block calling `odessy.chk(i32 id)`
     // (ids in discovery order), then stop. Gives every check a stable identity
@@ -173,12 +178,12 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
                bool Frame = false, bool MV = false, unsigned MVSane = 62,
                bool T3 = false, unsigned Profile = 0, bool Narrow = false,
                unsigned NBits = 16, bool Ind = false, bool NoPI = false,
-               bool NoFold = false, bool Tag = false)
+               bool NoFold = false, bool Tag = false, bool Keep = false)
         : VacuityCheck(Vacuity), HeavyMode(Heavy), QueryTimeoutMs(TimeoutMs),
           Threads(NThreads), LoadEq(LdEq), TrapCallees(std::move(Traps)),
           FrameMode(Frame), MultiVersion(MV), MVT3(T3), MVSaneExp(MVSane),
           ProfileMs(Profile), NarrowMul(Narrow), NarrowBits(NBits),
-          Inductive(Ind), NoPhiInv(NoPI), MVNoFold(NoFold), TagChecks(Tag) {}
+          Inductive(Ind), NoPhiInv(NoPI), MVNoFold(NoFold), TagChecks(Tag), MVKeep(Keep) {}
 
     PreservedAnalyses run(Module &M, ModuleAnalysisManager &MAM) {
         auto &FAM =
@@ -269,7 +274,7 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
                << (FrameMode ? " [frame]" : "")
                << (MultiVersion ? (MVT3 ? " [mv]" : " [mv-light]") : "")
                << (NarrowMul ? " [narrow]" : "") << (Inductive ? " [ind]" : "") << (NoPhiInv ? " [nophiinv]" : "")
-               << (MVNoFold ? " [mv-nofold]" : "") << (TagChecks ? " [tag-checks]" : "");
+               << (MVNoFold ? " [mv-nofold]" : "") << (MVKeep ? " [mv-keep]" : "") << (TagChecks ? " [tag-checks]" : "");
         if (!TrapCallees.empty()) {
             errs() << " [traps=";
             for (size_t i = 0; i < TrapCallees.size(); ++i)
@@ -516,6 +521,10 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
                     unsigned N = 0;
                     for (BranchInst *CBr : Targets) {
                         if (!CBr->isConditional() || !Folded.insert(CBr).second) continue;
+                        if (MVKeep) {
+                            OS << "    -> [mv-keep] check left in the H-guarded fast copy\n";
+                            ++N; continue;
+                        }
                         if (MVNoFold) {
                             // Keep the check; give its trap edge a private,
                             // numbered trap so -O3 can only delete it by
@@ -643,7 +652,7 @@ llvmGetPassPluginInfo() {
                         bool Frame = false;               // FRAME default: off
                         bool MV = false, MVT3 = false; unsigned MVSane = 62;  // MV default: off
                         unsigned Profile = 0; bool Narrow = false; unsigned NBits = 16;
-                        bool Ind = false, NoPI = false, NoFold = false, Tag = false;
+                        bool Ind = false, NoPI = false, NoFold = false, Tag = false, Keep = false;
                         std::vector<std::string> Traps;   // traps= callees: empty
                         if (!Name.empty()) {              // parse "<a;b;...>"
                             if (!Name.consume_front("<") || !Name.consume_back(">"))
@@ -670,6 +679,8 @@ llvmGetPassPluginInfo() {
                                     NoPI = true;
                                 else if (P == "mv-nofold")
                                     NoFold = true;
+                                else if (P == "mv-keep")
+                                    Keep = true;
                                 else if (P == "tag-checks")
                                     Tag = true;
                                 else if (P.consume_front("narrow=")) {
@@ -724,7 +735,7 @@ llvmGetPassPluginInfo() {
                         }
                         MPM.addPass(OraclePass(Vacuity, Heavy, TimeoutMs, Threads,
                                                LdEq, std::move(Traps), Frame,
-                                               MV, MVSane, MVT3, Profile, Narrow, NBits, Ind, NoPI, NoFold, Tag));
+                                               MV, MVSane, MVT3, Profile, Narrow, NBits, Ind, NoPI, NoFold, Tag, Keep));
                         return true;
                     }
                 );
