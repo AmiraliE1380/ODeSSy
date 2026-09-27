@@ -5864,3 +5864,6 @@ main,base2x,30,3.008142
 sha256,oracle,1,4.454914
 sha256,base,1,4.925606
 sha256,base2x,1,4.915306
+sha256,base2x,1,4.920564
+sha256,oracle,1,4.453438
+sha256,base,1,4.924315
