@@ -25,7 +25,10 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"; cd "$ROOT"
 PL_ROOT="$(dirname "$ROOT")"
 THOROUGH="${THOROUGH:-heavy;frame;ind;mv;narrow;timeout=10000;threads=1}"
 FAST="${FAST:-heavy;frame;mv;narrow;timeout=10;threads=10}"
-FAST_REPS="${FAST_REPS:-3}"
+LIGHT="${LIGHT:-timeout=10;threads=10}"   # light tier: no imported analyses, no frame, no guard synthesis
+FAST_REPS="${FAST_REPS:-3}"                # repetitions for fast and light (median)
+CONFIGS="${CONFIGS:-o3 thorough fast light}"   # subset to run; rows with the same (bench,module) are merged
+has() { [[ " $CONFIGS " == *" $1 "* ]]; }
 ONLY="${ONLY:-}"
 OUT="${OUT:-results/static/compile_cost}"
 ZLIB="${ZLIB:-$PL_ROOT/zlib}"; ZSTD="${ZSTD:-$PL_ROOT/zstd}"
@@ -34,7 +37,9 @@ PIN="numactl --cpunodebind=0 --membind=0"; command -v numactl >/dev/null || PIN=
 PLUGIN="$ROOT/build/OraclePass.so"
 W="$OUT/ir"; mkdir -p "$W" "$OUT/logs"
 CSV="$OUT/modules.csv"
-[ "${APPEND:-0}" = 1 ] && [ -s "$CSV" ] || echo "bench,lang,module,checks,o3_s,thorough_s,thorough_proofs,fast_s,fast_proofs" > "$CSV"
+# an older CSV without the light columns gets its header upgraded (old rows simply lack them)
+[ -s "$CSV" ] && ! head -1 "$CSV" | grep -q light_s && sed -i.bak '1s/$/,light_s,light_proofs/' "$CSV" && rm -f "$CSV.bak"
+[ "${APPEND:-0}" = 1 ] && [ -s "$CSV" ] || echo "bench,lang,module,checks,o3_s,thorough_s,thorough_proofs,fast_s,fast_proofs,light_s,light_proofs" > "$CSV"
 want() { [ -z "$ONLY" ] || [[ "$1" =~ $ONLY ]]; }
 
 # Swift toolchain resolution, as in run_swift_perf.sh (pinned version on both machines)
@@ -52,18 +57,27 @@ tm() { python3 -c 'import subprocess,sys,time
 t=time.monotonic(); r=subprocess.run(sys.argv[1:]); print(f"{time.monotonic()-t:.3f}"); sys.exit(r.returncode)' "$@"; }
 proofs() { awk '/Total Traps Eliminated:/{e+=$NF} /Folded In Fast Copies/{f+=$NF} END{print e+f+0}' "$1"; }
 checks() { awk '/Total Trap Attempts:/{n+=$NF} END{print n+0}' "$1"; }
-median() { python3 -c 'import statistics,sys; print(f"{statistics.median(float(x) for x in sys.argv[1:]):.3f}")' "$@"; }
+median() { python3 -c 'import statistics,sys
+v=[float(x) for x in sys.argv[1:] if x not in ("","FAIL")]
+print(f"{statistics.median(v):.3f}" if len(v)==len(sys.argv[1:]) else "FAIL")' "$@"; }
 
 measure() {  # bench lang module ll trapspec
   local b=$1 l=$2 m=$3 ll=$4 tr=$5 L="$OUT/logs/$1.$3"
-  local o3 th fs=() fp=0 i
-  o3=$(tm $PIN opt -passes='default<O3>' -disable-output "$ll" 2>/dev/null) || o3=NA
-  th=$(tm $PIN opt -load-pass-plugin="$PLUGIN" -passes="oracle-pass<$THOROUGH$tr>" -disable-output "$ll" 2>"$L.thorough.err") || th=FAIL
-  for ((i=1; i<=FAST_REPS; i++)); do
-    fs+=("$(tm $PIN opt -load-pass-plugin="$PLUGIN" -passes="oracle-pass<$FAST$tr>" -disable-output "$ll" 2>"$L.fast.err")")
-  done
-  printf "%s,%s,%s,%s,%s,%s,%s,%s,%s\n" "$b" "$l" "$m" "$(checks "$L.thorough.err")" "$o3" "$th" \
-    "$(proofs "$L.thorough.err")" "$(median "${fs[@]}")" "$(proofs "$L.fast.err")" | tee -a "$CSV"
+  local o3=NA th=NA tp=NA fs=NA fp=NA ls=NA lp=NA ck=NA t=() i
+  has o3 && { o3=$(tm $PIN opt -passes='default<O3>' -disable-output "$ll" 2>/dev/null) || o3=FAIL; }
+  if has thorough; then
+    th=$(tm $PIN opt -load-pass-plugin="$PLUGIN" -passes="oracle-pass<$THOROUGH$tr>" -disable-output "$ll" 2>"$L.thorough.err") || th=FAIL
+    tp=$(proofs "$L.thorough.err"); ck=$(checks "$L.thorough.err")
+  fi
+  if has fast; then t=()
+    for ((i=1; i<=FAST_REPS; i++)); do t+=("$(tm $PIN opt -load-pass-plugin="$PLUGIN" -passes="oracle-pass<$FAST$tr>" -disable-output "$ll" 2>"$L.fast.err" || echo FAIL)"); done
+    fs=$(median "${t[@]}"); fp=$(proofs "$L.fast.err"); [ "$ck" = NA ] && ck=$(checks "$L.fast.err")
+  fi
+  if has light; then t=()
+    for ((i=1; i<=FAST_REPS; i++)); do t+=("$(tm $PIN opt -load-pass-plugin="$PLUGIN" -passes="oracle-pass<$LIGHT$tr>" -disable-output "$ll" 2>"$L.light.err" || echo FAIL)"); done
+    ls=$(median "${t[@]}"); lp=$(proofs "$L.light.err"); [ "$ck" = NA ] && ck=$(checks "$L.light.err")
+  fi
+  echo "$b,$l,$m,$ck,$o3,$th,$tp,$fs,$fp,$ls,$lp" | tee -a "$CSV"
 }
 
 # ---- Swift kernels + CryptoSwift: swiftc -O -wmo -emit-ir, one module each
@@ -123,17 +137,24 @@ if want zlib; then
   done
 fi
 
-# ---- summary: per benchmark, total over modules and the slowest module
-python3 - "$CSV" <<'PYEOF' | tee "$OUT/table.txt"
-import csv, sys, collections
-rows = [r for r in csv.DictReader(open(sys.argv[1]))]
+# ---- summary: merge rows per (bench, module) -- partial reruns fill in columns --
+#      then per benchmark: total over modules and the slowest module
+python3 - "$CSV" <<'PYEOF2' | tee "$OUT/table.txt"
+import csv, sys, collections, math
+bad = ("", "NA", "FAIL", None)
+mods = collections.OrderedDict()
+for r in csv.DictReader(open(sys.argv[1])):
+    k = (r["bench"], r["lang"], r["module"])
+    m = mods.setdefault(k, {})
+    for c, v in r.items():
+        if c and v not in bad: m[c] = v                # later non-empty values win
 by = collections.OrderedDict()
-for r in rows: by.setdefault((r["bench"], r["lang"]), []).append(r)
-f = lambda x: float(x) if x not in ("NA", "FAIL", "") else float("nan")
-print(f"{'benchmark':16s} {'lang':5s} {'mods':>4s} {'checks':>6s} {'O3 s':>8s} | {'thorough s':>11s} {'(slowest)':>9s} {'proofs':>6s} | {'fast s':>8s} {'(slowest)':>9s} {'proofs':>6s}")
-for (b, l), rs in by.items():
-    s = lambda k: sum(f(r[k]) for r in rs)
-    mx = lambda k: max(f(r[k]) for r in rs)
-    print(f"{b:16s} {l:5s} {len(rs):4d} {int(s('checks')):6d} {s('o3_s'):8.2f} | {s('thorough_s'):11.2f} {mx('thorough_s'):9.2f} {int(s('thorough_proofs')):6d} | "
-          f"{s('fast_s'):8.2f} {mx('fast_s'):9.2f} {int(s('fast_proofs')):6d}")
-PYEOF
+for (b, l, _), m in mods.items(): by.setdefault((b, l), []).append(m)
+num = lambda m, c: float(m[c]) if c in m else math.nan
+print(f"{'benchmark':16s} {'lang':5s} {'mods':>4s} {'checks':>6s} {'O3 s':>7s} | {'thorough s':>10s} {'(max)':>8s} {'pf':>4s} | {'fast s':>8s} {'(max)':>7s} {'pf':>4s} | {'light s':>8s} {'(max)':>7s} {'pf':>4s}")
+for (b, l), ms in by.items():
+    S = lambda c: sum(num(m, c) for m in ms); M = lambda c: max(num(m, c) for m in ms)
+    P = lambda c: int(S(c)) if not math.isnan(S(c)) else -1
+    print(f"{b:16s} {l:5s} {len(ms):4d} {P('checks'):6d} {S('o3_s'):7.2f} | {S('thorough_s'):10.2f} {M('thorough_s'):8.2f} {P('thorough_proofs'):4d} | "
+          f"{S('fast_s'):8.2f} {M('fast_s'):7.2f} {P('fast_proofs'):4d} | {S('light_s'):8.2f} {M('light_s'):7.2f} {P('light_proofs'):4d}")
+PYEOF2

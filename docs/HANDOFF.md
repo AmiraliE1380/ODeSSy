@@ -3220,3 +3220,7 @@ Thorough). Its queries are ms-scale (570 UNKNOWN at the 10 ms cap), so the time 
 outside the solver. Mac attribution on the same module (Fast 39.6 s): without mv 15.5 s,
 without frame 28.5 s, light tier 3.0 s with 26 proofs vs 30. The cost is fact import
 (heavy+frame) and guard-synthesis machinery, not the per-query budget.
+- Sep 27: third configuration Light = `timeout=10;threads=10` (light tier: no imported
+  analyses, no frame, no guard synthesis), FAST_REPS reps. CONFIGS selects a subset;
+  rows per (bench,module) are merged, old CSV headers are upgraded. Server plan: Julia
+  rows with all configurations, then Light for every other benchmark.
