@@ -3173,3 +3173,11 @@ lz4 PROD: did not finish (log ends during the oracle build); no data.
 - zstd: its harness had no unchecked build. `run_zstd_perf.sh` gained
   CEILING=1 (lib compiled without -fsanitize, through opt -O3 as base, byte-
   identity gated; smoke-tested on the Mac). Campaign job: ONLY=ceil_zstd.
+- zstd ceiling measured (server, Sep 26, S=0926, ONLY=ceil_zstd, PROD knobs, 30 reps):
+  comp base 0.3989 / base2x 0.3937 / oracle 0.3744 / unchecked 0.3713 s ->
+  speedup 1.065× (replicate of 1.059×), vs base2x 1.052×, floor 1.013×,
+  ceiling 1.075×. decomp: 1.001×, ceiling 1.002× (no headroom).
+  Source: the pasted campaign tail; the committed log arrives with the server push.
+- nbody, Julia filt_dsp and poly: kept out of the runtime table (no proofs
+  that change the hot path). The August nbody ceiling (+410%, plain -O vs
+  -Ounchecked) is future-work motivation only.
