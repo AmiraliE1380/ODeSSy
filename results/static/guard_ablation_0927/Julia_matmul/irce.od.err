@@ -1,0 +1,72 @@
+[ODeSSy] 3 trap site(s) across 2 function(s); threads=1 [tier: heavy] [frame] [ind] [traps=bounds_error,boundserror,odessy.chk]
+
+[Z3 Oracle] Analyzing Function: julia_matmul!_145
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of 'top'):  %.not44 = icmp slt i64 %"n::Int64", 1, !dbg !29
+    -> Collected 1 dominating context guard(s).
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[PHIINV-hi:0] i64 %value_phi45 == i64 1 || sle(i64 %value_phi45, i64 %"n::Int64") (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:1] (B <=s INT_MAX-1 && v0 <=s B) -> i64 %value_phi45 >=s i64 1 (monotone WRAPPING increments; conditional)
+    -> Fact[PHIINV-hi:2] i64 %value_phi240 == i64 1 || sle(i64 %value_phi240, i64 %"n::Int64") (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:3] (B <=s INT_MAX-1 && v0 <=s B) -> i64 %value_phi240 >=s i64 1 (monotone WRAPPING increments; conditional)
+    -> [heavy] 4 analysis fact(s) on 4 boundary value(s)
+    -> [ind L0] BASE (2 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 22.031833 ms]
+    -> [ind L1] BASE (1 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 21.874994 ms]
+    -> [ind L2] BASE (1 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 20.859720 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 38.712477 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of 'L14'):  %.not31 = icmp ult i64 %5, %"a::Array.size.0.copyload", !dbg !39
+    -> Guard[1] (false edge of 'top'):  %.not44 = icmp slt i64 %"n::Int64", 1, !dbg !29
+    -> Collected 2 dominating context guard(s).
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[PHIINV-hi:0] i64 %value_phi45 == i64 1 || sle(i64 %value_phi45, i64 %"n::Int64") (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:1] (B <=s INT_MAX-1 && v0 <=s B) -> i64 %value_phi45 >=s i64 1 (monotone WRAPPING increments; conditional)
+    -> Fact[LVI:2] i64 %"a::Array.size.0.copyload" in [1,0) (LVI @ L31)
+    -> Fact[PHIINV-hi:3] i64 %value_phi143 == i64 1 || sle(i64 %value_phi143, i64 %"n::Int64") (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:4] (B <=s INT_MAX-1 && v0 <=s B) -> i64 %value_phi143 >=s i64 1 (monotone WRAPPING increments; conditional)
+    -> Fact[PHIINV-hi:5] i64 %value_phi240 == i64 1 || sle(i64 %value_phi240, i64 %"n::Int64") (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:6] (B <=s INT_MAX-1 && v0 <=s B) -> i64 %value_phi240 >=s i64 1 (monotone WRAPPING increments; conditional)
+    -> [heavy] 7 analysis fact(s) on 6 boundary value(s)
+    -> [ind L0] BASE (2 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 27.261030 ms]
+    -> [ind L1] BASE (1 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 27.329864 ms]
+    -> [ind L2] BASE (1 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 26.952005 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 48.265082 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of 'L52'):  %.not30 = icmp sgt i64 %14, %"n::Int64", !dbg !64
+    -> Guard[1] (true edge of 'L31'):  %.not32 = icmp ult i64 %9, %"b::Array.size.0.copyload", !dbg !39
+    -> Guard[2] (true edge of 'L14'):  %.not31 = icmp ult i64 %5, %"a::Array.size.0.copyload", !dbg !39
+    -> Guard[3] (false edge of 'top'):  %.not44 = icmp slt i64 %"n::Int64", 1, !dbg !29
+    -> Collected 4 dominating context guard(s).
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i64 %"n::Int64" in [-9223372036854775808,9223372036854775807) (LVI @ L10.L60_crit_edge)
+    -> Fact[PHIINV-hi:1] i64 %value_phi45 == i64 1 || sle(i64 %value_phi45, i64 %"n::Int64") (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:2] (B <=s INT_MAX-1 && v0 <=s B) -> i64 %value_phi45 >=s i64 1 (monotone WRAPPING increments; conditional)
+    -> Fact[LVI:3] i64 %"a::Array.size.0.copyload" in [1,0) (LVI @ L10.L60_crit_edge)
+    -> Fact[PHIINV-hi:4] i64 %value_phi143 == i64 1 || sle(i64 %value_phi143, i64 %"n::Int64") (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:5] (B <=s INT_MAX-1 && v0 <=s B) -> i64 %value_phi143 >=s i64 1 (monotone WRAPPING increments; conditional)
+    -> Fact[LVI:6] i64 %"b::Array.size.0.copyload" in [1,0) (LVI @ L10.L60_crit_edge)
+    -> Fact[LVI:7] i64 %value_phi240 in [-9223372036854775808,9223372036854775807) (LVI @ L10.L60_crit_edge)
+    -> Fact[PHIINV-hi:8] i64 %value_phi240 == i64 1 || sle(i64 %value_phi240, i64 %"n::Int64") (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:9] (B <=s INT_MAX-1 && v0 <=s B) -> i64 %value_phi240 >=s i64 1 (monotone WRAPPING increments; conditional)
+    -> [heavy] 10 analysis fact(s) on 7 boundary value(s)
+    -> [ind L0] BASE (1 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.943147 ms]
+    -> [ind L1] BASE (1 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.752506 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 27.032181 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 3
+  => Total SMT Queries Executed: 3
+  => Total SMT Query Latency: 3.318171e+02 ms
+  => Average SMT Query Latency: 1.106057e+02 ms
+  => Total DFS & SMT Execution Time: 5.450287e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: jfptr_matmul!_146
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 5.517700e-02 ms
+--------------------------------------------------

@@ -1,0 +1,35 @@
+irce: looking at loop Loop at depth 3 containing: %scalar.ph<header><exiting>,%227<exiting>,%229<exiting>,%231<exiting>,%233<exiting>,%234<latch><exiting>
+irce: loop has 5 inductive range checks: 
+InductiveRangeCheck:
+  Begin: ((4 * %.ph)<nsw> + {0,+,64}<nuw><nsw><%162>)<nuw><nsw>  Step: 4  End: %149
+  CheckUse:   br i1 %.not69, label %227, label %odessy.chk5, !prof !11 Operand: 0
+InductiveRangeCheck:
+  Begin: ((4 * %.ph)<nsw> + {1,+,64}<nuw><nsw><%162>)  Step: 4  End: %149
+  CheckUse:   br i1 %.not70, label %229, label %odessy.chk6, !prof !11 Operand: 0
+InductiveRangeCheck:
+  Begin: ((4 * %.ph)<nsw> + {2,+,64}<nuw><nsw><%162>)  Step: 4  End: %149
+  CheckUse:   br i1 %.not71, label %231, label %odessy.chk7, !prof !11 Operand: 0
+InductiveRangeCheck:
+  Begin: ((4 * %.ph)<nsw> + {3,+,64}<nuw><nsw><%162>)  Step: 4  End: %149
+  CheckUse:   br i1 %.not112, label %233, label %odessy.chk8, !prof !11 Operand: 0
+InductiveRangeCheck:
+  Begin: %.ph  Step: 1  End: 80
+  CheckUse:   br i1 %.not72, label %234, label %odessy.chk9, !prof !11 Operand: 0
+irce: looking at loop Loop at depth 3 containing: %.preheader87.preheader<header><exiting>,%257<latch><exiting>
+irce: loop has 1 inductive range checks: 
+InductiveRangeCheck:
+  Begin: 13  Step: 1  End: 80
+  CheckUse:   br i1 %.not73, label %257, label %odessy.chk10, !prof !11 Operand: 0
+irce: in function main: constrained Loop at depth 3 containing: %.preheader87.preheader<header><exiting>,%257<latch><exiting>
+irce: looking at loop Loop at depth 3 containing: %.preheader<header>,%291,%296,%303,%298,%293,%286,%306<latch><exiting>
+irce: loop has 3 inductive range checks: 
+InductiveRangeCheck:
+  Begin: 0  Step: 1  End: 20
+  CheckUse:   br i1 %278, label %286, label %291 Operand: 0
+InductiveRangeCheck:
+  Begin: 0  Step: 1  End: 40
+  CheckUse:   br i1 %292, label %293, label %296 Operand: 0
+InductiveRangeCheck:
+  Begin: 0  Step: 1  End: 60
+  CheckUse:   br i1 %297, label %298, label %303 Operand: 0
+irce: in function main: constrained Loop at depth 3 containing: %.preheader<header>,%291,%296,%303,%298,%293,%286,%306<latch><exiting>

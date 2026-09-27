@@ -1,0 +1,26 @@
+irce: looking at loop Loop at depth 3 containing: %scalar.ph<header><exiting>,%236<exiting>,%238<exiting>,%240<exiting>,%242<latch><exiting>
+irce: loop has 4 inductive range checks: 
+InductiveRangeCheck:
+  Begin: ((4 * %.ph)<nsw> + {0,+,64}<nuw><nsw><%.preheader101>)<nuw><nsw>  Step: 4  End: %150
+  CheckUse:   br i1 %.not82, label %236, label %odessy.chk7, !prof !11 Operand: 0
+InductiveRangeCheck:
+  Begin: ((4 * %.ph)<nsw> + {1,+,64}<nuw><nsw><%.preheader101>)  Step: 4  End: %150
+  CheckUse:   br i1 %.not83, label %238, label %odessy.chk8, !prof !11 Operand: 0
+InductiveRangeCheck:
+  Begin: ((4 * %.ph)<nsw> + {2,+,64}<nuw><nsw><%.preheader101>)  Step: 4  End: %150
+  CheckUse:   br i1 %.not84, label %240, label %odessy.chk9, !prof !11 Operand: 0
+InductiveRangeCheck:
+  Begin: ((4 * %.ph)<nsw> + {3,+,64}<nuw><nsw><%.preheader101>)  Step: 4  End: %150
+  CheckUse:   br i1 %.not127, label %242, label %odessy.chk10, !prof !11 Operand: 0
+irce: looking at loop Loop at depth 3 containing: %.preheader<header>,%281,%291,%299,%293,%283,%276,%305<exiting>,%312<latch><exiting>
+irce: loop has 3 inductive range checks: 
+InductiveRangeCheck:
+  Begin: 0  Step: 1  End: 16
+  CheckUse:   br i1 %269, label %276, label %281 Operand: 0
+InductiveRangeCheck:
+  Begin: 0  Step: 1  End: 32
+  CheckUse:   br i1 %282, label %283, label %291 Operand: 0
+InductiveRangeCheck:
+  Begin: 0  Step: 1  End: 48
+  CheckUse:   br i1 %292, label %293, label %299 Operand: 0
+irce: in function main: constrained Loop at depth 3 containing: %.preheader<header>,%281,%291,%299,%293,%283,%276,%305<exiting>,%312<latch><exiting>

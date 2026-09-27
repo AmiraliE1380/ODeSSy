@@ -1,0 +1,500 @@
+[ODeSSy] 9 trap site(s) across 1 function(s); threads=1 [tier: heavy] [frame] [ind] [traps=bounds_error,boundserror,odessy.chk]
+
+[Z3 Oracle] Analyzing Function: japi1_gemm!_145
+  [tier: heavy]
+  -> Trap source: abstractarray.jl:699
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of 'L55.preheader.split'):  %.fr = freeze i1 %28
+    -> Guard[1] (false edge of 'L37'):  %.fr578 = freeze i1 %24
+    -> Guard[2] (false edge of 'L37.preheader.split'):  %9 = icmp slt i64 %.size.sroa.0.0.copyload.fr, 1
+    -> Guard[3] (false edge of 'L37.preheader'):  %8 = icmp slt i64 %.size2.sroa.1.0.copyload, 1
+    -> Guard[4] (false edge of 'L20'):  %7 = icmp slt i64 %.size.sroa.3.0.copyload, 1, !dbg !68
+    -> Guard[5] (true edge of 'L15'):  %.not150 = icmp eq i64 %.size8.sroa.1.0.copyload, %.size.sroa.3.0.copyload, !dbg !59
+    -> Guard[6] (true edge of 'L10'):  %.not149 = icmp eq i64 %.size6.sroa.0.0.copyload, %.size2.sroa.1.0.copyload, !dbg !56
+    -> Guard[7] (true edge of 'top'):  %.not = icmp eq i64 %.size4.sroa.0.0.copyload, %.size.sroa.0.0.copyload.fr, !dbg !51
+    -> Collected 8 dominating context guard(s).
+    -> Frame[0] held (cross-BB, no intervening clobber):  %.size.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size39.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8
+    -> Frame[1] held (cross-BB, no intervening clobber):  %.size.sroa.3.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size39.sroa.2.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8
+    -> Frame[2] held (cross-BB, no intervening clobber):  %.size4.sroa.0.0.copyload = load i64, ptr %.size_ptr1, align 8, !dbg !49, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size58.sroa.0.0.copyload = load i64, ptr %.size_ptr1, align 8
+    -> Frame[3] held (cross-BB, no intervening clobber):  %.size2.sroa.1.0.copyload = load i64, ptr %.size2.sroa.1.0..size_ptr1.sroa_idx, align 8, !dbg !47, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size58.sroa.2.0.copyload = load i64, ptr %.size2.sroa.1.0..size_ptr1.sroa_idx, align 8
+    -> Frame[4] held (cross-BB, no intervening clobber):  %.size.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size77.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8
+    -> Frame[5] held (cross-BB, no intervening clobber):  %.size.sroa.3.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size77.sroa.2.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8
+    -> Frame[6] held (cross-BB, no intervening clobber):  %.size4.sroa.0.0.copyload = load i64, ptr %.size_ptr1, align 8, !dbg !49, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size58.sroa.0.0.copyload.postloop = load i64, ptr %.size_ptr1, align 8
+    -> Frame[7] held (cross-BB, no intervening clobber):  %.size2.sroa.1.0.copyload = load i64, ptr %.size2.sroa.1.0..size_ptr1.sroa_idx, align 8, !dbg !47, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size58.sroa.2.0.copyload.postloop = load i64, ptr %.size2.sroa.1.0..size_ptr1.sroa_idx, align 8
+    -> Frame[8] held (cross-BB, no intervening clobber):  %.size.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size77.sroa.0.0.copyload.postloop = load i64, ptr %.size_ptr, align 8
+    -> Frame[9] held (cross-BB, no intervening clobber):  %.size.sroa.3.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size77.sroa.2.0.copyload.postloop = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8
+    -> [go3] 57 leaf-closure instruction(s) encoded
+    -> Fact[SCEV:0] i64 %value_phi13 in [1,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:1] i64 %value_phi13 in [1,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:2] i64 %value_phi13 - start(1) <=u BTC((-1 + (0 smax %.size.sroa.3.0.copyload))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[SCEV:3] i64 %value_phi20 in [1,0) (SCEV unsigned)
+    -> Fact[SCEV:4] i64 %value_phi20 in [1,0) (SCEV signed)
+    -> Fact[KB:5] i64 %index known bits zero=0x3 one=0x0
+    -> Fact[SCEV:6] i64 %index in [0,-3) (SCEV unsigned)
+    -> Fact[SCEV:7] i64 %index in [-9223372036854775808,9223372036854775805) (SCEV signed)
+    -> Fact[SCEVSYM:8] i64 %index - start(0) <=u 4*BTC(((-3 + (-1 * %70)<nsw> + ((-1 + %.size39.sroa.0.0.copyload) umin (-1 + %.size58.sroa.0.0.copyload.fr) umin %53)) /u 4)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:9] i64 %index == i64 0 || ne(i64 %index, i64 %n.vec) (latch-implied bound, 1-induction)
+    -> Fact[SCEVSYM:10] i64 %value_phi35 - start(%bc.resume.val) <=u BTC((((1 + (-1 * %bc.resume.val) + ((-1 + %bc.resume.val) umax %.size39.sroa.0.0.copyload)) umin (1 + (-1 * %bc.resume.val) + ((-1 + %bc.resume.val) umax %.size58.sroa.0.0.copyload.fr))) umin_seq (((-1 * %bc.resume.val) + (0 smax %.size.sroa.0.0.copyload.fr)) umin (1 + (-1 * %bc.resume.val) + ((-1 + %bc.resume.val) umax %.size77.sroa.0.0.copyload))))) (SCEV symbolic trip count, sub-form)
+    -> Fact[SCEVSYM:11] i64 %value_phi20.postloop - start(%value_phi20.copy) <=u BTC((((-1 * %value_phi20.copy) + (0 smax %.size2.sroa.1.0.copyload)) umin (1 + (-1 * %value_phi20.copy) + ((-1 + %value_phi20.copy) umax %.size2.sroa.1.0.copyload)))) (SCEV symbolic trip count, sub-form)
+    -> Fact[KB:12] i64 %index.postloop known bits zero=0x3 one=0x0
+    -> Fact[SCEV:13] i64 %index.postloop in [0,-3) (SCEV unsigned)
+    -> Fact[SCEV:14] i64 %index.postloop in [-9223372036854775808,9223372036854775805) (SCEV signed)
+    -> Fact[SCEVSYM:15] i64 %index.postloop - start(0) <=u 4*BTC(((-3 + (-1 * %141)<nsw> + ((-1 + %.size39.sroa.0.0.copyload) umin (-1 + %.size58.sroa.0.0.copyload.fr.postloop) umin %124)) /u 4)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:16] i64 %index.postloop == i64 0 || ne(i64 %index.postloop, i64 %n.vec.postloop) (latch-implied bound, 1-induction)
+    -> Fact[SCEVSYM:17] i64 %value_phi35.postloop - start(%bc.resume.val.postloop) <=u BTC((((1 + (-1 * %bc.resume.val.postloop) + ((-1 + %bc.resume.val.postloop) umax %.size39.sroa.0.0.copyload)) umin (1 + (-1 * %bc.resume.val.postloop) + ((-1 + %bc.resume.val.postloop) umax %.size58.sroa.0.0.copyload.fr.postloop))) umin_seq (((-1 * %bc.resume.val.postloop) + (0 smax %.size.sroa.0.0.copyload.fr)) umin (1 + (-1 * %bc.resume.val.postloop) + ((-1 + %bc.resume.val.postloop) umax %.size77.sroa.0.0.copyload.postloop))))) (SCEV symbolic trip count, sub-form)
+    -> Fact[KB:18] i64 %70 known bits zero=0x18446744073709551608 one=0x0
+    -> Fact[SCEVEQ:19] i64 %.size58.sroa.0.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:20] i64 %53 == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:21] i64 %bc.resume.val in phi image (4 incoming)
+    -> Fact[SCEVEQ:22] i64 %.size.sroa.0.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:23] i64 %value_phi20.copy in phi image (2 incoming)
+    -> Fact[KB:24] i64 %141 known bits zero=0x18446744073709551608 one=0x0
+    -> Fact[SCEVEQ:25] i64 %.size58.sroa.0.0.copyload.fr.postloop == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:26] i64 %124 == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:27] i64 %bc.resume.val.postloop in phi image (4 incoming)
+    -> Fact[SCEVEQ:28] i64 %umin1598 == SCEV(((-2 + (0 smax %.size.sroa.0.0.copyload.fr))<nsw> umin (-1 + %.size77.sroa.0.0.copyload)))
+    -> Fact[SCEVEQ:29] i64 %ind.end == SCEV((3 + (-1 * %70)<nsw> + ((-1 + %.size39.sroa.0.0.copyload) umin (-1 + %.size58.sroa.0.0.copyload.fr) umin %53)))
+    -> Fact[SCEVEQ:30] i64 %.lcssa49 in phi image (1 incoming)
+    -> Fact[SCEVEQ:31] i64 %umin1598.postloop == SCEV(((-2 + (0 smax %.size.sroa.0.0.copyload.fr))<nsw> umin (-1 + %.size77.sroa.0.0.copyload.postloop)))
+    -> Fact[SCEVEQ:32] i64 %ind.end.postloop == SCEV((3 + (-1 * %141)<nsw> + ((-1 + %.size39.sroa.0.0.copyload) umin (-1 + %.size58.sroa.0.0.copyload.fr.postloop) umin %124)))
+    -> [heavy] 33 analysis fact(s) on 47 boundary value(s)
+    -> Fact[FRAME:0] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:1] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:2] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:3] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:4] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:5] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:6] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:7] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:8] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:9] cross-BB load pair unified (frame held)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.810253 ms]
+  -> Trap source: abstractarray.jl:699
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of 'L133.preheader.split.split.split.us'):  %.lcssa = phi i1 [ %.lcssa.ph, %L133.preheader.split.split.split.us.loopexit ], [ %.lcssa.ph60, %L133.preheader.split.split.split.us.loopexit58 ], !dbg !130
+    -> Guard[1] (false edge of 'L55.preheader.split'):  %.fr = freeze i1 %28
+    -> Guard[2] (false edge of 'L37'):  %.fr578 = freeze i1 %24
+    -> Guard[3] (false edge of 'L37.preheader.split'):  %9 = icmp slt i64 %.size.sroa.0.0.copyload.fr, 1
+    -> Guard[4] (false edge of 'L37.preheader'):  %8 = icmp slt i64 %.size2.sroa.1.0.copyload, 1
+    -> Guard[5] (false edge of 'L20'):  %7 = icmp slt i64 %.size.sroa.3.0.copyload, 1, !dbg !68
+    -> Guard[6] (true edge of 'L15'):  %.not150 = icmp eq i64 %.size8.sroa.1.0.copyload, %.size.sroa.3.0.copyload, !dbg !59
+    -> Guard[7] (true edge of 'L10'):  %.not149 = icmp eq i64 %.size6.sroa.0.0.copyload, %.size2.sroa.1.0.copyload, !dbg !56
+    -> Guard[8] (true edge of 'top'):  %.not = icmp eq i64 %.size4.sroa.0.0.copyload, %.size.sroa.0.0.copyload.fr, !dbg !51
+    -> Collected 9 dominating context guard(s).
+    -> Frame[0] held (cross-BB, no intervening clobber):  %.size.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size39.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8
+    -> Frame[1] held (cross-BB, no intervening clobber):  %.size.sroa.3.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size39.sroa.2.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8
+    -> Frame[2] held (cross-BB, no intervening clobber):  %.size4.sroa.0.0.copyload = load i64, ptr %.size_ptr1, align 8, !dbg !49, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size58.sroa.0.0.copyload = load i64, ptr %.size_ptr1, align 8
+    -> Frame[3] held (cross-BB, no intervening clobber):  %.size2.sroa.1.0.copyload = load i64, ptr %.size2.sroa.1.0..size_ptr1.sroa_idx, align 8, !dbg !47, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size58.sroa.2.0.copyload = load i64, ptr %.size2.sroa.1.0..size_ptr1.sroa_idx, align 8
+    -> Frame[4] held (cross-BB, no intervening clobber):  %.size.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size77.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8
+    -> Frame[5] held (cross-BB, no intervening clobber):  %.size.sroa.3.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size77.sroa.2.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8
+    -> Frame[6] held (cross-BB, no intervening clobber):  %.size4.sroa.0.0.copyload = load i64, ptr %.size_ptr1, align 8, !dbg !49, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size58.sroa.0.0.copyload.postloop = load i64, ptr %.size_ptr1, align 8
+    -> Frame[7] held (cross-BB, no intervening clobber):  %.size2.sroa.1.0.copyload = load i64, ptr %.size2.sroa.1.0..size_ptr1.sroa_idx, align 8, !dbg !47, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size58.sroa.2.0.copyload.postloop = load i64, ptr %.size2.sroa.1.0..size_ptr1.sroa_idx, align 8
+    -> Frame[8] held (cross-BB, no intervening clobber):  %.size.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size77.sroa.0.0.copyload.postloop = load i64, ptr %.size_ptr, align 8
+    -> Frame[9] held (cross-BB, no intervening clobber):  %.size.sroa.3.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size77.sroa.2.0.copyload.postloop = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8
+    -> [go3] 57 leaf-closure instruction(s) encoded
+    -> Fact[SCEV:0] i64 %value_phi13 in [1,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:1] i64 %value_phi13 in [1,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:2] i64 %value_phi13 - start(1) <=u BTC((-1 + (0 smax %.size.sroa.3.0.copyload))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[SCEV:3] i64 %value_phi20 in [1,0) (SCEV unsigned)
+    -> Fact[SCEV:4] i64 %value_phi20 in [1,0) (SCEV signed)
+    -> Fact[KB:5] i64 %index known bits zero=0x3 one=0x0
+    -> Fact[SCEV:6] i64 %index in [0,-3) (SCEV unsigned)
+    -> Fact[SCEV:7] i64 %index in [-9223372036854775808,9223372036854775805) (SCEV signed)
+    -> Fact[SCEVSYM:8] i64 %index - start(0) <=u 4*BTC(((-3 + (-1 * %70)<nsw> + ((-1 + %.size39.sroa.0.0.copyload) umin (-1 + %.size58.sroa.0.0.copyload.fr) umin %53)) /u 4)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:9] i64 %index == i64 0 || ne(i64 %index, i64 %n.vec) (latch-implied bound, 1-induction)
+    -> Fact[SCEVSYM:10] i64 %value_phi35 - start(%bc.resume.val) <=u BTC((((1 + (-1 * %bc.resume.val) + ((-1 + %bc.resume.val) umax %.size39.sroa.0.0.copyload)) umin (1 + (-1 * %bc.resume.val) + ((-1 + %bc.resume.val) umax %.size58.sroa.0.0.copyload.fr))) umin_seq (((-1 * %bc.resume.val) + (0 smax %.size.sroa.0.0.copyload.fr)) umin (1 + (-1 * %bc.resume.val) + ((-1 + %bc.resume.val) umax %.size77.sroa.0.0.copyload))))) (SCEV symbolic trip count, sub-form)
+    -> Fact[SCEVSYM:11] i64 %value_phi20.postloop - start(%value_phi20.copy) <=u BTC((((-1 * %value_phi20.copy) + (0 smax %.size2.sroa.1.0.copyload)) umin (1 + (-1 * %value_phi20.copy) + ((-1 + %value_phi20.copy) umax %.size2.sroa.1.0.copyload)))) (SCEV symbolic trip count, sub-form)
+    -> Fact[KB:12] i64 %index.postloop known bits zero=0x3 one=0x0
+    -> Fact[SCEV:13] i64 %index.postloop in [0,-3) (SCEV unsigned)
+    -> Fact[SCEV:14] i64 %index.postloop in [-9223372036854775808,9223372036854775805) (SCEV signed)
+    -> Fact[SCEVSYM:15] i64 %index.postloop - start(0) <=u 4*BTC(((-3 + (-1 * %141)<nsw> + ((-1 + %.size39.sroa.0.0.copyload) umin (-1 + %.size58.sroa.0.0.copyload.fr.postloop) umin %124)) /u 4)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:16] i64 %index.postloop == i64 0 || ne(i64 %index.postloop, i64 %n.vec.postloop) (latch-implied bound, 1-induction)
+    -> Fact[SCEVSYM:17] i64 %value_phi35.postloop - start(%bc.resume.val.postloop) <=u BTC((((1 + (-1 * %bc.resume.val.postloop) + ((-1 + %bc.resume.val.postloop) umax %.size39.sroa.0.0.copyload)) umin (1 + (-1 * %bc.resume.val.postloop) + ((-1 + %bc.resume.val.postloop) umax %.size58.sroa.0.0.copyload.fr.postloop))) umin_seq (((-1 * %bc.resume.val.postloop) + (0 smax %.size.sroa.0.0.copyload.fr)) umin (1 + (-1 * %bc.resume.val.postloop) + ((-1 + %bc.resume.val.postloop) umax %.size77.sroa.0.0.copyload.postloop))))) (SCEV symbolic trip count, sub-form)
+    -> Fact[KB:18] i64 %70 known bits zero=0x18446744073709551608 one=0x0
+    -> Fact[SCEVEQ:19] i64 %.size58.sroa.0.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:20] i64 %53 == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:21] i64 %bc.resume.val in phi image (4 incoming)
+    -> Fact[SCEVEQ:22] i64 %.size.sroa.0.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:23] i64 %value_phi20.copy in phi image (2 incoming)
+    -> Fact[KB:24] i64 %141 known bits zero=0x18446744073709551608 one=0x0
+    -> Fact[SCEVEQ:25] i64 %.size58.sroa.0.0.copyload.fr.postloop == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:26] i64 %124 == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:27] i64 %bc.resume.val.postloop in phi image (4 incoming)
+    -> Fact[SCEVEQ:28] i64 %umin1598 == SCEV(((-2 + (0 smax %.size.sroa.0.0.copyload.fr))<nsw> umin (-1 + %.size77.sroa.0.0.copyload)))
+    -> Fact[SCEVEQ:29] i64 %ind.end == SCEV((3 + (-1 * %70)<nsw> + ((-1 + %.size39.sroa.0.0.copyload) umin (-1 + %.size58.sroa.0.0.copyload.fr) umin %53)))
+    -> Fact[SCEVEQ:30] i64 %.lcssa49 in phi image (1 incoming)
+    -> Fact[SCEVEQ:31] i64 %umin1598.postloop == SCEV(((-2 + (0 smax %.size.sroa.0.0.copyload.fr))<nsw> umin (-1 + %.size77.sroa.0.0.copyload.postloop)))
+    -> Fact[SCEVEQ:32] i64 %ind.end.postloop == SCEV((3 + (-1 * %141)<nsw> + ((-1 + %.size39.sroa.0.0.copyload) umin (-1 + %.size58.sroa.0.0.copyload.fr.postloop) umin %124)))
+    -> [heavy] 33 analysis fact(s) on 47 boundary value(s)
+    -> Fact[FRAME:0] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:1] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:2] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:3] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:4] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:5] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:6] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:7] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:8] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:9] cross-BB load pair unified (frame held)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 20.994863 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of 'L37.preheader.split'):  %9 = icmp slt i64 %.size.sroa.0.0.copyload.fr, 1
+    -> Guard[1] (false edge of 'L37.preheader'):  %8 = icmp slt i64 %.size2.sroa.1.0.copyload, 1
+    -> Guard[2] (false edge of 'L20'):  %7 = icmp slt i64 %.size.sroa.3.0.copyload, 1, !dbg !68
+    -> Guard[3] (true edge of 'L15'):  %.not150 = icmp eq i64 %.size8.sroa.1.0.copyload, %.size.sroa.3.0.copyload, !dbg !59
+    -> Guard[4] (true edge of 'L10'):  %.not149 = icmp eq i64 %.size6.sroa.0.0.copyload, %.size2.sroa.1.0.copyload, !dbg !56
+    -> Guard[5] (true edge of 'top'):  %.not = icmp eq i64 %.size4.sroa.0.0.copyload, %.size.sroa.0.0.copyload.fr, !dbg !51
+    -> Collected 6 dominating context guard(s).
+    -> Frame[0] held (cross-BB, no intervening clobber):  %.size.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size39.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8
+    -> Frame[1] held (cross-BB, no intervening clobber):  %.size.sroa.3.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size39.sroa.2.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8
+    -> Frame[2] held (cross-BB, no intervening clobber):  %.size4.sroa.0.0.copyload = load i64, ptr %.size_ptr1, align 8, !dbg !49, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size58.sroa.0.0.copyload = load i64, ptr %.size_ptr1, align 8
+    -> Frame[3] held (cross-BB, no intervening clobber):  %.size2.sroa.1.0.copyload = load i64, ptr %.size2.sroa.1.0..size_ptr1.sroa_idx, align 8, !dbg !47, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size58.sroa.2.0.copyload = load i64, ptr %.size2.sroa.1.0..size_ptr1.sroa_idx, align 8
+    -> Frame[4] held (cross-BB, no intervening clobber):  %.size.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size77.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8
+    -> Frame[5] held (cross-BB, no intervening clobber):  %.size.sroa.3.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size77.sroa.2.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8
+    -> Frame[6] held (cross-BB, no intervening clobber):  %.size4.sroa.0.0.copyload = load i64, ptr %.size_ptr1, align 8, !dbg !49, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size58.sroa.0.0.copyload.postloop = load i64, ptr %.size_ptr1, align 8
+    -> Frame[7] held (cross-BB, no intervening clobber):  %.size2.sroa.1.0.copyload = load i64, ptr %.size2.sroa.1.0..size_ptr1.sroa_idx, align 8, !dbg !47, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size58.sroa.2.0.copyload.postloop = load i64, ptr %.size2.sroa.1.0..size_ptr1.sroa_idx, align 8
+    -> Frame[8] held (cross-BB, no intervening clobber):  %.size.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size77.sroa.0.0.copyload.postloop = load i64, ptr %.size_ptr, align 8
+    -> Frame[9] held (cross-BB, no intervening clobber):  %.size.sroa.3.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size77.sroa.2.0.copyload.postloop = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[SCEV:0] i64 %value_phi13 in [1,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:1] i64 %value_phi13 in [1,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:2] i64 %value_phi13 - start(1) <=u BTC((-1 + (0 smax %.size.sroa.3.0.copyload))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> [heavy] 3 analysis fact(s) on 7 boundary value(s)
+    -> Fact[FRAME:0] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:1] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:2] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:3] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:4] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:5] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:6] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:7] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:8] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:9] cross-BB load pair unified (frame held)
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 212.897516 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of 'L37.us1021'):  %.fr578.us.not = xor i1 %.fr578.us, true
+    -> Guard[1] (true edge of 'L37.preheader.split'):  %9 = icmp slt i64 %.size.sroa.0.0.copyload.fr, 1
+    -> Guard[2] (false edge of 'L37.preheader'):  %8 = icmp slt i64 %.size2.sroa.1.0.copyload, 1
+    -> Guard[3] (false edge of 'L20'):  %7 = icmp slt i64 %.size.sroa.3.0.copyload, 1, !dbg !68
+    -> Guard[4] (true edge of 'L15'):  %.not150 = icmp eq i64 %.size8.sroa.1.0.copyload, %.size.sroa.3.0.copyload, !dbg !59
+    -> Guard[5] (true edge of 'L10'):  %.not149 = icmp eq i64 %.size6.sroa.0.0.copyload, %.size2.sroa.1.0.copyload, !dbg !56
+    -> Guard[6] (true edge of 'top'):  %.not = icmp eq i64 %.size4.sroa.0.0.copyload, %.size.sroa.0.0.copyload.fr, !dbg !51
+    -> Collected 7 dominating context guard(s).
+    -> Frame[0] held (cross-BB, no intervening clobber):  %.size.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size39.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8
+    -> Frame[1] held (cross-BB, no intervening clobber):  %.size.sroa.3.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size39.sroa.2.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8
+    -> Frame[2] held (cross-BB, no intervening clobber):  %.size4.sroa.0.0.copyload = load i64, ptr %.size_ptr1, align 8, !dbg !49, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size58.sroa.0.0.copyload = load i64, ptr %.size_ptr1, align 8
+    -> Frame[3] held (cross-BB, no intervening clobber):  %.size2.sroa.1.0.copyload = load i64, ptr %.size2.sroa.1.0..size_ptr1.sroa_idx, align 8, !dbg !47, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size58.sroa.2.0.copyload = load i64, ptr %.size2.sroa.1.0..size_ptr1.sroa_idx, align 8
+    -> Frame[4] held (cross-BB, no intervening clobber):  %.size.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size77.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8
+    -> Frame[5] held (cross-BB, no intervening clobber):  %.size.sroa.3.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size77.sroa.2.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8
+    -> Frame[6] held (cross-BB, no intervening clobber):  %.size4.sroa.0.0.copyload = load i64, ptr %.size_ptr1, align 8, !dbg !49, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size58.sroa.0.0.copyload.postloop = load i64, ptr %.size_ptr1, align 8
+    -> Frame[7] held (cross-BB, no intervening clobber):  %.size2.sroa.1.0.copyload = load i64, ptr %.size2.sroa.1.0..size_ptr1.sroa_idx, align 8, !dbg !47, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size58.sroa.2.0.copyload.postloop = load i64, ptr %.size2.sroa.1.0..size_ptr1.sroa_idx, align 8
+    -> Frame[8] held (cross-BB, no intervening clobber):  %.size.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size77.sroa.0.0.copyload.postloop = load i64, ptr %.size_ptr, align 8
+    -> Frame[9] held (cross-BB, no intervening clobber):  %.size.sroa.3.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size77.sroa.2.0.copyload.postloop = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8
+    -> [go3] 8 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i64 %.size2.sroa.1.0.copyload in [1,0) (LVI @ L55.us662.us)
+    -> Fact[SCEV:1] i64 %value_phi13.us1030 in [1,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %value_phi13.us1030 in [1,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:3] i64 %value_phi13.us1030 - start(1) <=u BTC((-1 + (0 smax %.size.sroa.3.0.copyload))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[SCEVSYM:4] i64 %value_phi20.us669.us - start(%bc.resume.val1610) <=u BTC((((-1 * %bc.resume.val1610) + (0 smax %.size2.sroa.1.0.copyload)) umin (1 + (-1 * %bc.resume.val1610) + ((-1 + %bc.resume.val1610)<nsw> umax %.size2.sroa.1.0.copyload)))) (SCEV symbolic trip count, sub-form)
+    -> Fact[SCEVEQ:5] i64 %bc.resume.val1610 in phi image (2 incoming)
+    -> Fact[LVI:6] i64 %.size2.sroa.1.0.copyload in [1,0) (LVI @ L55.us662.us)
+    -> Fact[SCEVEQ:7] i64 %ind.end1609 == SCEV((2 + (-1 * %17)<nsw> + ((-1 + (0 smax %.size2.sroa.1.0.copyload))<nsw> umin %.size2.sroa.1.0.copyload)))
+    -> Fact[KB:8] i64 %17 known bits zero=0x18446744073709551552 one=0x0
+    -> [heavy] 9 analysis fact(s) on 10 boundary value(s)
+    -> Fact[FRAME:0] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:1] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:2] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:3] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:4] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:5] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:6] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:7] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:8] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:9] cross-BB load pair unified (frame held)
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4673.293551 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of 'L37.preheader.split'):  %9 = icmp slt i64 %.size.sroa.0.0.copyload.fr, 1
+    -> Guard[1] (false edge of 'L37.preheader'):  %8 = icmp slt i64 %.size2.sroa.1.0.copyload, 1
+    -> Guard[2] (false edge of 'L20'):  %7 = icmp slt i64 %.size.sroa.3.0.copyload, 1, !dbg !68
+    -> Guard[3] (true edge of 'L15'):  %.not150 = icmp eq i64 %.size8.sroa.1.0.copyload, %.size.sroa.3.0.copyload, !dbg !59
+    -> Guard[4] (true edge of 'L10'):  %.not149 = icmp eq i64 %.size6.sroa.0.0.copyload, %.size2.sroa.1.0.copyload, !dbg !56
+    -> Guard[5] (true edge of 'top'):  %.not = icmp eq i64 %.size4.sroa.0.0.copyload, %.size.sroa.0.0.copyload.fr, !dbg !51
+    -> Collected 6 dominating context guard(s).
+    -> Frame[0] held (cross-BB, no intervening clobber):  %.size.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size39.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8
+    -> Frame[1] held (cross-BB, no intervening clobber):  %.size.sroa.3.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size39.sroa.2.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8
+    -> Frame[2] held (cross-BB, no intervening clobber):  %.size4.sroa.0.0.copyload = load i64, ptr %.size_ptr1, align 8, !dbg !49, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size58.sroa.0.0.copyload = load i64, ptr %.size_ptr1, align 8
+    -> Frame[3] held (cross-BB, no intervening clobber):  %.size2.sroa.1.0.copyload = load i64, ptr %.size2.sroa.1.0..size_ptr1.sroa_idx, align 8, !dbg !47, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size58.sroa.2.0.copyload = load i64, ptr %.size2.sroa.1.0..size_ptr1.sroa_idx, align 8
+    -> Frame[4] held (cross-BB, no intervening clobber):  %.size.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size77.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8
+    -> Frame[5] held (cross-BB, no intervening clobber):  %.size.sroa.3.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size77.sroa.2.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8
+    -> Frame[6] held (cross-BB, no intervening clobber):  %.size4.sroa.0.0.copyload = load i64, ptr %.size_ptr1, align 8, !dbg !49, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size58.sroa.0.0.copyload.postloop = load i64, ptr %.size_ptr1, align 8
+    -> Frame[7] held (cross-BB, no intervening clobber):  %.size2.sroa.1.0.copyload = load i64, ptr %.size2.sroa.1.0..size_ptr1.sroa_idx, align 8, !dbg !47, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size58.sroa.2.0.copyload.postloop = load i64, ptr %.size2.sroa.1.0..size_ptr1.sroa_idx, align 8
+    -> Frame[8] held (cross-BB, no intervening clobber):  %.size.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size77.sroa.0.0.copyload.postloop = load i64, ptr %.size_ptr, align 8
+    -> Frame[9] held (cross-BB, no intervening clobber):  %.size.sroa.3.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size77.sroa.2.0.copyload.postloop = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i64 %.size2.sroa.1.0.copyload in [1,0) (LVI @ L37.us1021)
+    -> Fact[SCEV:1] i64 %value_phi13.us1030 in [1,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %value_phi13.us1030 in [1,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:3] i64 %value_phi13.us1030 - start(1) <=u BTC((-1 + (0 smax %.size.sroa.3.0.copyload))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> [heavy] 4 analysis fact(s) on 7 boundary value(s)
+    -> Fact[FRAME:0] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:1] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:2] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:3] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:4] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:5] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:6] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:7] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:8] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:9] cross-BB load pair unified (frame held)
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 109.192074 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of 'L55.preheader.split'):  %.fr = freeze i1 %28
+    -> Guard[1] (false edge of 'L37'):  %.fr578 = freeze i1 %24
+    -> Guard[2] (false edge of 'L37.preheader.split'):  %9 = icmp slt i64 %.size.sroa.0.0.copyload.fr, 1
+    -> Guard[3] (false edge of 'L37.preheader'):  %8 = icmp slt i64 %.size2.sroa.1.0.copyload, 1
+    -> Guard[4] (false edge of 'L20'):  %7 = icmp slt i64 %.size.sroa.3.0.copyload, 1, !dbg !68
+    -> Guard[5] (true edge of 'L15'):  %.not150 = icmp eq i64 %.size8.sroa.1.0.copyload, %.size.sroa.3.0.copyload, !dbg !59
+    -> Guard[6] (true edge of 'L10'):  %.not149 = icmp eq i64 %.size6.sroa.0.0.copyload, %.size2.sroa.1.0.copyload, !dbg !56
+    -> Guard[7] (true edge of 'top'):  %.not = icmp eq i64 %.size4.sroa.0.0.copyload, %.size.sroa.0.0.copyload.fr, !dbg !51
+    -> Collected 8 dominating context guard(s).
+    -> Frame[0] held (cross-BB, no intervening clobber):  %.size.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size39.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8
+    -> Frame[1] held (cross-BB, no intervening clobber):  %.size.sroa.3.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size39.sroa.2.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8
+    -> Frame[2] held (cross-BB, no intervening clobber):  %.size4.sroa.0.0.copyload = load i64, ptr %.size_ptr1, align 8, !dbg !49, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size58.sroa.0.0.copyload = load i64, ptr %.size_ptr1, align 8
+    -> Frame[3] held (cross-BB, no intervening clobber):  %.size2.sroa.1.0.copyload = load i64, ptr %.size2.sroa.1.0..size_ptr1.sroa_idx, align 8, !dbg !47, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size58.sroa.2.0.copyload = load i64, ptr %.size2.sroa.1.0..size_ptr1.sroa_idx, align 8
+    -> Frame[4] held (cross-BB, no intervening clobber):  %.size.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size77.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8
+    -> Frame[5] held (cross-BB, no intervening clobber):  %.size.sroa.3.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size77.sroa.2.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8
+    -> Frame[6] held (cross-BB, no intervening clobber):  %.size4.sroa.0.0.copyload = load i64, ptr %.size_ptr1, align 8, !dbg !49, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size58.sroa.0.0.copyload.postloop = load i64, ptr %.size_ptr1, align 8
+    -> Frame[7] held (cross-BB, no intervening clobber):  %.size2.sroa.1.0.copyload = load i64, ptr %.size2.sroa.1.0..size_ptr1.sroa_idx, align 8, !dbg !47, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size58.sroa.2.0.copyload.postloop = load i64, ptr %.size2.sroa.1.0..size_ptr1.sroa_idx, align 8
+    -> Frame[8] held (cross-BB, no intervening clobber):  %.size.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size77.sroa.0.0.copyload.postloop = load i64, ptr %.size_ptr, align 8
+    -> Frame[9] held (cross-BB, no intervening clobber):  %.size.sroa.3.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size77.sroa.2.0.copyload.postloop = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8
+    -> [go3] 57 leaf-closure instruction(s) encoded
+    -> Fact[SCEV:0] i64 %value_phi13 in [1,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:1] i64 %value_phi13 in [1,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:2] i64 %value_phi13 - start(1) <=u BTC((-1 + (0 smax %.size.sroa.3.0.copyload))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[SCEV:3] i64 %value_phi20 in [1,0) (SCEV unsigned)
+    -> Fact[SCEV:4] i64 %value_phi20 in [1,0) (SCEV signed)
+    -> Fact[KB:5] i64 %index known bits zero=0x3 one=0x0
+    -> Fact[SCEV:6] i64 %index in [0,-3) (SCEV unsigned)
+    -> Fact[SCEV:7] i64 %index in [-9223372036854775808,9223372036854775805) (SCEV signed)
+    -> Fact[SCEVSYM:8] i64 %index - start(0) <=u 4*BTC(((-3 + (-1 * %70)<nsw> + ((-1 + %.size39.sroa.0.0.copyload) umin (-1 + %.size58.sroa.0.0.copyload.fr) umin %53)) /u 4)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:9] i64 %index == i64 0 || ne(i64 %index, i64 %n.vec) (latch-implied bound, 1-induction)
+    -> Fact[SCEVSYM:10] i64 %value_phi35 - start(%bc.resume.val) <=u BTC((((1 + (-1 * %bc.resume.val) + ((-1 + %bc.resume.val) umax %.size39.sroa.0.0.copyload)) umin (1 + (-1 * %bc.resume.val) + ((-1 + %bc.resume.val) umax %.size58.sroa.0.0.copyload.fr))) umin_seq (((-1 * %bc.resume.val) + (0 smax %.size.sroa.0.0.copyload.fr)) umin (1 + (-1 * %bc.resume.val) + ((-1 + %bc.resume.val) umax %.size77.sroa.0.0.copyload))))) (SCEV symbolic trip count, sub-form)
+    -> Fact[SCEVSYM:11] i64 %value_phi20.postloop - start(%value_phi20.copy) <=u BTC((((-1 * %value_phi20.copy) + (0 smax %.size2.sroa.1.0.copyload)) umin (1 + (-1 * %value_phi20.copy) + ((-1 + %value_phi20.copy) umax %.size2.sroa.1.0.copyload)))) (SCEV symbolic trip count, sub-form)
+    -> Fact[KB:12] i64 %index.postloop known bits zero=0x3 one=0x0
+    -> Fact[SCEV:13] i64 %index.postloop in [0,-3) (SCEV unsigned)
+    -> Fact[SCEV:14] i64 %index.postloop in [-9223372036854775808,9223372036854775805) (SCEV signed)
+    -> Fact[SCEVSYM:15] i64 %index.postloop - start(0) <=u 4*BTC(((-3 + (-1 * %141)<nsw> + ((-1 + %.size39.sroa.0.0.copyload) umin (-1 + %.size58.sroa.0.0.copyload.fr.postloop) umin %124)) /u 4)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:16] i64 %index.postloop == i64 0 || ne(i64 %index.postloop, i64 %n.vec.postloop) (latch-implied bound, 1-induction)
+    -> Fact[SCEVSYM:17] i64 %value_phi35.postloop - start(%bc.resume.val.postloop) <=u BTC((((1 + (-1 * %bc.resume.val.postloop) + ((-1 + %bc.resume.val.postloop) umax %.size39.sroa.0.0.copyload)) umin (1 + (-1 * %bc.resume.val.postloop) + ((-1 + %bc.resume.val.postloop) umax %.size58.sroa.0.0.copyload.fr.postloop))) umin_seq (((-1 * %bc.resume.val.postloop) + (0 smax %.size.sroa.0.0.copyload.fr)) umin (1 + (-1 * %bc.resume.val.postloop) + ((-1 + %bc.resume.val.postloop) umax %.size77.sroa.0.0.copyload.postloop))))) (SCEV symbolic trip count, sub-form)
+    -> Fact[KB:18] i64 %70 known bits zero=0x18446744073709551608 one=0x0
+    -> Fact[SCEVEQ:19] i64 %.size58.sroa.0.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:20] i64 %53 == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:21] i64 %bc.resume.val in phi image (4 incoming)
+    -> Fact[SCEVEQ:22] i64 %.size.sroa.0.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:23] i64 %value_phi20.copy in phi image (2 incoming)
+    -> Fact[KB:24] i64 %141 known bits zero=0x18446744073709551608 one=0x0
+    -> Fact[SCEVEQ:25] i64 %.size58.sroa.0.0.copyload.fr.postloop == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:26] i64 %124 == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:27] i64 %bc.resume.val.postloop in phi image (4 incoming)
+    -> Fact[SCEVEQ:28] i64 %umin1598 == SCEV(((-2 + (0 smax %.size.sroa.0.0.copyload.fr))<nsw> umin (-1 + %.size77.sroa.0.0.copyload)))
+    -> Fact[SCEVEQ:29] i64 %ind.end == SCEV((3 + (-1 * %70)<nsw> + ((-1 + %.size39.sroa.0.0.copyload) umin (-1 + %.size58.sroa.0.0.copyload.fr) umin %53)))
+    -> Fact[SCEVEQ:30] i64 %.lcssa49 in phi image (1 incoming)
+    -> Fact[SCEVEQ:31] i64 %umin1598.postloop == SCEV(((-2 + (0 smax %.size.sroa.0.0.copyload.fr))<nsw> umin (-1 + %.size77.sroa.0.0.copyload.postloop)))
+    -> Fact[SCEVEQ:32] i64 %ind.end.postloop == SCEV((3 + (-1 * %141)<nsw> + ((-1 + %.size39.sroa.0.0.copyload) umin (-1 + %.size58.sroa.0.0.copyload.fr.postloop) umin %124)))
+    -> [heavy] 33 analysis fact(s) on 47 boundary value(s)
+    -> Fact[FRAME:0] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:1] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:2] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:3] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:4] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:5] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:6] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:7] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:8] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:9] cross-BB load pair unified (frame held)
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 0.381112 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of 'L55.preheader.split'):  %.fr = freeze i1 %28
+    -> Guard[1] (false edge of 'L37'):  %.fr578 = freeze i1 %24
+    -> Guard[2] (false edge of 'L37.preheader.split'):  %9 = icmp slt i64 %.size.sroa.0.0.copyload.fr, 1
+    -> Guard[3] (false edge of 'L37.preheader'):  %8 = icmp slt i64 %.size2.sroa.1.0.copyload, 1
+    -> Guard[4] (false edge of 'L20'):  %7 = icmp slt i64 %.size.sroa.3.0.copyload, 1, !dbg !68
+    -> Guard[5] (true edge of 'L15'):  %.not150 = icmp eq i64 %.size8.sroa.1.0.copyload, %.size.sroa.3.0.copyload, !dbg !59
+    -> Guard[6] (true edge of 'L10'):  %.not149 = icmp eq i64 %.size6.sroa.0.0.copyload, %.size2.sroa.1.0.copyload, !dbg !56
+    -> Guard[7] (true edge of 'top'):  %.not = icmp eq i64 %.size4.sroa.0.0.copyload, %.size.sroa.0.0.copyload.fr, !dbg !51
+    -> Collected 8 dominating context guard(s).
+    -> Frame[0] held (cross-BB, no intervening clobber):  %.size.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size39.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8
+    -> Frame[1] held (cross-BB, no intervening clobber):  %.size.sroa.3.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size39.sroa.2.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8
+    -> Frame[2] held (cross-BB, no intervening clobber):  %.size4.sroa.0.0.copyload = load i64, ptr %.size_ptr1, align 8, !dbg !49, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size58.sroa.0.0.copyload = load i64, ptr %.size_ptr1, align 8
+    -> Frame[3] held (cross-BB, no intervening clobber):  %.size2.sroa.1.0.copyload = load i64, ptr %.size2.sroa.1.0..size_ptr1.sroa_idx, align 8, !dbg !47, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size58.sroa.2.0.copyload = load i64, ptr %.size2.sroa.1.0..size_ptr1.sroa_idx, align 8
+    -> Frame[4] held (cross-BB, no intervening clobber):  %.size.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size77.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8
+    -> Frame[5] held (cross-BB, no intervening clobber):  %.size.sroa.3.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size77.sroa.2.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8
+    -> Frame[6] held (cross-BB, no intervening clobber):  %.size4.sroa.0.0.copyload = load i64, ptr %.size_ptr1, align 8, !dbg !49, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size58.sroa.0.0.copyload.postloop = load i64, ptr %.size_ptr1, align 8
+    -> Frame[7] held (cross-BB, no intervening clobber):  %.size2.sroa.1.0.copyload = load i64, ptr %.size2.sroa.1.0..size_ptr1.sroa_idx, align 8, !dbg !47, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size58.sroa.2.0.copyload.postloop = load i64, ptr %.size2.sroa.1.0..size_ptr1.sroa_idx, align 8
+    -> Frame[8] held (cross-BB, no intervening clobber):  %.size.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size77.sroa.0.0.copyload.postloop = load i64, ptr %.size_ptr, align 8
+    -> Frame[9] held (cross-BB, no intervening clobber):  %.size.sroa.3.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size77.sroa.2.0.copyload.postloop = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8
+    -> [go3] 57 leaf-closure instruction(s) encoded
+    -> Fact[SCEV:0] i64 %value_phi13 in [1,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:1] i64 %value_phi13 in [1,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:2] i64 %value_phi13 - start(1) <=u BTC((-1 + (0 smax %.size.sroa.3.0.copyload))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[SCEV:3] i64 %value_phi20 in [1,0) (SCEV unsigned)
+    -> Fact[SCEV:4] i64 %value_phi20 in [1,0) (SCEV signed)
+    -> Fact[KB:5] i64 %index known bits zero=0x3 one=0x0
+    -> Fact[SCEV:6] i64 %index in [0,-3) (SCEV unsigned)
+    -> Fact[SCEV:7] i64 %index in [-9223372036854775808,9223372036854775805) (SCEV signed)
+    -> Fact[SCEVSYM:8] i64 %index - start(0) <=u 4*BTC(((-3 + (-1 * %70)<nsw> + ((-1 + %.size39.sroa.0.0.copyload) umin (-1 + %.size58.sroa.0.0.copyload.fr) umin %53)) /u 4)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:9] i64 %index == i64 0 || ne(i64 %index, i64 %n.vec) (latch-implied bound, 1-induction)
+    -> Fact[SCEVSYM:10] i64 %value_phi35 - start(%bc.resume.val) <=u BTC((((1 + (-1 * %bc.resume.val) + ((-1 + %bc.resume.val) umax %.size39.sroa.0.0.copyload)) umin (1 + (-1 * %bc.resume.val) + ((-1 + %bc.resume.val) umax %.size58.sroa.0.0.copyload.fr))) umin_seq (((-1 * %bc.resume.val) + (0 smax %.size.sroa.0.0.copyload.fr)) umin (1 + (-1 * %bc.resume.val) + ((-1 + %bc.resume.val) umax %.size77.sroa.0.0.copyload))))) (SCEV symbolic trip count, sub-form)
+    -> Fact[SCEVSYM:11] i64 %value_phi20.postloop - start(%value_phi20.copy) <=u BTC((((-1 * %value_phi20.copy) + (0 smax %.size2.sroa.1.0.copyload)) umin (1 + (-1 * %value_phi20.copy) + ((-1 + %value_phi20.copy) umax %.size2.sroa.1.0.copyload)))) (SCEV symbolic trip count, sub-form)
+    -> Fact[KB:12] i64 %index.postloop known bits zero=0x3 one=0x0
+    -> Fact[SCEV:13] i64 %index.postloop in [0,-3) (SCEV unsigned)
+    -> Fact[SCEV:14] i64 %index.postloop in [-9223372036854775808,9223372036854775805) (SCEV signed)
+    -> Fact[SCEVSYM:15] i64 %index.postloop - start(0) <=u 4*BTC(((-3 + (-1 * %141)<nsw> + ((-1 + %.size39.sroa.0.0.copyload) umin (-1 + %.size58.sroa.0.0.copyload.fr.postloop) umin %124)) /u 4)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:16] i64 %index.postloop == i64 0 || ne(i64 %index.postloop, i64 %n.vec.postloop) (latch-implied bound, 1-induction)
+    -> Fact[SCEVSYM:17] i64 %value_phi35.postloop - start(%bc.resume.val.postloop) <=u BTC((((1 + (-1 * %bc.resume.val.postloop) + ((-1 + %bc.resume.val.postloop) umax %.size39.sroa.0.0.copyload)) umin (1 + (-1 * %bc.resume.val.postloop) + ((-1 + %bc.resume.val.postloop) umax %.size58.sroa.0.0.copyload.fr.postloop))) umin_seq (((-1 * %bc.resume.val.postloop) + (0 smax %.size.sroa.0.0.copyload.fr)) umin (1 + (-1 * %bc.resume.val.postloop) + ((-1 + %bc.resume.val.postloop) umax %.size77.sroa.0.0.copyload.postloop))))) (SCEV symbolic trip count, sub-form)
+    -> Fact[KB:18] i64 %70 known bits zero=0x18446744073709551608 one=0x0
+    -> Fact[SCEVEQ:19] i64 %.size58.sroa.0.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:20] i64 %53 == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:21] i64 %bc.resume.val in phi image (4 incoming)
+    -> Fact[SCEVEQ:22] i64 %.size.sroa.0.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:23] i64 %value_phi20.copy in phi image (2 incoming)
+    -> Fact[KB:24] i64 %141 known bits zero=0x18446744073709551608 one=0x0
+    -> Fact[SCEVEQ:25] i64 %.size58.sroa.0.0.copyload.fr.postloop == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:26] i64 %124 == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:27] i64 %bc.resume.val.postloop in phi image (4 incoming)
+    -> Fact[SCEVEQ:28] i64 %umin1598 == SCEV(((-2 + (0 smax %.size.sroa.0.0.copyload.fr))<nsw> umin (-1 + %.size77.sroa.0.0.copyload)))
+    -> Fact[SCEVEQ:29] i64 %ind.end == SCEV((3 + (-1 * %70)<nsw> + ((-1 + %.size39.sroa.0.0.copyload) umin (-1 + %.size58.sroa.0.0.copyload.fr) umin %53)))
+    -> Fact[SCEVEQ:30] i64 %.lcssa49 in phi image (1 incoming)
+    -> Fact[SCEVEQ:31] i64 %umin1598.postloop == SCEV(((-2 + (0 smax %.size.sroa.0.0.copyload.fr))<nsw> umin (-1 + %.size77.sroa.0.0.copyload.postloop)))
+    -> Fact[SCEVEQ:32] i64 %ind.end.postloop == SCEV((3 + (-1 * %141)<nsw> + ((-1 + %.size39.sroa.0.0.copyload) umin (-1 + %.size58.sroa.0.0.copyload.fr.postloop) umin %124)))
+    -> [heavy] 33 analysis fact(s) on 47 boundary value(s)
+    -> Fact[FRAME:0] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:1] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:2] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:3] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:4] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:5] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:6] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:7] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:8] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:9] cross-BB load pair unified (frame held)
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 0.374069 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of 'L37'):  %.fr578 = freeze i1 %24
+    -> Guard[1] (false edge of 'L37.preheader.split'):  %9 = icmp slt i64 %.size.sroa.0.0.copyload.fr, 1
+    -> Guard[2] (false edge of 'L37.preheader'):  %8 = icmp slt i64 %.size2.sroa.1.0.copyload, 1
+    -> Guard[3] (false edge of 'L20'):  %7 = icmp slt i64 %.size.sroa.3.0.copyload, 1, !dbg !68
+    -> Guard[4] (true edge of 'L15'):  %.not150 = icmp eq i64 %.size8.sroa.1.0.copyload, %.size.sroa.3.0.copyload, !dbg !59
+    -> Guard[5] (true edge of 'L10'):  %.not149 = icmp eq i64 %.size6.sroa.0.0.copyload, %.size2.sroa.1.0.copyload, !dbg !56
+    -> Guard[6] (true edge of 'top'):  %.not = icmp eq i64 %.size4.sroa.0.0.copyload, %.size.sroa.0.0.copyload.fr, !dbg !51
+    -> Collected 7 dominating context guard(s).
+    -> Frame[0] held (cross-BB, no intervening clobber):  %.size.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size39.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8
+    -> Frame[1] held (cross-BB, no intervening clobber):  %.size.sroa.3.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size39.sroa.2.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8
+    -> Frame[2] held (cross-BB, no intervening clobber):  %.size4.sroa.0.0.copyload = load i64, ptr %.size_ptr1, align 8, !dbg !49, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size58.sroa.0.0.copyload = load i64, ptr %.size_ptr1, align 8
+    -> Frame[3] held (cross-BB, no intervening clobber):  %.size2.sroa.1.0.copyload = load i64, ptr %.size2.sroa.1.0..size_ptr1.sroa_idx, align 8, !dbg !47, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size58.sroa.2.0.copyload = load i64, ptr %.size2.sroa.1.0..size_ptr1.sroa_idx, align 8
+    -> Frame[4] held (cross-BB, no intervening clobber):  %.size.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size77.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8
+    -> Frame[5] held (cross-BB, no intervening clobber):  %.size.sroa.3.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size77.sroa.2.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8
+    -> Frame[6] held (cross-BB, no intervening clobber):  %.size4.sroa.0.0.copyload = load i64, ptr %.size_ptr1, align 8, !dbg !49, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size58.sroa.0.0.copyload.postloop = load i64, ptr %.size_ptr1, align 8
+    -> Frame[7] held (cross-BB, no intervening clobber):  %.size2.sroa.1.0.copyload = load i64, ptr %.size2.sroa.1.0..size_ptr1.sroa_idx, align 8, !dbg !47, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size58.sroa.2.0.copyload.postloop = load i64, ptr %.size2.sroa.1.0..size_ptr1.sroa_idx, align 8
+    -> Frame[8] held (cross-BB, no intervening clobber):  %.size.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size77.sroa.0.0.copyload.postloop = load i64, ptr %.size_ptr, align 8
+    -> Frame[9] held (cross-BB, no intervening clobber):  %.size.sroa.3.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size77.sroa.2.0.copyload.postloop = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i64 %value_phi13 in [1,0) (LVI @ L55.preheader.split)
+    -> Fact[SCEV:1] i64 %value_phi13 in [1,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %value_phi13 in [1,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:3] i64 %value_phi13 - start(1) <=u BTC((-1 + (0 smax %.size.sroa.3.0.copyload))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> [heavy] 4 analysis fact(s) on 8 boundary value(s)
+    -> Fact[FRAME:0] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:1] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:2] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:3] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:4] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:5] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:6] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:7] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:8] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:9] cross-BB load pair unified (frame held)
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 0.062683 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of 'L133.preheader.split.split.split.us'):  %.lcssa = phi i1 [ %.lcssa.ph, %L133.preheader.split.split.split.us.loopexit ], [ %.lcssa.ph60, %L133.preheader.split.split.split.us.loopexit58 ], !dbg !130
+    -> Guard[1] (false edge of 'L55.preheader.split'):  %.fr = freeze i1 %28
+    -> Guard[2] (false edge of 'L37'):  %.fr578 = freeze i1 %24
+    -> Guard[3] (false edge of 'L37.preheader.split'):  %9 = icmp slt i64 %.size.sroa.0.0.copyload.fr, 1
+    -> Guard[4] (false edge of 'L37.preheader'):  %8 = icmp slt i64 %.size2.sroa.1.0.copyload, 1
+    -> Guard[5] (false edge of 'L20'):  %7 = icmp slt i64 %.size.sroa.3.0.copyload, 1, !dbg !68
+    -> Guard[6] (true edge of 'L15'):  %.not150 = icmp eq i64 %.size8.sroa.1.0.copyload, %.size.sroa.3.0.copyload, !dbg !59
+    -> Guard[7] (true edge of 'L10'):  %.not149 = icmp eq i64 %.size6.sroa.0.0.copyload, %.size2.sroa.1.0.copyload, !dbg !56
+    -> Guard[8] (true edge of 'top'):  %.not = icmp eq i64 %.size4.sroa.0.0.copyload, %.size.sroa.0.0.copyload.fr, !dbg !51
+    -> Collected 9 dominating context guard(s).
+    -> Frame[0] held (cross-BB, no intervening clobber):  %.size.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size39.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8
+    -> Frame[1] held (cross-BB, no intervening clobber):  %.size.sroa.3.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size39.sroa.2.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8
+    -> Frame[2] held (cross-BB, no intervening clobber):  %.size4.sroa.0.0.copyload = load i64, ptr %.size_ptr1, align 8, !dbg !49, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size58.sroa.0.0.copyload = load i64, ptr %.size_ptr1, align 8
+    -> Frame[3] held (cross-BB, no intervening clobber):  %.size2.sroa.1.0.copyload = load i64, ptr %.size2.sroa.1.0..size_ptr1.sroa_idx, align 8, !dbg !47, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size58.sroa.2.0.copyload = load i64, ptr %.size2.sroa.1.0..size_ptr1.sroa_idx, align 8
+    -> Frame[4] held (cross-BB, no intervening clobber):  %.size.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size77.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8
+    -> Frame[5] held (cross-BB, no intervening clobber):  %.size.sroa.3.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size77.sroa.2.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8
+    -> Frame[6] held (cross-BB, no intervening clobber):  %.size4.sroa.0.0.copyload = load i64, ptr %.size_ptr1, align 8, !dbg !49, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size58.sroa.0.0.copyload.postloop = load i64, ptr %.size_ptr1, align 8
+    -> Frame[7] held (cross-BB, no intervening clobber):  %.size2.sroa.1.0.copyload = load i64, ptr %.size2.sroa.1.0..size_ptr1.sroa_idx, align 8, !dbg !47, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size58.sroa.2.0.copyload.postloop = load i64, ptr %.size2.sroa.1.0..size_ptr1.sroa_idx, align 8
+    -> Frame[8] held (cross-BB, no intervening clobber):  %.size.sroa.0.0.copyload = load i64, ptr %.size_ptr, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size77.sroa.0.0.copyload.postloop = load i64, ptr %.size_ptr, align 8
+    -> Frame[9] held (cross-BB, no intervening clobber):  %.size.sroa.3.0.copyload = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8, !dbg !39, !tbaa !44, !alias.scope !45, !noalias !46  ==  %.size77.sroa.2.0.copyload.postloop = load i64, ptr %.size.sroa.3.0..size_ptr.sroa_idx, align 8
+    -> [go3] 57 leaf-closure instruction(s) encoded
+    -> Fact[SCEV:0] i64 %value_phi13 in [1,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:1] i64 %value_phi13 in [1,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:2] i64 %value_phi13 - start(1) <=u BTC((-1 + (0 smax %.size.sroa.3.0.copyload))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[SCEV:3] i64 %value_phi20 in [1,0) (SCEV unsigned)
+    -> Fact[SCEV:4] i64 %value_phi20 in [1,0) (SCEV signed)
+    -> Fact[KB:5] i64 %index known bits zero=0x3 one=0x0
+    -> Fact[SCEV:6] i64 %index in [0,-3) (SCEV unsigned)
+    -> Fact[SCEV:7] i64 %index in [-9223372036854775808,9223372036854775805) (SCEV signed)
+    -> Fact[SCEVSYM:8] i64 %index - start(0) <=u 4*BTC(((-3 + (-1 * %70)<nsw> + ((-1 + %.size39.sroa.0.0.copyload) umin (-1 + %.size58.sroa.0.0.copyload.fr) umin %53)) /u 4)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:9] i64 %index == i64 0 || ne(i64 %index, i64 %n.vec) (latch-implied bound, 1-induction)
+    -> Fact[SCEVSYM:10] i64 %value_phi35 - start(%bc.resume.val) <=u BTC((((1 + (-1 * %bc.resume.val) + ((-1 + %bc.resume.val) umax %.size39.sroa.0.0.copyload)) umin (1 + (-1 * %bc.resume.val) + ((-1 + %bc.resume.val) umax %.size58.sroa.0.0.copyload.fr))) umin_seq (((-1 * %bc.resume.val) + (0 smax %.size.sroa.0.0.copyload.fr)) umin (1 + (-1 * %bc.resume.val) + ((-1 + %bc.resume.val) umax %.size77.sroa.0.0.copyload))))) (SCEV symbolic trip count, sub-form)
+    -> Fact[SCEVSYM:11] i64 %value_phi20.postloop - start(%value_phi20.copy) <=u BTC((((-1 * %value_phi20.copy) + (0 smax %.size2.sroa.1.0.copyload)) umin (1 + (-1 * %value_phi20.copy) + ((-1 + %value_phi20.copy) umax %.size2.sroa.1.0.copyload)))) (SCEV symbolic trip count, sub-form)
+    -> Fact[KB:12] i64 %index.postloop known bits zero=0x3 one=0x0
+    -> Fact[SCEV:13] i64 %index.postloop in [0,-3) (SCEV unsigned)
+    -> Fact[SCEV:14] i64 %index.postloop in [-9223372036854775808,9223372036854775805) (SCEV signed)
+    -> Fact[SCEVSYM:15] i64 %index.postloop - start(0) <=u 4*BTC(((-3 + (-1 * %141)<nsw> + ((-1 + %.size39.sroa.0.0.copyload) umin (-1 + %.size58.sroa.0.0.copyload.fr.postloop) umin %124)) /u 4)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:16] i64 %index.postloop == i64 0 || ne(i64 %index.postloop, i64 %n.vec.postloop) (latch-implied bound, 1-induction)
+    -> Fact[SCEVSYM:17] i64 %value_phi35.postloop - start(%bc.resume.val.postloop) <=u BTC((((1 + (-1 * %bc.resume.val.postloop) + ((-1 + %bc.resume.val.postloop) umax %.size39.sroa.0.0.copyload)) umin (1 + (-1 * %bc.resume.val.postloop) + ((-1 + %bc.resume.val.postloop) umax %.size58.sroa.0.0.copyload.fr.postloop))) umin_seq (((-1 * %bc.resume.val.postloop) + (0 smax %.size.sroa.0.0.copyload.fr)) umin (1 + (-1 * %bc.resume.val.postloop) + ((-1 + %bc.resume.val.postloop) umax %.size77.sroa.0.0.copyload.postloop))))) (SCEV symbolic trip count, sub-form)
+    -> Fact[KB:18] i64 %70 known bits zero=0x18446744073709551608 one=0x0
+    -> Fact[SCEVEQ:19] i64 %.size58.sroa.0.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:20] i64 %53 == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:21] i64 %bc.resume.val in phi image (4 incoming)
+    -> Fact[SCEVEQ:22] i64 %.size.sroa.0.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:23] i64 %value_phi20.copy in phi image (2 incoming)
+    -> Fact[KB:24] i64 %141 known bits zero=0x18446744073709551608 one=0x0
+    -> Fact[SCEVEQ:25] i64 %.size58.sroa.0.0.copyload.fr.postloop == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:26] i64 %124 == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:27] i64 %bc.resume.val.postloop in phi image (4 incoming)
+    -> Fact[SCEVEQ:28] i64 %umin1598 == SCEV(((-2 + (0 smax %.size.sroa.0.0.copyload.fr))<nsw> umin (-1 + %.size77.sroa.0.0.copyload)))
+    -> Fact[SCEVEQ:29] i64 %ind.end == SCEV((3 + (-1 * %70)<nsw> + ((-1 + %.size39.sroa.0.0.copyload) umin (-1 + %.size58.sroa.0.0.copyload.fr) umin %53)))
+    -> Fact[SCEVEQ:30] i64 %.lcssa49 in phi image (1 incoming)
+    -> Fact[SCEVEQ:31] i64 %umin1598.postloop == SCEV(((-2 + (0 smax %.size.sroa.0.0.copyload.fr))<nsw> umin (-1 + %.size77.sroa.0.0.copyload.postloop)))
+    -> Fact[SCEVEQ:32] i64 %ind.end.postloop == SCEV((3 + (-1 * %141)<nsw> + ((-1 + %.size39.sroa.0.0.copyload) umin (-1 + %.size58.sroa.0.0.copyload.fr.postloop) umin %124)))
+    -> [heavy] 33 analysis fact(s) on 47 boundary value(s)
+    -> Fact[FRAME:0] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:1] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:2] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:3] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:4] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:5] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:6] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:7] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:8] cross-BB load pair unified (frame held)
+    -> Fact[FRAME:9] cross-BB load pair unified (frame held)
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 0.057199 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  => Total Traps Eliminated: 7
+  => Total Trap Attempts: 9
+  => Total SMT Queries Executed: 9
+  => Total SMT Query Latency: 5.031063e+03 ms
+  => Average SMT Query Latency: 5.590070e+02 ms
+  => Total DFS & SMT Execution Time: 5.615511e+03 ms
+--------------------------------------------------

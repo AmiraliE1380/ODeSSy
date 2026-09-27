@@ -1,0 +1,34 @@
+[ODeSSy] 1 trap site(s) across 2 function(s); threads=1 [tier: heavy] [frame] [ind] [traps=bounds_error,boundserror,odessy.chk]
+
+[Z3 Oracle] Analyzing Function: julia_poly!_145
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of 'L16.preheader'):  %4 = icmp slt i64 %3, 1
+    -> Guard[1] (false edge of 'top'):  %2 = icmp slt i64 %"iters::Int64", 1, !dbg !32
+    -> Collected 2 dominating context guard(s).
+    -> [go3] 11 leaf-closure instruction(s) encoded
+    -> Fact[SCEVSYM:0] i64 %value_phi8 - start(%bc.resume.val) <=u BTC((((-1 * %bc.resume.val) + (0 smax %3)) umin (1 + (-1 * %bc.resume.val) + %3))) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hx:1] (i64 %bc.resume.val <=u i64 %5) -> i64 %value_phi8 <=u i64 %5 (header-exit eq bound, unit step, 1-induction)
+    -> Fact[SCEVEQ:2] i64 %bc.resume.val in phi image (3 incoming)
+    -> Fact[SCEVEQ:3] i64 %ind.end == SCEV((2 + (-1 * %12)<nsw> + ((-1 + (0 smax %3))<nsw> umin %3)))
+    -> Fact[KB:4] i64 %12 known bits zero=0x18446744073709551584 one=0x0
+    -> [heavy] 5 analysis fact(s) on 7 boundary value(s)
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1729.378113 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  => Total Traps Eliminated: 1
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.729378e+03 ms
+  => Average SMT Query Latency: 1.729378e+03 ms
+  => Total DFS & SMT Execution Time: 1.776562e+03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: jfptr_poly!_146
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 5.574000e-02 ms
+--------------------------------------------------

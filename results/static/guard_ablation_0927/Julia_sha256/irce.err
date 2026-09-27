@@ -1,0 +1,56 @@
+irce: looking at loop Loop at depth 3 containing: %L53<header><exiting>,%L73<exiting>,%L94<exiting>,%L116<exiting>,%L158<latch><exiting>
+irce: loop has 4 inductive range checks: 
+InductiveRangeCheck:
+  Begin: {0,+,64}<nuw><nsw><%L41>  Step: 4  End: %"data::Array.size.0.copyload"
+  CheckUse:   br i1 %.not, label %L73, label %odessy.chk1, !dbg !75 Operand: 0
+InductiveRangeCheck:
+  Begin: {1,+,64}<nuw><nsw><%L41>  Step: 4  End: %"data::Array.size.0.copyload"
+  CheckUse:   br i1 %.not281, label %L94, label %odessy.chk3, !dbg !75 Operand: 0
+InductiveRangeCheck:
+  Begin: {2,+,64}<nuw><nsw><%L41>  Step: 4  End: %"data::Array.size.0.copyload"
+  CheckUse:   br i1 %.not282, label %L116, label %odessy.chk5, !dbg !75 Operand: 0
+InductiveRangeCheck:
+  Begin: {3,+,64}<nuw><nsw><%L41>  Step: 4  End: %"data::Array.size.0.copyload"
+  CheckUse:   br i1 %.not283, label %L158, label %odessy.chk7, !dbg !75 Operand: 0
+irce: looking at loop Loop at depth 3 containing: %L53.postloop<header><exiting>,%L73.postloop<exiting>,%L94.postloop<exiting>,%L116.postloop<exiting>,%L138.postloop<exiting>,%L158.postloop<latch><exiting>
+irce: loop has 5 inductive range checks: 
+InductiveRangeCheck:
+  Begin: ((4 * %value_phi22.copy)<nuw><nsw> + {-4,+,64}<nsw><%L41>)  Step: 4  End: %"data::Array.size.0.copyload"
+  CheckUse:   br i1 %.not.postloop, label %L73.postloop, label %odessy.chk, !dbg !75 Operand: 0
+InductiveRangeCheck:
+  Begin: ((4 * %value_phi22.copy)<nuw><nsw> + {-3,+,64}<nsw><%L41>)  Step: 4  End: %"data::Array.size.0.copyload"
+  CheckUse:   br i1 %.not281.postloop, label %L94.postloop, label %odessy.chk2, !dbg !75 Operand: 0
+InductiveRangeCheck:
+  Begin: ((4 * %value_phi22.copy)<nuw><nsw> + {-2,+,64}<nsw><%L41>)  Step: 4  End: %"data::Array.size.0.copyload"
+  CheckUse:   br i1 %.not282.postloop, label %L116.postloop, label %odessy.chk4, !dbg !75 Operand: 0
+InductiveRangeCheck:
+  Begin: ((4 * %value_phi22.copy)<nuw><nsw> + {-1,+,64}<nsw><%L41>)  Step: 4  End: %"data::Array.size.0.copyload"
+  CheckUse:   br i1 %.not283.postloop, label %L138.postloop, label %odessy.chk6, !dbg !75 Operand: 0
+InductiveRangeCheck:
+  Begin: (-1 + %value_phi22.copy)<nsw>  Step: 1  End: %"new::Array.size.0.copyload"
+  CheckUse:   br i1 %.not284.postloop, label %L158.postloop, label %odessy.chk8, !dbg !88 Operand: 0
+irce: looking at loop Loop at depth 3 containing: %L175.postloop<header><exiting>,%L237.postloop<exiting>,%L303.postloop<exiting>,%L324.postloop<exiting>,%L343.postloop<exiting>,%L364.postloop<latch><exiting>
+irce: loop has 5 inductive range checks: 
+InductiveRangeCheck:
+  Begin: (-16 + %value_phi81.copy)<nsw>  Step: 1  End: %"new::Array.size84.0.copyload"
+  CheckUse:   br i1 %.not286.postloop, label %L237.postloop, label %odessy.chk9, !dbg !110 Operand: 0
+InductiveRangeCheck:
+  Begin: (-3 + %value_phi81.copy)<nsw>  Step: 1  End: %"new::Array.size84.0.copyload"
+  CheckUse:   br i1 %.not289.postloop, label %L303.postloop, label %odessy.chk10, !dbg !117 Operand: 0
+InductiveRangeCheck:
+  Begin: (-17 + %value_phi81.copy)<nsw>  Step: 1  End: %"new::Array.size84.0.copyload"
+  CheckUse:   br i1 %.not292.postloop, label %L324.postloop, label %odessy.chk11, !dbg !118 Operand: 0
+InductiveRangeCheck:
+  Begin: (-8 + %value_phi81.copy)<nsw>  Step: 1  End: %"new::Array.size84.0.copyload"
+  CheckUse:   br i1 %.not293.postloop, label %L343.postloop, label %odessy.chk12, !dbg !118 Operand: 0
+InductiveRangeCheck:
+  Begin: (-1 + %value_phi81.copy)<nsw>  Step: 1  End: %"new::Array.size84.0.copyload"
+  CheckUse:   br i1 %.not294.postloop, label %L364.postloop, label %odessy.chk13, !dbg !121 Operand: 0
+irce: looking at loop Loop at depth 3 containing: %L381.postloop<header><exiting>,%L420.postloop<exiting>,%L438.postloop<latch><exiting>
+irce: loop has 2 inductive range checks: 
+InductiveRangeCheck:
+  Begin: (-1 + %value_phi203.copy)<nsw>  Step: 1  End: %.size.0.copyload
+  CheckUse:   br i1 %.not296.postloop, label %L420.postloop, label %odessy.chk14, !dbg !149 Operand: 0
+InductiveRangeCheck:
+  Begin: (-1 + %value_phi203.copy)<nsw>  Step: 1  End: %"new::Array.size225.0.copyload"
+  CheckUse:   br i1 %.not297.postloop, label %L438.postloop, label %odessy.chk15, !dbg !149 Operand: 0
