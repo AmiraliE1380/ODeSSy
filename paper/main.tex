@@ -1560,11 +1560,13 @@ hack could have touched.
 \caption{SMT query latency by verdict class (1{,}818 queries over eight
 runs of zlib's \texttt{deflate} module: signed and unsigned
 specifications $\times$ O1 and O3 $\times$ light and heavy tiers, the two
-tiers yielding identical verdict sets; unbounded per-query budget). Proofs are
+tiers yielding identical verdict sets; Apple M-series, an earlier version
+of the encoder without the heap-invariance, inductive, and guard-synthesis
+additions; no query reached the per-query budget). Proofs are
 \emph{cheaper} than refutations at the median (\textsc{unsat} 3.0\,ms vs.\
 \textsc{sat} 5.5\,ms); the expense lives entirely in a thin tail
-(\textsc{unsat} max 2{,}238\,ms). This is the distribution that makes the
-timeout dial of Table~\ref{tab:dial} effective: a tight budget truncates
+(\textsc{unsat} max 2{,}238\,ms). This shape is what makes the timeout
+dial of Table~\ref{tab:dial} (x86) effective: a tight budget truncates
 the tail while retaining nearly every proof. Note that this workload class
 is the easy end of the spectrum --- the OpenSSL queries discussed below
 sit three decades to the right.}
