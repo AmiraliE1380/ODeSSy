@@ -325,7 +325,7 @@ This paper makes the following contributions:
   behind it (\S\ref{sec:guards}).
 \item \textbf{\tool{}} (\S\ref{sec:system}): an LLVM pass and online optimizer
   as an instantiation of super-analysis. \tool{} eliminates sanitizers and safety checks and unlocks further optimizations. It supports C/C++, Swift, and Julia as frontends and can enable hot-path transformations and speedups.
-\item \textbf{Robust Performance Improvement} (\S\ref{sec:method} \& \S\ref{sec:results}):
+\item \textbf{Robust Performance Improvement} (\S\ref{sec:results}):
   our systematic evaluation of \tool{} on two target architectures (x86 and M-series) show removing hot-loop checks has a cascading effect, unlocking further transformations (unrolling, vectorization, etc) that enables up to $4.01\times$ speedups for widely used kernels and libraries. \tool{} proofs are generally cheap: \pct{96} of
   zlib's proofs survive a 100\,ms per-query budget. By multi-threading and strict SMT timout budgets \tool{} can compile up to $4.8\times$ faster, making it an online compiler.
 \end{itemize}
@@ -1203,7 +1203,9 @@ tripwire tests (may-alias clobbers, unrelated bounds) must stay
 fact source has become unsoundly strong.
 
 %% =====================================================================
-\section{Experimental Methodology}
+\section{Experimental Setup}
+\label{sec:results}
+\subsection{Experimental Methodology}
 \label{sec:method}
 \paragraph{Machines.}
 x86 measurements use a CloudLab~\cite{cloudlab} \texttt{c220g2} node:
@@ -1259,8 +1261,6 @@ Our evaluation is organized around three questions:
   with a flexible time budget? (\S\ref{sec:results-cost})
 \end{itemize}
 %% =====================================================================
-\section{Experimental Results}
-\label{sec:results}
 \subsection{RQ1: How much does it improve performance?}
 \label{sec:results-perf}
 \label{sec:results-static}
