@@ -57,10 +57,10 @@ median() { python3 -c 'import statistics,sys; print(f"{statistics.median(float(x
 measure() {  # bench lang module ll trapspec
   local b=$1 l=$2 m=$3 ll=$4 tr=$5 L="$OUT/logs/$1.$3"
   local o3 th fs=() fp=0 i
-  o3=$($PIN tm opt -passes='default<O3>' -disable-output "$ll" 2>/dev/null) || o3=NA
-  th=$($PIN tm opt -load-pass-plugin="$PLUGIN" -passes="oracle-pass<$THOROUGH$tr>" -disable-output "$ll" 2>"$L.thorough.err") || th=FAIL
+  o3=$(tm $PIN opt -passes='default<O3>' -disable-output "$ll" 2>/dev/null) || o3=NA
+  th=$(tm $PIN opt -load-pass-plugin="$PLUGIN" -passes="oracle-pass<$THOROUGH$tr>" -disable-output "$ll" 2>"$L.thorough.err") || th=FAIL
   for ((i=1; i<=FAST_REPS; i++)); do
-    fs+=("$($PIN tm opt -load-pass-plugin="$PLUGIN" -passes="oracle-pass<$FAST$tr>" -disable-output "$ll" 2>"$L.fast.err")")
+    fs+=("$(tm $PIN opt -load-pass-plugin="$PLUGIN" -passes="oracle-pass<$FAST$tr>" -disable-output "$ll" 2>"$L.fast.err")")
   done
   printf "%s,%s,%s,%s,%s,%s,%s,%s,%s\n" "$b" "$l" "$m" "$(checks "$L.thorough.err")" "$o3" "$th" \
     "$(proofs "$L.thorough.err")" "$(median "${fs[@]}")" "$(proofs "$L.fast.err")" | tee -a "$CSV"
