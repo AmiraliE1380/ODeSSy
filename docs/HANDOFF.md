@@ -3228,6 +3228,6 @@ without frame 28.5 s, light tier 3.0 s with 26 proofs vs 30. The cost is fact im
   and Light for every benchmark. The 4 FAIL rows left in modules.csv are the first,
   failed Julia attempt; the summary's per-module merge ignores them. Final table:
   results/static/compile_cost/table.txt. Totals over all 17 rows (proofs):
-  Thorough 834, Fast 350, Light 178. zlib: Thorough 2996 s (slowest module 2277 s),
+  Thorough 826, Fast 347, Light 178. zlib: Thorough 2996 s (slowest module 2277 s),
   Fast 437 s (407), Light 48 s (34). Julia lz77 Thorough proves 2 at 10 s (the runtime
   row's guard was mined at 60 s).
