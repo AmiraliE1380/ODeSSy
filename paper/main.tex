@@ -1667,6 +1667,29 @@ does neither, takes 34\,s. Per-trap jobs are share-nothing, and the
 thread dial of Figure~\ref{fig:matrix} gives $3.8\times$ at 8 workers
 and plateaus at $4.05\times$ by 16 (Amdahl: serial discovery plus the
 slow-query tail).
+\paragraph{Where each configuration fits.}
+The repository totals overstate what a developer waits for. Builds
+compile modules independently and rebuild only the ones that changed,
+so the latency that matters in the edit--compile loop is per module, and
+per module even Thorough is modest: the median module takes 7.2\,s in
+zlib and 2.4\,s in zstd, and 12 of zlib's 14 modules and 17 of zstd's
+18 finish in under 75\,s. The modules that do the libraries' main work
+fall in that range: zlib's compressor (\texttt{deflate.c}, 71\,s) and
+decompressor (\texttt{inflate.c}, 64\,s), and zstd's Huffman encoder
+(\texttt{huf\_compress.c}, 46\,s) and optimal parser
+(\texttt{zstd\_opt.c}, 39\,s). The totals are set by a few outliers ---
+\texttt{trees.c} (2277\,s) and \texttt{adler32.c} (530\,s) in zlib,
+\texttt{zstd\_preSplit.c} (164\,s) in zstd --- whose heavily inlined
+bodies give each query a long guard chain. We therefore see the
+configurations as serving two points of a project's life. During
+development, Fast and Light keep \tool{} inside the edit--compile loop
+(every kernel under 2\,s, zlib's slowest module 34\,s under Light), as
+does Thorough on the single module being edited. Thorough on a whole
+repository does not belong in that loop; it belongs where the final
+binary is built. There, a few minutes to an hour, spent once on code
+that is no longer changing, buys the proofs behind every speedup in
+Table~\ref{tab:speedups} --- the same trade release builds already make
+with link-time and profile-guided optimization.
 \paragraph{The dial.}
 Table~\ref{tab:dial} is the central cost result: \pct{96} of the provable
 facts (50 of 52) survive a \emph{100\,ms} per-query budget, and the
