@@ -1596,18 +1596,77 @@ Budget & \textsc{unsat} & \textsc{sat} & \textsc{unknown} & Wall\\
 \bottomrule
 \end{tabular}
 \end{table}
+\begin{table}
+\caption{Compile cost of three configurations on every benchmark of
+Table~\ref{tab:speedups} (x86 c220g2, turbo off, one socket; each module
+compiled on its own, one at a time). \emph{Thorough} is the
+configuration behind every speedup in this paper (10\,s per query, one
+thread, inductive encoding and guard synthesis); \emph{Fast} keeps the
+imported analyses, heap facts, and guard synthesis at 10\,ms per query
+on 10 threads, without inductive encoding, which runs single-threaded;
+\emph{Light} is the encoded context alone
+(\S\ref{sec:system-facts}), at 10\,ms on 10 threads. Time is the
+\tool{} stage in seconds (Thorough: one run; Fast and Light: median of
+3). For the multi-module repositories it is the total over all
+modules, with the slowest single module in parentheses. Proofs are
+checks removed outright plus checks removed in guarded loop copies.
+\texttt{-O3} is one conventional \texttt{-O3} run on the same input; an
+\tool{} build runs it twice, around the pass. Julia rows use the
+unchanged kernels' IR.}
+\label{tab:compile}
+\small
+\setlength{\tabcolsep}{3pt}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{llrr|rr|rr|rr}
+\toprule
+ & & & & \multicolumn{2}{c|}{Thorough} & \multicolumn{2}{c|}{Fast} & \multicolumn{2}{c}{Light}\\
+Benchmark & Front end & Checks & \texttt{-O3} & Time & Proofs & Time & Proofs & Time & Proofs\\
+\midrule
+gemm, stdlib & Julia & 16 & 0.05 & 14.6 & 14 & 0.22 & 9 & 0.15 & 0\\
+lz77 & Julia & 4 & 0.03 & 38.8 & 2 & 0.11 & 0 & 0.08 & 0\\
+matmul & Julia & 3 & 0.02 & 115 & 3 & 0.48 & 0 & 0.15 & 0\\
+sha256 & Julia & 16 & 0.06 & 282 & 14 & 1.97 & 0 & 0.38 & 0\\
+lz77 & Rust & 4 & 0.04 & 5.2 & 2 & 0.46 & 0 & 0.09 & 0\\
+matmul & Rust & 4 & 0.03 & 1.6 & 2 & 0.40 & 2 & 0.13 & 0\\
+sha256 & Swift & 36 & 0.11 & 2.7 & 8 & 0.42 & 1 & 0.35 & 0\\
+base64 & Swift & 27 & 0.09 & 5.2 & 7 & 0.48 & 0 & 0.25 & 0\\
+lz77 & Swift & 27 & 0.10 & 12.9 & 7 & 0.28 & 3 & 0.24 & 1\\
+crc32 & Swift & 37 & 0.11 & 4.1 & 11 & 0.46 & 0 & 0.38 & 0\\
+adler32 & Swift & 38 & 0.10 & 5.9 & 2 & 0.45 & 2 & 0.26 & 1\\
+sha1 & Swift & 24 & 0.11 & 1.9 & 2 & 0.26 & 2 & 0.23 & 0\\
+md5 & Swift & 25 & 0.11 & 2.4 & 1 & 0.28 & 1 & 0.24 & 0\\
+utf8 validator & Swift & 21 & 0.08 & 0.9 & 4 & 0.22 & 2 & 0.16 & 1\\
+\midrule
+CryptoSwift & Swift & 2696 & 4.88 & 715 & 376 & 40.4 & 160 & 21.3 & 68\\
+zstd, 18 modules & C & 606 & 8.73 & 353 (164) & 82 & 31.4 (20.7) & 30 & 7.9 (1.9) & 27\\
+zlib, 14 modules & C & 1554 & 2.23 & 2996 (2277) & 289 & 437 (407) & 135 & 48.0 (33.8) & 80\\
+\midrule
+Total & & 5138 & & & 826 & & 347 & & 178\\
+\bottomrule
+\end{tabular}}
+\end{table}
 \paragraph{Compile cost.}
-Whole-library zlib costs 131--207\,s of solver stage (about 100--160\,ms
-per trap of wall time at 5 processes $\times$ 8 threads) against a 6\,s
-unsanitized compile. Per-trap jobs are share-nothing and embarrassingly
-parallel; the thread dial of Figure~\ref{fig:matrix} gives $3.8\times$
-at 8 workers and plateaus at $4.05\times$ by 16 (Amdahl: serial
-discovery plus the slow-query tail). The production configuration of
-Table~\ref{tab:speedups} sits at the other end of both dials --- a 10\,s
-budget, one thread, and inductive encoding and guard synthesis on every
-satisfiable query --- and costs accordingly: the \tool{} stage takes
-381--397\,s on zstd against a 19\,s baseline build, and 2563\,s (4314\,s
-under the wider specification) on zlib against 6\,s.
+Table~\ref{tab:compile} prices three configurations on every benchmark
+of Table~\ref{tab:speedups}. \emph{Thorough}, the configuration behind
+every speedup, costs 1--13\,s per Swift and Rust kernel and 15--282\,s
+per Julia kernel, against a conventional \texttt{-O3} compile of about
+0.1\,s; the repositories carry the real cost: 715\,s for CryptoSwift and
+2996\,s for zlib, 2277\,s of it in a single module (\texttt{trees.c}).
+The two dials trade that cost for proofs. \emph{Fast} keeps 347 of
+Thorough's 826 proofs (\pct{42}) at a seventh of zlib's cost, and
+\emph{Light} keeps 178 (\pct{22}) at a sixtieth, with every kernel
+under 2\,s in both. The proofs lost first are exactly the ones behind
+the largest speedups: guard synthesis (base64 falls from 7 proofs to
+0, crc32 from 11 to 0) and heap invariance (GEMM from 14 to 9 under
+Fast and to 0 under Light). Cold, scattered proofs survive: Light still
+keeps 80 of zlib's 289 and 27 of zstd's 82. The per-query budget bounds
+only the solver. On zlib's largest module, Fast's queries finish in
+milliseconds, and most of its 407\,s go to importing LLVM's analyses
+and to guard synthesis, which the budget does not limit; Light, which
+does neither, takes 34\,s. Per-trap jobs are share-nothing, and the
+thread dial of Figure~\ref{fig:matrix} gives $3.8\times$ at 8 workers
+and plateaus at $4.05\times$ by 16 (Amdahl: serial discovery plus the
+slow-query tail).
 \paragraph{The dial.}
 Table~\ref{tab:dial} is the central cost result: \pct{96} of the provable
 facts (50 of 52) survive a \emph{100\,ms} per-query budget, and the
