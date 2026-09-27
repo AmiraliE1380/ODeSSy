@@ -34,7 +34,7 @@ PIN="numactl --cpunodebind=0 --membind=0"; command -v numactl >/dev/null || PIN=
 PLUGIN="$ROOT/build/OraclePass.so"
 W="$OUT/ir"; mkdir -p "$W" "$OUT/logs"
 CSV="$OUT/modules.csv"
-echo "bench,lang,module,checks,o3_s,thorough_s,thorough_proofs,fast_s,fast_proofs" > "$CSV"
+[ "${APPEND:-0}" = 1 ] && [ -s "$CSV" ] || echo "bench,lang,module,checks,o3_s,thorough_s,thorough_proofs,fast_s,fast_proofs" > "$CSV"
 want() { [ -z "$ONLY" ] || [[ "$1" =~ $ONLY ]]; }
 
 # Swift toolchain resolution, as in run_swift_perf.sh (pinned version on both machines)
@@ -92,6 +92,9 @@ done
 #      measured on the real kernels)
 for k in jl_gemm_base lz77 matmul sha256; do
   want "jl_$k" || continue
+  # logs/ is not tracked: emit the kernel's IR on this machine when it is missing
+  [ -s "logs/julia_triage/$k.ll" ] || bash scripts/julia_triage.sh "native_bench/$k.jl" >/dev/null 2>&1
+  [ -s "logs/julia_triage/$k.ll" ] || { echo "[FATAL] no Julia IR for $k"; exit 1; }
   measure "jl_$k" Julia "$k" "logs/julia_triage/$k.ll" ";traps=bounds_error:boundserror"
 done
 

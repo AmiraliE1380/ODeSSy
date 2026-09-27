@@ -3206,3 +3206,17 @@ threads is where yield collapses; 10 threads = one socket. Proofs = eliminated +
 removals per configuration. Repos report total and slowest module. zlib: both spec only.
 Mac smoke (base64, Rust lz77, Julia matmul): base64 Thorough 7 proofs (= campaign 2+5) in
 0.39 s, Fast 5 in 0.09 s; Julia matmul Thorough 3 in 95 s, Fast 0 in 0.25 s.
+
+### 10.64 RQ3 compile cost: server results (x86, Sep 26-27 2026) -- Julia rows pending
+Merged `server-0926-compile-cost`. results/static/compile_cost/{modules.csv,table.txt,logs.tgz}.
+Validation: Thorough proof counts reproduce the campaign builds exactly (sha256 7+1,
+base64 2+5, crc32 4+7, lz77 4+3, adler32 1+1, sha1 2, md5 1, utf8 3+1, CryptoSwift
+264+112, Rust lz77 2, Rust matmul 0+2).
+Julia rows FAILED: logs/ is gitignored, so the triage IR was absent on the server.
+Fixed: the harness now emits missing Julia IR via julia_triage.sh; APPEND=1 keeps the
+existing CSV for a Julia-only rerun.
+Finding: Fast is not uniformly fast. zlib trees.c takes 407 s under Fast (2277 s
+Thorough). Its queries are ms-scale (570 UNKNOWN at the 10 ms cap), so the time is
+outside the solver. Mac attribution on the same module (Fast 39.6 s): without mv 15.5 s,
+without frame 28.5 s, light tier 3.0 s with 26 proofs vs 30. The cost is fact import
+(heavy+frame) and guard-synthesis machinery, not the per-query budget.
