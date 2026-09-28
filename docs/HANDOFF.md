@@ -3275,3 +3275,8 @@ lz77, matmul: every non-mv arm removes 0 checks -> proxy = the checked baseline 
 GEMM: excluded from the runtime ablation -- no guarded removals (mv = keep = 12), and its
 checks cannot be grouped into source accesses reliably (missing dbg, versioned
 conditions). Static counts only.
+- Sep 27 server (21 rotated reps, outputs identical): Julia sha256 checked 0.2926 s;
+  o3 (= IRCE+O3) 1.024x, IRCE+ODeSSy 1.031x, keep 1.022x, mv_x86 1.089x, ceiling 1.129x.
+  The three middle arms differ by less than the run-to-run spread (no base2x control in
+  Julia arms); mv_x86 is below the full-guard arm of the runtime table (1.107x) because
+  x86 at 10 s leaves data[i+1] checked.
