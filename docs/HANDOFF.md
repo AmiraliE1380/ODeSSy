@@ -3250,3 +3250,15 @@ IRCE's .preloop/.postloop clones; plus a nesting check. Mac check on base64: D =
 sources that were timed; Julia: x86 emission) through all five pipelines; Part R = runtime
 arms mv / keep / irce_od / irce_o3 for Swift base64, crc32 and Rust matmul (REPS=30).
 Julia runtime arms are phase 2, built from Part S's per-check results.
+
+### 10.67 Guard ablation phase 1 results (x86, Sep 27 2026; merged server-0927-guard-ablation)
+Static (x86 IR, 17 kernels, 385 checks): O3 8 | mv 85 | mv-keep(+O3) 69 | IRCE+O3 17 |
+IRCE+ODeSSy 52. Nesting holds for O3, keep and IRCE+O3; IRCE+ODeSSy proves 2 GEMM checks
+(ids 7, 11) that mv does not -- the one exception. results/static/guard_ablation_0927/.
+Runtime (30 reps; speedup vs base, static checks dead on the hot path in brackets):
+ base64      mv 1.440 [8] | keep 1.258 [7] | IRCE+ODeSSy 1.242 [3] | IRCE+O3 1.250 [3]
+ crc32       mv 1.074 [11]| keep 1.061 [9] | IRCE+ODeSSy 1.070 [4] | IRCE+O3 1.000 [0]
+ Rust matmul mv 1.373 [2] | keep 1.372 [2] | IRCE+ODeSSy 1.103 [2] | IRCE+O3 1.103 [2]
+   (the IRCE matmul run is noisy: base/base2x 0.939; absolute ODeSSy-arm time 1.643 s vs mv 1.366 s)
+Julia (x86 static): lz77 mv 2/4 at 10 s, all other arms 0; matmul mv 3/3, others 0;
+sha256 mv 14, keep 8, IRCE+ODeSSy 6, IRCE+O3 2, O3 2 -> phase 2 needs sha256 proxies only.
