@@ -3262,3 +3262,16 @@ Runtime (30 reps; speedup vs base, static checks dead on the hot path in bracket
    (the IRCE matmul run is noisy: base/base2x 0.939; absolute ODeSSy-arm time 1.643 s vs mv 1.366 s)
 Julia (x86 static): lz77 mv 2/4 at 10 s, all other arms 0; matmul mv 3/3, others 0;
 sha256 mv 14, keep 8, IRCE+ODeSSy 6, IRCE+O3 2, O3 2 -> phase 2 needs sha256 proxies only.
+
+### 10.68 Guard ablation phase 2: Julia proxies
+Finding: the Julia IR is already IRCE-split by Julia's own pipeline (.postloop /
+main.pseudo.exit blocks), so each read appears as a main-loop and a post-loop copy.
+sha256 maps cleanly (ids -> accesses by index expression; see the header of
+native_bench/jl_sha256_ablation_arms.jl, a designated variant; sha256.jl untouched).
+Arms: o3 (= IRCE+O3) {w16,w7}; irce_od {data4,w16,w7}; keep {data2..4,w16,w7};
+mv_x86 {all but data1, guarded part under H}. An access is annotated only if the arm
+removes every copy of it. Mac smoke: outputs identical.
+lz77, matmul: every non-mv arm removes 0 checks -> proxy = the checked baseline (1.000x).
+GEMM: excluded from the runtime ablation -- no guarded removals (mv = keep = 12), and its
+checks cannot be grouped into source accesses reliably (missing dbg, versioned
+conditions). Static counts only.
