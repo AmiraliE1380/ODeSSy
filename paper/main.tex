@@ -1458,29 +1458,89 @@ Most of the other large speedups --- Julia lz77 ($4.01\times$), base64
 ($1.44\times$), Rust matmul ($1.38\times$), Julia matmul, crc32 --- come
 from guard synthesis and loop cloning (\S\ref{sec:guards}). Cloning a
 loop behind a runtime test is not new (\S\ref{sec:relwork}): LLVM's own
-inductive range-check elimination (IRCE) versions loops around range
-checks. We therefore ask which part of \tool{}'s version pays: the
-synthesized guard, or the solver's proofs inside the guarded copy. We
-compare four pipelines on the same checks, each check tagged with its
-own identity so it can be followed through every pipeline:
-(i)~\tool{} with guard synthesis, which synthesizes the guard, clones
-the loop, and removes the checks it proves dead in the guarded copy;
-(ii)~\tool{} synthesizing, verifying, and cloning behind the same guard
-but leaving every check in place, so that \texttt{-O3} must prove them
-itself; (iii)~IRCE followed by \texttt{-O3}, where LLVM extracts the
-range and versions the loop; and (iv)~\texttt{-O3} alone.
+inductive range-check elimination (IRCE) splits a loop around its range
+checks and versions it behind a runtime range test. Guard synthesis has
+two parts that could each be responsible for the gain: the
+\emph{guard}, which the solver synthesizes and verifies, and the
+\emph{proofs} that remove the checks inside the guarded copy. We
+separate them with five pipelines that combine the two parts with
+LLVM's counterparts:
+(i)~\tool{} with guard synthesis: \tool{}'s guard and \tool{}'s proofs;
+(ii)~\tool{}'s guard and loop copy, with every check left in place, so
+that \texttt{-O3} must remove them: \tool{}'s guard, LLVM's proofs;
+(iii)~IRCE followed by \tool{} without guard synthesis: LLVM's guard,
+\tool{}'s proofs;
+(iv)~IRCE followed by \texttt{-O3}: LLVM's guard and proofs; and
+(v)~\texttt{-O3} alone. Every check is tagged with its own identity, so
+each pipeline's removals can be compared check by check.
+Table~\ref{tab:ablation} reports proofs and speedups on the six
+benchmarks whose speedup involves guard synthesis.
 
-Over 379 checks in 17 kernels, (i) proves 105 dead, (ii) 88, (iii) 31,
-and (iv) 17, and the sets are nested: no check that any of the other
-pipelines proves dead escapes (i), on any kernel. The gap between (i)
-and (ii) lies entirely in the guarded copies: of the 32 checks \tool{}
-removes there, \texttt{-O3} removes only 13 when handed the same guard,
-and none of the 14 in the Julia kernels. The guard alone is therefore
-not enough. LLVM's analyses cannot exploit it, and it is the solver's
-proofs inside the guarded copy that remove the checks.
-%% TODO(next session, server): runtime ablation table on the kernels
-%% where guard synthesis pays -- (i) mv, (ii) mv-nofold + O3,
-%% IRCE + ODeSSy, (iii) IRCE + O3, (iv) O3; proofs and speedup per arm.
+\begin{table}
+\caption{Guard-synthesis ablation (x86 c220g2, production budget). Each
+cell is the speedup over the unchanged checked program, with the number
+of checks proved dead in brackets. Julia rows time designated copies of
+the unchanged kernels in which an access is annotated \texttt{@inbounds}
+only if the pipeline removes every one of its checks; Julia's own
+pipeline already runs IRCE, so (iv) and (v) coincide there. $1.000\times$
+marks a pipeline that removes no check: its code is the checked
+program.}
+\label{tab:ablation}
+\small
+\setlength{\tabcolsep}{3pt}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{llccccc}
+\toprule
+ & & (i) \tool{} guard & (ii) \tool{} guard & (iii) IRCE guard & (iv) IRCE guard & (v) no guard\\
+Benchmark & Front end & + \tool{} proofs & + \texttt{-O3} & + \tool{} proofs & + \texttt{-O3} & \texttt{-O3}\\
+\midrule
+lz77$^{a}$ & Julia & $\mathbf{4.013\times}$ [4] & $1.000\times$ [0] & $1.000\times$ [0] & $1.000\times$ [0] & $1.000\times$ [0]\\
+base64 & Swift & $\mathbf{1.440\times}$ [8] & $1.258\times$ [7] & $1.242\times$ [3] & $1.250\times$ [3] & $1.000\times$ [1]\\
+matmul & Rust & $\mathbf{1.373\times}$ [2] & $1.372\times$ [2] & $1.103\times$ [2]$^{b}$ & $1.103\times$ [2]$^{b}$ & $1.000\times$ [0]\\
+matmul, $n{=}512$ & Julia & $\mathbf{1.145\times}$ [3] & $1.000\times$ [0] & $1.000\times$ [0] & $1.000\times$ [0] & $1.000\times$ [0]\\
+sha256$^{c}$ & Julia & $\mathbf{1.089\times}$ [14] & $1.022\times$ [8] & $1.031\times$ [6] & $1.024\times$ [2] & $1.024\times$ [2]\\
+crc32 & Swift & $\mathbf{1.074\times}$ [11] & $1.061\times$ [9] & $1.070\times$ [4] & $1.000\times$ [0] & $1.000\times$ [0]\\
+\bottomrule
+\end{tabular}}\\
+\raggedright\footnotesize
+$^{a}$Guard synthesized under a 60\,s budget; at 10\,s, (i) removes 2
+of the 4 checks.
+$^{b}$Measured in a noisier run (baseline and double-O3 control differ
+by \pct{6}); both builds take 1.64\,s against 1.37\,s for (i).
+$^{c}$At the 10\,s budget (i) leaves one access checked; the full
+guarded copy of Table~\ref{tab:speedups} reaches $1.107\times$.\par
+\end{table}
+
+\emph{Pipeline (i) is the best or tied on every benchmark}, and the other
+columns show why. On Julia lz77 and matmul, the two kernels where guard
+synthesis pays most, nothing else removes a single check: without the
+synthesized guard the checks are live, because nothing in the code ties
+the arrays' lengths to the loop bounds (\S\ref{sec:guards}). Here the
+guard is the whole speedup.
+When the guard is handed to LLVM (ii), the result depends on how hard
+the checks inside the copy are. On Rust matmul, \texttt{-O3} removes
+both checks by itself once the guard is in place, and (ii) matches (i)
+($1.372\times$ against $1.373\times$): the synthesized guard is what
+pays, and LLVM's analyses suffice for the rest. IRCE's own guard, in
+contrast, buys only $1.10\times$. On base64, the guard alone lifts
+\texttt{-O3} to the level IRCE reaches ($1.26\times$ against
+$1.25\times$), and \tool{}'s proofs inside the copy add the rest, up to
+$1.44\times$: both halves are needed. On Julia sha256, only the
+guarded removals separate (i) from the rest: every pipeline without
+them lands at $1.02$--$1.03\times$, within run-to-run noise of each
+other, while (i) reaches $1.089\times$.
+crc32 is the counterexample: most of its gain comes from four checks
+\tool{} proves dead outright, which it proves just as well after IRCE
+(iii, $1.070\times$); the guard adds only the last $1.004\times$, and
+IRCE alone removes nothing.
+In aggregate, over all 385 checks of the 17 kernels (not only those in
+Table~\ref{tab:ablation}), the five pipelines prove 85, 69, 52, 17, and
+8 checks dead. Every check proved by (ii), (iv), or (v) is also proved
+by (i); the single exception to nesting is (iii), which proves two GEMM
+checks that (i) does not. The synthesized guard is therefore not a
+repackaging of IRCE: IRCE's guard, even with \tool{}'s proofs behind
+it, recovers at most part of what guard synthesis does, and on the
+kernels where guard synthesis matters most it recovers nothing.
 \subsection{RQ3: Is its overhead low enough for real-world use?}
 \label{sec:results-cost}
 \begin{figure}[t]
