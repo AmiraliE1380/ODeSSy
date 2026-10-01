@@ -3280,3 +3280,16 @@ conditions). Static counts only.
   The three middle arms differ by less than the run-to-run spread (no base2x control in
   Julia arms); mv_x86 is below the full-guard arm of the runtime table (1.107x) because
   x86 at 10 s leaves data[i+1] checked.
+
+### 10.69 Latency figures (Figs 6/7) with the current encoder -- in progress
+New Fig 6 draft: paper/smt_latencies_thorough_x86.pdf (stats: evaluation/smt_latency_stats_thorough_x86.csv)
+from the Thorough compile-cost logs (x86, threads=1, 10 s, all 17 runtime benchmarks), DIRECT
+queries only (one per check): UNSAT 548, median 23.3 ms, p90 753 ms, <=100 ms 72%, <=1 s 92%;
+SAT 5180, median 5.6 ms, <=100 ms 84%; UNKNOWN 21 (10 s cap). Induction BASE/STEP sub-queries
+are excluded (an earlier quick count that included them gave a misleading 3.9 ms UNSAT median).
+Under Thorough, proofs are NOT cheaper than refutations at the median (the July light/heavy
+figure showed 3.0 vs 5.5 ms on zlib deflate). The abstract's "96% of proofs survive 100 ms" is
+a July light-tier zlib-deflate number; not changed yet (ask the user first).
+Fig 7 regeneration: scripts/run_dial_matrix.sh now takes KNOBS (and CSV); plan: KNOBS =
+heavy;frame;mv;narrow (Thorough minus induction, which forces one thread) on the runtime-build
+zlib deflate.c (results/static/compile_cost/ir/zlib_deflate.ll on the server).

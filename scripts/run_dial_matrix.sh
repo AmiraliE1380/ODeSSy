@@ -13,6 +13,11 @@
 #        INPUT=evaluation/zlib/deflate_integer_unsigned_O1.ll
 # Out  : evaluation/dial_matrix.csv  (threads,timeout_ms,rep,wall_s,unsat,sat,unknown)
 # Plot : python3 tools/plot_dial_matrix.py  -> paper/dial_matrix.pdf
+# KNOBS (default "vacuity", the July light-tier matrix) selects the tier, e.g.
+#   KNOBS="heavy;frame;mv;narrow" for the current encoder without induction
+#   (induction forces one thread, so the Thorough configuration has no thread axis).
+# CSV overrides the output file. With KNOBS set, a cell's "unsat" column counts
+# proofs = checks eliminated + checks removed in guarded copies (as in tab:compile).
 # =============================================================================
 set -u
 ROOT="${ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
@@ -21,7 +26,8 @@ THREADS_LIST=${THREADS_LIST:-"1 2 4 8 16"}
 TIMEOUTS=${TIMEOUTS:-"1 10 100 1000 10000"}
 REPS=${REPS:-3}
 INPUT=${INPUT:-evaluation/zlib/deflate_integer_unsigned_O1.ll}
-CSV="$ROOT/evaluation/dial_matrix.csv"
+CSV="${CSV:-$ROOT/evaluation/dial_matrix.csv}"
+KNOBS="${KNOBS:-vacuity}"
 PIN="${PIN-numactl --cpunodebind=0 --membind=0}"; command -v numactl >/dev/null || PIN=""
 [ -f "$INPUT" ] || { echo "[FATAL] $INPUT missing"; exit 1; }
 ( cd build && ninja ) || exit 1
@@ -40,12 +46,18 @@ for TH in $THREADS_LIST; do
       rm -f "$vlog"
       t0=$(date +%s.%N)
       $PIN opt -load-pass-plugin=build/OraclePass.so \
-          -passes="oracle-pass<vacuity;timeout=${T};threads=${TH}>" \
+          -passes="oracle-pass<${KNOBS};timeout=${T};threads=${TH}>" \
           -disable-output "$INPUT" > "logs/opt_runs/matrix_t${TH}_to${T}_r${r}.log" 2>&1
+      rl="logs/opt_runs/matrix_t${TH}_to${T}_r${r}.log"
       t1=$(date +%s.%N)
       wall=$(awk -v a="$t0" -v b="$t1" 'BEGIN{printf "%.3f", b-a}')
-      u=$(grep -c 'UNSAT' "$vlog"); s=$(grep -c 'SAT (WARNING' "$vlog")
-      k=$(grep -c 'UNKNOWN (Solver gave up' "$vlog")
+      if [ "$KNOBS" = vacuity ]; then
+        u=$(grep -c 'UNSAT' "$vlog"); s=$(grep -c 'SAT (WARNING' "$vlog")
+        k=$(grep -c 'UNKNOWN (Solver gave up' "$vlog")
+      else   # direct queries from the run's own log; proofs incl. guarded removals
+        u=$(awk '/Total Traps Eliminated:/{e+=$NF} /Folded In Fast Copies/{f+=$NF} END{print e+f+0}' "$rl")
+        s=$(grep -cE '^ *-> SAT ' "$rl"); k=$(grep -cE '^ *-> UNKNOWN ' "$rl")
+      fi
       echo "$TH,$T,$r,$wall,$u,$s,$k" >> "$CSV"
       printf '%8s %10s %6s %8s %6s %6s %8s\n' "$TH" "$T" "$r" "$wall" "$u" "$s" "$k"
     done
