@@ -2,7 +2,7 @@
 %% Build: pdflatex main && bibtex main && pdflatex main && pdflatex main
 %% Numbers sourced from docs/PAPER_FACTS.md and docs/HANDOFF.md (x86 campaign,
 %% Sep 24-30 2026; earlier M-series results in the appendix).
-%% Figures used: spectrum.png, quadrants.pdf, smt_latencies_thorough_x86.pdf,
+%% Figures used: spectrum.pdf (tools/plot_spectrum.py), quadrants.pdf, smt_latencies_thorough_x86.pdf,
 %% dial_matrix_x86_current.pdf, gemm_sweep.pdf.
 %%
 \begin{filecontents*}[overwrite]{odessy.bib}
@@ -244,7 +244,7 @@ cannot match at costs that confine them to peephole windows and offline
 runs.
 \begin{figure}[t]
 \centering
-\includegraphics[width=\linewidth]{spectrum.png}
+\includegraphics[width=\linewidth]{spectrum.pdf}
 \caption{The cost--precision spectrum of aggressive compiler
 optimization. Conventional pipelines are online but heuristic and
 incomplete; superoptimizers are precise but offline. Super-analysis
