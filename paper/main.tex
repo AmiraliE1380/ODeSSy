@@ -465,6 +465,22 @@ compiler performs for free. This is why the two paradigms differ by orders
 of magnitude in latency while sharing the same underlying technology, and
 why super-analysis can run inside the pipeline rather than beside it
 (\S\ref{sec:results-cost}).
+
+The same asymmetry decides how much of the program each paradigm can
+see. A synthesizing search must enumerate or sample candidate
+replacements, and the space of candidates grows exponentially with the
+size of the code being replaced, so superoptimizers confine themselves
+to small, mostly local windows: a peephole, a basic block, a loop-free
+kernel. A decision procedure faces no such space. It decides a single
+formula, so the context it is given can be as large as the analysis
+can encode: many basic blocks and their merge points, every dominating
+branch condition, and facts imported from loop and heap analyses that
+summarize code it never sees. Super-analysis can therefore reason
+\emph{globally} about the point it decides, while superoptimization
+reasons locally about the code it rewrites; the checks of
+\S\ref{sec:conjunction} and \S\ref{sec:frame}, whose proofs combine
+facts from several analyses and from code far from the check, are of
+the first kind.
 \subsection{Encoding program context}
 \label{sec:encoding}
 A super-analyzer decides a property of a single \emph{program point} ---

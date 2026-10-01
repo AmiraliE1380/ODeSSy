@@ -3315,3 +3315,69 @@ runtime table, prediction record.
   adler32 1.039x (1.031 / 1.034) | sha1 0.953x (0.956 / 0.954) | md5 0.983x (0.983 / 0.983) |
   Rust matmul 1.336x (1.382 campaign, 1.373 ablation run; this run's base 1.809 s vs 1.897 s;
   ceiling base/unchecked 1.408x). Noise floors 0.999-1.000x. Not yet in the paper.
+
+## 11. PLANNED (revision): super-analysis vs superoptimization -- ODeSSy vs Souper
+
+Status: designed Oct 1 2026, NOT run. Deferred to the revision; run only if reviewers ask
+or the paper is final. Paper side: §3.1 now argues the paradigm-level difference (global
+decision vs local synthesis) without naming Souper; §3.1's "orders of magnitude in latency"
+sentence is NOT supported against Souper's constant mode (see 11.1) -- revisit after the run.
+
+### 11.1 What is known about Souper (Sasnauskas et al., arXiv 1711.04422)
+- Souper is an LLVM pass (inside `opt`, or via the `sclang` wrapper). For every
+  integer-valued instruction it extracts the expression DAG feeding it (backwards within the
+  function, stopping at loops, memory, calls; with some path conditions) and asks the solver
+  about it.
+- Constant-synthesis mode (their online mode): only asks "is this value always a constant c?";
+  if so replaces it by c. This is the mode that can remove a check (a branch condition proven
+  always false folds). Full synthesis mode: CEGIS/enumerative search for a cheaper sequence of
+  up to N instructions -- much more expensive, run offline in the paper.
+- Their build times (6-core Haswell, Z3 4.5.1, constant mode): LLVM 3.9 13 min -> 88 min with a
+  COLD cache (6.8x), 9 min warm (vs 8); SPEC CINT2006 1 min 5 s -> 26 min cold (24x),
+  2 min 15 s warm. "Often 5x to 25x slower than optimized compilation."
+- Our cost relative to -O3 on zlib: Thorough ~1000x, Fast ~200x, Light ~20x. So Souper's
+  cheap mode is cheaper than our Thorough; the paradigm argument must rest on what each
+  proves (global vs local), not on raw latency.
+
+### 11.2 Version constraint (decisive)
+- Souper pins LLVM 18.1.6 (fork regehr/llvm-project, branch disable-peepholes-llvmorg-18.1.6),
+  Z3 4.13.0, Alive2 v7, built by its build_deps.sh into its own third_party/ directory.
+- An older LLVM cannot parse IR written by a newer one: unknown syntax (captures(none),
+  samesign, inbounds nuw, debug records) makes opt fail outright -- Souper never runs on that
+  module (no over-approximation, no partial result).
+- Our front ends: Swift 6.3.3 -> LLVM 21 (swiftlang fork); Rust 1.97 -> LLVM 22.1.6;
+  Julia 1.12 -> LLVM 18.1.7; C via clang of our choice.
+- Consequence: C repositories (zlib, zstd): yes, compiled with Souper's clang 18. Julia
+  kernels: very likely loadable (same major version), static counts only (JIT). Swift/Rust:
+  out, unless re-emitted with LLVM-18-era front ends (e.g. an older Rust release); stripping
+  new syntax by hand is fragile and arguably unfair to Souper -- do not.
+
+### 11.3 Design
+- ONE input per module: emit IR once with an LLVM 18 front end (Souper's clang for C; Julia
+  1.12 as is). Both tools consume the identical file (our LLVM 23 reads LLVM 18 IR).
+- Isolation: Souper and its LLVM/Z3/Alive2 live entirely under /mydata/souper (+ copy to
+  /opt for the image); always invoked by absolute path; /opt/llvm, our Z3 and PATH untouched.
+- Arms (all cold cache: no Redis, fresh process per module, no external cache):
+  * Souper-const: constant synthesis only (its online mode)
+  * Souper-synth: Souper's standard synthesis setting (state the exact flags)
+  * ODeSSy Thorough, Fast, Light (tab:compile knob strings)
+  Matched per-query budget where Souper exposes one (10 s); fix all Souper knobs BEFORE the
+  run and report them (pre-registration -- no "tuned to lose" objection).
+- Baselines: each tool against ITS OWN -O3 pipeline (Souper: LLVM 18 sandwich; ODeSSy: LLVM
+  23 sandwich). Report per tool: checks removed (same tagged-check method as
+  run_guard_competitors.sh where possible), compile time (total and slowest module), runtime
+  speedup vs own baseline, byte-identity gate. Never compare absolute runtimes across tools.
+- Check one thing first: does the disable-peepholes fork weaken -O3 by default? If yes, use
+  stock LLVM 18.1.6 for Souper's baseline builds.
+- Benchmarks: zlib (both spec), zstd (signed spec) static + runtime; Julia kernels static only
+  (runtime only if Souper removes Julia checks: then designated proxy copies, as for sha256).
+- Prediction (record before running): Souper removes few checks (local DAG, no loop/heap
+  facts, no guards); its constant mode compiles faster than Thorough and within ~5-25x of -O3;
+  synthesis mode is slower than Thorough on the repositories.
+
+### 11.4 Cost estimate
+Build Souper + deps 1.5-3 h (unattended) | pilot (IR loads, knob sanity, counts) 1-2 h |
+static runs ~half a day (Souper synthesis is the unknown) | runtime 3-5 h (zlib 20 reps
+dominates) | engineering (LLVM-18 emission in the harnesses, Souper arm, tables) ~1 day.
+Total ~1.5-2 days, half of it machine time. Node: start from image odessy-c220g2
+(docs/RESURRECTION.md §8).
