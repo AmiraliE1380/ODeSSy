@@ -3381,3 +3381,12 @@ static runs ~half a day (Souper synthesis is the unknown) | runtime 3-5 h (zlib 
 dominates) | engineering (LLVM-18 emission in the harnesses, Souper arm, tables) ~1 day.
 Total ~1.5-2 days, half of it machine time. Node: start from image odessy-c220g2
 (docs/RESURRECTION.md §8).
+
+### 10.71 Whole-pipeline compile time (prepared Oct 1 2026)
+scripts/run_pipeline_cost.sh: per module of every non-Julia runtime benchmark, times each stage
+of base = front end (optimizing IR emission, as in the runtime harnesses) -> opt -O3 -> llc and
+ODeSSy = front end -> oracle-pass<cfg> -> opt -O3 -> llc for Thorough/Fast/Light. Linking not
+timed (identical in both). Cheap stages: one untimed warm-up + median of 3 (the warm-up fixes a
+cold-start artifact seen on the Mac); the pass: 1 run, no warm-up. Summary: whole-pipeline
+ratio per benchmark, geomean/median/range over the 13 non-Julia benchmarks. Julia excluded.
+Mac smoke: base64 2.01x / 1.26x / 1.12x; Rust matmul 5.44x / 2.44x / 1.44x.
