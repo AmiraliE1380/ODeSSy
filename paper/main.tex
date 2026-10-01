@@ -1020,7 +1020,8 @@ used throughout the paper: \emph{light}, \emph{heavy} (analysis facts
 \S\ref{sec:frame-machinery}). The remaining knobs are
 \texttt{timeout=} and \texttt{threads=} (the two latency dials of
 \S\ref{sec:results-cost}), \texttt{traps=} (\S\ref{sec:pipeline}), and
-\texttt{vacuity} (\S\ref{sec:audit}).
+\texttt{vacuity} (\S\ref{sec:audit}); Appendix~\ref{sec:app-knobs}
+lists every knob.
 
 \subsection{Encoding heap invariance}
 \label{sec:frame-machinery}
@@ -1653,16 +1654,33 @@ decompressor (\texttt{inflate.c}, 64\,s), and zstd's Huffman encoder
 (\texttt{zstd\_opt.c}, 39\,s). The totals are set by a few outliers ---
 \texttt{trees.c} (2277\,s) and \texttt{adler32.c} (530\,s) in zlib,
 \texttt{zstd\_preSplit.c} (164\,s) in zstd --- whose heavily inlined
-bodies give each query a long guard chain. We therefore see the
-configurations as serving two points of a project's life. During
-development, Fast and Light keep \tool{} inside the edit--compile loop
-(every kernel under 2\,s, zlib's slowest module 34\,s under Light), as
-does Thorough on the single module being edited. Thorough on a whole
-repository does not belong in that loop; it belongs where the final
-binary is built. There, a few minutes to an hour, spent once on code
-that is no longer changing, buys the proofs behind every speedup in
-Table~\ref{tab:speedups} --- the same trade release builds already make
-with link-time and profile-guided optimization.
+bodies give each query a long guard chain.
+
+\emph{Fast} is the configuration for the development loop, and it is
+both fast and effective. It compiles every kernel in under 2\,s (all
+but one in under half a second) and the whole of zstd and of
+CryptoSwift in 31\,s and 40\,s. Where it keeps Thorough's proofs it
+keeps Thorough's speedups: on Rust matmul, adler32, sha1, and md5 it
+removes exactly the checks Thorough removes, and it speeds up Rust
+matmul by $1.336\times$ and adler32 by $1.039\times$, within run-to-run
+variation of Thorough (Table~\ref{tab:fast},
+Appendix~\ref{sec:app-full}). The exception is zlib's \texttt{trees.c},
+which takes 407\,s even under Fast, for the fact-import cost discussed
+above; Light compiles it in 34\,s.
+
+We therefore recommend choosing the configuration by stage. During
+development, compile whole repositories and large modules with Fast
+(Light for an outlier such as \texttt{trees.c}), and the single module
+being edited with Thorough, which per module stays between seconds and
+about a minute. Every configuration takes a flexible per-query budget,
+and Fast and Light also scale with threads (Figure~\ref{fig:matrix});
+Thorough runs on one thread because inductive encoding does. For the
+final binary, compile the whole codebase with Thorough: a few minutes to
+an hour, spent once on code that is no longer changing, buys the proofs
+behind every speedup in Table~\ref{tab:speedups} --- the same trade
+release builds already make with link-time and profile-guided
+optimization. With this split, \tool{} stays an online pass during
+development and becomes a thorough one at release.
 \paragraph{The dial.}
 Figure~\ref{fig:matrix} is the central cost result. On zlib's
 \texttt{deflate.c}, \pct{96} of the proofs (52 of 54) survive a 1\,s
@@ -1854,6 +1872,29 @@ lz77 4 and matmul 3 checks removed under a synthesized guard, sha256
 under guard synthesis. $^{b}$The wider all-non-firing specification
 (212 checks removed), which serves as zlib's replicate.\par
 \end{table}
+Table~\ref{tab:fast} times the Fast configuration of
+Table~\ref{tab:compile} on the kernels where it keeps every one of
+Thorough's proofs, with the same harnesses, workloads, and repetitions
+as Table~\ref{tab:speedups}.
+\begin{table}[t]
+\caption{Fast against Thorough at runtime (x86 c220g2, medians of 30
+shuffled repetitions, byte-identical output, noise floors within
+$1.00\pm0.001\times$). Each Fast build removes exactly the checks of the
+Thorough build. ``Replicate'' is an independent Thorough run of the same
+campaign.}
+\label{tab:fast}
+\small
+\begin{tabular}{llrrr}
+\toprule
+Benchmark & Checks removed & Fast & Thorough & Thorough, replicate\\
+\midrule
+matmul (Rust) & 0 (+2 guarded) & $1.336\times$ & $1.382\times$ & $1.373\times$\\
+adler32 (Swift) & 1 (+1 guarded) & $1.039\times$ & $1.031\times$ & $1.034\times$\\
+md5 (Swift) & 1 & $0.983\times$ & $0.983\times$ & $0.983\times$\\
+sha1 (Swift) & 2 & $0.953\times$ & $0.956\times$ & $0.954\times$\\
+\bottomrule
+\end{tabular}
+\end{table}
 \begin{table}
 \caption{The frontier: benchmarks with a measured, unrecovered
 checked-vs-unchecked ceiling and no (or unusably few) proofs at the
@@ -2012,6 +2053,65 @@ cannot state (stride-$k$ and multi-exit loops); the two misses need an
 auxiliary invariant ($k \leq m$) that trap-only induction cannot supply
 --- the rules stay active and the two mechanisms are used together.
 \texttt{ind} forces \texttt{threads=1}.
+
+\section{Configuration Knobs}
+\label{sec:app-knobs}
+Every mechanism of \tool{} is a parameter of the pass,
+\texttt{oracle-pass<\emph{knob};\emph{knob};\ldots>}, so that each
+earlier configuration stays reproducible and each mechanism can be
+ablated alone. Table~\ref{tab:knobs} lists them; the three
+configurations of Table~\ref{tab:compile} are
+\emph{Thorough} = \texttt{heavy;frame;ind;mv;narrow;timeout=10000;threads=1},
+\emph{Fast} = \texttt{heavy;frame;mv;narrow;timeout=10;threads=10}, and
+\emph{Light} = \texttt{timeout=10;threads=10}.
+\begin{table}[h]
+\caption{The knobs of \tool{}. Defaults in brackets; with no knobs the
+pass runs the light tier serially at 10\,s per query.}
+\label{tab:knobs}
+\small
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lp{0.72\linewidth}}
+\toprule
+Knob & Effect\\
+\midrule
+\multicolumn{2}{l}{\emph{Fact sources}}\\
+\texttt{light} / \texttt{heavy} & [\texttt{light}] Light encodes the context alone;
+heavy also imports LLVM's analyses as facts (RM, KB, LVI, SCEV, SCEVSYM,
+and the header-phi rules), \S\ref{sec:system-facts}.\\
+\texttt{frame} & [off] Heap-invariance facts and the definitional axioms of
+\S\ref{sec:frame-machinery}.\\
+\texttt{ldeq} & [off] Load equality within a basic block (\S\ref{sec:system-facts}).\\
+\texttt{nophiinv} & [off] Disables the header-phi rules (for ablation).\\
+\texttt{ind} & [off] Inductive body encoding (Appendix~\ref{sec:app-machinery});
+forces one thread.\\
+\midrule
+\multicolumn{2}{l}{\emph{Guard synthesis} (\S\ref{sec:guards-impl})}\\
+\texttt{mv} & [off] Guard synthesis and loop cloning with templates T1--T3.\\
+\texttt{mv-light} & [off] The same with templates T1 and T2 only.\\
+\texttt{mv-sane=}$k$ & [62] Largest rung $2^k$ of template T2's sane-range ladder ($8 \le k \le 62$).\\
+\texttt{narrow}[\texttt{=}$b$] & [off; $b$=16] Certifies guards whose queries multiply 64-bit
+values by re-encoding them at 32 bits with overflow flags, sound only under the guard.\\
+\midrule
+\multicolumn{2}{l}{\emph{Cost and audit}}\\
+\texttt{timeout=}$t$ & [10000] Per-query solver budget in milliseconds.\\
+\texttt{threads=}$n$ & [1] Worker threads; 0 means one per hardware thread. Verdicts do not depend on $n$
+unless the budget is so small that contention decides which queries finish (Figure~\ref{fig:matrix}).\\
+\texttt{vacuity} & [off] Re-solves every \textsc{unsat} without the trap condition and refuses
+the proof if the context alone is contradictory (\S\ref{sec:audit}).\\
+\texttt{traps=}$a$\texttt{:}$b$ & [none] Further callee names treated as checks: \texttt{panic}
+for Rust, \texttt{bounds\_error:boundserror} for Julia (\S\ref{sec:pipeline}).\\
+\texttt{profile}[\texttt{=}$t$] & [off; $t$=1000] Dumps every query slower than $t$\,ms as SMT-LIB.\\
+\midrule
+\multicolumn{2}{l}{\emph{Experiment instruments} (not optimizations)}\\
+\texttt{mv-keep} & Clones and guards as \texttt{mv} does but leaves every check in the guarded
+copy (pipeline (ii) of Table~\ref{tab:ablation}).\\
+\texttt{mv-nofold} & As \texttt{mv-keep}, with each kept check given its own trap so its fate
+can be traced.\\
+\texttt{tag-checks} & Gives every check its own identity and stops, so pipelines can be
+compared check by check.\\
+\bottomrule
+\end{tabular}}
+\end{table}
 
 \section{M-series Results}
 \label{sec:app-mseries}
