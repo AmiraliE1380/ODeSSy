@@ -31,3 +31,13 @@ paper/*.synctex.gz
 paper/main.pdf
 paper/odessy.bib
 concole-log-cloudlabs.txt
+
+# ACM template documentation shipped next to acmart.cls (not ours)
+paper/README.txt
+paper/acmguide.pdf
+# raster copy of Figure 2; the paper uses quadrants.pdf
+paper/quadrants.png
+# regenerable IR from the guard-vs-LLVM experiment (logs are tracked)
+results/static/guard_vs_llvm/*/*.ll
+# raw induction-sweep logs; tracked as results/static/ind_sweep_logs.tgz
+results/static/ind_sweep/
