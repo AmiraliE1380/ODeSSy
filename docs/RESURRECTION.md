@@ -281,3 +281,19 @@ the profile at `:1`.
   `check_env.sh` now flags an unpinned default (rows `jlpin`, `rspin`).
 - `/opt/llvm` insurance copy made: `/proj/odessy-PG0/odessy-preserve/opt-llvm.tar` (2.3 GB).
 - Final `check_env.sh` on c220g2-010809 with turbo off: no DIFF lines.
+
+## 8. SEP 30 2026 IMAGE -- `odessy-c220g2` (START HERE NEXT TIME)
+
+URN: `urn:publicid:IDN+wisc.cloudlab.us+image+odessy-PG0:odessy-c220g2` (5.04 GB), captured
+from c220g2-010809 after the OOPSLA campaign. Contents: root fs (`/opt/llvm`, Z3, apt
+packages) + `/opt/odessy-preserve/` tarballs (repo at the latest oopsla-research, Swift 6.3.3
+toolchain, benchmarks, `home-toolchains.tgz` = ~/.juliaup ~/.cargo ~/.rustup); the same
+tarballs are mirrored in `/proj/odessy-PG0/odessy-preserve/`. The `/mydata` fstab line was
+removed BEFORE capture, so the image does not boot-loop on a fresh node (section 7).
+Imaging deletes the home directory, so on every new node also restore it:
+
+    tar xzf /opt/odessy-preserve/home-toolchains.tgz -C "$HOME"
+    export PATH=/mydata/swift-toolchain/usr/bin:/opt/llvm/bin:$HOME/.juliaup/bin:$HOME/.cargo/bin:$PATH
+
+then follow section 2 (unpack the three /mydata tarballs, `git pull`, `scripts/check_env.sh`).
+Restoring a working node from this image takes about 1-2 hours.
