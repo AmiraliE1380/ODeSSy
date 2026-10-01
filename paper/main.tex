@@ -199,10 +199,9 @@ A further solver-based optimization, \emph{guard synthesis}, handles
 checks that are not dead for every input: the solver synthesizes a cheap invariant safety guard under which a fast check-free loop is cloned,
 speeding up a Swift Base64 encoder by $1.44\times$ and a Julia LZ77
 compressor by $4.01\times$. Latency
-is controllable:
-\pct{96} of proofs survive a 100\,ms per-query SMT timeout budget, making
-super-analysis viable as an online compiler pass rather than an offline
-tool.
+is controllable: the median proof takes 23\,ms and \pct{96} of proofs
+survive a one-second per-query budget, so the same pass serves both the
+edit--compile loop and the release build.
 \end{abstract}
 \begin{CCSXML}
 <ccs2012>
