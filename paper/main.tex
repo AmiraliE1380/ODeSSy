@@ -1768,8 +1768,7 @@ guard synthesis).
 \includegraphics[width=\textwidth]{module_latency.pdf}
 \caption{Per-module \tool{} stage time for the two C libraries, modules
 sorted by Thorough time (x86, one module at a time, log scale). Bars:
-Thorough, Fast, Light; red ticks: one conventional \texttt{-O3} run of the
-same module; dashed line: one minute. Under Thorough, 12 of zlib's 14
+Thorough, Fast, Light; dashed line: one minute. Under Thorough, 12 of zlib's 14
 modules and 17 of zstd's 18 finish in about a minute or less (medians 7.2\,s
 and 2.4\,s); the totals of Table~\ref{tab:compile} are set by two zlib
 outliers, \texttt{trees.c} and \texttt{adler32.c}. Fast and Light sit one
@@ -1777,7 +1776,7 @@ to two orders of magnitude lower on almost every module.}
 \Description{Two bar-chart panels on a logarithmic time axis from 0.01 to
 over 1000 seconds. Left, zlib's 14 modules; right, zstd's 18 modules, each
 sorted from slowest to fastest under Thorough. Each module has three bars
-(Thorough, Fast, Light) and a red tick for one -O3 run. A dashed line marks
+(Thorough, Fast, Light). A dashed line marks
 one minute. In zlib, trees and adler32 rise far above the line under
 Thorough; every other module, and every zstd module but one, sits near or
 below it.}
