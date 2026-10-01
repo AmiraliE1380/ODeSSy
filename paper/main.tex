@@ -1,9 +1,9 @@
-%% main.tex — ODeSSy / Super-Analysis — CGO 2027 R2 submission draft
+%% main.tex — ODeSSy / Super-Analysis — OOPSLA 2027 submission draft
 %% Build: pdflatex main && bibtex main && pdflatex main && pdflatex main
-%% Numbers sourced from docs/PAPER_FACTS.md v4-final (Aug 18 2026).
-%% Figures expected in the project root: spectrum.png, super-opt_cost.png,
-%% super-analysis_cost.png, smt_latencies.png  (PNG for the draft; convert
-%% to PDF for camera-ready).
+%% Numbers sourced from docs/PAPER_FACTS.md and docs/HANDOFF.md (x86 campaign,
+%% Sep 24-30 2026; earlier M-series results in the appendix).
+%% Figures used: spectrum.png, quadrants.pdf, smt_latencies_thorough_x86.pdf,
+%% dial_matrix_x86_current.pdf, gemm_sweep.pdf.
 %%
 \begin{filecontents*}[overwrite]{odessy.bib}
 @inproceedings{dillig2012abductive,
@@ -292,7 +292,7 @@ such as UBSan~\cite{ubsanDocs} and the native checks of memory-safe
 languages (Swift bounds and overflow checks, Rust panics, Julia bounds
 errors) compile to trap-guarded branches whose hot-path cost is the
 standing tax of memory safety --- we measure it at up to $1.075\times$ on
-the fully sanitized zstd library and up to $4.17\times$ and $5.11\times$ on native-language kernels (Julia GEMM and Swift nbody, respectively).
+the zstd library under signed-overflow checks and up to $4.17\times$ and $5.11\times$ on native-language kernels (Julia GEMM and Swift nbody, respectively).
 Today the only recourse on hot paths is to turn checks \emph{off}
 wholesale (\texttt{-Ounchecked}, \texttt{--check-bounds=no}), trading away
 the safety guarantee entirely. \tool{} offers the sound alternative:
@@ -300,7 +300,7 @@ delete exactly the checks that are provably redundant with the guards,
 contracts, and invariants already present in the program, and keep every
 check that is not --- each deletion certified by an unsat core, audited
 for vacuity, and validated by byte-identical program output.
-\tool{} is able to recover up to $3.91\times$ of performance by removing redundant sanitizers and enabling a cascade of further optimizations.
+\tool{} is able to recover up to $3.91\times$ of performance by removing redundant safety checks and enabling a cascade of further optimizations.
 
 Deleting checks that are already dead is not \tool{}'s only
 optimization. Many hot checks are not dead for every input: they are
@@ -345,7 +345,7 @@ This paper makes the following contributions:
   runtime guard under which a loop's checks are dead and clone the loop
   behind it (\S\ref{sec:guards}).
 \item \textbf{\tool{}} (\S\ref{sec:system}): an LLVM pass and online optimizer
-  as an instantiation of super-analysis. \tool{} eliminates sanitizers and safety checks and unlocks further optimizations. It supports C/C++, Swift, and Julia as frontends and can enable hot-path transformations and speedups.
+  as an instantiation of super-analysis. \tool{} eliminates sanitizers and safety checks and unlocks further optimizations. It supports C/C++, Swift, Rust, and Julia as frontends and can enable hot-path transformations and speedups.
 \item \textbf{Robust Performance Improvement} (\S\ref{sec:results}):
   our systematic evaluation of \tool{} on two target architectures (x86 and M-series) show removing hot-loop checks has a cascading effect, unlocking further transformations (unrolling, vectorization, etc) that enables up to $4.01\times$ speedups for widely used kernels and libraries. \tool{} proofs are generally cheap: the median proof takes 23\,ms, and \pct{96} of
   zlib's proofs survive a 1\,s per-query budget. Multi-threading and per-query budgets make \tool{}'s analysis up to $5.7\times$ faster, and its budget is a dial between an online pass and a release build (\S\ref{sec:results-cost}).
@@ -373,7 +373,7 @@ verifies it, so the solver is invoked \emph{per candidate}. \tool{}
 performs no synthesis at all: its solver decides reachability over
 arbitrarily structured acyclic slices, once per check site, and the
 compiler's own machinery performs the rewrite. This is why
-super-analysis scales to whole libraries (156k-line IR modules; 12{,}798
+super-analysis scales to whole libraries (156k-line IR modules; 19{,}197
 checks in zstd) that no synthesizing tool can process. 
 
 
@@ -841,7 +841,7 @@ inputs as possible.
 %% =====================================================================
 \section{\tool{}: Design and Implementation}
 \label{sec:system}
-\tool{} is an LLVM module pass of roughly six thousand lines. Two
+\tool{} is an LLVM module pass of roughly five thousand lines. Two
 requirements dictate its design: soundness under aggressive
 parallelism, and bit-reproducible verdicts regardless of thread count.
 This section describes the pipeline the pass lives in
@@ -1219,8 +1219,8 @@ M-series MacBook Pro. The pass builds against pinned LLVM trunk
 \paragraph{Timing protocol.}
 Corpora live in tmpfs; every configuration is warmed; repetitions are
 \emph{shuffled and interleaved} so drift spreads uniformly across
-configurations; finals use 30 repetitions (20 for whole-library C runs)
-and \emph{medians} are primary. Two controls isolate attribution: a
+configurations; finals use 30 repetitions (20 for zlib; 21 rotated
+repetitions for the Julia copies) and \emph{medians} are primary. Two controls isolate attribution: a
 \texttt{base} binary (one verify round-trip through the identical
 emit-IR/\texttt{opt}/\texttt{llc} sandwich) and a \texttt{base2x} binary
 (the same full O3 applied \emph{twice}), so oracle-vs-\texttt{base2x}
@@ -1785,7 +1785,7 @@ We introduced super-analysis, an alternative paradigm of aggressive compilation 
 \appendix
 \section{Reproducibility Summary}
 Verdicts, output IR, and logs are invariant in \texttt{threads=N} by the
-FactGate construction (\S\ref{sec:system-facts}); the acceptance test is a
+ticket-turnstile construction (\S\ref{sec:pipeline}); the acceptance test is a
 \texttt{diff} of \texttt{threads=1} vs.\ \texttt{threads=8} outputs.
 Hardware is specified to the CloudLab node type (\texttt{c220g2}), whose
 full specification is published; all timed runs disable turbo and pin to
@@ -1881,14 +1881,14 @@ measurement or by construction.}
 \toprule
 Benchmark & Lang & Elim & Platform & Ceiling & Why static-only\\
 \midrule
-OpenSSL sha256 & C & 43 & x86 & 0\%$^{d}$ & asm fast path\\
-lz4 decomp. & C & --- & x86 & $+0.2$\% & below noise\\
-poly (Horner) & Julia & 1 & both & 0.0\% & no ceiling, either ISA\\
+OpenSSL sha256 & C & 43 & x86 & $1.000\times^{d}$ & asm fast path\\
+lz4 decomp. & C & --- & x86 & $1.002\times$ & below noise\\
+poly (Horner) & Julia & 1 & both & $1.000\times$ & no ceiling, either ISA\\
 zlib decomp.\ (both spec) & C & --- & x86 & n/a & traps fire; un-runnable\\
 zstd comp.\ (unsigned) & C & --- & x86 & n/a & traps fire; un-runnable\\
 \bottomrule
 \end{tabular}\\
-\raggedright\footnotesize $^{d}$Exactly zero by construction: under the
+\raggedright\footnotesize $^{d}$No overhead by construction: under the
 signed specification OpenSSL's SHA-256 emits no checks at all. The two
 un-runnable rows have no measurable ceiling of any kind: the sanitized
 binary executes an intentional-wraparound trap on its first blocks, so
