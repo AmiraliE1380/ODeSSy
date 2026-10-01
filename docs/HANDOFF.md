@@ -3309,3 +3309,9 @@ Thorough proof in tab:compile. GEMM (9 of 14 under Fast) is not included: its ch
 be mapped to source accesses reliably, so no faithful Julia copy can be built.
 Paper appendix trimmed the same day: inductive encoding (+PHIINV definition), M-series
 runtime table, prediction record.
+- Oct 1 server (merged server-1001-fast; results/perf/fast_tier_1001/, 30 reps, all gates passed).
+  Fast builds removed exactly the checks of the Thorough builds (adler32 1+1, sha1 2, md5 1,
+  Rust matmul 0+2). Speedup vs base (Thorough campaign / replicate in brackets):
+  adler32 1.039x (1.031 / 1.034) | sha1 0.953x (0.956 / 0.954) | md5 0.983x (0.983 / 0.983) |
+  Rust matmul 1.336x (1.382 campaign, 1.373 ablation run; this run's base 1.809 s vs 1.897 s;
+  ceiling base/unchecked 1.408x). Noise floors 0.999-1.000x. Not yet in the paper.
