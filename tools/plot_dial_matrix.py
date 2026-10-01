@@ -29,12 +29,16 @@ def main():
         csv_path = args[args.index("--csv") + 1]
     if "--out" in args:
         out = args[args.index("--out") + 1]
+    # --title / --noun: the July figure's wording stays the default
+    title = args[args.index("--title") + 1] if "--title" in args else "Oracle-stage wall-clock, zlib deflate (unsigned, O1)"
+    noun = args[args.index("--noun") + 1] if "--noun" in args else "unsat"
 
-    walls, unsat = defaultdict(list), {}
+    walls, unsat_reps = defaultdict(list), defaultdict(list)
     for r in csv.DictReader(open(csv_path)):
         key = (int(r["threads"]), int(r["timeout_ms"]))
         walls[key].append(float(r["wall_s"]))
-        unsat[key] = int(r["unsat"])
+        unsat_reps[key].append(int(r["unsat"]))
+    unsat = {k: int(statistics.median(v)) for k, v in unsat_reps.items()}   # median over reps
     threads = sorted({k[0] for k in walls})
     timeouts = sorted({k[1] for k in walls})
     M = np.array([[statistics.median(walls[(t, to)]) for to in timeouts] for t in threads])
@@ -44,7 +48,7 @@ def main():
                    aspect="auto")
     for i, t in enumerate(threads):
         for j, to in enumerate(timeouts):
-            ax.text(j, i, f"{M[i, j]:.1f} s\n{unsat[(t, to)]} unsat",
+            ax.text(j, i, f"{M[i, j]:.1f} s\n{unsat[(t, to)]} {noun}",
                     ha="center", va="center", fontsize=7.5, color="#111111")
     ax.set_xticks(range(len(timeouts)))
     ax.set_xticklabels([f"{to} ms" if to < 1000 else f"{to // 1000} s" for to in timeouts],
@@ -53,7 +57,7 @@ def main():
     ax.set_yticklabels([str(t) for t in threads], fontsize=8)
     ax.set_xlabel("per-query timeout", fontsize=9)
     ax.set_ylabel("worker threads", fontsize=9)
-    ax.set_title("Oracle-stage wall-clock, zlib deflate (unsigned, O1)", fontsize=9.5)
+    ax.set_title(title, fontsize=9.5)
     cb = fig.colorbar(im, ax=ax, fraction=0.046, pad=0.03)
     cb.set_label("wall-clock (s, log scale)", fontsize=8)
     cb.ax.tick_params(labelsize=7)

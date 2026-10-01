@@ -3293,3 +3293,11 @@ a July light-tier zlib-deflate number; not changed yet (ask the user first).
 Fig 7 regeneration: scripts/run_dial_matrix.sh now takes KNOBS (and CSV); plan: KNOBS =
 heavy;frame;mv;narrow (Thorough minus induction, which forces one thread) on the runtime-build
 zlib deflate.c (results/static/compile_cost/ir/zlib_deflate.ll on the server).
+- Sep 30: merged server-0930-dial (evaluation/dial_matrix_x86_current.csv; heavy;frame;mv;narrow,
+  zlib deflate.c runtime build, x86). Proofs (median of 3): 10 s 54 | 1 s 52 | 100 ms 41-44 |
+  10 ms 32 | 1 ms 5-9 (falls with threads: wall-clock budget under contention). Wall: 1 thr
+  10 s 59.9 s -> 10 thr 16.8 s (3.6x, no proof lost); 8 threads 3.7x; corner to corner 5.7x.
+  Paper: Fig 6 -> smt_latencies_thorough_x86.pdf, Fig 7 -> dial_matrix_x86_current.pdf, captions,
+  dial paragraph, compile-cost thread sentence, OpenSSL sentence, methodology, contributions updated.
+  The abstract still says "96% of proofs survive a 100 ms budget" -- false for the current
+  encoder (true: 96% at 1 s, ~78% at 100 ms); change proposed to the user, not applied.

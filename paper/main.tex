@@ -348,8 +348,8 @@ This paper makes the following contributions:
 \item \textbf{\tool{}} (\S\ref{sec:system}): an LLVM pass and online optimizer
   as an instantiation of super-analysis. \tool{} eliminates sanitizers and safety checks and unlocks further optimizations. It supports C/C++, Swift, and Julia as frontends and can enable hot-path transformations and speedups.
 \item \textbf{Robust Performance Improvement} (\S\ref{sec:results}):
-  our systematic evaluation of \tool{} on two target architectures (x86 and M-series) show removing hot-loop checks has a cascading effect, unlocking further transformations (unrolling, vectorization, etc) that enables up to $4.01\times$ speedups for widely used kernels and libraries. \tool{} proofs are generally cheap: \pct{96} of
-  zlib's proofs survive a 100\,ms per-query budget. By multi-threading and strict SMT timout budgets \tool{} can compile up to $4.8\times$ faster, making it an online compiler.
+  our systematic evaluation of \tool{} on two target architectures (x86 and M-series) show removing hot-loop checks has a cascading effect, unlocking further transformations (unrolling, vectorization, etc) that enables up to $4.01\times$ speedups for widely used kernels and libraries. \tool{} proofs are generally cheap: the median proof takes 23\,ms, and \pct{96} of
+  zlib's proofs survive a 1\,s per-query budget. Multi-threading and per-query budgets make \tool{}'s analysis up to $5.7\times$ faster, and its budget is a dial between an online pass and a release build (\S\ref{sec:results-cost}).
 \end{itemize}
 %% =====================================================================
 \section{Paradigms of Aggressive Compiler Optimization}
@@ -1234,8 +1234,8 @@ output on the workload; a mismatch aborts the experiment. Static
 from verdicts; crashes and timeouts are marked, never counted as
 eliminations. Performance builds use a 10\,s per-query solver budget
 and one solver thread, the budget of the library audits;
-\S\ref{sec:results-cost} shows the provable set is already \pct{96}
-saturated at 100\,ms on the densest workload.
+\S\ref{sec:results-cost} shows that \pct{96} of the proofs already
+survive a 1\,s budget on zlib's \texttt{deflate.c}.
 \paragraph{Benchmarks, specifications, tiers.}
 Four C libraries (zlib, zstd, lz4, OpenSSL) under UBSan trap-mode
 specifications; nine Swift kernels plus the unmodified CryptoSwift
@@ -1545,28 +1545,25 @@ kernels where guard synthesis matters most it recovers nothing.
 \label{sec:results-cost}
 \begin{figure}[t]
 \centering
-\includegraphics[width=\textwidth]{smt_latencies_single.pdf}
-\caption{SMT query latency by verdict class (1{,}818 queries over eight
-runs of zlib's \texttt{deflate} module: signed and unsigned
-specifications $\times$ O1 and O3 $\times$ light and heavy tiers, the two
-tiers yielding identical verdict sets; Apple M-series, an earlier version
-of the encoder without the heap-invariance, inductive, and guard-synthesis
-additions; no query reached the per-query budget). Proofs are
-\emph{cheaper} than refutations at the median (\textsc{unsat} 3.0\,ms vs.\
-\textsc{sat} 5.5\,ms); the expense lives entirely in a thin tail
-(\textsc{unsat} max 2{,}238\,ms). This shape is what makes the timeout
-dial of Figure~\ref{fig:matrix} (x86) effective: a tight budget truncates
-the tail while retaining nearly every proof. Note that this workload class
-is the easy end of the spectrum --- the OpenSSL queries discussed below
-sit three decades to the right.}
+\includegraphics[width=\textwidth]{smt_latencies_thorough_x86.pdf}
+\caption{SMT query latency by verdict class: every direct reachability
+query (one per check) that the Thorough configuration poses on the 17
+benchmarks of Table~\ref{tab:speedups} (5{,}749 queries; x86, one
+thread, 10\,s per query). The median proof takes 23\,ms, and \pct{72}
+of proofs finish within 100\,ms and \pct{92} within 1\,s; refutations
+are cheaper at the median (5.6\,ms). 21 queries reach the 10\,s budget
+and keep their checks. Most of the cost sits in a tail: this is the
+shape that makes the timeout dial of Figure~\ref{fig:matrix}
+effective, since a budget truncates the tail while keeping most of the
+proofs.}
 \Description{A single histogram panel of SMT query latency on a
-logarithmic x-axis in milliseconds, with query count on the y-axis. Two
-overlaid distributions: SAT in red with 1644 queries, and UNSAT in blue
-with 174 queries, so the red distribution is roughly ten times taller
-throughout. The blue mass sits to the left of the red mass. Dashed
-vertical lines mark the medians at 3.0 milliseconds for UNSAT and 5.5
-milliseconds for SAT. A small isolated group of blue bars appears past
-one second, reaching 2238 milliseconds; no red bar reaches that far.}
+logarithmic x-axis in milliseconds, with query count on the y-axis. Three
+overlaid outlines: SAT in red with 5180 queries, UNSAT in blue with 548
+queries, and UNKNOWN in green with 21 queries at the 10 second cap.
+Dashed vertical lines mark the medians at 5.6 milliseconds for SAT and
+23.3 milliseconds for UNSAT. Both distributions spread from below 0.1
+milliseconds to several seconds, with a second, smaller SAT mode between
+1 and 10 seconds.}
 \label{fig:latency}
 \end{figure}
 \begin{table}
@@ -1637,9 +1634,9 @@ only the solver. On zlib's largest module, Fast's queries finish in
 milliseconds, and most of its 407\,s go to importing LLVM's analyses
 and to guard synthesis, which the budget does not limit; Light, which
 does neither, takes 34\,s. Per-trap jobs are share-nothing, and the
-thread dial of Figure~\ref{fig:matrix} gives $3.8\times$ at 8 workers
-and plateaus at $4.05\times$ by 16 (Amdahl: serial discovery plus the
-slow-query tail).
+thread dial of Figure~\ref{fig:matrix} gives $3.7\times$ at 8 workers
+and nothing more at 10 (Amdahl: serial discovery, fact import, and
+guard synthesis).
 \paragraph{Where each configuration fits.}
 The repository totals overstate what a developer waits for. Builds
 compile modules independently and rebuild only the ones that changed,
@@ -1664,40 +1661,36 @@ that is no longer changing, buys the proofs behind every speedup in
 Table~\ref{tab:speedups} --- the same trade release builds already make
 with link-time and profile-guided optimization.
 \paragraph{The dial.}
-Figure~\ref{fig:matrix} is the central cost result (zlib's
-\texttt{deflate} module, unsigned specification, 457 queries): \pct{96}
-of the provable facts (50 of 52) survive a \emph{100\,ms} per-query
-budget, and the
-verdict set is fully saturated by 3\,s --- so the default budgets used
-throughout this paper sit on a plateau where proof yield is
-budget-insensitive. Median \textsc{unsat} latency on this workload is
-$\sim$3\,ms; the budget exists for the tail.
-Figure~\ref{fig:latency} shows why the dial is so cheap to turn: across
-1{,}818 real queries the proofs we want are \emph{faster} than the
-refutations we discard, and the cost sits in a thin high-latency tail that
-a per-query budget removes almost losslessly.
+Figure~\ref{fig:matrix} is the central cost result. On zlib's
+\texttt{deflate.c}, \pct{96} of the proofs (52 of 54) survive a 1\,s
+per-query budget and about \pct{78} survive 100\,ms; the full set needs
+10\,s. Figure~\ref{fig:latency} shows why the dial costs so little at
+the top: across 5{,}749 queries on all benchmarks the median proof takes
+23\,ms and \pct{92} take under a second, so a budget removes the
+expensive tail while keeping most of the proofs. Refutations are cheaper
+still (median 5.6\,ms), which matters because they are the large
+majority of queries.
 \begin{figure}
 \centering
-\includegraphics[width=\columnwidth]{dial_matrix.pdf}
-\caption{The two dials compose. Oracle-stage wall-clock (median of 3
-pinned runs) for zlib's \texttt{deflate} module (unsigned
-specification, O1, 457 queries, x86) over worker threads
-$\times$ per-query timeout; each cell also shows its \textsc{unsat}
-yield. Proof yield is set by the timeout alone (identical in every
-row down to 10\,ms);
-wall-clock is set mostly by threads. Serially, the timeout dial is worth
-$1.5\times$ (16.7\,s $\to$ 11.0\,s); at 8 threads the pool has already
-absorbed the tail and the same dial is worth $1.24\times$. Corner to
-corner: $4.8\times$. Below 10\,ms at 16 threads the budget begins to
-interact with oversubscription --- a wall-clock budget under contention
---- and the yield dips (52 $\to$ 38 proofs), the one region where the
-two knobs are not independent.}
-\Description{A five-by-five heatmap, rows are 1 to 16 worker threads,
-columns are per-query timeouts from 1 millisecond to 10 seconds. Cells
-are colored from red for slow to green for fast on a log scale and
-annotated with wall-clock seconds and UNSAT counts. Wall-clock falls
-from 16.7 seconds at one thread to about 4 seconds at 8 and 16 threads;
-UNSAT counts rise left to right from 16 to 52 in every row.}
+\includegraphics[width=\columnwidth]{dial_matrix_x86_current.pdf}
+\caption{The two dials compose. \tool{}-stage wall-clock (median of 3
+pinned runs) for zlib's \texttt{deflate.c} as built for the runtime
+experiments, over worker threads $\times$ per-query timeout, with the
+proofs each cell keeps. The configuration is Thorough without inductive
+encoding, which runs single-threaded. Proof yield is set by the timeout
+(54 proofs at 10\,s, 52 at 1\,s, about 42 at 100\,ms, 32 at 10\,ms);
+wall-clock is set mostly by threads: 10 threads cut the 10\,s column
+from 59.9\,s to 16.8\,s ($3.6\times$) at no loss of proofs, and corner
+to corner the stage is $5.7\times$ faster. At 1\,ms the budget interacts
+with contention --- it is a wall-clock budget --- and yield falls from 9
+proofs on one thread to 5 on ten.}
+\Description{A five-by-five heatmap, rows are 1, 2, 4, 8 and 10 worker
+threads, columns are per-query timeouts from 1 millisecond to 10
+seconds. Cells are colored from red for slow to green for fast on a log
+scale and annotated with wall-clock seconds and proof counts. Wall-clock
+falls from 59.9 seconds at one thread and 10 seconds to about 10.5
+seconds at ten threads and 1 millisecond; proof counts rise left to
+right from about 5 to 54 in every row.}
 \label{fig:matrix}
 \end{figure}
 \paragraph{The far end of the dial.}
@@ -1711,10 +1704,10 @@ $0\,@\,1\text{s} \rightarrow 0\,@\,5\text{s} \rightarrow 43\,@\,30\text{s}
 \rightarrow 125\,@\,\infty$ is monotone and tier-invariant: query hardness
 here scales with inlined guard-chain depth, and the same knob that makes
 zlib effectively free spans five orders of magnitude on real code. The
-practical reading is favorable: an \emph{online} deployment at
-millisecond budgets gets \pct{96} of zlib-class proofs and silently,
-soundly skips OpenSSL-class queries (\textsc{unknown} keeps the check);
-an offline audit turns the dial up.
+practical reading is favorable: a deployment at a 1\,s budget keeps
+\pct{96} of zlib-class proofs and silently, soundly skips OpenSSL-class
+queries (\textsc{unknown} keeps the check); an offline audit turns the
+dial up.
 %% =====================================================================
 \section{Related Work}
 \label{sec:relwork}
