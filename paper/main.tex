@@ -455,6 +455,66 @@ take the first half and leave the second to the compiler's existing
 rules. Both asymmetric corners are under-explored relative to the two
 diagonal ones.
 
+\begin{figure}[t]
+\centering
+\begin{minipage}[t]{0.47\linewidth}
+\begin{lstlisting}[style=odessy,basicstyle=\footnotesize\ttfamily,
+    morekeywords={while,if,return,for,each,in,not},comment={[l]{;}}]
+; Superoptimization
+best := P            ; a program fragment
+while budget left:   ; open-ended search
+  cand := Synthesize(best)
+  if Verify(cand == P):  ; 1 query
+                         ; per candidate
+    if Cost(cand) < Cost(best):
+      best := cand
+return best
+\end{lstlisting}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.50\linewidth}
+\begin{lstlisting}[style=odessy,basicstyle=\footnotesize\ttfamily,
+    morekeywords={while,if,return,for,each,in,not},comment={[l]{;}}]
+; Super-analysis
+for each point p in WorkList(P):
+  fact := Analyze(p)     ; cheap, as today
+  if not fact:           ; heuristics failed
+    fact := Decide(Context(p) && Query(p))
+                         ; solver: a bounded
+                         ; number of queries
+  if fact:
+    P := Rewrite(P, p)   ; conventional
+\end{lstlisting}
+\end{minipage}
+\caption{The two paradigms as procedures. A superoptimizer searches,
+for each fragment, over candidate replacements, and pays a solver query
+for every candidate it verifies; the search has no natural end and is
+cut off by a budget. A super-analyzer visits each point of a work list
+the compiler chooses (here, every safety check) once, consults the
+solver only where the conventional analysis fails, poses a bounded
+number of queries there, each under its own time budget, and hands the
+answer to a conventional rewrite.}
+\Description{Two pseudocode listings side by side. Left, superoptimization:
+starting from a program fragment, a loop runs while budget remains,
+synthesizes a candidate, verifies it equals the original with one solver
+query, and keeps it if it is cheaper. Right, super-analysis: for each
+point in a work list, run the conventional analysis; only if it fails,
+ask the solver to decide the point's context together with its query;
+if a fact is established, apply a conventional rewrite.}
+\label{fig:procedures}
+\end{figure}
+Figure~\ref{fig:procedures} states the difference as two procedures.
+The superoptimizer's outer loop is a search: its cost is the number of
+candidates it tries times the cost of verifying each, the number of
+candidates grows with the size of the fragment, and nothing bounds it
+except the budget. The super-analyzer has no search loop at all. Its
+only loop runs over a work list that the compiler chooses, which makes
+its use of the solver \emph{strategic} --- the compiler decides where
+precision is worth paying for --- and the solver is consulted only
+where the conventional analysis has already failed, which makes it
+\emph{surgical}: expensive reasoning is spent on exactly the points
+that need it, a bounded number of queries each, every query under a
+fixed budget. The transformation that follows is the compiler's own.
+
 The cost consequence is concrete. A
 superoptimizer's dominant expense is not the solver but the
 \emph{synthesis loop} that feeds it: a search over candidate programs,
