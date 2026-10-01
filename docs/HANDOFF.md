@@ -3301,3 +3301,11 @@ zlib deflate.c (results/static/compile_cost/ir/zlib_deflate.ll on the server).
   dial paragraph, compile-cost thread sentence, OpenSSL sentence, methodology, contributions updated.
   The abstract still says "96% of proofs survive a 100 ms budget" -- false for the current
   encoder (true: 96% at 1 s, ~78% at 100 ms); change proposed to the user, not applied.
+
+### 10.70 Fast-tier runtime (prepared Oct 1 2026)
+scripts/run_fast_tier.sh: Fast (heavy;frame;mv;narrow;timeout=10;threads=10) through the
+same harnesses for adler32, sha1, md5, Rust matmul -- the kernels where Fast keeps every
+Thorough proof in tab:compile. GEMM (9 of 14 under Fast) is not included: its checks cannot
+be mapped to source accesses reliably, so no faithful Julia copy can be built.
+Paper appendix trimmed the same day: inductive encoding (+PHIINV definition), M-series
+runtime table, prediction record.
