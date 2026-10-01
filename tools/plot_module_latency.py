@@ -49,8 +49,8 @@ def main():
         ax.set_xticklabels([m for m, _ in rows], rotation=60, ha="right", fontsize=7)
         ax.set_yscale("log")
         ax.set_ylim(1e-2, 5e3)                        # every decade, uniformly labelled
-        ax.set_yticks([1e-2, 1e0, 1e2])                       # labelled decades
-        ax.yaxis.set_minor_locator(matplotlib.ticker.FixedLocator([1e-1, 1e1, 1e3]))
+        ax.set_yticks([1e-1, 1e1, 1e3])                       # labelled decades
+        ax.yaxis.set_minor_locator(matplotlib.ticker.FixedLocator([1e-2, 1e0, 1e2]))
         ax.yaxis.set_minor_formatter(matplotlib.ticker.NullFormatter())   # tick marks only
         ax.set_axisbelow(True)                                # grid behind the bars
         ax.grid(axis="y", which="major", color="#eeeeee")
