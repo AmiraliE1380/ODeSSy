@@ -1813,7 +1813,12 @@ We therefore recommend choosing the configuration by stage. During
 development, compile whole repositories and large modules with Fast
 (Light for an outlier such as \texttt{trees.c}), and the single module
 being edited with Thorough, which per module stays between seconds and
-about a minute. Every configuration takes a flexible per-query budget,
+about a minute. A wait of that order --- a few seconds for the typical
+module, 7.2\,s and 2.4\,s at the median --- fits the edit--compile loop:
+it is paid once per edit, only for the module that changed, while the
+build reuses every other module's object file, and a module that is
+still too slow for the developer's patience can be given a smaller
+budget or compiled with Fast. Every configuration takes a flexible per-query budget,
 and Fast and Light also scale with threads (Figure~\ref{fig:matrix});
 Thorough runs on one thread because inductive encoding does. For the
 final binary, compile the whole codebase with Thorough: a few minutes to
