@@ -13,6 +13,7 @@ import sys
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import matplotlib.ticker
 import numpy as np
 
 CSV = "results/static/compile_cost/modules.csv"
@@ -50,6 +51,9 @@ def main():
         ax.set_xticks(x)
         ax.set_xticklabels([m for m, _ in rows], rotation=60, ha="right", fontsize=7)
         ax.set_yscale("log")
+        ax.set_ylim(1e-2, 5e3)                        # every decade, uniformly labelled
+        ax.set_yticks([1e-2, 1e-1, 1e0, 1e1, 1e2, 1e3])
+        ax.yaxis.set_minor_locator(matplotlib.ticker.NullLocator())
         ax.grid(axis="y", which="major", color="#eeeeee")
         ax.spines[["top", "right"]].set_visible(False)
     axes[0].set_ylabel("ODeSSy stage time per module (s)", fontsize=9)
