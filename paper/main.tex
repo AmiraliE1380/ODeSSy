@@ -374,7 +374,7 @@ performs no synthesis at all: its solver decides reachability over
 arbitrarily structured acyclic slices, once per check site, and the
 compiler's own machinery performs the rewrite. This is why
 super-analysis scales to whole libraries (156k-line IR modules; 19{,}197
-checks in zstd) that no synthesizing tool can process. 
+checks in zstd) at the cost of one decision per check. 
 
 
 \paragraph{Equality Saturation.}
@@ -846,7 +846,8 @@ requirements dictate its design: soundness under aggressive
 parallelism, and bit-reproducible verdicts regardless of thread count.
 This section describes the pipeline the pass lives in
 (\S\ref{sec:pipeline}), the encoding machinery at its core
-(\S\ref{sec:encoding-impl}), the heap-invariance extension
+(\S\ref{sec:encoding-impl}), inductive loop encoding
+(\S\ref{sec:app-machinery}), the heap-invariance extension
 (\S\ref{sec:frame-machinery}), guard synthesis and loop cloning
 (\S\ref{sec:guards-impl}), and how proofs are audited before they are
 believed (\S\ref{sec:audit}).
@@ -879,7 +880,9 @@ every analysis query passes through a ticket turnstile keyed on
 discovery index, serializing them in one canonical order. That single
 mechanism buys thread safety \emph{and} reproducibility: verdicts,
 output IR, and logs are identical for \texttt{threads=1} and
-\texttt{threads=N}, which we verify by \texttt{diff}. \emph{Serial
+\texttt{threads=N}, which we verify by \texttt{diff}, as long as no
+query lands at its time budget: a wall-clock budget lets contention
+decide such a query (Figure~\ref{fig:matrix}). \emph{Serial
 transform}: the main thread folds each proven branch to a constant in
 discovery order --- the only IR mutation in the pass --- and standard
 \texttt{simplifycfg}/\texttt{adce} reclaim the dead blocks. Workers
@@ -1022,6 +1025,44 @@ used throughout the paper: \emph{light}, \emph{heavy} (analysis facts
 \S\ref{sec:results-cost}), \texttt{traps=} (\S\ref{sec:pipeline}), and
 \texttt{vacuity} (\S\ref{sec:audit}); Appendix~\ref{sec:app-knobs}
 lists every knob.
+
+\subsection{Encoding loops inductively}
+\label{sec:app-machinery}
+Loop-header $\phi$s are boundaries (\S\ref{sec:encoding}), so a check
+whose safety depends on how a loop's values evolve is out of reach of a
+single query unless a fact source bounds those values. Scalar evolution
+often does (SCEVSYM), but not for loops that advance by a variable or
+non-unit stride, or exit in several places. The \texttt{ind} option
+proves such checks by one-step induction over the loop, with no trip
+count and no invariant synthesis. Let $\vec\phi$ be the header $\phi$s
+of the trap's loop, $\vec\phi_0$ their entry values, $\Gamma$ the
+encoded context of the trap, and primes denote a copy of the loop body
+over fresh symbols that stands for the previous iteration. Two queries
+are posed:
+\[
+\textsc{Base}:\ \ \Gamma \wedge \vec\phi = \vec\phi_0 \wedge \mathit{trap}
+\qquad
+\textsc{Step}:\ \ \Gamma \wedge \Gamma' \wedge \mathit{latch}' \wedge
+\vec\phi = \mathit{next}'(\vec\phi') \wedge \neg\,\mathit{trap}' \wedge \mathit{trap}
+\]
+where $\mathit{latch}'$ states that the previous iteration reached the
+latch and took the back edge, $\mathit{next}'$ computes the header
+values that edge carries, and $\neg\,\mathit{trap}'$ states that the
+check did not fire on the previous iteration. If both are
+\textsc{unsat}, the check cannot fire on the first iteration, nor on any
+iteration that follows one on which it did not fire; by induction it
+never fires. \tool{} poses the two queries only when the direct query is
+\textsc{sat} or \textsc{unknown} and the trap lies in a loop, first for
+the trap's own loop and then for each enclosing one. The copy's fresh
+symbols receive the same facts as ordinary boundaries, except facts
+valid only at a single program point. The heavy tier also carries four
+syntactic \emph{header-phi interval} rules (\texttt{PHIINV}), each a
+fact about a loop-header $\phi$ justified by the same one-step argument
+(for example, a counter that only increases stays at or above its start
+value); induction recovers 12 of the 14 proofs those rules provide and
+adds proofs they cannot state, and the two mechanisms are used together.
+Because the copy queries scalar evolution outside the turnstile of
+\S\ref{sec:pipeline}, \texttt{ind} runs on one thread.
 
 \subsection{Encoding heap invariance}
 \label{sec:frame-machinery}
@@ -1196,8 +1237,10 @@ genuinely contradictory guard chain --- the elimination is
 self-distrusting: on zstd it surrendered 61 likely-sound eliminations
 whose guard chains are jointly infeasible for the actual constants,
 because the tool cannot distinguish that situation from its own bugs;
-vacuous counts are reported in every experiment and are zero except
-where noted. Independently, every assertion is tracked, so each
+vacuous counts are reported in every static audit and are zero except
+where noted. The timed builds run without this audit, for speed; guard
+synthesis checks its own guards for vacuity in every build
+(\S\ref{sec:guards-impl}). Independently, every assertion is tracked, so each
 \textsc{unsat} yields a minimal core naming exactly the guards and
 facts that proved it; we inspect the cores of every nontrivial proof
 family by hand before counting it, and six standing \textsc{sat}
@@ -1240,7 +1283,10 @@ survive a 1\,s budget on zlib's \texttt{deflate.c}.
 Four C libraries (zlib, zstd, lz4, OpenSSL) under UBSan trap-mode
 specifications; nine Swift kernels plus the unmodified CryptoSwift
 library; Julia kernels including the stdlib GEMM of \S\ref{sec:frame};
-and Rust ports that exercise the \texttt{traps=} retargeting. Dynamic
+and Rust ports that exercise the \texttt{traps=} retargeting. lz4 and
+OpenSSL are static only: \tool{}'s lz4 build at the production budget
+did not finish in reasonable time on the x86 node, and OpenSSL's signed
+specification emits no checks. Dynamic
 experiments use only specifications that do not fire at runtime --- a
 firing specification (intentional wraparound in hashing code) is
 reported as an un-runnable finding, never timed
@@ -2016,43 +2062,10 @@ a data-dependent stride of 1 to 4. No amount of trip-count machinery
 helps, because there is no trip count to translate. The remedy is to
 stop asking for one: encode the induction structurally, as a base case
 plus a step case over a copy of the loop body
-(Appendix~\ref{sec:app-machinery}). That closes crc32's four
+(\S\ref{sec:app-machinery}). That closes crc32's four
 stride-4 bounds checks; base64 and UTF-8 remain, the former because its
 residue is also class~(b). Guard synthesis (\S\ref{sec:guards}) reaches
 base64's hot checks instead, in a guarded copy of the loop.
-
-\section{Inductive Body Encoding}
-\label{sec:app-machinery}
-The production configuration (\texttt{heavy;frame;ind;mv;narrow}) adds
-one mechanism beyond those of \S\ref{sec:making} and \S\ref{sec:system}:
-inductive body encoding. Like every mechanism of \tool{}, it sits behind
-a knob, and its prediction was recorded before it was implemented
-(Appendix~\ref{sec:app-mseries}). It complements four syntactic
-\emph{header-phi interval} rules (\texttt{PHIINV}) in the heavy tier,
-each a fact about a loop-header $\phi$ justified by one-step induction
-on its loop (for example, a counter that only increases stays at or
-above its start value).
-
-\paragraph{Inductive body encoding (knob \texttt{ind}).}
-When the direct query $\mathit{context} \wedge \mathit{facts} \wedge
-\mathit{guards} \wedge \mathit{trap}$ is satisfiable and the trap lies
-in a loop, two further obligations are checked, for the trap's loop and
-then each enclosing loop: \textsc{Base}, with every header $\phi$ fixed
-to its entry value, and \textsc{Step}, with a \emph{primed copy} of the
-loop body instantiated over fresh symbols $\phi_{t-1}$, the link
-$\phi_t = \mathit{latch}'(\phi_{t-1})$, the hypothesis that lap $t{-}1$
-reached the latch and took the back edge, and the hypothesis that the
-trap did not fire on lap $t{-}1$. The copy's fresh symbols receive the
-same value facts as ordinary boundaries (minus point-valid LVI facts).
-Both unsatisfiable proves the trap dead by one-step induction with no
-trip counter and no invariant synthesis; the cores carry labels
-\texttt{IND-base}, \texttt{IND-link}, \texttt{IND-latch},
-\texttt{IND-notrap}. The encoding recovers 12 of the 14 proofs
-attributable to the \texttt{PHIINV} rules and adds proofs the rules
-cannot state (stride-$k$ and multi-exit loops); the two misses need an
-auxiliary invariant ($k \leq m$) that trap-only induction cannot supply
---- the rules stay active and the two mechanisms are used together.
-\texttt{ind} forces \texttt{threads=1}.
 
 \section{Configuration Knobs}
 \label{sec:app-knobs}
@@ -2082,7 +2095,7 @@ and the header-phi rules), \S\ref{sec:system-facts}.\\
 \S\ref{sec:frame-machinery}.\\
 \texttt{ldeq} & [off] Load equality within a basic block (\S\ref{sec:system-facts}).\\
 \texttt{nophiinv} & [off] Disables the header-phi rules (for ablation).\\
-\texttt{ind} & [off] Inductive body encoding (Appendix~\ref{sec:app-machinery});
+\texttt{ind} & [off] Inductive body encoding (\S\ref{sec:app-machinery});
 forces one thread.\\
 \midrule
 \multicolumn{2}{l}{\emph{Guard synthesis} (\S\ref{sec:guards-impl})}\\
@@ -2125,7 +2138,7 @@ not compared directly.
 \begin{table}[h]
 \caption{M-series runtime results (\tool{} vs.\ base / double-O3
 control). ``rules'' is the heavy fact tier with the \texttt{PHIINV}
-rules of Appendix~\ref{sec:app-machinery}. Rows marked \emph{arm} are designated
+rules of \S\ref{sec:app-machinery}. Rows marked \emph{arm} are designated
 hand-versioned Julia copies mirroring what the pass does to the frozen
 kernel's IR; they are runtime proxies, not machinery output.}
 \label{tab:app-runtime}
