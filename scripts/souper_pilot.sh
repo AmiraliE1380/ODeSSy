@@ -67,8 +67,8 @@ run() {  # name, baseline-traps-or-empty, command...
 }
 run base18 "" "$L18/opt" -passes='default<O3>'
 B18=$(traps "$OUT/base18.ll")
-run souper_const "$B18" "$L18/opt" -load-pass-plugin="$PLUG" -passes='souper,default<O3>' $COMMON -souper-only-infer-iN
-run souper_synth "$B18" "$L18/opt" -load-pass-plugin="$PLUG" -passes='souper,default<O3>' $COMMON \
+run souper_const "$B18" "$L18/opt" -load-pass-plugin="$PLUG" -passes='function(souper),default<O3>' $COMMON -souper-only-infer-iN
+run souper_synth "$B18" "$L18/opt" -load-pass-plugin="$PLUG" -passes='function(souper),default<O3>' $COMMON \
     -souper-enumerative-synthesis-max-instructions="$SYNTH_N"
 run base23 "" opt -passes='default<O3>'
 B23=$(traps "$OUT/base23.ll")
