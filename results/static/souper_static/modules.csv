@@ -47,3 +47,9 @@ zlib,infback,base23,0.09,2,-
 zlib,infback,thorough,8.52,2,0
 zlib,infback,fast,1.00,2,0
 zlib,infback,light,0.59,2,0
+zlib,inffast,base18,0.06,2,-
+zlib,inffast,souper_const,120.72,2,0
+zlib,inffast,base23,0.06,2,-
+zlib,inffast,thorough,3.72,2,0
+zlib,inffast,fast,0.49,2,0
+zlib,inffast,light,0.39,2,0
