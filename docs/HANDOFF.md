@@ -3390,3 +3390,8 @@ timed (identical in both). Cheap stages: one untimed warm-up + median of 3 (the 
 cold-start artifact seen on the Mac); the pass: 1 run, no warm-up. Summary: whole-pipeline
 ratio per benchmark, geomean/median/range over the 13 non-Julia benchmarks. Julia excluded.
 Mac smoke: base64 2.01x / 1.26x / 1.12x; Rust matmul 5.44x / 2.44x / 1.44x.
+- Oct 1 server (merged server-1001-pipeline; results/static/pipeline_cost/, no FAIL): whole
+  compile (front end + [pass] + -O3 + llc) vs base, 13 non-Julia benchmarks: Thorough geomean
+  8.27x (median 5.73x, 1.96-381.85x), Fast 2.16x (1.38x, 1.22-57.04x), Light 1.47x (1.25x,
+  1.17-7.02x). Pass times match tab:compile (zlib Thorough 3024 vs 2996 s). Post-pass -O3/llc
+  within ~16% of base (CryptoSwift o3 5.72 vs 4.94 s). Added to RQ3 ("Whole-compile cost").

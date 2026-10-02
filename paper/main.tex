@@ -1763,6 +1763,26 @@ does neither, takes 34\,s. Per-trap jobs are share-nothing, and the
 thread dial of Figure~\ref{fig:matrix} gives $3.7\times$ at 8 workers
 and nothing more at 10 (Amdahl: serial discovery, fact import, and
 guard synthesis).
+\paragraph{Whole-compile cost.}
+The ratio that matters to a developer is that of whole compiles, not of
+one optimizer run. A build runs a front end, the optimizer, and code
+generation, and the front end is often a large share of it: Swift's, for
+instance, runs its own optimizer before LLVM sees the code. Comparing
+against \texttt{-O3} alone would therefore overstate the cost. We timed
+every stage of the two pipelines the runtime experiments use, per module,
+on the 13 benchmarks whose pipeline can take the pass output (all but
+Julia's): the baseline (optimizing front end, \texttt{-O3}, code
+generation) and the same pipeline with \tool{} inserted before
+\texttt{-O3}. Both come from one harness, so the comparison is like for
+like. A whole compile with \tool{} costs a geometric mean of $8.3\times$
+the baseline under Thorough (median $5.7\times$, range
+$2.0$--$382\times$), $2.2\times$ under Fast (median $1.38\times$, range
+$1.22$--$57\times$), and $1.5\times$ under Light (median $1.25\times$,
+range $1.17$--$7.0\times$). The pass is nearly the whole difference: the
+\texttt{-O3} and code-generation stages that follow it take at most about
+\pct{16} longer than in the baseline, guarded loop copies included. The
+top of every range is zlib, whose \texttt{trees.c} dominates
+(Figure~\ref{fig:modules}).
 \begin{figure}[t]
 \centering
 \includegraphics[width=\textwidth]{module_latency.pdf}
