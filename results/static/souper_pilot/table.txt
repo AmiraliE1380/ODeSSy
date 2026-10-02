@@ -1,0 +1,4 @@
+arm             seconds   traps  removed
+base18             0.44     128        -
+souper_const     119.60     128        0
+souper_synth    8748.80     128        0

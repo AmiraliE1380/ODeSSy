@@ -1,0 +1,57 @@
+      --assumption-cache-tracker                                                - Assumption Cache Tracker
+  --alive-skip-solver                                                        - Omit Alive solver calls for performance testing (default = false)
+  --cache-line-size=<uint>                                                   - Use this to override the target cache line size when specified by the user.
+  --enable-ext-tsp-block-placement                                           - Enable machine block placement based on the ext-tsp model, optimizing I-cache utilization.
+  --keep-solver-inputs                                                       - Do not clean up solver inputs
+  --ml-advisor-keep-fpi-cache                                                - For test - keep the ML Inline advisor's FunctionPropertiesInfo cache
+  --solver-timeout=<int>                                                     - Solver timeout in seconds (default=15)
+  --souper-constant-synthesis-max-num-specializations=<uint>                 - Maximum number of input specializations in constant synthesis (default=15).
+  --souper-constant-synthesis-use-concrete-interpreter                       - Use concrete interpreter in constant synthesis (default=false)
+  --souper-dataflow-ai-phi                                                   - Abstract interpret Phi instead of assuming first argument (default=false)
+  --souper-dataflow-pruning                                                  - Enable pruning based on dataflow analysis (default=false)
+  --souper-dataflow-pruning-bb                                               - Prune with bivalent-bits analysis (default=true)
+  --souper-dataflow-pruning-cr                                               - Prune with integer-ranges analysis (default=true)
+  --souper-dataflow-pruning-fb                                               - Prune with forced-bits analysis (default=true)
+  --souper-dataflow-pruning-heavy                                            - Enable all pruning techniques (default=false)
+  --souper-dataflow-pruning-kb                                               - Prune with known-bits analysis (default=true)
+  --souper-dataflow-pruning-rb                                               - Prune with required-bits analysis (default=true)
+  --souper-debug-level=<uint>                                                - Control the verbose level of debug output (default=1). The larger the number is, the more fine-grained debug information will be printed.
+  --souper-double-check                                                      - Double check synthesis result with alive (default=false)
+  --souper-dynamic-profile                                                   - Dynamic profiling of Souper optimizations (default=false)
+  --souper-enumerative-synthesis-cost-fudge=<uint>                           - Generate guesses costing LHS + N (default=0)
+  --souper-enumerative-synthesis-ignore-cost                                 - Ignore cost of RHSs -- just generate them (default=false)
+  --souper-enumerative-synthesis-max-instructions=<uint>                     - Maximum number of instructions to synthesize (default=0).
+  --souper-enumerative-synthesis-max-verification-load=<uint>                - Maximum number of guesses verified at once (default=300).
+  --souper-enumerative-synthesis-skip-solver                                 - Skip refinement check after generating guesses (default=false)
+  --souper-exploit-blockpcs                                                  - Exploit block path conditions (default=false)
+  --souper-external-cache                                                    - Use external Redis-based cache (default=false)
+  --souper-external-cache-unix                                               - Talk to the cache using UNIX domain sockets (default=false)
+  --souper-first-opt=<uint>                                                  - First Souper optimization to perform (default=0)
+  --souper-harvest-dataflow-facts                                            - Perform data flow analysis (default=true)
+  --souper-harvest-uses                                                      - Harvest operands (default=false)
+  --souper-internal-cache                                                    - Cache solver results in memory (default=true)
+  --souper-last-opt=<uint>                                                   - Last Souper optimization to perform (default=infinite)
+  --souper-lsb-pruning                                                       - Try to prune guesses by looking for a difference in LSB
+  --souper-mark-external-uses                                                - Mark external uses in harvesting (default=true)
+  --souper-max-constant-synthesis-tries=<int>                                - Max number of constant synthesis tries. (default=30)
+  --souper-max-lhs-cands=<uint>                                              - Gather at most this many values from a LHS to use as synthesis inputs (default=10)
+  --souper-max-lhs-size=<int>                                                - Max size of LHS (in bytes) to put in external cache (default=1024)
+  --souper-no-infer                                                          - Populate the external cache, but don't infer replacements (default=false)
+  --souper-only-infer-i1                                                     - Only infer integer constants with width 1 (default=false)
+  --souper-only-infer-iN                                                     - Only infer integer constants (default=false)
+  --souper-redis-port=<uint>                                                 - Redis server port (default=6379)
+  --souper-shrink-consts                                                     - Try to shrink constants (defaults=false)
+  --souper-smt-expr-builder=<value>                                          - SMT-LIBv2 expression builder (default=klee)
+  --souper-static-profile                                                    - Static profiling of Souper optimizations (default=false)
+  --souper-synthesis-comp-num=<int>                                          - Maximum number of components (default=all)
+  --souper-synthesis-comps=<string>                                          - Comma-separated list of instruction synthesis component kinds
+  --souper-synthesis-const-with-cegis                                        - Synthesis constants with CEGIS (default=false)
+  --souper-synthesis-debug-level=<uint>                                      - Synthesis debug level (default=0). The larger the number is, the more fine-grained debug information will be printed
+  --souper-synthesis-ignore-cost                                             - Ignore cand inst cost (default=false)
+  --souper-synthesis-wiring-iterations=<uint>                                - Number of convergence iterations of wirings that contain constants
+  --souper-use-alive                                                         - Use Alive2 as the backend
+  --souper-use-cegis                                                         - Infer instructions (default=false)
+  --souper-verify                                                            - Verify functions before Souper processes them (default=false)
+  --tail-dup-placement-penalty=<uint>                                        - Cost penalty for blocks that can avoid breaking CFG by copying. Copying can increase fallthrough, but it also increases icache pressure. This parameter controls the penalty to account for that. Percent as integer.
+  --verify-assumption-cache                                                  - Enable verification of assumption cache
+  --x86-discriminate-memops                                                  - Generate unique debug info for each instruction with a memory operand. Should be enabled for profile-driven cache prefetching, both in the build of the binary being profiled, as well as in the build of the binary consuming the profile.
