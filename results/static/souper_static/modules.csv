@@ -71,3 +71,9 @@ zlib,trees,base23,0.28,50,-
 zlib,trees,thorough,2354.92,50,0
 zlib,trees,fast,402.54,50,0
 zlib,trees,light,33.85,50,0
+zlib,uncompr,base18,0.04,8,-
+zlib,uncompr,souper_const,4.31,8,0
+zlib,uncompr,base23,0.03,8,-
+zlib,uncompr,thorough,0.86,8,0
+zlib,uncompr,fast,0.47,8,0
+zlib,uncompr,light,0.20,8,0
