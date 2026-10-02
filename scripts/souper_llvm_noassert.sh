@@ -15,8 +15,11 @@ B="$DEST/third_party/llvm-Release-build"
 log() { echo; echo "=== [$(date +%F\ %H:%M:%S)] $* ==="; }
 [ -d "$B" ] || { echo "FATAL: $B missing (run install_souper.sh first)"; exit 1; }
 
-log "reconfigure LLVM 18.1.6 without assertions"
-( cd "$B" && "${CLEAN[@]}" cmake -DLLVM_ENABLE_ASSERTIONS=OFF . )
+log "reconfigure LLVM 18.1.6 without assertions (dump() kept: Souper calls Module::dump)"
+# LLVM compiles its dump() methods only with assertions or LLVM_ENABLE_DUMP; Souper's
+# plugin calls llvm::Module::dump(), so an assertion-free build needs LLVM_ENABLE_DUMP=ON.
+# It only makes those debug printers exist; it adds none of the assertion checks.
+( cd "$B" && "${CLEAN[@]}" cmake -DLLVM_ENABLE_ASSERTIONS=OFF -DLLVM_ENABLE_DUMP=ON . )
 log "rebuild and reinstall LLVM"
 "${CLEAN[@]}" ninja -C "$B"
 "${CLEAN[@]}" ninja -C "$B" install

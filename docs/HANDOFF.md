@@ -3419,3 +3419,7 @@ compile time. scripts/souper_llvm_noassert.sh reconfigures the existing build wi
 assertions OFF, reinstalls, rebuilds Souper, re-archives. Run before any timing.
 Install status Oct 1: LLVM 18.1.6 + Z3 + Souper built (libsouperPass.so, souper,
 souper-check); /opt/llvm untouched; archive /proj/odessy-PG0/odessy-preserve/souper-build.tgz.
+- Oct 2: assertion-free rebuild linked LLVM fine but Souper's plugin failed:
+  "undefined reference to llvm::Module::dump() const" (dump() exists only with assertions or
+  LLVM_ENABLE_DUMP). Script now sets -DLLVM_ENABLE_ASSERTIONS=OFF -DLLVM_ENABLE_DUMP=ON
+  (debug printers only; no assertion checks). Souper's source unchanged.
