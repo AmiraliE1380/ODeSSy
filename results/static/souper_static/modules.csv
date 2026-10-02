@@ -65,3 +65,9 @@ zlib,inftrees,base23,0.05,2,-
 zlib,inftrees,thorough,3.22,2,0
 zlib,inftrees,fast,0.43,2,0
 zlib,inftrees,light,0.34,2,0
+zlib,trees,base18,0.31,50,-
+zlib,trees,souper_const,131.60,50,0
+zlib,trees,base23,0.28,50,-
+zlib,trees,thorough,2354.92,50,0
+zlib,trees,fast,402.54,50,0
+zlib,trees,light,33.85,50,0
