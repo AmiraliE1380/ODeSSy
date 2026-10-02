@@ -1,0 +1,7 @@
+repo,module,arm,seconds,traps,removed
+zlib,adler32,base18,0.07,4,-
+zlib,adler32,souper_const,1493.93,4,0
+zlib,adler32,base23,0.06,4,-
+zlib,adler32,thorough,533.91,4,0
+zlib,adler32,fast,4.81,4,0
+zlib,adler32,light,4.46,4,0
