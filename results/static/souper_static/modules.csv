@@ -17,3 +17,9 @@ zlib,crc32,base23,0.12,9,-
 zlib,crc32,thorough,7.68,2,7
 zlib,crc32,fast,1.38,2,7
 zlib,crc32,light,0.35,2,7
+zlib,deflate,base18,0.44,128,-
+zlib,deflate,souper_const,119.09,128,0
+zlib,deflate,base23,0.41,128,-
+zlib,deflate,thorough,68.38,120,8
+zlib,deflate,fast,11.11,120,8
+zlib,deflate,light,4.21,120,8
