@@ -3423,3 +3423,10 @@ souper-check); /opt/llvm untouched; archive /proj/odessy-PG0/odessy-preserve/sou
   "undefined reference to llvm::Module::dump() const" (dump() exists only with assertions or
   LLVM_ENABLE_DUMP). Script now sets -DLLVM_ENABLE_ASSERTIONS=OFF -DLLVM_ENABLE_DUMP=ON
   (debug printers only; no assertion checks). Souper's source unchanged.
+- Oct 2: Souper rebuilt against LLVM 18.1.6 without assertions (+LLVM_ENABLE_DUMP); archived.
+  Pilot script scripts/souper_pilot.sh (zlib deflate.c, LLVM-18 IR emitted once): lists the
+  plugin's accepted flags first and refuses to run if the needed ones are absent. Mode flags
+  (from Souper's source): constant mode = -souper-only-infer-iN; synthesis =
+  -souper-enumerative-synthesis-max-instructions=N (pilot N=2). z3-path / solver-timeout flag
+  names are taken from the plugin's own --help listing. Pass name: -passes=souper (new PM).
+  Census: ubsantrap call sites after each arm vs its own LLVM's -O3 baseline.
