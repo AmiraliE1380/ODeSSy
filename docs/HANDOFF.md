@@ -3411,3 +3411,11 @@ not exist (git ls-remote: newest such tag is disable-peepholes-llvmorg-17.0.3-1)
 script now patches build_deps.sh to use the official llvmorg-18.1.6 tag (shallow fetch).
 Consequence: Souper's -O3 baseline is stock LLVM 18 -- no weakened peepholes (settles §11.3's
 "check the fork" step). Z3 and Alive2 had built fine before the failure.
+
+### 11.7 Souper's LLVM must match ours: no assertions
+/opt/llvm: "LLVM version 23.0.0git, Optimized build." Souper's build_deps.sh builds LLVM
+18.1.6 with LLVM_ENABLE_ASSERTIONS=ON ("Optimized build with assertions"), which inflates
+compile time. scripts/souper_llvm_noassert.sh reconfigures the existing build with
+assertions OFF, reinstalls, rebuilds Souper, re-archives. Run before any timing.
+Install status Oct 1: LLVM 18.1.6 + Z3 + Souper built (libsouperPass.so, souper,
+souper-check); /opt/llvm untouched; archive /proj/odessy-PG0/odessy-preserve/souper-build.tgz.
