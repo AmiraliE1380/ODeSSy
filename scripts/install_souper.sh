@@ -21,7 +21,20 @@ log "clone"
 if [ ! -d "$DEST/.git" ]; then git clone https://github.com/google/souper.git "$DEST"; fi
 git -C "$DEST" rev-parse HEAD | tee /mydata/souper_commit.txt
 
-log "dependencies: LLVM 18 fork, Z3, Alive2 (the long part)"
+log "patch build_deps.sh: stock LLVM 18.1.6, shallow fetch"
+# Upstream build_deps.sh pins regehr/llvm-project@disable-peepholes-llvmorg-18.1.6, a ref
+# that does not exist (the fork's newest Souper tag is for LLVM 17.0.3). Use the official
+# llvmorg-18.1.6 tag instead -- the version Souper targets, and an unweakened -O3 for
+# Souper's baseline builds (HANDOFF §11.6). Fetch that one commit, not LLVM's history.
+cd "$DEST"
+git checkout -- build_deps.sh
+sed -i 's|^llvm_repo=.*|llvm_repo=https://github.com/llvm/llvm-project.git|;
+        s|^llvm_commit=.*|llvm_commit=llvmorg-18.1.6|;
+        s|git fetch origin \$llvm_commit|git fetch --depth 1 origin $llvm_commit|' build_deps.sh
+grep -nE "^llvm_repo=|^llvm_commit=|git fetch" build_deps.sh
+rm -rf "$DEST/third_party"            # start the dependency build from scratch
+
+log "dependencies: LLVM 18.1.6, Z3, Alive2 (the long part)"
 ( cd "$DEST" && "${CLEAN[@]}" ./build_deps.sh Release )
 
 log "Souper itself"

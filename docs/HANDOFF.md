@@ -3404,3 +3404,10 @@ verifies LLVM 18 opt and that our opt is untouched; archives build + third_party
 /proj/odessy-PG0/odessy-preserve/souper-build.tgz (survives the node). Pilot and arms: §11.3.
 Alive2 is a build dependency; whether Souper uses it at run time is a flag to settle in the pilot.
 All three ODeSSy configurations are compared (pre-registered; no post-hoc selection).
+
+### 11.6 Deviation: stock LLVM 18.1.6 for Souper (Oct 1 2026)
+Souper's build_deps.sh pins regehr/llvm-project@disable-peepholes-llvmorg-18.1.6, which does
+not exist (git ls-remote: newest such tag is disable-peepholes-llvmorg-17.0.3-1). The install
+script now patches build_deps.sh to use the official llvmorg-18.1.6 tag (shallow fetch).
+Consequence: Souper's -O3 baseline is stock LLVM 18 -- no weakened peepholes (settles §11.3's
+"check the fork" step). Z3 and Alive2 had built fine before the failure.
