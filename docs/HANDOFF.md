@@ -3439,3 +3439,8 @@ souper-check); /opt/llvm untouched; archive /proj/odessy-PG0/odessy-preserve/sou
   removes 8. Souper enumerative synthesis (max 2 instr) ABORTS inside the pass (stack trace in
   results/static/souper_pilot/souper_synth.err on the server). Next: read the abort message;
   try SYNTH_FLAGS=-souper-use-cegis ARMS=souper.
+- Oct 2, prediction check (§11.3) on the deflate.c pilot: "Souper removes few checks" HELD
+  (constant mode: 0 of 128; ODeSSy: 8 in every configuration). "Souper constant mode compiles
+  faster than Thorough" FALSIFIED (119 s vs 69 s; Light 4.2 s). "Synthesis slower than
+  Thorough" holding (CEGIS still running at 44 min; enumerative aborts). One module only --
+  the full zlib/zstd runs decide the paper claim. Synthesis run capped at 2 h.
