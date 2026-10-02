@@ -24,7 +24,8 @@ OUT=results/static/souper_pilot; mkdir -p "$OUT"
 PIN="numactl --cpunodebind=0 --membind=0"; command -v numactl >/dev/null || PIN=""
 log() { echo; echo "=== [$(date +%F\ %H:%M:%S)] $* ==="; }
 tm() { python3 -c 'import subprocess,sys,time
-t=time.monotonic(); r=subprocess.run(sys.argv[1:], stderr=subprocess.DEVNULL)
+import os
+t=time.monotonic(); r=subprocess.run(sys.argv[1:], stderr=open(os.environ.get("ERRF","/dev/null"),"w"))
 print(f"{time.monotonic()-t:.2f}" if r.returncode==0 else "FAIL")' "$@"; }
 traps() { grep -c 'call void @llvm.ubsantrap' "$1" 2>/dev/null || echo NA; }
 
@@ -58,7 +59,8 @@ log "2. arms"
 printf "%-13s %9s %7s %8s\n" arm seconds traps removed | tee "$OUT/table.txt"
 run() {  # name, baseline-traps-or-empty, command...
   local name=$1 bt=$2; shift 2
-  local s; s=$(tm $PIN "$@" -S "$OUT/deflate18.ll" -o "$OUT/$name.ll")
+  local s; s=$(ERRF="$OUT/$name.err" tm $PIN "$@" -S "$OUT/deflate18.ll" -o "$OUT/$name.ll")
+  if [ "$s" = FAIL ]; then echo "--- $name failed; last lines of $OUT/$name.err:"; tail -15 "$OUT/$name.err"; fi
   local t; t=$(traps "$OUT/$name.ll")
   local rm="-"; [ -n "$bt" ] && [ "$t" != NA ] && rm=$((bt - t))
   printf "%-13s %9s %7s %8s\n" "$name" "$s" "$t" "$rm" | tee -a "$OUT/table.txt"
