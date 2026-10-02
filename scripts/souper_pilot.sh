@@ -58,7 +58,7 @@ log "2. arms"
 printf "%-13s %9s %7s %8s\n" arm seconds traps removed | tee "$OUT/table.txt"
 run() {  # name, baseline-traps-or-empty, command...
   local name=$1 bt=$2; shift 2
-  local s; s=$($PIN tm "$@" -S "$OUT/deflate18.ll" -o "$OUT/$name.ll")
+  local s; s=$(tm $PIN "$@" -S "$OUT/deflate18.ll" -o "$OUT/$name.ll")
   local t; t=$(traps "$OUT/$name.ll")
   local rm="-"; [ -n "$bt" ] && [ "$t" != NA ] && rm=$((bt - t))
   printf "%-13s %9s %7s %8s\n" "$name" "$s" "$t" "$rm" | tee -a "$OUT/table.txt"
