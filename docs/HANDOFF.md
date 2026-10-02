@@ -3395,3 +3395,12 @@ Mac smoke: base64 2.01x / 1.26x / 1.12x; Rust matmul 5.44x / 2.44x / 1.44x.
   8.27x (median 5.73x, 1.96-381.85x), Fast 2.16x (1.38x, 1.22-57.04x), Light 1.47x (1.25x,
   1.17-7.02x). Pass times match tab:compile (zlib Thorough 3024 vs 2996 s). Post-pass -O3/llc
   within ~16% of base (CryptoSwift o3 5.72 vs 4.94 s). Added to RQ3 ("Whole-compile cost").
+
+### 11.5 Installing Souper (script)
+scripts/install_souper.sh: apt packages (re2c, ninja, cmake), clone google/souper into
+/mydata/souper, build_deps.sh Release (LLVM 18.1.6 fork + Z3 4.13 + Alive2) and Souper itself,
+all in a clean environment (env -i, system gcc, PATH without /opt/llvm or the Swift toolchain);
+verifies LLVM 18 opt and that our opt is untouched; archives build + third_party to
+/proj/odessy-PG0/odessy-preserve/souper-build.tgz (survives the node). Pilot and arms: §11.3.
+Alive2 is a build dependency; whether Souper uses it at run time is a flag to settle in the pilot.
+All three ODeSSy configurations are compared (pre-registered; no post-hoc selection).
