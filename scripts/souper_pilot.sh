@@ -20,6 +20,9 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"; cd "$ROOT"
 SOUPER=/mydata/souper; L18="$SOUPER/third_party/llvm-Release-install/bin"
 PLUG="$SOUPER/build/libsouperPass.so"
 ZLIB="${ZLIB:-$(dirname "$ROOT")/zlib}"; SYNTH_N="${SYNTH_N:-2}"; TIMEOUT_S="${TIMEOUT_S:-10}"
+# SYNTH_FLAGS overrides the synthesis arm (default: enumerative, <= SYNTH_N instructions);
+# e.g. SYNTH_FLAGS=-souper-use-cegis. ARMS=souper runs only the Souper arms and base18.
+SYNTH_FLAGS="${SYNTH_FLAGS:--souper-enumerative-synthesis-max-instructions=$SYNTH_N}"; ARMS="${ARMS:-all}"
 OUT=results/static/souper_pilot; mkdir -p "$OUT"
 PIN="numactl --cpunodebind=0 --membind=0"; command -v numactl >/dev/null || PIN=""
 log() { echo; echo "=== [$(date +%F\ %H:%M:%S)] $* ==="; }
@@ -68,8 +71,8 @@ run() {  # name, baseline-traps-or-empty, command...
 run base18 "" "$L18/opt" -passes='default<O3>'
 B18=$(traps "$OUT/base18.ll")
 run souper_const "$B18" "$L18/opt" -load-pass-plugin="$PLUG" -passes='function(souper),default<O3>' $COMMON -souper-only-infer-iN
-run souper_synth "$B18" "$L18/opt" -load-pass-plugin="$PLUG" -passes='function(souper),default<O3>' $COMMON \
-    -souper-enumerative-synthesis-max-instructions="$SYNTH_N"
+run souper_synth "$B18" "$L18/opt" -load-pass-plugin="$PLUG" -passes='function(souper),default<O3>' $COMMON $SYNTH_FLAGS
+[ "$ARMS" = souper ] && { log "SOUPER PILOT DONE (Souper arms only)"; exit 0; }
 run base23 "" opt -passes='default<O3>'
 B23=$(traps "$OUT/base23.ll")
 run thorough "$B23" opt -load-pass-plugin=build/OraclePass.so -passes='oracle-pass<heavy;frame;ind;mv;narrow;timeout=10000;threads=1>,default<O3>'

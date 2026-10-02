@@ -3434,3 +3434,8 @@ souper-check); /opt/llvm untouched; archive /proj/odessy-PG0/odessy-preserve/sou
   hard-codes the Z3 it built (external process per query); budget flag is -solver-timeout
   (seconds, default 15) -> pilot uses 10; -souper-external-cache=false (Redis off, cold);
   -souper-internal-cache left at its default (true: in-run memo of identical queries).
+- Oct 2 pilot (zlib deflate.c, LLVM-18 IR, 128 checks; both -O3 baselines keep 128):
+  Souper constant mode 119 s, removes 0; ODeSSy Thorough 69 s / Fast 11 s / Light 4.2 s, each
+  removes 8. Souper enumerative synthesis (max 2 instr) ABORTS inside the pass (stack trace in
+  results/static/souper_pilot/souper_synth.err on the server). Next: read the abort message;
+  try SYNTH_FLAGS=-souper-use-cegis ARMS=souper.
