@@ -18,7 +18,7 @@
 set -u
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"; cd "$ROOT"
 SOUPER=/mydata/souper; L18="$SOUPER/third_party/llvm-Release-install/bin"
-PLUG="$SOUPER/build/libsouperPass.so"; Z3BIN="$SOUPER/third_party/z3-install/bin/z3"
+PLUG="$SOUPER/build/libsouperPass.so"
 ZLIB="${ZLIB:-$(dirname "$ROOT")/zlib}"; SYNTH_N="${SYNTH_N:-2}"; TIMEOUT_S="${TIMEOUT_S:-10}"
 OUT=results/static/souper_pilot; mkdir -p "$OUT"
 PIN="numactl --cpunodebind=0 --membind=0"; command -v numactl >/dev/null || PIN=""
@@ -35,12 +35,13 @@ log "0. Souper flags actually accepted by this build"
 for f in souper-only-infer-iN souper-enumerative-synthesis-max-instructions; do
   grep -q -- "-$f" "$OUT/souper_flags.txt" || { echo "FATAL: flag -$f not accepted -- see $OUT/souper_flags.txt"; exit 1; }
 done
-Z3FLAG=$(grep -oE -- '-z3-path' "$OUT/souper_flags.txt" | head -1)
-TOFLAG=$(grep -oE -- '-solver-timeout' "$OUT/souper_flags.txt" | head -1)
-[ -n "$Z3FLAG" ] || { echo "FATAL: no -z3-path flag found -- paste $OUT/souper_flags.txt"; exit 1; }
-[ -x "$Z3BIN" ] || { echo "FATAL: $Z3BIN missing"; exit 1; }
-COMMON="$Z3FLAG=$Z3BIN"; [ -n "$TOFLAG" ] && COMMON="$COMMON $TOFLAG=$TIMEOUT_S"
-echo "common Souper flags: $COMMON   (no timeout flag found => Souper's default)" | tee "$OUT/souper_common_flags.txt"
+# Souper has no z3-path flag: GetSolver.h bakes in the path of the Z3 it built (Z3 4.13)
+# and runs it as an external process per query. Its budget is -solver-timeout (seconds,
+# default 15). Redis cache is off by default; the in-process memo (-souper-internal-cache,
+# default on) only reuses identical queries within one run and is kept as shipped.
+grep -q -- "-solver-timeout" "$OUT/souper_flags.txt" || { echo "FATAL: -solver-timeout not accepted -- see $OUT/souper_flags.txt"; exit 1; }
+COMMON="-solver-timeout=$TIMEOUT_S -souper-external-cache=false"
+echo "common Souper flags: $COMMON" | tee "$OUT/souper_common_flags.txt"
 
 log "1. IR, emitted once with Souper's clang 18"
 "$L18/clang" -O3 -S -emit-llvm \

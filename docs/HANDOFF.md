@@ -3430,3 +3430,7 @@ souper-check); /opt/llvm untouched; archive /proj/odessy-PG0/odessy-preserve/sou
   -souper-enumerative-synthesis-max-instructions=N (pilot N=2). z3-path / solver-timeout flag
   names are taken from the plugin's own --help listing. Pass name: -passes=souper (new PM).
   Census: ubsantrap call sites after each arm vs its own LLVM's -O3 baseline.
+- Oct 2 pilot attempt 1 stopped at the safeguard: no -z3-path flag. Souper's GetSolver.h.in
+  hard-codes the Z3 it built (external process per query); budget flag is -solver-timeout
+  (seconds, default 15) -> pilot uses 10; -souper-external-cache=false (Redis off, cold);
+  -souper-internal-cache left at its default (true: in-run memo of identical queries).
