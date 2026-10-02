@@ -77,3 +77,9 @@ zlib,uncompr,base23,0.03,8,-
 zlib,uncompr,thorough,0.86,8,0
 zlib,uncompr,fast,0.47,8,0
 zlib,uncompr,light,0.20,8,0
+zlib,zutil,base18,0.02,1,-
+zlib,zutil,souper_const,21.79,1,0
+zlib,zutil,base23,0.01,1,-
+zlib,zutil,thorough,0.05,1,0
+zlib,zutil,fast,0.06,1,0
+zlib,zutil,light,0.05,1,0
