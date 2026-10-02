@@ -3444,3 +3444,13 @@ souper-check); /opt/llvm untouched; archive /proj/odessy-PG0/odessy-preserve/sou
   faster than Thorough" FALSIFIED (119 s vs 69 s; Light 4.2 s). "Synthesis slower than
   Thorough" holding (CEGIS still running at 44 min; enumerative aborts). One module only --
   the full zlib/zstd runs decide the paper claim. Synthesis run capped at 2 h.
+
+### 11.8 Full static Souper comparison (prepared Oct 2 2026; node expires Oct 4 11:00)
+Pilot outcome merged (server-1002-souper-pilot): Souper constant mode changed code on
+deflate.c (diff vs base18 non-empty), CEGIS synthesis changed nothing (identical IR) after
+8749 s. Decision: Souper synthesis dropped from the full run (2.4 h per mid-sized module, no
+transformation) -- reported with this justification; SYNTH=1 re-enables it with a per-module cap.
+scripts/souper_static.sh: every zlib (both spec) and zstd (signed spec) module, IR emitted once
+by clang 18; arms base18, souper_const, base23, thorough, fast, light; per-module CSV committed
+locally after each module (resumable: finished modules are skipped). Runtime arms follow once
+the static run shows where Souper changes code.
