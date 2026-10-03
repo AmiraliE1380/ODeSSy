@@ -173,3 +173,9 @@ zstd,cover,base23,0.13,2,-
 zstd,cover,thorough,1.84,2,0
 zstd,cover,fast,0.27,2,0
 zstd,cover,light,0.24,2,0
+zstd,divsufsort,base18,0.54,63,-
+zstd,divsufsort,souper_const,247.83,60,3
+zstd,divsufsort,base23,0.51,61,-
+zstd,divsufsort,thorough,48.33,57,4
+zstd,divsufsort,fast,5.07,61,0
+zstd,divsufsort,light,2.68,61,0
