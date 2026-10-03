@@ -143,3 +143,9 @@ zstd,zstd_opt,base23,0.72,5,-
 zstd,zstd_opt,thorough,30.78,5,0
 zstd,zstd_opt,fast,1.87,5,0
 zstd,zstd_opt,light,1.23,5,0
+zstd,zstd_preSplit,base18,0.05,13,-
+zstd,zstd_preSplit,souper_const,229.43,13,0
+zstd,zstd_preSplit,base23,0.04,13,-
+zstd,zstd_preSplit,thorough,175.28,10,3
+zstd,zstd_preSplit,fast,0.83,13,0
+zstd,zstd_preSplit,light,0.82,13,0
