@@ -185,3 +185,9 @@ zstd,fastcover,base23,0.07,2,-
 zstd,fastcover,thorough,1.43,2,0
 zstd,fastcover,fast,0.27,2,0
 zstd,fastcover,light,0.15,2,0
+zstd,zdict,base18,0.19,2,-
+zstd,zdict,souper_const,116.51,2,0
+zstd,zdict,base23,0.17,2,-
+zstd,zdict,thorough,1.13,2,0
+zstd,zdict,fast,0.33,2,0
+zstd,zdict,light,0.25,2,0
