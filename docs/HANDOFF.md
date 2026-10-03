@@ -3454,3 +3454,12 @@ scripts/souper_static.sh: every zlib (both spec) and zstd (signed spec) module, 
 by clang 18; arms base18, souper_const, base23, thorough, fast, light; per-module CSV committed
 locally after each module (resumable: finished modules are skipped). Runtime arms follow once
 the static run shows where Souper changes code.
+- Oct 2 full static run (merged server-1002-souper-static): 30 of 32 modules complete. On
+  zstd_compress and zstd_decompress our LLVM 23 could not parse the LLVM 18 *text* IR (even
+  base23 FAIL). Fix: LLVM-23 arms read LLVM-18 bitcode (llvm-as 18), which newer LLVM is
+  guaranteed to read; REDO= re-runs just those modules.
+  Totals over the 30 complete modules (seconds / checks removed):
+  zlib (14): Souper-const 2406.5 / 7 | Thorough 3093.4 / 62 | Fast 435.9 / 39 | Light 50.1 / 18
+  zstd (16): Souper-const 3822.1 / 5 | Thorough 384.3 / 13 | Fast 40.0 / 4  | Light 15.8 / 4
+  Souper removes checks in only 3 modules (crc32 7, divsufsort 3, fse_decompress 2); ODeSSy
+  Thorough removes as many or more in each.

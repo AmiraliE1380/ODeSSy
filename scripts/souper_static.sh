@@ -18,8 +18,11 @@ SOUPER=/mydata/souper; L18="$SOUPER/third_party/llvm-Release-install/bin"
 PLUG="$SOUPER/build/libsouperPass.so"
 ZLIB="${ZLIB:-$(dirname "$ROOT")/zlib}"; ZSTD="${ZSTD:-$(dirname "$ROOT")/zstd}"
 TIMEOUT_S="${TIMEOUT_S:-10}"; SYNTH="${SYNTH:-0}"; SYNTH_CAP="${SYNTH_CAP:-1800}"; ONLY="${ONLY:-}"
+# REDO="zstd,zstd_compress zstd,zstd_decompress": drop these modules' rows so they re-run
+REDO="${REDO:-}"
 OUT=results/static/souper_static; IR="$OUT/ir"; mkdir -p "$IR"
 CSV="$OUT/modules.csv"; [ -s "$CSV" ] || echo "repo,module,arm,seconds,traps,removed" > "$CSV"
+for rm_ in $REDO; do sed -i "/^$rm_,/d" "$CSV"; done
 PIN="numactl --cpunodebind=0 --membind=0"; command -v numactl >/dev/null || PIN=""
 COMMON="-solver-timeout=$TIMEOUT_S -souper-external-cache=false"
 log() { echo; echo "=== [$(date +%F\ %H:%M:%S)] $* ==="; }
@@ -37,7 +40,7 @@ git config user.name  >/dev/null || git config user.name  "Amirali Ebrahimzadeh"
 arm() {  # repo module name baseline-traps cmd...
   local repo=$1 m=$2 name=$3 bt=$4; shift 4
   local f="$IR/$repo.$m.$name.ll" s t rm="-"
-  s=$(ERRF="$IR/$repo.$m.$name.err" tm $PIN "$@" -S "$IR/$repo.$m.ll" -o "$f")
+  s=$(ERRF="$IR/$repo.$m.$name.err" tm $PIN "$@" -S "$IR/$repo.$m.${EXT:-ll}" -o "$f")
   t=$(traps "$f"); [ -n "$bt" ] && [ "$t" != NA ] && [ "$s" != FAIL ] && [ "$s" != TIMEOUT ] && rm=$((bt - t))
   echo "$repo,$m,$name,$s,$t,$rm" | tee -a "$CSV"
   rm -f "$f"          # keep the CSV, not the IR (large)
@@ -53,11 +56,16 @@ module() {  # repo module
     arm "$repo" "$m" souper_synth "$b18" timeout "$SYNTH_CAP" "$L18/opt" -load-pass-plugin="$PLUG" \
         -passes='function(souper),default<O3>' $COMMON -souper-use-cegis
   fi
+  # LLVM 23 reads LLVM 18 *bitcode* (a compatibility guarantee); text IR is not guaranteed
+  # (two zstd modules failed to parse as text). Same module, converted by LLVM 18's llvm-as.
+  "$L18/llvm-as" "$IR/$repo.$m.ll" -o "$IR/$repo.$m.bc" || { echo "FATAL llvm-as $repo/$m"; return; }
+  EXT=bc
   arm "$repo" "$m" base23 "" opt -passes='default<O3>'
   local b23; b23=$(tail -1 "$CSV" | cut -d, -f5)
   arm "$repo" "$m" thorough "$b23" opt -load-pass-plugin=build/OraclePass.so -passes='oracle-pass<heavy;frame;ind;mv;narrow;timeout=10000;threads=1>,default<O3>'
   arm "$repo" "$m" fast     "$b23" opt -load-pass-plugin=build/OraclePass.so -passes='oracle-pass<heavy;frame;mv;narrow;timeout=10;threads=10>,default<O3>'
   arm "$repo" "$m" light    "$b23" opt -load-pass-plugin=build/OraclePass.so -passes='oracle-pass<timeout=10;threads=10>,default<O3>'
+  EXT=ll
   git add "$CSV" 2>/dev/null; git commit -q -m "souper static: $repo/$m" 2>/dev/null || true
 }
 
