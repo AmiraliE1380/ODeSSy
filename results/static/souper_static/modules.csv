@@ -167,3 +167,9 @@ zstd,zstd_decompress,base23,FAIL,NA,-
 zstd,zstd_decompress,thorough,FAIL,NA,-
 zstd,zstd_decompress,fast,FAIL,NA,-
 zstd,zstd_decompress,light,FAIL,NA,-
+zstd,cover,base18,0.14,2,-
+zstd,cover,souper_const,102.12,2,0
+zstd,cover,base23,0.13,2,-
+zstd,cover,thorough,1.84,2,0
+zstd,cover,fast,0.27,2,0
+zstd,cover,light,0.24,2,0
