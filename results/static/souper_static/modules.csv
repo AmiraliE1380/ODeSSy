@@ -95,3 +95,9 @@ zstd,fse_decompress,base23,0.13,2,-
 zstd,fse_decompress,thorough,0.22,0,2
 zstd,fse_decompress,fast,0.21,0,2
 zstd,fse_decompress,light,0.18,0,2
+zstd,fse_compress,base18,0.13,5,-
+zstd,fse_compress,souper_const,315.45,5,0
+zstd,fse_compress,base23,0.12,4,-
+zstd,fse_compress,thorough,5.51,4,0
+zstd,fse_compress,fast,0.87,4,0
+zstd,fse_compress,light,0.38,4,0
