@@ -137,3 +137,9 @@ zstd,zstdmt_compress,base23,0.16,2,-
 zstd,zstdmt_compress,thorough,0.22,2,0
 zstd,zstdmt_compress,fast,0.21,2,0
 zstd,zstdmt_compress,light,0.20,2,0
+zstd,zstd_opt,base18,0.74,5,-
+zstd,zstd_opt,souper_const,299.31,5,0
+zstd,zstd_opt,base23,0.72,5,-
+zstd,zstd_opt,thorough,30.78,5,0
+zstd,zstd_opt,fast,1.87,5,0
+zstd,zstd_opt,light,1.23,5,0
