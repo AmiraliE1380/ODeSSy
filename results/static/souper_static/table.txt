@@ -6,8 +6,8 @@ zlib   light               50.1       18       14       0
 zlib   souper_const      2406.5        7       14       0
 zlib   thorough          3093.4       62       14       0
 zstd   base18               9.1        0       18       0
-zstd   base23               8.0        0       18       2
-zstd   fast                40.0        4       18       2
-zstd   light               15.8        4       18       2
-zstd   souper_const      4304.0        5       18       0
-zstd   thorough           384.3       13       18       2
+zstd   base23               8.8        0       18       0
+zstd   fast                41.4        4       18       0
+zstd   light               16.8        4       18       0
+zstd   souper_const      4303.7        5       18       0
+zstd   thorough           387.0       13       18       0
