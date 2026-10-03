@@ -107,3 +107,9 @@ zstd,huf_compress,base23,0.46,28,-
 zstd,huf_compress,thorough,47.32,26,2
 zstd,huf_compress,fast,21.94,27,1
 zstd,huf_compress,light,2.63,27,1
+zstd,zstd_compress,base18,0.70,7,-
+zstd,zstd_compress,souper_const,409.53,7,0
+zstd,zstd_compress,base23,FAIL,NA,-
+zstd,zstd_compress,thorough,FAIL,NA,-
+zstd,zstd_compress,fast,FAIL,NA,-
+zstd,zstd_compress,light,FAIL,NA,-
