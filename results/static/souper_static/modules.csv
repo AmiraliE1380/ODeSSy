@@ -113,3 +113,9 @@ zstd,zstd_compress,base23,FAIL,NA,-
 zstd,zstd_compress,thorough,FAIL,NA,-
 zstd,zstd_compress,fast,FAIL,NA,-
 zstd,zstd_compress,light,FAIL,NA,-
+zstd,zstd_compress_literals,base18,0.03,1,-
+zstd,zstd_compress_literals,souper_const,20.45,1,0
+zstd,zstd_compress_literals,base23,0.03,1,-
+zstd,zstd_compress_literals,thorough,0.06,1,0
+zstd,zstd_compress_literals,fast,0.06,1,0
+zstd,zstd_compress_literals,light,0.06,1,0
