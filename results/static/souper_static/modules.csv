@@ -125,3 +125,9 @@ zstd,zstd_double_fast,base23,0.71,4,-
 zstd,zstd_double_fast,thorough,0.91,4,0
 zstd,zstd_double_fast,fast,0.79,4,0
 zstd,zstd_double_fast,light,0.77,4,0
+zstd,zstd_lazy,base18,3.03,100,-
+zstd,zstd_lazy,souper_const,285.92,100,0
+zstd,zstd_lazy,base23,2.99,100,-
+zstd,zstd_lazy,thorough,6.65,100,0
+zstd,zstd_lazy,fast,3.87,100,0
+zstd,zstd_lazy,light,3.57,100,0
