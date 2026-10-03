@@ -1,0 +1,13 @@
+repo   arm              total s  removed  modules  failed
+zlib   base18               2.5        0       14       0
+zlib   base23               2.2        0       14       0
+zlib   fast               435.9       39       14       0
+zlib   light               50.1       18       14       0
+zlib   souper_const      2406.5        7       14       0
+zlib   thorough          3093.4       62       14       0
+zstd   base18               9.1        0       18       0
+zstd   base23               8.0        0       18       2
+zstd   fast                40.0        4       18       2
+zstd   light               15.8        4       18       2
+zstd   souper_const      4304.0        5       18       0
+zstd   thorough           384.3       13       18       2
