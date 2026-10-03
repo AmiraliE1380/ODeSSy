@@ -131,3 +131,9 @@ zstd,zstd_lazy,base23,2.99,100,-
 zstd,zstd_lazy,thorough,6.65,100,0
 zstd,zstd_lazy,fast,3.87,100,0
 zstd,zstd_lazy,light,3.57,100,0
+zstd,zstdmt_compress,base18,0.17,2,-
+zstd,zstdmt_compress,souper_const,694.15,2,0
+zstd,zstdmt_compress,base23,0.16,2,-
+zstd,zstdmt_compress,thorough,0.22,2,0
+zstd,zstdmt_compress,fast,0.21,2,0
+zstd,zstdmt_compress,light,0.20,2,0
