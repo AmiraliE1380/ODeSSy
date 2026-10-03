@@ -185,3 +185,9 @@ zstd,zstd_compress,base23,0.61,7,-
 zstd,zstd_compress,thorough,1.56,7,0
 zstd,zstd_compress,fast,0.85,7,0
 zstd,zstd_compress,light,0.76,7,0
+zstd,zstd_decompress,base18,0.20,1,-
+zstd,zstd_decompress,souper_const,72.56,1,0
+zstd,zstd_decompress,base23,0.16,1,-
+zstd,zstd_decompress,thorough,1.09,1,0
+zstd,zstd_decompress,fast,0.48,1,0
+zstd,zstd_decompress,light,0.28,1,0
