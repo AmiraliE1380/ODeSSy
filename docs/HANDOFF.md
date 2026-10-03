@@ -3463,3 +3463,7 @@ the static run shows where Souper changes code.
   zstd (16): Souper-const 3822.1 / 5 | Thorough 384.3 / 13 | Fast 40.0 / 4  | Light 15.8 / 4
   Souper removes checks in only 3 modules (crc32 7, divsufsort 3, fse_decompress 2); ODeSSy
   Thorough removes as many or more in each.
+- Oct 2 22:28 COMPLETE (32/32 modules, 0 failed; merged server-1002-souper-static).
+  zlib (14): Souper-const 2406.5 s / 7 | Thorough 3093.4 / 62 | Fast 435.9 / 39 | Light 50.1 / 18
+  zstd (18): Souper-const 4303.7 s / 5 | Thorough 387.0 / 13 | Fast 41.4 / 4  | Light 16.8 / 4
+  Baselines: LLVM 18 -O3 2.5 s / 9.1 s; LLVM 23 -O3 2.2 s / 8.8 s.
