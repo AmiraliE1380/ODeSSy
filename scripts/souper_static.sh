@@ -26,7 +26,8 @@ log() { echo; echo "=== [$(date +%F\ %H:%M:%S)] $* ==="; }
 tm() { python3 -c 'import subprocess,sys,time,os
 t=time.monotonic(); r=subprocess.run(sys.argv[1:], stderr=open(os.environ.get("ERRF","/dev/null"),"w"))
 print(f"{time.monotonic()-t:.2f}" if r.returncode==0 else ("TIMEOUT" if r.returncode==124 else "FAIL"))' "$@"; }
-traps() { grep -c 'call void @llvm.ubsantrap' "$1" 2>/dev/null || echo NA; }
+# number of trap call sites; 0 is a valid count (grep -c exits 1 on zero matches)
+traps() { [ -s "$1" ] || { echo NA; return; }; grep -c 'call void @llvm.ubsantrap' "$1" || true; }
 git config user.email >/dev/null || git config user.email "ebrahimzadeh.amirali@gmail.com"
 git config user.name  >/dev/null || git config user.name  "Amirali Ebrahimzadeh"
 [ -x "$L18/opt" ] && [ -f "$PLUG" ] || { echo "FATAL: Souper not built"; exit 1; }
@@ -44,6 +45,7 @@ arm() {  # repo module name baseline-traps cmd...
 module() {  # repo module
   local repo=$1 m=$2
   grep -q "^$repo,$m,light," "$CSV" && { echo "skip $repo/$m (done)"; return; }
+  sed -i "/^$repo,$m,/d" "$CSV"      # drop partial rows of an interrupted module
   arm "$repo" "$m" base18 "" "$L18/opt" -passes='default<O3>'
   local b18; b18=$(tail -1 "$CSV" | cut -d, -f5)
   arm "$repo" "$m" souper_const "$b18" "$L18/opt" -load-pass-plugin="$PLUG" -passes='function(souper),default<O3>' $COMMON -souper-only-infer-iN
