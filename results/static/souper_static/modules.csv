@@ -119,3 +119,9 @@ zstd,zstd_compress_literals,base23,0.03,1,-
 zstd,zstd_compress_literals,thorough,0.06,1,0
 zstd,zstd_compress_literals,fast,0.06,1,0
 zstd,zstd_compress_literals,light,0.06,1,0
+zstd,zstd_double_fast,base18,0.74,4,-
+zstd,zstd_double_fast,souper_const,57.43,4,0
+zstd,zstd_double_fast,base23,0.71,4,-
+zstd,zstd_double_fast,thorough,0.91,4,0
+zstd,zstd_double_fast,fast,0.79,4,0
+zstd,zstd_double_fast,light,0.77,4,0
