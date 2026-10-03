@@ -89,3 +89,9 @@ zstd,entropy_common,base23,0.07,6,-
 zstd,entropy_common,thorough,53.28,6,0
 zstd,entropy_common,fast,0.35,6,0
 zstd,entropy_common,light,0.31,6,0
+zstd,fse_decompress,base18,0.13,2,-
+zstd,fse_decompress,souper_const,64.44,0,2
+zstd,fse_decompress,base23,0.13,2,-
+zstd,fse_decompress,thorough,0.22,0,2
+zstd,fse_decompress,fast,0.21,0,2
+zstd,fse_decompress,light,0.18,0,2
