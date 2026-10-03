@@ -149,3 +149,9 @@ zstd,zstd_preSplit,base23,0.04,13,-
 zstd,zstd_preSplit,thorough,175.28,10,3
 zstd,zstd_preSplit,fast,0.83,13,0
 zstd,zstd_preSplit,light,0.82,13,0
+zstd,huf_decompress,base18,0.72,5,-
+zstd,huf_decompress,souper_const,553.56,5,0
+zstd,huf_decompress,base23,0.75,5,-
+zstd,huf_decompress,thorough,8.36,5,0
+zstd,huf_decompress,fast,1.63,5,0
+zstd,huf_decompress,light,1.00,5,0
