@@ -3467,3 +3467,8 @@ the static run shows where Souper changes code.
   zlib (14): Souper-const 2406.5 s / 7 | Thorough 3093.4 / 62 | Fast 435.9 / 39 | Light 50.1 / 18
   zstd (18): Souper-const 4303.7 s / 5 | Thorough 387.0 / 13 | Fast 41.4 / 4  | Light 16.8 / 4
   Baselines: LLVM 18 -O3 2.5 s / 9.1 s; LLVM 23 -O3 2.2 s / 8.8 s.
+- Oct 4: paper gains RQ4 ("How does super-analysis compare with superoptimization?",
+  §sec:results-souper, tab:souper) after RQ3: setup (LLVM 18 IR once, bitcode for ours, own
+  pinned LLVM/Z3, no assertions, no external cache, 10 s budget), table, results, two cautions
+  (one comparator/one task; no runtime comparison and why). RQ list in §6.1 now has four items.
+  The contributions bullet in the Intro does not mention RQ4 yet (the author edits the Intro).

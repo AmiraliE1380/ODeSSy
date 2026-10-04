@@ -1373,7 +1373,7 @@ configuration: the analysis facts and frame facts of the full tier, plus
 inductive encoding and guard synthesis
 (\texttt{heavy;frame;ind;mv;narrow}, 10\,s per query).
 \paragraph{Research questions.}
-Our evaluation is organized around three questions:
+Our evaluation is organized around four questions:
 \begin{itemize}
 \item \textbf{RQ1 --- How much does it improve performance?}
   How many checks can \tool{} prove dead, and --- where proofs land on
@@ -1384,6 +1384,9 @@ Our evaluation is organized around three questions:
 \item \textbf{RQ3 --- Is its overhead low enough for real-world use?}
   What does \tool{} cost to compile with, and how far can its budget be
   turned down? (\S\ref{sec:results-cost})
+\item \textbf{RQ4 --- How does super-analysis compare with superoptimization?}
+  On the same inputs, what does each paradigm remove, and at what compile
+  time? (\S\ref{sec:results-souper})
 \end{itemize}
 %% =====================================================================
 \subsection{RQ1: How much does it improve performance?}
@@ -1895,6 +1898,78 @@ practical reading is favorable: a deployment at a 1\,s budget keeps
 \pct{96} of zlib-class proofs and silently, soundly skips OpenSSL-class
 queries (\textsc{unknown} keeps the check); an offline audit turns the
 dial up.
+\subsection{RQ4: How does super-analysis compare with superoptimization?}
+\label{sec:results-souper}
+We compare \tool{} with Souper~\cite{sasnauskas2017souper}, the
+synthesizing superoptimizer for LLVM IR, on the task this paper targets:
+removing the safety checks of the two C libraries. Souper runs in its
+\emph{constant mode}, which only proves that a value is always the same
+constant --- the mode its authors use as an online optimizer, and the one
+that can fold a check whose condition is always false --- and, in a pilot,
+in its CEGIS synthesis mode.
+
+\paragraph{Setup.} Souper pins LLVM~18, whose parser cannot read the IR
+of newer front ends, so the comparison covers the C libraries, compiled
+with LLVM~18's clang. Each module is emitted \emph{once} and both tools
+read the same file; \tool{}'s LLVM reads it as bitcode, which newer LLVM
+versions are guaranteed to accept. Each tool runs with its own pinned
+LLVM, built without assertions in both cases, and its own pinned Z3
+(Souper: Z3 4.13, as an external process per query; \tool{}: Z3 4.8.12,
+in process), is followed by its own LLVM's \texttt{-O3}, and is compared
+against that LLVM's \texttt{-O3} alone. Souper's per-query budget is
+10\,s, as for Thorough, with no external cache; its in-memory cache of
+identical queries is left on, as shipped. Swift, Rust, and Julia are
+excluded because their front ends emit IR newer than LLVM~18.
+
+\begin{table}[t]
+\caption{Super-analysis against superoptimization on every module of zlib
+and zstd (x86 c220g2, the same LLVM~18 IR for both tools, no external
+caches). Time is the summed per-module time of the tool and the
+\texttt{-O3} that follows it; checks removed are counted against each
+tool's own \texttt{-O3} baseline, which removes none. Souper's synthesis
+mode is not shown: on zlib's \texttt{deflate.c} alone it ran for
+8{,}749\,s and changed nothing.}
+\label{tab:souper}
+\small
+\begin{tabular}{llrr}
+\toprule
+Library & Tool & Time (s) & Checks removed\\
+\midrule
+zlib (14 modules) & Souper, constant mode & 2{,}407 & 7\\
+ & \tool{} Thorough & 3{,}093 & 62\\
+ & \tool{} Fast & 436 & 39\\
+ & \tool{} Light & 50 & 18\\
+\midrule
+zstd (18 modules) & Souper, constant mode & 4{,}304 & 5\\
+ & \tool{} Thorough & 387 & 13\\
+ & \tool{} Fast & 41 & 4\\
+ & \tool{} Light & 17 & 4\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Results.} Table~\ref{tab:souper} answers RQ4. On the checks
+both tools target, super-analysis does more: Thorough removes 62 checks in
+zlib and 13 in zstd where Souper removes 7 and 5, and Souper removes
+checks in only three modules, in each of which Thorough removes at least as
+many. Even Light, the encoded context alone, removes more than Souper on
+zlib (18 against 7) in about a fiftieth of its time. On cost, the answer depends
+on the configuration. Fast and Light are faster than Souper on both
+libraries, by $5.5$--$250\times$. Thorough is $11\times$ faster on zstd but
+slower on zlib, where a single module, \texttt{trees.c}, takes 2{,}355\,s
+of its 3{,}093\,s (Figure~\ref{fig:modules}). Souper's synthesis mode,
+the one that makes it a superoptimizer, is out of reach at this scale: on
+\texttt{deflate.c} it ran for 2.4\,hours, against 69\,s for Thorough, and
+produced no change at all.
+
+Two cautions bound the comparison. It is one superoptimizer, on one task:
+Souper is built to find general peephole improvements, and removing safety
+checks is not its purpose, so the comparison measures how the two
+paradigms fare on the problem this paper addresses, not Souper's worth.
+And we do not compare runtime: Souper removes checks in only three modules,
+in each of which Thorough removes at least as many, and the two pipelines
+end in different LLVM versions, so a runtime difference would mostly
+measure LLVM~18 against LLVM~23 rather than the two tools.
 %% =====================================================================
 \section{Related Work}
 \label{sec:relwork}
