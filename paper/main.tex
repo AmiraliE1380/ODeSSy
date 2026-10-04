@@ -182,10 +182,11 @@
 %% \begin{chkbox}{i}{w}, where i is the boxed lines' common indent and w the
 %% length of their longest line after it, both in characters of the
 %% (monospaced) listing font; the boxed lines are written without that
-%% indent and the inner listing takes xleftmargin=0pt.
+%% indent and the inner listing takes xleftmargin=0pt. \raggedright undoes the
+%% figure's \centering, which would otherwise center the (narrower) box.
 \newlength{\chkcw}\newlength{\chkpad}
 \AtBeginDocument{\settowidth{\chkcw}{\footnotesize\ttfamily 0}\setlength{\chkpad}{2pt}}
-\newenvironment{chkbox}[2]{\par\vspace{1pt}\noindent
+\newenvironment{chkbox}[2]{\par\vspace{1pt}\raggedright\noindent
   \hspace*{\dimexpr 0.5em+#1\chkcw-\chkpad\relax}%
   \tcolorbox[nobeforeafter, colback=checkpink, colframe=checkpink,
     boxrule=0pt, arc=3pt, boxsep=0pt, left=\chkpad, right=\chkpad,
