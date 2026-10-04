@@ -198,10 +198,10 @@ One mechanism serves four frontends and yields speedups in each:
 A further solver-based optimization, \emph{guard synthesis}, handles
 checks that are not dead for every input: the solver synthesizes a cheap invariant safety guard under which a fast check-free loop is cloned,
 speeding up a Swift Base64 encoder by $1.44\times$ and a Julia LZ77
-compressor by $4.01\times$. Latency
-is controllable: the median proof takes 23\,ms and \pct{96} of proofs
-survive a one-second per-query budget, so the same pass serves both the
-edit--compile loop and the release build.
+compressor by $4.01\times$. Compared with Souper, the synthesizing
+superoptimizer for LLVM, \tool{} removes $6$--$9\times$ more safety checks
+from zlib and zstd, in most configurations in less time, and its latency
+is controllable, making it viable as an online compiler pass.
 \end{abstract}
 \begin{CCSXML}
 <ccs2012>
@@ -348,7 +348,7 @@ This paper makes the following contributions:
   as an instantiation of super-analysis. \tool{} eliminates sanitizers and safety checks and unlocks further optimizations. It supports C/C++, Swift, Rust, and Julia as frontends and can enable hot-path transformations and speedups.
 \item \textbf{Robust Performance Improvement} (\S\ref{sec:results}):
   our systematic evaluation of \tool{} on two target architectures (x86 and M-series) show removing hot-loop checks has a cascading effect, unlocking further transformations (unrolling, vectorization, etc) that enables up to $4.01\times$ speedups for widely used kernels and libraries. \tool{} proofs are generally cheap: the median proof takes 23\,ms, and \pct{96} of
-  zlib's proofs survive a 1\,s per-query budget. Multi-threading and per-query budgets make \tool{}'s analysis up to $5.7\times$ faster, and its budget is a dial between an online pass and a release build (\S\ref{sec:results-cost}).
+  zlib's proofs survive a 1\,s per-query budget. Multi-threading and per-query budgets make \tool{}'s analysis up to $5.7\times$ faster, and its budget is a dial between an online pass and a release build (\S\ref{sec:results-cost}). A comparison with a synthesizing superoptimizer shows that super-analysis removes several times more checks, in most configurations in less time (\S\ref{sec:results-souper}).
 \end{itemize}
 %% =====================================================================
 \section{Paradigms of Aggressive Compiler Optimization}
