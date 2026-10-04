@@ -176,8 +176,12 @@
 \definecolor{codekw}{RGB}{0,90,160}
 \definecolor{trapred}{RGB}{200,20,20}
 \definecolor{checkpink}{RGB}{252,222,232}
-%% a safety check inside a listing: black code in a pink box, via (*\chk{...}*)
-\newcommand{\chk}[1]{{\setlength{\fboxsep}{1pt}\colorbox{checkpink}{\strut #1}}}
+\usepackage{tcolorbox}
+%% a safety check inside a listing: its lines, comments included, in one
+%% rounded pink box; the listing is split around a chkbox holding them
+\newtcolorbox{chkbox}{colback=checkpink, colframe=checkpink, boxrule=0pt,
+  arc=3pt, boxsep=0pt, left=0pt, right=0pt, top=1.5pt, bottom=1.5pt,
+  before skip=1pt, after skip=1pt}
 \lstdefinestyle{odessy}{
   basicstyle=\footnotesize\ttfamily,
   escapeinside={(*}{*)},
@@ -186,7 +190,9 @@
   columns=fullflexible,
   keepspaces=true,
   breaklines=false,
-  xleftmargin=0.5em
+  xleftmargin=0.5em,
+  aboveskip=0pt,
+  belowskip=0pt
 }
 %% Convenience macros
 \newcommand{\odessy}{ODeSSy}
@@ -635,8 +641,18 @@ the shipping standard library.
 %n1 = load i64, ptr %A.len     ; read 1: the loop runs i up to n1
 loop:
   %n2 = load i64, ptr %A.len   ; read 2: same address, a new value
-  (*\chk{\%oob = icmp ugt i64 \%i, \%n2}*)  ; the check needs i <= n2
-  (*\chk{br i1 \%oob, label \%trap, label \%body}*)
+\end{lstlisting}
+\begin{chkbox}
+\begin{lstlisting}[style=odessy,
+    morekeywords={load,store,icmp,ugt,br,label,i64,i1,ptr,x,double},
+    comment={[l]{;}}]
+  %oob = icmp ugt i64 %i, %n2  ; the check needs i <= n2
+  br i1 %oob, label %trap, label %body
+\end{lstlisting}
+\end{chkbox}
+\begin{lstlisting}[style=odessy,
+    morekeywords={load,store,icmp,ugt,br,label,i64,i1,ptr,x,double},
+    comment={[l]{;}}]
   ;...
   store <2 x double> %v, ptr %C.data   ; can this overwrite A.len?
   br label %loop
@@ -648,7 +664,7 @@ length: a fact about the heap, which no scalar analysis supplies.}
 \Description{A schematic LLVM IR listing: a load of A's length before
 the loop, named n1; inside the loop a second load of the same address,
 named n2; the compare of i against n2 and the conditional branch to the
-trap, highlighted in pink boxes; a vector store into C's data, with a
+trap, highlighted in one rounded pink box; a vector store into C's data, with a
 comment asking whether it can overwrite A's length; and the back edge.}
 \label{fig:frame-example}
 \end{figure}
@@ -727,8 +743,18 @@ where a solver becomes necessary.
 var w = [UInt32](repeating: 0, count: 64)
 for t in 16..<64 {
   // s0, s1: rotate-xors of w[t-15], w[t-2]
+\end{lstlisting}
+\begin{chkbox}
+\begin{lstlisting}[style=odessy,
+    morekeywords={var,for,in,let,if},
+    comment={[l]{//}}]
   // implicit check (injected by compiler)
-  (*\chk{if t-16 >= w.count \{ trap() \}}*)
+  if t-16 >= w.count { trap() }
+\end{lstlisting}
+\end{chkbox}
+\begin{lstlisting}[style=odessy,
+    morekeywords={var,for,in,let,if},
+    comment={[l]{//}}]
   w[t] = w[t-16] + s0 + w[t-7] + s1
 }
 \end{lstlisting}
@@ -740,10 +766,16 @@ for t in 16..<64 {
 ; the check for w[t-16], after swiftc -O + LLVM O3:
 %n   = load i64, ptr %w.count  ; array length: n = 64
 %idx = add i64 %t, -16         ; idx = t - 16
-(*\chk{\%oob = icmp uge i64 \%idx, \%n}*)    ; oob = (idx >= n)
-(*\chk{br i1 \%oob, label \%trap, label \%ld}*)  ; trap if oob
-(*\chk{trap: call void @llvm.ubsantrap(i8 18)}*) ; aborts
 \end{lstlisting}
+\begin{chkbox}
+\begin{lstlisting}[style=odessy,
+    morekeywords={load,add,icmp,uge,br,label,call,void,i8,i64,i1,ptr},
+    comment={[l]{;}}]
+%oob = icmp uge i64 %idx, %n    ; oob = (idx >= n)
+br i1 %oob, label %trap, label %ld  ; trap if oob
+trap: call void @llvm.ubsantrap(i8 18) ; aborts
+\end{lstlisting}
+\end{chkbox}
 \end{minipage}
 \caption{A Swift SHA-256 message-schedule loop (top) and one of its
 bounds checks after \texttt{swiftc -O} and LLVM O3 (bottom), checks
@@ -751,9 +783,9 @@ highlighted. The check is dead only by a conjunction: scalar evolution
 gives $t - 16 < 48$ and a return-value range gives \texttt{w.count} $= 64$.}
 \Description{Above, a Swift listing of the SHA-256 message schedule
 loop with the injected check, if t minus 16 is greater or equal to the
-array count then trap, highlighted in a pink box. Below, five lines of LLVM IR showing the
-load of the array count, the index computation, and, highlighted in pink
-boxes, the unsigned compare, the conditional branch to the trap block,
+array count then trap, highlighted in a rounded pink box. Below, five lines of LLVM IR showing the
+load of the array count, the index computation, and, highlighted in one rounded pink
+box, the unsigned compare, the conditional branch to the trap block,
 and the trap block's call to ubsantrap.}
 \label{fig:simple-example}
 \end{figure}
@@ -920,8 +952,18 @@ that calls a function that never returns --- and that shape is what
 for j in 1:n, l in 1:k
     b = B[l, j]
     for i in 1:m
+\end{lstlisting}
+\begin{chkbox}
+\begin{lstlisting}[style=odessy,
+    morekeywords={for,in,end,if},
+    comment={[l]{\#}}]
         # check inserted by Julia for A[i, l]:
-        (*\chk{if !(1 <= i <= size(A, 1)) \{ trap() \}}*)
+        if !(1 <= i <= size(A, 1)) { trap() }
+\end{lstlisting}
+\end{chkbox}
+\begin{lstlisting}[style=odessy,
+    morekeywords={for,in,end,if},
+    comment={[l]{\#}}]
         C[i, j] += A[i, l] * b
     end
 end
@@ -932,7 +974,7 @@ end
 iteration of the innermost loop; removing it makes the kernel up to
 $4.2\times$ faster.}
 \Description{A Julia loop nest over j, l and i. Inside the innermost loop,
-highlighted in a pink box, the check that i lies between 1 and the first
+highlighted in a rounded pink box, the check that i lies between 1 and the first
 dimension of A, followed by the multiply-accumulate into C.}
 \label{fig:checks}
 \end{figure}
