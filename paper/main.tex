@@ -610,82 +610,46 @@ The facts a super-analyzer composes are usually \emph{scalar}:
 ranges, known bits, trip counts, branch conditions
 (\S\ref{sec:conjunction} shows how a compiler supplies them). A large and
 expensive class of checks falls outside their reach because the fact
-that discharges them lives in the heap. Our acceptance test for
-this class is the kernel of Julia's standard-library GEMM
-(\texttt{generic\_matmatmul!}) illustrated in Figure~\ref{fig:frame-example}: a benchmark on which the scalar fact
-sources prove \emph{zero} of 16 residual bounds-check edges, while
-turning those same checks off is worth roughly $4\times$
-($4.17\times$ on x86, $4.19\times$ on Apple Silicon;
-\S\ref{sec:frame-results}). The checks are not exotic --- they guard
-an ordinary three-loop matrix multiply, and Julia's own authors
-discharge them by hand, with trusted \texttt{@inbounds} annotations,
-in the shipping standard library.
+that discharges them lives in the heap. Figure~\ref{fig:frame-example}
+shows the pattern. An array's length lives in its header, in memory, so
+every read of it is a load. A loop reads the length once to bound its
+counter and again inside the loop for the check, and between the two
+reads sits a store. The two loads read the same address, but they are
+two different values to the compiler: they are equal only if the store
+never overwrites the length, which is a question for alias and heap
+analysis, not for the scalar facts. The pattern is common in widely
+used kernels. In Julia's standard-library GEMM
+(\texttt{generic\_matmatmul!}) the scalar fact sources prove \emph{zero}
+of 16 residual bounds-check edges, while turning those same checks off
+is worth roughly $4\times$ ($4.17\times$ on x86, $4.19\times$ on Apple
+Silicon; \S\ref{sec:frame-results}). The checks are not exotic --- they
+guard an ordinary three-loop matrix multiply, and Julia's own authors
+discharge them by hand, with trusted \texttt{@inbounds} annotations, in
+the shipping standard library.
 \begin{figure}[t]
 \centering
-\begin{minipage}[t]{\linewidth}
 \begin{lstlisting}[style=odessy,
-    morekeywords={for,in,end,if},
-    comment={[l]{\#}}]
-# C += A * B      C: m x n,  A: m x k,  B: k x n
-
-m, n = size(C)    # C has m rows and n columns
-k = size(A, 2)    # 2nd dimension of A: its columns
-size(A, 1) == m || throw(DimensionMismatch())  # [n1]
-size(B, 1) == k || throw(DimensionMismatch())
-size(B, 2) == n || throw(DimensionMismatch())
-# ... the loop nest of Figure (*\ref{fig:checks}*), whose check
-# on A[i, l] reloads size(A, 1)  [n2]
-\end{lstlisting}
-\end{minipage}\par\vspace{0.7em}
-\begin{minipage}[t]{\linewidth}
-\begin{lstlisting}[style=odessy,
-    morekeywords={load,store,add,icmp,uge,br,label,i64,i1,ptr,x,double},
+    morekeywords={load,store,icmp,ugt,br,label,i64,i1,ptr,x,double},
     comment={[l]{;}}]
-; the same kernel after -O3 (schematic)
-
-; every size(..) is a load of an array-header field
-; into a fresh SSA register:
-%n1 = load i64, ptr %A.size    ; [n1] == m, by the guard
-
-
-
-loop:                          ; vectorized inner loop
-%n2  = load i64, ptr %A.size   ; [n2] same address, new load
-;...
-(*\chk{\%oob = icmp ugt i64 \%i, \%n2}*)    ; oob = (i > n2)
-(*\chk{br i1 \%oob, label \%trap, label \%body}*)
-store <2 x double> %v, ptr %C.data      ; [st]
-; does [st] ever rewrite %A.size?
-br label %loop
+; a hot loop after -O3 (schematic); A's length is in its header
+%n1 = load i64, ptr %A.len     ; read 1: the loop runs i up to n1
+loop:
+  %n2 = load i64, ptr %A.len   ; read 2: same address, a new value
+  (*\chk{\%oob = icmp ugt i64 \%i, \%n2}*)  ; the check needs i <= n2
+  (*\chk{br i1 \%oob, label \%trap, label \%body}*)
+  ;...
+  store <2 x double> %v, ptr %C.data   ; can this overwrite A.len?
+  br label %loop
 \end{lstlisting}
-\end{minipage}
-\caption{The final boss: Julia stdlib GEMM (top: its dimension guards,
-from the source; its loop nest and the check on \texttt{A[i,l]} are in
-Figure~\ref{fig:checks}; bottom: that check after lowering, highlighted). Every call to \texttt{size} becomes a load of an
-array-header field into a fresh SSA register, so the guard reads
-$n_1$ and the check reads $n_2$: two different values, loaded in different locations but from the
-\emph{same} address. Refuting the trap means proving $i \le n_2$.
-Proving $i \le n_1$ would be easy --- the guard gives $n_1 = m$, the
-inner loop header gives $1 \le i \le m$ --- but nothing connects
-$n_2$ to $n_1$. Between the two loads sits the loop's store into
-\texttt{C}'s data, so $n_1 = n_2$ holds only if that store never
-overwrites \texttt{A}'s size field: an aliasing question, and the
-vectorizer has cloned the reload without the metadata that would let
-alias analysis answer it, and the trap stays satisfiable no matter how many
-scalar facts are supplied. What is missing is a \emph{heap
-invariant}: no store between the two loads touches the size field,
-hence $n_1 = n_2$. \S\ref{sec:frame-machinery} gives the encoding
-rules; \S\ref{sec:frame-results} reports the result --- 16 of 16, and
-$3.9$--$4.2\times$ speedup end-to-end.}
-\Description{Above, a Julia source listing of a three-loop GEMM kernel:
-a comment stating C plus-equals A times B with the three matrix
-shapes, two lines reading the dimensions, three shape guards, and a
-comment pointing to the loop nest of the previous figure. Below, a schematic LLVM
-IR listing aligned line by line with the source: the guard-side load
-of the size field tagged n1, the loop header, the reload of the size
-field tagged n2, the unsigned compare and the conditional branch to the
-trap block highlighted in pink boxes, then the
-vectorized store into C tagged st and the back edge.}
+\caption{Two reads of one heap location with a store between them
+(schematic LLVM IR, check highlighted). The check is dead if
+$n_2 = n_1$, which holds only if the store never writes \texttt{A}'s
+length: a fact about the heap, which no scalar analysis supplies.}
+\Description{A schematic LLVM IR listing: a load of A's length before
+the loop, named n1; inside the loop a second load of the same address,
+named n2; the compare of i against n2 and the conditional branch to the
+trap, highlighted in pink boxes; a vector store into C's data, with a
+comment asking whether it can overwrite A's length; and the back edge.}
 \label{fig:frame-example}
 \end{figure}
 The failure is structural, and not limited to this special GEMM
@@ -781,30 +745,16 @@ for t in 16..<64 {
 (*\chk{trap: call void @llvm.ubsantrap(i8 18)}*) ; aborts
 \end{lstlisting}
 \end{minipage}
-\caption{The warm-up: the message-schedule extension of a Swift
-SHA-256 kernel (top; the compiler-injected check highlighted, as
-source-level pseudocode) and the same check after lowering (bottom). Every one of these checks survives
-\texttt{swiftc -O} \emph{and} a second full LLVM O3. The facts that
-jointly refute the trap edge live in \emph{different} analyses:\newline
-$\bullet$~loop bounds (scalar evolution): $t \in [16, 64)$, hence
-$\mathit{idx} = t - 16 \in [0, 48)$ --- exact in
-bit-vectors;\newline
-$\bullet$~allocation (return-value range, refined by LazyValueInfo):
-$\texttt{w.count} = 64$.\newline
-The trap requires $\mathit{idx} \geq \texttt{w.count}$; with
-$\mathit{idx} < 48$ and $\texttt{w.count} = 64$ the conjunction is
-absurd --- yet no single fact suffices (drop any one and the query is
-satisfiable), and no fixed pass computes the conjunction. \tool{}
-conjoins them, deletes the checks, and now the simplified control-flow
-graph can be further optimized. Here the unlocked unrolling is worth
-$1.107\times$ on x86 (\S\ref{sec:results-perf}).}
+\caption{A Swift SHA-256 message-schedule loop (top) and one of its
+bounds checks after \texttt{swiftc -O} and LLVM O3 (bottom), checks
+highlighted. The check is dead only by a conjunction: scalar evolution
+gives $t - 16 < 48$ and a return-value range gives \texttt{w.count} $= 64$.}
 \Description{Above, a Swift listing of the SHA-256 message schedule
 loop with the injected check, if t minus 16 is greater or equal to the
 array count then trap, highlighted in a pink box. Below, five lines of LLVM IR showing the
 load of the array count, the index computation, and, highlighted in pink
 boxes, the unsigned compare, the conditional branch to the trap block,
-and the trap block's call to ubsantrap. The caption lists the two facts whose conjunction
-refutes the trap.}
+and the trap block's call to ubsantrap.}
 \label{fig:simple-example}
 \end{figure}
 Consider the message-schedule loop of a Swift SHA-256 kernel
@@ -970,9 +920,9 @@ that calls a function that never returns --- and that shape is what
 for j in 1:n, l in 1:k
     b = B[l, j]
     for i in 1:m
-        # check inserted by Julia for A[i, l]; it reloads size(A, 1):
-        (*\chk{if !(1 <= i <= size(A, 1)) \{ trap() \}}*)   # [n2]
-        C[i, j] += A[i, l] * b   # store into C  [st]
+        # check inserted by Julia for A[i, l]:
+        (*\chk{if !(1 <= i <= size(A, 1)) \{ trap() \}}*)
+        C[i, j] += A[i, l] * b
     end
 end
 \end{lstlisting}
