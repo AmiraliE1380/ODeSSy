@@ -121,6 +121,24 @@
   booktitle = {OSDI},
   year = {2021}
 }
+@misc{swiftBook,
+  author = {{Swift Project}},
+  title = {The {Swift} Programming Language: Basic Operators and Collection Types},
+  howpublished = {\url{https://docs.swift.org/swift-book/}},
+  year = {2026}
+}
+@misc{rustReference,
+  author = {{The Rust Project}},
+  title = {The {Rust} Reference: Panics and Integer Overflow},
+  howpublished = {\url{https://doc.rust-lang.org/reference/}},
+  year = {2026}
+}
+@misc{juliaBoundsCheck,
+  author = {{The Julia Project}},
+  title = {The {Julia} Manual: Bounds Checking},
+  howpublished = {\url{https://docs.julialang.org/en/v1/devdocs/boundscheck/}},
+  year = {2026}
+}
 @misc{ubsanDocs,
   author = {{LLVM Project}},
   title = {UndefinedBehaviorSanitizer Documentation},
@@ -157,8 +175,12 @@
 \definecolor{codecomment}{gray}{0.45}
 \definecolor{codekw}{RGB}{0,90,160}
 \definecolor{trapred}{RGB}{200,20,20}
+\definecolor{checkpink}{RGB}{252,222,232}
+%% a safety check inside a listing: black code in a pink box, via (*\chk{...}*)
+\newcommand{\chk}[1]{{\setlength{\fboxsep}{1pt}\colorbox{checkpink}{\strut #1}}}
 \lstdefinestyle{odessy}{
-  basicstyle=\small\ttfamily,
+  basicstyle=\footnotesize\ttfamily,
+  escapeinside={(*}{*)},
   keywordstyle=\color{codekw}\bfseries,
   commentstyle=\color{codecomment}\itshape,
   columns=fullflexible,
@@ -192,16 +214,14 @@ problem suited to a solver, not to any single dataflow pass.
 
 We instantiate
 super-analysis in \tool{}, an LLVM pass that proves sanitizer traps and
-native-language safety checks unreachable and deletes them.
+native-language safety checks unreachable and removes them.
 One mechanism serves four frontends and yields speedups in each:
 \tool{} generates code up to $3.91\times$ faster than LLVM -O3 for a GEMM implemented in Julia.
 A further solver-based optimization, \emph{guard synthesis}, handles
 checks that are not dead for every input: the solver synthesizes a cheap invariant safety guard under which a fast check-free loop is cloned,
 speeding up a Swift Base64 encoder by $1.44\times$ and a Julia LZ77
 compressor by $4.01\times$. Compared with Souper, the synthesizing
-superoptimizer for LLVM, \tool{} removes $6$--$9\times$ more safety checks
-from zlib and zstd, in most configurations in less time, and its latency
-is controllable, making it viable as an online compiler pass.
+superoptimizer for LLVM, \tool{} removes more safety checks and is orders of magnitude faster in most configurations, making it viable as an online compiler pass.
 \end{abstract}
 \begin{CCSXML}
 <ccs2012>
@@ -458,7 +478,7 @@ diagonal ones.
 \begin{figure}[t]
 \centering
 \begin{minipage}[t]{0.47\linewidth}
-\begin{lstlisting}[style=odessy,basicstyle=\footnotesize\ttfamily,
+\begin{lstlisting}[style=odessy,
     morekeywords={while,if,return,for,each,in,not},comment={[l]{;}}]
 ; P: the program
 Superoptimize(p):         ; p: a point in P
@@ -466,14 +486,14 @@ Superoptimize(p):         ; p: a point in P
   best := frag
   while budget left:      ; open-ended
     cand := Synthesize(best)    ; search
-    if Verify(cand == frag):    ; 1 query
-      if Cost(cand) < Cost(best): ; per
-        best := cand        ; candidate
+    if Verify(cand == frag):    ; solver query
+      if Cost(cand) < Cost(best): 
+        best := cand        
   P := Replace(P, frag, best)
 \end{lstlisting}
 \end{minipage}\hfill
 \begin{minipage}[t]{0.50\linewidth}
-\begin{lstlisting}[style=odessy,basicstyle=\footnotesize\ttfamily,
+\begin{lstlisting}[style=odessy,
     morekeywords={while,if,return,for,each,in,not},comment={[l]{;}}]
 ; P: the program
 SuperAnalyze(p):          ; p: a point in P
@@ -603,10 +623,9 @@ in the shipping standard library.
 \begin{figure}[t]
 \centering
 \begin{minipage}[t]{\linewidth}
-\begin{lstlisting}[style=odessy,basicstyle=\footnotesize\ttfamily,
+\begin{lstlisting}[style=odessy,
     morekeywords={for,in,end,if},
-    comment={[l]{\#}},
-    moredelim={[is][\color{trapred}\bfseries]{|}{|}}]
+    comment={[l]{\#}}]
 # C += A * B      C: m x n,  A: m x k,  B: k x n
 
 m, n = size(C)    # C has m rows and n columns
@@ -614,22 +633,14 @@ k = size(A, 2)    # 2nd dimension of A: its columns
 size(A, 1) == m || throw(DimensionMismatch())  # [n1]
 size(B, 1) == k || throw(DimensionMismatch())
 size(B, 2) == n || throw(DimensionMismatch())
-
-for j in 1:n, l in 1:k
-    b = B[l, j]
-    for i in 1:m
-        |# implicit check for A[i, l]; reloads size(A,1):|
-        |if !(1 <= i <= size(A, 1)) { trap() }   # [n2]|
-        C[i, j] += A[i, l] * b   # store into C  [st]
-    end
-end
+# ... the loop nest of Figure (*\ref{fig:checks}*), whose check
+# on A[i, l] reloads size(A, 1)  [n2]
 \end{lstlisting}
 \end{minipage}\par\vspace{0.7em}
 \begin{minipage}[t]{\linewidth}
-\begin{lstlisting}[style=odessy,basicstyle=\footnotesize\ttfamily,
+\begin{lstlisting}[style=odessy,
     morekeywords={load,store,add,icmp,uge,br,label,i64,i1,ptr,x,double},
-    comment={[l]{;}},
-    moredelim={[is][\color{trapred}\bfseries]{|}{|}}]
+    comment={[l]{;}}]
 ; the same kernel after -O3 (schematic)
 
 ; every size(..) is a load of an array-header field
@@ -641,16 +652,16 @@ end
 loop:                          ; vectorized inner loop
 %n2  = load i64, ptr %A.size   ; [n2] same address, new load
 ;...
-|%oob = icmp ugt i64 %i, %n2    ; oob = (i > n2)|
-|br i1 %oob, label %trap, label %body|
+(*\chk{\%oob = icmp ugt i64 \%i, \%n2}*)    ; oob = (i > n2)
+(*\chk{br i1 \%oob, label \%trap, label \%body}*)
 store <2 x double> %v, ptr %C.data      ; [st]
 ; does [st] ever rewrite %A.size?
 br label %loop
 \end{lstlisting}
 \end{minipage}
-\caption{The final boss: Julia stdlib GEMM (top: the source, with the
-check on \texttt{A[i,l]} spelled out in red; bottom: the same check
-after lowering). Every call to \texttt{size} becomes a load of an
+\caption{The final boss: Julia stdlib GEMM (top: its dimension guards,
+from the source; its loop nest and the check on \texttt{A[i,l]} are in
+Figure~\ref{fig:checks}; bottom: that check after lowering, highlighted). Every call to \texttt{size} becomes a load of an
 array-header field into a fresh SSA register, so the guard reads
 $n_1$ and the check reads $n_2$: two different values, loaded in different locations but from the
 \emph{same} address. Refuting the trap means proving $i \le n_2$.
@@ -668,13 +679,12 @@ rules; \S\ref{sec:frame-results} reports the result --- 16 of 16, and
 $3.9$--$4.2\times$ speedup end-to-end.}
 \Description{Above, a Julia source listing of a three-loop GEMM kernel:
 a comment stating C plus-equals A times B with the three matrix
-shapes, two lines reading the dimensions, three shape guards, and the
-loop nest with the implicit bounds check on A written out in red and
-tagged n2, and the accumulate line tagged st. Below, a schematic LLVM
+shapes, two lines reading the dimensions, three shape guards, and a
+comment pointing to the loop nest of the previous figure. Below, a schematic LLVM
 IR listing aligned line by line with the source: the guard-side load
 of the size field tagged n1, the loop header, the reload of the size
-field tagged n2, in red the unsigned
-compare and the conditional branch to the trap block, then the
+field tagged n2, the unsigned compare and the conditional branch to the
+trap block highlighted in pink boxes, then the
 vectorized store into C tagged st and the back edge.}
 \label{fig:frame-example}
 \end{figure}
@@ -749,13 +759,12 @@ where a solver becomes necessary.
 \begin{minipage}[t]{\linewidth}
 \begin{lstlisting}[style=odessy,
     morekeywords={var,for,in,let,if},
-    comment={[l]{//}},
-    moredelim={[is][\color{trapred}\bfseries]{|}{|}}]
+    comment={[l]{//}}]
 var w = [UInt32](repeating: 0, count: 64)
 for t in 16..<64 {
   // s0, s1: rotate-xors of w[t-15], w[t-2]
-  |// implicit check (injected by compiler)|
-  |if t-16 >= w.count { trap() }|
+  // implicit check (injected by compiler)
+  (*\chk{if t-16 >= w.count \{ trap() \}}*)
   w[t] = w[t-16] + s0 + w[t-7] + s1
 }
 \end{lstlisting}
@@ -763,18 +772,17 @@ for t in 16..<64 {
 \begin{minipage}[t]{\linewidth}
 \begin{lstlisting}[style=odessy,
     morekeywords={load,add,icmp,uge,br,label,call,void,i8,i64,i1,ptr},
-    comment={[l]{;}},
-    moredelim={[is][\color{trapred}\bfseries]{|}{|}}]
+    comment={[l]{;}}]
 ; the check for w[t-16], after swiftc -O + LLVM O3:
 %n   = load i64, ptr %w.count  ; array length: n = 64
 %idx = add i64 %t, -16         ; idx = t - 16
-|%oob = icmp uge i64 %idx, %n   ; oob = (idx >= n)|
-|br i1 %oob, label %trap, label %ld ; trap if oob|
-|trap:  call void @llvm.ubsantrap(i8 18) ; aborts|
+(*\chk{\%oob = icmp uge i64 \%idx, \%n}*)    ; oob = (idx >= n)
+(*\chk{br i1 \%oob, label \%trap, label \%ld}*)  ; trap if oob
+(*\chk{trap: call void @llvm.ubsantrap(i8 18)}*) ; aborts
 \end{lstlisting}
 \end{minipage}
 \caption{The warm-up: the message-schedule extension of a Swift
-SHA-256 kernel (top; the compiler-injected check shown in red as
+SHA-256 kernel (top; the compiler-injected check highlighted, as
 source-level pseudocode) and the same check after lowering (bottom). Every one of these checks survives
 \texttt{swiftc -O} \emph{and} a second full LLVM O3. The facts that
 jointly refute the trap edge live in \emph{different} analyses:\newline
@@ -791,11 +799,11 @@ conjoins them, deletes the checks, and now the simplified control-flow
 graph can be further optimized. Here the unlocked unrolling is worth
 $1.107\times$ on x86 (\S\ref{sec:results-perf}).}
 \Description{Above, a Swift listing of the SHA-256 message schedule
-loop with a red comment stating the trap condition t minus 16 greater
-or equal to the array count. Below, five lines of LLVM IR showing the
-load of the array count, the index computation, the unsigned compare
-highlighted in red, and the conditional branch to a trap block that
-calls ubsantrap. The caption lists the two facts whose conjunction
+loop with the injected check, if t minus 16 is greater or equal to the
+array count then trap, highlighted in a pink box. Below, five lines of LLVM IR showing the
+load of the array count, the index computation, and, highlighted in pink
+boxes, the unsigned compare, the conditional branch to the trap block,
+and the trap block's call to ubsantrap. The caption lists the two facts whose conjunction
 refutes the trap.}
 \label{fig:simple-example}
 \end{figure}
@@ -925,13 +933,72 @@ inputs as possible.
 \tool{} is an LLVM module pass of roughly five thousand lines. Two
 requirements dictate its design: soundness under aggressive
 parallelism, and bit-reproducible verdicts regardless of thread count.
-This section describes the pipeline the pass lives in
+This section describes the checks \tool{} targets
+(\S\ref{sec:target}), the pipeline the pass lives in
 (\S\ref{sec:pipeline}), the encoding machinery at its core
 (\S\ref{sec:encoding-impl}), inductive loop encoding
 (\S\ref{sec:app-machinery}), the heap-invariance extension
 (\S\ref{sec:frame-machinery}), guard synthesis and loop cloning
 (\S\ref{sec:guards-impl}), and how proofs are audited before they are
 believed (\S\ref{sec:audit}).
+
+\subsection{Target: safety checks}
+\label{sec:target}
+\tool{} targets the \emph{safety checks} that compilers insert into
+programs. A safety check guards an operation whose result would
+otherwise be undefined or unsafe --- an array access out of bounds, a
+signed integer overflow --- with a test and a branch to a block that
+stops the program if the test fails. Every front end we support inserts
+them. In C and C++, UndefinedBehaviorSanitizer~\cite{ubsanDocs} adds a
+check for each kind of undefined behavior it is asked to catch; in trap
+mode each one ends in a call to \texttt{llvm.ubsantrap}. Swift checks
+every array access and every arithmetic overflow by default, in
+optimized builds too, and stops with \texttt{llvm.trap}~\cite{swiftBook}.
+Rust checks every slice and array index, and every arithmetic operation
+when overflow checks are enabled, and stops with a call to a panic
+function~\cite{rustReference}. Julia checks every array access and stops
+by throwing a bounds error~\cite{juliaBoundsCheck}. After lowering to
+LLVM IR all of them have one shape --- a conditional branch to a block
+that calls a function that never returns --- and that shape is what
+\tool{} looks for (\S\ref{sec:pipeline}).
+
+\begin{figure}[t]
+\centering
+\begin{lstlisting}[style=odessy,
+    morekeywords={for,in,end,if},
+    comment={[l]{\#}}]
+for j in 1:n, l in 1:k
+    b = B[l, j]
+    for i in 1:m
+        # check inserted by Julia for A[i, l]; it reloads size(A, 1):
+        (*\chk{if !(1 <= i <= size(A, 1)) \{ trap() \}}*)   # [n2]
+        C[i, j] += A[i, l] * b   # store into C  [st]
+    end
+end
+\end{lstlisting}
+\caption{The inner loop of Julia's standard-library matrix multiply
+($C \mathrel{+}= A B$), with the bounds check Julia inserts for the access
+\texttt{A[i,l]} written out and highlighted. The check runs on every
+iteration of the innermost loop; removing it makes the kernel up to
+$4.2\times$ faster.}
+\Description{A Julia loop nest over j, l and i. Inside the innermost loop,
+highlighted in a pink box, the check that i lies between 1 and the first
+dimension of A, followed by the multiply-accumulate into C.}
+\label{fig:checks}
+\end{figure}
+The checks make programs safe, and the safety has a price.
+Figure~\ref{fig:checks} shows the innermost loop of Julia's
+standard-library matrix multiply with one of the checks Julia inserts.
+It runs on every iteration of the hottest loop of the program, and as a
+side exit from that loop it keeps LLVM from vectorizing and unrolling
+the loop as fully as the check-free version: with the checks turned off
+this kernel runs $4.17\times$ faster on x86, and Swift's n-body
+simulation $5.11\times$. Today the only way to recover that performance
+is to turn checks off wholesale (\texttt{@inbounds},
+\texttt{--check-bounds=no}, \texttt{-Ounchecked}), giving up the guarantee
+for the whole loop or program. \tool{} instead removes only the checks it
+proves can never fail, so the program stays exactly as safe; on this
+kernel it recovers $3.91\times$ (\S\ref{sec:results-perf}).
 
 \subsection{Pipeline}
 \label{sec:pipeline}
@@ -1022,6 +1089,7 @@ and profitable (one side exit of one loop version disappears).
 \begin{algorithm}[t]
 \caption{Encoding and deciding one trap edge $(P, c)$}
 \label{alg:encode}
+\footnotesize
 \begin{algorithmic}[1]
 \State $G \gets \emptyset$ \Comment{dominating context}
 \ForAll{dominators $D$ of $P$ ending in a cond.\ branch}
@@ -1223,6 +1291,7 @@ the guard for vacuity, and transform the loop.
 \begin{algorithm}[t]
 \caption{Guard synthesis for one trap edge $(P, c)$ inside loop $L$}
 \label{alg:guards}
+\footnotesize
 \begin{algorithmic}[1]
 \Require the direct query $\Gamma \wedge c$ returned \textsc{sat} or
   \textsc{unknown} \Comment{$\Gamma$: context, facts, guards}
