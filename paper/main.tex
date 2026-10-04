@@ -178,10 +178,18 @@
 \definecolor{checkpink}{RGB}{252,222,232}
 \usepackage{tcolorbox}
 %% a safety check inside a listing: its lines, comments included, in one
-%% rounded pink box; the listing is split around a chkbox holding them
-\newtcolorbox{chkbox}{colback=checkpink, colframe=checkpink, boxrule=0pt,
-  arc=3pt, boxsep=0pt, left=0pt, right=0pt, top=1.5pt, bottom=1.5pt,
-  before skip=1pt, after skip=1pt}
+%% rounded pink box as wide as the code. The listing is split around
+%% \begin{chkbox}{i}{w}, where i is the boxed lines' common indent and w the
+%% length of their longest line after it, both in characters of the
+%% (monospaced) listing font; the inner listing takes xleftmargin=-i\chkcw.
+\newlength{\chkcw}\newlength{\chkpad}
+\AtBeginDocument{\settowidth{\chkcw}{\footnotesize\ttfamily 0}\setlength{\chkpad}{2pt}}
+\newenvironment{chkbox}[2]{\par\vspace{1pt}\noindent
+  \hspace*{\dimexpr 0.5em+#1\chkcw-\chkpad\relax}%
+  \tcolorbox[nobeforeafter, colback=checkpink, colframe=checkpink,
+    boxrule=0pt, arc=3pt, boxsep=0pt, left=\chkpad, right=\chkpad,
+    top=1.5pt, bottom=1.5pt, width=\dimexpr #2\chkcw+2\chkpad\relax]}%
+  {\endtcolorbox\par\vspace{1pt}}
 \lstdefinestyle{odessy}{
   basicstyle=\footnotesize\ttfamily,
   escapeinside={(*}{*)},
@@ -638,15 +646,15 @@ the shipping standard library.
     morekeywords={load,store,icmp,ugt,br,label,i64,i1,ptr,x,double},
     comment={[l]{;}}]
 ; a hot loop after -O3 (schematic); A's length is in its header
-%n1 = load i64, ptr %A.len     ; read 1: the loop runs i up to n1
+%n1 = load i64, ptr %A.len              ; read 1: the loop runs i up to n1
 loop:
-  %n2 = load i64, ptr %A.len   ; read 2: same address, a new value
+  %n2 = load i64, ptr %A.len            ; read 2: same address, a new value
 \end{lstlisting}
-\begin{chkbox}
-\begin{lstlisting}[style=odessy,
+\begin{chkbox}{2}{63}
+\begin{lstlisting}[style=odessy, xleftmargin=-2\chkcw,
     morekeywords={load,store,icmp,ugt,br,label,i64,i1,ptr,x,double},
     comment={[l]{;}}]
-  %oob = icmp ugt i64 %i, %n2  ; the check needs i <= n2
+  %oob = icmp ugt i64 %i, %n2           ; the check needs i <= n2
   br i1 %oob, label %trap, label %body
 \end{lstlisting}
 \end{chkbox}
@@ -654,7 +662,7 @@ loop:
     morekeywords={load,store,icmp,ugt,br,label,i64,i1,ptr,x,double},
     comment={[l]{;}}]
   ;...
-  store <2 x double> %v, ptr %C.data   ; can this overwrite A.len?
+  store <2 x double> %v, ptr %C.data    ; can this overwrite A.len?
   br label %loop
 \end{lstlisting}
 \caption{Two reads of one heap location with a store between them
@@ -744,8 +752,8 @@ var w = [UInt32](repeating: 0, count: 64)
 for t in 16..<64 {
   // s0, s1: rotate-xors of w[t-15], w[t-2]
 \end{lstlisting}
-\begin{chkbox}
-\begin{lstlisting}[style=odessy,
+\begin{chkbox}{2}{40}
+\begin{lstlisting}[style=odessy, xleftmargin=-2\chkcw,
     morekeywords={var,for,in,let,if},
     comment={[l]{//}}]
   // implicit check (injected by compiler)
@@ -764,16 +772,16 @@ for t in 16..<64 {
     morekeywords={load,add,icmp,uge,br,label,call,void,i8,i64,i1,ptr},
     comment={[l]{;}}]
 ; the check for w[t-16], after swiftc -O + LLVM O3:
-%n   = load i64, ptr %w.count  ; array length: n = 64
-%idx = add i64 %t, -16         ; idx = t - 16
+%n   = load i64, ptr %w.count           ; array length: n = 64
+%idx = add i64 %t, -16                  ; idx = t - 16
 \end{lstlisting}
-\begin{chkbox}
-\begin{lstlisting}[style=odessy,
+\begin{chkbox}{0}{58}
+\begin{lstlisting}[style=odessy, xleftmargin=-0\chkcw,
     morekeywords={load,add,icmp,uge,br,label,call,void,i8,i64,i1,ptr},
     comment={[l]{;}}]
-%oob = icmp uge i64 %idx, %n    ; oob = (idx >= n)
-br i1 %oob, label %trap, label %ld  ; trap if oob
-trap: call void @llvm.ubsantrap(i8 18) ; aborts
+%oob = icmp uge i64 %idx, %n            ; oob = (idx >= n)
+br i1 %oob, label %trap, label %ld      ; trap if oob
+trap: call void @llvm.ubsantrap(i8 18)  ; aborts
 \end{lstlisting}
 \end{chkbox}
 \end{minipage}
@@ -953,8 +961,8 @@ for j in 1:n, l in 1:k
     b = B[l, j]
     for i in 1:m
 \end{lstlisting}
-\begin{chkbox}
-\begin{lstlisting}[style=odessy,
+\begin{chkbox}{8}{38}
+\begin{lstlisting}[style=odessy, xleftmargin=-8\chkcw,
     morekeywords={for,in,end,if},
     comment={[l]{\#}}]
         # check inserted by Julia for A[i, l]:
