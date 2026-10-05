@@ -305,8 +305,7 @@ We use an SMT solver as an analysis oracle and feed it with the encoded formula 
 verdict changes nothing.
 
 
-Why should a solver find opportunities that forty years of heuristics
-miss? Our central empirical finding is that the missed opportunities require complex reasoning  over multiple domains and from different fact sources to prove safe. Proving
+SMT-based compiler analysis is more precise than native lightweight compiler analysis. Our central empirical finding is that the missed opportunities require complex reasoning  over multiple domains and from different fact sources to prove safe. Proving
 one bounds check dead in a real SHA-256 kernel requires the return-value
 range of one function, a scalar-evolution loop bound, a value-range fact
 on a third value, and two dominating branch conditions from the program's prefix ---
@@ -315,7 +314,7 @@ single pass computes their conjunction, and the phase-ordering problem
 ensures no fixed pipeline ever will. Deciding satisfiability of a
 complex conjunction is, in principle, an entailment
 problem --- exactly what an SMT solver decides and exactly what a
-heuristic cannot. Our tool extracts the unsat core of every proof, so this
+heuristic cannot. We inspect the unsat core of every proof, so this
 claim is not an intuition but a measurement: the cores name the
 contributing analyses, and the majority of our nontrivial proofs draw on
 two to four sources at once (\S\ref{sec:results-static}).
@@ -329,13 +328,12 @@ languages (Swift bounds and overflow checks, Rust panics, Julia bounds
 errors) compile to trap-guarded branches whose hot-path cost is the
 standing tax of memory safety --- we measure it at up to $1.075\times$ on
 the zstd library under signed-overflow checks and up to $4.17\times$ and $5.11\times$ on native-language kernels (Julia GEMM and Swift nbody, respectively).
-Today the only recourse on hot paths is to turn checks \emph{off}
+Today the only recourse to avoid this performance tax is to turn checks \emph{off}
 wholesale (\texttt{-Ounchecked}, \texttt{--check-bounds=no}), trading away
 the safety guarantee entirely. \tool{} offers the sound alternative:
 delete exactly the checks that are provably redundant with the guards,
 contracts, and invariants already present in the program, and keep every
-check that is not --- each deletion certified by an unsat core, audited
-for vacuity, and validated by byte-identical program output.
+check that is not.
 \tool{} is able to recover up to $3.91\times$ of performance by removing redundant safety checks and enabling a cascade of further optimizations.
 
 Deleting checks that are already dead is not \tool{}'s only
@@ -343,7 +341,7 @@ optimization. Many hot checks are not dead for every input: they are
 dead only for the well-formed inputs a program actually receives, such
 as arrays of the expected length. For these, \tool{} performs
 \emph{guard synthesis}. The solver synthesizes a guard --- a cheap
-condition over values that do not change inside the loop --- under
+condition over values that are invariant inside the loop --- under
 which every check in the loop is provably dead. The loop is then
 specialized: the guard is tested once, outside the loop, and when it
 holds a copy of the loop runs with all its checks removed; otherwise
@@ -360,8 +358,7 @@ optimization, and it carries one open problem we deliberately defer:
 indiscriminately at every program point would be ruinous, and deciding
 where precision repays its cost demands a cost model no compiler has.
 Safety-check elimination is the ideal first instantiation precisely
-because it answers that question for free. The work list is given --- run
-exactly where the traps are, a set the frontend already enumerates. Based on our experiments, removing a safety check is either a win or has a marginal effect in most cases --- it simplifies the program control-flow, allowing other optimizations to be performed by subsequent passes. This
+because it answers that question for free. The work list is given, and the traps are expected to be unreachable (unsat) for safe programs. Based on our experiments, removing a safety check is either a win or has a marginal effect in most cases --- it simplifies the program control-flow, allowing other optimizations to be performed by subsequent passes. This
 application therefore isolates the paradigm's contribution --- precision
 of analysis --- from the question it defers: when to use it.
 
@@ -372,25 +369,24 @@ This paper makes the following contributions:
   a crucial analysis problem --- array optimizations often require heap
   reasoning to ensure their safety --- formalize it, and show that
   super-analysis can more effectively reason over heap and memory safety
-  of certain transformations in hot loops (\S\ref{sec:frame}).
+  of certain transformations.
 \item \textbf{Making super-analysis work} (\S\ref{sec:making}): a set of
   techniques inside the paradigm that make it effective. We encode the
   compiler's lightweight native analyses as facts that constrain the
-  solver's search (\S\ref{sec:conjunction}), and we
+  solver's search, and we
   introduce guard synthesis and loop specialization, which synthesize a
   runtime guard under which a loop's checks are dead and clone the loop
-  behind it (\S\ref{sec:guards}).
+  behind it.
 \item \textbf{\tool{}} (\S\ref{sec:system}): an LLVM pass and online optimizer
-  as an instantiation of super-analysis. \tool{} eliminates sanitizers and safety checks and unlocks further optimizations. It supports C/C++, Swift, Rust, and Julia as frontends and can enable hot-path transformations and speedups.
+  as an instantiation of super-analysis. \tool{} eliminates safety checks and unlocks further optimizations. It supports C/C++, Swift, Rust, and Julia as frontends and can enable hot-path transformations and speedups.
 \item \textbf{Robust Performance Improvement} (\S\ref{sec:results}):
-  our systematic evaluation of \tool{} on two target architectures (x86 and M-series) show removing hot-loop checks has a cascading effect, unlocking further transformations (unrolling, vectorization, etc) that enables up to $4.01\times$ speedups for widely used kernels and libraries. \tool{} proofs are generally cheap: the median proof takes 23\,ms, and \pct{96} of
-  zlib's proofs survive a 1\,s per-query budget. Multi-threading and per-query budgets make \tool{}'s analysis up to $5.7\times$ faster, and its budget is a dial between an online pass and a release build (\S\ref{sec:results-cost}). A comparison with a synthesizing superoptimizer shows that super-analysis removes several times more checks, in most configurations in less time (\S\ref{sec:results-souper}).
+  our systematic evaluation of \tool{} on an x86 server show removing hot-loop checks has a cascading effect, unlocking further transformations (unrolling, vectorization, etc) that enables up to $4.01\times$ speedups for widely used kernels and libraries. \tool{} proofs are generally cheap, making it usuable as an online pass and usable in the development loop. Multi-threading and per-query budgets make \tool{}'s analysis up to $5.7\times$ faster. A further comparison with a synthesizing superoptimizer shows that super-analysis removes several times more checks, in most configurations in less time.
 \end{itemize}
 %% =====================================================================
 \section{Paradigms of Aggressive Compiler Optimization}
 \label{sec:related}
 
-Conventional compiler optimization passes (like in LLVM) consist of analysis modules and transformation rules that consume the analysis to produce more efficient code. Both components are lightweight and fast, sacrificing precision to save compile time and provide rapid feedback. Multiple families of optimizers deviate from this simple fast compilation methodology, including superoptimizers and equality saturation methods.
+\paragraph{Conventional optimization.} Conventional compiler optimization passes (like in LLVM) consist of analysis modules and transformation rules that consume the analysis to produce more efficient code. Both components are lightweight and fast, sacrificing precision to save compile time and provide rapid feedback. Multiple families of optimizers deviate from this simple fast compilation methodology, including superoptimizers and equality saturation methods.
 
 \paragraph{Superoptimization.} A superoptimizer tries to search a large space of programs for a faster or shorter alternative to the initial code.
 Massalin's original superoptimizer~\cite{massalin1987superoptimizer}
@@ -405,12 +401,7 @@ Souper~\cite{sasnauskas2017souper} works at the LLVM IR level: it
 synthesizes replacements for bounded peephole windows and verifies each
 candidate with an SMT solver. Souper is architecturally different from our work.
 In every sound superoptimizer the search proposes code and the solver
-verifies it, so the solver is invoked \emph{per candidate}. \tool{}
-performs no synthesis at all: its solver decides reachability over
-arbitrarily structured acyclic slices, once per check site, and the
-compiler's own machinery performs the rewrite. This is why
-super-analysis scales to whole libraries (156k-line IR modules; 19{,}197
-checks in zstd) at the cost of one decision per check. 
+verifies it, so the solver is invoked \emph{per candidate}. 
 
 
 \paragraph{Equality Saturation.}
@@ -421,7 +412,7 @@ e-graph with the combinations of a fixed rewrite-rule set and extracts
 the cheapest result, so its search ranges over rules rather than over
 arbitrary programs and no candidate needs a proof of its own.
 
-\paragraph{Super-analysis.} This paper introduces a third route. A
+\paragraph{Super-analysis.} This paper introduces a fourth route. A
 super-analyzer spends the solver on \emph{analysis} alone: the solver
 decides whether a rewrite is licensed --- here, whether a safety check
 can ever fire --- and the compiler's existing, conventional
@@ -523,14 +514,12 @@ SuperAnalyze(p):          ; p: a point in P
 \end{lstlisting}
 \end{minipage}
 \caption{The two paradigms as procedures, each applied to one point
-$p$ of the program $P$; a compiler runs either one at every point of a
-work list it chooses (for \tool{}, every safety check). At a point, a
-superoptimizer takes the surrounding fragment and searches over
+$p$ of the program $P$. A
+superoptimizer takes the surrounding fragment at point $p$ and searches over
 candidate replacements, paying a solver query for every candidate it
-verifies; the search has no natural end and is cut off by a budget, and
-the best candidate replaces the fragment. A super-analyzer first asks
+verifies. A super-analyzer first asks
 the conventional analysis, consults the solver only if that fails, poses
-a bounded number of queries, each under its own time budget, and hands
+a bounded number of queries, and hands
 the answer to a conventional rewrite.}
 \Description{Two pseudocode functions side by side, each taking a point p
 of the program P. Left, Superoptimize: take the fragment around p, then
@@ -542,7 +531,7 @@ the solver to decide p's context together with its query; if a fact is
 established, apply a conventional rewrite to P.}
 \label{fig:procedures}
 \end{figure}
-Figure~\ref{fig:procedures} states the difference as two procedures.
+Figure~\ref{fig:procedures} states the procedural difference between superoptimization and super-analysis.
 Both are applied point by point, and they differ in what happens at a
 point. The superoptimizer runs a search: its cost is the number of
 candidates it tries times the cost of verifying each, the number of
@@ -561,10 +550,10 @@ superoptimizer's dominant expense is not the solver but the
 \emph{synthesis loop} that feeds it: a search over candidate programs,
 each candidate requiring its own equivalence query. Super-analysis deletes
 that outer loop. What remains is one decision procedure invocation per
-check site --- a decision, not a search --- and a transformation the
-compiler performs for free. This is why the two paradigms differ by orders
+check site --- a decision, not a search --- and a cheap transformation the
+compiler performs. This is why the two paradigms differ by orders
 of magnitude in latency while sharing the same underlying technology, and
-why super-analysis can run inside the pipeline rather than beside it
+why super-analysis can run inside the development pipeline rather than beside it
 (\S\ref{sec:results-cost}).
 
 The same asymmetry decides how much of the program each paradigm can
@@ -572,19 +561,15 @@ see. A synthesizing search must enumerate or sample candidate
 replacements, and the space of candidates grows exponentially with the
 size of the code being replaced, so superoptimizers confine themselves
 to small, mostly local windows: a peephole, a basic block, a loop-free
-kernel. A decision procedure faces no such space. It decides a single
-formula, so the context it is given can be as large as the analysis
+kernel. A super-analyzer does not have such a limitation; It can reason globally and the context it is given can be as large as the analysis
 can encode: many basic blocks and their merge points, every dominating
 branch condition, and facts imported from loop and heap analyses that
-summarize code it never sees. Super-analysis can therefore reason
-\emph{globally} about the point it decides, while superoptimization
-reasons locally about the code it rewrites; the checks of
-\S\ref{sec:conjunction} and \S\ref{sec:frame}, whose proofs combine
-facts from several analyses and from code far from the check, are of
-the first kind.
+summarize code it never sees. The proofs of
+\S\ref{sec:conjunction} and \S\ref{sec:frame} combine
+facts from several analyses and from code far from the check, demonstrating the more global reasoning of a super-analyzer.
+
 \subsection{Encoding program context}
 \label{sec:encoding}
-A super-analyzer decides a property of a single \emph{program point} ---
 here, whether a trap is reachable. But the property is never decided by
 the point itself; it is decided by the \emph{context} that leads there.
 The core machinery of the paradigm is therefore a translation: render
@@ -598,7 +583,7 @@ instruction as an exact equation over bit-vectors --- arithmetic,
 comparisons, shifts, overflow intrinsics, and the control flow
 connecting them. The resulting formula is satisfiable exactly by the
 machine states that can reach the point, so reachability becomes one
-satisfiability query: $\mathit{context} \wedge \mathit{trap}$.
+satisfiability query: $\mathit{Context} \wedge \mathit{TrapCond}$.
 
 A backward encoding cannot descend forever. It stops at
 \emph{boundaries} --- loop-carried values, function calls, loads:
@@ -620,32 +605,28 @@ leaves closed --- which post-conditions to import for them, and why
 composing those facts requires a solver.
 \subsection{Heap-Invariant Super-Analysis}
 \label{sec:frame}
-The analyses a compiler runs on every function are \emph{scalar}: each
-describes the values that one SSA register may hold. In LLVM these are
-value ranges (LazyValueInfo and range metadata), known bits, and the
-trip counts and induction ranges of scalar evolution, and they are the
-facts that \S\ref{sec:conjunction} imports into the solver. Many bounds
-checks in array code cannot be decided from such facts, because the
-fact that decides them is about the heap: the length an index is checked
-against is stored in memory, in the array's header, and every use of it
-is a load.
+Many of the crucial compiler analysis including alias analysis require heap reasoning. In our particular application, heap facts can be important as the metadata for arrays (e.g. length) often live in the heap, and array index-in-bound checks cause high performance loss in hot loops. This necessitates super-analysis to perform complex yet fast heap reasoning so it can preserve effectiveness and its status as online analysis at the same time.
 
-Figure~\ref{fig:frame-example} shows the pattern. The loop runs $i$ up
-to $n_1$, a load of \texttt{A}'s length before the loop. Inside the
-loop, the check compares $i$ with $n_2$, a second load of the same
-address, and the loop also stores into \texttt{C}. The check is dead if
-$n_2 = n_1$, and scalar analyses cannot establish that, for two reasons.
-First, a load is opaque to them: its result is whatever memory holds,
-so without metadata $n_2$ may be any 64-bit value. Second, $n_2 = n_1$
-is a relation between two values, while a range or a set of known bits
-describes one value at a time; even exact ranges for both loads would
-not make them equal. The equality holds only if the store between the
-two reads never writes \texttt{A}'s length, which is a question about
-memory, answered in LLVM by alias analysis and MemorySSA. Here they do
-not answer it: the reload is a copy made by the vectorizer, without the
-aliasing metadata that would let alias analysis rule out the store. The
-check survives \texttt{-O3}, and a solver given only scalar facts
-treats $n_2$ as a free variable and finds the trap reachable.
+The facts a super-analyzer composes are usually \emph{scalar}:
+ranges, known bits, trip counts, branch conditions
+(\S\ref{sec:conjunction} shows how a compiler supplies them). A large and
+expensive class of checks falls outside their reach because the fact
+that discharges them lives in the heap. Figure~\ref{fig:frame-example}
+shows the pattern. An array's length lives in its header, in memory, so
+every read of it is a load. A loop reads the length once to bound its
+counter and again inside the loop for the check, and between the two
+reads sits a store. The two loads read the same address, but they are
+two different values to the compiler: they are equal only if the store
+never overwrites the length, which is a question for alias and heap
+analysis, not for the scalar facts. The pattern is common in widely
+used kernels. In Julia's standard-library GEMM
+(\texttt{generic\_matmatmul!}) the scalar fact sources prove \emph{zero}
+of 16 residual bounds-check edges, while turning those same checks off
+is worth roughly $4\times$ ($4.17\times$ on x86, $4.19\times$ on Apple
+Silicon; \S\ref{sec:frame-results}). The checks are not exotic --- they
+guard an ordinary three-loop matrix multiply, and Julia's own authors
+discharge them by hand, with trusted \texttt{@inbounds} annotations, in
+the shipping standard library.
 \begin{figure}[t]
 \centering
 \begin{lstlisting}[style=odessy,
@@ -672,9 +653,9 @@ br i1 %oob, label %trap, label %body
   br label %loop
 \end{lstlisting}
 \caption{Two reads of one heap location with a store between them
-(schematic LLVM IR, check highlighted). The loop bounds $i$ by $n_1$; the
-check compares $i$ with $n_2$, a second load of the same address. It is
-dead if $n_2 = n_1$: a fact about memory, which no range analysis can state.}
+(schematic LLVM IR, check highlighted). The check is dead if
+$n_2 = n_1$, which holds only if the store never over-writes \texttt{A}'s
+length: a fact about the heap, which no scalar analysis supplies.}
 \Description{A schematic LLVM IR listing: a load of A's length before
 the loop, named n1; inside the loop a second load of the same address,
 named n2; the compare of i against n2 and the conditional branch to the
@@ -682,38 +663,37 @@ trap, highlighted in one rounded pink box; a vector store into C's data, with a
 comment asking whether it can overwrite A's length; and the back edge.}
 \label{fig:frame-example}
 \end{figure}
-The pattern is common in widely used kernels. In Julia's
-standard-library GEMM (\texttt{generic\_matmatmul!}) the scalar fact
-sources prove \emph{none} of its 16 bounds-check edges, while turning
-those checks off makes the kernel $4.17\times$ faster on x86
-(\S\ref{sec:frame-results}). The checks are not exotic: they guard an
-ordinary three-loop matrix multiply, and Julia's own authors remove them
-by hand, with trusted \texttt{@inbounds} annotations, in the shipping
-standard library.
+The failure is structural, and not limited to this special GEMM
+implementation, as the encoder additions this section motivates also
+removed checks in other benchamrks (Swift SHA-256, Julia SHA-256, the 
+CryptoSwift library, etc.) 
 
-A heap fact alone is not enough either; the proof must \emph{compose}
-it with the scalar ones. The unsat core of GEMM's hardest edge combines
-three load equalities with a symbolic trip-count bound, known bits, three
-further scalar-evolution facts, and four dominating guards
+The fact that
+would discharge the check is that certain important metadata of arrays are not overwritten by the stores in the loop. A dataflow analysis
+propagates facts \emph{about values}; this premise is a fact
+\emph{about memory}. The GEMM implementation consists of multiple loads of arrays' dimensions (stored in the array header in the heap) and multiple stores that the compiler has to prove do not overwrite the metadata between two loads. LLVM's dataflow heuristics can no longer justify the unification
+itself --- which is precisely why the checks survive O3, and why a
+sound encoder that reads the same IR is stuck for the same reason.
+
+A heap fact alone is also not enough. The proof must \emph{compose} it
+with the scalar ones: the flagship GEMM edge needs the load equality
+\emph{and} a symbolic trip-count bound \emph{and} known-bits
+\emph{and} three phi-image facts simultaneously
 (\S\ref{sec:frame-results}). This is the conjunction argument of
-\S\ref{sec:conjunction} again, now across memory and values, and it is
-why the remedy is a new \emph{fact source} for the solver rather than a
-new pass.
+\S\ref{sec:conjunction} again, now spanning two theories rather than
+one --- which is why the answer is a new \emph{fact source} for the
+solver rather than a new pass.
 
-Heap-invariant super-analysis adds that fact source. When the compiler's
-memory analyses show that no store between two loads can write the
-loaded location, the encoder asserts that the two loads are equal. This
-is the frame rule of separation logic~\cite{reynolds2002separation},
-used as a source of facts rather than as a proof system; when the memory
-analyses cannot answer, nothing is asserted. For the vectorizer's
-reload, \tool{} obtains the answer by asking about the store at the
-first load's location, which still carries the metadata
-(\S\ref{sec:frame-machinery}). The solver still only decides
-reachability, and the compiler still performs every rewrite. With this
-fact source \tool{} proves all 16 GEMM edges and recovers $3.91\times$
-of the $4.17\times$ (\S\ref{sec:frame-results}); the encoding additions
-that GEMM required (\S\ref{sec:frame-machinery}) also added proofs on
-other benchmarks, among them Swift and Julia SHA-256 and CryptoSwift.
+To perform heap invariant super-analysis we need a new fact source: when the
+compiler's own memory analyses can show that no store between two
+loads touches the location, the encoder may state that the two loads
+are equal. This is the frame rule of separation
+logic~\cite{reynolds2002separation}, used as a source of facts rather
+than as a proof system, and it refuses whenever the memory analyses
+cannot answer. The solver still only
+answers reachability and the compiler still performs every rewrite,
+so the super-analysis contract of \S\ref{sec:superanalysis} holds
+unchanged. \S\ref{sec:frame-machinery} gives the rules.
 %% =====================================================================
 \section{Making Super-Analysis Work}
 \label{sec:making}
