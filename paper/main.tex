@@ -605,28 +605,71 @@ leaves closed --- which post-conditions to import for them, and why
 composing those facts requires a solver.
 \subsection{Heap-Invariant Super-Analysis}
 \label{sec:frame}
-Many of the crucial compiler analysis including alias analysis require heap reasoning. In our particular application, heap facts can be important as the metadata for arrays (e.g. length) often live in the heap, and array index-in-bound checks cause high performance loss in hot loops. This necessitates super-analysis to perform complex yet fast heap reasoning so it can preserve effectiveness and its status as online analysis at the same time.
 
-The facts a super-analyzer composes are usually \emph{scalar}:
-ranges, known bits, trip counts, branch conditions
-(\S\ref{sec:conjunction} shows how a compiler supplies them). A large and
-expensive class of checks falls outside their reach because the fact
-that discharges them lives in the heap. Figure~\ref{fig:frame-example}
-shows the pattern. An array's length lives in its header, in memory, so
-every read of it is a load. A loop reads the length once to bound its
-counter and again inside the loop for the check, and between the two
-reads sits a store. The two loads read the same address, but they are
-two different values to the compiler: they are equal only if the store
-never overwrites the length, which is a question for alias and heap
-analysis, not for the scalar facts. The pattern is common in widely
-used kernels. In Julia's standard-library GEMM
-(\texttt{generic\_matmatmul!}) the scalar fact sources prove \emph{zero}
-of 16 residual bounds-check edges, while turning those same checks off
-is worth roughly $4\times$ ($4.17\times$ on x86, $4.19\times$ on Apple
-Silicon; \S\ref{sec:frame-results}). The checks are not exotic --- they
-guard an ordinary three-loop matrix multiply, and Julia's own authors
-discharge them by hand, with trusted \texttt{@inbounds} annotations, in
-the shipping standard library.
+The analyses a compiler runs on every function are \emph{scalar}: each
+describes the values that one SSA register may hold. In LLVM these are
+value ranges (LazyValueInfo and range metadata), known bits, and the
+trip counts and induction ranges of scalar evolution, and they are the
+facts that \S\ref{sec:conjunction} imports into the solver. Many bounds
+checks in array code cannot be decided from such facts, because the
+fact that decides them is about the heap: the length an index is checked
+against is stored in memory, in the array's header, and every use of it
+is a load.
+
+
+Figure~\ref{fig:frame-example} shows the pattern. The loop runs $i$ up
+to $n_1$, a load of \texttt{A}'s length before the loop. Inside the
+loop, the check compares $i$ with $n_2$, a second load of the same
+address, and the loop also stores into \texttt{C}. The check is dead if
+$n_2 = n_1$, and scalar analyses cannot establish that, for two reasons.
+First, a load is opaque to them: its result is whatever memory holds,
+so without metadata $n_2$ may be any 64-bit value. Second, $n_2 = n_1$
+is a relation between two values, while a range or a set of known bits
+describes one value at a time; even exact ranges for both loads would
+not make them equal. The equality holds only if the store between the
+two reads never writes \texttt{A}'s length, which is a question about
+memory, answered in LLVM by alias analysis and MemorySSA. Here they do
+not answer it: the reload is a copy made by the vectorizer, without the
+aliasing metadata that would let alias analysis rule out the store. The
+check survives \texttt{-O3}, and a solver given only scalar facts
+treats $n_2$ as a free variable and finds the trap reachable.
+
+
+The pattern is common in widely used kernels. In Julia's
+standard-library GEMM (\texttt{generic\_matmatmul!}) the scalar fact
+sources prove \emph{none} of its 16 bounds-check edges, while turning
+those checks off makes the kernel $4.17\times$ faster on x86
+(\S\ref{sec:frame-results}). The checks are not exotic: they guard an
+ordinary three-loop matrix multiply, and Julia's own authors remove them
+by hand, with trusted \texttt{@inbounds} annotations, in the shipping
+standard library.
+
+A heap fact alone is not enough either; the proof must \emph{compose}
+it with the scalar ones. The unsat core of GEMM's hardest edge combines
+three load equalities with a symbolic trip-count bound, known bits, three
+further scalar-evolution facts, and four dominating guards
+(\S\ref{sec:frame-results}). This is the conjunction argument of
+\S\ref{sec:conjunction} again, now across memory and values, and it is
+why the remedy is a new \emph{fact source} for the solver rather than a
+new pass.
+
+Heap-invariant super-analysis adds that fact source. When the compiler's
+memory analyses show that no store between two loads can write the
+loaded location, the encoder asserts that the two loads are equal. This
+is the frame rule of separation logic~\cite{reynolds2002separation},
+used as a source of facts rather than as a proof system; when the memory
+analyses cannot answer, nothing is asserted. For the vectorizer's
+reload, \tool{} obtains the answer by asking about the store at the
+first load's location, which still carries the metadata
+(\S\ref{sec:frame-machinery}). The solver still only decides
+reachability, and the compiler still performs every rewrite. With this
+fact source \tool{} proves all 16 GEMM edges and recovers $3.91\times$
+of the $4.17\times$ (\S\ref{sec:frame-results}); the encoding additions
+that GEMM required (\S\ref{sec:frame-machinery}) also added proofs on
+other benchmarks, among them Swift and Julia SHA-256 and CryptoSwift.
+
+
+
 \begin{figure}[t]
 \centering
 \begin{lstlisting}[style=odessy,
