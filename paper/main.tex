@@ -843,17 +843,22 @@ solver~\cite{demoura2008z3}. This is the sense in which super-analysis is
 \subsection{Guard Synthesis and Loop Cloning}
 \label{sec:guards}
 Sometimes a check cannot be proved dead for every execution, because it
-is not dead for every execution. Consider the Julia matrix multiply
-\texttt{matmul!} in our benchmarks. It takes three flat arrays and a
-dimension $n$, and indexes them as \texttt{a[(i-1)*n+k]}. Nothing in the
-function ties the lengths of the arrays to $n$: a caller may pass arrays
-that are too short, and then the bounds check fires, exactly as it
-should. No proof of universal deadness exists, because the claim is
-false.
+is not dead for every execution. Consider the Julia LZ77 compressor
+\texttt{lz77\_scan} in our benchmarks. Its inner loop compares
+\texttt{data[j+len]} with \texttt{data[i+len]} while
+\texttt{i+len <= n}, where $n$ is the length of \texttt{data}, and the
+check on \texttt{data[i+len]} looks redundant. It is not: Julia integers
+wrap, and the solver answers with a satisfying assignment in which
+\texttt{data} is within 255 elements of $2^{63}$ long. Then
+\texttt{i+len} wraps past the largest 64-bit integer, the loop
+condition holds, and the access is out of bounds. The check on
+\texttt{data[j+len]} has a similar model, with a hugely negative
+\texttt{window} argument. No proof of universal deadness exists, because
+the claim is false.
 
-Yet the calls that matter are the well-formed ones, where each array
-holds $n^2$ elements, and for those every bounds check in the loop nest
-is dead. The property is hard to prove for the loop, but easy to prove
+Yet no real call looks like these models: an array of nearly $2^{63}$
+bytes, about 9 exabytes, exists on no machine, and for every array that
+does, every bounds check in the loop is dead. The property is hard to prove for the loop, but easy to prove
 for a \emph{constrained} version of it --- and the constrained version is
 the frequent one, often the only one that ever runs.
 
@@ -863,13 +868,13 @@ values that do not change inside the loop, cheap enough to test once
 before the loop starts. Given such a guard, the loop is cloned
 (Figure~\ref{fig:guard}). The fast copy has its checks removed; the
 original, with every check intact, runs whenever the guard fails. For
-\texttt{matmul!} the solver synthesizes
+\texttt{lz77\_scan}, guided by those models, the solver synthesizes
 \[
-n \le 2^{15} \;\wedge\; |a|, |b|, |c| > n^2 - 1 \;\wedge\;
-|a|, |b|, |c| \le 2^{30},
+0 \le n \le 2^{62} \;\wedge\; 0 \le \mathit{window} \le 2^{62},
 \]
-which holds on every correctly sized call we ran, so the fast copy is
-the one that always executes.
+which holds for every array a real machine can allocate and every
+sensible window size, so the fast copy is the one that always
+executes.
 
 \begin{figure}[t]
 \centering
