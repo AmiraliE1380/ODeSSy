@@ -733,30 +733,19 @@ loads touches the location, the encoder may state that the two loads
 are equal. This is the frame rule of separation
 logic~\cite{reynolds2002separation}, used as a source of facts rather
 than as a proof system, and it refuses whenever the memory analyses
-cannot answer. The solver still only
-answers reachability and the compiler still performs every rewrite,
-so the super-analysis contract of \S\ref{sec:superanalysis} holds
-unchanged. \S\ref{sec:frame-machinery} gives the rules.
+cannot answer. This is still an instance of super-analysis as the solver only
+answers reachability and the compiler still performs every rewrite. \S\ref{sec:frame-machinery} gives the rules.
 %% =====================================================================
 \section{Making Super-Analysis Work}
 \label{sec:making}
-\S\ref{sec:superanalysis} gave the recipe in its purest form:
-encode the program's semantics around a point of interest, and ask the
-solver. The recipe is sound, but on its own it is rarely enough to be
-useful. The facts a proof needs often hide inside boxes the encoding
-does not open, and some checks are simply not dead for every input. This section collects the techniques that make
-super-analysis practical and useful. Like
+\S\ref{sec:superanalysis} gave the general framework and recipe for super-analysis, this section collects the techniques that make
+it practical and useful. Like
 \S\ref{sec:superanalysis}, it is a general recipe, independent of
-LLVM and applicable to any compiler: we import the lightweight facts a
-compiler already computes, to constrain the solver's search
-(\S\ref{sec:conjunction}), and when a check
-cannot be proved dead for every execution, we synthesize a guard under
-which it is dead and clone the loop behind it (\S\ref{sec:guards}).
-Throughout, every solver query runs under a fixed time budget, so a
-hard query costs a missed proof, never an unbounded compile
-(\S\ref{sec:results-cost}). \S\ref{sec:system} shows how \tool{}
-realizes each technique in LLVM, and the evaluation maps each one to
-its results.
+LLVM and applicable to any compiler. Encoding a program point's context may not provide enough constraints for a useful proof, therefore we import the lightweight facts a
+conventional compiler analysis already computes, to further constrain the solver's search
+(\S\ref{sec:conjunction}). Also, some checks
+cannot be proven dead for every execution, no matter how precise the analysis is. We do not give up in these cases: we synthesize an invariant guard under
+which checks are dead and clone the loop behind it (\S\ref{sec:guards}).
 
 \subsection{Encoding Lightweight Heuristics}
 \label{sec:conjunction}
@@ -818,7 +807,7 @@ trap: call void @llvm.ubsantrap(i8 18)  ; aborts
 \caption{A Swift SHA-256 message-schedule loop (top) and one of its
 bounds checks after \texttt{swiftc -O} and LLVM O3 (bottom), checks
 highlighted. The check is dead only by a conjunction: scalar evolution
-gives $t - 16 < 48$ and a return-value range gives \texttt{w.count} $= 64$.}
+gives $t - 16 < 48$ ($Fact_1$) and a return-value range gives \texttt{w.count} $= 64$ ($Fact_2$). Together with the context they imply $idx >= n$ is \textsc{unsat}.}
 \Description{Above, a Swift listing of the SHA-256 message schedule
 loop with the injected check, if t minus 16 is greater or equal to the
 array count then trap, highlighted in a rounded pink box. Below, five lines of LLVM IR showing the
@@ -827,7 +816,8 @@ box, the unsigned compare, the conditional branch to the trap block,
 and the trap block's call to ubsantrap.}
 \label{fig:simple-example}
 \end{figure}
-Consider the message-schedule loop of a Swift SHA-256 kernel
+
+Consider the simplified message-schedule loop of a Swift SHA-256 kernel
 (Figure~\ref{fig:simple-example}), whose inner
 16 iterations index a 64-element working array. Swift's bounds checks on
 these accesses survive both \texttt{swiftc -O} and a subsequent full LLVM
@@ -839,7 +829,7 @@ single heuristic could. Each proof's minimal core has the shape:
 \]
 --- a return-value range (\textsf{RM}), two scalar-evolution facts
 (\textsf{SCEV}), a lattice value range (\textsf{LVI}), and two dominating
-guard conditions ($G_0$, $G_k$), jointly inconsistent with the check
+guard conditions from the context ($G_0$, $G_k$), jointly inconsistent with the check
 firing (\textsf{Spec}). Four independent analyses and path conditions must be intersected;
 each in isolation is insufficient (removing any core member returns
 \textsc{sat}). LLVM's analyses do not compose this way: each consumes the
@@ -848,8 +838,8 @@ satisfiability of their conjunction --- nor could a fixed pipeline, since
 which facts matter is different at every check site. Deciding such
 conjunctions is the definitional competence of an SMT
 solver~\cite{demoura2008z3}. This is the sense in which super-analysis is
-\emph{necessary} rather than merely convenient: the reasoning is
-entailment over a conjunction of theories, not dataflow over a lattice.
+\emph{necessary} rather than merely convenient: the inconsistency of the conjunction is decided by a solver, not another conventional compiler analyzer.
+
 \subsection{Guard Synthesis and Loop Cloning}
 \label{sec:guards}
 Sometimes a check cannot be proved dead for every execution, because it
@@ -868,7 +858,7 @@ for a \emph{constrained} version of it --- and the constrained version is
 the frequent one, often the only one that ever runs.
 
 Guard synthesis exploits this. Instead of asking whether the check is
-dead, we ask \emph{under what condition} it is dead: a condition over
+dead, we ask \emph{under what condition} it is dead: an invariant condition over
 values that do not change inside the loop, cheap enough to test once
 before the loop starts. Given such a guard, the loop is cloned
 (Figure~\ref{fig:guard}). The fast copy has its checks removed; the
@@ -898,10 +888,10 @@ else:
 \end{minipage}
 \caption{Guard synthesis and loop cloning. A loop whose safety checks
 cannot be proved dead for every execution (left) is cloned behind a
-synthesized guard (right). The guard is tested once, before the loop.
-When it holds, the fast copy runs with its checks removed, because the
-solver has proved every removed check unreachable under the guard. When
-it fails, the original loop runs, with every check intact.}
+synthesized guard (right). The guard is invariant w.r.t the loop and is checked once.
+When it holds, the fast copy runs with checks removed, because the
+solver has proved every check unreachable under the guard. When
+it fails, the original slow loop runs.}
 \Description{On the left, a slow loop, commented as having safety
 checks. An arrow points right, to an if-else: if the synthesized guard
 holds, the fast loop runs, commented as having its safety checks
@@ -910,7 +900,7 @@ in place.}
 \label{fig:guard}
 \end{figure}
 
-The transformation itself is simple; the hard part is the guard. It must
+The transformation itself is simple; the hard part is finding the right guard. It must
 be a smart, useful guard: weak enough to hold on the executions we care
 about, and loop-invariant and cheap, so that testing it costs nothing
 measurable. And it must be sufficient: under the guard, the fast copy
