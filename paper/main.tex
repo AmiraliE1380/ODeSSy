@@ -482,58 +482,8 @@ take the first half and leave the second to the compiler's existing
 rules. Both asymmetric corners are under-explored relative to the two
 diagonal ones.
 
-\begin{figure}[t]
-\centering
-\begin{minipage}[t]{0.47\linewidth}
-\begin{lstlisting}[style=odessy,
-    morekeywords={while,if,return,for,each,in,not},comment={[l]{;}}]
-; P: the program
-Superoptimize(p):         ; p: a point in P
-  frag := Window(P, p)    ; code around p
-  best := frag
-  while budget left:      ; open-ended
-    cand := Synthesize(best)    ; search
-    if Verify(cand == frag):    ; solver query
-      if Cost(cand) < Cost(best): 
-        best := cand        
-  P := Replace(P, frag, best)
-\end{lstlisting}
-\end{minipage}\hfill
-\begin{minipage}[t]{0.50\linewidth}
-\begin{lstlisting}[style=odessy,
-    morekeywords={while,if,return,for,each,in,not},comment={[l]{;}}]
-; P: the program
-SuperAnalyze(p):          ; p: a point in P
-  fact := Analyze(P, p)   ; cheap, as today
-  if not fact:            ; heuristics failed
-    fact := Decide(Context(P, p) && Query(p))
-                          ; a bounded number
-                          ; of solver queries
-  if fact:
-    P := Rewrite(P, p)    ; conventional
-\end{lstlisting}
-\end{minipage}
-\caption{The two paradigms as procedures, each applied to one point
-$p$ of the program $P$. A
-superoptimizer takes the surrounding fragment at point $p$ and searches over
-candidate replacements, paying a solver query for every candidate it
-verifies. A super-analyzer first asks
-the conventional analysis, consults the solver only if that fails, poses
-a bounded number of queries, and hands
-the answer to a conventional rewrite.}
-\Description{Two pseudocode functions side by side, each taking a point p
-of the program P. Left, Superoptimize: take the fragment around p, then
-loop while budget remains, synthesizing a candidate, verifying with one
-solver query that it equals the fragment, and keeping it if cheaper;
-finally replace the fragment in P by the best candidate. Right,
-SuperAnalyze: run the conventional analysis at p; only if it fails, ask
-the solver to decide p's context together with its query; if a fact is
-established, apply a conventional rewrite to P.}
-\label{fig:procedures}
-\end{figure}
-Figure~\ref{fig:procedures} states the procedural difference between superoptimization and super-analysis.
-Both are applied point by point, and they differ in what happens at a
-point. The superoptimizer runs a search: its cost is the number of
+Procedurally, superoptimization and super-analysis are both applied
+point by point, and they differ in what happens at a point. The superoptimizer runs a search: its cost is the number of
 candidates it tries times the cost of verifying each, the number of
 candidates grows with the size of the fragment, and nothing bounds it
 except the budget. The super-analyzer has no search at all. The points
@@ -570,6 +520,7 @@ facts from several analyses and from code far from the check, demonstrating the 
 
 \subsection{Encoding program context}
 \label{sec:encoding}
+A super-analyzer decides a property of a single \emph{program point} ---
 here, whether a trap is reachable. But the property is never decided by
 the point itself; it is decided by the \emph{context} that leads there.
 The core machinery of the paradigm is therefore a translation: render
@@ -864,7 +815,7 @@ the frequent one, often the only one that ever runs.
 
 Guard synthesis exploits this. Instead of asking whether the check is
 dead, we ask \emph{under what condition} it is dead: an invariant condition over
-values that do not change inside the loop, cheap enough to test once
+values that do not change inside the loop, cheap enough to check once
 before the loop starts. Given such a guard, the loop is cloned
 (Figure~\ref{fig:guard}). The fast copy has its checks removed; the
 original, with every check intact, runs whenever the guard fails. For
@@ -977,44 +928,11 @@ LLVM IR all of them have one shape --- a conditional branch to a block
 that calls a function that never returns --- and that shape is what
 \tool{} looks for (\S\ref{sec:pipeline}).
 
-\begin{figure}[t]
-\centering
-\begin{lstlisting}[style=odessy,
-    morekeywords={for,in,end,if},
-    comment={[l]{\#}}]
-for j in 1:n, l in 1:k
-    b = B[l, j]
-    for i in 1:m
-\end{lstlisting}
-\begin{chkbox}{8}{38}
-\begin{lstlisting}[style=odessy, xleftmargin=0pt,
-    morekeywords={for,in,end,if},
-    comment={[l]{\#}}]
-# check inserted by Julia for A[i, l]:
-if !(1 <= i <= size(A, 1)) { trap() }
-\end{lstlisting}
-\end{chkbox}
-\begin{lstlisting}[style=odessy,
-    morekeywords={for,in,end,if},
-    comment={[l]{\#}}]
-        C[i, j] += A[i, l] * b
-    end
-end
-\end{lstlisting}
-\caption{The inner loop of Julia's standard-library matrix multiply
-($C \mathrel{+}= A B$), with the bounds check Julia inserts for the access
-\texttt{A[i,l]} written out and highlighted. The check runs on every
-iteration of the innermost loop; removing it makes the kernel up to
-$4.2\times$ faster.}
-\Description{A Julia loop nest over j, l and i. Inside the innermost loop,
-highlighted in a rounded pink box, the check that i lies between 1 and the first
-dimension of A, followed by the multiply-accumulate into C.}
-\label{fig:checks}
-\end{figure}
-The checks make programs safe, and the safety has a price.
-Figure~\ref{fig:checks} shows the innermost loop of Julia's
-standard-library matrix multiply with one of the checks Julia inserts.
-It runs on every iteration of the hottest loop of the program, and as a
+
+The checks make programs safe, and the safety has a price. In Julia's
+standard-library matrix multiply, the check Julia inserts for the
+access \texttt{A[i,l]} runs on every iteration of the innermost loop,
+the hottest loop of the program, and as a
 side exit from that loop it keeps LLVM from vectorizing and unrolling
 the loop as fully as the check-free version: with the checks turned off
 this kernel runs $4.17\times$ faster on x86, and Swift's n-body
@@ -1474,7 +1392,7 @@ inductive encoding and guard synthesis
 \paragraph{Research questions.}
 Our evaluation is organized around four questions:
 \begin{itemize}
-\item \textbf{RQ1 --- How much does it improve performance?}
+\item \textbf{RQ1 --- How much does \tool{} improve performance?}
   How many checks can \tool{} prove dead, and --- where proofs land on
   hot paths --- how much speedup it gains? (\S\ref{sec:results-perf})
 \item \textbf{RQ2 --- What is the source of speedup?}
@@ -1798,19 +1716,12 @@ milliseconds to several seconds, with a second, smaller SAT mode between
 \caption{Compile cost of three configurations on every benchmark of
 Table~\ref{tab:speedups} (x86 c220g2, turbo off, one socket; each module
 compiled on its own, one at a time). \emph{Thorough} is the
-configuration behind every speedup in this paper (10\,s per query, one
+configuration used for the performance improvement tables (10\,s per query, one
 thread, inductive encoding and guard synthesis); \emph{Fast} keeps the
 imported analyses, heap facts, and guard synthesis at 10\,ms per query
 on 10 threads, without inductive encoding, which runs single-threaded;
 \emph{Light} is the encoded context alone
-(\S\ref{sec:system-facts}), at 10\,ms on 10 threads. Time is the
-\tool{} stage in seconds (Thorough: one run; Fast and Light: median of
-3). For the multi-module repositories it is the total over all
-modules, with the slowest single module in parentheses. Proofs are
-checks removed outright plus checks removed in guarded loop copies.
-\texttt{-O3} is one conventional \texttt{-O3} run on the same input; an
-\tool{} build runs it twice, around the pass. Julia rows use the
-unchanged kernels' IR.}
+(\S\ref{sec:system-facts}), at 10\,ms on 10 threads.}
 \label{tab:compile}
 \small
 \setlength{\tabcolsep}{3pt}
@@ -1846,7 +1757,7 @@ Total & & 5138 & & & 826 & & 347 & & 178\\
 \paragraph{Compile cost.}
 Table~\ref{tab:compile} prices three configurations on every benchmark
 of Table~\ref{tab:speedups}. \emph{Thorough}, the configuration behind
-every speedup, costs 1--13\,s per Swift and Rust kernel and 15--282\,s
+our speedup table, costs 1--13\,s per Swift and Rust kernel and 15--282\,s
 per Julia kernel, against a conventional \texttt{-O3} compile of about
 0.1\,s; the repositories carry the real cost: 715\,s for CryptoSwift and
 2996\,s for zlib, 2277\,s of it in a single module (\texttt{trees.c}).
@@ -1962,17 +1873,8 @@ majority of queries.
 \begin{figure}
 \centering
 \includegraphics[width=\columnwidth]{dial_matrix_x86_current.pdf}
-\caption{The two dials compose. \tool{}-stage wall-clock (median of 3
-pinned runs) for zlib's \texttt{deflate.c} as built for the runtime
-experiments, over worker threads $\times$ per-query timeout, with the
-proofs each cell keeps. The configuration is Thorough without inductive
-encoding, which runs single-threaded. Proof yield is set by the timeout
-(54 proofs at 10\,s, 52 at 1\,s, about 42 at 100\,ms, 32 at 10\,ms);
-wall-clock is set mostly by threads: 10 threads cut the 10\,s column
-from 59.9\,s to 16.8\,s ($3.6\times$) at no loss of proofs, and corner
-to corner the stage is $5.7\times$ faster. At 1\,ms the budget interacts
-with contention --- it is a wall-clock budget --- and yield falls from 9
-proofs on one thread to 5 on ten.}
+\caption{\tool{}'s latency for zlib's \texttt{deflate.c} with sweep over number of threads vs solver timeout. The configuration is Thorough without inductive
+encoding, which only runs single-threaded. High multi-threading and strict timeouts can make \tool{} up to $5.7\times$ faster. A strict timeout of 10ms will preserve a majority of proofs.}
 \Description{A five-by-five heatmap, rows are 1, 2, 4, 8 and 10 worker
 threads, columns are per-query timeouts from 1 millisecond to 10
 seconds. Cells are colored from red for slow to green for fast on a log
@@ -2001,11 +1903,10 @@ dial up.
 \label{sec:results-souper}
 We compare \tool{} with Souper~\cite{sasnauskas2017souper}, the
 synthesizing superoptimizer for LLVM IR, on the task this paper targets:
-removing the safety checks of the two C libraries. Souper runs in its
+removing the safety checks of the two C libraries. We ran Souper in its
 \emph{constant mode}, which only proves that a value is always the same
-constant --- the mode its authors use as an online optimizer, and the one
-that can fold a check whose condition is always false --- and, in a pilot,
-in its CEGIS synthesis mode.
+constant. The authors of Souper used this mode as an online optimizer, and compiled LLVM's own code base using it. In a smaller scale experiment,
+we also ran Souper in its CEGIS synthesis mode.
 
 \paragraph{Setup.} Souper pins LLVM~18, whose parser cannot read the IR
 of newer front ends, so the comparison covers the C libraries, compiled
@@ -2025,9 +1926,7 @@ excluded because their front ends emit IR newer than LLVM~18.
 and zstd (x86 c220g2, the same LLVM~18 IR for both tools, no external
 caches). Time is the summed per-module time of the tool and the
 \texttt{-O3} that follows it; checks removed are counted against each
-tool's own \texttt{-O3} baseline, which removes none. Souper's synthesis
-mode is not shown: on zlib's \texttt{deflate.c} alone it ran for
-8{,}749\,s and changed nothing.}
+tool's own \texttt{-O3} baseline, which removes none.}
 \label{tab:souper}
 \small
 \begin{tabular}{llrr}
@@ -2056,15 +1955,13 @@ zlib (18 against 7) in about a fiftieth of its time. On cost, the answer depends
 on the configuration. Fast and Light are faster than Souper on both
 libraries, by $5.5$--$250\times$. Thorough is $11\times$ faster on zstd but
 slower on zlib, where a single module, \texttt{trees.c}, takes 2{,}355\,s
-of its 3{,}093\,s (Figure~\ref{fig:modules}). Souper's synthesis mode,
-the one that makes it a superoptimizer, is out of reach at this scale: on
-\texttt{deflate.c} it ran for 2.4\,hours, against 69\,s for Thorough, and
-produced no change at all.
+of its 3{,}093\,s (Figure~\ref{fig:modules}). Souper's synthesis mode is out of reach at this scale: on
+\texttt{deflate.c} it ran for 2.4\,hours (8,749\,s), against 69\,s for Thorough, and
+removed no checks.
 
 Two cautions bound the comparison. It is one superoptimizer, on one task:
 Souper is built to find general peephole improvements, and removing safety
-checks is not its purpose, so the comparison measures how the two
-paradigms fare on the problem this paper addresses, not Souper's worth.
+checks is not its purpose, so the comparison measures the performance of the two paradigms on the problem this paper addresses only.
 And we do not compare runtime: Souper removes checks in only three modules,
 in each of which Thorough removes at least as many, and the two pipelines
 end in different LLVM versions, so a runtime difference would mostly
