@@ -1656,8 +1656,7 @@ crc32 & Swift & $\mathbf{1.074\times}$ & 11 & $1.061\times$ & 9 & $1.070\times$ 
 \end{tabular}}\\
 \raggedright\footnotesize
 $^{a}$Guard synthesized under a 60\,s budget; at 10\,s, (i) removes 2
-of the 4 checks.
-$^{c}$At the 10\,s budget (i) leaves one access checked; the full
+of the 4 checks. $^{c}$At the 10\,s budget (i) leaves one access checked; the full
 guarded copy of Table~\ref{tab:speedups} reaches $1.107\times$.\par
 \end{table}
 
@@ -1716,56 +1715,24 @@ milliseconds to several seconds, with a second, smaller SAT mode between
 1 and 10 seconds.}
 \label{fig:latency}
 \end{figure}
-\begin{table}
-\caption{Compile cost of two configurations on every benchmark of
-Table~\ref{tab:speedups} (x86 c220g2, turbo off, one socket; each module
-compiled on its own, one at a time). \emph{Thorough} is the
-configuration used for the performance improvement tables (10\,s per query, one
-thread, inductive encoding and guard synthesis); \emph{Fast} keeps the
-imported analyses, heap facts, and guard synthesis at 10\,ms per query
-on 10 threads, without inductive encoding, which runs single-threaded.}
-\label{tab:compile}
-\small
-\setlength{\tabcolsep}{3pt}
-\resizebox{\linewidth}{!}{%
-\begin{tabular}{llrr|rr|rr}
-\toprule
- & & & & \multicolumn{2}{c|}{Thorough} & \multicolumn{2}{c}{Fast}\\
-Benchmark & Front end & Checks & \texttt{-O3} & Time & Proofs & Time & Proofs\\
-\midrule
-gemm, stdlib & Julia & 16 & 0.05 & 14.6 & 14 & 0.22 & 9\\
-lz77 & Julia & 4 & 0.03 & 38.8 & 2 & 0.11 & 0\\
-matmul & Julia & 3 & 0.02 & 115 & 3 & 0.48 & 0\\
-sha256 & Julia & 16 & 0.06 & 282 & 14 & 1.97 & 0\\
-lz77 & Rust & 4 & 0.04 & 5.2 & 2 & 0.46 & 0\\
-matmul & Rust & 4 & 0.03 & 1.6 & 2 & 0.40 & 2\\
-sha256 & Swift & 36 & 0.11 & 2.7 & 8 & 0.42 & 1\\
-base64 & Swift & 27 & 0.09 & 5.2 & 7 & 0.48 & 0\\
-lz77 & Swift & 27 & 0.10 & 12.9 & 7 & 0.28 & 3\\
-crc32 & Swift & 37 & 0.11 & 4.1 & 11 & 0.46 & 0\\
-adler32 & Swift & 38 & 0.10 & 5.9 & 2 & 0.45 & 2\\
-sha1 & Swift & 24 & 0.11 & 1.9 & 2 & 0.26 & 2\\
-md5 & Swift & 25 & 0.11 & 2.4 & 1 & 0.28 & 1\\
-utf8 validator & Swift & 21 & 0.08 & 0.9 & 4 & 0.22 & 2\\
-\midrule
-CryptoSwift & Swift & 2696 & 4.88 & 715 & 376 & 40.4 & 160\\
-zstd, 18 modules & C & 606 & 8.73 & 353 (164) & 82 & 31.4 (20.7) & 30\\
-zlib, 14 modules & C & 1554 & 2.23 & 2996 (2277) & 289 & 437 (407) & 135\\
-\midrule
-Total & & 5138 & & & 826 & & 347\\
-\bottomrule
-\end{tabular}}
-\end{table}
 \paragraph{Compile cost.}
-Table~\ref{tab:compile} prices two configurations on every benchmark
-of Table~\ref{tab:speedups}. \emph{Thorough}, the configuration behind
-our speedup table, costs 1--13\,s per Swift and Rust kernel and 15--282\,s
-per Julia kernel, against a conventional \texttt{-O3} compile of about
-0.1\,s; the repositories carry the real cost: 715\,s for CryptoSwift and
-2996\,s for zlib, 2277\,s of it in a single module (\texttt{trees.c}).
+Table~\ref{tab:compile} (Appendix~\ref{sec:app-full}) gives the \tool{}
+stage time of both configurations on every benchmark of
+Table~\ref{tab:speedups}; we summarize it here. On the 14 kernels,
+\emph{Thorough}, the configuration behind our speedup table, takes a
+median of 5.2\,s, and 9 of them compile in under 10\,s; the slowest is
+Julia SHA-256, at 282\,s. \emph{Fast} takes a median of 0.41\,s and at
+most 2.0\,s, against about 0.1\,s for a conventional \texttt{-O3}. On
+the three repositories Thorough takes 715\,s (CryptoSwift), 353\,s
+(zstd), and 2996\,s (zlib), and Fast 40\,s, 31\,s, and 437\,s. A
+rebuild, however, pays per module: the median zlib module takes 7.2\,s
+under Thorough and 1.1\,s under Fast, the median zstd module 2.4\,s
+and 0.31\,s, and 21 of the 32 modules compile in under 10\,s under
+Thorough, 29 under Fast. The maximum is zlib's \texttt{trees.c}, at
+2277\,s under Thorough and 407\,s under Fast; Figure~\ref{fig:modules}
+(Appendix~\ref{sec:app-full}) shows the full per-module distribution.
 The two dials trade that cost for proofs. \emph{Fast} keeps 347 of
-Thorough's 826 proofs (\pct{42}) at a seventh of zlib's cost, with
-every kernel under 2\,s. The proofs lost first are exactly the ones
+Thorough's 826 proofs (\pct{42}) at a seventh of zlib's cost. The proofs lost first are exactly the ones
 behind the largest speedups: guard synthesis (base64 falls from 7
 proofs to 0, crc32 from 11 to 0) and heap invariance (GEMM from 14 to
 9). The per-query budget bounds
@@ -1786,42 +1753,23 @@ on the 13 benchmarks whose pipeline can take the pass output (all but
 Julia's): the baseline (optimizing front end, \texttt{-O3}, code
 generation) and the same pipeline with \tool{} inserted before
 \texttt{-O3}. Both come from one harness, so the comparison is like for
-like. A whole compile with \tool{} costs a geometric mean of $8.3\times$
-the baseline under Thorough (median $5.7\times$, range
-$2.0$--$382\times$) and $2.2\times$ under Fast (median $1.38\times$, range
-$1.22$--$57\times$). The pass is nearly the whole difference: the
+like. The median whole compile with \tool{} takes $1.38\times$ the
+time of the baseline under Fast and $5.7\times$ under Thorough
+(geometric means $2.2\times$ and $8.3\times$; ranges
+$1.22$--$57\times$ and $2.0$--$382\times$). These are the numbers a
+developer actually waits for, front end and code generation included,
+and they are those of an online pass: a typical build with Fast takes
+little more than a conventional one, and even Thorough stays within a
+small factor of it. The pass is nearly the whole difference: the
 \texttt{-O3} and code-generation stages that follow it take at most about
 \pct{16} longer than in the baseline, guarded loop copies included. The
-top of every range is zlib, whose \texttt{trees.c} dominates
-(Figure~\ref{fig:modules}).
-\begin{figure}[t]
-\centering
-\includegraphics[width=\textwidth]{module_latency.pdf}
-\caption{Per-module \tool{} stage time for the two C libraries, modules
-sorted by Thorough time (x86, one module at a time, log scale). Bars:
-Thorough and Fast; dashed line: one minute. Under Thorough, 12 of zlib's 14
-modules and 17 of zstd's 18 finish in about a minute or less (medians 7.2\,s
-and 2.4\,s); the totals of Table~\ref{tab:compile} are set by two zlib
-outliers, \texttt{trees.c} and \texttt{adler32.c}. Fast is lower on every
-module that takes more than a tenth of a second under Thorough (median
-$5.5\times$, up to $205\times$).}
-\Description{Two bar-chart panels on a logarithmic time axis from 0.01 to
-over 1000 seconds. Left, zlib's 14 modules; right, zstd's 18 modules, each
-sorted from slowest to fastest under Thorough. Each module has two bars
-(Thorough, Fast). A dashed line marks
-one minute. In zlib, trees and adler32 rise far above the line under
-Thorough; every other module, and every zstd module but one, sits near or
-below it.}
-\label{fig:modules}
-\end{figure}
+top of every range is zlib, whose \texttt{trees.c} dominates.
 \paragraph{Where each configuration fits.}
 The repository totals overstate what a developer waits for. Builds
 compile modules independently and rebuild only the ones that changed,
 so the latency that matters in the edit--compile loop is per module, and
-per module even Thorough is modest (Figure~\ref{fig:modules}): the median module takes 7.2\,s in
-zlib and 2.4\,s in zstd, and 12 of zlib's 14 modules and 17 of zstd's
-18 finish in under 75\,s. The modules that do the libraries' main work
-fall in that range: zlib's compressor (\texttt{deflate.c}, 71\,s) and
+per module even Thorough is modest. The modules that do the libraries'
+main work take about a minute or less: zlib's compressor (\texttt{deflate.c}, 71\,s) and
 decompressor (\texttt{inflate.c}, 64\,s), and zstd's Huffman encoder
 (\texttt{huf\_compress.c}, 46\,s) and optimal parser
 (\texttt{zstd\_opt.c}, 39\,s). The totals are set by a few outliers ---
@@ -2129,6 +2077,69 @@ sha1 (Swift) & 2 & $0.953\times$ & $0.956\times$ & $0.954\times$\\
 \bottomrule
 \end{tabular}
 \end{table}
+Table~\ref{tab:compile} gives the compile cost summarized in
+\S\ref{sec:results-cost}, and Figure~\ref{fig:modules} its per-module
+distribution on the two C libraries.
+\begin{table}
+\caption{Compile cost of two configurations on every benchmark of
+Table~\ref{tab:speedups} (x86 c220g2, turbo off, one socket; each module
+compiled on its own, one at a time). \emph{Thorough} is the
+configuration used for the performance improvement tables (10\,s per query, one
+thread, inductive encoding and guard synthesis); \emph{Fast} keeps the
+imported analyses, heap facts, and guard synthesis at 10\,ms per query
+on 10 threads, without inductive encoding, which runs single-threaded.}
+\label{tab:compile}
+\small
+\setlength{\tabcolsep}{3pt}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{llrr|rr|rr}
+\toprule
+ & & & & \multicolumn{2}{c|}{Thorough} & \multicolumn{2}{c}{Fast}\\
+Benchmark & Front end & Checks & \texttt{-O3} & Time & Proofs & Time & Proofs\\
+\midrule
+gemm, stdlib & Julia & 16 & 0.05 & 14.6 & 14 & 0.22 & 9\\
+lz77 & Julia & 4 & 0.03 & 38.8 & 2 & 0.11 & 0\\
+matmul & Julia & 3 & 0.02 & 115 & 3 & 0.48 & 0\\
+sha256 & Julia & 16 & 0.06 & 282 & 14 & 1.97 & 0\\
+lz77 & Rust & 4 & 0.04 & 5.2 & 2 & 0.46 & 0\\
+matmul & Rust & 4 & 0.03 & 1.6 & 2 & 0.40 & 2\\
+sha256 & Swift & 36 & 0.11 & 2.7 & 8 & 0.42 & 1\\
+base64 & Swift & 27 & 0.09 & 5.2 & 7 & 0.48 & 0\\
+lz77 & Swift & 27 & 0.10 & 12.9 & 7 & 0.28 & 3\\
+crc32 & Swift & 37 & 0.11 & 4.1 & 11 & 0.46 & 0\\
+adler32 & Swift & 38 & 0.10 & 5.9 & 2 & 0.45 & 2\\
+sha1 & Swift & 24 & 0.11 & 1.9 & 2 & 0.26 & 2\\
+md5 & Swift & 25 & 0.11 & 2.4 & 1 & 0.28 & 1\\
+utf8 validator & Swift & 21 & 0.08 & 0.9 & 4 & 0.22 & 2\\
+\midrule
+CryptoSwift & Swift & 2696 & 4.88 & 715 & 376 & 40.4 & 160\\
+zstd, 18 modules & C & 606 & 8.73 & 353 (164) & 82 & 31.4 (20.7) & 30\\
+zlib, 14 modules & C & 1554 & 2.23 & 2996 (2277) & 289 & 437 (407) & 135\\
+\midrule
+Total & & 5138 & & & 826 & & 347\\
+\bottomrule
+\end{tabular}}
+\end{table}
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{module_latency.pdf}
+\caption{Per-module \tool{} stage time for the two C libraries, modules
+sorted by Thorough time (x86, one module at a time, log scale). Bars:
+Thorough and Fast; dashed line: one minute. Under Thorough, 12 of zlib's 14
+modules and 17 of zstd's 18 finish in about a minute or less (medians 7.2\,s
+and 2.4\,s); the totals of Table~\ref{tab:compile} are set by two zlib
+outliers, \texttt{trees.c} and \texttt{adler32.c}. Fast is lower on every
+module that takes more than a tenth of a second under Thorough (median
+$5.5\times$, up to $205\times$).}
+\Description{Two bar-chart panels on a logarithmic time axis from 0.01 to
+over 1000 seconds. Left, zlib's 14 modules; right, zstd's 18 modules, each
+sorted from slowest to fastest under Thorough. Each module has two bars
+(Thorough, Fast). A dashed line marks
+one minute. In zlib, trees and adler32 rise far above the line under
+Thorough; every other module, and every zstd module but one, sits near or
+below it.}
+\label{fig:modules}
+\end{figure}
 \begin{table}
 \caption{The frontier: benchmarks with a measured, unrecovered
 checked-vs-unchecked ceiling and no (or unusably few) proofs at the
