@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Per-module ODeSSy compile time for zlib and zstd (results/static/compile_cost).
 
-One panel per repository, modules sorted by Thorough time; bars for Thorough,
-Fast and Light on a log axis, and a dashed line at one minute.
+One panel per repository, modules sorted by Thorough time; bars for Thorough
+and Fast on a log axis, and a dashed line at one minute.
 Usage: python3 tools/plot_module_latency.py [--out paper/module_latency.pdf]
 """
 import collections
@@ -17,7 +17,7 @@ import numpy as np
 
 CSV = "results/static/compile_cost/modules.csv"
 BAD = ("", "NA", "FAIL", None)
-COL = {"thorough": "#1f4e79", "fast": "#4f8fc0", "light": "#a9cbe6"}
+COL = {"thorough": "#1f4e79", "fast": "#7fb2dd"}
 plt.rcParams.update({"font.family": "serif", "font.serif": ["DejaVu Serif"], "pdf.fonttype": 42})
 
 
@@ -38,9 +38,9 @@ def main():
     for ax, repo in zip(axes, ("zlib", "zstd")):
         rows = [(m, d) for (b, m), d in mods.items() if b == repo]
         rows.sort(key=lambda x: -float(x[1]["thorough_s"]))
-        x = np.arange(len(rows)); w = 0.27
-        for i, cfg in enumerate(("thorough", "fast", "light")):
-            ax.bar(x + (i - 1) * w, [float(d[cfg + "_s"]) for _, d in rows], w, color=COL[cfg],
+        x = np.arange(len(rows)); w = 0.38
+        for i, cfg in enumerate(("thorough", "fast")):
+            ax.bar(x + (i - 0.5) * w, [float(d[cfg + "_s"]) for _, d in rows], w, color=COL[cfg],
                    label=cfg.capitalize() if repo == "zlib" else None)
         ax.axhline(60, color="#555555", lw=0.8, ls="--", zorder=0)   # behind the bars
         med = np.median([float(d["thorough_s"]) for _, d in rows])
@@ -57,7 +57,7 @@ def main():
         ax.spines[["top", "right"]].set_visible(False)
     axes[0].set_ylabel("ODeSSy stage time per module (s)", fontsize=9)
     axes[0].text(len([1 for (b, _) in mods if b == "zlib"]) - 0.5, 66, "1 min", fontsize=7, ha="right", color="#555555")
-    fig.legend(loc="upper center", ncol=3, fontsize=8, frameon=False, bbox_to_anchor=(0.5, 1.03))
+    fig.legend(loc="upper center", ncol=2, fontsize=8, frameon=False, bbox_to_anchor=(0.5, 1.03))
     fig.tight_layout(rect=(0, 0, 1, 0.94))
     fig.savefig(out, bbox_inches="tight", pad_inches=0.02)
     print("figure ->", out)
