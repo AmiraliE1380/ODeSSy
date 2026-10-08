@@ -1452,7 +1452,7 @@ matmul$^{*}$ & Rust & O & 7 & 0 (+2) & 0\\
 \bottomrule
 \end{tabular}\\
 \raggedright\footnotesize $^{\dagger}$At a 30\,s per-query budget;
-see \S\ref{sec:results-cost}. $^{\ddagger}$All 16 proven by the
+see Appendix~\ref{sec:app-openssl}. $^{\ddagger}$All 16 proven by the
 heap-invariant extension of \S\ref{sec:frame}; the base encoder proved
 0 (the frame-gap result). $^{\P}$Marginal over the double-O3 control
 per our reporting convention: for lz4, \tool{} removes 1027 of 3403 and
@@ -1831,21 +1831,6 @@ seconds at ten threads and 1 millisecond; proof counts rise left to
 right from about 5 to 54 in every row.}
 \label{fig:matrix}
 \end{figure}
-\paragraph{The far end of the dial.}
-OpenSSL's SHA-256, compiled with aggressive inlining, is the counterpoint:
-each of its 2225 unsigned-spec queries carries the false-edges of up to
-$\sim$200 \emph{preceding} overflow checks as dominating context. At
-0.3--5\,s budgets the pass proves \emph{nothing} (all queries pinned at
-the cap); at 30\,s, 43 proofs
-appear; an uncapped historical run found 125. The budget curve
-$0\,@\,1\text{s} \rightarrow 0\,@\,5\text{s} \rightarrow 43\,@\,30\text{s}
-\rightarrow 125\,@\,\infty$ is monotone: query hardness
-here scales with inlined guard-chain depth, and the same knob that makes
-zlib effectively free spans five orders of magnitude on real code. The
-practical reading is favorable: a deployment at a 1\,s budget keeps
-\pct{96} of zlib-class proofs and silently, soundly skips OpenSSL-class
-queries (\textsc{unknown} keeps the check); an offline audit turns the
-dial up.
 \subsection{RQ4: How does super-analysis compare with superoptimization?}
 \label{sec:results-souper}
 We compare \tool{} with Souper~\cite{sasnauskas2017souper}, the
@@ -2140,6 +2125,22 @@ Thorough; every other module, and every zstd module but one, sits near or
 below it.}
 \label{fig:modules}
 \end{figure}
+\paragraph{The far end of the dial.}\label{sec:app-openssl}
+OpenSSL's SHA-256, compiled with aggressive inlining, is the
+counterpoint to the timeout dial of \S\ref{sec:results-cost}:
+each of its 2225 unsigned-spec queries carries the false-edges of up to
+$\sim$200 \emph{preceding} overflow checks as dominating context. At
+0.3--5\,s budgets the pass proves \emph{nothing} (all queries pinned at
+the cap); at 30\,s, 43 proofs
+appear; an uncapped historical run found 125. The budget curve
+$0\,@\,1\text{s} \rightarrow 0\,@\,5\text{s} \rightarrow 43\,@\,30\text{s}
+\rightarrow 125\,@\,\infty$ is monotone: query hardness
+here scales with inlined guard-chain depth, and the same knob that makes
+zlib effectively free spans five orders of magnitude on real code. The
+practical reading is favorable: a deployment at a 1\,s budget keeps
+\pct{96} of zlib-class proofs and silently, soundly skips OpenSSL-class
+queries (\textsc{unknown} keeps the check); an offline audit turns the
+dial up.
 \begin{table}
 \caption{The frontier: benchmarks with a measured, unrecovered
 checked-vs-unchecked ceiling and no (or unusably few) proofs at the
