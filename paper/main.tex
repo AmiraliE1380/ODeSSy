@@ -306,7 +306,8 @@ verdict changes nothing.
 
 
 SMT-based compiler analysis is more precise than native lightweight compiler analysis. Our central empirical finding is that the missed opportunities require complex reasoning  over multiple domains and from different fact sources to prove safe. Proving
-one bounds check dead in a real SHA-256 kernel requires the return-value
+one bounds check dead in a real SHA-256 kernel
+(Figure~\ref{fig:simple-example}) requires the return-value
 range of one function, a scalar-evolution loop bound, a value-range fact
 on a third value, and two dominating branch conditions from the program's prefix ---
 \emph{simultaneously}. Each fact lives in a different LLVM analysis; no
@@ -325,7 +326,8 @@ an LLVM module pass targeting one of the most consequential class of
 provably-dead code in modern software: \emph{safety checks}. Sanitizers
 such as UBSan~\cite{ubsanDocs} and the native checks of memory-safe
 languages (Swift bounds and overflow checks, Rust panics, Julia bounds
-errors) compile to trap-guarded branches whose hot-path cost is the
+errors) compile to trap-guarded branches
+(Figure~\ref{fig:simple-example}) whose hot-path cost is the
 standing tax of memory safety --- we measure it at up to $1.075\times$ on
 the zstd library under signed-overflow checks and up to $4.17\times$ and $5.11\times$ on native-language kernels (Julia GEMM and Swift nbody, respectively).
 Today the only recourse to avoid this performance tax is to turn checks \emph{off}
@@ -335,6 +337,65 @@ delete exactly the checks that are provably redundant with the guards,
 contracts, and invariants already present in the program, and keep every
 check that is not.
 \tool{} is able to recover up to $3.91\times$ of performance by removing redundant safety checks and enabling a cascade of further optimizations.
+
+\begin{figure}[t]
+\centering
+\begin{minipage}[t]{\linewidth}
+\begin{lstlisting}[style=odessy,
+    morekeywords={var,for,in,let,if},
+    comment={[l]{//}}]
+var w = [UInt32](repeating: 0, count: 64)
+for t in 16..<64 {
+  // s0, s1: rotate-xors of w[t-15], w[t-2]
+\end{lstlisting}
+\begin{chkbox}{2}{40}
+\begin{lstlisting}[style=odessy, xleftmargin=0pt,
+    morekeywords={var,for,in,let,if},
+    comment={[l]{//}}]
+// implicit check (injected by compiler)
+if t-16 >= w.count { trap() }
+\end{lstlisting}
+\end{chkbox}
+\begin{lstlisting}[style=odessy,
+    morekeywords={var,for,in,let,if},
+    comment={[l]{//}}]
+  w[t] = w[t-16] + s0 + w[t-7] + s1
+}
+\end{lstlisting}
+\end{minipage}\par\vspace{0.7em}
+\begin{minipage}[t]{\linewidth}
+\begin{lstlisting}[style=odessy,
+    morekeywords={load,add,icmp,uge,br,label,call,void,i8,i64,i1,ptr},
+    comment={[l]{;}}]
+; the check for w[t-16], after swiftc -O + LLVM O3:
+%n   = load i64, ptr %w.count           ; array length: n = 64
+%idx = add i64 %t, -16                  ; idx = t - 16
+\end{lstlisting}
+\begin{chkbox}{0}{58}
+\begin{lstlisting}[style=odessy, xleftmargin=0pt,
+    morekeywords={load,add,icmp,uge,br,label,call,void,i8,i64,i1,ptr},
+    comment={[l]{;}}]
+%oob = icmp uge i64 %idx, %n            ; oob = (idx >= n)
+br i1 %oob, label %trap, label %ld      ; trap if oob
+trap: call void @llvm.ubsantrap(i8 18)  ; aborts
+\end{lstlisting}
+\end{chkbox}
+\end{minipage}
+\caption{A Swift SHA-256 message-schedule loop (top) and one of its
+bounds checks, which survives \texttt{swiftc -O} and LLVM O3, at the IR
+level (bottom); checks highlighted. Conventional analysis cannot remove
+the check from the hot loop, which imposes a performance tax: scalar
+evolution gives $t - 16 < 48$ and a return-value range gives
+\texttt{w.count} $= 64$, but no analysis conjoins the two facts and
+checks that they entail that the trap is unreachable.}
+\Description{Above, a Swift listing of the SHA-256 message schedule
+loop with the injected check, if t minus 16 is greater or equal to the
+array count then trap, highlighted in a rounded pink box. Below, five lines of LLVM IR showing the
+load of the array count, the index computation, and, highlighted in one rounded pink
+box, the unsigned compare, the conditional branch to the trap block,
+and the trap block's call to ubsantrap.}
+\label{fig:simple-example}
+\end{figure}
 
 Deleting checks that are already dead is not \tool{}'s only
 optimization. Many hot checks are not dead for every input: they are
@@ -712,64 +773,9 @@ really happen. No single one of these facts is usually enough, though:
 a proof needs several of them at once, and composing them is exactly
 where a solver becomes necessary.
 
-\begin{figure}[t]
-\centering
-\begin{minipage}[t]{\linewidth}
-\begin{lstlisting}[style=odessy,
-    morekeywords={var,for,in,let,if},
-    comment={[l]{//}}]
-var w = [UInt32](repeating: 0, count: 64)
-for t in 16..<64 {
-  // s0, s1: rotate-xors of w[t-15], w[t-2]
-\end{lstlisting}
-\begin{chkbox}{2}{40}
-\begin{lstlisting}[style=odessy, xleftmargin=0pt,
-    morekeywords={var,for,in,let,if},
-    comment={[l]{//}}]
-// implicit check (injected by compiler)
-if t-16 >= w.count { trap() }
-\end{lstlisting}
-\end{chkbox}
-\begin{lstlisting}[style=odessy,
-    morekeywords={var,for,in,let,if},
-    comment={[l]{//}}]
-  w[t] = w[t-16] + s0 + w[t-7] + s1
-}
-\end{lstlisting}
-\end{minipage}\par\vspace{0.7em}
-\begin{minipage}[t]{\linewidth}
-\begin{lstlisting}[style=odessy,
-    morekeywords={load,add,icmp,uge,br,label,call,void,i8,i64,i1,ptr},
-    comment={[l]{;}}]
-; the check for w[t-16], after swiftc -O + LLVM O3:
-%n   = load i64, ptr %w.count           ; array length: n = 64
-%idx = add i64 %t, -16                  ; idx = t - 16
-\end{lstlisting}
-\begin{chkbox}{0}{58}
-\begin{lstlisting}[style=odessy, xleftmargin=0pt,
-    morekeywords={load,add,icmp,uge,br,label,call,void,i8,i64,i1,ptr},
-    comment={[l]{;}}]
-%oob = icmp uge i64 %idx, %n            ; oob = (idx >= n)
-br i1 %oob, label %trap, label %ld      ; trap if oob
-trap: call void @llvm.ubsantrap(i8 18)  ; aborts
-\end{lstlisting}
-\end{chkbox}
-\end{minipage}
-\caption{A Swift SHA-256 message-schedule loop (top) and one of its
-bounds checks after \texttt{swiftc -O} and LLVM O3 (bottom), checks
-highlighted. The check is dead only by a conjunction: scalar evolution
-gives $t - 16 < 48$ ($Fact_1$) and a return-value range gives \texttt{w.count} $= 64$ ($Fact_2$). Together with the context they imply $idx >= n$ is \textsc{unsat}.}
-\Description{Above, a Swift listing of the SHA-256 message schedule
-loop with the injected check, if t minus 16 is greater or equal to the
-array count then trap, highlighted in a rounded pink box. Below, five lines of LLVM IR showing the
-load of the array count, the index computation, and, highlighted in one rounded pink
-box, the unsigned compare, the conditional branch to the trap block,
-and the trap block's call to ubsantrap.}
-\label{fig:simple-example}
-\end{figure}
 
-Consider the simplified message-schedule loop of a Swift SHA-256 kernel
-(Figure~\ref{fig:simple-example}), whose inner
+Consider again the simplified message-schedule loop of the Swift SHA-256
+kernel of the introduction (Figure~\ref{fig:simple-example}), whose inner
 16 iterations index a 64-element working array. Swift's bounds checks on
 these accesses survive both \texttt{swiftc -O} and a subsequent full LLVM
 O3. \tool{} proves them dead, and the extracted unsat cores show why no
