@@ -387,7 +387,7 @@ level (bottom); checks highlighted. Conventional analysis cannot remove
 the check from the hot loop, which imposes a performance tax: scalar
 evolution gives $t - 16 < 48$ and a return-value range gives
 \texttt{w.count} $= 64$, but no analysis conjoins the two facts and
-checks that they entail that the trap is unreachable.}
+prove that the trap is unreachable.}
 \Description{Above, a Swift listing of the SHA-256 message schedule
 loop with the injected check, if t minus 16 is greater or equal to the
 array count then trap, highlighted in a rounded pink box. Below, five lines of LLVM IR showing the
@@ -1630,8 +1630,8 @@ benchmarks whose speedup involves guard synthesis.
 
 \begin{table}
 \caption{Guard-synthesis ablation (x86 c220g2, production budget). Each
-cell is the speedup over the unchanged checked program, with the number
-of checks proved dead in brackets. Julia rows time designated copies of
+pipeline has two columns: the speedup over the unchanged checked
+program, and the number of checks it proves dead. Julia rows time designated copies of
 the unchanged kernels in which an access is annotated \texttt{@inbounds}
 only if the pipeline removes every one of its checks; Julia's own
 pipeline already runs IRCE, so (iv) and (v) coincide there. $1.000\times$
@@ -1641,17 +1641,19 @@ program.}
 \small
 \setlength{\tabcolsep}{3pt}
 \resizebox{\linewidth}{!}{%
-\begin{tabular}{llccccc}
+\begin{tabular}{ll*{5}{rr}}
 \toprule
- & & (i) \tool{} guard & (ii) \tool{} guard & (iii) IRCE guard & (iv) IRCE guard & (v) no guard\\
-Benchmark & Front end & + \tool{} proofs & + \texttt{-O3} & + \tool{} proofs & + \texttt{-O3} & \texttt{-O3}\\
+ & & \multicolumn{2}{c}{(i) \tool{} guard} & \multicolumn{2}{c}{(ii) \tool{} guard} & \multicolumn{2}{c}{(iii) IRCE guard} & \multicolumn{2}{c}{(iv) IRCE guard} & \multicolumn{2}{c}{(v) no guard}\\
+ & & \multicolumn{2}{c}{+ \tool{} proofs} & \multicolumn{2}{c}{+ \texttt{-O3}} & \multicolumn{2}{c}{+ \tool{} proofs} & \multicolumn{2}{c}{+ \texttt{-O3}} & \multicolumn{2}{c}{\texttt{-O3}}\\
+\cmidrule(lr){3-4}\cmidrule(lr){5-6}\cmidrule(lr){7-8}\cmidrule(lr){9-10}\cmidrule(lr){11-12}
+Benchmark & Front end & Speedup & Proofs & Speedup & Proofs & Speedup & Proofs & Speedup & Proofs & Speedup & Proofs\\
 \midrule
-lz77$^{a}$ & Julia & $\mathbf{4.013\times}$ [4] & $1.000\times$ [0] & $1.000\times$ [0] & $1.000\times$ [0] & $1.000\times$ [0]\\
-base64 & Swift & $\mathbf{1.440\times}$ [8] & $1.258\times$ [7] & $1.242\times$ [3] & $1.250\times$ [3] & $1.000\times$ [1]\\
-matmul & Rust & $\mathbf{1.373\times}$ [2] & $1.372\times$ [2] & $1.103\times$ [2]$^{b}$ & $1.103\times$ [2]$^{b}$ & $1.000\times$ [0]\\
-matmul, $n{=}512$ & Julia & $\mathbf{1.145\times}$ [3] & $1.000\times$ [0] & $1.000\times$ [0] & $1.000\times$ [0] & $1.000\times$ [0]\\
-sha256$^{c}$ & Julia & $\mathbf{1.089\times}$ [14] & $1.022\times$ [8] & $1.031\times$ [6] & $1.024\times$ [2] & $1.024\times$ [2]\\
-crc32 & Swift & $\mathbf{1.074\times}$ [11] & $1.061\times$ [9] & $1.070\times$ [4] & $1.000\times$ [0] & $1.000\times$ [0]\\
+lz77$^{a}$ & Julia & $\mathbf{4.013\times}$ & 4 & $1.000\times$ & 0 & $1.000\times$ & 0 & $1.000\times$ & 0 & $1.000\times$ & 0\\
+base64 & Swift & $\mathbf{1.440\times}$ & 8 & $1.258\times$ & 7 & $1.242\times$ & 3 & $1.250\times$ & 3 & $1.000\times$ & 1\\
+matmul & Rust & $\mathbf{1.373\times}$ & 2 & $1.372\times$ & 2 & $1.103\times^{b}$ & 2 & $1.103\times^{b}$ & 2 & $1.000\times$ & 0\\
+matmul, $n{=}512$ & Julia & $\mathbf{1.145\times}$ & 3 & $1.000\times$ & 0 & $1.000\times$ & 0 & $1.000\times$ & 0 & $1.000\times$ & 0\\
+sha256$^{c}$ & Julia & $\mathbf{1.089\times}$ & 14 & $1.022\times$ & 8 & $1.031\times$ & 6 & $1.024\times$ & 2 & $1.024\times$ & 2\\
+crc32 & Swift & $\mathbf{1.074\times}$ & 11 & $1.061\times$ & 9 & $1.070\times$ & 4 & $1.000\times$ & 0 & $1.000\times$ & 0\\
 \bottomrule
 \end{tabular}}\\
 \raggedright\footnotesize
