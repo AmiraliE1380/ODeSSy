@@ -633,11 +633,13 @@ against is stored in memory, in the array's header, and every use of it
 is a load.
 
 
-Figure~\ref{fig:frame-example} shows the pattern. The loop runs $i$ up
-to $n_1$, a load of \texttt{A}'s length before the loop. Inside the
-loop, the check compares $i$ with $n_2$, a second load of the same
-address, and the loop also stores into \texttt{C}. The check is dead if
-$n_2 = n_1$, and scalar analyses cannot establish that, for two reasons.
+Figure~\ref{fig:frame-example} shows the pattern, in the inner loop of
+a matrix multiply. Before the loop, a dimension guard loads
+\texttt{A}'s length into $n_1$ and checks that it equals the loop bound
+$m$. Inside the loop, the bounds check loads the length again, into
+$n_2$, and the loop also stores into \texttt{C}. Since $i \le m = n_1$,
+the check is dead if $n_2 = n_1$, and scalar analyses cannot establish
+that, for two reasons.
 First, a load is opaque to them: its result is whatever memory holds,
 so without metadata $n_2$ may be any 64-bit value. Second, $n_2 = n_1$
 is a relation between two values, while a range or a set of known bits
@@ -651,8 +653,9 @@ check survives \texttt{-O3}, and a solver given only scalar facts
 treats $n_2$ as a free variable and finds the trap reachable.
 
 
-The pattern is common in widely used kernels. In Julia's
-standard-library GEMM (\texttt{generic\_matmatmul!}) the scalar fact
+The figure is taken from Julia's standard-library GEMM
+(\texttt{generic\_matmatmul!}), and the pattern is common in widely used
+kernels. In GEMM the scalar fact
 sources prove \emph{none} of its 16 bounds-check edges, while turning
 those checks off makes the kernel $4.17\times$ faster on x86
 (\S\ref{sec:frame-results}). The checks are not exotic: they guard an
@@ -715,45 +718,18 @@ br i1 %oob, label %trap
   br i1 %c, label %loop, label %exit
 \end{lstlisting}
 \caption{Two reads of one heap location with a store between them
-(schematic LLVM IR, check highlighted). The check is dead if
-$n_2 = n_1$, which holds only if the store never over-writes \texttt{A}'s
-length: a fact about the heap, which no scalar analysis supplies.}
+(schematic LLVM IR of GEMM's inner loop, check highlighted). The guard
+gives $n_1 = m$ and the loop bounds $i$ by $m$, so the check is dead if
+$n_2 = n_1$, which holds only if the store never overwrites \texttt{A}'s
+length: a fact about the heap that no scalar analysis supplies.}
 \Description{A schematic LLVM IR listing: a load of A's length before
-the loop, named n1; inside the loop a second load of the same address,
-named n2; the compare of i against n2 and the conditional branch to the
-trap, highlighted in one rounded pink box; a vector store into C's data, with a
+the loop, named n1, compared with the loop bound m by a dimension guard;
+inside the loop, highlighted in one rounded pink box, a second load of
+the same address, named n2, the compare of i against n2, and the branch
+to the trap; a vector store into C's data, with a
 comment asking whether it can overwrite A's length; and the back edge.}
 \label{fig:frame-example}
 \end{figure}
-The failure is structural, and not limited to this special GEMM
-implementation, as the encoder additions this section motivates also
-removed checks in other benchamrks (Swift SHA-256, Julia SHA-256, the 
-CryptoSwift library, etc.) 
-
-The fact that
-would discharge the check is that certain important metadata of arrays are not overwritten by the stores in the loop. A dataflow analysis
-propagates facts \emph{about values}; this premise is a fact
-\emph{about memory}. The GEMM implementation consists of multiple loads of arrays' dimensions (stored in the array header in the heap) and multiple stores that the compiler has to prove do not overwrite the metadata between two loads. LLVM's dataflow heuristics can no longer justify the unification
-itself --- which is precisely why the checks survive O3, and why a
-sound encoder that reads the same IR is stuck for the same reason.
-
-A heap fact alone is also not enough. The proof must \emph{compose} it
-with the scalar ones: the flagship GEMM edge needs the load equality
-\emph{and} a symbolic trip-count bound \emph{and} known-bits
-\emph{and} three phi-image facts simultaneously
-(\S\ref{sec:frame-results}). This is the conjunction argument of
-\S\ref{sec:conjunction} again, now spanning two theories rather than
-one --- which is why the answer is a new \emph{fact source} for the
-solver rather than a new pass.
-
-To perform heap invariant super-analysis we need a new fact source: when the
-compiler's own memory analyses can show that no store between two
-loads touches the location, the encoder may state that the two loads
-are equal. This is the frame rule of separation
-logic~\cite{reynolds2002separation}, used as a source of facts rather
-than as a proof system, and it refuses whenever the memory analyses
-cannot answer. This is still an instance of super-analysis as the solver only
-answers reachability and the compiler still performs every rewrite. \S\ref{sec:frame-machinery} gives the rules.
 \subsection{Use Case: Safety Checks}
 \label{sec:target}
 We instantiate super-analysis on the \emph{safety checks} that compilers insert into
