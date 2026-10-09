@@ -689,27 +689,30 @@ other benchmarks, among them Swift and Julia SHA-256 and CryptoSwift.
 \begin{figure}[t]
 \centering
 \begin{lstlisting}[style=odessy,
-    morekeywords={load,store,icmp,ugt,br,label,i64,i1,ptr,x,double},
+    morekeywords={load,store,icmp,ugt,ult,eq,br,label,i64,i1,ptr,x,double},
     comment={[l]{;}}]
 ; a hot loop after -O3 (schematic); A's length is in its header
-%n1 = load i64, ptr %A.len              ; read 1: the loop runs i up to n1
-loop:
-  %n2 = load i64, ptr %A.len            ; read 2: same address, a new value
+%n1 = load i64, ptr %A.len             ; read 1, for the dimension guard
+%ok = icmp eq i64 %n1, %m              ; size(A) == m, else throw
+br i1 %ok, label %loop, label %throw
+loop:                                  ; i runs from 1 to m
 \end{lstlisting}
-\begin{chkbox}{2}{63}
+\begin{chkbox}{2}{67}
 \begin{lstlisting}[style=odessy, xleftmargin=0pt,
-    morekeywords={load,store,icmp,ugt,br,label,i64,i1,ptr,x,double},
+    morekeywords={load,store,icmp,ugt,ult,eq,br,label,i64,i1,ptr,x,double},
     comment={[l]{;}}]
-%oob = icmp ugt i64 %i, %n2           ; the check needs i <= n2
-br i1 %oob, label %trap, label %body
+%n2 = load i64, ptr %A.len           ; read 2: the check reloads it
+%oob = icmp ugt i64 %i, %n2          ; the check needs i <= n2
+br i1 %oob, label %trap
 \end{lstlisting}
 \end{chkbox}
 \begin{lstlisting}[style=odessy,
-    morekeywords={load,store,icmp,ugt,br,label,i64,i1,ptr,x,double},
+    morekeywords={load,store,icmp,ugt,ult,eq,br,label,i64,i1,ptr,x,double},
     comment={[l]{;}}]
   ;...
-  store <2 x double> %v, ptr %C.data    ; can this overwrite A.len?
-  br label %loop
+  store <2 x double> %v, ptr %C.data   ; can this overwrite A.len?
+  %c = icmp ult i64 %i.next, %m        ; latch: bound is m
+  br i1 %c, label %loop, label %exit
 \end{lstlisting}
 \caption{Two reads of one heap location with a store between them
 (schematic LLVM IR, check highlighted). The check is dead if
