@@ -622,36 +622,57 @@ values, a loop invariant, a full summary.
 \subsection{Heap-Invariant Super-Analysis}
 \label{sec:frame}
 
-Encoding the context alone is not enough to prove all properties an optimizer needs, as many assertions are about the state of the heap. Many optimizations require assumptions about load and store values and their pointers, like assertions on dynamic array lengths which are stored as metadata in the heap. For example the array length an index is checked
-against is stored in memory (e.g. in the array's header), and every use of it
-is a load. This necessitates a memory model and reasoning over heap states. A compiler's scalar analyses do not assert anything about the heap state, but each
-describes the values that one SSA register may hold. In LLVM these are
+Encoding the context alone does not prove every property an optimizer
+needs, because many of these properties concern the state of the heap:
+optimizations depend on the values that loads return and on the
+pointers they read through. A dynamic array's length, for example, is
+stored as metadata in memory (in the array's header), so the length an
+index is checked against is a load, and reasoning about it requires a
+model of the heap. A compiler's scalar analyses do not provide one.
+Each describes the values that one SSA register may hold: in LLVM,
 value ranges (LazyValueInfo and range metadata), known bits, and the
-trip counts and induction ranges of scalar evolution.
+trip counts and induction ranges of scalar evolution. They can
+constrain the value of a single load, but they cannot relate two loads
+to each other.
 
-Figure~\ref{fig:frame-example} emphasizes the necessity of heap-aware reasoning and analysis. The example is a safety check in the inner loop of
-a matrix multiply, blocking vectorization. Before the loop, a dimension guard loads
-\texttt{A}'s length into $n_1$ and checks that it equals the loop bound
-$m$. Inside the loop, the bounds check loads the length again, into
-$n_2$, and the loop also stores into \texttt{C}. Since $i < m = n_1$,
-the check is dead if $n_2 = n_1$, and scalar analyses cannot establish
-that, for two reasons: First, a load is opaque to them: its result is whatever memory holds,
-so without metadata $n_2$ may be any 64-bit value. Second, $n_2 = n_1$
-is a relation between two values, while a range or a set of known bits
-describes one value at a time. The equality holds only if the store between the
-two reads never overwrites \texttt{A}'s length, which is a question about
-memory, answered in LLVM by alias analysis and MemorySSA. Here they do
-not answer it: the reload is a copy made by the vectorizer, without the
-aliasing metadata that would let alias analysis rule out the store. The
-check survives \texttt{-O3}, and a solver given only scalar facts
-treats $n_2$ as a free variable and finds the trap reachable. The checks impose a  $4.17\times$ performance tax in the Julia standard \texttt{generic\_matmatmul!} library on x86
+Figure~\ref{fig:frame-example} illustrates the need for heap-aware
+reasoning. The example is a safety check in the inner loop of a matrix
+multiply. Before the loop, a dimension guard loads \texttt{A}'s length
+into $n_1$ and checks that it equals the loop bound $m$. Inside the
+loop, the bounds check loads the length again, into $n_2$, and the loop
+also stores into \texttt{C}. Since $i < m = n_1$, the check is dead if
+$n_2 = n_1$, and scalar analyses cannot establish that, for two
+reasons. First, a load is opaque to them: its result is whatever memory
+holds, so without metadata $n_2$ may be any 64-bit value. Second,
+$n_2 = n_1$ is a relation between two values, while a range or a set of
+known bits describes one value at a time. The equality holds only if
+the store between the two reads never overwrites \texttt{A}'s length,
+which is a question about memory, answered in LLVM by alias analysis and
+MemorySSA. Here they do not answer it: the reload is a copy made by the
+vectorizer, without the aliasing metadata that would let alias analysis
+rule out the store. The check survives \texttt{-O3}, and a solver given
+only scalar facts treats $n_2$ as a free variable and finds the trap
+reachable. The checks limit how much the loop is vectorized and
+unrolled: in \texttt{generic\_matmatmul!}, the matrix multiply of
+Julia's standard library, they cost $4.17\times$ on x86
 (\S\ref{sec:frame-results}).
 
-Heap-invariant super-analysis adds that fact source. A super-analyzer can encode axiomatic rules, like that same pointers load same values, given the memory location has not been overwritten by a store. This
-is the frame rule of separation logic~\cite{reynolds2002separation}. Super-analysis can provide more precision when conventional scalar analysis fails (e.g. LLVM's known bits), and it's special case, heap-invariant super-analysis kicks in when conventional memory analysis fails (e.g. LLVM's MemorySSA). The encoding machinery that handles GEMM (\S\ref{sec:frame-machinery}) also added proofs on
-other benchmarks like Swift and Julia SHA-256 implementations and CryptoSwift.
-
-
+Heap-invariant super-analysis supplies the missing fact. A
+super-analyzer can reason via axiomatic rules and encode the facts they
+yield: here, that two loads through the same pointer return the same
+value if no store in between overwrites the location --- an instance of
+the frame rule of separation logic~\cite{reynolds2002separation}.
+Super-analysis adds precision where conventional scalar analyses fail
+(e.g., LLVM's known bits), and its special case, heap-invariant
+super-analysis, takes over where conventional memory analysis fails
+(e.g., LLVM's MemorySSA), reusing that analysis's answers to derive new
+facts. A heap fact alone is rarely enough: the solver conjoins it with
+the scalar facts --- for GEMM, the load equalities together with
+trip-count, known-bits, and definitional facts --- and it is the
+combination that proves the check dead. The encoding machinery that
+handles GEMM (\S\ref{sec:frame-machinery}) also added proofs on other
+benchmarks, such as the Swift and Julia SHA-256 implementations and
+CryptoSwift.
 
 \begin{figure}[t]
 \centering
@@ -662,7 +683,7 @@ other benchmarks like Swift and Julia SHA-256 implementations and CryptoSwift.
 %n1 = load i64, ptr %A.len             ; read 1, for the dimension guard
 %ok = icmp eq i64 %n1, %m              ; size(A) == m, else throw
 br i1 %ok, label %loop, label %throw
-loop:                                  ; i runs from 1 to m
+loop:                                  ; i runs from 0 to m-1
 \end{lstlisting}
 \begin{chkbox}{2}{82}
 \begin{lstlisting}[style=odessy, xleftmargin=0pt,
@@ -678,11 +699,11 @@ br i1 %oob, label %trap
     comment={[l]{;}}]
   ;...
   store <2 x double> %v, ptr %C.data   ; can this store overwrite A.len?
-  %c = icmp ult i64 %i, %m             ; back edge: bound is m
+  %c = icmp ult i64 %i.next, %m        ; back edge: bound is m
   br i1 %c, label %loop, label %exit
 \end{lstlisting}
 \caption{Two reads of one heap location with a store between them
-(Julia’s standard-library GEMM, check highlighted). The guard
+(schematic LLVM IR of Julia's standard-library GEMM, check highlighted). The guard
 gives $n_1 = m$ and the loop bounds $i$ by $m$, so the check is dead if
 $n_2 = n_1$, which holds only if the store never overwrites \texttt{A}'s
 length: a fact about the heap that no scalar analysis supplies.}
