@@ -49,6 +49,20 @@
   booktitle = {POPL},
   year = {2009}
 }
+@article{willsey2021egg,
+  author = {Max Willsey and Chandrakana Nandi and Yisu Remy Wang and Oliver Flatt and Zachary Tatlock and Pavel Panchekha},
+  title = {egg: Fast and Extensible Equality Saturation},
+  journal = {Proc. ACM Program. Lang.},
+  volume = {5},
+  number = {POPL},
+  year = {2021}
+}
+@inproceedings{yang2021tensat,
+  author = {Yichen Yang and Phitchaya Mangpo Phothilimthana and Yisu Remy Wang and Max Willsey and Sudip Roy and Jacques Pienaar},
+  title = {Equality Saturation for Tensor Graph Superoptimization},
+  booktitle = {MLSys},
+  year = {2021}
+}
 @inproceedings{demoura2008z3,
   author = {Leonardo de Moura and Nikolaj Bj{\o}rner},
   title = {{Z3}: An Efficient {SMT} Solver},
@@ -224,7 +238,7 @@ heuristics that miss opportunities; superoptimizers synthesize faster code
 but take hours, confining them to small kernels and offline use. We introduce
 \emph{super-analysis}, a middle ground that uses an SMT solver purely for
 \emph{analysis} while transformations remain conventional, avoiding
-program synthesis entirely. The key argument for super-analysis is that many simple, yet fruitful transformations require complex reasoning: proving a safety check dead often needs facts from four
+program synthesis entirely. The key argument for super-analysis is that conventional compilers have rich transformations rules, but proving them to be safe requires complex reasoning: proving a safety check dead often needs facts from four
 independent LLVM analyses \emph{simultaneously} --- a conjunctive entailment
 problem suited to a solver, not to any single dataflow pass.
 
@@ -232,8 +246,7 @@ problem suited to a solver, not to any single dataflow pass.
 We instantiate
 super-analysis in \tool{}, an LLVM pass that proves sanitizer traps and
 native-language safety checks unreachable and removes them.
-One mechanism serves four frontends and yields speedups in each:
-\tool{} generates code up to $3.91\times$ faster than LLVM -O3 for a GEMM implemented in Julia.
+One mechanism serves four frontend languages and yields speedups in each, including a $3.91\times$ speedup for a GEMM implemented in Julia.
 A further solver-based optimization, \emph{guard synthesis}, handles
 checks that are not dead for every input: the solver synthesizes a cheap invariant safety guard under which a fast check-free loop is cloned,
 speeding up a Swift Base64 encoder by $1.44\times$ and a Julia LZ77
@@ -296,8 +309,8 @@ middle, and Superoptimization (Souper, STOKE) on the right.}
 This paper argues for a middle ground we call \emph{super-analysis}
 (Figure~\ref{fig:spectrum}): use
 the decision procedure for \emph{analysis only}, and leave transformation
-to the conventional machinery that already exists. No program is synthesized;
-no search over programs is performed. The solver answers exactly one kind of question
+to the conventional machinery that already exists. No program is synthesized and
+no search over the infinite space of programs is performed. The solver answers exactly one kind of question
 --- \emph{is this program point reachable under this context?} --- and a
 standard, trivially correct transformation (deleting an unreachable branch)
 consumes the answer.
@@ -319,7 +332,7 @@ problem --- exactly what an SMT solver decides and exactly what a
 heuristic cannot. We inspect the unsat core of every proof, so this
 claim is not an intuition but a measurement: the cores name the
 contributing analyses, and the majority of our nontrivial proofs draw on
-two to four sources at once (\S\ref{sec:results-static}).
+two to four sources at once.
 
 
 We instantiate super-analysis in \tool{}\footnote{On-Demand SMT System.},
@@ -405,7 +418,7 @@ as arrays of the expected length. For these, \tool{} performs
 \emph{guard synthesis}. The solver synthesizes a guard --- a cheap
 condition over values that are invariant inside the loop --- under
 which every check in the loop is provably dead. The loop is then
-specialized: the guard is tested once, outside the loop, and when it
+specialized: the guard is checked once, outside the loop, and when it
 holds a copy of the loop runs with all its checks removed; otherwise
 the original loop runs unchanged. Because real inputs take the
 specialized copy, the hot loop becomes the fast one. Guard synthesis
@@ -420,7 +433,7 @@ optimization, and it carries one open problem we deliberately defer:
 indiscriminately at every program point would be ruinous, and deciding
 where precision repays its cost demands a cost model no compiler has.
 Safety-check elimination is the ideal first instantiation precisely
-because it answers that question for free. The work list is given, and the traps are expected to be unreachable (unsat) for safe programs. Based on our experiments, removing a safety check is either a win or has a marginal effect in most cases --- it simplifies the program control-flow, allowing other optimizations to be performed by subsequent passes. This
+because it answers that question for free. The work list is given, and the traps are expected to be unreachable (therefore \textsc{unsat}) for safe programs. Based on our experiments, removing a safety check is either a win or has a marginal effect in most cases --- it simplifies the program control-flow, allowing other optimizations to be performed by subsequent passes. This
 application therefore isolates the paradigm's contribution --- precision
 of analysis --- from the question it defers: when to use it.
 
@@ -428,8 +441,7 @@ This paper makes the following contributions:
 \begin{itemize}
 \item \textbf{Super-analysis} (\S\ref{sec:superanalysis}): an aggressive compilation paradigm
   positioning between conventional heuristic-based optimization and superoptimization in terms of compiler latency and precision. The general recipe for this paradigm is to use solvers as an analysis oracle, while applying cheap conventional rules-based transformation for optimization. We identify heap reasoning as
-  a crucial analysis problem --- array optimizations often require heap
-  reasoning to ensure their safety --- formalize it, and show that
+  a crucial analysis problem, formalize it, and show that
   super-analysis can more effectively reason over heap and memory safety
   of certain transformations.
 \item \textbf{Making super-analysis work} (\S\ref{sec:making}): a set of
@@ -442,7 +454,7 @@ This paper makes the following contributions:
 \item \textbf{\tool{}} (\S\ref{sec:system}): an LLVM pass and online optimizer
   as an instantiation of super-analysis. \tool{} eliminates safety checks and unlocks further optimizations. It supports C/C++, Swift, Rust, and Julia as frontends and can enable hot-path transformations and speedups.
 \item \textbf{Robust Performance Improvement} (\S\ref{sec:results}):
-  our systematic evaluation of \tool{} on an x86 server show removing hot-loop checks has a cascading effect, unlocking further transformations (unrolling, vectorization, etc) that enables up to $4.01\times$ speedups for widely used kernels and libraries. \tool{} proofs are generally cheap, making it usuable as an online pass and usable in the development loop. Multi-threading and per-query budgets make \tool{}'s analysis up to $5.7\times$ faster. A further comparison with a synthesizing superoptimizer shows that super-analysis removes several times more checks, in most configurations in less time.
+  our systematic evaluation of \tool{} on an x86 server show removing hot-loop checks has a cascading effect, unlocking further transformations (unrolling, vectorization, etc.) that enables up to $4.01\times$ speedups for widely used kernels and libraries. \tool{} proofs are generally cheap, which makes it usable as an online pass in the development loop. Multi-threading and per-query budgets make \tool{}'s analysis up to $5.7\times$ faster. A further comparison with Souper (a synthesizing superoptimizer) shows that \tool{} removes several times more checks, in most configurations in less time.
 \end{itemize}
 %% =====================================================================
 \section{Paradigms of Aggressive Compiler Optimization}
@@ -460,19 +472,18 @@ mutates x86-64 kernels, scores each candidate by test-case correctness
 and estimated latency, and hands the survivors to an SMT solver for a
 formal equivalence proof, at costs of hours per loop-free kernel.
 Souper~\cite{sasnauskas2017souper} works at the LLVM IR level: it
-synthesizes replacements for bounded peephole windows and verifies each
-candidate with an SMT solver. Souper is architecturally different from our work.
-In every sound superoptimizer the search proposes code and the solver
+synthesizes replacement code for bounded peephole windows and verifies each
+candidate with an SMT solver. In every sound superoptimizer the search proposes code and the solver
 verifies it, so the solver is invoked \emph{per candidate}. 
 
 
 \paragraph{Equality Saturation.}
 Equality
 saturation~\cite{tate2009equality} searches the same kind of space by a
-different route: rather than synthesizing candidates it saturates an
+different route: rather than synthesizing candidates ,it saturates an
 e-graph with the combinations of a fixed rewrite-rule set and extracts
-the cheapest result, so its search ranges over rules rather than over
-arbitrary programs and no candidate needs a proof of its own.
+the cheapest result. This aggressive search ranges over combinations of rewrite rules rather than over
+arbitrary programs, so no candidate needs an equivalence proof as the applied rules are sound and preserve equivalence.
 
 \paragraph{Super-analysis.} This paper introduces a fourth route. A
 super-analyzer spends the solver on \emph{analysis} alone: the solver
@@ -480,7 +491,7 @@ decides whether a rewrite is licensed --- here, whether a safety check
 can ever fire --- and the compiler's existing, conventional
 transformations perform the rewrite. No replacement code is searched
 for, synthesized, or verified. Figure~\ref{fig:quadrants} places the
-three paradigms on one map, by what each spends on analysis and what it
+four paradigms on one map, by what each spends on analysis and what it
 spends on transformation; \S\ref{sec:superanalysis} develops the
 paradigm.
 
@@ -498,7 +509,7 @@ and each can be cheap or expensive. Conventional optimization keeps both
 cheap; superoptimization makes both expensive. Super-analysis takes one
 asymmetric corner where a solver licenses rewrites. Super-transformation takes the other: exhaustive search over
 combinations of rewrites. Both asymmetric corners
-are under-explored; this paper develops the first.}
+are under-explored.}
 \Description{A two-by-two matrix. Columns: transformation cost, cheap
 versus expensive. Rows: analysis cost, cheap versus expensive. Cheap/cheap
 is Conventional Optimization (LLVM -O3). Cheap analysis with expensive
@@ -516,7 +527,7 @@ cheap or expensive, which gives the four-way design space of
 Figure~\ref{fig:quadrants}. A conventional pass has cheap analysis and
 cheap transformation, and both are heuristic. A superoptimizer makes both
 expensive: the search proposes code, the solver verifies it. Super-analysis
-splits the difference asymmetrically: expensive, precise, \emph{sound}
+splits the difference asymmetrically: expensive, precise
 analysis; cheap, conventional transformation. Analysis is partially provided by an expensive SMT query, licensing known transformations. Super-analysis can be strategically used by a compiler to manage the high latency of the solver, making it online and keeping it in the programmer's rapid develop and test loop. As we show in \S\ref{sec:results} removing a safety check in a hot loop by proving it unreachable can unlock valuable transformations (unrolling, vectorization, etc.)
 
 \paragraph{The other asymmetric corner.}
@@ -534,7 +545,7 @@ sound once, offline, so no candidate requires a proof of its own at
 compile time. The expense is entirely on the transformation side: saturating
 the e-graph and then extracting the cheapest term from it, which the
 original work posed to a pseudo-boolean solver and later systems solve
-greedily or with ILP. Synthesis lands in the superoptimization cell
+greedily~\cite{willsey2021egg} or with ILP~\cite{yang2021tensat}. Synthesis lands in the superoptimization cell
 precisely because it lacks this guarantee: an arbitrary candidate carries
 no proof, so each one must be verified, and the analysis becomes
 expensive as well.
