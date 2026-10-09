@@ -711,7 +711,7 @@ br i1 %oob, label %trap
     comment={[l]{;}}]
   ;...
   store <2 x double> %v, ptr %C.data   ; can this overwrite A.len?
-  %c = icmp ult i64 %i.next, %m        ; latch: bound is m
+  %c = icmp ult i64 %i, %m             ; back edge: bound is m
   br i1 %c, label %loop, label %exit
 \end{lstlisting}
 \caption{Two reads of one heap location with a store between them
@@ -1146,11 +1146,11 @@ are posed:
 \[
 \textsc{Base}:\ \ \Gamma \wedge \vec\phi = \vec\phi_0 \wedge \mathit{TrapCond}
 \qquad
-\textsc{Step}:\ \ \Gamma \wedge \Gamma' \wedge \mathit{Latch}' \wedge
+\textsc{Step}:\ \ \Gamma \wedge \Gamma' \wedge \mathit{BackEdge}' \wedge
 \vec\phi = \mathit{Next}'(\vec\phi') \wedge \neg\,\mathit{TrapCond}' \wedge \mathit{TrapCond}
 \]
-where $\mathit{Latch}'$ states that the previous iteration reached the
-latch and took the back edge, $\mathit{Next}'$ computes the header
+where $\mathit{BackEdge}'$ states that the previous iteration took the
+back edge, $\mathit{Next}'$ computes the header
 values that edge carries, and $\neg\,\mathit{TrapCond}'$ states that the
 check did not fire on the previous iteration. If both are
 \textsc{unsat}, the check cannot fire on the first iteration, nor on any
@@ -2262,7 +2262,7 @@ Table~\ref{tab:frontier} labels each unrecovered ceiling with its class.
 \paragraph{(a) Symbolic trip counts --- solved.}
 A loop counter bounded by an SSA-valued expression rather than a
 constant. Dominance-based guard collection cannot see the bound, because
-the latch that establishes it does not dominate the check. The
+the back-edge test that establishes it does not dominate the check. The
 \textsc{scevsym} fact source (\S\ref{sec:system-facts}) supplies it:
 umin-exact for single-exit loops, a symbolic maximum for multi-exit
 loops, exact division for strided counts. This class is closed.
@@ -2287,7 +2287,7 @@ allowing partial elimination of a shared error block, closes it.
 
 \paragraph{(d) Non-unit and variable stride induction.}
 Scalar evolution computes no trip count at all, in any form, for a loop
-whose latch compares an unsigned counter advancing by a stride greater
+whose back-edge test compares an unsigned counter advancing by a stride greater
 than one --- base64 at stride 3, crc32 at stride 4, UTF-8 validation at
 a data-dependent stride of 1 to 4. No amount of trip-count machinery
 helps, because there is no trip count to translate. The remedy is to
