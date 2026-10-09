@@ -748,6 +748,41 @@ logic~\cite{reynolds2002separation}, used as a source of facts rather
 than as a proof system, and it refuses whenever the memory analyses
 cannot answer. This is still an instance of super-analysis as the solver only
 answers reachability and the compiler still performs every rewrite. \S\ref{sec:frame-machinery} gives the rules.
+\subsection{Use Case: Safety Checks}
+\label{sec:target}
+We instantiate super-analysis on the \emph{safety checks} that compilers insert into
+programs. A safety check guards an operation whose result would
+otherwise be undefined or unsafe --- an array access out of bounds, a
+signed integer overflow --- with a test and a branch to a block that
+stops the program if the test fails. Every front end we support inserts
+them. In C and C++, UndefinedBehaviorSanitizer~\cite{ubsanDocs} adds a
+check for each kind of undefined behavior it is asked to catch; in trap
+mode each one ends in a call to \texttt{llvm.ubsantrap}. Swift checks
+every array access and every arithmetic overflow by default, in
+optimized builds too, and stops with \texttt{llvm.trap}~\cite{swiftBook}.
+Rust checks every slice and array index, and every arithmetic operation
+when overflow checks are enabled, and stops with a call to a panic
+function~\cite{rustReference}. Julia checks every array access and stops
+by throwing a bounds error~\cite{juliaBoundsCheck}. After lowering to
+LLVM IR all of them have one shape --- a conditional branch to a block
+that calls a function that never returns --- and that shape is what
+\tool{} looks for (\S\ref{sec:pipeline}).
+
+
+The checks make programs safe, and the safety has a price. In Julia's
+standard-library matrix multiply, the check Julia inserts for the
+access \texttt{A[i,l]} runs on every iteration of the innermost loop,
+the hottest loop of the program, and as a
+side exit from that loop it keeps LLVM from vectorizing and unrolling
+the loop as fully as the check-free version: with the checks turned off
+this kernel runs $4.17\times$ faster on x86, and Swift's n-body
+simulation $5.11\times$. Today the only way to recover that performance
+is to turn checks off wholesale (\texttt{@inbounds},
+\texttt{--check-bounds=no}, \texttt{-Ounchecked}), giving up the guarantee
+for the whole loop or program. \tool{} instead removes only the checks it
+proves can never fail, so the program stays exactly as safe; on this
+kernel it recovers $3.91\times$ (\S\ref{sec:results-perf}).
+
 %% =====================================================================
 \section{Making Super-Analysis Work}
 \label{sec:making}
@@ -906,49 +941,13 @@ inputs as possible.
 \tool{} is an LLVM module pass of roughly five thousand lines. Two
 requirements dictate its design: soundness under aggressive
 parallelism, and bit-reproducible verdicts regardless of thread count.
-This section describes the checks \tool{} targets
-(\S\ref{sec:target}), the pipeline the pass lives in
+This section describes the pipeline the pass lives in
 (\S\ref{sec:pipeline}), the encoding machinery at its core
 (\S\ref{sec:encoding-impl}), inductive loop encoding
 (\S\ref{sec:app-machinery}), the heap-invariance extension
 (\S\ref{sec:frame-machinery}), guard synthesis and loop cloning
 (\S\ref{sec:guards-impl}), and how proofs are audited before they are
 believed (\S\ref{sec:audit}).
-
-\subsection{Target: safety checks}
-\label{sec:target}
-\tool{} targets the \emph{safety checks} that compilers insert into
-programs. A safety check guards an operation whose result would
-otherwise be undefined or unsafe --- an array access out of bounds, a
-signed integer overflow --- with a test and a branch to a block that
-stops the program if the test fails. Every front end we support inserts
-them. In C and C++, UndefinedBehaviorSanitizer~\cite{ubsanDocs} adds a
-check for each kind of undefined behavior it is asked to catch; in trap
-mode each one ends in a call to \texttt{llvm.ubsantrap}. Swift checks
-every array access and every arithmetic overflow by default, in
-optimized builds too, and stops with \texttt{llvm.trap}~\cite{swiftBook}.
-Rust checks every slice and array index, and every arithmetic operation
-when overflow checks are enabled, and stops with a call to a panic
-function~\cite{rustReference}. Julia checks every array access and stops
-by throwing a bounds error~\cite{juliaBoundsCheck}. After lowering to
-LLVM IR all of them have one shape --- a conditional branch to a block
-that calls a function that never returns --- and that shape is what
-\tool{} looks for (\S\ref{sec:pipeline}).
-
-
-The checks make programs safe, and the safety has a price. In Julia's
-standard-library matrix multiply, the check Julia inserts for the
-access \texttt{A[i,l]} runs on every iteration of the innermost loop,
-the hottest loop of the program, and as a
-side exit from that loop it keeps LLVM from vectorizing and unrolling
-the loop as fully as the check-free version: with the checks turned off
-this kernel runs $4.17\times$ faster on x86, and Swift's n-body
-simulation $5.11\times$. Today the only way to recover that performance
-is to turn checks off wholesale (\texttt{@inbounds},
-\texttt{--check-bounds=no}, \texttt{-Ounchecked}), giving up the guarantee
-for the whole loop or program. \tool{} instead removes only the checks it
-proves can never fail, so the program stays exactly as safe; on this
-kernel it recovers $3.91\times$ (\S\ref{sec:results-perf}).
 
 \subsection{Pipeline}
 \label{sec:pipeline}
