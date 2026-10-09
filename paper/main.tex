@@ -559,21 +559,19 @@ Procedurally, superoptimization and super-analysis are both applied
 point by point, and they differ in what happens at a point. The superoptimizer runs a search: its cost is the number of
 candidates it tries times the cost of verifying each, the number of
 candidates grows with the size of the fragment, and nothing bounds it
-except the budget. The super-analyzer has no search at all. The points
+except the budget. This makes superoptimization super expensive. The super-analyzer has no search at all. The points
 it visits come from a work list that the compiler chooses, which makes
 its use of the solver \emph{strategic} --- the compiler decides where
 precision is worth paying for --- and the solver is consulted only
 where the conventional analysis has already failed, which makes it
-\emph{surgical}: expensive reasoning is spent on exactly the points
-that need it, a bounded number of queries each, every query under a
-fixed budget. The transformation that follows is the compiler's own.
+\emph{surgical}. The transformation that follows is the compiler's own.
 
-The cost consequence is concrete. A
+A
 superoptimizer's dominant expense is not the solver but the
 \emph{synthesis loop} that feeds it: a search over candidate programs,
 each candidate requiring its own equivalence query. Super-analysis deletes
 that outer loop. What remains is one decision procedure invocation per
-check site --- a decision, not a search --- and a cheap transformation the
+check site --- not a search --- and a cheap transformation the
 compiler performs. This is why the two paradigms differ by orders
 of magnitude in latency while sharing the same underlying technology, and
 why super-analysis can run inside the development pipeline rather than beside it
@@ -586,7 +584,7 @@ size of the code being replaced, so superoptimizers confine themselves
 to small, mostly local windows: a peephole, a basic block, a loop-free
 kernel. A super-analyzer does not have such a limitation; It can reason globally and the context it is given can be as large as the analysis
 can encode: many basic blocks and their merge points, every dominating
-branch condition, and facts imported from loop and heap analyses that
+branch condition, and facts imported from loop and heap analyses or called procedures that
 summarize code it never sees. The proofs of
 \S\ref{sec:conjunction} and \S\ref{sec:frame} combine
 facts from several analyses and from code far from the check, demonstrating the more global reasoning of a super-analyzer.
@@ -621,12 +619,6 @@ post-condition derivation is a precision dial that can in principle be
 turned arbitrarily far: a range, an algebraic relation among boundary
 values, a loop invariant, a full summary. 
 
-This encoded context is the dominant machinery of super-analysis: by
-proof count, most eliminations in this paper are discharged by the
-translated context alone (the \emph{light} tier of
-\S\ref{sec:system-facts}). What remains is the boxes the encoding
-leaves closed --- which post-conditions to import for them, and why
-composing those facts requires a solver.
 \subsection{Heap-Invariant Super-Analysis}
 \label{sec:frame}
 
