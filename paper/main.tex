@@ -701,7 +701,7 @@ loop:                                  ; i runs from 1 to m
 \begin{lstlisting}[style=odessy, xleftmargin=0pt,
     morekeywords={load,store,icmp,ugt,ult,eq,br,label,i64,i1,ptr,x,double},
     comment={[l]{;}}]
-%n2 = load i64, ptr %A.len           ; read 2: the check reloads it
+%n2 = load i64, ptr %A.len           ; read 2: the check reloads the array length
 %oob = icmp uge i64 %i, %n2          ; the check needs i < n2 for each access to A
 br i1 %oob, label %trap
 \end{lstlisting}
