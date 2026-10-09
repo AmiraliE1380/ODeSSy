@@ -136,11 +136,7 @@ def variant_B(d, logy, name):
             ax.set_yticks({"zlib": [5, 10, 20, 50], "zstd": [3, 5, 10]}[lib])
         else:
             ax.set_ylim(-ymax * 0.05, ymax)
-        dominance(ax, lib, d, logy)
-        if lib == "zlib" and not logy:
-            cegis_note(ax)
         ax.set_title(f"{lib} ({ {'zlib': 14, 'zstd': 18}[lib] } modules)", fontsize=7, pad=3)
-        better_hint(ax, (0.04, 0.95) if not (logy and lib == "zlib") else (0.04, 0.55))
     axes[0].set_ylabel("checks removed" + (" (log)" if logy else ""))
     fig.supxlabel("compile time, summed over modules (s, log)", fontsize=7, y=0.02)
     fig.tight_layout(pad=0.3, w_pad=0.8)
@@ -182,7 +178,6 @@ def variant_C(d):
     ax.set_ylabel("trap edges proved")
     ax.text(0.98, 0.97, "ODeSSy: per-query timeout sweep, LLVM 23 IR, trap edges\nSouper: LLVM 18 IR, checks removed (0)",
             transform=ax.transAxes, fontsize=5.3, color="#666666", ha="right", va="top")
-    better_hint(ax, (0.40, 0.80))
     fig.tight_layout(pad=0.3)
     save(fig, "C")
 
