@@ -301,7 +301,7 @@ no search over programs is performed. The solver answers exactly one kind of que
 --- \emph{is this program point reachable under this context?} --- and a
 standard, trivially correct transformation (deleting an unreachable branch)
 consumes the answer.
-We use an SMT solver as an analysis oracle and feed it with the encoded formula $Context \land Query$ and ask if it is satisfiable. Soundness is preserved by construction: an
+We use an SMT solver as an analysis oracle and feed it with the encoded formula $\mathit{Context} \wedge \mathit{Query}$ and ask if it is satisfiable. Soundness is preserved by construction: an
 \textsc{unsat} verdict is a proof, a \textsc{sat} or \textsc{unknown}
 verdict changes nothing.
 
@@ -885,13 +885,13 @@ abduction seeks a hypothesis $\psi$ that is \emph{sufficient} and
 \]
 Guard synthesis instantiates this directly. $\Gamma$ is the encoded
 context of the check, with its dominating guards and imported facts; the
-goal is that the trap is unreachable, $\varphi = \neg\,\mathit{trap}$; and
+goal is that the trap is unreachable, $\varphi = \neg\,\mathit{TrapCond}$; and
 the hypothesis is the guard $H$, restricted to values that do not change
-inside the loop. Since $\Gamma \wedge H \models \neg\,\mathit{trap}$
-holds exactly when $\Gamma \wedge H \wedge \mathit{trap}$ has no model,
+inside the loop. Since $\Gamma \wedge H \models \neg\,\mathit{TrapCond}$
+holds exactly when $\Gamma \wedge H \wedge \mathit{TrapCond}$ has no model,
 each condition becomes one solver query:
 \[
-\underbrace{\Gamma \wedge H \wedge \mathit{trap}\ \text{is \textsc{unsat}}}_{\text{sufficient: the fast copy is safe}}
+\underbrace{\Gamma \wedge H \wedge \mathit{TrapCond}\ \text{is \textsc{unsat}}}_{\text{sufficient: the fast copy is safe}}
 \qquad\text{and}\qquad
 \underbrace{\Gamma \wedge H\ \text{is \textsc{sat}}}_{\text{consistent: the guard is not vacuous}} .
 \]
@@ -1016,11 +1016,11 @@ LLVM IR (pseudocode) & encoding & also covers\\
 \texttt{z = zext x} & $\den{z} = \mathrm{zeroExtend}_w(\den{x})$ & \texttt{sext}, \texttt{trunc}\\
 \texttt{z = select c, x, y} & $\den{z} = \mathrm{ite}(\den{c}, \den{x}, \den{y})$ & \\
 \texttt{z = umax(x, y)} & $\den{z} = \mathrm{ite}(\den{x} >_u \den{y}, \den{x}, \den{y})$ & \texttt{umin}, \texttt{smax}, \texttt{smin}, \texttt{abs}, \texttt{fshl}, \texttt{bswap}\\
-\texttt{r, o = sadd.with.overflow(x, y)} & $\den{r} = \den{x} + \den{y}$, \quad $\den{o} = \neg\,\mathit{noOvf}_s(\den{x}, \den{y})$ & the six \texttt{\{s,u\}\{add,sub,mul\}} forms\\
-\texttt{z = add nsw x, y} & the \texttt{add} rule, and assert $\mathit{noOvf}_s(\den{x}, \den{y})$ & \texttt{nuw}; \texttt{sub}, \texttt{mul}\\
+\texttt{r, o = sadd.with.overflow(x, y)} & $\den{r} = \den{x} + \den{y}$, \quad $\den{o} = \neg\,\mathit{NoOvf}_s(\den{x}, \den{y})$ & the six \texttt{\{s,u\}\{add,sub,mul\}} forms\\
+\texttt{z = add nsw x, y} & the \texttt{add} rule, and assert $\mathit{NoOvf}_s(\den{x}, \den{y})$ & \texttt{nuw}; \texttt{sub}, \texttt{mul}\\
 \texttt{z = freeze x} & $\den{z} = \den{x}$ & identity (\S\ref{sec:frame-machinery})\\
-\texttt{z = phi [v$_1$, B$_1$], \ldots, [v$_n$, B$_n$]} & $\den{z} = \mathrm{ite}\bigl(\mathit{Reach}(B_n) \wedge \mathit{edge}(B_n{\to}B),\ \den{v_n},\ \ldots\ \den{v_1}\bigr)$ & merge-point phis only\\
-\texttt{br c, S, T} & $\mathit{edge}(B{\to}S) = \den{c}$, \quad $\mathit{edge}(B{\to}T) = \neg \den{c}$ & \texttt{switch}: case equalities\\
+\texttt{z = phi [v$_1$, B$_1$], \ldots, [v$_n$, B$_n$]} & $\den{z} = \mathrm{ite}\bigl(\mathit{Reach}(B_n) \wedge \mathit{Edge}(B_n{\to}B),\ \den{v_n},\ \ldots\ \den{v_1}\bigr)$ & merge-point phis only\\
+\texttt{br c, S, T} & $\mathit{Edge}(B{\to}S) = \den{c}$, \quad $\mathit{Edge}(B{\to}T) = \neg \den{c}$ & \texttt{switch}: case equalities\\
 loop-header \texttt{phi}, \texttt{load}, \texttt{call}, \texttt{gep} & fresh variable & every unmodeled instruction\\
 \bottomrule
 \end{tabular}}
@@ -1088,13 +1088,13 @@ encoded once per block, not once per path: a merge-point phi becomes
 an if-then-else chain gated by a memoized reachability formula
 \[
 \mathit{Reach}(B) \;=\; \textstyle\bigvee_{P \in \mathrm{preds}(B)}
-\mathit{Reach}(P) \wedge \mathit{edge}(P{\to}B),
+\mathit{Reach}(P) \wedge \mathit{Edge}(P{\to}B),
 \]
 an $O(\mathit{edges})$ circuit whose shared prefixes are stored once
 (Z3 terms are hash-consed), leaving path enumeration to the SAT
 engine rather than to an exponential DNF.
 
-The query is then $\mathit{guards} \wedge \mathit{definitions} \wedge
+The query is then $\mathit{Guards} \wedge \mathit{Definitions} \wedge
 c$: satisfiable exactly by the machine states, consistent with
 everything encoded, in which this edge reaches the trap.
 \textsc{unsat} proves the edge dead in every execution;
@@ -1139,14 +1139,14 @@ encoded context of the trap, and primes denote a copy of the loop body
 over fresh symbols that stands for the previous iteration. Two queries
 are posed:
 \[
-\textsc{Base}:\ \ \Gamma \wedge \vec\phi = \vec\phi_0 \wedge \mathit{trap}
+\textsc{Base}:\ \ \Gamma \wedge \vec\phi = \vec\phi_0 \wedge \mathit{TrapCond}
 \qquad
-\textsc{Step}:\ \ \Gamma \wedge \Gamma' \wedge \mathit{latch}' \wedge
-\vec\phi = \mathit{next}'(\vec\phi') \wedge \neg\,\mathit{trap}' \wedge \mathit{trap}
+\textsc{Step}:\ \ \Gamma \wedge \Gamma' \wedge \mathit{Latch}' \wedge
+\vec\phi = \mathit{Next}'(\vec\phi') \wedge \neg\,\mathit{TrapCond}' \wedge \mathit{TrapCond}
 \]
-where $\mathit{latch}'$ states that the previous iteration reached the
-latch and took the back edge, $\mathit{next}'$ computes the header
-values that edge carries, and $\neg\,\mathit{trap}'$ states that the
+where $\mathit{Latch}'$ states that the previous iteration reached the
+latch and took the back edge, $\mathit{Next}'$ computes the header
+values that edge carries, and $\neg\,\mathit{TrapCond}'$ states that the
 check did not fire on the previous iteration. If both are
 \textsc{unsat}, the check cannot fire on the first iteration, nor on any
 iteration that follows one on which it did not fire; by induction it
