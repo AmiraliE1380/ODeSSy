@@ -151,7 +151,8 @@ def variant_C(d):
     pts = []
     for to in sorted(rows):
         ws = sorted(w for w, _ in rows[to])
-        pts.append((ws[len(ws) // 2], rows[to][0][1], to))
+        us = sorted(u for _, u in rows[to])          # proofs vary by one across reps at small budgets
+        pts.append((ws[len(ws) // 2], us[len(us) // 2], to))
     fig, ax = plt.subplots(figsize=(W, 2.3))
     ax.set_xscale("log")
     ax.set_xlim(10, 2e4)

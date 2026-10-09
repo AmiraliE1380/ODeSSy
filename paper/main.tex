@@ -3,7 +3,8 @@
 %% Numbers sourced from docs/PAPER_FACTS.md and docs/HANDOFF.md (x86 campaign,
 %% Sep 24-30 2026; earlier M-series results in the appendix).
 %% Figures used: spectrum.pdf (tools/plot_spectrum.py), quadrants.pdf, smt_latencies_thorough_x86.pdf,
-%% dial_matrix_x86_current.pdf, module_latency.pdf, gemm_sweep.pdf.
+%% dial_matrix_x86_current.pdf, module_latency.pdf, gemm_sweep.pdf,
+%% souper_libraries.pdf and souper_deflate.pdf (figs/rq4_proto/plot_rq4.py, variants B1 and C).
 %%
 \begin{filecontents*}[overwrite]{odessy.bib}
 @inproceedings{dillig2012abductive,
@@ -1853,41 +1854,66 @@ against that LLVM's \texttt{-O3} alone. Souper's per-query budget is
 identical queries is left on, as shipped. Swift, Rust, and Julia are
 excluded because their front ends emit IR newer than LLVM~18.
 
-\begin{table}[t]
-\caption{Super-analysis against superoptimization on every module of zlib
-and zstd (x86 c220g2, the same LLVM~18 IR for both tools, no external
-caches). Time is the summed per-module time of the tool and the
-\texttt{-O3} that follows it; checks removed are counted against each
-tool's own \texttt{-O3} baseline, which removes none.}
-\label{tab:souper}
-\small
-\begin{tabular}{llrr}
-\toprule
-Library & Tool & Time (s) & Checks removed\\
-\midrule
-zlib (14 modules) & Souper, constant mode & 2{,}407 & 7\\
- & \tool{} Thorough & 3{,}093 & 62\\
- & \tool{} Fast & 436 & 39\\
-\midrule
-zstd (18 modules) & Souper, constant mode & 4{,}304 & 5\\
- & \tool{} Thorough & 387 & 13\\
- & \tool{} Fast & 41 & 4\\
-\bottomrule
-\end{tabular}
-\end{table}
+On this shared input the two \texttt{-O3} pipelines leave nearly the same
+checks behind --- 476 in zlib under both, 254 and 251 in zstd --- so both
+tools start from the same population of checks. Thorough and Souper run on
+one thread each; Fast uses ten, and Souper has no parallelism within a
+module.
 
-\paragraph{Results.} Table~\ref{tab:souper} answers RQ4. On the checks
-both tools target, super-analysis does more: Thorough removes 62 checks in
-zlib and 13 in zstd where Souper removes 7 and 5, and Souper removes
-checks in only three modules, in each of which Thorough removes at least as
-many. Fast removes more than Souper on zlib (39 against 7) and one fewer
-on zstd (4 against 5). On cost, the answer depends on the configuration.
-Fast is faster than Souper on both libraries, by $5.5\times$ on zlib and
-$105\times$ on zstd. Thorough is $11\times$ faster on zstd but
-slower on zlib, where a single module, \texttt{trees.c}, takes 2{,}355\,s
-of its 3{,}093\,s (Figure~\ref{fig:modules}). Souper's synthesis mode is out of reach at this scale: on
-\texttt{deflate.c} it ran for 2.4\,hours (8,749\,s), against 69\,s for Thorough, and
-removed no checks.
+\begin{figure}[t]
+\centering
+\includegraphics[width=3.3in]{souper_libraries.pdf}
+\caption{Checks removed against compile time on every module of zlib and
+zstd (x86, the same LLVM~18 IR for both tools). Time is summed over
+modules and includes the \texttt{-O3} that follows each tool; checks are
+counted against each tool's own \texttt{-O3} baseline. The dashed line
+joins \tool{}'s two configurations; $\times$ is Souper in constant mode.}
+\Description{Two scatter panels, zlib and zstd, with compile time on a
+logarithmic x-axis and checks removed on the y-axis. In each panel a dashed
+line joins ODeSSy Fast (circle) and ODeSSy Thorough (square), and a black
+cross marks Souper. zlib: Fast 436 seconds and 39 checks, Thorough 3093
+seconds and 62 checks, Souper 2407 seconds and 7 checks. zstd: Fast 41
+seconds and 4 checks, Thorough 387 seconds and 13 checks, Souper 4304
+seconds and 5 checks.}
+\label{fig:souper-libs}
+\end{figure}
+
+\paragraph{Results.} Figure~\ref{fig:souper-libs} answers RQ4. On each
+library some \tool{} configuration beats Souper on both axes. On zlib,
+Fast removes 39 checks in 436\,s, where Souper removes 7 in 2{,}407\,s;
+Thorough removes 62, at a higher cost (3{,}093\,s), most of it
+spent on a single module, \texttt{trees.c} (2{,}355\,s;
+Figure~\ref{fig:modules}). On zstd, Thorough removes 13 checks in
+387\,s, where Souper removes 5 in 4{,}304\,s, and Fast removes 4 in
+41\,s. Souper removes checks in only three modules, and in each of them
+Thorough removes at least as many.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=3.3in]{souper_deflate.pdf}
+\caption{zlib's \texttt{deflate.c}, the compressor. The curve is
+\tool{}'s per-query timeout sweep (Thorough without inductive encoding,
+one thread, 1\,ms to 10\,s; trap edges proved, on the LLVM~23 IR of
+Figure~\ref{fig:matrix}). The crosses are Souper on the LLVM~18 IR, in
+constant mode and in CEGIS synthesis mode; neither removes a check.}
+\Description{A scatter plot with ODeSSy stage time on a logarithmic
+x-axis and trap edges proved on the y-axis. A dashed curve rises from 9
+edges at 1 millisecond per query (23 seconds) through 32 at 10 ms, 43 at
+100 ms and 52 at 1 s to 54 at 10 s (60 seconds). Two crosses sit at zero:
+Souper constant mode at 119 seconds and Souper CEGIS at 8749 seconds.}
+\label{fig:souper-deflate}
+\end{figure}
+
+\paragraph{One module in detail.} Figure~\ref{fig:souper-deflate} shows
+the two paradigms on zlib's compressor, \texttt{deflate.c}. \tool{}'s
+per-query budget traces a curve: 32 trap edges proved at 10\,ms per query
+in 27\,s, and 54 at 10\,s in 60\,s. Souper's constant mode takes 119\,s
+and removes nothing. Its synthesis mode, the one that makes it a
+superoptimizer, ran for 2.4\,hours (8{,}749\,s) and also removed nothing;
+at that cost per module we did not run it on the libraries, nor sweep
+Souper's own timeout. The two sides of the figure count different things
+--- edges proved on \tool{}'s IR, checks removed on Souper's --- but
+Souper's count is zero on either measure.
 
 Two cautions bound the comparison. It is one superoptimizer, on one task:
 Souper is built to find general peephole improvements, and removing safety
