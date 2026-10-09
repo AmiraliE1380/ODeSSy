@@ -697,12 +697,12 @@ other benchmarks, among them Swift and Julia SHA-256 and CryptoSwift.
 br i1 %ok, label %loop, label %throw
 loop:                                  ; i runs from 1 to m
 \end{lstlisting}
-\begin{chkbox}{2}{67}
+\begin{chkbox}{2}{82}
 \begin{lstlisting}[style=odessy, xleftmargin=0pt,
     morekeywords={load,store,icmp,ugt,ult,eq,br,label,i64,i1,ptr,x,double},
     comment={[l]{;}}]
 %n2 = load i64, ptr %A.len           ; read 2: the check reloads it
-%oob = icmp ugt i64 %i, %n2          ; the check needs i <= n2
+%oob = icmp uge i64 %i, %n2          ; the check needs i < n2 for each access to A
 br i1 %oob, label %trap
 \end{lstlisting}
 \end{chkbox}
@@ -710,7 +710,7 @@ br i1 %oob, label %trap
     morekeywords={load,store,icmp,ugt,ult,eq,br,label,i64,i1,ptr,x,double},
     comment={[l]{;}}]
   ;...
-  store <2 x double> %v, ptr %C.data   ; can this overwrite A.len?
+  store <2 x double> %v, ptr %C.data   ; can this store overwrite A.len?
   %c = icmp ult i64 %i, %m             ; back edge: bound is m
   br i1 %c, label %loop, label %exit
 \end{lstlisting}
