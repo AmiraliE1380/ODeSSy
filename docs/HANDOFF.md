@@ -3472,3 +3472,18 @@ the static run shows where Souper changes code.
   pinned LLVM/Z3, no assertions, no external cache, 10 s budget), table, results, two cautions
   (one comparator/one task; no runtime comparison and why). RQ list in §6.1 now has four items.
   The contributions bullet in the Intro does not mention RQ4 yet (the author edits the Intro).
+
+### 11.9 Known gap in the paper's deflate.c figure (Oct 8 2026) -- rebuttal item
+`paper/souper_deflate.pdf` (fig:souper-deflate, from `figs/rq4_proto/plot_rq4.py`
+variant C) plots ODeSSy's one-thread timeout sweep on the **LLVM 23** build of
+deflate.c, **without inductive encoding** (the threads x timeout sweep of
+fig:matrix), against Souper on the **LLVM 18** IR. The caption states both. No
+sweep exists on the clang-18 IR: only Thorough (68 s, 8 removed) and Fast
+(11 s, 8 removed) from `results/static/souper_static/modules.csv`. Decision
+(author): keep the figure; redo only if a reviewer asks. Fix, on a node with
+the Souper build restored (`/proj/odessy-PG0/odessy-preserve/souper-build.tgz`):
+emit deflate.c with clang 18 exactly as in `scripts/souper_static.sh`, convert
+to bitcode, then for t in 1 10 100 1000 10000 run
+`opt -load-pass-plugin=build/OraclePass.so -passes='oracle-pass<heavy;frame;ind;mv;narrow;timeout=$t;threads=1>,default<O3>'`
+(3 reps, timed, ubsantrap call sites counted against base23), and replot C
+from that CSV in place of the dial-matrix row.
