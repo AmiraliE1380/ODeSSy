@@ -747,8 +747,11 @@ simulation $5.11\times$. Today the only way to recover that performance
 is to turn checks off wholesale (\texttt{@inbounds},
 \texttt{--check-bounds=no}, \texttt{-Ounchecked}), giving up the guarantee
 for the whole loop or program. \tool{} instead removes only the checks it
-proves can never fail, so the program stays exactly as safe; on this
-kernel it recovers $3.91\times$ (\S\ref{sec:results-perf}).
+proves can never fail, so the program stays exactly as safe. Because
+Swift and Rust keep their checks in optimized builds, \tool{} applies
+to the large body of existing Swift and Rust code without any source
+change --- the unmodified CryptoSwift library is one of our benchmarks
+(\S\ref{sec:results-perf}) --- for example as a step in release builds.
 
 %% =====================================================================
 \section{Making Super-Analysis Work}
