@@ -750,8 +750,9 @@ for the whole loop or program. \tool{} instead removes only the checks it
 proves can never fail, so the program stays exactly as safe. Because
 Swift and Rust keep their checks in optimized builds, \tool{} applies
 to the large body of existing Swift and Rust code without any source
-change --- the unmodified CryptoSwift library is one of our benchmarks
-(\S\ref{sec:results-perf}) --- for example as a step in release builds.
+change --- two of our Swift benchmarks, crc32 and adler32, are taken
+unmodified from existing code bases (\S\ref{sec:results-perf}) --- for
+example as a step in release builds.
 
 %% =====================================================================
 \section{Making Super-Analysis Work}
