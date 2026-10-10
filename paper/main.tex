@@ -801,24 +801,23 @@ IR and produces facts in its own domain, and no pass computes the
 satisfiability of their conjunction --- nor could a fixed pipeline, since
 which facts matter is different at every check site. Deciding such
 conjunctions is the definitional competence of an SMT
-solver~\cite{demoura2008z3}. This is the sense in which super-analysis is
-\emph{necessary} rather than merely convenient: the inconsistency of the conjunction is decided by a solver, not another conventional compiler analyzer.
+solver~\cite{demoura2008z3}, making super-analysis necessary rather than merely convenient.
 
 \subsection{Guard Synthesis and Loop Cloning}
 \label{sec:guards}
 Sometimes a check cannot be proved dead for every execution, because it
 is not dead for every execution. Consider the Julia LZ77 compressor
-\texttt{lz77\_scan} in our benchmarks. Its inner loop compares
-\texttt{data[j+len]} with \texttt{data[i+len]} while
-\texttt{i+len <= n}, where $n$ is the length of \texttt{data}, and the
-check on \texttt{data[i+len]} looks redundant. It is not: Julia integers
-wrap, and the solver answers with a satisfying assignment in which
-\texttt{data} is within 255 elements of $2^{63}$ long. Then
-\texttt{i+len} wraps past the largest 64-bit integer, the loop
-condition holds, and the access is out of bounds. The check on
-\texttt{data[j+len]} has a similar model, with a hugely negative
-\texttt{window} argument. No proof of universal deadness exists, because
-the claim is false.
+\texttt{lz77\_scan} in our benchmarks. Its inner loop reads
+\texttt{data[i+len]} only while \texttt{i+len <= n}, where $n$ is the
+length of \texttt{data}, a value known only at run time. In
+unbounded integer arithmetic this test makes the bounds check on
+\texttt{data[i+len]} redundant. In 64-bit arithmetic it does not: Julia
+integer arithmetic silently overflows, and the solver answers with a
+satisfying assignment in which \texttt{data} is within 255 elements of
+$2^{63}$ long. Then \texttt{i+len} overflows past the largest 64-bit
+integer into a negative number, the test \texttt{i+len <= n} still
+holds, and the access is out of bounds. No proof of universal deadness
+exists, because the claim is false.
 
 Yet no real call looks like these models: an array of nearly $2^{63}$
 bytes, about 9 exabytes, exists on no machine, and for every array that
@@ -834,11 +833,10 @@ before the loop starts. Given such a guard, the loop is cloned
 original, with every check intact, runs whenever the guard fails. For
 \texttt{lz77\_scan}, guided by those models, the solver synthesizes
 \[
-0 \le n \le 2^{62} \;\wedge\; 0 \le \mathit{window} \le 2^{62},
+0 \le n \le 2^{62},
 \]
-which holds for every array a real machine can allocate and every
-sensible window size, so the fast copy is the one that always
-executes.
+which holds for every array a real machine can allocate, so the fast
+copy is the one that always executes.
 
 \begin{figure}[t]
 \centering
@@ -871,7 +869,7 @@ in place.}
 
 The transformation itself is simple; the hard part is finding the right guard. It must
 be a smart, useful guard: weak enough to hold on the executions we care
-about, and loop-invariant and cheap, so that testing it costs nothing
+about, and loop-invariant and cheap, so that checking it at run time costs nothing
 measurable. And it must be sufficient: under the guard, the fast copy
 must be provably safe to run. Both are questions about the conjunction
 of the guard, the context, and the trap condition, so, again, they
