@@ -812,12 +812,7 @@ is not dead for every execution. Consider the Julia LZ77 compressor
 length of \texttt{data}, a value known only at run time. In
 unbounded integer arithmetic this test makes the bounds check on
 \texttt{data[i+len]} redundant. In 64-bit arithmetic it does not: Julia
-integer arithmetic silently overflows, and the solver answers with a
-satisfying assignment in which \texttt{data} is within 255 elements of
-$2^{63}$ long. Then \texttt{i+len} overflows past the largest 64-bit
-integer into a negative number, the test \texttt{i+len <= n} still
-holds, and the access is out of bounds. No proof of universal deadness
-exists, because the claim is false.
+integer arithmetic silently overflows, and the solver answers with a satisfying assignment in which \texttt{i+len} overflows to $-2^{63}$, passing the programmer's safety guard \texttt{i+len <= n} but triggering  index out of bound (negative index) at \texttt{data[i+len]}. This vulnerability truly exists, safety check must remain for this array access.
 
 Yet no real call looks like these models: an array of nearly $2^{63}$
 bytes, about 9 exabytes, exists on no machine, and for every array that
