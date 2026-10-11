@@ -1014,11 +1014,19 @@ and profitable, even if the trap remains reachable from other blocks.
     $G \gets G \cup \{$that edge's condition$\}$
   \EndIf
 \EndFor
-\State $S \gets$ backward worklist walk from $c$ and $G$:
-\Statex \hspace{\algorithmicindent} enter merge-point phis (incoming
-  values $+$ region branch conditions);
-\Statex \hspace{\algorithmicindent} \textbf{stop} at loads, geps,
-  unencoded calls, loop-header phis \Comment{boundaries}
+\State $S \gets \emptyset$;\ \ $W \gets \{c\} \cup G$ \Comment{slice; worklist}
+\While{$W \neq \emptyset$}
+  \State take $v$ from $W$; \textbf{if} $v \in S$ or $v$ is a constant \textbf{then continue}
+  \State $S \gets S \cup \{v\}$
+  \If{$v$ is a load, gep, unencoded call, or loop-header phi}
+    \State \textbf{continue} \Comment{boundary: a free variable}
+  \ElsIf{$v$ is a phi at a merge point $B$}
+    \State $W \gets W \cup \{$incoming values of $v\}$
+      $\cup\ \{$branch conditions between $\mathrm{idom}(B)$ and $B\}$
+  \Else
+    \State $W \gets W \cup \{$operands of $v\}$
+  \EndIf
+\EndWhile
 \ForAll{$I \in S$ in reverse post-order}
   \State assert $\den{I}$ per Table~\ref{tab:encoding}
   \Comment{boundaries: fresh variables}
