@@ -989,11 +989,11 @@ LLVM IR (pseudocode) & encoding & also covers\\
 \texttt{z = select c, x, y} & $\den{z} = \mathrm{ite}(\den{c}, \den{x}, \den{y})$ & \\
 \texttt{z = umax(x, y)} & $\den{z} = \mathrm{ite}(\den{x} >_u \den{y}, \den{x}, \den{y})$ & \texttt{umin}, \texttt{smax}, \texttt{smin}, \texttt{abs}, \texttt{fshl}\\
 \texttt{r, o = sadd.with.overflow(x, y)} & $\den{r} = \den{x} + \den{y}$, \quad $\den{o} = \neg\,\mathit{NoOvf}_s(\den{x}, \den{y})$ & \texttt{\{s,u\} $\times$ \{add,sub,mul\}} \\
-\texttt{z = add nsw x, y} & the \texttt{add} rule, and $P(z) = P(x) \vee P(y) \vee \neg\mathit{NoOvf}_s(\den{x}, \den{y})$ & \texttt{nuw}; \texttt{sub}, \texttt{mul}, \texttt{shl}; \texttt{exact}, \texttt{disjoint}, \texttt{nneg}, \texttt{samesign}; shift amounts $\geq w$\\
+\texttt{z = add nsw x, y} & \texttt{add} rule, and $P(z) = P(x) \vee P(y) \vee \neg\mathit{NoOvf}_s(\den{x}, \den{y})$ & \texttt{nuw}; \texttt{sub}, \texttt{mul}, \texttt{shl}; \texttt{exact}, \texttt{disjoint}, \texttt{nneg}, \texttt{samesign}; shift amounts $\geq w$\\
 \texttt{z = freeze x} & $\den{z} = \mathrm{ite}\bigl(P(x),\ f,\ \den{x}\bigr)$, $f$ fresh;\quad $P(z) = \bot$ & (\S\ref{sec:frame-machinery})\\
 \texttt{z = phi [v$_1$, B$_1$], \ldots, [v$_n$, B$_n$]} & $\den{z} = \mathrm{ite}\bigl(\mathit{Reach}(B_n) \wedge \mathit{Edge}(B_n{\to}B),\ \den{v_n},\ \ldots\ \den{v_1}\bigr)$ & merge-point phis only\\
-\texttt{br c, S, T} & $\mathit{Edge}(B{\to}S) = \den{c}$, \quad $\mathit{Edge}(B{\to}T) = \neg \den{c}$; a guard or trap condition also asserts $\neg P(c)$ & \texttt{switch}: case equalities\\
-loop-header \texttt{phi}, \texttt{load}, \texttt{call}, \texttt{gep} & fresh variable, and a fresh $P$ unless LLVM proves the value never poison; loads are assumed not poison (\S\ref{sec:frame-machinery}) & every unmodeled instruction\\
+\texttt{br c, S, T} & $\mathit{Edge}(B{\to}S) = \den{c}$, \quad $\mathit{Edge}(B{\to}T) = \neg \den{c}$ & \texttt{switch}: case equalities\\
+loop-header \texttt{phi}, \texttt{load}, \texttt{call}, \texttt{gep} & fresh variable & every unmodeled instruction\\
 \bottomrule
 \end{tabular}}
 \end{table}
@@ -1305,8 +1305,7 @@ which bounds the inputs, so it is used only to certify guards.
 \subsection{Debug Mode}
 \label{sec:audit}
 We take multiple measures to ensure the absence of data races,
-parallelism bugs, and encoding bugs. These checks run in a debug mode,
-because each one would impose a tax on the production pass. First,
+parallelism bugs, and encoding bugs. These checks run in a debug mode as each one would impose a performance tax on the pass. First,
 verdicts, output IR, and logs must be identical for \texttt{threads=1}
 and \texttt{threads=N}, which we verify by \texttt{diff}.
 A wrong proof is the one failure mode this tool must not have, so no
@@ -1321,13 +1320,12 @@ because the tool cannot distinguish that situation from its own bugs;
 vacuous counts are reported in every static audit and are zero except
 where noted. The timed builds run without this audit, for speed; guard
 synthesis checks its own guards for vacuity in every build
-(\S\ref{sec:guards-impl}). Independently, every assertion is tracked, so each
+(\S\ref{sec:guards-impl}).
+
+Independently, every encoded solver constraint is tracked, so each
 \textsc{unsat} yields a minimal core naming exactly the guards and
 facts that proved it; we inspect the cores of every nontrivial proof
-family by hand before counting it, and six standing \textsc{sat}
-tripwire tests (may-alias clobbers, unrelated bounds) must stay
-\textsc{sat} forever --- one flipping to \textsc{unsat} would mean a
-fact source has become unsoundly strong.
+family by hand before counting it.
 
 %% =====================================================================
 \section{Experimental Setup}
