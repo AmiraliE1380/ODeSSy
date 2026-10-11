@@ -81,6 +81,20 @@
   booktitle = {PLDI},
   year = {2021}
 }
+@inproceedings{lee2017taming,
+  author = {Juneyoung Lee and Yoonseung Kim and Youngju Song and Chung-Kil Hur and Sanjoy Das and David Majnemer and John Regehr and Nuno P. Lopes},
+  title = {Taming Undefined Behavior in {LLVM}},
+  booktitle = {PLDI},
+  year = {2017}
+}
+@article{lee2018reconciling,
+  author = {Juneyoung Lee and Chung-Kil Hur and Ralf Jung and Zhengyang Liu and John Regehr and Nuno P. Lopes},
+  title = {Reconciling High-Level Optimizations and Low-Level Code in {LLVM}},
+  journal = {Proc. ACM Program. Lang.},
+  volume = {2},
+  number = {OOPSLA},
+  year = {2018}
+}
 @inproceedings{grosser2012polly,
   author = {Tobias Grosser and Armin Gr{\"o}{\ss}linger and Christian Lengauer},
   title = {Polly: Performing Polyhedral Optimizations on a Low-Level Intermediate Representation},
@@ -948,8 +962,12 @@ in the system converges on declining to optimize.
 \begin{table}[t]
 \caption{The encoding rules. $\den{x}$ is the bit-vector term for SSA
 value \texttt{x}, at \texttt{x}'s own width $w$; all arithmetic is
-modulo $2^w$. Instructions not in the table (and non-integer types)
-fall through to the last row --- the soundness floor.}
+modulo $2^w$. $P(x)$ is a Boolean that holds when \texttt{x} is poison,
+following LLVM's semantics of poison and \texttt{freeze}~\cite{lee2017taming}
+and Alive2's encoding of them~\cite{lopes2021alive2}; each rule also sets
+$P(z)$ to the disjunction of its operands' $P$ (for \texttt{select} and
+\texttt{phi}, of the chosen operand's). Instructions not in the table (and
+non-integer types) fall through to the last row --- the soundness floor.}
 \label{tab:encoding}
 \centering
 %% One column (acmsmall): the natural width of this table exceeds the
@@ -971,11 +989,11 @@ LLVM IR (pseudocode) & encoding & also covers\\
 \texttt{z = select c, x, y} & $\den{z} = \mathrm{ite}(\den{c}, \den{x}, \den{y})$ & \\
 \texttt{z = umax(x, y)} & $\den{z} = \mathrm{ite}(\den{x} >_u \den{y}, \den{x}, \den{y})$ & \texttt{umin}, \texttt{smax}, \texttt{smin}, \texttt{abs}, \texttt{fshl}\\
 \texttt{r, o = sadd.with.overflow(x, y)} & $\den{r} = \den{x} + \den{y}$, \quad $\den{o} = \neg\,\mathit{NoOvf}_s(\den{x}, \den{y})$ & \texttt{\{s,u\} $\times$ \{add,sub,mul\}} \\
-\texttt{z = add nsw x, y} & the \texttt{add} rule, and assert $\mathit{NoOvf}_s(\den{x}, \den{y})$ & \texttt{nuw}; \texttt{sub}, \texttt{mul}\\
-\texttt{z = freeze x} & $\den{z} = \den{x}$ & identity (\S\ref{sec:frame-machinery})\\
+\texttt{z = add nsw x, y} & the \texttt{add} rule, and $P(z) = P(x) \vee P(y) \vee \neg\mathit{NoOvf}_s(\den{x}, \den{y})$ & \texttt{nuw}; \texttt{sub}, \texttt{mul}, \texttt{shl}; \texttt{exact}, \texttt{disjoint}, \texttt{nneg}, \texttt{samesign}; shift amounts $\geq w$\\
+\texttt{z = freeze x} & $\den{z} = \mathrm{ite}\bigl(P(x),\ f,\ \den{x}\bigr)$, $f$ fresh;\quad $P(z) = \bot$ & (\S\ref{sec:frame-machinery})\\
 \texttt{z = phi [v$_1$, B$_1$], \ldots, [v$_n$, B$_n$]} & $\den{z} = \mathrm{ite}\bigl(\mathit{Reach}(B_n) \wedge \mathit{Edge}(B_n{\to}B),\ \den{v_n},\ \ldots\ \den{v_1}\bigr)$ & merge-point phis only\\
-\texttt{br c, S, T} & $\mathit{Edge}(B{\to}S) = \den{c}$, \quad $\mathit{Edge}(B{\to}T) = \neg \den{c}$ & \texttt{switch}: case equalities\\
-loop-header \texttt{phi}, \texttt{load}, \texttt{call}, \texttt{gep} & fresh variable & every unmodeled instruction\\
+\texttt{br c, S, T} & $\mathit{Edge}(B{\to}S) = \den{c}$, \quad $\mathit{Edge}(B{\to}T) = \neg \den{c}$; a guard or trap condition also asserts $\neg P(c)$ & \texttt{switch}: case equalities\\
+loop-header \texttt{phi}, \texttt{load}, \texttt{call}, \texttt{gep} & fresh variable, and a fresh $P$ unless LLVM proves the value never poison; loads are assumed not poison (\S\ref{sec:frame-machinery}) & every unmodeled instruction\\
 \bottomrule
 \end{tabular}}
 \end{table}
@@ -1148,11 +1166,20 @@ variable with the \emph{definitional axiom} of its defining code.
 First, \texttt{freeze}: the vectorizer's multiversioning stabilizes its
 guard flags against poison, and 13 of GEMM's 16 trap conditions were
 freeze-wrapped --- encoded as unconstrained Booleans, their queries
-were trivially satisfiable no matter what facts we supplied. Since
-\texttt{freeze} is the identity on every non-poison operand, the axiom
-$\den{\mathit{freeze}(x)} = \den{x}$
-is sound over the encoder's over-approximation (a poisoned operand is
-itself a free variable and can assume the frozen choice). Second,
+were trivially satisfiable no matter what facts we supplied.
+\texttt{freeze} is the identity on every non-poison operand and an
+arbitrary but fixed value on a poison one~\cite{lee2017taming}, so we
+encode it as $\den{\mathit{freeze}(x)} = \mathrm{ite}(P(x), f, \den{x})$
+with $f$ fresh, as Alive2 does~\cite{lopes2021alive2}. The plain identity
+$\den{\mathit{freeze}(x)} = \den{x}$ is \emph{not} sound: combined with a
+fact that holds only for non-poison values, such as the no-overflow
+condition of an \texttt{nsw} operation, it excludes executions in which
+the operand is poison and the frozen value takes the trap. We assume
+that loaded values are not poison: memory holds poison only where a
+program stores a poison value or reads uninitialized
+memory~\cite{lee2018reconciling}, which safe Julia, Swift, and Rust code
+never does and C code does only through undefined behavior; the
+\texttt{poison-loads} knob drops the assumption. Second,
 trip-count bounds moved to \emph{subtraction form}:
 \[
 \den{\phi} - \mathit{start} \ \le_u\
@@ -1329,7 +1356,13 @@ Before any timing is trusted, all binaries must produce byte-identical
 output on the workload; a mismatch aborts the experiment. Static
 ``eliminated'' counts are recomputed from the final IR, never inferred
 from verdicts; crashes and timeouts are marked, never counted as
-eliminations. Performance builds use a 10\,s per-query solver budget
+eliminations.\footnote{The static counts in this paper were produced
+before we corrected the encoding of \texttt{freeze} and of the poison
+flags (Table~\ref{tab:encoding}). Re-running the benchmarks of
+Table~\ref{tab:compile} with the corrected encoder on M-series
+(46 of their 47 modules) changes their total from 780 to 810 proofs; stdlib GEMM keeps 9 of its 16
+edges, which still prove every check of the two accesses behind its
+speedup (\S\ref{sec:frame-results}).} Performance builds use a 10\,s per-query solver budget
 and one solver thread, the budget of the library audits;
 \S\ref{sec:results-cost} shows that \pct{96} of the proofs already
 survive a 1\,s budget on zlib's \texttt{deflate.c}.
@@ -2274,6 +2307,7 @@ and the header-phi rules), \S\ref{sec:system-facts}.\\
 \S\ref{sec:frame-machinery}.\\
 \texttt{ldeq} & [off] Load equality within a basic block (\S\ref{sec:system-facts}).\\
 \texttt{nophiinv} & [off] Disables the header-phi rules (for ablation).\\
+\texttt{poison-loads} & [off] Drops the assumption that loaded values are not poison (\S\ref{sec:frame-machinery}).\\
 \texttt{ind} & [off] Inductive body encoding (\S\ref{sec:app-machinery});
 forces one thread.\\
 \midrule
