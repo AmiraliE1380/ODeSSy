@@ -1014,7 +1014,6 @@ and profitable, even if the trap remains reachable from other blocks.
     $G \gets G \cup \{$that edge's condition$\}$
   \EndIf
 \EndFor
-\State $G \gets G \cup \{$conditions of \texttt{llvm.assume}s dominating $P\}$
 \State $S \gets$ backward worklist walk from $c$ and $G$:
 \Statex \hspace{\algorithmicindent} enter merge-point phis (incoming
   values $+$ region branch conditions);
@@ -1038,7 +1037,6 @@ dominator ending in a conditional branch with one outgoing edge that
 dominates $P$, every execution reaching $P$ took that edge, so the
 edge's condition is asserted as context --- SSA immutability
 guarantees its operands still denote the same values at the trap.
-Dominating \texttt{llvm.assume} conditions join the same way.
 \emph{(2)~Slice.} A worklist walks operands backwards from $c$ and
 from every guard. It stops at the \emph{boundaries} of
 \S\ref{sec:encoding}: loads, address computations, calls we do not
