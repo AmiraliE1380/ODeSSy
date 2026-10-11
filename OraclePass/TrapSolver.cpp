@@ -37,6 +37,8 @@ TrapSolver::TrapSolver(const SolverConfig &Cfg, const FunctionCtx &FC,
     if (Narrow == 2) Encoder.enableNarrowMul(64, Cfg.NarrowBits);   // mul-only fallback
     if (Cfg.LoadEq)
         Encoder.enableLoadEquivalence();
+    if (Cfg.PoisonLoads)
+        Encoder.setLoadsDefined(false);
 }
 
 bool TrapSolver::encodePhase() {

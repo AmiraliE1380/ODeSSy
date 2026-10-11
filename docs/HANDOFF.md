@@ -3487,3 +3487,121 @@ to bitcode, then for t in 1 10 100 1000 10000 run
 `opt -load-pass-plugin=build/OraclePass.so -passes='oracle-pass<heavy;frame;ind;mv;narrow;timeout=$t;threads=1>,default<O3>'`
 (3 reps, timed, ubsantrap call sites counted against base23), and replot C
 from that CSV in place of the dial-matrix row.
+
+## 12. Poison soundness: the freeze/nsw encoding (Oct 11 2026)
+
+### 12.1 The bug
+Two rules in Z3Encoder were unsound under LLVM's poison semantics (Lee et al.,
+PLDI'17; Alive2, PLDI'21):
+* `freeze(x)` was encoded as the identity, and
+* `nsw`/`nuw` no-overflow, `!range`, and every imported analysis fact (LVI, KB,
+  SCEV, SCEVSYM, PHIINV, SCEVEQ) were asserted for ALL executions.
+A violated flag yields poison, not UB; it becomes UB only when a branch
+consumes it. `freeze` (and an unchosen select/phi arm) absorbs it legally. So
+asserting no-overflow globally drops real executions. Counterexample (now in
+the worktree's scratch tests): `g: a >= -1; y = add nsw a, 1; x = freeze y;
+trap if x < 0`. Old pass: UNSAT (trap deleted). Real: a = INT_MAX makes y
+poison, x arbitrary (e.g. -1), trap fires. Second counterexample: the nsw add
+only in the unchosen arm of a select. The comment justifying the old rule
+("every op we encode feeds a branched-on condition") is exactly what freeze
+and select break. Also oversized shifts: Z3 gives 0, LLVM gives poison.
+Also found: guard synthesis inserted `br` on a new condition H without
+freezing it; a poison operand makes that branch new UB.
+
+### 12.2 The fix (Alive2-style poison tracking)
+Committed on oopsla-research (Oct 11; not pushed): Z3Encoder.{h,cpp},
+FactEncoder.cpp, OraclePass.cpp, TrapSolver.{h,cpp}. Developed in the
+scratch worktree `/Users/ebrah/Project/compiler/ODeSSy-poison` (can be
+removed: `git worktree remove ../ODeSSy-poison`). New tripwires:
+tests/test_poison_freeze_sat.ll, tests/test_poison_select_sat.ll (old
+pass: UNSAT, i.e. the bug), tests/test_poison_nofreeze1.ll (UNSAT control).
+* Every encoded value V gets a Bool P(V) "V is poison". Constants: false.
+  Boundaries (loads, calls, args, header phis, unmodeled ops): fresh Bool,
+  unless `isGuaranteedNotToBePoison(V)`.
+* P propagates through ops; flag violations feed P instead of being asserted:
+  nsw/nuw on add/sub/mul/shl, oversized shift amount, `exact` (udiv/sdiv/
+  lshr/ashr), `disjoint` or, `nneg` zext, `trunc nuw/nsw`, icmp `samesign`,
+  `abs(x, true)` on INT_MIN.
+* select: P = P(c) || ite(c, P(t), P(f)); merge phi: same gated ite chain.
+* freeze: [[z]] = ite(P(x), fresh, [[x]]), P(z) = false. Same in the SCEVEQ
+  leaf identity in FactEncoder::processScevLeaves.
+* assertCondition / assertConditionTracked / condExpr add !P(cond) (a branch
+  or assume on poison is UB).
+* Imported facts are guarded: assertRange/assertKnownBits wrap
+  implies(!P(V), F); FactEncoder sets a "fact subject" for each boundary value
+  so every fact about V (raw SCEVSYM/PHIINV/SCEVEQ too) becomes !P(V) -> F.
+* LDEQ shares P with the donor load; primed (ind) copy has its own P map.
+* OraclePass.cpp: the guard-synthesis condition is frozen (`mv.h.fr`) before
+  the branch.
+
+### 12.3 Validation (Mac, Oct 11)
+* Regression suite (48 tests) identical verdicts old vs new under light,
+  heavy;frame;ldeq, and heavy;mv;narrow; run_mv_tests 9/9 PASS.
+* Both counterexamples: old UNSAT, new SAT. No-freeze control: UNSAT on both.
+* Static Thorough, every benchmark of tab:compile, Mac-generated IR (same IR
+  for both builds; scratch harness, not in repo), proofs = eliminated+guarded:
+    jl gemm 14 -> 3 | CryptoSwift 367 -> 358 | zstd 64 -> 98 |
+    zlib (13 modules, trees.c pending) 260 -> 261 | all other kernels equal.
+  Losses: gemm (freeze), CryptoSwift -9, zlib adler32 64->60, zstd
+  divsufsort/fse_compress/zstd_decompress_block/fastcover -1 each.
+  Gains are REAL, not noise: with the newly honored flags (nneg, trunc nuw,
+  disjoint, samesign, shift range) switched off, zstd huf_compress returns
+  from 54 to exactly the old 17. The old encoder ignored these flags.
+* Vacuity audit on the gained module: 0 vacuous.
+
+### 12.4 GEMM
+* Its freezes sit on loads of array sizes and on compares of them; LLVM
+  semantics lets a load return poison (memory bytes can hold poison: a stored
+  poison value, or uninitialized memory; cf. Lee et al., OOPSLA'18).
+* Experiment "loads are never poison" (P(load) = false): gemm 3 -> 9 of 16.
+  The remaining losses are loop counters / nsw arithmetic under freeze.
+* Which accesses are fully proved (live trap edges counted in pass output):
+    old (14): all four accesses     -> = arm2 of native_bench/jl_gemm_arms.jl
+    loads-defined (9): A read, C write -> = arm3
+    sound (3): none                  -> = arm1 (checked baseline)
+* Mac timing (jl_gemm_arms.jl unmodified, N=512, 21 rotated reps, outputs
+  identical): arm2 4.248x, arm3 4.257x (100.1% of the gap). So the 9-proof
+  encoding keeps the whole GEMM speedup; the fully sound encoding loses it.
+* The loads-defined assumption is the DEFAULT (Z3Encoder::LoadsDefined):
+  a load gets P = false. Knob `poison-loads` turns it off (every load gets a
+  fresh poison bit; fully LLVM-faithful). Mac check after the commit: gemm
+  9/16 by default, 3/16 under poison-loads. Justification (stated in the
+  paper): safe Julia/Swift/Rust never read uninitialized memory, and a
+  correct compilation stores poison only where the source program had UB.
+  The §12.3 before/after numbers were measured WITHOUT this assumption (all
+  loads poisonable); rerun on x86 with the default to get the paper's
+  numbers.
+
+### 12.5 Induction for non-poison counters (planned, not started)
+Goal: recover the counter-related GEMM losses without any assumption.
+A header phi i is poison only if a back-edge value (`i.next = add nsw i, 1`)
+is poison, i.e. it wrapped. Prove !P(i) inductively with the existing `ind`
+base/step queries: base, P(entry value) is false; step, !P(i') and the
+iteration's bound imply !P(i.next'). Pitfall: SCEV's bounds on i are now
+guarded by !P(i), so the step must carry the bound and !P jointly (one
+invariant), not assume one to get the other. Prediction: recovers 3-5 of the
+5 gemm edges still lost with loads-defined, and the same pattern elsewhere.
+Estimate: 1-2 days implementation, 1 day validation (tripwires, static rerun).
+Does not remove the need for the loads assumption on gemm's size loads.
+
+### 12.6 Paper changes made (uncommitted in the main tree)
+* Table 1 (tab:encoding): caption defines P and cites lee2017taming and
+  lopes2021alive2; the nsw row now sets P instead of asserting NoOvf; the
+  freeze row is ite(P(x), f, [[x]]); the br row asserts !P(c) for guards and
+  the trap condition; boundary rows get a fresh P.
+* §5.5 freeze paragraph rewritten to the sound rule, with one sentence on why
+  the identity is unsound.
+* odessy.bib: lee2017taming (PLDI'17) and lee2018reconciling (OOPSLA'18,
+  poison in memory; not yet cited in the text).
+* NOT changed: any static count (gemm 16/16 etc.), pending the author's
+  decision; the numbers in the paper were produced by the old encoder.
+
+### 12.7 Open decisions / next steps
+* Static numbers: rerun all static tables with the fixed encoder on x86 (the
+  paper's IR is x86) when the server is back, before the arXiv posting
+  (applications deadline mid-December 2026).
+* Runtime: rows whose proofs changed need re-timing: gemm (if the assumption
+  is not adopted, it falls to 1.00x), zstd (lost one proof each in
+  fse_compress and zstd_decompress_block, gained elsewhere), CryptoSwift.
+* Decide on the loads-defined assumption (knob + paper sentence citing
+  lee2018reconciling) and on the §12.5 induction.

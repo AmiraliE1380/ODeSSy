@@ -37,6 +37,7 @@ unsigned FactEncoder::encodeFactsFor(BasicBlock *PredBB, const std::vector<Value
     for (size_t i = 0; i < Vals.size(); ++i) {     // by index: Vals may grow
         Value *V = Vals[i];
         if (!V->getType()->isIntegerTy()) continue;
+        Encoder.setFactSubject(V);   // facts about V hold only if V is not poison
         tryRangeMetadata(V);
         tryRangeAttr(V);
         tryKnownBits(V);
@@ -44,6 +45,7 @@ unsigned FactEncoder::encodeFactsFor(BasicBlock *PredBB, const std::vector<Value
         trySCEVSym(V);
         tryPhiInv(V);
     }
+    Encoder.setFactSubject(nullptr);
     processScevLeaves(PredBB);
     return NumFacts;
 }
@@ -212,6 +214,7 @@ unsigned FactEncoder::encodeBoundaryFacts(BasicBlock *PredBB) {
         // Pointers / vectors / aliens are modeled as width-64 stand-ins;
         // a "range" over the stand-in is not a fact about the real value.
         if (!V->getType()->isIntegerTy()) continue;
+        Encoder.setFactSubject(V);   // facts about V hold only if V is not poison
         tryRangeMetadata(V);
         tryRangeAttr(V);
         tryKnownBits(V);
@@ -220,6 +223,7 @@ unsigned FactEncoder::encodeBoundaryFacts(BasicBlock *PredBB) {
         trySCEVSym(V);
         tryPhiInv(V);
     }
+    Encoder.setFactSubject(nullptr);
     processScevLeaves(PredBB);
     return NumFacts;
 }
@@ -250,6 +254,7 @@ unsigned FactEncoder::encodeBoundaryFacts(BasicBlock *PredBB) {
 // Facts NEVER move a boundary: the leaf stays free-plus-constrained.
 // =====================================================================
 void FactEncoder::processScevLeaves(BasicBlock *PredBB) {
+    struct ClearSubject { Z3Encoder &E; ~ClearSubject() { E.setFactSubject(nullptr); } } CS{Encoder};
     // Budget: leaves processed, not facts -- keeps worst-case audit runs
     // (CryptoSwift-scale) bounded. 32 is ~4x what gemm needs.
     unsigned Budget = 32;
@@ -258,6 +263,7 @@ void FactEncoder::processScevLeaves(BasicBlock *PredBB) {
         auto *I = dyn_cast<Instruction>(V);
         if (!I || !I->getType()->isIntegerTy()) continue;
         --Budget;
+        Encoder.setFactSubject(V);   // facts about V hold only if V is not poison
         // Value battery (each source has its own gates and labels).
         tryRangeMetadata(V);
         tryRangeAttr(V);
@@ -271,8 +277,10 @@ void FactEncoder::processScevLeaves(BasicBlock *PredBB) {
         if (auto *FI = dyn_cast<FreezeInst>(I)) {
             Value *Op = FI->getOperand(0);
             if (!Op->getType()->isIntegerTy()) continue;
-            z3::expr Fact =
-                Encoder.valueAsBV(V, W) == Encoder.valueAsBV(Op, W);
+            // identity only when the operand is not poison (freeze of
+            // poison is an arbitrary value; Lee et al. PLDI'17)
+            z3::expr Fact = z3::implies(!Encoder.poisonOf(Op),
+                Encoder.valueAsBV(V, W) == Encoder.valueAsBV(Op, W));
             std::string Lbl = mkLabel("SCEVEQ");
             Encoder.assertRawFact(Fact, Audit ? Lbl : std::string());
             Log << "    -> Fact[" << Lbl << "] " << valueStr(V)

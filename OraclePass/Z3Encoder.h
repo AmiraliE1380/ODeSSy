@@ -66,8 +66,30 @@ class Z3Encoder {
     // are exactly the over-approximation boundaries of the current query
     // -- the set the HEAVY tier walks to assert analysis facts (§9).
     std::vector<llvm::Value*> FreeVars;
+    // --- POISON TRACKING (Alive2-style; Lee et al. PLDI'17 semantics) ---
+    // PoisonMap[V] is a Bool term: "V is poison in this execution". Flagged
+    // ops (nsw/nuw/exact/disjoint/nneg/samesign, trunc nuw/nsw, oversized
+    // shifts, abs INT_MIN) feed it instead of being asserted as facts;
+    // freeze(x) = ite(P(x), fresh, x); branch conditions assert !P (branching
+    // on poison is UB); imported analysis facts about V hold only if !P(V).
+    std::unordered_map<llvm::Value*, z3::expr> PoisonMap, PrimedPoisonMap;
+    unsigned FreshCounter = 0;
+    llvm::Value *FactSubject = nullptr;
+    // Default assumption: a loaded value is never poison. LLVM's semantics
+    // let memory bytes hold poison (a stored poison value, uninitialized
+    // memory; Lee et al. OOPSLA'18); a program in which neither happens --
+    // safe Julia/Swift/Rust, or C without UB -- never loads one. Off under
+    // oracle-pass<poison-loads>, which gives every load a fresh poison bit.
+    bool LoadsDefined = true;
+    void setPoison(llvm::Value *V, const z3::expr &P);
 
 public:
+    // Bool term: V is poison (creates a fresh one for boundaries unless LLVM
+    // guarantees V is never poison).
+    z3::expr poisonOf(llvm::Value *V);
+    // Facts asserted while a subject is set are guarded by !poison(subject).
+    void setFactSubject(llvm::Value *V) { FactSubject = V; }
+    void setLoadsDefined(bool B) { LoadsDefined = B; }
     explicit Z3Encoder(unsigned TimeoutMs = 10000);
     z3::expr getOrCreateZ3Expr(llvm::Value *Val);
     bool encodeInstruction(llvm::Instruction *Inst, llvm::DominatorTree *DT = nullptr, llvm::LoopInfo *LI = nullptr);
@@ -97,7 +119,7 @@ public:
     void endPrimed() { PrimedLoop = nullptr; PrimeTag.clear(); }
     // Forget the copy (its definitions live in a popped scope): call
     // after the STEP scope is popped, before another loop level.
-    void resetPrimed() { endPrimed(); PrimedMap.clear(); PrimedHeaderPhis.clear(); PrimedFreeVars.clear(); }
+    void resetPrimed() { endPrimed(); PrimedMap.clear(); PrimedPoisonMap.clear(); PrimedHeaderPhis.clear(); PrimedFreeVars.clear(); }
     // In-loop values that became FRESH symbols in the copy (header phis,
     // loads, calls...): the copy's boundaries, for FactEncoder.
     std::vector<llvm::Value*> PrimedFreeVars;
@@ -111,7 +133,7 @@ public:
         PrimedLoop = Save; PrimeTag = T; return E;
     }
     const std::vector<std::pair<llvm::PHINode*, z3::expr>> &primedHeaderPhis() const { return PrimedHeaderPhis; }
-    z3::expr condExpr(llvm::Value *Cond, bool IsTrue) { z3::expr c = asBool(getOrCreateZ3Expr(Cond)); return IsTrue ? c : !c; }
+    z3::expr condExpr(llvm::Value *Cond, bool IsTrue) { z3::expr c = asBool(getOrCreateZ3Expr(Cond)); return (IsTrue ? c : !c) && !poisonOf(Cond); }
     unsigned timeoutMs() const { return TimeoutMsStored; }
     std::vector<std::string> TrackedLabels;   // answer literals of tracked assertions (scope-aware)
     std::vector<size_t> TrackedScopes;        // TrackedLabels.size() at each push
@@ -188,6 +210,7 @@ private:
     // invariant from §4 applies to fact constants too).
     z3::expr bvConst(const llvm::APInt &A);
     void defineValue(llvm::Value *V, const z3::expr &E);   // ValueMap or PrimedMap
+    void defineValueP(llvm::Value *V, const z3::expr &E, const z3::expr &P) { defineValue(V, E); setPoison(V, P); }
     void addFact(const z3::expr &Fact, const std::string &Label);
     // --- i1 sort-coercion helpers ---
     

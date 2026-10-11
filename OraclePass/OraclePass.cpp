@@ -154,6 +154,7 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
     unsigned NarrowBits = 16;
     bool Inductive = false;         // ind knob (item 1, HANDOFF §10.46)
     bool NoPhiInv = false;          // nophiinv knob (PHIINV ablation)
+    bool PoisonLoads = false;       // poison-loads knob (HANDOFF §12)
     // mv-nofold (experiment, HANDOFF §10.58): synthesize, verify and clone
     // exactly as `mv`, but in the fast copy KEEP each check, redirecting its
     // trap edge to a uniquely numbered `odessy.fast.trap(i32 id)`. A later
@@ -178,12 +179,13 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
                bool Frame = false, bool MV = false, unsigned MVSane = 62,
                bool T3 = false, unsigned Profile = 0, bool Narrow = false,
                unsigned NBits = 16, bool Ind = false, bool NoPI = false,
-               bool NoFold = false, bool Tag = false, bool Keep = false)
+               bool NoFold = false, bool Tag = false, bool Keep = false,
+               bool PLoads = false)
         : VacuityCheck(Vacuity), HeavyMode(Heavy), QueryTimeoutMs(TimeoutMs),
           Threads(NThreads), LoadEq(LdEq), TrapCallees(std::move(Traps)),
           FrameMode(Frame), MultiVersion(MV), MVT3(T3), MVSaneExp(MVSane),
           ProfileMs(Profile), NarrowMul(Narrow), NarrowBits(NBits),
-          Inductive(Ind), NoPhiInv(NoPI), MVNoFold(NoFold), TagChecks(Tag), MVKeep(Keep) {}
+          Inductive(Ind), NoPhiInv(NoPI), MVNoFold(NoFold), TagChecks(Tag), MVKeep(Keep), PoisonLoads(PLoads) {}
 
     PreservedAnalyses run(Module &M, ModuleAnalysisManager &MAM) {
         auto &FAM =
@@ -221,6 +223,7 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
         Cfg.NarrowBits = NarrowBits;
         Cfg.Inductive = Inductive;
         Cfg.NoPhiInv = NoPhiInv;
+        Cfg.PoisonLoads = PoisonLoads;
         if (ProfileMs) sys::fs::create_directories("logs/profile");
 
         // =============================================================
@@ -273,7 +276,7 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
                << (LoadEq ? " [ldeq]" : "")
                << (FrameMode ? " [frame]" : "")
                << (MultiVersion ? (MVT3 ? " [mv]" : " [mv-light]") : "")
-               << (NarrowMul ? " [narrow]" : "") << (Inductive ? " [ind]" : "") << (NoPhiInv ? " [nophiinv]" : "")
+               << (NarrowMul ? " [narrow]" : "") << (Inductive ? " [ind]" : "") << (NoPhiInv ? " [nophiinv]" : "") << (PoisonLoads ? " [poison-loads]" : "")
                << (MVNoFold ? " [mv-nofold]" : "") << (MVKeep ? " [mv-keep]" : "") << (TagChecks ? " [tag-checks]" : "");
         if (!TrapCallees.empty()) {
             errs() << " [traps=";
@@ -475,6 +478,9 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
                     Value *Cmp = B.CreateICmp((ICmpInst::Predicate)C.Pred, C.V, RHS, "mv.h");
                     H = H ? B.CreateAnd(H, Cmp, "mv.h") : Cmp;
                 }
+                // The guard reads values the original loop may never branch
+                // on; a branch on poison would be new UB, so freeze it.
+                if (H) H = B.CreateFreeze(H, "mv.h.fr");
                 // Split: CheckBB | PH(original preheader), clone before PH.
                 BasicBlock *PH = SplitBlock(CheckBB, CheckBB->getTerminator(), DT, LI, nullptr,
                                             L->getHeader()->getName() + ".mv.ph");
@@ -652,7 +658,7 @@ llvmGetPassPluginInfo() {
                         bool Frame = false;               // FRAME default: off
                         bool MV = false, MVT3 = false; unsigned MVSane = 62;  // MV default: off
                         unsigned Profile = 0; bool Narrow = false; unsigned NBits = 16;
-                        bool Ind = false, NoPI = false, NoFold = false, Tag = false, Keep = false;
+                        bool Ind = false, NoPI = false, NoFold = false, Tag = false, Keep = false, PLoads = false;
                         std::vector<std::string> Traps;   // traps= callees: empty
                         if (!Name.empty()) {              // parse "<a;b;...>"
                             if (!Name.consume_front("<") || !Name.consume_back(">"))
@@ -677,6 +683,8 @@ llvmGetPassPluginInfo() {
                                     Ind = true;
                                 else if (P == "nophiinv")
                                     NoPI = true;
+                                else if (P == "poison-loads")
+                                    PLoads = true;
                                 else if (P == "mv-nofold")
                                     NoFold = true;
                                 else if (P == "mv-keep")
@@ -735,7 +743,7 @@ llvmGetPassPluginInfo() {
                         }
                         MPM.addPass(OraclePass(Vacuity, Heavy, TimeoutMs, Threads,
                                                LdEq, std::move(Traps), Frame,
-                                               MV, MVSane, MVT3, Profile, Narrow, NBits, Ind, NoPI, NoFold, Tag, Keep));
+                                               MV, MVSane, MVT3, Profile, Narrow, NBits, Ind, NoPI, NoFold, Tag, Keep, PLoads));
                         return true;
                     }
                 );

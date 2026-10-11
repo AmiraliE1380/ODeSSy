@@ -2,6 +2,7 @@
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/IR/CFG.h"
 #include "llvm/IR/Operator.h"
+#include "llvm/Analysis/ValueTracking.h"
 #include "llvm/ADT/SmallString.h"
 #include <chrono>
 #include <string>
@@ -27,6 +28,7 @@ void Z3Encoder::enableUnsatCores() { Solver.set("unsat_core", true); }
 void Z3Encoder::assertConditionTracked(Value *Cond, bool IsTrue, const std::string &Label) {
     z3::expr c = asBool(getOrCreateZ3Expr(Cond));
     if (!IsTrue) c = !c;
+    c = c && !poisonOf(Cond);         // a branch on poison is UB
     Solver.add(c, Label.c_str());     // tracked: eligible for the core
     TrackedLabels.push_back(Label);
 }
@@ -87,7 +89,12 @@ z3::expr Z3Encoder::bvConst(const llvm::APInt &A) {
     return Ctx.bv_val(S.c_str(), W);
 }
 
-void Z3Encoder::addFact(const z3::expr &Fact, const std::string &Label) {
+void Z3Encoder::addFact(const z3::expr &Fact0, const std::string &Label) {
+    // An imported fact about V (LLVM analyses, !range, SCEV) holds for V's
+    // non-poison values only: a frozen poison V is an arbitrary number.
+    z3::expr Fact = Fact0;
+    if (FactSubject && FactSubject->getType()->isIntegerTy())
+        Fact = z3::implies(!poisonOf(FactSubject), Fact0);
     FactExprs.push_back(Fact);
     if (Label.empty()) Solver.add(Fact);
     else             { Solver.add(Fact, Label.c_str()); TrackedLabels.push_back(Label); }
@@ -112,7 +119,7 @@ bool Z3Encoder::assertRange(Value *V, const ConstantRange &CR,
     if (!SMin.isMinSignedValue()) { Fact = Fact && (X >= bvConst(SMin));      Any = true; }
     if (!SMax.isMaxSignedValue()) { Fact = Fact && (X <= bvConst(SMax));      Any = true; }
     if (!Any) return false;                     // all four bounds trivial
-    addFact(Fact, Label);
+    addFact(z3::implies(!poisonOf(V), Fact), Label);
     return true;
 }
 
@@ -129,7 +136,7 @@ bool Z3Encoder::assertKnownBits(Value *V, const llvm::KnownBits &KB,
         Fact = Fact && ((X & bvConst(KB.Zero)) == Ctx.bv_val(0, W));
     if (!KB.One.isZero())
         Fact = Fact && ((X & bvConst(KB.One)) == bvConst(KB.One));
-    addFact(Fact, Label);
+    addFact(z3::implies(!poisonOf(V), Fact), Label);
     return true;
 }
 
@@ -213,6 +220,30 @@ void Z3Encoder::defineValue(llvm::Value *V, const z3::expr &E) {
 static bool insidePrimed(Value *Val, llvm::Loop *L) {
     auto *I = dyn_cast<Instruction>(Val);
     return I && L && L->contains(I->getParent());
+}
+
+void Z3Encoder::setPoison(llvm::Value *V, const z3::expr &P) {
+    if (PrimedLoop && insidePrimed(V, PrimedLoop)) { PrimedPoisonMap.insert({V, P}); return; }
+    PoisonMap.insert({V, P});
+}
+
+z3::expr Z3Encoder::poisonOf(llvm::Value *V) {
+    bool InCopy = PrimedLoop && insidePrimed(V, PrimedLoop);
+    auto &M = InCopy ? PrimedPoisonMap : PoisonMap;
+    auto It = M.find(V);
+    if (It != M.end()) return It->second;
+    if (isa<ConstantInt>(V)) return Ctx.bool_val(false);
+    if (isa<PoisonValue>(V)) return Ctx.bool_val(true);
+    z3::expr P = Ctx.bool_val(false);
+    // Boundaries (loads, calls, arguments, header phis, unmodeled ops): a
+    // free poison bit, unless LLVM's own analysis guarantees no poison or
+    // V is a load under the loads-defined assumption (see LoadsDefined).
+    if (!(LoadsDefined && isa<LoadInst>(V)) && !isGuaranteedNotToBePoison(V)) {
+        std::string N = "poison!" + getSafeName(V) + (InCopy ? "~" + PrimeTag : std::string());
+        P = Ctx.bool_const(N.c_str());
+    }
+    M.insert({V, P});
+    return P;
 }
 
 z3::expr Z3Encoder::getOrCreateZ3Expr(Value *Val) {
@@ -448,38 +479,45 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo
                 getOrCreateZ3Expr(Inst); 
                 return true; 
         }
-        // --- nsw/nuw FLAGS AS FREE FACTS ---
-        // LLVM guarantees a flagged op never wraps in any defined execution
-        // (wrapping would yield poison; every op we encode feeds a
-        // branched-on condition, and branching on poison is UB, so defined
-        // executions reaching the trap have no wrap here).
-        if (auto *OBO = dyn_cast<OverflowingBinaryOperator>(BinOp)) {
-            unsigned Opc = BinOp->getOpcode();
-            if (Opc == Instruction::Add || Opc == Instruction::Sub ||
-                Opc == Instruction::Mul) {
-                z3::expr a = asBV(op1, W), b = asBV(op2, W);
-                if (OBO->hasNoSignedWrap()) {
-                    if (Opc == Instruction::Add)
-                        Solver.add(z3::bvadd_no_overflow(a, b, true) &&
-                                   z3::bvadd_no_underflow(a, b));
-                    else if (Opc == Instruction::Sub)
-                        Solver.add(z3::bvsub_no_overflow(a, b) &&
-                                   z3::bvsub_no_underflow(a, b, true));
-                    else
-                        Solver.add(z3::bvmul_no_overflow(a, b, true) &&
-                                   z3::bvmul_no_underflow(a, b));
-                }
-                if (OBO->hasNoUnsignedWrap()) {
-                    if (Opc == Instruction::Add)
-                        Solver.add(z3::bvadd_no_overflow(a, b, false));
-                    else if (Opc == Instruction::Sub)
-                        Solver.add(z3::bvsub_no_underflow(a, b, false));
-                    else
-                        Solver.add(z3::bvmul_no_overflow(a, b, false));
+        // --- POISON: flags violated => poison (not a fact) ---
+        // A wrapped nsw/nuw op is poison, not UB; it only becomes UB when
+        // a branch consumes it (assertCondition asserts !P there). Freeze
+        // and unchosen select/phi arms can absorb it, so the no-wrap
+        // condition must not be asserted globally.
+        unsigned Opc = BinOp->getOpcode();
+        z3::expr P = poisonOf(BinOp->getOperand(0)) || poisonOf(BinOp->getOperand(1));
+        if (W > 1) {
+            z3::expr a = asBV(op1, W), b = asBV(op2, W);
+            if (auto *OBO = dyn_cast<OverflowingBinaryOperator>(BinOp)) {
+                bool NSW = OBO->hasNoSignedWrap(), NUW = OBO->hasNoUnsignedWrap();
+                if (Opc == Instruction::Add) {
+                    if (NSW) P = P || !(z3::bvadd_no_overflow(a, b, true) && z3::bvadd_no_underflow(a, b));
+                    if (NUW) P = P || !z3::bvadd_no_overflow(a, b, false);
+                } else if (Opc == Instruction::Sub) {
+                    if (NSW) P = P || !(z3::bvsub_no_overflow(a, b) && z3::bvsub_no_underflow(a, b, true));
+                    if (NUW) P = P || !z3::bvsub_no_underflow(a, b, false);
+                } else if (Opc == Instruction::Mul) {
+                    if (NSW) P = P || !(z3::bvmul_no_overflow(a, b, true) && z3::bvmul_no_underflow(a, b));
+                    if (NUW) P = P || !z3::bvmul_no_overflow(a, b, false);
+                } else if (Opc == Instruction::Shl) {
+                    if (NUW) P = P || (z3::lshr(res, b) != a);
+                    if (NSW) P = P || (z3::ashr(res, b) != a);
                 }
             }
+            if (Opc == Instruction::Shl || Opc == Instruction::LShr || Opc == Instruction::AShr)
+                P = P || z3::uge(b, Ctx.bv_val(W, W));          // oversized shift
+            if (auto *PE = dyn_cast<PossiblyExactOperator>(BinOp); PE && PE->isExact()) {
+                if (Opc == Instruction::UDiv) P = P || (z3::urem(a, b) != Ctx.bv_val(0, W));
+                else if (Opc == Instruction::SDiv) P = P || (z3::srem(a, b) != Ctx.bv_val(0, W));
+                else if (Opc == Instruction::LShr) P = P || (z3::shl(res, b) != a);
+                else if (Opc == Instruction::AShr) P = P || (z3::shl(res, b) != a);
+            }
+            if (auto *PD = dyn_cast<PossiblyDisjointInst>(BinOp); PD && PD->isDisjoint())
+                P = P || ((a & b) != Ctx.bv_val(0, W));
+        } else if (auto *PD = dyn_cast<PossiblyDisjointInst>(BinOp); PD && PD->isDisjoint()) {
+            P = P || (asBool(op1) && asBool(op2));
         }
-        defineValue(Inst, res);
+        defineValueP(Inst, res, P);
         return true;
     } 
     else if (auto *Cmp = dyn_cast<ICmpInst>(Inst)) {
@@ -511,7 +549,13 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo
                 getOrCreateZ3Expr(Inst); 
                 return true;
         }
-        defineValue(Inst, res);
+        z3::expr P = poisonOf(Cmp->getOperand(0)) || poisonOf(Cmp->getOperand(1));
+        if (Cmp->hasSameSign() && !Cmp->getOperand(0)->getType()->isIntegerTy(1)) {
+            unsigned CW = Cmp->getOperand(0)->getType()->getIntegerBitWidth();
+            z3::expr Z = Ctx.bv_val(0, CW);
+            P = P || ((asBV(op1, CW) < Z) != (asBV(op2, CW) < Z));
+        }
+        defineValueP(Inst, res, P);
         return true;
     }
     else if (auto *Cast = dyn_cast<CastInst>(Inst)) {
@@ -556,8 +600,15 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo
             getOrCreateZ3Expr(Inst);
             return true;
         }
-        
-        defineValue(Inst, res);
+        z3::expr P = poisonOf(Cast->getOperand(0));
+        if (auto *TI = dyn_cast<TruncInst>(Inst)) {
+            z3::expr S = asBV(src, src_width), T = S.extract(dst_width - 1, 0);
+            if (TI->hasNoUnsignedWrap()) P = P || (z3::zext(T, src_width - dst_width) != S);
+            if (TI->hasNoSignedWrap())   P = P || (z3::sext(T, src_width - dst_width) != S);
+        } else if (isa<ZExtInst>(Inst) && Inst->hasNonNeg() && src_width > 1) {
+            P = P || (asBV(src, src_width) < Ctx.bv_val(0, src_width));
+        }
+        defineValueP(Inst, res, P);
         return true;
     }
     else if (isa<FreezeInst>(Inst)) {
@@ -584,7 +635,15 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo
             getOrCreateZ3Expr(Inst);
             return true;
         }
-        defineValue(Inst, getOrCreateZ3Expr(Op));
+        // freeze(x) = x when x is not poison; otherwise some fixed but
+        // arbitrary value (LangRef; Lee et al. PLDI'17). Alive2 encodes it
+        // the same way. The result is never poison.
+        z3::expr X = getOrCreateZ3Expr(Op);
+        std::string N = "freeze!" + getSafeName(Inst) + (PrimedLoop ? "~" + PrimeTag : std::string())
+                        + "!" + std::to_string(FreshCounter++);
+        z3::expr Fresh = X.is_bool() ? Ctx.bool_const(N.c_str())
+                                     : Ctx.bv_const(N.c_str(), X.get_sort().bv_size());
+        defineValueP(Inst, z3::ite(poisonOf(Op), Fresh, X), Ctx.bool_val(false));
         return true;
     }
     else if (auto *ExtVal = dyn_cast<ExtractValueInst>(Inst)) {
@@ -627,7 +686,7 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo
             } else {
                 getOrCreateZ3Expr(Inst); return true;
             }
-            defineValue(Inst, res);
+            defineValueP(Inst, res, poisonOf(Call->getArgOperand(0)) || poisonOf(Call->getArgOperand(1)));
             return true;
         }
         
@@ -712,7 +771,17 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo
                     Encoded = false;
                 }
                 if (Encoded) {
-                    defineValue(Inst, res);
+                    z3::expr P = Ctx.bool_val(false);
+                    for (unsigned i = 0; i < Call->arg_size(); ++i)
+                        if (Call->getArgOperand(i)->getType() == Call->getType())
+                            P = P || poisonOf(Call->getArgOperand(i));
+                    if (Name.starts_with("llvm.abs.")) {
+                        // abs(x, true) is poison on INT_MIN
+                        auto *Flag = dyn_cast<ConstantInt>(Call->getArgOperand(1));
+                        if (!Flag || !Flag->isZero())
+                            P = P || (Arg(0) == Ctx.bv_val(APInt::getSignedMinValue(W).getSExtValue(), W));
+                    }
+                    defineValueP(Inst, res, P);
                     return true;
                 }
             }
@@ -727,7 +796,10 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo
         z3::expr t = getOrCreateZ3Expr(Sel->getTrueValue());
         z3::expr f = getOrCreateZ3Expr(Sel->getFalseValue());
         if (Sel->getType()->isIntegerTy(1)) { t = asBool(t); f = asBool(f); }
-        defineValue(Inst, z3::ite(c, t, f));
+        // poison iff the condition is, or the CHOSEN arm is
+        defineValueP(Inst, z3::ite(c, t, f),
+                     poisonOf(Sel->getCondition()) ||
+                     z3::ite(c, poisonOf(Sel->getTrueValue()), poisonOf(Sel->getFalseValue())));
         return true;
     }
     else if (auto *Phi = dyn_cast<PHINode>(Inst)) {
@@ -751,6 +823,7 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo
         // Base case: incoming value 0 is the "default" leaf of the ite chain.
         z3::expr res = getOrCreateZ3Expr(Phi->getIncomingValue(0));
         if (PhiIsI1) res = asBool(res);
+        z3::expr Pres = poisonOf(Phi->getIncomingValue(0));
         
         for (unsigned i = 1; i < Phi->getNumIncomingValues(); ++i) {
             BasicBlock *IncBB = Phi->getIncomingBlock(i);
@@ -766,9 +839,10 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo
             z3::expr IncExpr = getOrCreateZ3Expr(IncVal);
             if (PhiIsI1) IncExpr = asBool(IncExpr);
             res = z3::ite(gate, IncExpr, res);
+            Pres = z3::ite(gate, poisonOf(IncVal), Pres);
         }
 
-        defineValue(Inst, res);
+        defineValueP(Inst, res, Pres);
         return true;
     }
     
@@ -778,7 +852,7 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo
         // `i < n` (guard's load) contradict `i >= n'` (check's reload).
         if (LoadInst *Eq = findEquivalentLoad(Load)) {
             z3::expr Same = getOrCreateZ3Expr(Eq);  // already encoded (RPO)
-            defineValue(Load, Same);
+            defineValueP(Load, Same, poisonOf(Eq));   // same memory, same poison
             ++NumLoadEquivs;
             if (DebugOracle) {
                 errs() << "    [LDEQ] load " << getSafeName(Load)
@@ -815,7 +889,7 @@ void Z3Encoder::assertCondition(Value *Cond, bool IsTrue) {
     if (!IsTrue) {
         z3_cond = !z3_cond;
     }
-    Solver.add(z3_cond);
+    Solver.add(z3_cond && !poisonOf(Cond));   // a branch on poison is UB
 }
 
 std::pair<std::string, double> Z3Encoder::checkSatisfiability() {

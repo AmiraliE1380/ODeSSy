@@ -67,6 +67,9 @@ struct SolverConfig {
     // switch that disables the four PHIINV rules (hi/lo/hx/rel).
     bool Inductive = false;
     bool NoPhiInv = false;
+    // poison-loads (HANDOFF §12): drop the default assumption that loaded
+    // values are never poison (LLVM lets memory bytes hold poison).
+    bool PoisonLoads = false;
 };
 
 class TrapSolver {
