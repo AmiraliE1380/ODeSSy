@@ -1014,25 +1014,16 @@ and profitable, even if the trap remains reachable from other blocks.
     $G \gets G \cup \{$that edge's condition$\}$
   \EndIf
 \EndFor
-\State $S \gets \emptyset$;\ \ $W \gets \{c\} \cup G$ \Comment{slice; worklist}
-\While{$W \neq \emptyset$}
-  \State take $v$ from $W$; \textbf{if} $v \in S$ or $v$ is a constant \textbf{then continue}
-  \State $S \gets S \cup \{v\}$
-  \If{$v$ is a load, gep, unencoded call, or loop-header phi}
-    \State \textbf{continue} \Comment{boundary: a free variable}
-  \ElsIf{$v$ is a phi at a merge point $B$}
-    \State $W \gets W \cup \{$incoming values of $v\}$
-      $\cup\ \{$branch conditions between $\mathrm{idom}(B)$ and $B\}$
-  \Else
-    \State $W \gets W \cup \{$operands of $v\}$
-  \EndIf
-\EndWhile
+\State $S \gets$ every instruction that $c$ and $G$ depend on, collected
+  backwards through operands \Comment{the slice}
+\Statex \hspace{\algorithmicindent} (through phis that merge branches, with
+  the branch conditions that select their value; stopping at loads, calls,
+  and loop phis)
 \ForAll{$I \in S$ in reverse post-order}
   \State assert $\den{I}$ per Table~\ref{tab:encoding}
   \Comment{boundaries: fresh variables}
 \EndFor
-\State assert every $g \in G$ (tracked);\ \ [heavy] assert boundary
-  facts (\S\ref{sec:system-facts})
+\State assert every $g \in G$ (tracked)
 \State \Return $\mathrm{check\mbox{-}sat}(c)$
 \Comment{\textsc{unsat}: fold edge; \textsc{sat}/\textsc{unknown}: keep}
 \end{algorithmic}
