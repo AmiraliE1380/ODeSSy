@@ -187,6 +187,9 @@
 \usepackage{listings}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
+%% algorithm captions in the table style (acmart journal: small sans,
+%% period separator) instead of the ruled float's bold label
+\captionsetup[algorithm]{labelfont={sf,small}, textfont={sf,small}, labelsep=period}
 \definecolor{codecomment}{gray}{0.45}
 \definecolor{codekw}{RGB}{0,90,160}
 \definecolor{trapred}{RGB}{200,20,20}
@@ -979,13 +982,13 @@ loop-header \texttt{phi}, \texttt{load}, \texttt{call}, \texttt{gep} & fresh var
 
 An encoding thread starts from a trap \emph{edge}, which is a boolean condition $c$ that takes the control-flow from a predecessor basic block $P$ to a trap block. Frontends merge error blocks, so a trap block routinely has many incoming
 edges. Each qualifying edge is an independent obligation: the trap fires via this edge
-iff control reaches $P$ and $c$ holds. Removing the exit branch from $P$ via $c$ to a shared trap block is solid
+iff control reaches $P$ and $c$ holds. Removing the exit branch from $P$ via $c$ to a shared trap block is sound
 and profitable, even if the trap remains reachable from other blocks.
 
 \begin{algorithm}[t]
 \caption{Encoding and deciding one trap edge $(P, c)$}
 \label{alg:encode}
-\footnotesize
+\small
 \begin{algorithmic}[1]
 \State $G \gets \emptyset$ \Comment{dominating context}
 \ForAll{dominators $D$ of $P$ ending in a cond.\ branch}
@@ -1187,7 +1190,7 @@ the guard for vacuity, and transform the loop.
 \begin{algorithm}[t]
 \caption{Guard synthesis for one trap edge $(P, c)$ inside loop $L$}
 \label{alg:guards}
-\footnotesize
+\small
 \begin{algorithmic}[1]
 \Require the direct query $\Gamma \wedge c$ returned \textsc{sat} or
   \textsc{unknown} \Comment{$\Gamma$: context, facts, guards}
