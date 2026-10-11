@@ -977,15 +977,10 @@ loop-header \texttt{phi}, \texttt{load}, \texttt{call}, \texttt{gep} & fresh var
 \end{tabular}}
 \end{table}
 
-The unit of proof is a trap \emph{edge}, fixed by an \emph{anchor}.
-Frontends merge error blocks, and loop multiversioning clones checks
-around a shared one, so a trap block routinely has many incoming
-edges. Each qualifying edge --- a predecessor $P$ ending in a
-conditional branch with condition $c$ whose one successor is the trap
-block --- is an independent obligation: the trap fires via this edge
-iff control reaches $P$ and $c$ holds. A proof folds only $P$'s
-branch, so \emph{partial} elimination of a shared trap block is sound
-and profitable (one side exit of one loop version disappears).
+An encoding thread starts from a trap \emph{edge}, which is a boolean condition $c$ that takes the control-flow from a predecessor basic block $P$ to a trap block. Frontends merge error blocks, so a trap block routinely has many incoming
+edges. Each qualifying edge is an independent obligation: the trap fires via this edge
+iff control reaches $P$ and $c$ holds. Removing the exit branch from $P$ via $c$ to a shared trap block is solid
+and profitable, even if the trap remains reachable from other blocks.
 
 \begin{algorithm}[t]
 \caption{Encoding and deciding one trap edge $(P, c)$}
