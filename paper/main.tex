@@ -989,7 +989,7 @@ LLVM IR (pseudocode) & encoding & also covers\\
 \texttt{z = select c, x, y} & $\den{z} = \mathrm{ite}(\den{c}, \den{x}, \den{y})$ & \\
 \texttt{z = umax(x, y)} & $\den{z} = \mathrm{ite}(\den{x} >_u \den{y}, \den{x}, \den{y})$ & \texttt{umin}, \texttt{smax}, \texttt{smin}, \texttt{abs}, \texttt{fshl}\\
 \texttt{r, o = sadd.with.overflow(x, y)} & $\den{r} = \den{x} + \den{y}$, \quad $\den{o} = \neg\,\mathit{NoOvf}_s(\den{x}, \den{y})$ & \texttt{\{s,u\} $\times$ \{add,sub,mul\}} \\
-\texttt{z = add nsw x, y} & \texttt{add} rule, and $P(z) = P(x) \vee P(y) \vee \neg\mathit{NoOvf}_s(\den{x}, \den{y})$ & \texttt{nuw}; \texttt{sub}, \texttt{mul}, \texttt{shl}; \texttt{exact}, \texttt{disjoint}, \texttt{nneg}, \texttt{samesign}; shift amounts $\geq w$\\
+\texttt{z = add nsw x, y} & \texttt{add} rule, and $P(z) = P(x) \vee P(y) \vee \neg\mathit{NoOvf}_s(\den{x}, \den{y})$ & \texttt{nuw}; other poison flags\\
 \texttt{z = freeze x} & $\den{z} = \mathrm{ite}\bigl(P(x),\ f,\ \den{x}\bigr)$, $f$ fresh;\quad $P(z) = \bot$ & (\S\ref{sec:frame-machinery})\\
 \texttt{z = phi [v$_1$, B$_1$], \ldots, [v$_n$, B$_n$]} & $\den{z} = \mathrm{ite}\bigl(\mathit{Reach}(B_n) \wedge \mathit{Edge}(B_n{\to}B),\ \den{v_n},\ \ldots\ \den{v_1}\bigr)$ & merge-point phis only\\
 \texttt{br c, S, T} & $\mathit{Edge}(B{\to}S) = \den{c}$, \quad $\mathit{Edge}(B{\to}T) = \neg \den{c}$ & \texttt{switch}: case equalities\\
