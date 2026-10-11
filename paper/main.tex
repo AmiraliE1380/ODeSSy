@@ -913,20 +913,14 @@ believed (\S\ref{sec:audit}).
 \subsection{Pipeline}
 \label{sec:pipeline}
 \tool{} runs sandwiched between two full \texttt{-O3} pipelines. The
-first produces the optimized, check-laden IR that is the analysis
-input; the second, after \tool{}'s check elimination, re-optimizes the simplified
+first produces the optimized IR with inserted checks it could not prove dead; that is the analysis
+input. The second, after \tool{}'s check elimination, re-optimizes the simplified
 control flow and performs the transformations the deleted checks were
-blocking --- unrolling, vectorization (\S\ref{sec:results-mech}). The
-pass itself changes nothing but the proven branches: the solver
-licenses, the compiler rewrites.
+blocking --- unrolling, vectorization (\S\ref{sec:results-mech}). 
 
 Internally the pass is three stages. \emph{Serial discovery} scans the
 module for trap sites: calls to
-\texttt{llvm.ubsantrap}/\texttt{llvm.trap} plus, behind a divergence
-gate (the callee is no-return, or the call is followed by
-\texttt{unreachable}), any callee named in the \texttt{traps=}
-parameter --- one mechanism that retargets the pass to Swift, Rust,
-and Julia checks with zero per-language code. Each incoming edge of a
+\texttt{llvm.ubsantrap}/\texttt{llvm.trap}. Each incoming edge of a
 trap block becomes one independent \emph{job}
 (\S\ref{sec:encoding-impl}).
 \emph{Parallel solve}: workers claim jobs in discovery order, each
