@@ -806,13 +806,12 @@ solver~\cite{demoura2008z3}, making super-analysis necessary rather than merely 
 \subsection{Guard Synthesis and Loop Cloning}
 \label{sec:guards}
 Sometimes a check cannot be proved dead for every execution, because it
-is not dead for every execution. Consider the Julia LZ77 compressor
-\texttt{lz77\_scan} in our benchmarks. Its inner loop reads
+is not dead for every execution. Consider the Julia LZ77 compressor in our benchmarks. Its inner loop reads
 \texttt{data[i+len]} only while \texttt{i+len <= n}, where $n$ is the
 length of \texttt{data}, a value known only at run time. In
 unbounded integer arithmetic this test makes the bounds check on
 \texttt{data[i+len]} redundant. In 64-bit arithmetic it does not: Julia
-integer arithmetic silently overflows, and the solver answers with a satisfying assignment in which \texttt{i+len} overflows to $-2^{63}$, passing the programmer's safety guard \texttt{i+len <= n} but triggering  index out of bound (negative index) at \texttt{data[i+len]}. This vulnerability truly exists, safety check must remain for this array access.
+integer arithmetic silently overflows, and the solver answers with a satisfying assignment in which \texttt{i+len} overflows to $-2^{63}$, passing the programmer's safety guard \texttt{i+len <= n} but triggering  index out of bound (negative index) at \texttt{data[i+len]}. This vulnerability truly exists, and the safety check must remain for this array access.
 
 Yet no real call looks like these models: an array of nearly $2^{63}$
 bytes, about 9 exabytes, exists on no machine, and for every array that
@@ -870,7 +869,7 @@ must be provably safe to run. Both are questions about the conjunction
 of the guard, the context, and the trap condition, so, again, they
 necessitate a solver. The solver proposes the guard, verifies that the
 trap is unreachable under it, and verifies that the guard does not
-contradict the context --- a contradictory guard would make the fast
+contradict the context as a contradictory guard would make the fast
 copy dead code.
 
 The idea resembles abductive inference~\cite{dillig2012abductive,
@@ -902,9 +901,7 @@ inputs as possible.
 %% =====================================================================
 \section{\tool{}: Design and Implementation}
 \label{sec:system}
-\tool{} is an LLVM module pass of roughly five thousand lines. Two
-requirements dictate its design: soundness under aggressive
-parallelism, and bit-reproducible verdicts regardless of thread count.
+\tool{} is an LLVM module pass of roughly five thousand lines that removes safety checks and enables further optimizations.
 This section describes the pipeline the pass lives in
 (\S\ref{sec:pipeline}), the encoding machinery at its core
 (\S\ref{sec:encoding-impl}), inductive loop encoding
@@ -917,7 +914,7 @@ believed (\S\ref{sec:audit}).
 \label{sec:pipeline}
 \tool{} runs sandwiched between two full \texttt{-O3} pipelines. The
 first produces the optimized, check-laden IR that is the analysis
-input; the second, after elimination, re-optimizes the simplified
+input; the second, after \tool{}'s check elimination, re-optimizes the simplified
 control flow and performs the transformations the deleted checks were
 blocking --- unrolling, vectorization (\S\ref{sec:results-mech}). The
 pass itself changes nothing but the proven branches: the solver
@@ -931,8 +928,7 @@ gate (the callee is no-return, or the call is followed by
 parameter --- one mechanism that retargets the pass to Swift, Rust,
 and Julia checks with zero per-language code. Each incoming edge of a
 trap block becomes one independent \emph{job}
-(\S\ref{sec:encoding-impl}); the job list spans the whole module, so
-one function with 400 traps and ten with 2 load-balance perfectly.
+(\S\ref{sec:encoding-impl}).
 \emph{Parallel solve}: workers claim jobs in discovery order, each
 owning a private Z3 context; the IR is read-only throughout. The only
 shared mutable state is LLVM's own analyses, whose internal caches make
@@ -941,9 +937,7 @@ every analysis query passes through a ticket turnstile keyed on
 discovery index, serializing them in one canonical order. That single
 mechanism buys thread safety \emph{and} reproducibility: verdicts,
 output IR, and logs are identical for \texttt{threads=1} and
-\texttt{threads=N}, which we verify by \texttt{diff}, as long as no
-query lands at its time budget: a wall-clock budget lets contention
-decide such a query (Figure~\ref{fig:matrix}). \emph{Serial
+\texttt{threads=N} (\S\ref{sec:audit}). \emph{Serial
 transform}: the main thread folds each proven branch to a constant in
 discovery order --- the only IR mutation in the pass --- and standard
 \texttt{simplifycfg}/\texttt{adce} reclaim the dead blocks. Workers
@@ -1289,8 +1283,13 @@ folds already made in earlier ones. When a verification query contains
 at 32 bits with explicit overflow flags; this is sound only under $H$,
 which bounds the inputs, so it is used only to certify guards.
 
-\subsection{Auditing the proofs}
+\subsection{Debug Mode}
 \label{sec:audit}
+We take multiple measures to ensure the absence of data races,
+parallelism bugs, and encoding bugs. These checks run in a debug mode,
+because each one would impose a tax on the production pass. First,
+verdicts, output IR, and logs must be identical for \texttt{threads=1}
+and \texttt{threads=N}, which we verify by \texttt{diff}.
 A wrong proof is the one failure mode this tool must not have, so no
 \textsc{unsat} is accepted at face value. Under \texttt{vacuity},
 every \textsc{unsat} is re-solved with the trap condition removed: if
@@ -1952,7 +1951,7 @@ that it is sufficient and consistent before the loop is cloned.
 %% =====================================================================
 \section{Conclusion}
 \label{sec:conclusion}
-We introduced super-analysis, an alternative paradigm of aggressive compilation which uses a solver for analysis only. We show that this paradigm is effective: it can speedup our benchmarks up to $4.01\times$ on x86. Super-analysis can be used online, and the cost of compilation can be controlled by parallelization and strict SMT timeout budgets. Our implementation, \tool{} targeted safety check removal and loop cloning under synthesized guards. Future work consists of extending this paradigm into other analyses and optimizations.
+We introduced super-analysis, an alternative paradigm of aggressive compiler optimization which uses a solver for analysis only. We show that this paradigm is effective: it can speedup our benchmarks up to $4.01\times$ on x86. We also show that it is relatively fast: Super-analysis can be used online, and the cost of compilation can be controlled by parallelization and strict SMT timeout budgets. Our implementation, \tool{} targeted safety check removal and loop cloning under synthesized guards. Future work consists of extending this paradigm into other analyses and optimizations.
 %% =====================================================================
 \begin{acks}
 %% Anonymized for review.
