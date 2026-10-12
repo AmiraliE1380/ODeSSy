@@ -1048,12 +1048,12 @@ function.
 \emph{(3)~Translation.} The slice is encoded in reverse post-order by
 the rules of Table~\ref{tab:encoding}: one exact bit-vector equation
 per instruction, at the instruction's own width. A merge-point phi becomes
-an if-then-else chain gated by a memoized reachability formula
+an if-then-else chain gated by a reachability formula that is built once per block:
 \[
 \mathit{Reach}(B) \;=\; \textstyle\bigvee_{P \in \mathrm{preds}(B)}
 \mathit{Reach}(P) \wedge \mathit{Edge}(P{\to}B),
 \]
-an $O(\mathit{edges})$ circuit whose shared prefixes are stored once
+The formula is an $O(\mathit{edges})$ circuit whose shared prefixes are stored once
 (Z3 terms are hash-consed), leaving path enumeration to the SAT
 engine rather than to an exponential DNF.
 
@@ -1065,28 +1065,20 @@ everything encoded, in which this edge reaches the trap.
 
 \subsection{Encoding LLVM's analyses}
 \label{sec:system-facts}
-The \emph{light} tier is the machinery above: free variables are
-constrained only by their types. The \emph{heavy} tier strengthens the
+The encoding of \S\ref{sec:encoding-impl} is the \emph{light} tier: it encodes the context alone and gives every boundary --- a load, a call, a loop-header phi --- an unconstrained variable. This over-approximates the values the boundaries can take, and the solver often answers \textsc{sat} with a model no execution can produce. The \emph{heavy} tier strengthens the
 boundaries with post-conditions bought from LLVM's own analyses,
 asserted as labeled constraints on the free variables:
 \texttt{!range} metadata and range attributes (RM), KnownBits (KB),
 LazyValueInfo ranges (LVI), scalar-evolution constant ranges (SCEV),
 and a symbolic trip-count translation (SCEVSYM) that renders loop
 bounds --- including symbolic starts and an exact unsigned-division
-translation --- as constraints on loop-header phis. The import
-discipline is refusal: a fact that is trivial, width-mismatched, or
-self-contradictory (an empty LVI range, conflicting known bits) is
-dropped rather than repaired. The \texttt{ldeq} option adds
-load-equality within a basic block --- two loads of the same pointer
-with no intervening may-write share one variable, exactly GVN's
-theorem replayed at encoding time. Three tiers name the configurations
+translation --- as constraints on loop-header phis. 
+
+Three tiers name the configurations
 used throughout the paper: \emph{light}, \emph{heavy} (analysis facts
-+ \texttt{ldeq}), and \emph{full} (heavy + the \texttt{frame} facts of
-\S\ref{sec:frame-machinery}). The remaining knobs are
-\texttt{timeout=} and \texttt{threads=} (the two latency dials of
-\S\ref{sec:results-cost}), \texttt{traps=} (\S\ref{sec:pipeline}), and
-\texttt{vacuity} (\S\ref{sec:audit}); Appendix~\ref{sec:app-knobs}
-lists every knob.
++ \texttt{ldeq}, under which two loads of the same pointer in one block,
+with no store between them, share one variable), and \emph{full} (heavy + the \texttt{frame} facts of
+\S\ref{sec:frame-machinery}). Each tier adds knobs that further constrain the solver. Besides these, the user sets the two latency dials, \texttt{timeout=} and \texttt{threads=} (\S\ref{sec:results-cost}), and the functions treated as traps, \texttt{traps=} (\S\ref{sec:pipeline}); Appendix~\ref{sec:app-knobs} lists every knob.
 
 \subsection{Encoding loops inductively}
 \label{sec:app-machinery}
