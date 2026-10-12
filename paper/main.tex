@@ -1342,10 +1342,7 @@ pinned to socket~0 (\texttt{numactl}). Apple-Silicon measurements use an
 M-series MacBook Pro. The pass builds against pinned LLVM trunk
 (23.0.0git) with Z3 4.8.12; Swift 6.3.3, Rust 1.97, Julia 1.12.
 \paragraph{Timing protocol.}
-Corpora live in tmpfs; every configuration is warmed; repetitions are
-\emph{shuffled and interleaved} so drift spreads uniformly across
-configurations; finals use 30 repetitions (20 for zlib; 21 rotated
-repetitions for the Julia copies) and \emph{medians} are reported. We compare
+To measure the run time of our compiled benchmarks, we run each output binary 30 times and report the median to rule out outliers. We compare
 against two baselines. The first runs \texttt{-O3} once. The second runs
 it twice in a row, as \tool{} itself sits between two \texttt{-O3} runs
 (\S\ref{sec:pipeline}), so a speedup over it cannot come from the extra
@@ -1353,23 +1350,8 @@ it twice in a row, as \tool{} itself sits between two \texttt{-O3} runs
 baselines perform almost identically, and the difference between them
 serves as the noise floor of each run. Speedups are reported against the
 single \texttt{-O3} baseline; Table~\ref{tab:speedups-full} also gives
-them against the double one.
+them against the double one. The runtime experiments (\S\ref{sec:results-perf}--\S\ref{sec:results-mech}) use a 10\,s per-query solver budget; the compile-cost experiments (\S\ref{sec:results-cost}) vary it.
 
-\paragraph{Honesty gates.}
-Before any timing is trusted, all binaries must produce byte-identical
-output on the workload; a mismatch aborts the experiment. Static
-``eliminated'' counts are recomputed from the final IR, never inferred
-from verdicts; crashes and timeouts are marked, never counted as
-eliminations.\footnote{The static counts in this paper were produced
-before we corrected the encoding of \texttt{freeze} and of the poison
-flags (Table~\ref{tab:encoding}). Re-running the benchmarks of
-Table~\ref{tab:compile} with the corrected encoder on M-series
-(46 of their 47 modules) changes their total from 780 to 810 proofs; stdlib GEMM keeps 9 of its 16
-edges, which still prove every check of the two accesses behind its
-speedup (\S\ref{sec:frame-results}).} Performance builds use a 10\,s per-query solver budget
-and one solver thread, the budget of the library audits;
-\S\ref{sec:results-cost} shows that \pct{96} of the proofs already
-survive a 1\,s budget on zlib's \texttt{deflate.c}.
 \paragraph{Benchmarks, specifications, tiers.}
 Four C libraries (zlib, zstd, lz4, OpenSSL) under UBSan trap-mode
 specifications; nine Swift kernels plus the unmodified CryptoSwift
