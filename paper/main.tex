@@ -1047,8 +1047,7 @@ once: it always terminates, and the slice is at most the size of the
 function.
 \emph{(3)~Translation.} The slice is encoded in reverse post-order by
 the rules of Table~\ref{tab:encoding}: one exact bit-vector equation
-per instruction, at the instruction's own width. Control flow is
-encoded once per block, not once per path: a merge-point phi becomes
+per instruction, at the instruction's own width. A merge-point phi becomes
 an if-then-else chain gated by a memoized reachability formula
 \[
 \mathit{Reach}(B) \;=\; \textstyle\bigvee_{P \in \mathrm{preds}(B)}
