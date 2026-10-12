@@ -42,3 +42,24 @@ zlib,C,infback,44,0.104,7.872,6,1.709,6,NA,NA
 zlib,C,inffast,29,0.078,4.337,7,0.679,1,NA,NA
 zlib,C,inflate,109,0.249,54.746,15,7.220,7,NA,NA
 zlib,C,inftrees,11,0.050,2.729,1,0.711,0,NA,NA
+zlib,C,trees,0,0.282,FAIL,0,489.014,22,NA,NA
+zlib,C,uncompr,24,0.034,0.810,8,0.490,8,NA,NA
+zlib,C,zutil,1,0.016,0.051,0,0.055,0,NA,NA
+benchmark        lang  mods checks    O3 s | thorough s    (max)   pf |   fast s   (max)   pf |  light s   (max)   pf
+sha256           Swift    1     36    0.26 |       2.69     2.69    8 |     0.63    0.63    1 |      nan     nan   -1
+base64           Swift    1     27    0.09 |       4.27     4.27    7 |     0.67    0.67    0 |      nan     nan   -1
+lz77             Swift    1     27    0.10 |      12.15    12.15    7 |     0.41    0.41    3 |      nan     nan   -1
+crc32            Swift    1     37    0.12 |       4.31     4.31   11 |     0.68    0.68    0 |      nan     nan   -1
+adler32          Swift    1     38    0.10 |       6.19     6.19    2 |     0.62    0.62    1 |      nan     nan   -1
+sha1             Swift    1     24    0.11 |       1.50     1.50    2 |     0.41    0.41    2 |      nan     nan   -1
+md5              Swift    1     25    0.11 |       1.73     1.73    1 |     0.42    0.42    1 |      nan     nan   -1
+utf8             Swift    1     21    0.09 |       1.00     1.00    4 |     0.28    0.28    2 |      nan     nan   -1
+cryptoswift      Swift    1   2696    4.87 |     682.48   682.48  377 |    69.90   69.90  146 |      nan     nan   -1
+rs_lz77_bench    Rust     1      4    0.04 |       4.33     4.33    2 |     0.59    0.59    0 |      nan     nan   -1
+rs_matmul_bench  Rust     1      4    0.04 |       2.31     2.31    2 |     0.49    0.49    2 |      nan     nan   -1
+jl_jl_gemm_base  Julia    1     16    0.05 |      12.27    12.27    9 |     0.38    0.38    8 |      nan     nan   -1
+jl_lz77          Julia    1      4    0.04 |      38.48    38.48    2 |     0.14    0.14    0 |      nan     nan   -1
+jl_matmul        Julia    1      3    0.02 |     114.88   114.88    3 |     0.56    0.56    0 |      nan     nan   -1
+jl_sha256        Julia    1     16    0.06 |     282.66   282.66   14 |     2.26    2.26    0 |      nan     nan   -1
+zstd             C       18    606    8.82 |     302.98   171.69  153 |    33.25   17.28   92 |      nan     nan   -1
+zlib             C       14   1246    2.29 |        nan   472.84  254 |   531.75  489.01  117 |      nan     nan   -1

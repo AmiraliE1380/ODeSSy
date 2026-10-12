@@ -43,3 +43,6 @@ zlib,C,infback,44,0.104,7.872,6,1.709,6,NA,NA
 zlib,C,inffast,29,0.078,4.337,7,0.679,1,NA,NA
 zlib,C,inflate,109,0.249,54.746,15,7.220,7,NA,NA
 zlib,C,inftrees,11,0.050,2.729,1,0.711,0,NA,NA
+zlib,C,trees,0,0.282,FAIL,0,489.014,22,NA,NA
+zlib,C,uncompr,24,0.034,0.810,8,0.490,8,NA,NA
+zlib,C,zutil,1,0.016,0.051,0,0.055,0,NA,NA
