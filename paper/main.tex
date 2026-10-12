@@ -1144,7 +1144,7 @@ thread.
 
 \subsection{Encoding heap invariance}
 \label{sec:frame-machinery}
-The \texttt{frame} encoding knob supplies the heap fact of \S\ref{sec:frame}:
+We add a heap and pointer reasoning machinery to our pass. The \texttt{frame} encoding knob supplies the heap fact of \S\ref{sec:frame}:
 two loads of the same location return the same value if no store
 between them can write that location. Two notions from LLVM decide this.
 A store (or call) \emph{clobbers} a load if it may rewrite in the location
