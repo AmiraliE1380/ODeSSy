@@ -1040,10 +1040,11 @@ from every guard. It stops at the \emph{boundaries} of
 \S\ref{sec:encoding}: loads, address computations, calls we do not
 encode, and loop-header phis, all of which become free variables. A
 phi at an ordinary merge point is entered instead: its incoming values
-and the branch conditions of its merge region join the slice. Each
-value is visited once, and every cyclic dependence in SSA passes
-through a loop-header phi --- a boundary --- so the walk terminates
-with a slice linear in the function.
+and the branch conditions of its merge region join the slice. Every
+cycle of data dependences in SSA runs through a loop-header phi, where
+the walk stops, so the walk follows an acyclic graph and visits each value
+once: it always terminates, and the slice is at most the size of the
+function.
 \emph{(3)~Translation.} The slice is encoded in reverse post-order by
 the rules of Table~\ref{tab:encoding}: one exact bit-vector equation
 per instruction, at the instruction's own width. Control flow is
