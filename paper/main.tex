@@ -1096,10 +1096,15 @@ single query unless a fact source bounds those values. Scalar evolution
 often does (SCEVSYM), but not for loops that advance by a variable or
 non-unit stride, or exit in several places. It is also not the most precise loop post-condition or invariant deriver.  The \texttt{ind} option
 proves such checks by one-step induction over the loop, with no trip
-count and no invariant synthesis. Let $\vec\phi_k$ be the vector of values of
-the trap's loop-header phis in iteration $k$, $\vec\phi_{\mathit{init}}$
-their values on entry to the loop, and $\Gamma_k$ and
-$\mathit{TrapCond}_k$ the encoded context and trap condition in
+count and no invariant synthesis. Each loop-header phi has the form
+\[
+\vec\phi = \mathtt{phi}\ [\vec\phi_{\mathit{init}},\ \mathit{preheader}],\ [\vec\phi_{\mathit{ind}},\ \mathit{latch}],
+\]
+where $\vec\phi_{\mathit{init}}$ is the value on entry to the loop and
+$\vec\phi_{\mathit{ind}}$ the value the back edge carries, computed in the
+loop body. Let $\vec\phi_k$ be the values of the trap's loop-header phis
+in iteration $k$, and $\Gamma_k$ and $\mathit{TrapCond}_k$ the encoded
+context, with its imported facts, and the trap condition in
 iteration $k$; iterations $k$ and $k{+}1$ are encoded as two copies of
 the loop body over separate variables, which in effect unrolls the loop
 once. Two queries are posed:
@@ -1107,13 +1112,13 @@ once. Two queries are posed:
 \textsc{Base}:&\quad \Gamma_0 \wedge \vec\phi_0 = \vec\phi_{\mathit{init}} \wedge \mathit{TrapCond}_0\\
 \textsc{Step}:&\quad \bigl(\Gamma_k \wedge \neg\,\mathit{TrapCond}_k \wedge \mathit{BackEdge}_k\bigr)
   && \text{iteration $k$: the check did not fire}\\
-&\quad\wedge\ \vec\phi_{k+1} = \den{\vec v}_k
+&\quad\wedge\ \vec\phi_{k+1} = \den{\vec\phi_{\mathit{ind}}}_k
   && \text{the back edge}\\
 &\quad\wedge\ \bigl(\Gamma_{k+1} \wedge \mathit{TrapCond}_{k+1}\bigr)
   && \text{iteration $k{+}1$: the check fires}
 \end{align*}
 where $\mathit{BackEdge}_k$ states that iteration $k$ took the back
-edge, $\vec v$ are the values the back edge passes to the header phis and $\den{\vec v}_k$ their encoding in iteration $k$, and
+edge, $\den{\vec\phi_{\mathit{ind}}}_k$ is the back-edge value encoded in iteration $k$, and
 $\neg\,\mathit{TrapCond}_k$ states that the check did not fire in
 iteration $k$. If both are
 \textsc{unsat}, the check cannot fire on the first iteration, nor on any
@@ -1130,8 +1135,10 @@ fact about a loop-header phi justified by the same one-step argument
 (for example, a counter that only increases stays at or above its start
 value); induction recovers 12 of the 14 proofs those rules provide and
 adds proofs they cannot state, and the two mechanisms are used together.
-Because encoding iteration $k$ queries scalar evolution outside the turnstile of
-\S\ref{sec:pipeline}, \texttt{ind} runs on one thread.
+Importing the facts of iteration $k$ queries scalar evolution, which is
+not thread-safe, outside the turnstile of \S\ref{sec:pipeline}; until
+that import is routed through the turnstile, \texttt{ind} runs on one
+thread, although its solver queries could run in parallel.
 
 \subsection{Encoding heap invariance}
 \label{sec:frame-machinery}
