@@ -1100,12 +1100,11 @@ their values on entry to the loop, and $\Gamma_k$ and
 $\mathit{TrapCond}_k$ the encoded context and trap condition in
 iteration $k$; iterations $k$ and $k{+}1$ are encoded as two copies of
 the loop body over separate variables. Two queries are posed:
-\[
-\textsc{Base}:\ \ \Gamma_0 \wedge \vec\phi_0 = \vec\phi_{\mathit{init}} \wedge \mathit{TrapCond}_0
-\qquad
-\textsc{Step}:\ \ \Gamma_k \wedge \Gamma_{k+1} \wedge \mathit{BackEdge}_k \wedge
+\begin{align*}
+\textsc{Base}:&\quad \Gamma_0 \wedge \vec\phi_0 = \vec\phi_{\mathit{init}} \wedge \mathit{TrapCond}_0\\
+\textsc{Step}:&\quad \Gamma_k \wedge \Gamma_{k+1} \wedge \mathit{BackEdge}_k \wedge
 \vec\phi_{k+1} = \mathit{Next}(\vec\phi_k) \wedge \neg\,\mathit{TrapCond}_k \wedge \mathit{TrapCond}_{k+1}
-\]
+\end{align*}
 where $\mathit{BackEdge}_k$ states that iteration $k$ took the back
 edge, $\mathit{Next}$ computes the header values that edge carries, and
 $\neg\,\mathit{TrapCond}_k$ states that the check did not fire in
