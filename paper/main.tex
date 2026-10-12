@@ -1086,24 +1086,31 @@ with no store between them, share one variable), and \emph{full} (heavy + the \t
 
 \subsection{Encoding loops inductively}
 \label{sec:app-machinery}
-A loop-header phi merges a loop variable's value on entry with the
+Hot loops hold the checks that cost the most, so for loops we do not rely
+on LLVM's analyses alone: we also encode constraints derived from the loop
+itself. A loop-header phi merges a loop variable's value on entry with the
 value its back edge carries from the previous iteration. Loop-header
 phis are boundaries (\S\ref{sec:encoding}), so a check
 whose safety depends on how a loop's values evolve is out of reach of a
 single query unless a fact source bounds those values. Scalar evolution
 often does (SCEVSYM), but not for loops that advance by a variable or
-non-unit stride, or exit in several places. The \texttt{ind} option
+non-unit stride, or exit in several places. It is also not the most precise loop post-condition or invariant deriver.  The \texttt{ind} option
 proves such checks by one-step induction over the loop, with no trip
 count and no invariant synthesis. Let $\vec\phi_k$ be the values of
 the trap's loop-header phis in iteration $k$, $\vec\phi_{\mathit{init}}$
 their values on entry to the loop, and $\Gamma_k$ and
 $\mathit{TrapCond}_k$ the encoded context and trap condition in
 iteration $k$; iterations $k$ and $k{+}1$ are encoded as two copies of
-the loop body over separate variables. Two queries are posed:
+the loop body over separate variables, which in effect unrolls the loop
+once. Two queries are posed:
 \begin{align*}
 \textsc{Base}:&\quad \Gamma_0 \wedge \vec\phi_0 = \vec\phi_{\mathit{init}} \wedge \mathit{TrapCond}_0\\
-\textsc{Step}:&\quad \Gamma_k \wedge \Gamma_{k+1} \wedge \mathit{BackEdge}_k \wedge
-\vec\phi_{k+1} = \mathit{Next}(\vec\phi_k) \wedge \neg\,\mathit{TrapCond}_k \wedge \mathit{TrapCond}_{k+1}
+\textsc{Step}:&\quad \bigl(\Gamma_k \wedge \neg\,\mathit{TrapCond}_k \wedge \mathit{BackEdge}_k\bigr)
+  && \text{iteration $k$: the check did not fire}\\
+&\quad\wedge\ \vec\phi_{k+1} = \mathit{Next}(\vec\phi_k)
+  && \text{the back edge}\\
+&\quad\wedge\ \bigl(\Gamma_{k+1} \wedge \mathit{TrapCond}_{k+1}\bigr)
+  && \text{iteration $k{+}1$: the check fires}
 \end{align*}
 where $\mathit{BackEdge}_k$ states that iteration $k$ took the back
 edge, $\mathit{Next}$ computes the header values that edge carries, and
