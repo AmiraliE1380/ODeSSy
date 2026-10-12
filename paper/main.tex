@@ -1072,7 +1072,11 @@ asserted as labeled constraints on the free variables:
 LazyValueInfo ranges (LVI), scalar-evolution constant ranges (SCEV),
 and a symbolic trip-count translation (SCEVSYM) that renders loop
 bounds --- including symbolic starts and an exact unsigned-division
-translation --- as constraints on loop-header phis. 
+translation --- as constraints on loop-header phis. In debug mode
+(\S\ref{sec:audit}) every fact is tracked under its label, so the unsat
+core of each proof names the fact sources and mechanisms that contributed
+to it; these are the labels in the cores of \S\ref{sec:conjunction} and
+\S\ref{sec:frame-results}. 
 
 Three tiers name the configurations
 used throughout the paper: \emph{light}, \emph{heavy} (analysis facts
