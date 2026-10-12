@@ -1205,7 +1205,7 @@ the guard for vacuity, and transform the loop.
   \textsc{unsat}$} \Comment{verification}
   \State \Return \textit{keep the trap}
 \EndIf
-\State $H \gets C \cap \mathrm{core}$ \Comment{a sufficient subset}
+\State $H \gets C \cap \mathrm{unsat\mbox{-}core}$ of that query \Comment{a sufficient subset}
 \ForAll{$h \in H$, upper bounds first, tightest first}
   \Comment{minimization}
   \If{$\mathrm{check\mbox{-}sat}(\Gamma \wedge c \wedge
@@ -1213,10 +1213,11 @@ the guard for vacuity, and transform the loop.
     \State $H \gets H \setminus \{h\}$
   \EndIf
 \EndFor
-\State loosen each upper bound in $H$ while the query stays
-  \textsc{unsat}
+\ForAll{upper bounds $v \le_s 2^k$ in $H$} \Comment{loosening}
+  \State raise $k$ while $\mathrm{check\mbox{-}sat}(\Gamma \wedge c \wedge \bigwedge H) = \textsc{unsat}$
+\EndFor
 \If{$\mathrm{check\mbox{-}sat}(\Gamma \wedge \bigwedge H) =
-  \textsc{unsat}$} \Comment{vacuity}
+  \textsc{unsat}$} \Comment{vacuity check}
   \State \Return \textit{keep the trap}
 \EndIf
 \If{an operand of $H$ does not dominate the preheader of $L$}
