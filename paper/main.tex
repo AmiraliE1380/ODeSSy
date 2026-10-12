@@ -1345,12 +1345,16 @@ M-series MacBook Pro. The pass builds against pinned LLVM trunk
 Corpora live in tmpfs; every configuration is warmed; repetitions are
 \emph{shuffled and interleaved} so drift spreads uniformly across
 configurations; finals use 30 repetitions (20 for zlib; 21 rotated
-repetitions for the Julia copies) and \emph{medians} are primary. Two controls isolate attribution: a
-\texttt{base} binary (one verify round-trip through the identical
-emit-IR/\texttt{opt}/\texttt{llc} sandwich) and a \texttt{base2x} binary
-(the same full O3 applied \emph{twice}), so oracle-vs-\texttt{base2x}
-deltas cannot be an artifact of extra conventional optimization exposure.
-The \texttt{base}--\texttt{base2x} gap doubles as a per-run noise floor.
+repetitions for the Julia copies) and \emph{medians} are reported. We compare
+against two baselines. The first runs \texttt{-O3} once. The second runs
+it twice in a row, as \tool{} itself sits between two \texttt{-O3} runs
+(\S\ref{sec:pipeline}), so a speedup over it cannot come from the extra
+\texttt{-O3} run alone and is \tool{}'s own contribution. The two
+baselines perform almost identically, and the difference between them
+serves as the noise floor of each run. Speedups are reported against the
+single \texttt{-O3} baseline; Table~\ref{tab:speedups-full} also gives
+them against the double one.
+
 \paragraph{Honesty gates.}
 Before any timing is trusted, all binaries must produce byte-identical
 output on the workload; a mismatch aborts the experiment. Static
