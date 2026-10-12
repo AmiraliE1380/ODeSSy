@@ -101,12 +101,13 @@
   booktitle = {Parallel Processing Letters},
   year = {2012}
 }
-@inproceedings{relaxingalias2025,
-  author = {Anonymous},
+@article{relaxingalias2025,
+  author = {Michel Weber and Theodoros Theodoridis and Zhendong Su},
   title = {Relaxing Alias Analysis: Exploring the Unexplored Space},
-  booktitle = {PLDI},
-  year = {2025},
-  note = {Citation to be completed}
+  journal = {Proc. ACM Program. Lang.},
+  volume = {9},
+  number = {PLDI},
+  year = {2025}
 }
 @inproceedings{taneja2020knownbits,
   author = {Jubi Taneja and Zhengyang Liu and John Regehr},
@@ -1152,8 +1153,9 @@ the load reads. \emph{MemorySSA} is LLVM's analysis that links each load
 to the most recent memory write that may clobber it, using alias
 analysis to skip writes that provably touch other locations.
 
-For two loads of the same pointer $p$, \texttt{n1 = load p} before
-the loop and \texttt{n2 = load p} inside it, \tool{} adds the equality
+For any two loads of the same pointer $p$, \texttt{n1 = load p} and
+\texttt{n2 = load p}, where every path to \texttt{n2} passes through
+\texttt{n1}, \tool{} adds the equality
 \[
 \frac{\mathrm{clobber}(n_2,\ p) \ \preceq\ \mathrm{def}(n_1)}
      {\den{n_1} = \den{n_2}}
@@ -1163,7 +1165,9 @@ write before $n_2$ that may clobber $p$, as MemorySSA reports it;
 $\mathrm{def}(n_1)$ is the most recent write before $n_1$; and
 $\preceq$ means ``is the same write, or an earlier one.'' If the premise
 holds, nothing between the two loads can change the location, and the
-two loaded values are equal: a new encoded constraint. This is exactly
+two loaded values are equal: a new encoded constraint. With no write
+between the loads the premise holds trivially; with writes between them,
+MemorySSA must show that none of them can write the location. This is exactly
 the case of Figure~\ref{fig:frame-example}, where \texttt{n1} is read by
 the dimension guard and \texttt{n2} by the check, and the equality
 $n_2 = n_1$ is what proves the check dead.
@@ -1176,7 +1180,11 @@ load in the guard keeps the front end's aliasing metadata, and with it
 LLVM's alias analysis shows that the stores in the loop write
 \texttt{C}, not \texttt{A}'s length. \tool{} adds no alias analysis of
 its own: every disjointness verdict is LLVM's, and when MemorySSA cannot
-rule a write out, no fact is added.
+rule a write out, no fact is added. A super-analyzer could also reason
+about pointers itself, encoding address arithmetic and aliasing in the
+solver, but more precise alias information does not by itself make code
+faster: removing LLVM's alias analysis changes the final binaries little,
+and only a small fraction of alias queries affects them~\cite{relaxingalias2025}.
 
 \subsection{Implementing Guard Synthesis}
 \label{sec:guards-impl}
