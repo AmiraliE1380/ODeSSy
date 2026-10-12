@@ -1086,40 +1086,45 @@ with no store between them, share one variable), and \emph{full} (heavy + the \t
 
 \subsection{Encoding loops inductively}
 \label{sec:app-machinery}
-Loop-header $\phi$s are boundaries (\S\ref{sec:encoding}), so a check
+A loop-header phi merges a loop variable's value on entry with the
+value its back edge carries from the previous iteration. Loop-header
+phis are boundaries (\S\ref{sec:encoding}), so a check
 whose safety depends on how a loop's values evolve is out of reach of a
 single query unless a fact source bounds those values. Scalar evolution
 often does (SCEVSYM), but not for loops that advance by a variable or
 non-unit stride, or exit in several places. The \texttt{ind} option
 proves such checks by one-step induction over the loop, with no trip
-count and no invariant synthesis. Let $\vec\phi$ be the header $\phi$s
-of the trap's loop, $\vec\phi_0$ their entry values, $\Gamma$ the
-encoded context of the trap, and primes denote a copy of the loop body
-over fresh symbols that stands for the previous iteration. Two queries
-are posed:
+count and no invariant synthesis. Let $\vec\phi_k$ be the values of
+the trap's loop-header phis in iteration $k$, $\vec\phi_{\mathit{init}}$
+their values on entry to the loop, and $\Gamma_k$ and
+$\mathit{TrapCond}_k$ the encoded context and trap condition in
+iteration $k$; iterations $k$ and $k{+}1$ are encoded as two copies of
+the loop body over separate variables. Two queries are posed:
 \[
-\textsc{Base}:\ \ \Gamma \wedge \vec\phi = \vec\phi_0 \wedge \mathit{TrapCond}
+\textsc{Base}:\ \ \Gamma_0 \wedge \vec\phi_0 = \vec\phi_{\mathit{init}} \wedge \mathit{TrapCond}_0
 \qquad
-\textsc{Step}:\ \ \Gamma \wedge \Gamma' \wedge \mathit{BackEdge}' \wedge
-\vec\phi = \mathit{Next}'(\vec\phi') \wedge \neg\,\mathit{TrapCond}' \wedge \mathit{TrapCond}
+\textsc{Step}:\ \ \Gamma_k \wedge \Gamma_{k+1} \wedge \mathit{BackEdge}_k \wedge
+\vec\phi_{k+1} = \mathit{Next}(\vec\phi_k) \wedge \neg\,\mathit{TrapCond}_k \wedge \mathit{TrapCond}_{k+1}
 \]
-where $\mathit{BackEdge}'$ states that the previous iteration took the
-back edge, $\mathit{Next}'$ computes the header
-values that edge carries, and $\neg\,\mathit{TrapCond}'$ states that the
-check did not fire on the previous iteration. If both are
+where $\mathit{BackEdge}_k$ states that iteration $k$ took the back
+edge, $\mathit{Next}$ computes the header values that edge carries, and
+$\neg\,\mathit{TrapCond}_k$ states that the check did not fire in
+iteration $k$. If both are
 \textsc{unsat}, the check cannot fire on the first iteration, nor on any
 iteration that follows one on which it did not fire; by induction it
-never fires. \tool{} poses the two queries only when the direct query is
+never fires. Iteration $k$ is
+arbitrary, so the step query leaves $\vec\phi_k$ unconstrained except by
+the facts below. \tool{} poses the two queries only when the direct query is
 \textsc{sat} or \textsc{unknown} and the trap lies in a loop, first for
-the trap's own loop and then for each enclosing one. The copy's fresh
-symbols receive the same facts as ordinary boundaries, except facts
+the trap's own loop and then for each enclosing one. The variables of
+iteration $k$ receive the same facts as ordinary boundaries, except facts
 valid only at a single program point. The heavy tier also carries four
 syntactic \emph{header-phi interval} rules (\texttt{PHIINV}), each a
-fact about a loop-header $\phi$ justified by the same one-step argument
+fact about a loop-header phi justified by the same one-step argument
 (for example, a counter that only increases stays at or above its start
 value); induction recovers 12 of the 14 proofs those rules provide and
 adds proofs they cannot state, and the two mechanisms are used together.
-Because the copy queries scalar evolution outside the turnstile of
+Because encoding iteration $k$ queries scalar evolution outside the turnstile of
 \S\ref{sec:pipeline}, \texttt{ind} runs on one thread.
 
 \subsection{Encoding heap invariance}
