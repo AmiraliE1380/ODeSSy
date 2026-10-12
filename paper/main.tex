@@ -1900,30 +1900,22 @@ each pass. Like \tool{}, it treats unencoded behavior as an
 over-approximation, so a solver verdict is only trusted in one
 direction.
 
-\paragraph{Bounds-check elimination.}
-Removing redundant array bounds checks is a classic problem.
-ABCD~\cite{bodik2000abcd} proves checks redundant on demand by solving
-a system of difference constraints over an extended SSA form, and
-production JIT compilers such as HotSpot's client
-compiler~\cite{wurthinger2007hotspot} eliminate checks with range
-analysis and by hoisting them out of loops. LLVM's inductive range-check
-elimination splits a loop into a pre-loop, a check-free main loop, and
-a post-loop when the checked index is an affine function of the
-induction variable. Each of these reasons in a single abstract domain
-chosen in advance; the proofs \tool{} needs combine several domains at
-once (\S\ref{sec:conjunction}) and, for heap-resident lengths, memory
-(\S\ref{sec:frame}).
-
-\paragraph{Reducing sanitizer overhead.}
-Sanitizers such as AddressSanitizer~\cite{serebryany2012asan} and
-UBSan~\cite{ubsanDocs} are the most widely deployed runtime checks.
-ASAP~\cite{wagner2015asap} lowers their cost by removing the checks on
-the hottest code, trading safety for speed under a user-chosen overhead
-budget; \tool{} removes only checks it proves can never fire, so the
-safety guarantee is unchanged. SanRazor~\cite{zhang2021sanrazor}
-removes checks that are redundant with other checks, using a
-combination of static and dynamic (profiling) analysis; \tool{}'s
-removals are static and each is backed by a solver proof.
+\paragraph{Bounds-check elimination and sanitizer overhead.}
+Removing redundant safety checks is a classic problem.
+ABCD~\cite{bodik2000abcd} proves bounds checks redundant by solving
+difference constraints over an extended SSA form,
+HotSpot~\cite{wurthinger2007hotspot} eliminates them with range analysis
+and loop hoisting, and LLVM's inductive range-check elimination splits a
+loop around checks whose index is affine in the induction variable. Each
+reasons in a single abstract domain chosen in advance; the proofs \tool{}
+needs combine several domains at once (\S\ref{sec:conjunction}) and, for
+heap-resident lengths, memory (\S\ref{sec:frame}). For sanitizers such as
+AddressSanitizer~\cite{serebryany2012asan} and UBSan~\cite{ubsanDocs},
+ASAP~\cite{wagner2015asap} removes the checks on the hottest code under a
+user-chosen overhead budget, trading safety for speed, and
+SanRazor~\cite{zhang2021sanrazor} removes checks it finds redundant with
+other checks, using profiling as well as static analysis. \tool{} removes
+only checks it proves can never fire, each backed by a solver proof.
 
 \paragraph{Guards and loop versioning.}
 Cloning a loop behind a runtime test is established practice: .NET's
