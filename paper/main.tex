@@ -1016,8 +1016,7 @@ and profitable, even if the trap remains reachable from other blocks.
 \EndFor
 \State $S \gets$ every instruction that $c$ and $G$ depend on, collected
   backwards through operands \Comment{the slice}
-\Statex \hspace{\algorithmicindent} (through phis that merge branches, with
-  the branch conditions that select their value; stopping at loads, calls,
+\Statex \hspace{\algorithmicindent} (including phis that merge branches; stopping at loads, calls,
   and loop phis)
 \ForAll{$I \in S$ in reverse post-order}
   \State assert $\den{I}$ per Table~\ref{tab:encoding}
