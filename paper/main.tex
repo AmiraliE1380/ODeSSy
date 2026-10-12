@@ -990,7 +990,7 @@ LLVM IR (pseudocode) & encoding & also covers\\
 \texttt{z = umax(x, y)} & $\den{z} = \mathrm{ite}(\den{x} >_u \den{y}, \den{x}, \den{y})$ & \texttt{umin}, \texttt{smax}, \texttt{smin}, \texttt{abs}, \texttt{fshl}\\
 \texttt{r, o = sadd.with.overflow(x, y)} & $\den{r} = \den{x} + \den{y}$, \quad $\den{o} = \neg\,\mathit{NoOvf}_s(\den{x}, \den{y})$ & \texttt{\{s,u\} $\times$ \{add,sub,mul\}} \\
 \texttt{z = add nsw x, y} & \texttt{add} rule, and $P(z) = P(x) \vee P(y) \vee \neg\mathit{NoOvf}_s(\den{x}, \den{y})$ & \texttt{nuw}; other poison flags\\
-\texttt{z = freeze x} & $\den{z} = \mathrm{ite}\bigl(P(x),\ f,\ \den{x}\bigr)$, $f$ fresh;\quad $P(z) = \bot$ & (\S\ref{sec:frame-machinery})\\
+\texttt{z = freeze x} & $\den{z} = \mathrm{ite}\bigl(P(x),\ f,\ \den{x}\bigr)$, $f$ fresh;\quad $P(z) = \bot$ & \\
 \texttt{z = phi [v$_1$, B$_1$], \ldots, [v$_n$, B$_n$]} & $\den{z} = \mathrm{ite}\bigl(\mathit{Reach}(B_n) \wedge \mathit{Edge}(B_n{\to}B),\ \den{v_n},\ \ldots\ \den{v_1}\bigr)$ & merge-point phis only\\
 \texttt{br c, S, T} & $\mathit{Edge}(B{\to}S) = \den{c}$, \quad $\mathit{Edge}(B{\to}T) = \neg \den{c}$ & \texttt{switch}: case equalities\\
 loop-header \texttt{phi}, \texttt{load}, \texttt{call}, \texttt{gep} & fresh variable & every unmodeled instruction\\
@@ -1056,6 +1056,13 @@ an if-then-else chain gated by a reachability formula that is built once per blo
 The formula is an $O(\mathit{edges})$ circuit whose shared prefixes are stored once
 (Z3 terms are hash-consed), leaving path enumeration to the SAT
 engine rather than to an exponential DNF.
+
+We encode LLVM's semantics of poison and
+\texttt{freeze}~\cite{lee2017taming}, following
+Alive2~\cite{lopes2021alive2}, which capture how undefined behavior
+spreads through a program; loaded values are assumed not to be
+poison~\cite{lee2018reconciling} (the \texttt{poison-loads} knob drops
+this assumption).
 
 The query is then $\mathit{Guards} \wedge \mathit{Definitions} \wedge
 c$: satisfiable exactly by the machine states, consistent with
@@ -1133,76 +1140,38 @@ thread.
 
 \subsection{Encoding heap invariance}
 \label{sec:frame-machinery}
-The \texttt{frame} option implements the requirements of
-\S\ref{sec:frame} as two encoder-level additions.
-\paragraph{FRAME: the frame rule as a fact source.}
-For a candidate pair of loads $L_1$ (guard-side) and $L_2$ (check-side)
-of the same address, the imported fact is
+The \texttt{frame} option supplies the heap fact of \S\ref{sec:frame}:
+two loads of the same location return the same value if no store
+between them can write that location. Two notions from LLVM decide this.
+A store (or call) \emph{clobbers} a load if it may write the location
+the load reads. \emph{MemorySSA} is LLVM's analysis that links each load
+to the most recent memory write that may clobber it, using alias
+analysis to skip writes that provably touch other locations.
+
+For a load $L_1$ before the loop (in the dimension guard of
+Figure~\ref{fig:frame-example}) and a load $L_2$ of the same address
+inside the loop (in the check), \tool{} adds the equality
 \[
-\frac{\mathrm{clobber}\bigl(L_2,\ \mathrm{loc}(L_1)\bigr) \ \preceq\
-      \mathrm{def}(L_1)}
-     {\ |\mathrm{FRAME}{:}k|:\ \ \den{L_1} = \den{L_2}\ }
+\frac{\mathrm{clobber}\bigl(L_2,\ \mathrm{loc}(L_1)\bigr) \ \preceq\ \mathrm{def}(L_1)}
+     {\den{L_1} = \den{L_2}}
 \]
---- if MemorySSA's clobbering access for $L_2$, queried \emph{at
-$L_1$'s own memory location} (address, width, and aliasing metadata),
-is $L_1$'s defining access or one dominating it, the loads agree.
-Querying with $L_1$'s location is the load-bearing choice: the
-check-side loads are vectorizer-cloned and carry no metadata at all
-(which is precisely why LLVM leaves the checks in), while the
-guard-side load carries the frontend's scoped no-alias metadata, under
-which stock \textsc{ScopedNoAliasAA} proves every loop-carried store
-harmless. The equality enters the query as a context-side fact labeled
-$|\mathrm{FRAME}{:}k|$ --- vacuity-audited, and guarded by two standing
-\textsc{sat} tripwire tests (a may-alias clobber and a single-arm
-clobber must refuse forever). No new alias analysis is written: the
-walk delegates every disjointness verdict to LLVM's existing stack and
-\emph{refuses} on anything unmodeled, the same posture as every other
-import in \S\ref{sec:system-facts}.
-\paragraph{Definitional encoding of stabilized values.}
-Three successive countermodel inspections --- our standing diagnostic:
-a should-prove query returning \textsc{sat} in microseconds indicates a
-\emph{missing constraint}, not solver hardness --- exposed a chain of
-encoding gaps, each closed by the same principle: replace a free
-variable with the \emph{definitional axiom} of its defining code.
-First, \texttt{freeze}: the vectorizer's multiversioning stabilizes its
-guard flags against poison, and 13 of GEMM's 16 trap conditions were
-freeze-wrapped --- encoded as unconstrained Booleans, their queries
-were trivially satisfiable no matter what facts we supplied.
-\texttt{freeze} is the identity on every non-poison operand and an
-arbitrary but fixed value on a poison one~\cite{lee2017taming}, so we
-encode it as $\den{\mathit{freeze}(x)} = \mathrm{ite}(P(x), f, \den{x})$
-with $f$ fresh, as Alive2 does~\cite{lopes2021alive2}. The plain identity
-$\den{\mathit{freeze}(x)} = \den{x}$ is \emph{not} sound: combined with a
-fact that holds only for non-poison values, such as the no-overflow
-condition of an \texttt{nsw} operation, it excludes executions in which
-the operand is poison and the frozen value takes the trap. We assume
-that loaded values are not poison: memory holds poison only where a
-program stores a poison value or reads uninitialized
-memory~\cite{lee2018reconciling}, which safe Julia, Swift, and Rust code
-never does and C code does only through undefined behavior; the
-\texttt{poison-loads} knob drops the assumption. Second,
-trip-count bounds moved to \emph{subtraction form}:
-\[
-\den{\phi} - \mathit{start} \ \le_u\
-s \cdot \mathrm{BTC}
-\qquad\text{instead of}\qquad
-\den{\phi} \ \le_u\ \mathit{start} + s \cdot
-\mathrm{BTC},
-\]
-which makes the unit-stride upper bound unconditionally wrap-safe ---
-modular subtraction cancels overflow exactly --- retiring the no-wrap
-side conditions and admitting the \emph{symbolic} starts of remainder
-loops for free. Third, the leaves of those bound expressions (the
-vectorizer's resume indices and the preamble computing them) are
-\emph{pre-encoded} through the ordinary instruction encoder: selects
-become if-then-elses, merge-point phis become unions guarded by their
-encoded branch predicates. No ``trip count $>0$'' is asserted anywhere;
-the countermodels claiming to stand inside zero-trip loops die because
-they violate the definitions. Every addition is true of all executions
-by construction, so the over-approximation --- and hence soundness ---
-is untouched. Together these took the GEMM acceptance test from 0 to
-9 of 16 edges and, being in no way GEMM-specific, moved every sufficiently
-similar benchmark (\S\ref{sec:frame-results}).
+Read as an inference rule: $\mathrm{clobber}(L_2, \mathrm{loc}(L_1))$ is
+the most recent write before $L_2$ that may clobber the location $L_1$
+reads, as MemorySSA reports it; $\mathrm{def}(L_1)$ is the most recent
+write before $L_1$; and $\preceq$ means ``is the same write, or an
+earlier one.'' If the premise holds, nothing between the two loads can
+change the location, and the equality is added as a fact.
+
+We ask about $L_1$'s location, not $L_2$'s, deliberately. The reload in
+the loop is a copy made by the vectorizer and carries no aliasing
+metadata, which is why LLVM's own passes cannot remove the check. The
+load in the guard keeps the front end's aliasing metadata, and with it
+LLVM's alias analysis shows that the stores in the loop write
+\texttt{C}, not \texttt{A}'s length. \tool{} adds no alias analysis of
+its own: every disjointness verdict is LLVM's, and when MemorySSA cannot
+rule a write out, no fact is added. Proving the GEMM checks also required
+encoding the code that computes the loop bounds exactly, rather than as
+free variables (Appendix~\ref{sec:app-defs}).
 
 \subsection{Implementing Guard Synthesis}
 \label{sec:guards-impl}
@@ -2264,6 +2233,31 @@ stride-4 bounds checks; base64 and UTF-8 remain, the former because its
 residue is also class~(b). Guard synthesis (\S\ref{sec:guards}) reaches
 base64's hot checks instead, in a guarded copy of the loop.
 
+\section{Definitional Encoding of Loop Bounds}
+\label{sec:app-defs}
+Countermodel inspection --- a should-prove query that returns
+\textsc{sat} in microseconds indicates a missing constraint, not solver
+hardness --- exposed encoding gaps on GEMM, each closed by replacing a
+free variable with the definition of the code that computes it. First,
+trip-count bounds are stated in \emph{subtraction form},
+\[
+\den{\phi} - \mathit{start} \ \le_u\ s \cdot \mathrm{BTC}
+\qquad\text{instead of}\qquad
+\den{\phi} \ \le_u\ \mathit{start} + s \cdot \mathrm{BTC},
+\]
+where $\phi$ is a loop-header phi, $s$ its stride, and $\mathrm{BTC}$
+the loop's back-edge-taken count. Modular subtraction cancels overflow
+exactly, so the unit-stride bound needs no no-wrap side condition and
+holds for the symbolic start values of remainder loops. Second, the
+values these bounds mention (the vectorizer's resume indices and the code
+that computes them) are encoded through the ordinary rules of
+Table~\ref{tab:encoding} instead of as free variables. No ``trip count
+$>0$'' is asserted anywhere: the countermodels that stand inside
+zero-trip loops die because they violate these definitions. Each
+addition holds in every execution, so soundness is unaffected. With the
+heap facts of \S\ref{sec:frame-machinery}, these took GEMM from 0 to 9
+of its 16 trap edges.
+
 \section{Configuration Knobs}
 \label{sec:app-knobs}
 Every mechanism of \tool{} is a parameter of the pass,
@@ -2287,11 +2281,10 @@ Knob & Effect\\
 \texttt{light} / \texttt{heavy} & [\texttt{light}] Light encodes the context alone;
 heavy also imports LLVM's analyses as facts (RM, KB, LVI, SCEV, SCEVSYM,
 and the header-phi rules), \S\ref{sec:system-facts}.\\
-\texttt{frame} & [off] Heap-invariance facts and the definitional axioms of
-\S\ref{sec:frame-machinery}.\\
+\texttt{frame} & [off] Heap-invariance facts (\S\ref{sec:frame-machinery}) and the definitional encoding of Appendix~\ref{sec:app-defs}.\\
 \texttt{ldeq} & [off] Load equality within a basic block (\S\ref{sec:system-facts}).\\
 \texttt{nophiinv} & [off] Disables the header-phi rules (for ablation).\\
-\texttt{poison-loads} & [off] Drops the assumption that loaded values are not poison (\S\ref{sec:frame-machinery}).\\
+\texttt{poison-loads} & [off] Drops the assumption that loaded values are not poison (\S\ref{sec:encoding-impl}).\\
 \texttt{ind} & [off] Inductive body encoding (\S\ref{sec:app-machinery});
 forces one thread.\\
 \midrule
