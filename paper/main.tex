@@ -1311,17 +1311,16 @@ We take multiple measures to ensure the absence of data races,
 parallelism bugs, and encoding bugs. These checks run in a debug mode as each one would impose a performance tax on the pass. First,
 verdicts, output IR, and logs must be identical for \texttt{threads=1}
 and \texttt{threads=N}, which we verify by \texttt{diff}.
-A wrong proof is the one failure mode this tool must not have, so no
-\textsc{unsat} is accepted at face value. Under \texttt{vacuity},
-every \textsc{unsat} is re-solved with the trap condition removed: if
+
+To make sure our tool is sound, no
+\textsc{unsat} is accepted at face value and is inspected. We perform a \texttt{vacuity} test, meaning that we remove the trap condition from the \texttt{UNSAT} proof and query the solver again with all the other constraints. If
 the context alone is already unsatisfiable --- an encoder bug, or a
 genuinely contradictory guard chain --- the elimination is
 \emph{refused} and reported. The audit is deliberately
 self-distrusting: on zstd it surrendered 61 likely-sound eliminations
 whose guard chains are jointly infeasible for the actual constants,
 because the tool cannot distinguish that situation from its own bugs;
-vacuous counts are reported in every static audit and are zero except
-where noted. The timed builds run without this audit, for speed; guard
+vacuous counts are reported in every static audit and are zero in vast majority of cases, so a vacuous proof can be considered a warning. The timed builds run without this audit to avoid an extra SMT query, for speed; guard
 synthesis checks its own guards for vacuity in every build
 (\S\ref{sec:guards-impl}).
 
