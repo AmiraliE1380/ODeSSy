@@ -1163,7 +1163,9 @@ For any two loads of the same pointer $p$, \texttt{n1 = load p} and
 Read as an inference rule: $\mathrm{clobber}(n_2, p)$ is the most recent
 write before $n_2$ that may clobber $p$, as MemorySSA reports it;
 $\mathrm{def}(n_1)$ is the most recent write before $n_1$; and
-$\preceq$ means ``is the same write, or an earlier one.'' If the premise
+$a \preceq b$ means that write $a$ is $b$ itself or comes before it. The
+premise therefore says that the last write that may change $p$ before
+$n_2$ had already happened when $n_1$ read $p$. If the premise
 holds, nothing between the two loads can change the location, and the
 two loaded values are equal: a new encoded constraint. With no write
 between the loads the premise holds trivially; with writes between them,
