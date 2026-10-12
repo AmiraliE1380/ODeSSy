@@ -1163,7 +1163,7 @@ For any two loads of the same pointer $p$, \texttt{n1 = load p} and
 Read as an inference rule: $\mathrm{clobber}(n_2, p)$ is the most recent
 write before $n_2$ that may clobber $p$, as MemorySSA reports it;
 $\mathrm{def}(n_1)$ is the most recent write before $n_1$; and
-$a \preceq b$ means that write $a$ is $b$ itself or comes before it. The
+$a \preceq b$ means that write instruction $a$ is $b$ itself or comes before it. The
 premise therefore says that the last write that may change $p$ before
 $n_2$ had already happened when $n_1$ read $p$. If the premise
 holds, nothing between the two loads can change the location, and the
@@ -1174,16 +1174,9 @@ the case of Figure~\ref{fig:frame-example}, where \texttt{n1} is read by
 the dimension guard and \texttt{n2} by the check, and the equality
 $n_2 = n_1$ is what proves the check dead.
 
-We query MemorySSA for $p$ as \texttt{n1} accesses it, not as \texttt{n2}
-does, deliberately. The reload in
-the loop is a copy made by the vectorizer and carries no aliasing
-metadata, which is why LLVM's own passes cannot remove the check. The
-load in the guard keeps the front end's aliasing metadata, and with it
-LLVM's alias analysis shows that the stores in the loop write
-\texttt{C}, not \texttt{A}'s length. \tool{} adds no alias analysis of
+\tool{} adds no alias analysis of
 its own: every disjointness verdict is LLVM's, and when MemorySSA cannot
-rule a write out, no fact is added. A super-analyzer could also reason
-about pointers itself, encoding address arithmetic and aliasing in the
+rule a write out, no fact is added. \tool{} only combines LLVM's analysis results with the other constraints, and that suffices for GEMM (Figure~\ref{fig:frame-example}): it recovers $3.91\times$ of the $4.17\times$ the checks cost (\S\ref{sec:frame-results}). A super-analyzer could reason itself about pointers, encoding address arithmetic and aliasing in the
 solver, but more precise alias information does not by itself make code
 faster: removing LLVM's alias analysis changes the final binaries little,
 and only a small fraction of alias queries affects them~\cite{relaxingalias2025}.
