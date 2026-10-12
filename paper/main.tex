@@ -1079,7 +1079,11 @@ asserted as labeled constraints on the free variables:
 LazyValueInfo ranges (LVI), scalar-evolution constant ranges (SCEV),
 and a symbolic trip-count translation (SCEVSYM) that renders loop
 bounds --- including symbolic starts and an exact unsigned-division
-translation --- as constraints on loop-header phis. In debug mode
+translation --- as constraints on loop-header phis. The values these
+trip-count facts mention, such as the vectorizer's resume indices, are
+themselves encoded by the rules of Table~\ref{tab:encoding} rather than
+left free, and the bounds are stated in a form that is safe under
+wrap-around (Appendix~\ref{sec:app-defs}). In debug mode
 (\S\ref{sec:audit}) every fact is tracked under its label, so the unsat
 core of each proof names the fact sources and mechanisms that contributed
 to it; these are the labels in the cores of \S\ref{sec:conjunction} and
@@ -1172,9 +1176,7 @@ load in the guard keeps the front end's aliasing metadata, and with it
 LLVM's alias analysis shows that the stores in the loop write
 \texttt{C}, not \texttt{A}'s length. \tool{} adds no alias analysis of
 its own: every disjointness verdict is LLVM's, and when MemorySSA cannot
-rule a write out, no fact is added. Proving the GEMM checks also required
-encoding the code that computes the loop bounds exactly, rather than as
-free variables (Appendix~\ref{sec:app-defs}).
+rule a write out, no fact is added.
 
 \subsection{Implementing Guard Synthesis}
 \label{sec:guards-impl}
@@ -2238,10 +2240,9 @@ base64's hot checks instead, in a guarded copy of the loop.
 
 \section{Definitional Encoding of Loop Bounds}
 \label{sec:app-defs}
-Countermodel inspection --- a should-prove query that returns
-\textsc{sat} in microseconds indicates a missing constraint, not solver
-hardness --- exposed encoding gaps on GEMM, each closed by replacing a
-free variable with the definition of the code that computes it. First,
+Two refinements make trip-count facts usable on vectorized loops, each
+replacing a free variable with the definition of the code that computes
+it. First,
 trip-count bounds are stated in \emph{subtraction form},
 \[
 \den{\phi} - \mathit{start} \ \le_u\ s \cdot \mathrm{BTC}
@@ -2257,9 +2258,11 @@ that computes them) are encoded through the ordinary rules of
 Table~\ref{tab:encoding} instead of as free variables. No ``trip count
 $>0$'' is asserted anywhere: the countermodels that stand inside
 zero-trip loops die because they violate these definitions. Each
-addition holds in every execution, so soundness is unaffected. With the
-heap facts of \S\ref{sec:frame-machinery}, these took GEMM from 0 to 9
-of its 16 trap edges.
+addition holds in every execution, so soundness is unaffected. Neither
+is specific to one benchmark; stdlib GEMM, whose loops the vectorizer
+splits into vector, remainder, and runtime-checked versions, is where
+they matter most: with the heap facts of \S\ref{sec:frame-machinery},
+they take it from 0 to 9 of its 16 trap edges.
 
 \section{Configuration Knobs}
 \label{sec:app-knobs}
