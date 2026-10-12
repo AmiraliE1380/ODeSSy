@@ -104,6 +104,7 @@ bool TrapSolver::factPhase() {
         Log << "    -> [heavy] " << NFacts << " analysis fact(s) on "
             << Encoder.getFreeVariables().size() << " boundary value(s)\n";
         if (Cfg.MultiVersion && Cfg.MVT3) prepareT3();   // SE queries: gate is held here
+        if (Cfg.Inductive && NarrowMode == 0) prepareInd(); // likewise
         return true;
     } catch (const z3::exception &e) {
         Log << "    -> [Skip] Z3 exception: " << e.msg() << "\n";
@@ -225,11 +226,10 @@ bool TrapSolver::indAtLoop(Loop *L, unsigned Depth) {
     unsigned Links = buildPrimedCopy(L, Latch, Tag, N, Skipped, Pfx);
     Encoder.beginPrimed(L, Tag);
     unsigned NF = 0;
-    if (FC.LVI || FC.SE) {   // heavy tier: the copy's fresh symbols get value facts
-        FactEncoder PF(Encoder, nullptr, FC.SE, FC.LI, *FC.DT, Job.F->getParent()->getDataLayout(),
-                       Cfg.VacuityCheck, Log, /*PhiInv=*/!Cfg.NoPhiInv);
-        NF = PF.encodeFactsFor(Job.PredBB, Encoder.primedFreeVars(), "p" + std::to_string(Depth) + ".");
-    }
+    // heavy tier: the copy's fresh symbols get the value facts captured
+    // under the FactGate by prepareInd (no analysis query here)
+    if (auto It = IndFacts.find(Depth); It != IndFacts.end())
+        for (auto &[F, Lbl] : It->second) { Encoder.assertRawFact(F, Lbl); ++NF; }
     // lap t-1 REACHED the latch (excludes header/body exits) and took the back edge
     Encoder.assertRawFact(Encoder.reachWithinLap(Latch, Header, FC.DT) && Encoder.edgeCond(Latch, Header), Pfx + "latch");
     z3::expr Fire = Encoder.reachWithinLap(Job.PredBB, Header, FC.DT) &&
@@ -251,6 +251,38 @@ bool TrapSolver::indAtLoop(Loop *L, unsigned Depth) {
     Encoder.pop();
     Encoder.resetPrimed();
     return Proved;
+}
+
+// Runs at the end of factPhase, so the caller holds this job's FactGate
+// ticket: every scalar-evolution query of `ind` happens here, in discovery
+// order, exactly once per loop level. The copy built here is discarded;
+// indAtLoop rebuilds it (pure encoding, deterministic symbol names) and
+// asserts the captured facts.
+void TrapSolver::prepareInd() {
+    if (!FC.LI || !FC.DT || !FC.SE) return;
+    Loop *L0 = FC.LI->getLoopFor(Job.PredBB);
+    unsigned Depth = 0;
+    for (Loop *L = L0; L; L = L->getParentLoop(), ++Depth) {
+        BasicBlock *Header = L->getHeader(), *Latch = L->getLoopLatch(), *Entry = nullptr;
+        if (Latch) for (BasicBlock *P : predecessors(Header)) if (P != Latch) { if (Entry) { Entry = nullptr; break; } Entry = P; }
+        if (!Latch || !Entry) continue;            // indAtLoop refuses this level too
+        std::string Tag = "p" + std::to_string(Depth), Pfx = "IND" + std::to_string(Depth) + "-";
+        std::vector<z3::expr> Links;
+        std::vector<std::pair<z3::expr, std::string>> &Out = IndFacts[Depth];
+        Encoder.push();
+        unsigned N, Skipped;
+        buildPrimedCopy(L, Latch, Tag, N, Skipped, Pfx, &Links);
+        Encoder.beginPrimed(L, Tag);
+        Encoder.setCapture(&Out);
+        raw_null_ostream Quiet;                  // indAtLoop logs the fact count
+        FactEncoder PF(Encoder, nullptr, FC.SE, FC.LI, *FC.DT, Job.F->getParent()->getDataLayout(),
+                       Cfg.VacuityCheck, Quiet, /*PhiInv=*/!Cfg.NoPhiInv);
+        PF.encodeFactsFor(Job.PredBB, Encoder.primedFreeVars(), Tag + ".");
+        Encoder.setCapture(nullptr);
+        Encoder.endPrimed();
+        Encoder.pop();
+        Encoder.resetPrimed();
+    }
 }
 
 // Precondition: solver holds context | guards | push | trap and the main

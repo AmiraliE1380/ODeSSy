@@ -109,11 +109,19 @@ private:
 
     // One loop level of indPhase. Solver: context | guards on entry/exit.
     bool indAtLoop(llvm::Loop *L, unsigned Depth);
+    // Under the FactGate (end of factPhase): build each loop level's copy
+    // and capture its scalar-evolution facts, so indAtLoop can run outside
+    // the gate, in parallel, without touching the analyses.
+    void prepareInd();
     z3::expr scevToBV(const llvm::SCEV *S, bool &OK, unsigned W);
     const SolverConfig &Cfg;
     const FunctionCtx &FC;
     TrapJob &Job;
     Z3Encoder Encoder;
+    // Captured `ind` facts (prepareInd). Declared AFTER Encoder: members are
+    // destroyed in reverse order, so these z3::exprs must go before the
+    // context that owns them.
+    std::map<unsigned, std::vector<std::pair<z3::expr, std::string>>> IndFacts;
     unsigned NarrowMode = 0;
     std::vector<z3::expr> Defs64, Guards64NoMul;
     // Whole-query narrowing state, one set per rewriter: [0] linearized

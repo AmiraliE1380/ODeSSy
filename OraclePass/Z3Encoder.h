@@ -73,8 +73,11 @@ class Z3Encoder {
     // freeze(x) = ite(P(x), fresh, x); branch conditions assert !P (branching
     // on poison is UB); imported analysis facts about V hold only if !P(V).
     std::unordered_map<llvm::Value*, z3::expr> PoisonMap, PrimedPoisonMap;
-    unsigned FreshCounter = 0;
     llvm::Value *FactSubject = nullptr;
+    // Capture mode (parallel `ind`): addFact records (fact, label) here
+    // instead of asserting, so facts imported under the FactGate can be
+    // asserted later, outside it.
+    std::vector<std::pair<z3::expr, std::string>> *CaptureFacts = nullptr;
     // Default assumption: a loaded value is never poison. LLVM's semantics
     // let memory bytes hold poison (a stored poison value, uninitialized
     // memory; Lee et al. OOPSLA'18); a program in which neither happens --
@@ -90,6 +93,7 @@ public:
     // Facts asserted while a subject is set are guarded by !poison(subject).
     void setFactSubject(llvm::Value *V) { FactSubject = V; }
     void setLoadsDefined(bool B) { LoadsDefined = B; }
+    void setCapture(std::vector<std::pair<z3::expr, std::string>> *V) { CaptureFacts = V; }
     explicit Z3Encoder(unsigned TimeoutMs = 10000);
     z3::expr getOrCreateZ3Expr(llvm::Value *Val);
     bool encodeInstruction(llvm::Instruction *Inst, llvm::DominatorTree *DT = nullptr, llvm::LoopInfo *LI = nullptr);

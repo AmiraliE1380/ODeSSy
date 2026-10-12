@@ -95,6 +95,7 @@ void Z3Encoder::addFact(const z3::expr &Fact0, const std::string &Label) {
     z3::expr Fact = Fact0;
     if (FactSubject && FactSubject->getType()->isIntegerTy())
         Fact = z3::implies(!poisonOf(FactSubject), Fact0);
+    if (CaptureFacts) { CaptureFacts->push_back({Fact, Label}); return; }
     FactExprs.push_back(Fact);
     if (Label.empty()) Solver.add(Fact);
     else             { Solver.add(Fact, Label.c_str()); TrackedLabels.push_back(Label); }
@@ -639,8 +640,10 @@ bool Z3Encoder::encodeInstruction(Instruction *Inst, DominatorTree *DT, LoopInfo
         // arbitrary value (LangRef; Lee et al. PLDI'17). Alive2 encodes it
         // the same way. The result is never poison.
         z3::expr X = getOrCreateZ3Expr(Op);
-        std::string N = "freeze!" + getSafeName(Inst) + (PrimedLoop ? "~" + PrimeTag : std::string())
-                        + "!" + std::to_string(FreshCounter++);
+        // One name per (instruction, copy): rebuilding a copy (parallel
+        // `ind` re-encodes the copy whose facts were captured under the
+        // FactGate) must yield the same symbol.
+        std::string N = "freeze!" + getSafeName(Inst) + (PrimedLoop ? "~" + PrimeTag : std::string());
         z3::expr Fresh = X.is_bool() ? Ctx.bool_const(N.c_str())
                                      : Ctx.bv_const(N.c_str(), X.get_sort().bv_size());
         defineValueP(Inst, z3::ite(poisonOf(Op), Fresh, X), Ctx.bool_val(false));
