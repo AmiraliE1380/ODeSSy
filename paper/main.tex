@@ -1140,29 +1140,32 @@ thread.
 
 \subsection{Encoding heap invariance}
 \label{sec:frame-machinery}
-The \texttt{frame} option supplies the heap fact of \S\ref{sec:frame}:
+The \texttt{frame} encoding knob supplies the heap fact of \S\ref{sec:frame}:
 two loads of the same location return the same value if no store
 between them can write that location. Two notions from LLVM decide this.
-A store (or call) \emph{clobbers} a load if it may write the location
+A store (or call) \emph{clobbers} a load if it may rewrite in the location
 the load reads. \emph{MemorySSA} is LLVM's analysis that links each load
 to the most recent memory write that may clobber it, using alias
 analysis to skip writes that provably touch other locations.
 
-For a load $L_1$ before the loop (in the dimension guard of
-Figure~\ref{fig:frame-example}) and a load $L_2$ of the same address
-inside the loop (in the check), \tool{} adds the equality
+For two loads of the same pointer $p$, \texttt{n1 = load p} before
+the loop and \texttt{n2 = load p} inside it, \tool{} adds the equality
 \[
-\frac{\mathrm{clobber}\bigl(L_2,\ \mathrm{loc}(L_1)\bigr) \ \preceq\ \mathrm{def}(L_1)}
-     {\den{L_1} = \den{L_2}}
+\frac{\mathrm{clobber}(n_2,\ p) \ \preceq\ \mathrm{def}(n_1)}
+     {\den{n_1} = \den{n_2}}
 \]
-Read as an inference rule: $\mathrm{clobber}(L_2, \mathrm{loc}(L_1))$ is
-the most recent write before $L_2$ that may clobber the location $L_1$
-reads, as MemorySSA reports it; $\mathrm{def}(L_1)$ is the most recent
-write before $L_1$; and $\preceq$ means ``is the same write, or an
-earlier one.'' If the premise holds, nothing between the two loads can
-change the location, and the equality is added as a fact.
+Read as an inference rule: $\mathrm{clobber}(n_2, p)$ is the most recent
+write before $n_2$ that may clobber $p$, as MemorySSA reports it;
+$\mathrm{def}(n_1)$ is the most recent write before $n_1$; and
+$\preceq$ means ``is the same write, or an earlier one.'' If the premise
+holds, nothing between the two loads can change the location, and the
+two loaded values are equal: a new encoded constraint. This is exactly
+the case of Figure~\ref{fig:frame-example}, where \texttt{n1} is read by
+the dimension guard and \texttt{n2} by the check, and the equality
+$n_2 = n_1$ is what proves the check dead.
 
-We ask about $L_1$'s location, not $L_2$'s, deliberately. The reload in
+We query MemorySSA for $p$ as \texttt{n1} accesses it, not as \texttt{n2}
+does, deliberately. The reload in
 the loop is a copy made by the vectorizer and carries no aliasing
 metadata, which is why LLVM's own passes cannot remove the check. The
 load in the guard keeps the front end's aliasing metadata, and with it
