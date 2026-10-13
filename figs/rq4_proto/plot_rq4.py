@@ -21,7 +21,7 @@ from matplotlib import font_manager
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SOUPER_CSV = "results/static/souper_static/modules.csv"
-DIAL_CSV = "evaluation/dial_matrix_x86_current.csv"
+DIAL_CSV = "evaluation/dial_matrix_x86_poison.csv"
 
 # acmart typesets text in Linux Libertine; the OTFs are vendored in fonts/.
 for f in ("LinLibertine_R.otf", "LinLibertine_RI.otf", "LinLibertine_RB.otf"):
@@ -174,7 +174,7 @@ def variant_C(d):
     ax.scatter([CEGIS[0]], [0], marker="x", s=28, color="#888888", lw=1.2, zorder=4, clip_on=False)
     ax.annotate("Souper, CEGIS", (CEGIS[0], 0), xytext=(-4, 4), textcoords="offset points",
                 fontsize=6, color="#888888", ha="right")
-    ax.set_ylim(-2, 60)
+    ax.set_ylim(-2, 80)
     ax.set_xlabel("ODeSSy stage time on deflate.c (s, log), one thread")
     ax.set_ylabel("trap edges proved")
     ax.text(0.98, 0.97, "ODeSSy: per-query timeout sweep, LLVM 23 IR, trap edges\nSouper: LLVM 18 IR, checks removed (0)",
