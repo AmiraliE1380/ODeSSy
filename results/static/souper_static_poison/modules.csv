@@ -29,3 +29,8 @@ zlib,gzread,base23,0.43,169,-
 zlib,gzread,thorough,10.71,126,43
 zlib,gzread,fast,5.75,151,18
 zlib,gzread,light,1.79,169,0
+zlib,gzwrite,base18,0.43,72,-
+zlib,gzwrite,base23,0.36,72,-
+zlib,gzwrite,thorough,5.72,72,0
+zlib,gzwrite,fast,3.83,72,0
+zlib,gzwrite,light,1.74,72,0
