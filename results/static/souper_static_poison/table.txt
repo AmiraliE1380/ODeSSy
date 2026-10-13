@@ -1,0 +1,11 @@
+repo   arm              total s  removed  modules  failed
+zlib   base18               2.7        0       14       0
+zlib   base23               2.2        0       14       0
+zlib   fast               525.1       37       14       0
+zlib   light               69.6       18       14       0
+zlib   thorough          1667.7       62       14       0
+zstd   base18               9.5        0       18       0
+zstd   base23               8.9        0       18       0
+zstd   fast                51.6        3       18       0
+zstd   light               18.9        3       18       0
+zstd   thorough           154.9       12       18       0
