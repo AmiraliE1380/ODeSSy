@@ -144,3 +144,8 @@ zstd,cover,base23,0.13,2,-
 zstd,cover,thorough,1.31,2,0
 zstd,cover,fast,0.27,2,0
 zstd,cover,light,0.25,2,0
+zstd,divsufsort,base18,0.58,63,-
+zstd,divsufsort,base23,0.52,61,-
+zstd,divsufsort,thorough,18.67,58,3
+zstd,divsufsort,fast,8.21,61,0
+zstd,divsufsort,light,3.37,61,0
