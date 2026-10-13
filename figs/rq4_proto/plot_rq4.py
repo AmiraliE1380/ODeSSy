@@ -20,7 +20,7 @@ import matplotlib.ticker
 from matplotlib import font_manager
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-SOUPER_CSV = "results/static/souper_static/modules.csv"
+SOUPER_CSV = "results/static/souper_static_poison/merged.csv"  # new ODeSSy rows + Souper rows of souper_static
 DIAL_CSV = "evaluation/dial_matrix_x86_poison.csv"
 
 # acmart typesets text in Linux Libertine; the OTFs are vendored in fonts/.
