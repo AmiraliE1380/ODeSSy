@@ -269,7 +269,7 @@ A further solver-based optimization, \emph{guard synthesis}, handles
 checks that are not dead for every input: the solver synthesizes a cheap invariant safety guard under which a fast check-free loop is cloned,
 speeding up a Swift Base64 encoder by $1.44\times$ and a Julia LZ77
 compressor by $4.01\times$. Compared with Souper, the synthesizing
-superoptimizer for LLVM, \tool{} removes more safety checks and is orders of magnitude faster in most configurations, making it viable as an online compiler pass.
+superoptimizer for LLVM, \tool{} removes more safety checks in significantly less time, making it viable as an online compiler pass.
 \end{abstract}
 \begin{CCSXML}
 <ccs2012>
@@ -1613,7 +1613,7 @@ Appendix~\ref{sec:app-full}).
 \begin{figure}
 \centering
 \includegraphics[width=\columnwidth]{dial_matrix_x86_current.pdf}
-\caption{\tool{}'s latency for zlib's \texttt{deflate.c} with sweep over number of threads vs solver timeout. The configuration is Thorough without inductive encoding. Multi-threading and strict timeouts can make \tool{} up to $2.0\times$ faster. A strict timeout of 10ms will preserve a majority of proofs.}
+\caption{\tool{}'s latency for zlib's \texttt{deflate.c} with sweep over number of threads vs solver timeout. The configuration is Thorough without inductive encoding. Multi-threading and strict timeouts can make \tool{} up to $2.0\times$ faster. A strict timeout of 10ms will preserve a majority of proofs. Parallelism is a more effective measure for reducing latency without loosing proofs.}
 \Description{A five-by-five heatmap, rows are 1, 2, 4, 8 and 10 worker
 threads, columns are per-query timeouts from 1 millisecond to 10
 seconds. Cells are colored from red for slow to green for fast on a log
@@ -1625,7 +1625,7 @@ right from about 20 to 65 in every row.}
 \end{figure}
 \subsection{RQ4: How does super-analysis compare with superoptimization?}
 \label{sec:results-souper}
-We compare \tool{} with Souper~\cite{sasnauskas2017souper}, the
+For the scope of this study we compare one representative of each paradigm, \tool{} with Souper~\cite{sasnauskas2017souper}, the
 synthesizing superoptimizer for LLVM IR, on the task this paper targets:
 removing the safety checks of the two C libraries. We ran Souper in its
 \emph{constant mode}, which only proves that a value is always the same
@@ -1633,25 +1633,21 @@ constant. The authors of Souper used this mode as an online optimizer, and compi
 we also ran Souper in its CEGIS synthesis mode.
 
 \paragraph{Setup.} Souper pins LLVM~18, whose parser cannot read the IR
-of newer front ends, so the comparison covers the C libraries, compiled
+of newer front ends, so the comparison covers only the C libraries which can be compiled
 with LLVM~18's clang. Each module is emitted \emph{once} and both tools
 read the same file; \tool{}'s LLVM reads it as bitcode, which newer LLVM
 versions are guaranteed to accept. Each tool runs with its own pinned
-LLVM, built without assertions in both cases, and its own pinned Z3
-(Souper: Z3 4.13, as an external process per query; \tool{}: Z3 4.8.12,
-in process), is followed by its own LLVM's \texttt{-O3}, and is compared
+LLVM and its own pinned Z3
+(Souper: Z3 4.13; \tool{}: Z3 4.8.12), is followed by its own LLVM's \texttt{-O3}, and is compared
 against that LLVM's \texttt{-O3} alone. Souper's per-query budget is
 10\,s, as for Thorough, with no external cache; its in-memory cache of
 identical queries is left on, as shipped. Swift, Rust, and Julia are
 excluded because their front ends emit IR newer than LLVM~18.
 
-On this shared input the two \texttt{-O3} pipelines leave nearly the same
+We use the same clang frontend from LLVM 18 to generate the input of the optimizing pipelines, and both leave nearly the same
 checks behind --- 476 in zlib under both, 254 and 251 in zstd --- so both
 tools start from the same population of checks. Thorough and Fast use ten
-threads; Souper has no parallelism within a module and runs on one. Souper's
-results come from its own LLVM~18 build; \tool{}'s side was rerun after the
-encoder change of \S\ref{sec:encoding-impl}, from IR emitted by a packaged
-clang~18.
+threads.
 
 \begin{figure}[t]
 \centering
@@ -1677,8 +1673,7 @@ Thorough removes 62 checks in 1{,}668\,s, where Souper removes 7 in
 2{,}407\,s, and Fast removes 37 in 525\,s; most of Thorough's time is
 spent on a single module, \texttt{trees.c} (Figure~\ref{fig:modules}).
 On zstd, Thorough removes 12 checks in 155\,s, where Souper removes 5 in
-4{,}304\,s, and Fast removes 3 in 52\,s. Souper removes checks in only three modules, and in each of them
-Thorough removes at least as many.
+4{,}304\,s, and Fast removes 3 in 52\,s, which is a $27.8\times$ difference. 
 
 \begin{figure}[t]
 \centering
@@ -1696,11 +1691,11 @@ seconds.}
 \label{fig:souper-deflate}
 \end{figure}
 
-\paragraph{One module in detail.} Figure~\ref{fig:souper-deflate} shows
-the two paradigms on zlib's compressor, \texttt{deflate.c}, on the same
+\paragraph{One module in detail.} We wanted to see how the more aggressive Souper mode, Counterexample-Guided Inductive Synthesis (CEGIS) performs. Figure~\ref{fig:souper-deflate} shows
+the two two tools on zlib's compressor, \texttt{deflate.c}, on the same
 input. \tool{} removes 8 checks, in 14\,s under Fast and 21\,s under
 Thorough. Souper's constant mode takes 119\,s and removes nothing. Its
-synthesis mode, the one that makes it a superoptimizer, ran for
+synthesis mode ran for
 2.4\,hours (8{,}749\,s) and also removed nothing; at that cost per
 module we did not run it on the libraries.
 
