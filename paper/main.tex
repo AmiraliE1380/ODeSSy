@@ -1352,7 +1352,7 @@ Our evaluation is organized around four questions:
   time? (\S\ref{sec:results-souper})
 \end{itemize}
 %% =====================================================================
-\subsection{RQ1: How much does it improve performance?}
+\subsection{RQ1: How much does \tool{} improve performance?}
 \label{sec:results-perf}
 \label{sec:results-static}
 
@@ -1543,7 +1543,7 @@ guarded copy of Table~\ref{tab:speedups} reaches $1.107\times$.\par
 Using guard synthesis or \tool{} proofs alone still recovers a lot of performance and yields a lot of proofs, although it is hard to say exactly which of the two (ii) and (iii) is the better. Both of them are clearly more powerful than full LLVM pipelines (iv) and (v). \emph{This restates the main thesis of the paper: solver-based expensive analysis pays back.} We believe our guard synthesis algorithm and templates are powerful, though \emph{it beats LLVM's IRCE not just because of our smart design choices, but because our guard synthesis is solver-guided from the beginning.}
  
 
-\subsection{RQ3: Is its overhead low enough for real-world use?}
+\subsection{RQ3: Is \tool{} fast enough for real-world use?}
 \label{sec:results-cost}
 
 \paragraph{Compile cost.}
@@ -1642,10 +1642,10 @@ Figure~\ref{fig:matrix} is the central cost result. On zlib's
 \texttt{deflate.c}, \pct{97} of the proofs (69 of 71) survive a 1\,s
 per-query budget and \pct{92} survive 100\,ms; the full set needs
 10\,s. The query latencies (Figure~\ref{fig:latency}, Appendix~\ref{sec:app-full}) show why the dial costs so little at
-the top: across 5{,}749 queries on all benchmarks the median proof takes
-23\,ms and \pct{92} take under a second, so a budget removes the
+the top: across 4{,}946 queries on all benchmarks the median proof takes
+7.2\,ms and \pct{93} take under a second, so a budget removes the
 expensive tail while keeping most of the proofs. Refutations are cheaper
-still (median 5.6\,ms), which matters because they are the large
+still (median 5.2\,ms), which matters because they are the large
 majority of queries.
 \begin{figure}
 \centering
@@ -1979,22 +1979,21 @@ Thorough; every other module sits near or below it.}
 \includegraphics[width=\textwidth]{smt_latencies_thorough_x86.pdf}
 \caption{SMT query latency by verdict class: every direct reachability
 query (one per check) that the Thorough configuration poses on the 17
-benchmarks of Table~\ref{tab:speedups} (5{,}749 queries; x86, one
-thread, 10\,s per query). The median proof takes 23\,ms, and \pct{72}
-of proofs finish within 100\,ms and \pct{92} within 1\,s; refutations
-are cheaper at the median (5.6\,ms). 21 queries reach the 10\,s budget
+benchmarks of Table~\ref{tab:speedups}, except zlib's \texttt{trees.c}, whose run did not finish (4{,}946 queries; x86, one
+thread, 10\,s per query). The median proof takes 7.2\,ms, and \pct{78}
+of proofs finish within 100\,ms and \pct{93} within 1\,s; refutations
+are cheaper at the median (5.2\,ms). 21 queries reach the 10\,s budget
 and keep their checks. Most of the cost sits in a tail: this is the
 shape that makes the timeout dial of Figure~\ref{fig:matrix}
 effective, since a budget truncates the tail while keeping most of the
 proofs.}
 \Description{A single histogram panel of SMT query latency on a
 logarithmic x-axis in milliseconds, with query count on the y-axis. Three
-overlaid outlines: SAT in red with 5180 queries, UNSAT in blue with 548
+overlaid outlines: SAT in red with 4348 queries, UNSAT in blue with 577
 queries, and UNKNOWN in green with 21 queries at the 10 second cap.
-Dashed vertical lines mark the medians at 5.6 milliseconds for SAT and
-23.3 milliseconds for UNSAT. Both distributions spread from below 0.1
-milliseconds to several seconds, with a second, smaller SAT mode between
-1 and 10 seconds.}
+Dashed vertical lines mark the medians at 5.2 milliseconds for SAT and
+7.2 milliseconds for UNSAT. Both distributions spread from below 0.1
+milliseconds to several seconds.}
 \label{fig:latency}
 \end{figure}
 \begin{table}
