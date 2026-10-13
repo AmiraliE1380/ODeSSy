@@ -139,3 +139,8 @@ zstd,zstd_decompress,base23,0.17,1,-
 zstd,zstd_decompress,thorough,0.80,1,0
 zstd,zstd_decompress,fast,0.55,1,0
 zstd,zstd_decompress,light,0.31,1,0
+zstd,cover,base18,0.15,2,-
+zstd,cover,base23,0.13,2,-
+zstd,cover,thorough,1.31,2,0
+zstd,cover,fast,0.27,2,0
+zstd,cover,light,0.25,2,0
