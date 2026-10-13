@@ -69,3 +69,8 @@ zlib,zutil,base23,0.02,1,-
 zlib,zutil,thorough,0.06,1,0
 zlib,zutil,fast,0.06,1,0
 zlib,zutil,light,0.06,1,0
+zstd,entropy_common,base18,0.09,6,-
+zstd,entropy_common,base23,0.07,6,-
+zstd,entropy_common,thorough,1.24,4,2
+zstd,entropy_common,fast,0.51,6,0
+zstd,entropy_common,light,0.36,6,0
