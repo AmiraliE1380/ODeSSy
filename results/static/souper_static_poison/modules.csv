@@ -129,3 +129,8 @@ zstd,huf_decompress,base23,0.78,5,-
 zstd,huf_decompress,thorough,6.33,5,0
 zstd,huf_decompress,fast,1.99,5,0
 zstd,huf_decompress,light,1.06,5,0
+zstd,zstd_decompress_block,base18,1.03,6,-
+zstd,zstd_decompress_block,base23,0.98,6,-
+zstd,zstd_decompress_block,thorough,2.91,6,0
+zstd,zstd_decompress_block,fast,1.51,6,0
+zstd,zstd_decompress_block,light,1.31,6,0
