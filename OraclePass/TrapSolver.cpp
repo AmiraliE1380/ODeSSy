@@ -1,4 +1,5 @@
 #include "TrapSolver.h"
+#include <unordered_set>
 #include "FactEncoder.h"
 #include "Narrow.h"
 #include <chrono>
@@ -636,13 +637,17 @@ void TrapSolver::mvPhase() {
                 for (auto &F : Encoder.factExprs()) { try { WholeN->rewrite(F); } catch (const NarrowRefused &) {} }
             }
             Guards64NoMul.clear();
+            // Memoized on the term id: Z3 terms are shared DAGs (Reach
+            // circuits, poison chains), so an unmemoized walk is exponential.
+            std::unordered_set<unsigned> Seen;
             std::function<bool(const z3::expr &)> hasMul = [&](const z3::expr &E) -> bool {
                 if (!E.is_app()) return false;
+                if (!Seen.insert(E.id()).second) return false;   // already explored: no mul there
                 if (E.decl().decl_kind() == Z3_OP_BMUL) return true;
                 for (unsigned i = 0; i < E.num_args(); ++i) if (hasMul(E.arg(i))) return true;
                 return false;
             };
-            for (auto &G : Job.Guards) { z3::expr GE = Encoder.condExpr(G.first, G.second); if (!hasMul(GE)) Guards64NoMul.push_back(GE); }
+            for (auto &G : Job.Guards) { z3::expr GE = Encoder.condExpr(G.first, G.second); Seen.clear(); if (!hasMul(GE)) Guards64NoMul.push_back(GE); }
             Whole = true;
             Log << "    -> [narrow] whole-query 64->32 rewrite: " << WholeN->flags().size() << " overflow flags, "
                 << WholeN->numInputs() << " 64-bit inputs, " << NS[0].N->numLinearized() << " product(s) linearized\n";

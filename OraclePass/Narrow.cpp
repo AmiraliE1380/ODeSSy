@@ -1,4 +1,5 @@
 #include "Narrow.h"
+#include <unordered_set>
 
 namespace odessy {
 
@@ -19,11 +20,18 @@ z3::expr Narrower::noFlag() {
 
 z3::expr Narrower::rewrite(const z3::expr &E) { return go(E); }
 
-bool Narrower::mentionsAny(const z3::expr &E, const std::vector<z3::expr> &Consts) {
+// Memoized on the term id: Z3 terms are shared DAGs, so an unmemoized walk
+// is exponential in the sharing depth.
+static bool mentionsAnyRec(const z3::expr &E, const std::vector<z3::expr> &Consts, std::unordered_set<unsigned> &Seen) {
     if (!E.is_app()) return false;
+    if (!Seen.insert(E.id()).second) return false;
     if (E.num_args() == 0) { for (auto &C : Consts) if (z3::eq(C, E)) return true; return false; }
-    for (unsigned i = 0; i < E.num_args(); ++i) if (mentionsAny(E.arg(i), Consts)) return true;
+    for (unsigned i = 0; i < E.num_args(); ++i) if (mentionsAnyRec(E.arg(i), Consts, Seen)) return true;
     return false;
+}
+bool Narrower::mentionsAny(const z3::expr &E, const std::vector<z3::expr> &Consts) {
+    std::unordered_set<unsigned> Seen;
+    return mentionsAnyRec(E, Consts, Seen);
 }
 
 // One fresh constant per unordered operand pair (X*Z and Z*X share it).
