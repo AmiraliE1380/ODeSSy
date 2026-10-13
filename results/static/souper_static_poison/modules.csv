@@ -1,0 +1,6 @@
+repo,module,arm,seconds,traps,removed
+zlib,adler32,base18,0.12,4,-
+zlib,adler32,base23,0.07,4,-
+zlib,adler32,thorough,62.03,4,0
+zlib,adler32,fast,5.33,4,0
+zlib,adler32,light,4.68,4,0
