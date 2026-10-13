@@ -1467,19 +1467,31 @@ of a $1.075\times$ ceiling.
 
 \paragraph{Heap invariance.}
 \label{sec:frame-results}
-The largest single unlock is stdlib GEMM. With the frame facts of
-\S\ref{sec:frame-machinery}, \tool{} proves 9 of its 16 trap edges, including every check of the read of \texttt{A} and the write of \texttt{C},
-where the scalar facts proved none; the flagship proof's unsat core
+Heap invariance unlocks stdlib GEMM, the second-largest speedup in
+Table~\ref{tab:speedups}. Its innermost loop, the hottest code of the
+kernel, makes four array accesses per iteration: it reads \texttt{A[i,l]},
+\texttt{B[l,j]}, and \texttt{C[i,j]}, and writes \texttt{C[i,j]}, and Julia
+guards each with a bounds check that reloads the array's length from its
+header (Figure~\ref{fig:frame-example}). With the scalar facts alone,
+\tool{} proves none of these checks: each reload is a fresh variable. With
+the frame facts of \S\ref{sec:frame-machinery}, each reload is equated
+with the load of the same length before the loop, where Julia's own
+dimension guard compares it with the loop bound, and \tool{} proves 9 of
+the kernel's 16 trap edges, among them every check of the read of
+\texttt{A} and of the write of \texttt{C}. The proof of the read's check
 draws on six fact sources at once
 ($|\mathrm{SCEVSYM}|\,|\mathrm{KB}|\,|\mathrm{SCEVEQ}|{\times}3\,
-|\mathrm{FRAME}|{\times}3$, plus four guards). Julia's JIT cannot
-consume the pass output, so the proofs are deployed as proof-carrying
-\texttt{@inbounds} annotations: annotating only the accesses proven at
-measurement time, these two, gives $3.911\times$ of the $4.174\times$ all-annotated
-ceiling on x86 ($4.156\times$ of $4.185\times$ on M-series), and the
-all-annotated build is faster at every one of 14 problem shapes, by
-$1.5$--$6.8\times$ (Figure~\ref{fig:gemm-sweep},
-Appendix~\ref{sec:app-full}).
+|\mathrm{FRAME}|{\times}3$, plus four guards).
+These two accesses are the ones that matter. Each check is a side exit
+from the innermost loop, and with the read of \texttt{A} and the write of
+\texttt{C} unchecked, LLVM vectorizes and unrolls the loop as it does the
+check-free version. Julia's JIT cannot consume the pass output, so we
+annotate exactly the two proven accesses \texttt{@inbounds} and leave the
+reads of \texttt{B} and \texttt{C} checked: the kernel runs $3.911\times$
+faster on x86, of the $4.174\times$ that removing all four checks gives
+($4.156\times$ of $4.185\times$ on M-series). The unchecked kernel is
+faster at every one of 14 problem shapes, by $1.5$--$6.8\times$
+(Figure~\ref{fig:gemm-sweep}, Appendix~\ref{sec:app-full}).
 
 \paragraph{Guard synthesis: which component pays?}
 Most of the other large speedups --- Julia lz77 ($4.01\times$), base64

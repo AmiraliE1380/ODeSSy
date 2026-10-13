@@ -14,7 +14,7 @@
 # =============================================================================
 set -u
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"; cd "$ROOT"
-SOUPER=/mydata/souper; L18="$SOUPER/third_party/llvm-Release-install/bin"
+SOUPER=/mydata/souper; L18="${L18:-$SOUPER/third_party/llvm-Release-install/bin}"
 PLUG="$SOUPER/build/libsouperPass.so"
 ZLIB="${ZLIB:-$(dirname "$ROOT")/zlib}"; ZSTD="${ZSTD:-$(dirname "$ROOT")/zstd}"
 TIMEOUT_S="${TIMEOUT_S:-10}"; SYNTH="${SYNTH:-0}"; SYNTH_CAP="${SYNTH_CAP:-1800}"; ONLY="${ONLY:-}"
@@ -36,7 +36,7 @@ print(f"{time.monotonic()-t:.2f}" if r.returncode==0 else ("TIMEOUT" if r.return
 traps() { [ -s "$1" ] || { echo NA; return; }; grep -c 'call void @llvm.ubsantrap' "$1" || true; }
 git config user.email >/dev/null || git config user.email "ebrahimzadeh.amirali@gmail.com"
 git config user.name  >/dev/null || git config user.name  "Amirali Ebrahimzadeh"
-[ -x "$L18/opt" ] && [ -f "$PLUG" ] || { echo "FATAL: Souper not built"; exit 1; }
+[ -x "$L18/opt" ] && { [ "$SKIP_SOUPER" = 1 ] || [ -f "$PLUG" ]; } || { echo "FATAL: Souper not built"; exit 1; }
 [ "$(cat /sys/devices/system/cpu/intel_pstate/no_turbo 2>/dev/null)" = 1 ] || { echo "FATAL: turbo is ON"; exit 1; }
 [ "$(command -v opt)" = /opt/llvm/bin/opt ] || { echo "FATAL: opt is not /opt/llvm/bin/opt"; exit 1; }
 
