@@ -1360,46 +1360,45 @@ half --- what the proofs buy at runtime. Table~\ref{tab:static}
 answers the first, Table~\ref{tab:speedups} the second.
 \begin{table}
 \caption{The benchmarks and the checks \tool{} proves dead in each.
-``Source'': \emph{upstream} = an unmodified open-source repository;
-\emph{ours} = our implementation of a standard kernel. Proven: checks
-removed, including those removed in guarded loop copies
-(\S\ref{sec:guards}), and in parentheses their percentage of the checks
-left after \texttt{-O3} (x86, Thorough, one thread, 10\,s per query;
+``Source'': \emph{Repo} = an unmodified open-source repository;
+\emph{Ours} = our implementation of a standard kernel. Proven: the
+percentage of the checks left after \texttt{-O3} that \tool{} removes,
+including those removed in guarded loop copies (\S\ref{sec:guards}) (x86, Thorough, one thread, 10\,s per query;
 the build of Table~\ref{tab:speedups}).}
 \label{tab:static}
 \small
 \begin{tabular}{lllr}
 \toprule
-Benchmark & Lang & Source & Proven (\%)\\
+Benchmark & Lang & Source & Proven\\
 \midrule
-zlib & C & upstream & 288 (18.5)\\
-zstd & C & upstream & 153 (25.2)\\
-CryptoSwift & Swift & upstream & 377 (14.0)\\
-crc32 & Swift & upstream & 11 (29.7)\\
-adler32 & Swift & upstream & 2 (5.3)\\
-sha256 & Swift & ours & 8 (22.2)\\
-lz77 & Swift & ours & 7 (25.9)\\
-base64 & Swift & ours & 7 (25.9)\\
-utf8 validator & Swift & ours & 4 (19.0)\\
-sha1 & Swift & ours & 2 (8.3)\\
-md5 & Swift & ours & 1 (4.0)\\
-lz77 & Rust & ours & 2 (50.0)\\
-matmul & Rust & ours & 2 (50.0)\\
-gemm & Julia & upstream & 9 (56.2)$^{\ddagger}$\\
-sha256 & Julia & ours & 14 (87.5)\\
-matmul & Julia & ours & 3 (100)\\
-lz77 & Julia & ours & 2 (50.0)$^{\S}$\\
+zlib & C & Repo & 19\%\\
+zstd & C & Repo & 25\%\\
+CryptoSwift & Swift & Repo & 14\%\\
+crc32 & Swift & Repo & 30\%\\
+adler32 & Swift & Repo & 5\%\\
+sha256 & Swift & Ours & 22\%\\
+lz77 & Swift & Ours & 26\%\\
+base64 & Swift & Ours & 26\%\\
+utf8 validator & Swift & Ours & 19\%\\
+sha1 & Swift & Ours & 8\%\\
+md5 & Swift & Ours & 4\%\\
+lz77 & Rust & Ours & 50\%\\
+matmul & Rust & Ours & 50\%\\
+gemm & Julia & Repo & 56\%$^{\ddagger}$\\
+sha256 & Julia & Ours & 88\%\\
+matmul & Julia & Ours & 100\%\\
+lz77 & Julia & Ours & 50\%$^{\S}$\\
 \bottomrule
 \end{tabular}\\
 \raggedright\footnotesize $^{\ddagger}$Julia's standard-library
-\texttt{generic\_matmatmul!}; counted in trap edges. The 9 include every
+\texttt{generic\_matmatmul!}; counted in trap edges (9 of 16), which include every
 check of the two hot accesses (the reads of \texttt{A} and writes of
 \texttt{C}), proven with the heap-invariant extension of \S\ref{sec:frame}.
-$^{\S}$All 4 under the 60\,s budget used for Table~\ref{tab:speedups}.\par
+$^{\S}$100\% under the 60\,s budget used for Table~\ref{tab:speedups}.\par
 \end{table}
 Table~\ref{tab:static} introduces the benchmarks and the checks \tool{}
-proves dead in each: 288 in zlib, 153 in zstd, and 377 in the unmodified
-CryptoSwift library, with the transformed libraries' output
+proves dead in each: 19\% of zlib's checks, 25\% of zstd's, and 14\% of
+the unmodified CryptoSwift library's, with the transformed libraries' output
 byte-identical to the original.
 Three structural findings accompany the counts. First, the
 \emph{specification split}: under the unsigned-overflow spec, hashing and
