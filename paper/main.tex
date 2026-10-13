@@ -1358,14 +1358,14 @@ Our evaluation is organized around four questions:
 
 In this section we evaluate how much \tool{}'s proofs speed up the final compiled binary. We collected 17 benchmarks, 6 of them from existing libraries and repositories or extracted from them, and the rest are our implementations of memory- and compute-heavy everyday kernels. Table~\ref{tab:static} lists the benchmarks, their sources, and the percentage of their checks that \tool{} removes. 
 
-What matters more than the static percentage of check removals in Table~\ref{tab:static} is how much performance improvement each final compiled binary yields, in other words whether check removal buys performance, which Table~\ref{tab:speedups} establishes. We achieve a significant speedup of $4.01\times$ on Swift lz77
+What matters more than the static percentage of check removals in Table~\ref{tab:static} is how much performance improvement each final compiled binary yields, in other words whether check removal buys performance, which Table~\ref{tab:speedups} establishes. We achieve a significant speedup of $4.01\times$ on Julia lz77
 and $3.91\times$ on stdlib GEMM; in total 7 out of 17 benchmarks have a performance improvement of more than 10\%. These performance improvements are among different applications: matrix operations are widely used in scientific computing and machine learning, and so are compression libraries and cryptographic kernels. A 10 to 300\% performance improvement is very impactful, especially knowing that code safety is not sacrificed. Also, for all four of our frontend languages (C, Swift, Rust, Julia) we have benchmarks that speed up, suggesting that \tool{} is not bound to a particular frontend or application, and super-analysis can be applied to a variety of domains. The speedups are also not an artifact of one machine: on
 Apple M-series the same proofs give $4.16\times$ on GEMM and $1.38\times$ on Swift lz77, demonstrating that super-analysis can accelerate code on many microarchitectures
 (Appendix~\ref{sec:app-mseries}).
 
 
 The safety check performance tax, or as we call it, the ceiling, is how much the checks slow the code down. Ideally \tool{} would recover all of the performance loss, as it does for 5 benchmarks. For two benchmarks (Rust lz77 and the 
-Swift utf8 validator) \tool{}'s partial check removal yields better performance than full removal (higher than ceiling). We have three interesting cases where check removal slows down the code, and one (CryptoSwift) where despite having a positive ceiling, \tool{}'s check removal slows the computation.
+Swift utf8 validator) \tool{}'s partial check removal yields better performance than full removal (higher than ceiling). We have three interesting cases where check removal slows down the code, and one (CryptoSwift) where despite having a positive ceiling, \tool{}'s check removal slows the computation. Removing a check that blocks no further transformation leaves the second \texttt{-O3} free to make different code-generation choices, which can cost as well as gain (\S\ref{sec:results-mech}).
 
 
 \begin{table}
