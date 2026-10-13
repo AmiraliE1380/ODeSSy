@@ -1359,55 +1359,48 @@ RQ1 has a capability half --- how much can be proven --- and a payoff
 half --- what the proofs buy at runtime. Table~\ref{tab:static}
 answers the first, Table~\ref{tab:speedups} the second.
 \begin{table}
-\caption{Static elimination on C libraries and native-language kernels.
-Trap counts are call-site censuses in the sanitized \texttt{-O3} baseline
-IR (edge-counted where noted). ``Prov'': R = unmodified repository; O = our implementation of a standard
-kernel. Rows marked $^{*}$ are the builds timed in
-Table~\ref{tab:speedups} (x86, production configuration); ``$(+k)$'' counts
-further checks removed in guarded loop copies (\S\ref{sec:guards}), which
-remain in the original loop. Vacuity-audited; vacuous $=0$ except zstd
-(see text).}
+\caption{The benchmarks and the checks \tool{} proves dead in each.
+``Source'': \emph{upstream} = an unmodified open-source repository;
+\emph{ours} = our implementation of a standard kernel. Proven: checks
+removed, including those removed in guarded loop copies
+(\S\ref{sec:guards}), and in parentheses their percentage of the checks
+left after \texttt{-O3} (x86, Thorough, one thread, 10\,s per query;
+the build of Table~\ref{tab:speedups}).}
 \label{tab:static}
 \small
-\begin{tabular}{lllrrr}
+\begin{tabular}{lllr}
 \toprule
-Benchmark & Lang & Prov & Traps & Proven & \%\\
+Benchmark & Lang & Source & Proven (\%)\\
 \midrule
-zlib$^{*}$  & C & R & 1298 & 207$^{\P}$ & 15.9\\
-zstd  & C & R & 19197 & 2619 & 13.6\\
-zstd (signed)$^{*}$  & C & R & 249 & 16 & 6.4\\
-CryptoSwift$^{*}$  & Swift & R & 2847 & 264 (+112) & 9.3\\
-sha256$^{*}$ & Swift & O & 40 & 7 (+1) & 18\\
-lz77$^{*}$ & Swift & O & 26 & 4 (+3) & 15\\
-utf8 validator$^{*}$ & Swift & O & 25 & 3 (+1) & 12\\
-crc32$^{*}$  & Swift & R & 41 & 4 (+7) & 10\\
-sha1$^{*}$ & Swift & O & 27 & 2 & 7\\
-base64$^{*}$ & Swift & O & 30 & 2 (+5) & 7\\
-md5$^{*}$ & Swift & O & 29 & 1 & 3\\
-adler32$^{*}$  & Swift & R & 42 & 1 (+1) & 2.4\\
-sha256 & Julia & O & 12 & 10 & 83\\
-gemm  & Julia & R & 16 edges & 9$^{\ddagger}$ & 56\\
-lz77$^{*}$ & Rust & O & 5 & 2 & 40\\
-matmul$^{*}$ & Rust & O & 7 & 0 (+2) & 0\\
+zlib & C & upstream & 288 (18.5)\\
+zstd & C & upstream & 153 (25.2)\\
+CryptoSwift & Swift & upstream & 377 (14.0)\\
+crc32 & Swift & upstream & 11 (29.7)\\
+adler32 & Swift & upstream & 2 (5.3)\\
+sha256 & Swift & ours & 8 (22.2)\\
+lz77 & Swift & ours & 7 (25.9)\\
+base64 & Swift & ours & 7 (25.9)\\
+utf8 validator & Swift & ours & 4 (19.0)\\
+sha1 & Swift & ours & 2 (8.3)\\
+md5 & Swift & ours & 1 (4.0)\\
+lz77 & Rust & ours & 2 (50.0)\\
+matmul & Rust & ours & 2 (50.0)\\
+gemm & Julia & upstream & 9 (56.2)$^{\ddagger}$\\
+sha256 & Julia & ours & 14 (87.5)\\
+matmul & Julia & ours & 3 (100)\\
+lz77 & Julia & ours & 2 (50.0)$^{\S}$\\
 \bottomrule
 \end{tabular}\\
-\raggedright\footnotesize $^{\ddagger}$Including every check of the two hot accesses (the reads of \texttt{A} and writes of \texttt{C}), proven by the
-heap-invariant extension of \S\ref{sec:frame}; the base encoder proved
-0 (the frame-gap result). $^{\P}$Marginal over the double-O3 control
-per our reporting convention: for zlib, the control removes 2. \par
+\raggedright\footnotesize $^{\ddagger}$Julia's standard-library
+\texttt{generic\_matmatmul!}; counted in trap edges. The 9 include every
+check of the two hot accesses (the reads of \texttt{A} and writes of
+\texttt{C}), proven with the heap-invariant extension of \S\ref{sec:frame}.
+$^{\S}$All 4 under the 60\,s budget used for Table~\ref{tab:speedups}.\par
 \end{table}
-On real C repositories under the
-combined integer specification, \tool{} proves \pct{13.6}--\pct{15.9} of
-checks dead --- 207 of 1298 in zlib, 2619 of 19197 in zstd --- and 264
-checks in the unmodified CryptoSwift library, plus 112 more in guarded
-loop copies, with the transformed library's output byte-identical to the
-original. As a calibration of what
-conventional re-optimization achieves on the same inputs: applying the
-\emph{entire} standard O3 pipeline a second time removes 2 traps in zlib
-(13 under the wider all-non-firing specification) where \tool{} removes
-207 (212 under the wider specification). Against a single \texttt{-O3} run the pass's marginal
-elimination is correspondingly larger; we report all counts against the
-stronger double-O3 control.
+Table~\ref{tab:static} introduces the benchmarks and the checks \tool{}
+proves dead in each: 288 in zlib, 153 in zstd, and 377 in the unmodified
+CryptoSwift library, with the transformed libraries' output
+byte-identical to the original.
 Three structural findings accompany the counts. First, the
 \emph{specification split}: under the unsigned-overflow spec, hashing and
 crypto code (CRC, Adler, xxHash, SHA) is intentionally-wrapping ---
@@ -1627,29 +1620,7 @@ it, recovers at most part of what guard synthesis does, and on the
 kernels where guard synthesis matters most it recovers nothing.
 \subsection{RQ3: Is its overhead low enough for real-world use?}
 \label{sec:results-cost}
-\begin{figure}[t]
-\centering
-\includegraphics[width=\textwidth]{smt_latencies_thorough_x86.pdf}
-\caption{SMT query latency by verdict class: every direct reachability
-query (one per check) that the Thorough configuration poses on the 17
-benchmarks of Table~\ref{tab:speedups} (5{,}749 queries; x86, one
-thread, 10\,s per query). The median proof takes 23\,ms, and \pct{72}
-of proofs finish within 100\,ms and \pct{92} within 1\,s; refutations
-are cheaper at the median (5.6\,ms). 21 queries reach the 10\,s budget
-and keep their checks. Most of the cost sits in a tail: this is the
-shape that makes the timeout dial of Figure~\ref{fig:matrix}
-effective, since a budget truncates the tail while keeping most of the
-proofs.}
-\Description{A single histogram panel of SMT query latency on a
-logarithmic x-axis in milliseconds, with query count on the y-axis. Three
-overlaid outlines: SAT in red with 5180 queries, UNSAT in blue with 548
-queries, and UNKNOWN in green with 21 queries at the 10 second cap.
-Dashed vertical lines mark the medians at 5.6 milliseconds for SAT and
-23.3 milliseconds for UNSAT. Both distributions spread from below 0.1
-milliseconds to several seconds, with a second, smaller SAT mode between
-1 and 10 seconds.}
-\label{fig:latency}
-\end{figure}
+
 \paragraph{Compile cost.}
 Table~\ref{tab:compile} (Appendix~\ref{sec:app-full}) gives the \tool{}
 stage time of both configurations on every benchmark of
@@ -1746,7 +1717,7 @@ development and becomes a thorough one at release.
 Figure~\ref{fig:matrix} is the central cost result. On zlib's
 \texttt{deflate.c}, \pct{96} of the proofs (52 of 54) survive a 1\,s
 per-query budget and about \pct{78} survive 100\,ms; the full set needs
-10\,s. Figure~\ref{fig:latency} shows why the dial costs so little at
+10\,s. The query latencies (Figure~\ref{fig:latency}, Appendix~\ref{sec:app-full}) show why the dial costs so little at
 the top: across 5{,}749 queries on all benchmarks the median proof takes
 23\,ms and \pct{92} take under a second, so a budget removes the
 expensive tail while keeping most of the proofs. Refutations are cheaper
@@ -2075,6 +2046,29 @@ one minute. In zlib, trees and adler32 rise far above the line under
 Thorough; every other module, and every zstd module but one, sits near or
 below it.}
 \label{fig:modules}
+\end{figure}
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{smt_latencies_thorough_x86.pdf}
+\caption{SMT query latency by verdict class: every direct reachability
+query (one per check) that the Thorough configuration poses on the 17
+benchmarks of Table~\ref{tab:speedups} (5{,}749 queries; x86, one
+thread, 10\,s per query). The median proof takes 23\,ms, and \pct{72}
+of proofs finish within 100\,ms and \pct{92} within 1\,s; refutations
+are cheaper at the median (5.6\,ms). 21 queries reach the 10\,s budget
+and keep their checks. Most of the cost sits in a tail: this is the
+shape that makes the timeout dial of Figure~\ref{fig:matrix}
+effective, since a budget truncates the tail while keeping most of the
+proofs.}
+\Description{A single histogram panel of SMT query latency on a
+logarithmic x-axis in milliseconds, with query count on the y-axis. Three
+overlaid outlines: SAT in red with 5180 queries, UNSAT in blue with 548
+queries, and UNKNOWN in green with 21 queries at the 10 second cap.
+Dashed vertical lines mark the medians at 5.6 milliseconds for SAT and
+23.3 milliseconds for UNSAT. Both distributions spread from below 0.1
+milliseconds to several seconds, with a second, smaller SAT mode between
+1 and 10 seconds.}
+\label{fig:latency}
 \end{figure}
 \begin{table}
 \caption{The frontier: benchmarks with a measured, unrecovered
