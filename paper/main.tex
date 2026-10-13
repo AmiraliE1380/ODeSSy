@@ -1585,61 +1585,31 @@ and they are reasonable for an online pass: a typical build with Fast takes
 little more than a conventional one, and even Thorough stays within a
 small factor of it. 
 
-\paragraph{Where each configuration fits.}
-The repository totals overstate what a developer waits for. Builds
-compile modules independently and rebuild only the ones that changed,
-so the latency that matters in the edit--compile loop is per module, and
-per module even Thorough is modest. The modules that do the libraries'
-main work take under half a minute: zlib's compressor (\texttt{deflate.c}, 22\,s) and
-decompressor (\texttt{inflate.c}, 22\,s), and zstd's Huffman encoder
-(\texttt{huf\_compress.c}, 18\,s) and optimal parser
-(\texttt{zstd\_opt.c}, 7.2\,s). The totals are set by a few outliers ---
-\texttt{trees.c} (1485\,s) and \texttt{adler32.c} (62\,s) in zlib,
-\texttt{zstd\_preSplit.c} (52\,s) in zstd --- whose heavily inlined
-bodies give each query a long guard chain.
+\paragraph{Parallelism and timeouts.}
+Both dials make both configurations faster (Figure~\ref{fig:matrix}, zlib's
+\texttt{deflate.c}). A strict per-query budget costs few proofs: \pct{98}
+of them survive 1\,s and \pct{91} survive 100\,ms, because most queries
+finish in milliseconds (Figure~\ref{fig:latency},
+Appendix~\ref{sec:app-full}). Parallelism has a limit: discovery, fact
+import, and the many queries guard synthesis poses for each trap run
+largely in series, so threads and budgets together speed \tool{} up by
+at most $2.0\times$, reached at four workers. The figure is measured
+without inductive encoding, whose fact import is also serial and would
+confound the two dials.
 
-\emph{Fast} is the configuration for the development loop, and it is
-both fast and effective. It compiles every kernel in under 2.3\,s (all
-but one in under 0.7\,s) and the whole of zstd and of
-CryptoSwift in 33\,s and 70\,s. Where it keeps Thorough's proofs it
-keeps Thorough's speedups: on Rust matmul, adler32, sha1, and md5 it
-removes exactly the checks Thorough removes, and it speeds up Rust
-matmul by $1.336\times$ and adler32 by $1.039\times$, within run-to-run
-variation of Thorough (Table~\ref{tab:fast},
-Appendix~\ref{sec:app-full}). The exception is zlib's \texttt{trees.c},
-which takes 496\,s even under Fast, for the fact-import cost discussed
-above.
-
-We therefore recommend choosing the configuration by stage. During
-development, compile whole repositories and large modules with Fast,
-and the single module
-being edited with Thorough, which per module stays between seconds and
-about a minute. A wait of that order --- a few seconds for the typical
-module, 5.0\,s and 1.4\,s at the median --- fits the edit--compile loop:
-it is paid once per edit, only for the module that changed, while the
-build reuses every other module's object file, and a module that is
-still too slow for the developer's patience can be given a smaller
-budget or compiled with Fast. Every configuration takes a flexible per-query budget
-and scales with threads up to about four workers (Figure~\ref{fig:matrix}). For the
-final binary, compile the whole codebase with Thorough: a few minutes to
-an hour, spent once on code that is no longer changing, buys the proofs
-behind every speedup in Table~\ref{tab:speedups} --- the same trade
-release builds already make with link-time and profile-guided
-optimization. With this split, \tool{} stays an online pass during
-development and becomes a thorough one at release.
-\paragraph{The dial.}
-Figure~\ref{fig:matrix} is the central cost result. It is measured
-without inductive encoding, a separate knob whose fact import runs
-serially through the turnstile (\S\ref{sec:pipeline}) and would confound
-the two dials; with it, the module proves 71 checks instead of 65. On zlib's
-\texttt{deflate.c}, \pct{98} of the proofs (64 of 65) survive a 1\,s
-per-query budget and \pct{91} survive 100\,ms; the full set needs
-10\,s. The query latencies (Figure~\ref{fig:latency}, Appendix~\ref{sec:app-full}) show why the dial costs so little at
-the top: across 4{,}946 queries on all benchmarks the median proof takes
-7.2\,ms and \pct{93} take under a second, so a budget removes the
-expensive tail while keeping most of the proofs. Refutations are cheaper
-still (median 5.2\,ms), which matters because they are the large
-majority of queries.
+\paragraph{How to use \tool{}.}
+A developer can use either configuration in the edit--compile loop,
+since builds recompile only the module that changed and per-module
+latency is modest: the median module takes 5.0\,s (zlib) and 1.4\,s
+(zstd) under Thorough, and the libraries' main modules under half a
+minute. For larger modules and whole code bases, Fast remains cheap ---
+every kernel in under 2.3\,s, zstd and CryptoSwift in 33\,s and 70\,s;
+where Thorough is too slow, the developer iterates with Fast and builds
+the final binary with Thorough, the same trade release builds already
+make with link-time and profile-guided optimization. Fast is not a
+straw man: where it keeps Thorough's proofs it keeps Thorough's
+speedups, $1.336\times$ on Rust matmul (Table~\ref{tab:fast},
+Appendix~\ref{sec:app-full}).
 \begin{figure}
 \centering
 \includegraphics[width=\columnwidth]{dial_matrix_x86_current.pdf}
