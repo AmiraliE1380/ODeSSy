@@ -54,3 +54,8 @@ zlib,inftrees,base23,0.05,2,-
 zlib,inftrees,thorough,1.21,2,0
 zlib,inftrees,fast,0.84,2,0
 zlib,inftrees,light,0.73,2,0
+zlib,trees,base18,0.33,50,-
+zlib,trees,base23,0.28,50,-
+zlib,trees,thorough,1530.94,50,0
+zlib,trees,fast,483.59,50,0
+zlib,trees,light,49.74,50,0
