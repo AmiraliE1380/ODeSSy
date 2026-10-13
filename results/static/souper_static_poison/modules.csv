@@ -49,3 +49,8 @@ zlib,inflate,base23,0.23,11,-
 zlib,inflate,thorough,20.30,11,0
 zlib,inflate,fast,6.28,11,0
 zlib,inflate,light,2.93,11,0
+zlib,inftrees,base18,0.07,2,-
+zlib,inftrees,base23,0.05,2,-
+zlib,inftrees,thorough,1.21,2,0
+zlib,inftrees,fast,0.84,2,0
+zlib,inftrees,light,0.73,2,0
