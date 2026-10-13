@@ -154,3 +154,8 @@ zstd,fastcover,base23,0.08,2,-
 zstd,fastcover,thorough,1.35,2,0
 zstd,fastcover,fast,0.28,2,0
 zstd,fastcover,light,0.16,2,0
+zstd,zdict,base18,0.21,2,-
+zstd,zdict,base23,0.18,2,-
+zstd,zdict,thorough,1.14,2,0
+zstd,zdict,fast,0.35,2,0
+zstd,zdict,light,0.26,2,0
