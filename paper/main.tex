@@ -1545,8 +1545,11 @@ Using guard synthesis or \tool{} proofs alone still recovers a lot of performanc
 
 \subsection{RQ3: Is \tool{} fast enough for real-world use?}
 \label{sec:results-cost}
-
 \paragraph{Compile cost.}
+Compile-time latency is the first concern when it comes to SMT-assisted optimization, and it has limited previous work to offline use~\cite{sasnauskas2017souper, schkufza2013stoke, taneja2020knownbits}. A compiler pass must be fast to be widely adopted by programmers as an online pass, and we use three measures to make \tool{} faster: massive parallelism, strict SMT timeouts, and relaxed encoding precision. This makes \tool{}'s cost flexible, and our results show that it is suitable for online use inside the programmer's development loop.
+
+To make \tool{} easy and simple to use, we introduce two tiers it can run in: \emph{Fast} and \emph{Thorough}. Fast uses strict 10\,ms timeouts with 10 threads, and encodes the imported LLVM analyses (\S\ref{sec:system-facts}), heap invariance (\S\ref{sec:frame-machinery}), and guard synthesis (\S\ref{sec:guards-impl}), without inductive encoding. Thorough is the configuration behind the speedup table (Table~\ref{tab:speedups}) and optimizes more aggressively, using a generous 10\,s timeout, 10-thread parallelism, and all the fruitful knobs on: the imported analyses, heap invariance, inductive encoding (\S\ref{sec:app-machinery}), and guard synthesis (Appendix~\ref{sec:app-knobs} lists both configurations).
+
 Table~\ref{tab:compile} (Appendix~\ref{sec:app-full}) gives the \tool{}
 stage time of both configurations on every benchmark of
 Table~\ref{tab:speedups}; we summarize it here. On the 14 kernels,
