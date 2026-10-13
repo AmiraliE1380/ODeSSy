@@ -1,0 +1,2 @@
+benchmark        lang  mods checks    O3 s | thorough s    (max)   pf |   fast s   (max)   pf |  light s   (max)   pf
+zlib             C       14   1554    2.31 |    1623.86  1485.41  288 |   539.11  496.32  119 |      nan     nan   -1

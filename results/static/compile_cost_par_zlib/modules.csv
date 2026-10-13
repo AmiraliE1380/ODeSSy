@@ -1,0 +1,15 @@
+bench,lang,module,checks,o3_s,thorough_s,thorough_proofs,fast_s,fast_proofs,light_s,light_proofs
+zlib,C,adler32,144,0.065,61.610,60,4.686,2,NA,NA
+zlib,C,compress,16,0.032,0.251,8,0.229,7,NA,NA
+zlib,C,crc32,11,0.118,5.344,9,1.506,7,NA,NA
+zlib,C,deflate,491,0.435,21.536,59,16.036,28,NA,NA
+zlib,C,gzlib,29,0.055,0.422,0,0.459,0,NA,NA
+zlib,C,gzread,186,0.421,11.253,73,5.255,30,NA,NA
+zlib,C,gzwrite,151,0.357,7.917,8,3.672,0,NA,NA
+zlib,C,infback,44,0.104,4.677,6,1.701,6,NA,NA
+zlib,C,inffast,29,0.080,1.525,7,0.702,1,NA,NA
+zlib,C,inflate,109,0.254,22.389,15,7.299,8,NA,NA
+zlib,C,inftrees,11,0.050,0.963,1,0.692,0,NA,NA
+zlib,C,trees,308,0.289,1485.410,34,496.325,22,NA,NA
+zlib,C,uncompr,24,0.034,0.513,8,0.493,8,NA,NA
+zlib,C,zutil,1,0.017,0.053,0,0.055,0,NA,NA
