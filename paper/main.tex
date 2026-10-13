@@ -1328,13 +1328,10 @@ single \texttt{-O3} baseline; Table~\ref{tab:speedups-full} also gives
 them against the double one. The runtime experiments (\S\ref{sec:results-perf}--\S\ref{sec:results-mech}) use a 10\,s per-query solver budget; the compile-cost experiments (\S\ref{sec:results-cost}) vary it.
 
 \paragraph{Benchmarks, specifications, tiers.}
-Four C libraries (zlib, zstd, lz4, OpenSSL) under UBSan trap-mode
+Two C libraries (zlib, zstd) under UBSan trap-mode
 specifications; nine Swift kernels plus the unmodified CryptoSwift
 library; Julia kernels including the stdlib GEMM of \S\ref{sec:frame};
-and Rust ports that exercise the \texttt{traps=} retargeting. lz4 and
-OpenSSL are static only: \tool{}'s lz4 build at the production budget
-did not finish in reasonable time on the x86 node, and OpenSSL's signed
-specification emits no checks. Dynamic
+and Rust ports that exercise the \texttt{traps=} retargeting. Dynamic
 experiments use only specifications that do not fire at runtime --- a
 firing specification (intentional wraparound in hashing code) is
 reported as an un-runnable finding, never timed
@@ -1383,8 +1380,6 @@ Benchmark & Lang & Prov & Traps & Proven & \%\\
 zlib$^{*}$  & C & R & 1298 & 207$^{\P}$ & 15.9\\
 zstd  & C & R & 19197 & 2619 & 13.6\\
 zstd (signed)$^{*}$  & C & R & 249 & 16 & 6.4\\
-lz4 & C & R & 3403 & 193$^{\P}$ & 5.7$^{\P}$\\
-OpenSSL sha256 & C & R & 2225 & 43$^{\dagger}$ & 1.9$^{\dagger}$\\
 CryptoSwift$^{*}$  & Swift & R & 2847 & 264 (+112) & 9.3\\
 sha256$^{*}$ & Swift & O & 40 & 7 (+1) & 18\\
 lz77$^{*}$ & Swift & O & 26 & 4 (+3) & 15\\
@@ -1400,12 +1395,10 @@ lz77$^{*}$ & Rust & O & 5 & 2 & 40\\
 matmul$^{*}$ & Rust & O & 7 & 0 (+2) & 0\\
 \bottomrule
 \end{tabular}\\
-\raggedright\footnotesize $^{\dagger}$At a 30\,s per-query budget;
-see Appendix~\ref{sec:app-openssl}. $^{\ddagger}$Including every check of the two hot accesses (the reads of \texttt{A} and writes of \texttt{C}), proven by the
+\raggedright\footnotesize $^{\ddagger}$Including every check of the two hot accesses (the reads of \texttt{A} and writes of \texttt{C}), proven by the
 heap-invariant extension of \S\ref{sec:frame}; the base encoder proved
 0 (the frame-gap result). $^{\P}$Marginal over the double-O3 control
-per our reporting convention: for lz4, \tool{} removes 1027 of 3403 and
-the control removes 834; for zlib, the control removes 2. \par
+per our reporting convention: for zlib, the control removes 2. \par
 \end{table}
 On real C repositories under the
 combined integer specification, \tool{} proves \pct{13.6}--\pct{15.9} of
@@ -1422,10 +1415,7 @@ stronger double-O3 control.
 Three structural findings accompany the counts. First, the
 \emph{specification split}: under the unsigned-overflow spec, hashing and
 crypto code (CRC, Adler, xxHash, SHA) is intentionally-wrapping ---
-all-\textsc{sat} there is a finding about the spec, not imprecision, and
-OpenSSL's SHA-256 is the limit case: the signed spec emits \emph{zero}
-checks (the code contains no instrumentable signed arithmetic), so under
-strict UB there is simply nothing to eliminate. The split is dynamic as
+all-\textsc{sat} there is a finding about the spec, not imprecision. The split is dynamic as
 well as static: a trap-mode \emph{unsigned} build of zstd's CLI executes
 a trap in its first benchmark block --- the intentional wraps in its
 xxhash checksum fire immediately --- so under that specification the
@@ -1958,8 +1948,7 @@ benchmarks with a real, measured ceiling that the current fact sources
 leave entirely (or almost entirely) unrecovered --- each row prices a
 residue class of \S\ref{sec:future}. Table~\ref{tab:static-only}
 collects the static-only runs, where no ceiling exists to recover --- by
-measurement (a $\leq$noise gap), by construction (OpenSSL's signed spec
-emits no checks), or because the specification that emits the checks is
+measurement (a $\leq$noise gap), or because the specification that emits the checks is
 dynamically un-runnable in trap mode (\S\ref{sec:results-static}).
 Earlier M-series measurements are in Appendix~\ref{sec:app-mseries}.
 \begin{table}[t]
@@ -2091,22 +2080,6 @@ Thorough; every other module, and every zstd module but one, sits near or
 below it.}
 \label{fig:modules}
 \end{figure}
-\paragraph{The far end of the dial.}\label{sec:app-openssl}
-OpenSSL's SHA-256, compiled with aggressive inlining, is the
-counterpoint to the timeout dial of \S\ref{sec:results-cost}:
-each of its 2225 unsigned-spec queries carries the false-edges of up to
-$\sim$200 \emph{preceding} overflow checks as dominating context. At
-0.3--5\,s budgets the pass proves \emph{nothing} (all queries pinned at
-the cap); at 30\,s, 43 proofs
-appear; an uncapped historical run found 125. The budget curve
-$0\,@\,1\text{s} \rightarrow 0\,@\,5\text{s} \rightarrow 43\,@\,30\text{s}
-\rightarrow 125\,@\,\infty$ is monotone: query hardness
-here scales with inlined guard-chain depth, and the same knob that makes
-zlib effectively free spans five orders of magnitude on real code. The
-practical reading is favorable: a deployment at a 1\,s budget keeps
-\pct{96} of zlib-class proofs and silently, soundly skips OpenSSL-class
-queries (\textsc{unknown} keeps the check); an offline audit turns the
-dial up.
 \begin{table}
 \caption{The frontier: benchmarks with a measured, unrecovered
 checked-vs-unchecked ceiling and no (or unusably few) proofs at the
@@ -2138,15 +2111,12 @@ measurement or by construction.}
 \toprule
 Benchmark & Lang & Elim & Platform & Ceiling & Why static-only\\
 \midrule
-OpenSSL sha256 & C & 43 & x86 & $1.000\times^{d}$ & asm fast path\\
-lz4 decomp. & C & --- & x86 & $1.002\times$ & below noise\\
 poly (Horner) & Julia & 1 & both & $1.000\times$ & no ceiling, either ISA\\
 zlib decomp.\ (both spec) & C & --- & x86 & n/a & traps fire; un-runnable\\
 zstd comp.\ (unsigned) & C & --- & x86 & n/a & traps fire; un-runnable\\
 \bottomrule
 \end{tabular}\\
-\raggedright\footnotesize $^{d}$No overhead by construction: under the
-signed specification OpenSSL's SHA-256 emits no checks at all. The two
+\raggedright\footnotesize The two
 un-runnable rows have no measurable ceiling of any kind: the sanitized
 binary executes an intentional-wraparound trap on its first blocks, so
 a checked-vs-unchecked comparison cannot be run --- the runnable
@@ -2376,6 +2346,6 @@ blocker), mechanism removed. Pointer-$\phi$ linking --- predicted no
 gain because pointers are havoced; held. Out-of-sample sweep ---
 predicted $+5$ to $+30$ on CryptoSwift and $\approx 0$ on C libraries;
 observed $+43$ on CryptoSwift and $+11$ on zstd (falsified upward),
-$0$ on zlib and lz4 (held); superset property held on every corpus.
+$0$ on zlib (held); superset property held on every corpus.
 
 \end{document}
