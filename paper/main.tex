@@ -1540,7 +1540,7 @@ guarded copy of Table~\ref{tab:speedups} reaches $1.107\times$.\par
 
 \emph{Pipeline (i) is the best or tied on every benchmark}, demonstrating that the combination of guard synthesis and \tool{} proofs is the most powerful and fruitful. Pipeline (i) not only beats evert other pipeline, but generates every single proof any other pipeline generates. It is the only pipeline powerful enough to recover $4.013\times$ performance of Julia's lz77. 
 
-Using guard synthesis or \tool{} proofs alone still recovers a lot of performance and yields a lot of proofs, although it is hard to say exactly which of the two (ii) and (iii) is the best. Both of them are clearly more powerful than full LLVM pipelines (iv) and (v). This re-state the main thesis of the paper: solver-based expensive analysis pays back. We believe our guard synthesis algorithm and templates are powerful, though it beats LLVM's IRCE not just because of our smart design choices, but because our guard synthesis is solver-guided from the beginning.
+Using guard synthesis or \tool{} proofs alone still recovers a lot of performance and yields a lot of proofs, although it is hard to say exactly which of the two (ii) and (iii) is the best. Both of them are clearly more powerful than full LLVM pipelines (iv) and (v). \emph{This restates the main thesis of the paper: solver-based expensive analysis pays back.} We believe our guard synthesis algorithm and templates are powerful, though \emph{it beats LLVM's IRCE not just because of our smart design choices, but because our guard synthesis is solver-guided from the beginning.}
  
 
 \subsection{RQ3: Is its overhead low enough for real-world use?}
