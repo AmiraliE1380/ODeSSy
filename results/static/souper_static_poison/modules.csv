@@ -104,3 +104,8 @@ zstd,zstd_double_fast,base23,0.72,4,-
 zstd,zstd_double_fast,thorough,0.84,4,0
 zstd,zstd_double_fast,fast,0.80,4,0
 zstd,zstd_double_fast,light,0.80,4,0
+zstd,zstd_lazy,base18,3.07,100,-
+zstd,zstd_lazy,base23,2.98,100,-
+zstd,zstd_lazy,thorough,4.57,100,0
+zstd,zstd_lazy,fast,4.03,100,0
+zstd,zstd_lazy,light,3.63,100,0
