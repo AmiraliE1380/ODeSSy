@@ -1720,29 +1720,26 @@ Thorough removes at least as many.
 \begin{figure}[t]
 \centering
 \includegraphics[width=3.3in]{souper_deflate.pdf}
-\caption{zlib's \texttt{deflate.c}, the compressor. The curve is
-\tool{}'s per-query timeout sweep (Thorough,
-one thread, 1\,ms to 10\,s; trap edges proved, on the LLVM~23 IR of
-Figure~\ref{fig:matrix}). The crosses are Souper on the LLVM~18 IR, in
-constant mode and in CEGIS synthesis mode; neither removes a check.}
-\Description{A scatter plot with ODeSSy stage time on a logarithmic
-x-axis and trap edges proved on the y-axis. A dashed curve rises from 25
-edges at 1 millisecond per query (32 seconds) through 48 at 10 ms, 65 at
-100 ms and 69 at 1 s to 71 at 10 s (45 seconds). Two crosses sit at zero:
-Souper constant mode at 119 seconds and Souper CEGIS at 8749 seconds.}
+\caption{zlib's \texttt{deflate.c}, the compressor: checks removed against
+compile time, both tools on the same LLVM~18 IR (time includes the
+\texttt{-O3} that follows each tool). Circle and square: \tool{}'s Fast
+and Thorough; crosses: Souper in constant mode and in CEGIS synthesis
+mode, neither of which removes a check.}
+\Description{A scatter plot with compile time on a logarithmic x-axis and
+checks removed on the y-axis. ODeSSy Fast removes 8 checks in 14 seconds
+and ODeSSy Thorough 8 in 21 seconds, joined by a dashed line. Two crosses
+sit at zero: Souper constant mode at 119 seconds and Souper CEGIS at 8749
+seconds.}
 \label{fig:souper-deflate}
 \end{figure}
 
 \paragraph{One module in detail.} Figure~\ref{fig:souper-deflate} shows
-the two paradigms on zlib's compressor, \texttt{deflate.c}. \tool{}'s
-per-query budget traces a curve: 48 trap edges proved at 10\,ms per query
-in 36\,s, and 71 at 10\,s in 45\,s. Souper's constant mode takes 119\,s
-and removes nothing. Its synthesis mode, the one that makes it a
-superoptimizer, ran for 2.4\,hours (8{,}749\,s) and also removed nothing;
-at that cost per module we did not run it on the libraries, nor sweep
-Souper's own timeout. The two sides of the figure count different things
---- edges proved on \tool{}'s IR, checks removed on Souper's --- but
-Souper's count is zero on either measure.
+the two paradigms on zlib's compressor, \texttt{deflate.c}, on the same
+input. \tool{} removes 8 checks, in 14\,s under Fast and 21\,s under
+Thorough. Souper's constant mode takes 119\,s and removes nothing. Its
+synthesis mode, the one that makes it a superoptimizer, ran for
+2.4\,hours (8{,}749\,s) and also removed nothing; at that cost per
+module we did not run it on the libraries.
 
 Two cautions bound the comparison. It is one superoptimizer, on one task:
 Souper is built to find general peephole improvements, and removing safety

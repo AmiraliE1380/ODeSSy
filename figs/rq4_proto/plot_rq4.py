@@ -144,41 +144,31 @@ def variant_B(d, logy, name):
 
 
 def variant_C(d):
-    rows = collections.defaultdict(list)
-    for r in csv.DictReader(open(DIAL_CSV)):
-        if r["threads"] == "1":
-            rows[int(r["timeout_ms"])].append((float(r["wall_s"]), int(r["unsat"])))
-    pts = []
-    for to in sorted(rows):
-        ws = sorted(w for w, _ in rows[to])
-        us = sorted(u for _, u in rows[to])          # proofs vary by one across reps at small budgets
-        pts.append((ws[len(ws) // 2], us[len(us) // 2], to))
-    fig, ax = plt.subplots(figsize=(W, 2.3))
-    ax.set_xscale("log")
-    ax.set_xlim(10, 2e4)
-    ax.spines[["top", "right"]].set_visible(False)
-    ax.plot([p[0] for p in pts], [p[1] for p in pts], ls="--", lw=0.9, color=LIB_COLOR["zlib"], zorder=2)
-    ax.scatter([p[0] for p in pts], [p[1] for p in pts], s=16, color=LIB_COLOR["zlib"], zorder=3)
-    for w, u, to in pts:
-        lab = f"{to} ms" if to < 1000 else f"{to // 1000} s"
-        ax.annotate(lab, (w, u), xytext=(3, -8), textcoords="offset points", fontsize=5.5,
-                    color=LIB_COLOR["zlib"])
-    ts, ps = d[("zlib", "souper_const")]   # zlib total is not deflate.c; use the module row instead
+    """deflate.c alone: ODeSSy's two tiers and Souper's two modes, all on the same LLVM 18 IR."""
     dm = {}
     for r in csv.DictReader(open(SOUPER_CSV)):
-        if r["repo"] == "zlib" and r["module"] == "deflate":
-            dm[r["arm"]] = (float(r["seconds"]), r["removed"])
-    sc = dm["souper_const"][0]
-    ax.scatter([sc], [0], marker="x", s=28, color="black", lw=1.2, zorder=4, clip_on=False)
-    ax.annotate("Souper, constant", (sc, 0), xytext=(4, 4), textcoords="offset points", fontsize=6)
-    ax.scatter([CEGIS[0]], [0], marker="x", s=28, color="#888888", lw=1.2, zorder=4, clip_on=False)
-    ax.annotate("Souper, CEGIS", (CEGIS[0], 0), xytext=(-4, 4), textcoords="offset points",
+        if r["repo"] == "zlib" and r["module"] == "deflate" and r["removed"] not in ("-", ""):
+            dm[r["arm"]] = (float(r["seconds"]), int(r["removed"]))
+    fig, ax = plt.subplots(figsize=(W, 2.0))
+    ax.set_xscale("log")
+    ax.set_xlim(5, 3e4)
+    ax.spines[["top", "right"]].set_visible(False)
+    c = LIB_COLOR["zlib"]
+    (tf, pf), (tt, pt) = dm["fast"], dm["thorough"]
+    ax.plot([tf, tt], [pf, pt], ls="--", lw=0.9, color=c, zorder=2)
+    ax.scatter([tf], [pf], marker="o", s=22, color=c, zorder=3, edgecolor="white", lw=0.4)
+    ax.scatter([tt], [pt], marker="s", s=20, color=c, zorder=3, edgecolor="white", lw=0.4)
+    ax.annotate("Fast", (tf, pf), xytext=(-4, 4), textcoords="offset points", fontsize=6, color=c, ha="right")
+    ax.annotate("Thorough", (tt, pt), xytext=(4, 4), textcoords="offset points", fontsize=6, color=c, ha="left")
+    sc = dm["souper_const"]
+    ax.scatter([sc[0]], [sc[1]], marker="x", s=28, color="black", lw=1.2, zorder=4, clip_on=False)
+    ax.annotate("Souper, constant", sc, xytext=(4, 4), textcoords="offset points", fontsize=6)
+    ax.scatter([CEGIS[0]], [CEGIS[1]], marker="x", s=28, color="#888888", lw=1.2, zorder=4, clip_on=False)
+    ax.annotate("Souper, CEGIS", CEGIS, xytext=(-4, 4), textcoords="offset points",
                 fontsize=6, color="#888888", ha="right")
-    ax.set_ylim(-2, 80)
-    ax.set_xlabel("ODeSSy stage time on deflate.c (s, log), one thread")
-    ax.set_ylabel("trap edges proved")
-    ax.text(0.98, 0.97, "ODeSSy: per-query timeout sweep, LLVM 23 IR, trap edges\nSouper: LLVM 18 IR, checks removed (0)",
-            transform=ax.transAxes, fontsize=5.3, color="#666666", ha="right", va="top")
+    ax.set_ylim(-0.6, 10)
+    ax.set_xlabel("compile time on deflate.c (s, log)")
+    ax.set_ylabel("checks removed")
     fig.tight_layout(pad=0.3)
     save(fig, "C")
 
