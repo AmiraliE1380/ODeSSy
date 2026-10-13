@@ -20,7 +20,10 @@ ZLIB="${ZLIB:-$(dirname "$ROOT")/zlib}"; ZSTD="${ZSTD:-$(dirname "$ROOT")/zstd}"
 TIMEOUT_S="${TIMEOUT_S:-10}"; SYNTH="${SYNTH:-0}"; SYNTH_CAP="${SYNTH_CAP:-1800}"; ONLY="${ONLY:-}"
 # REDO="zstd,zstd_compress zstd,zstd_decompress": drop these modules' rows so they re-run
 REDO="${REDO:-}"
-OUT=results/static/souper_static; IR="$OUT/ir"; mkdir -p "$IR"
+# SKIP_SOUPER=1: only base18 + the ODeSSy arms (Souper rows are reused from the earlier run)
+SKIP_SOUPER="${SKIP_SOUPER:-0}"
+THOROUGH="${THOROUGH:-heavy;frame;ind;mv;narrow;timeout=10000;threads=1}"
+OUT="${OUT:-results/static/souper_static}"; IR="$OUT/ir"; mkdir -p "$IR"
 CSV="$OUT/modules.csv"; [ -s "$CSV" ] || echo "repo,module,arm,seconds,traps,removed" > "$CSV"
 for rm_ in $REDO; do sed -i "/^$rm_,/d" "$CSV"; done
 PIN="numactl --cpunodebind=0 --membind=0"; command -v numactl >/dev/null || PIN=""
@@ -43,7 +46,7 @@ arm() {  # repo module name baseline-traps cmd...
   s=$(ERRF="$IR/$repo.$m.$name.err" tm $PIN "$@" -S "$IR/$repo.$m.${EXT:-ll}" -o "$f")
   t=$(traps "$f"); [ -n "$bt" ] && [ "$t" != NA ] && [ "$s" != FAIL ] && [ "$s" != TIMEOUT ] && rm=$((bt - t))
   echo "$repo,$m,$name,$s,$t,$rm" | tee -a "$CSV"
-  rm -f "$f"          # keep the CSV, not the IR (large)
+  rm -f "$f"          # keep the CSV and .err logs, not the IR (large)
 }
 module() {  # repo module
   local repo=$1 m=$2
@@ -51,8 +54,8 @@ module() {  # repo module
   sed -i "/^$repo,$m,/d" "$CSV"      # drop partial rows of an interrupted module
   arm "$repo" "$m" base18 "" "$L18/opt" -passes='default<O3>'
   local b18; b18=$(tail -1 "$CSV" | cut -d, -f5)
-  arm "$repo" "$m" souper_const "$b18" "$L18/opt" -load-pass-plugin="$PLUG" -passes='function(souper),default<O3>' $COMMON -souper-only-infer-iN
-  if [ "$SYNTH" = 1 ]; then
+  [ "$SKIP_SOUPER" = 1 ] || arm "$repo" "$m" souper_const "$b18" "$L18/opt" -load-pass-plugin="$PLUG" -passes='function(souper),default<O3>' $COMMON -souper-only-infer-iN
+  if [ "$SYNTH" = 1 ] && [ "$SKIP_SOUPER" != 1 ]; then
     arm "$repo" "$m" souper_synth "$b18" timeout "$SYNTH_CAP" "$L18/opt" -load-pass-plugin="$PLUG" \
         -passes='function(souper),default<O3>' $COMMON -souper-use-cegis
   fi
@@ -62,7 +65,7 @@ module() {  # repo module
   EXT=bc
   arm "$repo" "$m" base23 "" opt -passes='default<O3>'
   local b23; b23=$(tail -1 "$CSV" | cut -d, -f5)
-  arm "$repo" "$m" thorough "$b23" opt -load-pass-plugin=build/OraclePass.so -passes='oracle-pass<heavy;frame;ind;mv;narrow;timeout=10000;threads=1>,default<O3>'
+  arm "$repo" "$m" thorough "$b23" opt -load-pass-plugin=build/OraclePass.so -passes="oracle-pass<$THOROUGH>,default<O3>"
   arm "$repo" "$m" fast     "$b23" opt -load-pass-plugin=build/OraclePass.so -passes='oracle-pass<heavy;frame;mv;narrow;timeout=10;threads=10>,default<O3>'
   arm "$repo" "$m" light    "$b23" opt -load-pass-plugin=build/OraclePass.so -passes='oracle-pass<timeout=10;threads=10>,default<O3>'
   EXT=ll

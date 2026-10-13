@@ -17,7 +17,7 @@
 set -u
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"; cd "$ROOT"
 PL_ROOT="$(dirname "$ROOT")"
-THOROUGH="heavy;frame;ind;mv;narrow;timeout=10000;threads=1"
+THOROUGH="${THOROUGH:-heavy;frame;ind;mv;narrow;timeout=10000;threads=1}"
 FAST="heavy;frame;mv;narrow;timeout=10;threads=10"
 LIGHT="timeout=10;threads=10"
 REPS_CHEAP="${REPS_CHEAP:-3}"; PASS_REPS="${PASS_REPS:-1}"; ONLY="${ONLY:-}"
