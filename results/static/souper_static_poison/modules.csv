@@ -4,3 +4,8 @@ zlib,adler32,base23,0.07,4,-
 zlib,adler32,thorough,62.03,4,0
 zlib,adler32,fast,5.33,4,0
 zlib,adler32,light,4.68,4,0
+zlib,compress,base18,0.05,6,-
+zlib,compress,base23,0.03,6,-
+zlib,compress,thorough,0.29,2,4
+zlib,compress,fast,0.27,2,4
+zlib,compress,light,0.21,3,3
