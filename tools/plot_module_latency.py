@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker
 import numpy as np
 
-CSV = "results/static/compile_cost/modules.csv"
+CSV = sys.argv[sys.argv.index("--csv") + 1] if "--csv" in sys.argv else "results/static/compile_cost/modules.csv"
 BAD = ("", "NA", "FAIL", None)
 COL = {"thorough": "#1f4e79", "fast": "#7fb2dd"}
 plt.rcParams.update({"font.family": "serif", "font.serif": ["DejaVu Serif"], "pdf.fonttype": 42})
