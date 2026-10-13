@@ -1331,11 +1331,7 @@ them against the double one. The runtime experiments (\S\ref{sec:results-perf}--
 Two C libraries (zlib, zstd) under UBSan trap-mode
 specifications; nine Swift kernels plus the unmodified CryptoSwift
 library; Julia kernels including the stdlib GEMM of \S\ref{sec:frame};
-and Rust ports that exercise the \texttt{traps=} retargeting. Dynamic
-experiments use only specifications that do not fire at runtime --- a
-firing specification (intentional wraparound in hashing code) is
-reported as an un-runnable finding, never timed
-(\S\ref{sec:results-perf}). Every x86 runtime experiment uses one
+and Rust ports that exercise the \texttt{traps=} retargeting. Every x86 runtime experiment uses one
 configuration: the analysis facts and frame facts of the full tier, plus
 inductive encoding and guard synthesis
 (\texttt{heavy;frame;ind;mv;narrow}, 10\,s per query).
@@ -1348,7 +1344,7 @@ Our evaluation is organized around four questions:
 \item \textbf{RQ2 --- What is the source of speedup?}
   Which transformations do hot-path proofs unlock, and which component
   of \tool{} makes guard synthesis pay? (\S\ref{sec:results-mech})
-\item \textbf{RQ3 --- Is its overhead low enough for real-world use?}
+\item \textbf{RQ3 --- Is \tool{} fast enough for real-world use?}
   What does \tool{} cost to compile with, and how far can its budget be
   turned down? (\S\ref{sec:results-cost})
 \item \textbf{RQ4 --- How does super-analysis compare with superoptimization?}
