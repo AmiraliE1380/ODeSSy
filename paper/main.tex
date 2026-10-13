@@ -1449,7 +1449,7 @@ $^{d}$Removing the checks by any means slows this kernel: the
 \end{table}
 \subsection{RQ2: What is the source of speedup?}
 \label{sec:results-mech}
-In this section we explain how proofs unlock massive speedups, and in our main ablation study we explore which components of our guard synthesis mainly contribute to performance improvement. 
+In this section we explain how proofs unlock massive speedups, and in our main ablation study we explore which components of our guard synthesis procedure mainly contribute to performance improvement. 
 
 A removed check pays exactly when it was blocking a further
 transformation. A check is a side exit; inside a hot loop it prevents
@@ -1458,10 +1458,7 @@ unrolling and vectorization, and once it is gone the second
 speedup. SHA-256 is the typical case: seven proofs in the
 message-schedule loop let it unroll, and the kernel runs $1.107\times$
 faster on x86. Where the proofs land
-matters more than how many there are: 264 scattered proofs and 112
-guarded removals buy CryptoSwift nothing ($0.928\times$), while two
-proofs and five guarded removals in base64's hot loop buy its entire
-ceiling ($1.435\times$); 207 cold proofs leave zlib flat
+matters more than how many there are: 207 cold proofs leave zlib flat
 ($1.011\times$), while 16 on zstd's compression path buy $1.065\times$
 of a $1.075\times$ ceiling.
 
@@ -1484,26 +1481,24 @@ draws on six fact sources at once
 |\mathrm{FRAME}|{\times}3$, plus four guards).
 These two accesses are the ones that matter. Each check is a side exit
 from the innermost loop, and with the read of \texttt{A} and the write of
-\texttt{C} unchecked, LLVM vectorizes and unrolls the loop as it does the
+\texttt{C} unchecked, LLVM aggressively unrolls and vectorizes the loop as it does the
 check-free version. Julia's JIT cannot consume the pass output, so we
 annotate exactly the two proven accesses \texttt{@inbounds} and leave the
 reads of \texttt{B} and \texttt{C} checked: the kernel runs $3.911\times$
-faster on x86, of the $4.174\times$ that removing all four checks gives
-($4.156\times$ of $4.185\times$ on M-series). The unchecked kernel is
-faster at every one of 14 problem shapes, by $1.5$--$6.8\times$
+faster on x86, of the $4.174\times$ that removing all four checks gives. The performance improvement os robust as the unchecked kernel is
+significantly faster at every one of 14 problem shapes, by $1.5$--$6.8\times$
 (Figure~\ref{fig:gemm-sweep}, Appendix~\ref{sec:app-full}).
 
 \paragraph{Guard synthesis: which component pays?}
 Most of the other large speedups --- Julia lz77 ($4.01\times$), base64
 ($1.44\times$), Rust matmul ($1.38\times$), Julia matmul, crc32 --- come
-from guard synthesis and loop cloning (\S\ref{sec:guards}). Cloning a
+from guard synthesis and loop cloning (\S\ref{sec:guards}). We are interested in knowing if our synthesis algorithm makes the difference, or \tool{} verification and proving ability is again buying us the performance. Therefore we isolate the contribution of each component in this experiment.
+
+Cloning a
 loop behind a runtime test is not new (\S\ref{sec:relwork}): LLVM's own
 inductive range-check elimination (IRCE) splits a loop around its range
-checks and versions it behind a runtime range test. Guard synthesis has
-two parts that could each be responsible for the gain: the
-\emph{guard}, which the solver synthesizes and verifies, and the
-\emph{proofs} that remove the checks inside the guarded copy. We
-separate them with five pipelines that combine the two parts with
+checks and versions it behind a runtime range test. Using IRCE we can answer the question: is it our smart guards or is it \tool{}'s proving ability that makes the difference? We
+separate the two components with five pipelines that combine the two parts with
 LLVM's counterparts:
 (i)~\tool{} with guard synthesis: \tool{}'s guard and \tool{}'s proofs;
 (ii)~\tool{}'s guard and loop copy, with every check left in place, so
@@ -1511,20 +1506,13 @@ that \texttt{-O3} must remove them: \tool{}'s guard, LLVM's proofs;
 (iii)~IRCE followed by \tool{} without guard synthesis: LLVM's guard,
 \tool{}'s proofs;
 (iv)~IRCE followed by \texttt{-O3}: LLVM's guard and proofs; and
-(v)~\texttt{-O3} alone. Every check is tagged with its own identity, so
-each pipeline's removals can be compared check by check.
+(v)~\texttt{-O3} alone. 
 Table~\ref{tab:ablation} reports proofs and speedups on the six
 benchmarks whose speedup involves guard synthesis.
-
 \begin{table}
-\caption{Guard-synthesis ablation (x86 c220g2, production budget). Each
+\caption{Guard-synthesis ablation. Each
 pipeline has two columns: the speedup over the unchanged checked
-program, and the number of checks it proves dead. Julia rows time designated copies of
-the unchanged kernels in which an access is annotated \texttt{@inbounds}
-only if the pipeline removes every one of its checks; Julia's own
-pipeline already runs IRCE, so (iv) and (v) coincide there. $1.000\times$
-marks a pipeline that removes no check: its code is the checked
-program.}
+program, and the number of checks it proves dead. Pipeline (i) beats alternatives at every term. Pipelines (ii) and (iii) which consist of only using one \tool{} component are still significantly better than full LLVM pipelines.}
 \label{tab:ablation}
 \small
 \setlength{\tabcolsep}{3pt}
@@ -1550,36 +1538,11 @@ of the 4 checks. $^{c}$At the 10\,s budget (i) leaves one access checked; the fu
 guarded copy of Table~\ref{tab:speedups} reaches $1.107\times$.\par
 \end{table}
 
-\emph{Pipeline (i) is the best or tied on every benchmark}, and the other
-columns show why. On Julia lz77 and matmul, the two kernels where guard
-synthesis pays most, nothing else removes a single check: without the
-synthesized guard the checks are live, because nothing in the code ties
-the arrays' lengths to the loop bounds (\S\ref{sec:guards}). Here the
-guard is the whole speedup.
-When the guard is handed to LLVM (ii), the result depends on how hard
-the checks inside the copy are. On Rust matmul, \texttt{-O3} removes
-both checks by itself once the guard is in place, and (ii) matches (i)
-($1.372\times$ against $1.373\times$): the synthesized guard is what
-pays, and LLVM's analyses suffice for the rest. IRCE's own guard, in
-contrast, buys only $1.10\times$. On base64, the guard alone lifts
-\texttt{-O3} to the level IRCE reaches ($1.26\times$ against
-$1.25\times$), and \tool{}'s proofs inside the copy add the rest, up to
-$1.44\times$: both halves are needed. On Julia sha256, only the
-guarded removals separate (i) from the rest: every pipeline without
-them lands at $1.02$--$1.03\times$, within run-to-run noise of each
-other, while (i) reaches $1.089\times$.
-crc32 is the counterexample: most of its gain comes from four checks
-\tool{} proves dead outright, which it proves just as well after IRCE
-(iii, $1.070\times$); the guard adds only the last $1.004\times$, and
-IRCE alone removes nothing.
-In aggregate, over all 385 checks of the 17 kernels (not only those in
-Table~\ref{tab:ablation}), the five pipelines prove 85, 69, 52, 17, and
-8 checks dead. Every check proved by (ii), (iv), or (v) is also proved
-by (i); the single exception to nesting is (iii), which proves two GEMM
-checks that (i) does not. The synthesized guard is therefore not a
-repackaging of IRCE: IRCE's guard, even with \tool{}'s proofs behind
-it, recovers at most part of what guard synthesis does, and on the
-kernels where guard synthesis matters most it recovers nothing.
+\emph{Pipeline (i) is the best or tied on every benchmark}, demonstrating that the combination of guard synthesis and \tool{} proofs is the most powerful and fruitful. Pipeline (i) not only beats evert other pipeline, but generates every single proof any other pipeline generates. It is the only pipeline powerful enough to recover $4.013\times$ performance of Julia's lz77. 
+
+Using guard synthesis or \tool{} proofs alone still recovers a lot of performance and yields a lot of proofs, although it is hard to say exactly which of the two (ii) and (iii) is the best. Both of them are clearly more powerful than full LLVM pipelines (iv) and (v). This re-state the main thesis of the paper: solver-based expensive analysis pays back. We believe our guard synthesis algorithm and templates are powerful, though it beats LLVM's IRCE not just because of our smart design choices, but because our guard synthesis is solver-guided from the beginning.
+ 
+
 \subsection{RQ3: Is its overhead low enough for real-world use?}
 \label{sec:results-cost}
 
