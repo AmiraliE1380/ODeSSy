@@ -34,3 +34,8 @@ zlib,gzwrite,base23,0.36,72,-
 zlib,gzwrite,thorough,5.72,72,0
 zlib,gzwrite,fast,3.83,72,0
 zlib,gzwrite,light,1.74,72,0
+zlib,infback,base18,0.12,2,-
+zlib,infback,base23,0.09,2,-
+zlib,infback,thorough,7.17,2,0
+zlib,infback,fast,1.29,2,0
+zlib,infback,light,0.80,2,0
