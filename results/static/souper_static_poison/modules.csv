@@ -44,3 +44,8 @@ zlib,inffast,base23,0.06,2,-
 zlib,inffast,thorough,1.72,2,0
 zlib,inffast,fast,0.70,2,0
 zlib,inffast,light,0.52,2,0
+zlib,inflate,base18,0.27,11,-
+zlib,inflate,base23,0.23,11,-
+zlib,inflate,thorough,20.30,11,0
+zlib,inflate,fast,6.28,11,0
+zlib,inflate,light,2.93,11,0
