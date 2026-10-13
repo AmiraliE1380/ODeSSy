@@ -1558,46 +1558,33 @@ median of 2.3\,s, and 11 of them compile in under 10\,s; the slowest is
 Julia SHA-256, at 128\,s. \emph{Fast} takes a median of 0.53\,s and at
 most 2.3\,s, against about 0.1\,s for a conventional \texttt{-O3}. On
 the three repositories Thorough takes 147\,s (CryptoSwift), 117\,s
-(zstd), and 1624\,s (zlib), and Fast 70\,s, 33\,s, and 539\,s. A
-rebuild, however, pays per module: the median zlib module takes 5.0\,s
+(zstd), and 1624\,s (zlib), and Fast 70\,s, 33\,s, and 539\,s. These are massive repositories, and a developer often carse more about per module latency as each module is compiled individually in the development loop. The median zlib module takes 5.0\,s
 under Thorough and 1.6\,s under Fast, the median zstd module 1.4\,s
 and 0.41\,s, and 24 of the 32 modules compile in under 10\,s under
-Thorough, 29 under Fast. The maximum is zlib's \texttt{trees.c}, at
+Thorough, 29 under Fast. Zlib's \texttt{trees.c} is an outlier which takes
 1485\,s under Thorough and 496\,s under Fast; Figure~\ref{fig:modules}
 (Appendix~\ref{sec:app-full}) shows the full per-module distribution.
 The two dials trade that cost for proofs. \emph{Fast} keeps 380 of
-Thorough's 885 proofs (\pct{43}) at a third of zlib's cost. The proofs lost first are exactly the ones
-behind the largest speedups: guard synthesis (base64 falls from 7
-proofs to 0, crc32 from 11 to 0) and heap invariance (GEMM from 9 to
-8). The per-query budget bounds
-only the solver. On zlib's largest module, Fast's queries finish in
-milliseconds, and most of its 496\,s go to importing LLVM's analyses
-and to guard synthesis, which the budget does not limit. Per-trap jobs are share-nothing, and the
-thread dial of Figure~\ref{fig:matrix} gives $1.8\times$ at 4 workers
-and nothing more at 8 and 10 (Amdahl: serial discovery, fact import, and
-guard synthesis).
+Thorough's 885 proofs (\pct{43}) at a third of zlib's cost. 
+
 \paragraph{Whole-compile cost.}
-The ratio that matters to a developer is that of whole compiles, not of
+The latency that matters for a developer is the entire compile pipeline's time, not of
 one optimizer run. A build runs a front end, the optimizer, and code
 generation, and the front end is often a large share of it: Swift's, for
 instance, runs its own optimizer before LLVM sees the code. Comparing
 against \texttt{-O3} alone would therefore overstate the cost. We timed
 every stage of the two pipelines the runtime experiments use, per module,
-on the 13 benchmarks whose pipeline can take the pass output (all but
-Julia's): the baseline (optimizing front end, \texttt{-O3}, code
-generation) and the same pipeline with \tool{} inserted before
-\texttt{-O3}. Both come from one harness, so the comparison is like for
-like. The median whole compile with \tool{} takes $1.46\times$ the
+on the 13 benchmarks whose pipeline can take the pass output: the baseline (optimizing front end, \texttt{-O3}, code
+generation) and the same pipeline with \tool{} sandwiched between two 
+\texttt{-O3} runs. The median whole compile with \tool{} takes $1.46\times$ the
 time of the baseline under Fast and $4.39\times$ under Thorough
 (geometric means $2.33\times$ and $4.75\times$; ranges
 $1.29$--$65.5\times$ and $1.49$--$209\times$). These are the numbers a
 developer actually waits for, front end and code generation included,
-and they are those of an online pass: a typical build with Fast takes
+and they are reasonable for an online pass: a typical build with Fast takes
 little more than a conventional one, and even Thorough stays within a
-small factor of it. The pass is nearly the whole difference: the
-\texttt{-O3} and code-generation stages that follow it take at most about
-\pct{14} longer than in the baseline, guarded loop copies included. The
-top of every range is zlib, whose \texttt{trees.c} dominates.
+small factor of it. 
+
 \paragraph{Where each configuration fits.}
 The repository totals overstate what a developer waits for. Builds
 compile modules independently and rebuild only the ones that changed,
