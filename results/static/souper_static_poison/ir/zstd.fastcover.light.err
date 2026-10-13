@@ -1,0 +1,88 @@
+[ODeSSy] 4 trap site(s) across 5 function(s); threads=10
+
+[Z3 Oracle] Analyzing Function: ZDICT_trainFromBuffer_fastCover
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.626710e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: FASTCOVER_ctx_init
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 6.334400e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: FASTCOVER_buildDictionary
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %17 = icmp sgt i32 %16, 1
+    -> Guard[1] (false edge of ''):  %214 = icmp ult i64 %213, %33
+    -> Guard[2] (false edge of ''):  %208 = icmp eq i32 %54, 0
+    -> Guard[3] (false edge of ''):  %25 = icmp eq i64 %3, 0
+    -> Collected 4 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.118301 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.011830e+01 ms
+  => Average SMT Query Latency: 1.011830e+01 ms
+  => Total DFS & SMT Execution Time: 7.633408e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZDICT_optimizeTrainFromBuffer_fastCover
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %112 = icmp sgt i32 %50, 1
+    -> Guard[1] (false edge of ''):  %206 = or i1 %205, %203
+    -> Guard[2] (false edge of ''):  %197 = or i1 %196, %162
+    -> Guard[3] (false edge of ''):  %174 = icmp eq ptr %167, null
+    -> Guard[4] (true edge of ''):  %150 = icmp ult i64 %149, -119
+    -> Guard[5] (false edge of ''):  %119 = icmp ugt i32 %21, %22
+    -> Guard[6] (false edge of ''):  %89 = icmp ult i64 %1, 256
+    -> Guard[7] (false edge of ''):  %80 = icmp eq i32 %4, 0
+    -> Guard[8] (false edge of ''):  %71 = or i1 %69, %70
+    -> Guard[9] (false edge of ''):  %60 = icmp ugt i32 %46, 10
+    -> Guard[10] (false edge of ''):  %51 = fcmp ogt double %17, 1.000000e+00
+    -> Collected 11 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.143252 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %121 = icmp sgt i32 %50, 2
+    -> Guard[1] (false edge of ''):  %119 = icmp ugt i32 %21, %22
+    -> Guard[2] (false edge of ''):  %89 = icmp ult i64 %1, 256
+    -> Guard[3] (false edge of ''):  %80 = icmp eq i32 %4, 0
+    -> Guard[4] (false edge of ''):  %71 = or i1 %69, %70
+    -> Guard[5] (false edge of ''):  %60 = icmp ugt i32 %46, 10
+    -> Guard[6] (false edge of ''):  %51 = fcmp ogt double %17, 1.000000e+00
+    -> Collected 7 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.884976 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %121 = icmp sgt i32 %50, 2
+    -> Guard[1] (false edge of ''):  %119 = icmp ugt i32 %21, %22
+    -> Guard[2] (false edge of ''):  %89 = icmp ult i64 %1, 256
+    -> Guard[3] (false edge of ''):  %80 = icmp eq i32 %4, 0
+    -> Guard[4] (false edge of ''):  %71 = or i1 %69, %70
+    -> Guard[5] (false edge of ''):  %60 = icmp ugt i32 %46, 10
+    -> Guard[6] (false edge of ''):  %51 = fcmp ogt double %17, 1.000000e+00
+    -> Collected 7 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 0.810048 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  => Total Traps Eliminated: 1
+  => Total Trap Attempts: 3
+  => Total SMT Queries Executed: 3
+  => Total SMT Query Latency: 1.483828e+01 ms
+  => Average SMT Query Latency: 4.946092e+00 ms
+  => Total DFS & SMT Execution Time: 1.548177e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: FASTCOVER_tryParameters
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.391400e-02 ms
+--------------------------------------------------

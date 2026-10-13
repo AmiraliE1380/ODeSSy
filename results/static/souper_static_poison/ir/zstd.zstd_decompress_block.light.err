@@ -1,0 +1,220 @@
+[ODeSSy] 6 trap site(s) across 20 function(s); threads=10
+
+[Z3 Oracle] Analyzing Function: ZSTD_getcBlockSize
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 8.700000e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decodeLiteralsBlock_wrapper
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 5.364600e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decodeLiteralsBlock
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 8.400300e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_buildFSETable
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 6.784100e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_buildFSETable_body_bmi2
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 4.904800e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decodeSeqHeaders
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.835500e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_buildSeqTable
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.681000e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decompressBlock_internal
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.130600e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decompressSequencesLong
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %1551 = select i1 %1549, i1 %1550, i1 false
+    -> Guard[1] (false edge of ''):  %56 = icmp eq i64 %4, 0
+    -> Guard[2] (false edge of ''):  %37 = icmp eq i32 %5, 0
+    -> Guard[3] (true edge of ''):  %12 = icmp eq i32 %11, 0
+    -> Collected 4 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.228148 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.022815e+01 ms
+  => Average SMT Query Latency: 1.022815e+01 ms
+  => Total DFS & SMT Execution Time: 3.080496e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decompressSequencesSplitLitBuffer
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %698 = icmp ult i64 %697, -119
+    -> Guard[1] (false edge of ''):  %42 = icmp eq i64 %4, 0
+    -> Guard[2] (false edge of ''):  %30 = icmp eq i32 %5, 0
+    -> Guard[3] (true edge of ''):  %14 = icmp eq i32 %13, 0
+    -> Collected 4 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.285986 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.028599e+01 ms
+  => Average SMT Query Latency: 1.028599e+01 ms
+  => Total DFS & SMT Execution Time: 1.567579e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decompressSequences
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %696 = icmp ult i64 %695, -119
+    -> Guard[1] (false edge of ''):  %50 = icmp eq i64 %4, 0
+    -> Guard[2] (false edge of ''):  %38 = icmp eq i32 %5, 0
+    -> Guard[3] (true edge of ''):  %12 = icmp eq i32 %11, 0
+    -> Collected 4 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.302304 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.030230e+01 ms
+  => Average SMT Query Latency: 1.030230e+01 ms
+  => Total DFS & SMT Execution Time: 1.709443e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_checkContinuity
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 8.402000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decompressBlock_deprecated
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 6.748000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decompressBlock
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 5.959000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decompressSequencesLong_bmi2
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %1542 = select i1 %1540, i1 %1541, i1 false
+    -> Guard[1] (false edge of ''):  %50 = icmp eq i64 %4, 0
+    -> Guard[2] (false edge of ''):  %31 = icmp eq i32 %5, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.178436 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.017844e+01 ms
+  => Average SMT Query Latency: 1.017844e+01 ms
+  => Total DFS & SMT Execution Time: 3.109286e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_execSequenceEnd
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 4.996700e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_safecopy
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 5.260700e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_execSequenceEndSplitLitBuffer
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 4.595300e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decompressSequencesSplitLitBuffer_bmi2
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %692 = icmp ult i64 %691, -119
+    -> Guard[1] (false edge of ''):  %36 = icmp eq i64 %4, 0
+    -> Guard[2] (false edge of ''):  %24 = icmp eq i32 %5, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.290395 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.029040e+01 ms
+  => Average SMT Query Latency: 1.029040e+01 ms
+  => Total DFS & SMT Execution Time: 1.737646e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decompressSequences_bmi2
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %690 = icmp ult i64 %689, -119
+    -> Guard[1] (false edge of ''):  %44 = icmp eq i64 %4, 0
+    -> Guard[2] (false edge of ''):  %32 = icmp eq i32 %5, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.279160 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.027916e+01 ms
+  => Average SMT Query Latency: 1.027916e+01 ms
+  => Total DFS & SMT Execution Time: 1.662579e+02 ms
+--------------------------------------------------

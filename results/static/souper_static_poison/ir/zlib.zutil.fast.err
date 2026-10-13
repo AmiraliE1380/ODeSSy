@@ -1,0 +1,61 @@
+[ODeSSy] 1 trap site(s) across 5 function(s); threads=10 [tier: heavy] [frame] [mv] [narrow]
+
+[Z3 Oracle] Analyzing Function: zlibVersion
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.120668e+00 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: zlibCompileFlags
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 3.807900e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: zError
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 4.623000e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: zcalloc
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 2 boundary value(s)
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.676390 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 8.676390e+00 ms
+  => Average SMT Query Latency: 8.676390e+00 ms
+  => Total DFS & SMT Execution Time: 3.695059e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: zcfree
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 5.398300e-02 ms
+--------------------------------------------------

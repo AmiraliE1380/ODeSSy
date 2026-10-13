@@ -1,0 +1,601 @@
+[ODeSSy] 1 trap site(s) across 66 function(s); threads=10
+
+[Z3 Oracle] Analyzing Function: ZSTD_sizeof_DCtx
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.476010e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_estimateDCtxSize
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 5.213000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_initStaticDCtx
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.054100e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_createDCtx_advanced
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.636300e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_createDCtx
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.506900e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_freeDCtx
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.704900e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_copyDCtx
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 6.446000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_isFrame
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 3.940000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_isSkippableFrame
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 3.126000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_frameHeaderSize
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 7.905000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_getFrameHeader_advanced
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 3.745000e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_getFrameHeader
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 3.434000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_getFrameContentSize
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 4.104000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_readSkippableFrame
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 9.428000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_findDecompressedSize
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.601400e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_findFrameCompressedSize
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 9.661000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_getDecompressedSize
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 4.634000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decompressBound
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.126200e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_findFrameSizeInfo
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 3.055400e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decompressionMargin
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.459400e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_insertBlock
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 3.095000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decompress_usingDict
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.505000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decompressMultiFrame
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 8.643600e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decompressDCtx
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 7.903000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decompress_usingDDict
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.577000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_getDDict
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 5.890000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decompress
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.709500e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_nextSrcSizeToDecompress
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.173000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_nextInputType
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 3.735000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decompressContinue
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 6.630700e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decodeFrameHeader
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 3.366700e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_DCtx_trace_end
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.681200e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_loadDEntropy
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 3.344700e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decompressBegin
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 8.946000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decompressBegin_usingDict
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.897300e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decompressBegin_usingDDict
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.194500e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_getDictID_fromDict
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 4.314000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_getDictID_fromFrame
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 4.307000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_createDStream
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.489800e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_initStaticDStream
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.035800e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_createDStream_advanced
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.412200e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_freeDStream
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 6.406000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_DStreamInSize
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.860000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_DStreamOutSize
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.749000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_DCtx_loadDictionary_advanced
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.010500e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_DCtx_loadDictionary_byReference
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 6.593000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_DCtx_loadDictionary
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 6.617000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_DCtx_refPrefix_advanced
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.552000e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_DCtx_refPrefix
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 8.721000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_initDStream_usingDict
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 7.720000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_DCtx_reset
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 8.336000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_initDStream
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 7.785000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_DCtx_refDDict
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 5.450000e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_initDStream_usingDDict
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 5.131000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_resetDStream
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 6.356000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_DCtx_setMaxWindowSize
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 4.531000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_dParam_getBounds
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 6.416000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_DCtx_setFormat
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 7.298000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_DCtx_setParameter
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.351900e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_DCtx_getParameter
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.205200e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_sizeof_DStream
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 5.342000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decodingBufferSize_min
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 3.629000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_estimateDStreamSize
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.776000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_estimateDStreamSize_fromFrame
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.216000e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decompressStream
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %517 = select i1 %515, i1 %516, i1 false
+    -> Guard[1] (false edge of ''):  %22 = icmp ugt i64 %15, %18
+    -> Guard[2] (false edge of ''):  %20 = icmp ugt i64 %8, %11
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.294709 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.029471e+01 ms
+  => Average SMT Query Latency: 1.029471e+01 ms
+  => Total DFS & SMT Execution Time: 1.282594e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decompressStream_simpleArgs
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.283200e-02 ms
+--------------------------------------------------

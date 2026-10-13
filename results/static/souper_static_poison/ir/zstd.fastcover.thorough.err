@@ -1,0 +1,186 @@
+[ODeSSy] 4 trap site(s) across 5 function(s); threads=10 [tier: heavy] [frame] [mv] [narrow] [ind]
+
+[Z3 Oracle] Analyzing Function: ZDICT_trainFromBuffer_fastCover
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.237399e+00 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: FASTCOVER_ctx_init
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.730890e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: FASTCOVER_buildDictionary
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %17 = icmp sgt i32 %16, 1
+    -> Guard[1] (false edge of ''):  %214 = icmp ult i64 %213, %33
+    -> Guard[2] (false edge of ''):  %208 = icmp eq i32 %54, 0
+    -> Guard[3] (false edge of ''):  %25 = icmp eq i64 %3, 0
+    -> Collected 4 dominating context guard(s).
+    -> [go3] 4 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %16 in [2,-2147483648) (LVI @ )
+    -> Fact[KB:1] i64 %83 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:2] i64 %83 in [0,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:3] i64 %83 in [0,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:4] i64 %83 - start((zext i32 (trunc i64 ((%12 /u 4294967296) * %40) to i32) to i64)) <=u BTC((-1 + (zext i32 ((trunc i64 ((%12 /u 4294967296) * %40) to i32) + (trunc i64 (%12 /u 4294967296) to i32)) to i64) + (-1 * (zext i32 (trunc i64 ((%12 /u 4294967296) * %40) to i32) to i64))<nsw>)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:5] i64 %83 == i64 %50 || ne(i64 %83, i64 %51) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:6] i64 %83 >=s i64 %50 (monotone nsw increments, 1 arm(s))
+    -> Fact[PHIINV-hi:7] i64 %37 == i64 %3 || ne(i64 %37, i64 0) (latch-implied bound, 1-induction)
+    -> Fact[KB:8] i64 %212 known bits zero=0x18446744069414584320 one=0x0
+    -> Fact[LVI:9] i64 %212 in [0,4294967296) (LVI @ )
+    -> [heavy] 10 analysis fact(s) on 16 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (4 phi(s) = entry): UNSAT (Dead Code / Impossible Path) [Query Latency: 3.016582 ms]
+    -> [ind L0] STEP (copy: 184 instr, 0 skipped, 67 fresh, 19 fact(s), 4 link(s)): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 27.303197 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 27.743013 ms]
+    -> [mv] minimize: without {%12 <=s 2^31} -> SAT, kept (1.219371e+01 ms)
+    -> [mv] minimize: without {%12 >=s 0} -> SAT, kept (5.720554e+00 ms)
+    -> [mv] loosen: {%12 <=s 2^31} -> {%12 <=s 2^62}: kept tight (3.810345e+00 ms)
+    -> [mv] hypothesis contradicts the context: refusing (H vacuous): {%12 >=s 0, %12 <=s 2^31}
+    -> [narrow] retry: whole-query 64->32 with overflow flags
+    -> [go3] 4 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %16 in [2,-2147483648) (LVI @ )
+    -> Fact[KB:1] i64 %83 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:2] i64 %83 in [0,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:3] i64 %83 in [0,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:4] i64 %83 - start((zext i32 (trunc i64 ((%12 /u 4294967296) * %40) to i32) to i64)) <=u BTC((-1 + (zext i32 ((trunc i64 ((%12 /u 4294967296) * %40) to i32) + (trunc i64 (%12 /u 4294967296) to i32)) to i64) + (-1 * (zext i32 (trunc i64 ((%12 /u 4294967296) * %40) to i32) to i64))<nsw>)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:5] i64 %83 == i64 %50 || ne(i64 %83, i64 %51) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:6] i64 %83 >=s i64 %50 (monotone nsw increments, 1 arm(s))
+    -> Fact[PHIINV-hi:7] i64 %37 == i64 %3 || ne(i64 %37, i64 0) (latch-implied bound, 1-induction)
+    -> Fact[KB:8] i64 %212 known bits zero=0x18446744069414584320 one=0x0
+    -> Fact[LVI:9] i64 %212 in [0,4294967296) (LVI @ )
+    -> [heavy] 10 analysis fact(s) on 16 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 32.763316 ms]
+    -> [narrow] whole-query 64->32 rewrite: 16 overflow flags, 8 64-bit inputs, 1 product(s) linearized
+    -> [narrow] exempt input (unbounded, guards/facts/flags over it dropped): unnamed_109923345479768
+    -> [narrow] exempt input (unbounded, guards/facts/flags over it dropped): unnamed_109923345388432
+    -> [narrow] exempt input (unbounded, guards/facts/flags over it dropped): unnamed_109923345480808
+    -> [narrow] exempt input (unbounded, guards/facts/flags over it dropped): unnamed_109923345487496
+    -> [narrow] Q_A/Q_B hypothesis set: {%12 >=s 0} {%12 <=s 2^62} {%12 <=s 2^31} {%12 <=s 2^15} {%12 <=s 2^30} {%16 >=s 0} {%16 <=s 2^30} {%16 <=s 2^15} {%3 >=s 0} {%3 <=s 2^62} {%3 <=s 2^31} {%3 <=s 2^15} {%3 <=s 2^30} {%4 >=s 0} {%4 <=s 2^30} {%4 <=s 2^15} {%5 >=s 0} {%5 <=s 2^30} {%5 <=s 2^15}
+    -> [narrow] Q_A' (linearized products) UNSAT in 6.152000e-02 ms
+    -> [narrow] Q_B: some 64-bit value may leave 32 bits under H (SAT)
+         flag set: lshr neg: (bvlshr unnamed_109923345476096 #x0000000000000020)
+         flag set: input !fits: unnamed_109923345487496
+         flag set: shl ovf: (bvshl #x0000000000000001 #x000000000000003f)
+         inputs: unnamed_109923345479768=#x0000000000000002 unnamed_109923345388432=#x0000000000000000 unnamed_109923345480808=#x0000000000000000 unnamed_109923345476096=#x0000000000000000 unnamed_109923345487496=#x7fffffff00000001 unnamed_109923345372568=#x0000000000000001 unnamed_109923345480568=#x0000000000000000 unnamed_109923345390080=#x0000000000000000
+         SB assertions: 36, facts: 10, H in Q_B: {%12 >=s 0=true} {%12 <=s 2^62=true} {%12 <=s 2^31=true} {%12 <=s 2^15=true} {%12 <=s 2^30=true} {%16 >=s 0=true} {%16 <=s 2^30=true} {%16 <=s 2^15=true} {%3 >=s 0=true} {%3 <=s 2^62=true} {%3 <=s 2^31=true} {%3 <=s 2^15=true} {%3 <=s 2^30=true} {%4 >=s 0=true} {%4 <=s 2^30=true} {%4 <=s 2^15=true} {%5 >=s 0=true} {%5 <=s 2^30=true} {%5 <=s 2^15=true}
+    -> [mv] still SAT under 19 hypothesis candidate(s): not versionable
+    -> [narrow] retry: mul-only 16-bit-operand encoding
+    -> [go3] 4 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %16 in [2,-2147483648) (LVI @ )
+    -> Fact[KB:1] i64 %83 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:2] i64 %83 in [0,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:3] i64 %83 in [0,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:4] i64 %83 - start((zext i32 (trunc i64 ((%12 /u 4294967296) * %40) to i32) to i64)) <=u BTC((-1 + (zext i32 ((trunc i64 ((%12 /u 4294967296) * %40) to i32) + (trunc i64 (%12 /u 4294967296) to i32)) to i64) + (-1 * (zext i32 (trunc i64 ((%12 /u 4294967296) * %40) to i32) to i64))<nsw>)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:5] i64 %83 == i64 %50 || ne(i64 %83, i64 %51) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:6] i64 %83 >=s i64 %50 (monotone nsw increments, 1 arm(s))
+    -> Fact[PHIINV-hi:7] i64 %37 == i64 %3 || ne(i64 %37, i64 0) (latch-implied bound, 1-induction)
+    -> Fact[KB:8] i64 %212 known bits zero=0x18446744069414584320 one=0x0
+    -> Fact[LVI:9] i64 %212 in [0,4294967296) (LVI @ )
+    -> [heavy] 10 analysis fact(s) on 16 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 44.445552 ms]
+    -> [narrow] side condition certified for 1 multiplication(s)
+    -> [mv] minimize: without {%12 <=s 2^31} -> SAT, kept (6.704718e+00 ms)
+    -> [mv] minimize: without {%12 >=s 0} -> SAT, kept (4.148981e+00 ms)
+    -> [mv] loosen: {%12 <=s 2^31} -> {%12 <=s 2^62}: kept tight (5.586350e+00 ms)
+    -> [mv] hypothesis contradicts the context: refusing (H vacuous): {%12 >=s 0, %12 <=s 2^31}
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 6.471264e+01 ms
+  => Average SMT Query Latency: 6.471264e+01 ms
+  => Total DFS & SMT Execution Time: 1.015310e+03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZDICT_optimizeTrainFromBuffer_fastCover
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %112 = icmp sgt i32 %50, 1
+    -> Guard[1] (false edge of ''):  %206 = or i1 %205, %203
+    -> Guard[2] (false edge of ''):  %197 = or i1 %196, %162
+    -> Guard[3] (false edge of ''):  %174 = icmp eq ptr %167, null
+    -> Guard[4] (true edge of ''):  %150 = icmp ult i64 %149, -119
+    -> Guard[5] (false edge of ''):  %119 = icmp ugt i32 %21, %22
+    -> Guard[6] (false edge of ''):  %89 = icmp ult i64 %1, 256
+    -> Guard[7] (false edge of ''):  %80 = icmp eq i32 %4, 0
+    -> Guard[8] (false edge of ''):  %71 = or i1 %69, %70
+    -> Guard[9] (false edge of ''):  %60 = icmp ugt i32 %46, 10
+    -> Guard[10] (false edge of ''):  %51 = fcmp ogt double %17, 1.000000e+00
+    -> Collected 11 dominating context guard(s).
+    -> [go3] 4 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i64 %1 in [1,0) (LVI @ )
+    -> Fact[LVI:1] i32 %137 in [6,9) (LVI @ )
+    -> Fact[PHIINV-hi:2] i32 %137 == i32 %21 || ule(i32 %137, i32 %22) (latch-implied bound, 1-induction)
+    -> Fact[RM:3] i64 %149 in [-72,1) (!range)
+    -> Fact[LVI:4] i32 %165 in [6,0) (LVI @ )
+    -> Fact[PHIINV-hi:5] i32 %165 == i32 %25 || ule(i32 %165, i32 %26) (latch-implied bound, 1-induction)
+    -> Fact[LVI:6] i32 %195 in [1,32) (LVI @ )
+    -> [heavy] 7 analysis fact(s) on 19 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (3 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.363907 ms]
+    -> [ind L1] BASE (4 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.933008 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 19.838276 ms]
+    -> [mv] still SAT under 42 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %121 = icmp sgt i32 %50, 2
+    -> Guard[1] (false edge of ''):  %119 = icmp ugt i32 %21, %22
+    -> Guard[2] (false edge of ''):  %89 = icmp ult i64 %1, 256
+    -> Guard[3] (false edge of ''):  %80 = icmp eq i32 %4, 0
+    -> Guard[4] (false edge of ''):  %71 = or i1 %69, %70
+    -> Guard[5] (false edge of ''):  %60 = icmp ugt i32 %46, 10
+    -> Guard[6] (false edge of ''):  %51 = fcmp ogt double %17, 1.000000e+00
+    -> Collected 7 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 10 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (4 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.224798 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.418168 ms]
+    -> [mv] DEAD UNDER HYPOTHESIS H = {%49 >=s 0} (1 of 30 candidates in core, round 0; re-solve 1.850210e+00 ms; trap loop depth 1, hoist to depth 1)
+  => SUCCESS (fast copy): trap folded in 1 copy inside the H-guarded clone of loop ''
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %121 = icmp sgt i32 %50, 2
+    -> Guard[1] (false edge of ''):  %119 = icmp ugt i32 %21, %22
+    -> Guard[2] (false edge of ''):  %89 = icmp ult i64 %1, 256
+    -> Guard[3] (false edge of ''):  %80 = icmp eq i32 %4, 0
+    -> Guard[4] (false edge of ''):  %71 = or i1 %69, %70
+    -> Guard[5] (false edge of ''):  %60 = icmp ugt i32 %46, 10
+    -> Guard[6] (false edge of ''):  %51 = fcmp ogt double %17, 1.000000e+00
+    -> Collected 7 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 10 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 0.919247 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  => Total Traps Eliminated: 1
+  => Traps Folded In Fast Copies (mv): 1
+  => Total Trap Attempts: 3
+  => Total SMT Queries Executed: 3
+  => Total SMT Query Latency: 5.431318e+01 ms
+  => Average SMT Query Latency: 1.810439e+01 ms
+  => Total DFS & SMT Execution Time: 3.566721e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: FASTCOVER_tryParameters
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 7.703500e-02 ms
+--------------------------------------------------

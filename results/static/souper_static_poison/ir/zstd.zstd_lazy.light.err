@@ -1,0 +1,1299 @@
+[ODeSSy] 100 trap site(s) across 89 function(s); threads=10
+
+[Z3 Oracle] Analyzing Function: ZSTD_dedicatedDictSearch_lazy_loadDictionary
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.818730e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_insertAndFindFirstIndex
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.357181 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 3.357181e+00 ms
+  => Average SMT Query Latency: 3.357181e+00 ms
+  => Total DFS & SMT Execution Time: 8.559737e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_row_update
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.762000e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_greedy
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.055150e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_greedy_dictMatchState
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.165800 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.016580e+01 ms
+  => Average SMT Query Latency: 1.016580e+01 ms
+  => Total DFS & SMT Execution Time: 7.769179e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_greedy_dedicatedDictSearch
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.283850 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.028385e+01 ms
+  => Average SMT Query Latency: 1.028385e+01 ms
+  => Total DFS & SMT Execution Time: 8.031538e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_greedy_row
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %64 = icmp ugt ptr %63, %8
+    -> Collected 1 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.209650 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %599 = icmp ugt ptr %598, %8
+    -> Guard[1] (false edge of ''):  %591 = icmp eq i32 %590, 0
+    -> Guard[2] (true edge of ''):  %238 = icmp ult ptr %33, %8
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.204989 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 2
+  => Total SMT Queries Executed: 2
+  => Total SMT Query Latency: 2.041464e+01 ms
+  => Average SMT Query Latency: 1.020732e+01 ms
+  => Total DFS & SMT Execution Time: 1.600809e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_greedy_dictMatchState_row
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.185349 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %65 = icmp ugt ptr %64, %8
+    -> Guard[1] (false edge of ''):  %46 = extractvalue { i64, i1 } %45, 1, !nosanitize !21
+    -> Collected 2 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.135292 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %557 = icmp ugt ptr %556, %8
+    -> Guard[1] (false edge of ''):  %549 = icmp eq i32 %548, 0
+    -> Guard[2] (true edge of ''):  %239 = icmp ult ptr %53, %8
+    -> Guard[3] (false edge of ''):  %46 = extractvalue { i64, i1 } %45, 1, !nosanitize !21
+    -> Collected 4 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.228725 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 3
+  => Total SMT Queries Executed: 3
+  => Total SMT Query Latency: 3.054937e+01 ms
+  => Average SMT Query Latency: 1.018312e+01 ms
+  => Total DFS & SMT Execution Time: 2.780005e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_greedy_dedicatedDictSearch_row
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.185025 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %65 = icmp ugt ptr %64, %8
+    -> Guard[1] (false edge of ''):  %46 = extractvalue { i64, i1 } %45, 1, !nosanitize !21
+    -> Collected 2 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 15.399515 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %557 = icmp ugt ptr %556, %8
+    -> Guard[1] (false edge of ''):  %549 = icmp eq i32 %548, 0
+    -> Guard[2] (true edge of ''):  %239 = icmp ult ptr %53, %8
+    -> Guard[3] (false edge of ''):  %46 = extractvalue { i64, i1 } %45, 1, !nosanitize !21
+    -> Collected 4 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.182438 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 3
+  => Total SMT Queries Executed: 3
+  => Total SMT Query Latency: 3.576698e+01 ms
+  => Average SMT Query Latency: 1.192233e+01 ms
+  => Total DFS & SMT Execution Time: 2.603963e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_lazy
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.336970e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_lazy_dictMatchState
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.117285 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.011729e+01 ms
+  => Average SMT Query Latency: 1.011729e+01 ms
+  => Total DFS & SMT Execution Time: 5.272652e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_lazy_dedicatedDictSearch
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.181173 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.018117e+01 ms
+  => Average SMT Query Latency: 1.018117e+01 ms
+  => Total DFS & SMT Execution Time: 6.314557e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_lazy_row
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %65 = icmp ugt ptr %64, %9
+    -> Collected 1 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.150417 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %749 = icmp ugt ptr %748, %9
+    -> Guard[1] (false edge of ''):  %741 = icmp eq i32 %740, 0
+    -> Guard[2] (false edge of ''):  %366 = icmp ult i64 %365, 4
+    -> Guard[3] (true edge of ''):  %239 = icmp ult ptr %34, %9
+    -> Collected 4 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.161891 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 2
+  => Total SMT Queries Executed: 2
+  => Total SMT Query Latency: 2.031231e+01 ms
+  => Average SMT Query Latency: 1.015615e+01 ms
+  => Total DFS & SMT Execution Time: 1.246020e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_lazy_dictMatchState_row
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.122494 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %66 = icmp ugt ptr %65, %9
+    -> Guard[1] (false edge of ''):  %47 = extractvalue { i64, i1 } %46, 1, !nosanitize !21
+    -> Collected 2 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.118877 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %800 = icmp ugt ptr %799, %9
+    -> Guard[1] (false edge of ''):  %792 = icmp eq i32 %791, 0
+    -> Guard[2] (false edge of ''):  %317 = icmp ult i64 %316, 4
+    -> Guard[3] (true edge of ''):  %240 = icmp ult ptr %54, %9
+    -> Guard[4] (false edge of ''):  %47 = extractvalue { i64, i1 } %46, 1, !nosanitize !21
+    -> Collected 5 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.121217 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 3
+  => Total SMT Queries Executed: 3
+  => Total SMT Query Latency: 3.036259e+01 ms
+  => Average SMT Query Latency: 1.012086e+01 ms
+  => Total DFS & SMT Execution Time: 2.202911e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_lazy_dedicatedDictSearch_row
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.112488 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %66 = icmp ugt ptr %65, %9
+    -> Guard[1] (false edge of ''):  %47 = extractvalue { i64, i1 } %46, 1, !nosanitize !21
+    -> Collected 2 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.196410 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %800 = icmp ugt ptr %799, %9
+    -> Guard[1] (false edge of ''):  %792 = icmp eq i32 %791, 0
+    -> Guard[2] (false edge of ''):  %317 = icmp ult i64 %316, 4
+    -> Guard[3] (true edge of ''):  %240 = icmp ult ptr %54, %9
+    -> Guard[4] (false edge of ''):  %47 = extractvalue { i64, i1 } %46, 1, !nosanitize !21
+    -> Collected 5 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.109833 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 3
+  => Total SMT Queries Executed: 3
+  => Total SMT Query Latency: 3.041873e+01 ms
+  => Average SMT Query Latency: 1.013958e+01 ms
+  => Total DFS & SMT Execution Time: 1.860386e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_lazy2
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.664630e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_lazy2_dictMatchState
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.202532 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.020253e+01 ms
+  => Average SMT Query Latency: 1.020253e+01 ms
+  => Total DFS & SMT Execution Time: 3.618218e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_lazy2_dedicatedDictSearch
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.162967 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.016297e+01 ms
+  => Average SMT Query Latency: 1.016297e+01 ms
+  => Total DFS & SMT Execution Time: 4.401851e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_lazy2_row
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %66 = icmp ugt ptr %65, %10
+    -> Collected 1 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.312391 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %891 = icmp ugt ptr %890, %10
+    -> Guard[1] (false edge of ''):  %883 = icmp eq i32 %882, 0
+    -> Guard[2] (false edge of ''):  %367 = icmp ult i64 %366, 4
+    -> Guard[3] (true edge of ''):  %240 = icmp ult ptr %35, %10
+    -> Collected 4 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.127797 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 2
+  => Total SMT Queries Executed: 2
+  => Total SMT Query Latency: 2.044019e+01 ms
+  => Average SMT Query Latency: 1.022009e+01 ms
+  => Total DFS & SMT Execution Time: 8.423577e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_lazy2_dictMatchState_row
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.162579 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %67 = icmp ugt ptr %66, %10
+    -> Guard[1] (false edge of ''):  %48 = extractvalue { i64, i1 } %47, 1, !nosanitize !21
+    -> Collected 2 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.260815 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %888 = icmp ugt ptr %887, %10
+    -> Guard[1] (false edge of ''):  %880 = icmp eq i32 %879, 0
+    -> Guard[2] (false edge of ''):  %318 = icmp ult i64 %317, 4
+    -> Guard[3] (true edge of ''):  %241 = icmp ult ptr %55, %10
+    -> Guard[4] (false edge of ''):  %48 = extractvalue { i64, i1 } %47, 1, !nosanitize !21
+    -> Collected 5 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.109665 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 3
+  => Total SMT Queries Executed: 3
+  => Total SMT Query Latency: 3.053306e+01 ms
+  => Average SMT Query Latency: 1.017769e+01 ms
+  => Total DFS & SMT Execution Time: 1.684576e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_lazy2_dedicatedDictSearch_row
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.145943 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %67 = icmp ugt ptr %66, %10
+    -> Guard[1] (false edge of ''):  %48 = extractvalue { i64, i1 } %47, 1, !nosanitize !21
+    -> Collected 2 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.120725 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %888 = icmp ugt ptr %887, %10
+    -> Guard[1] (false edge of ''):  %880 = icmp eq i32 %879, 0
+    -> Guard[2] (false edge of ''):  %318 = icmp ult i64 %317, 4
+    -> Guard[3] (true edge of ''):  %241 = icmp ult ptr %55, %10
+    -> Guard[4] (false edge of ''):  %48 = extractvalue { i64, i1 } %47, 1, !nosanitize !21
+    -> Collected 5 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.110725 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 3
+  => Total SMT Queries Executed: 3
+  => Total SMT Query Latency: 3.037739e+01 ms
+  => Average SMT Query Latency: 1.012580e+01 ms
+  => Total DFS & SMT Execution Time: 1.576317e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_btlazy2
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.789630e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_btlazy2_dictMatchState
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.096403 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.009640e+01 ms
+  => Average SMT Query Latency: 1.009640e+01 ms
+  => Total DFS & SMT Execution Time: 4.361241e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_greedy_extDict
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.012800e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_greedy_extDict_row
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %49 = icmp ugt ptr %48, %8
+    -> Collected 1 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.131711 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %548 = icmp ugt ptr %547, %8
+    -> Guard[1] (false edge of ''):  %540 = icmp eq i32 %539, 0
+    -> Guard[2] (true edge of ''):  %223 = icmp ult ptr %38, %8
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.125928 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 2
+  => Total SMT Queries Executed: 2
+  => Total SMT Query Latency: 2.025764e+01 ms
+  => Average SMT Query Latency: 1.012882e+01 ms
+  => Total DFS & SMT Execution Time: 9.043345e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_lazy_extDict
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.295590e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_lazy_extDict_row
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %50 = icmp ugt ptr %49, %9
+    -> Collected 1 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.191663 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %653 = icmp ugt ptr %652, %9
+    -> Guard[1] (false edge of ''):  %645 = icmp eq i32 %644, 0
+    -> Guard[2] (false edge of ''):  %308 = icmp ult i64 %307, 4
+    -> Guard[3] (true edge of ''):  %224 = icmp ult ptr %39, %9
+    -> Collected 4 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.204071 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 2
+  => Total SMT Queries Executed: 2
+  => Total SMT Query Latency: 2.039573e+01 ms
+  => Average SMT Query Latency: 1.019787e+01 ms
+  => Total DFS & SMT Execution Time: 8.801803e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_lazy2_extDict
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.456310e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_lazy2_extDict_row
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %51 = icmp ugt ptr %50, %10
+    -> Collected 1 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.185126 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %750 = icmp ugt ptr %749, %10
+    -> Guard[1] (false edge of ''):  %742 = icmp eq i32 %741, 0
+    -> Guard[2] (false edge of ''):  %309 = icmp ult i64 %308, 4
+    -> Guard[3] (true edge of ''):  %225 = icmp ult ptr %40, %10
+    -> Collected 4 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.171039 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 2
+  => Total SMT Queries Executed: 2
+  => Total SMT Query Latency: 2.035617e+01 ms
+  => Average SMT Query Latency: 1.017808e+01 ms
+  => Total DFS & SMT Execution Time: 7.975668e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_btlazy2_extDict
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.477550e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_count_2segments
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 3.182600e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_HcFindBestMatch_noDict_4
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.289332 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.893320e-01 ms
+  => Average SMT Query Latency: 2.893320e-01 ms
+  => Total DFS & SMT Execution Time: 2.374564e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_HcFindBestMatch_noDict_5
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.292889 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.928890e-01 ms
+  => Average SMT Query Latency: 2.928890e-01 ms
+  => Total DFS & SMT Execution Time: 2.763561e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_HcFindBestMatch_noDict_6
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.279476 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.794760e-01 ms
+  => Average SMT Query Latency: 2.794760e-01 ms
+  => Total DFS & SMT Execution Time: 2.713746e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_BtFindBestMatch_noDict_4
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %11 = icmp ugt ptr %10, %1
+    -> Collected 1 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.621809 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.621809e+00 ms
+  => Average SMT Query Latency: 2.621809e+00 ms
+  => Total DFS & SMT Execution Time: 3.715731e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_BtFindBestMatch_noDict_5
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %11 = icmp ugt ptr %10, %1
+    -> Collected 1 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.714394 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.714394e+00 ms
+  => Average SMT Query Latency: 2.714394e+00 ms
+  => Total DFS & SMT Execution Time: 4.322296e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_BtFindBestMatch_noDict_6
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %11 = icmp ugt ptr %10, %1
+    -> Collected 1 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.591208 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.591208e+00 ms
+  => Average SMT Query Latency: 2.591208e+00 ms
+  => Total DFS & SMT Execution Time: 4.393139e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_noDict_4_4
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %103 = icmp ugt ptr %102, %100
+    -> Guard[1] (true edge of ''):  %45 = icmp ugt i32 %44, 384
+    -> Guard[2] (true edge of ''):  %40 = icmp eq i32 %39, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.098136 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.009814e+01 ms
+  => Average SMT Query Latency: 1.009814e+01 ms
+  => Total DFS & SMT Execution Time: 5.102109e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_noDict_4_5
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %104 = icmp ugt ptr %103, %101
+    -> Guard[1] (true edge of ''):  %45 = icmp ugt i32 %44, 384
+    -> Guard[2] (true edge of ''):  %40 = icmp eq i32 %39, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.122843 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.012284e+01 ms
+  => Average SMT Query Latency: 1.012284e+01 ms
+  => Total DFS & SMT Execution Time: 5.230076e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_noDict_4_6
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %105 = icmp ugt ptr %104, %102
+    -> Guard[1] (true edge of ''):  %45 = icmp ugt i32 %44, 384
+    -> Guard[2] (true edge of ''):  %40 = icmp eq i32 %39, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.105825 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.010582e+01 ms
+  => Average SMT Query Latency: 1.010582e+01 ms
+  => Total DFS & SMT Execution Time: 5.085234e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_noDict_5_4
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %103 = icmp ugt ptr %102, %100
+    -> Guard[1] (true edge of ''):  %45 = icmp ugt i32 %44, 384
+    -> Guard[2] (true edge of ''):  %40 = icmp eq i32 %39, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.128990 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.012899e+01 ms
+  => Average SMT Query Latency: 1.012899e+01 ms
+  => Total DFS & SMT Execution Time: 5.252099e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_noDict_5_5
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %104 = icmp ugt ptr %103, %101
+    -> Guard[1] (true edge of ''):  %45 = icmp ugt i32 %44, 384
+    -> Guard[2] (true edge of ''):  %40 = icmp eq i32 %39, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.108287 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.010829e+01 ms
+  => Average SMT Query Latency: 1.010829e+01 ms
+  => Total DFS & SMT Execution Time: 4.951537e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_noDict_5_6
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %105 = icmp ugt ptr %104, %102
+    -> Guard[1] (true edge of ''):  %45 = icmp ugt i32 %44, 384
+    -> Guard[2] (true edge of ''):  %40 = icmp eq i32 %39, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.116374 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.011637e+01 ms
+  => Average SMT Query Latency: 1.011637e+01 ms
+  => Total DFS & SMT Execution Time: 4.918109e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_noDict_6_4
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %103 = icmp ugt ptr %102, %100
+    -> Guard[1] (true edge of ''):  %45 = icmp ugt i32 %44, 384
+    -> Guard[2] (true edge of ''):  %40 = icmp eq i32 %39, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.188929 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.018893e+01 ms
+  => Average SMT Query Latency: 1.018893e+01 ms
+  => Total DFS & SMT Execution Time: 4.800308e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_noDict_6_5
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %104 = icmp ugt ptr %103, %101
+    -> Guard[1] (true edge of ''):  %45 = icmp ugt i32 %44, 384
+    -> Guard[2] (true edge of ''):  %40 = icmp eq i32 %39, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.132069 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.013207e+01 ms
+  => Average SMT Query Latency: 1.013207e+01 ms
+  => Total DFS & SMT Execution Time: 3.941314e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_noDict_6_6
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %105 = icmp ugt ptr %104, %102
+    -> Guard[1] (true edge of ''):  %45 = icmp ugt i32 %44, 384
+    -> Guard[2] (true edge of ''):  %40 = icmp eq i32 %39, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.143578 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.014358e+01 ms
+  => Average SMT Query Latency: 1.014358e+01 ms
+  => Total DFS & SMT Execution Time: 3.777655e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_HcFindBestMatch_extDict_4
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.281736 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.817360e-01 ms
+  => Average SMT Query Latency: 2.817360e-01 ms
+  => Total DFS & SMT Execution Time: 2.518091e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_HcFindBestMatch_extDict_5
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.303263 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 3.032630e-01 ms
+  => Average SMT Query Latency: 3.032630e-01 ms
+  => Total DFS & SMT Execution Time: 2.300596e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_HcFindBestMatch_extDict_6
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.235071 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.350710e-01 ms
+  => Average SMT Query Latency: 2.350710e-01 ms
+  => Total DFS & SMT Execution Time: 2.518714e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_BtFindBestMatch_extDict_4
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %11 = icmp ugt ptr %10, %1
+    -> Collected 1 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.648763 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.648763e+00 ms
+  => Average SMT Query Latency: 2.648763e+00 ms
+  => Total DFS & SMT Execution Time: 3.452662e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_BtFindBestMatch_extDict_5
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %11 = icmp ugt ptr %10, %1
+    -> Collected 1 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.701431 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.701431e+00 ms
+  => Average SMT Query Latency: 2.701431e+00 ms
+  => Total DFS & SMT Execution Time: 4.000599e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_BtFindBestMatch_extDict_6
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %11 = icmp ugt ptr %10, %1
+    -> Collected 1 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.594313 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.594313e+00 ms
+  => Average SMT Query Latency: 2.594313e+00 ms
+  => Total DFS & SMT Execution Time: 4.328630e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_extDict_4_4
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %110 = icmp ugt ptr %109, %107
+    -> Guard[1] (true edge of ''):  %52 = icmp ugt i32 %51, 384
+    -> Guard[2] (true edge of ''):  %47 = icmp eq i32 %46, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.132368 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.013237e+01 ms
+  => Average SMT Query Latency: 1.013237e+01 ms
+  => Total DFS & SMT Execution Time: 5.420458e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_extDict_4_5
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %111 = icmp ugt ptr %110, %108
+    -> Guard[1] (true edge of ''):  %52 = icmp ugt i32 %51, 384
+    -> Guard[2] (true edge of ''):  %47 = icmp eq i32 %46, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.102074 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.010207e+01 ms
+  => Average SMT Query Latency: 1.010207e+01 ms
+  => Total DFS & SMT Execution Time: 5.372883e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_extDict_4_6
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %112 = icmp ugt ptr %111, %109
+    -> Guard[1] (true edge of ''):  %52 = icmp ugt i32 %51, 384
+    -> Guard[2] (true edge of ''):  %47 = icmp eq i32 %46, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.128777 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.012878e+01 ms
+  => Average SMT Query Latency: 1.012878e+01 ms
+  => Total DFS & SMT Execution Time: 5.196326e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_extDict_5_4
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %110 = icmp ugt ptr %109, %107
+    -> Guard[1] (true edge of ''):  %52 = icmp ugt i32 %51, 384
+    -> Guard[2] (true edge of ''):  %47 = icmp eq i32 %46, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.107522 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.010752e+01 ms
+  => Average SMT Query Latency: 1.010752e+01 ms
+  => Total DFS & SMT Execution Time: 6.085887e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_extDict_5_5
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %111 = icmp ugt ptr %110, %108
+    -> Guard[1] (true edge of ''):  %52 = icmp ugt i32 %51, 384
+    -> Guard[2] (true edge of ''):  %47 = icmp eq i32 %46, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.137245 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.013725e+01 ms
+  => Average SMT Query Latency: 1.013725e+01 ms
+  => Total DFS & SMT Execution Time: 5.323877e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_extDict_5_6
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %112 = icmp ugt ptr %111, %109
+    -> Guard[1] (true edge of ''):  %52 = icmp ugt i32 %51, 384
+    -> Guard[2] (true edge of ''):  %47 = icmp eq i32 %46, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.130649 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.013065e+01 ms
+  => Average SMT Query Latency: 1.013065e+01 ms
+  => Total DFS & SMT Execution Time: 5.570003e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_extDict_6_4
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %110 = icmp ugt ptr %109, %107
+    -> Guard[1] (true edge of ''):  %52 = icmp ugt i32 %51, 384
+    -> Guard[2] (true edge of ''):  %47 = icmp eq i32 %46, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.215021 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.021502e+01 ms
+  => Average SMT Query Latency: 1.021502e+01 ms
+  => Total DFS & SMT Execution Time: 5.300067e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_extDict_6_5
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %111 = icmp ugt ptr %110, %108
+    -> Guard[1] (true edge of ''):  %52 = icmp ugt i32 %51, 384
+    -> Guard[2] (true edge of ''):  %47 = icmp eq i32 %46, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.124210 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.012421e+01 ms
+  => Average SMT Query Latency: 1.012421e+01 ms
+  => Total DFS & SMT Execution Time: 4.235623e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_extDict_6_6
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %112 = icmp ugt ptr %111, %109
+    -> Guard[1] (true edge of ''):  %52 = icmp ugt i32 %51, 384
+    -> Guard[2] (true edge of ''):  %47 = icmp eq i32 %46, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.154154 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.015415e+01 ms
+  => Average SMT Query Latency: 1.015415e+01 ms
+  => Total DFS & SMT Execution Time: 3.951797e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_HcFindBestMatch_dictMatchState_4
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.253633 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.536330e-01 ms
+  => Average SMT Query Latency: 2.536330e-01 ms
+  => Total DFS & SMT Execution Time: 1.612776e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_HcFindBestMatch_dictMatchState_5
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.294753 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.947530e-01 ms
+  => Average SMT Query Latency: 2.947530e-01 ms
+  => Total DFS & SMT Execution Time: 2.371125e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_HcFindBestMatch_dictMatchState_6
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.287630 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.876300e-01 ms
+  => Average SMT Query Latency: 2.876300e-01 ms
+  => Total DFS & SMT Execution Time: 2.423327e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_BtFindBestMatch_dictMatchState_4
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %11 = icmp ugt ptr %10, %1
+    -> Collected 1 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.614409 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.614409e+00 ms
+  => Average SMT Query Latency: 2.614409e+00 ms
+  => Total DFS & SMT Execution Time: 3.472288e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_BtFindBestMatch_dictMatchState_5
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %11 = icmp ugt ptr %10, %1
+    -> Collected 1 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.552202 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.552202e+00 ms
+  => Average SMT Query Latency: 2.552202e+00 ms
+  => Total DFS & SMT Execution Time: 3.801553e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_BtFindBestMatch_dictMatchState_6
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %11 = icmp ugt ptr %10, %1
+    -> Collected 1 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.610599 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.610599e+00 ms
+  => Average SMT Query Latency: 2.610599e+00 ms
+  => Total DFS & SMT Execution Time: 4.251559e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_dictMatchState_4_4
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %126 = icmp ugt ptr %125, %123
+    -> Guard[1] (true edge of ''):  %68 = icmp ugt i32 %67, 384
+    -> Guard[2] (true edge of ''):  %63 = icmp eq i32 %62, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.120577 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.012058e+01 ms
+  => Average SMT Query Latency: 1.012058e+01 ms
+  => Total DFS & SMT Execution Time: 6.657653e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_dictMatchState_4_5
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %128 = icmp ugt ptr %127, %125
+    -> Guard[1] (true edge of ''):  %69 = icmp ugt i32 %68, 384
+    -> Guard[2] (true edge of ''):  %64 = icmp eq i32 %63, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.119255 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.011926e+01 ms
+  => Average SMT Query Latency: 1.011926e+01 ms
+  => Total DFS & SMT Execution Time: 5.635097e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_dictMatchState_4_6
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %130 = icmp ugt ptr %129, %127
+    -> Guard[1] (true edge of ''):  %70 = icmp ugt i32 %69, 384
+    -> Guard[2] (true edge of ''):  %65 = icmp eq i32 %64, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.114286 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.011429e+01 ms
+  => Average SMT Query Latency: 1.011429e+01 ms
+  => Total DFS & SMT Execution Time: 5.235660e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_dictMatchState_5_4
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %126 = icmp ugt ptr %125, %123
+    -> Guard[1] (true edge of ''):  %68 = icmp ugt i32 %67, 384
+    -> Guard[2] (true edge of ''):  %63 = icmp eq i32 %62, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.103716 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.010372e+01 ms
+  => Average SMT Query Latency: 1.010372e+01 ms
+  => Total DFS & SMT Execution Time: 5.455146e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_dictMatchState_5_5
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %128 = icmp ugt ptr %127, %125
+    -> Guard[1] (true edge of ''):  %69 = icmp ugt i32 %68, 384
+    -> Guard[2] (true edge of ''):  %64 = icmp eq i32 %63, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.136551 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.013655e+01 ms
+  => Average SMT Query Latency: 1.013655e+01 ms
+  => Total DFS & SMT Execution Time: 6.688568e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_dictMatchState_5_6
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %130 = icmp ugt ptr %129, %127
+    -> Guard[1] (true edge of ''):  %70 = icmp ugt i32 %69, 384
+    -> Guard[2] (true edge of ''):  %65 = icmp eq i32 %64, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.116150 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.011615e+01 ms
+  => Average SMT Query Latency: 1.011615e+01 ms
+  => Total DFS & SMT Execution Time: 5.278932e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_dictMatchState_6_4
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %126 = icmp ugt ptr %125, %123
+    -> Guard[1] (true edge of ''):  %68 = icmp ugt i32 %67, 384
+    -> Guard[2] (true edge of ''):  %63 = icmp eq i32 %62, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.127291 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.012729e+01 ms
+  => Average SMT Query Latency: 1.012729e+01 ms
+  => Total DFS & SMT Execution Time: 5.212378e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_dictMatchState_6_5
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %128 = icmp ugt ptr %127, %125
+    -> Guard[1] (true edge of ''):  %69 = icmp ugt i32 %68, 384
+    -> Guard[2] (true edge of ''):  %64 = icmp eq i32 %63, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.140167 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.014017e+01 ms
+  => Average SMT Query Latency: 1.014017e+01 ms
+  => Total DFS & SMT Execution Time: 4.407331e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_dictMatchState_6_6
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %130 = icmp ugt ptr %129, %127
+    -> Guard[1] (true edge of ''):  %70 = icmp ugt i32 %69, 384
+    -> Guard[2] (true edge of ''):  %65 = icmp eq i32 %64, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.106456 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.010646e+01 ms
+  => Average SMT Query Latency: 1.010646e+01 ms
+  => Total DFS & SMT Execution Time: 3.969058e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_HcFindBestMatch_dedicatedDictSearch_4
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.232974 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.329740e-01 ms
+  => Average SMT Query Latency: 2.329740e-01 ms
+  => Total DFS & SMT Execution Time: 1.567035e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_HcFindBestMatch_dedicatedDictSearch_5
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.311906 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 3.119060e-01 ms
+  => Average SMT Query Latency: 3.119060e-01 ms
+  => Total DFS & SMT Execution Time: 2.197948e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_HcFindBestMatch_dedicatedDictSearch_6
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.278414 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.784140e-01 ms
+  => Average SMT Query Latency: 2.784140e-01 ms
+  => Total DFS & SMT Execution Time: 2.923516e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_dedicatedDictSearch_4_4
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %124 = icmp ugt ptr %123, %121
+    -> Guard[1] (true edge of ''):  %66 = icmp ugt i32 %65, 384
+    -> Guard[2] (true edge of ''):  %61 = icmp eq i32 %60, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.108603 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.010860e+01 ms
+  => Average SMT Query Latency: 1.010860e+01 ms
+  => Total DFS & SMT Execution Time: 4.874493e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_dedicatedDictSearch_4_5
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %125 = icmp ugt ptr %124, %122
+    -> Guard[1] (true edge of ''):  %66 = icmp ugt i32 %65, 384
+    -> Guard[2] (true edge of ''):  %61 = icmp eq i32 %60, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.126047 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.012605e+01 ms
+  => Average SMT Query Latency: 1.012605e+01 ms
+  => Total DFS & SMT Execution Time: 5.000759e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_dedicatedDictSearch_4_6
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %126 = icmp ugt ptr %125, %123
+    -> Guard[1] (true edge of ''):  %66 = icmp ugt i32 %65, 384
+    -> Guard[2] (true edge of ''):  %61 = icmp eq i32 %60, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.157005 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.015700e+01 ms
+  => Average SMT Query Latency: 1.015700e+01 ms
+  => Total DFS & SMT Execution Time: 5.294242e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_dedicatedDictSearch_5_4
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %124 = icmp ugt ptr %123, %121
+    -> Guard[1] (true edge of ''):  %66 = icmp ugt i32 %65, 384
+    -> Guard[2] (true edge of ''):  %61 = icmp eq i32 %60, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.101275 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.010127e+01 ms
+  => Average SMT Query Latency: 1.010127e+01 ms
+  => Total DFS & SMT Execution Time: 5.231401e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_dedicatedDictSearch_5_5
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %125 = icmp ugt ptr %124, %122
+    -> Guard[1] (true edge of ''):  %66 = icmp ugt i32 %65, 384
+    -> Guard[2] (true edge of ''):  %61 = icmp eq i32 %60, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.146654 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.014665e+01 ms
+  => Average SMT Query Latency: 1.014665e+01 ms
+  => Total DFS & SMT Execution Time: 6.594793e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_dedicatedDictSearch_5_6
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %126 = icmp ugt ptr %125, %123
+    -> Guard[1] (true edge of ''):  %66 = icmp ugt i32 %65, 384
+    -> Guard[2] (true edge of ''):  %61 = icmp eq i32 %60, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.105238 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.010524e+01 ms
+  => Average SMT Query Latency: 1.010524e+01 ms
+  => Total DFS & SMT Execution Time: 5.280488e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_dedicatedDictSearch_6_4
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %124 = icmp ugt ptr %123, %121
+    -> Guard[1] (true edge of ''):  %66 = icmp ugt i32 %65, 384
+    -> Guard[2] (true edge of ''):  %61 = icmp eq i32 %60, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.119761 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.011976e+01 ms
+  => Average SMT Query Latency: 1.011976e+01 ms
+  => Total DFS & SMT Execution Time: 5.266364e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_dedicatedDictSearch_6_5
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %125 = icmp ugt ptr %124, %122
+    -> Guard[1] (true edge of ''):  %66 = icmp ugt i32 %65, 384
+    -> Guard[2] (true edge of ''):  %61 = icmp eq i32 %60, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.123150 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.012315e+01 ms
+  => Average SMT Query Latency: 1.012315e+01 ms
+  => Total DFS & SMT Execution Time: 4.866904e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_dedicatedDictSearch_6_6
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %126 = icmp ugt ptr %125, %123
+    -> Guard[1] (true edge of ''):  %66 = icmp ugt i32 %65, 384
+    -> Guard[2] (true edge of ''):  %61 = icmp eq i32 %60, 0
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.123636 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.012364e+01 ms
+  => Average SMT Query Latency: 1.012364e+01 ms
+  => Total DFS & SMT Execution Time: 5.683112e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_DUBT_findBestMatch
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.234792 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %82 = icmp ugt i32 %81, %77
+    -> Guard[1] (false edge of ''):  %73 = extractvalue { i32, i1 } %71, 1, !nosanitize !24
+    -> Collected 2 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.163682 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %414 = icmp ugt i64 %412, %315
+    -> Guard[1] (true edge of ''):  %307 = icmp ugt i32 %306, %64
+    -> Guard[2] (false edge of ''):  %73 = extractvalue { i32, i1 } %71, 1, !nosanitize !24
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.126835 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %481 = and i1 %479, %480
+    -> Guard[1] (false edge of ''):  %73 = extractvalue { i32, i1 } %71, 1, !nosanitize !24
+    -> Collected 2 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.136708 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %578 = icmp ugt i64 %573, %559
+    -> Guard[1] (true edge of ''):  %552 = icmp ugt i32 %551, %532
+    -> Guard[2] (false edge of ''):  %543 = extractvalue { i32, i1 } %541, 1, !nosanitize !24
+    -> Guard[3] (true edge of ''):  %481 = and i1 %479, %480
+    -> Guard[4] (false edge of ''):  %73 = extractvalue { i32, i1 } %71, 1, !nosanitize !24
+    -> Collected 5 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.168945 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 5
+  => Total SMT Queries Executed: 5
+  => Total SMT Query Latency: 3.583096e+01 ms
+  => Average SMT Query Latency: 7.166192e+00 ms
+  => Total DFS & SMT Execution Time: 2.908666e+02 ms
+--------------------------------------------------

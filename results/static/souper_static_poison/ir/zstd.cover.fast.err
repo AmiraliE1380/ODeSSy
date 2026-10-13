@@ -1,0 +1,317 @@
+[ODeSSy] 4 trap site(s) across 22 function(s); threads=10 [tier: heavy] [frame] [mv] [narrow]
+
+[Z3 Oracle] Analyzing Function: COVER_sum
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.150196e+00 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: COVER_warnOnSmallCorpus
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 5.986200e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: COVER_computeEpochs
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 4.155600e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZDICT_trainFromBuffer_cover
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.325930e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: COVER_ctx_init
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.437970e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: COVER_buildDictionary
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %33 = icmp sgt i32 %32, 1
+    -> Guard[1] (false edge of ''):  %357 = icmp ult i64 %356, %49
+    -> Guard[2] (false edge of ''):  %351 = icmp eq i32 %266, 0
+    -> Guard[3] (true edge of ''):  %269 = icmp eq i64 %149, %68
+    -> Guard[4] (true edge of ''):  %63 = icmp ult i32 %57, %58
+    -> Guard[5] (false edge of ''):  %40 = icmp eq i64 %4, 0
+    -> Collected 6 dominating context guard(s).
+    -> [go3] 13 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %32 in [2,-2147483648) (LVI @ )
+    -> Fact[KB:1] i64 %96 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:2] i64 %96 in [0,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:3] i64 %96 in [0,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:4] i64 %96 - start((zext i32 ((trunc i64 %54 to i32) * %24) to i64)) <=u BTC((-1 + (zext i32 ((1 + (trunc i64 %54 to i32)) * %24) to i64) + (-1 * (zext i32 ((trunc i64 %54 to i32) * %24) to i64))<nsw>)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:5] i64 %96 == i64 %67 || ne(i64 %96, i64 %68) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:6] i64 %96 >=s i64 %67 (monotone nsw increments, 1 arm(s))
+    -> Fact[PHIINV-hi:7] i64 %52 == i64 %4 || ne(i64 %52, i64 0) (latch-implied bound, 1-induction)
+    -> Fact[KB:8] i64 %355 known bits zero=0x18446744069414584320 one=0x0
+    -> Fact[LVI:9] i64 %355 in [0,4294967296) (LVI @ )
+    -> Fact[SCEVEQ:10] i32 %24 in phi image (2 incoming)
+    -> Fact[SCEVEQ:11] i32 %20 == SCEV(((trunc i64 %10 to i32) umin (10 * %5)))
+    -> Fact[SCEVEQ:12] i32 %17 == SCEV(((trunc i64 %10 to i32) /u %16))
+    -> Fact[KB:13] i32 %16 known bits zero=0x3221225472 one=0x0
+    -> [heavy] 14 analysis fact(s) on 13 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.192819 ms]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.019282e+01 ms
+  => Average SMT Query Latency: 1.019282e+01 ms
+  => Total DFS & SMT Execution Time: 1.205942e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: COVER_checkTotalCompressedSize
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 7.021800e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: COVER_best_init
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 5.165000e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: COVER_best_wait
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 4.011100e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: COVER_best_destroy
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 6.304500e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: COVER_best_start
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 4.307200e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: COVER_best_finish
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 6.264800e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: COVER_dictSelectionError
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 3.647600e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: COVER_dictSelectionIsError
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 4.459400e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: COVER_dictSelectionFree
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 3.147400e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: COVER_selectDict
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 9.663000e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZDICT_optimizeTrainFromBuffer_cover
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %88 = icmp sgt i32 %39, 1
+    -> Guard[1] (false edge of ''):  %219 = or i1 %218, %217
+    -> Guard[2] (false edge of ''):  %171 = icmp eq ptr %164, null
+    -> Guard[3] (true edge of ''):  %129 = icmp ult i64 %128, -119
+    -> Guard[4] (false edge of ''):  %95 = icmp ugt i32 %18, %19
+    -> Guard[5] (false edge of ''):  %69 = icmp ult i64 %1, 256
+    -> Guard[6] (false edge of ''):  %60 = icmp eq i32 %4, 0
+    -> Guard[7] (false edge of ''):  %51 = or i1 %49, %50
+    -> Guard[8] (false edge of ''):  %40 = fcmp ogt double %14, 1.000000e+00
+    -> Collected 9 dominating context guard(s).
+    -> [go3] 4 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %39 in [2,-2147483648) (LVI @ )
+    -> Fact[LVI:1] i32 %116 in [1,0) (LVI @ )
+    -> Fact[PHIINV-hi:2] i32 %116 == i32 %18 || ule(i32 %116, i32 %19) (latch-implied bound, 1-induction)
+    -> Fact[RM:3] i64 %128 in [-72,1) (!range)
+    -> Fact[LVI:4] i32 %162 in [1,0) (LVI @ )
+    -> Fact[PHIINV-hi:5] i32 %162 == i32 %22 || ule(i32 %162, i32 %23) (latch-implied bound, 1-induction)
+    -> [heavy] 6 analysis fact(s) on 17 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.288514 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %97 = icmp sgt i32 %39, 2
+    -> Guard[1] (false edge of ''):  %95 = icmp ugt i32 %18, %19
+    -> Guard[2] (false edge of ''):  %69 = icmp ult i64 %1, 256
+    -> Guard[3] (false edge of ''):  %60 = icmp eq i32 %4, 0
+    -> Guard[4] (false edge of ''):  %51 = or i1 %49, %50
+    -> Guard[5] (false edge of ''):  %40 = fcmp ogt double %14, 1.000000e+00
+    -> Collected 6 dominating context guard(s).
+    -> Fact[LVI:0] i32 %39 in [-2147483648,3) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.724205 ms]
+    -> [mv] DEAD UNDER HYPOTHESIS H = {%39 >=s 0} (1 of 15 candidates in core, round 0; re-solve 8.958460e-01 ms; trap loop depth 1, hoist to depth 1)
+  => SUCCESS (fast copy): trap folded in 1 copy inside the H-guarded clone of loop ''
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %97 = icmp sgt i32 %39, 2
+    -> Guard[1] (false edge of ''):  %95 = icmp ugt i32 %18, %19
+    -> Guard[2] (false edge of ''):  %69 = icmp ult i64 %1, 256
+    -> Guard[3] (false edge of ''):  %60 = icmp eq i32 %4, 0
+    -> Guard[4] (false edge of ''):  %51 = or i1 %49, %50
+    -> Guard[5] (false edge of ''):  %40 = fcmp ogt double %14, 1.000000e+00
+    -> Collected 6 dominating context guard(s).
+    -> Fact[LVI:0] i32 %39 in [3,-2147483648) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 0.740124 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  => Total Traps Eliminated: 1
+  => Traps Folded In Fast Copies (mv): 1
+  => Total Trap Attempts: 3
+  => Total SMT Queries Executed: 3
+  => Total SMT Query Latency: 1.516519e+01 ms
+  => Average SMT Query Latency: 5.055062e+00 ms
+  => Total DFS & SMT Execution Time: 2.140665e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: COVER_tryParameters
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.240130e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: COVER_cmp8
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 4.474100e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: COVER_cmp
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 3.426300e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: COVER_strict_cmp8
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 3.861300e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: COVER_strict_cmp
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 3.839700e-02 ms
+--------------------------------------------------

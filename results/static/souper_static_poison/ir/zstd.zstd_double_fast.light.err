@@ -1,0 +1,67 @@
+[ODeSSy] 4 trap site(s) across 6 function(s); threads=10
+
+[Z3 Oracle] Analyzing Function: ZSTD_fillDoubleHashTable
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.440530e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_doubleFast
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 8.432800e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_doubleFast_dictMatchState
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.367210 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.332172 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.363831 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.358343 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 4
+  => Total SMT Queries Executed: 4
+  => Total SMT Query Latency: 4.142156e+01 ms
+  => Average SMT Query Latency: 1.035539e+01 ms
+  => Total DFS & SMT Execution Time: 2.395566e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_doubleFast_extDict
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 7.982000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_count_2segments
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 4.093300e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_doubleFast_extDict_generic
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.790140e-01 ms
+--------------------------------------------------

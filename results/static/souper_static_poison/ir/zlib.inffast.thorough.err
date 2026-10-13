@@ -1,0 +1,590 @@
+[ODeSSy] 29 trap site(s) across 1 function(s); threads=10 [tier: heavy] [frame] [mv] [narrow] [ind]
+
+[Z3 Oracle] Analyzing Function: inflate_fast
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %621 = icmp ult ptr %594, %31
+    -> Guard[1] (false edge of ''):  %602 = extractvalue { i32, i1 } %601, 1, !nosanitize !14
+    -> Guard[2] (false edge of ''):  %109 = extractvalue { i32, i1 } %108, 1, !nosanitize !14
+    -> Guard[3] (false edge of ''):  %23 = extractvalue { i32, i1 } %22, 1, !nosanitize !14
+    -> Guard[4] (false edge of ''):  %20 = extractvalue { i32, i1 } %19, 1, !nosanitize !14
+    -> Guard[5] (false edge of ''):  %9 = extractvalue { i32, i1 } %8, 1, !nosanitize !14
+    -> Collected 6 dominating context guard(s).
+    -> [go3] 127 leaf-closure instruction(s) encoded
+    -> Fact[SCEV:0] i32 %502 in [-98301,98303) (SCEV unsigned)
+    -> Fact[SCEV:1] i32 %502 in [-98301,98303) (SCEV signed)
+    -> Fact[PHIINV-hi:2] i32 %502 == i32 %168 || ugt(i32 %502, i32 2) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-hi:3] i32 %416 == i32 %263 || ne(i32 %416, i32 0) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:4] i64 %313 in [0,4294967296) (SCEV unsigned)
+    -> Fact[SCEV:5] i64 %313 in [0,4294967296) (SCEV signed)
+    -> Fact[PHIINV-hi:6] i32 %315 == i32 %306 || ne(i32 %315, i32 0) (latch-implied bound, 1-induction)
+    -> Fact[KB:7] i64 %337 known bits zero=0x31 one=0x0
+    -> Fact[SCEV:8] i64 %337 in [0,4294967233) (SCEV unsigned)
+    -> Fact[SCEV:9] i64 %337 in [0,4294967233) (SCEV signed)
+    -> Fact[SCEVSYM:10] i64 %337 - start(0) <=u 32*BTC(((-32 + (32 * ((zext i32 %37 to i64) /u 32))<nuw><nsw>)<nsw> /u 32)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:11] i64 %337 == i64 0 || ne(i64 %337, i64 %67) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:12] i32 %358 in [0,7) (SCEV unsigned)
+    -> Fact[SCEV:13] i32 %358 in [0,7) (SCEV signed)
+    -> Fact[SCEVSYM:14] i32 %358 - start(0) <=u BTC((-1 + (zext i3 (trunc i32 %349 to i3) to i32))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:15] i32 %358 == i32 0 || ne(i32 %358, i32 %352) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-hi:16] i32 %373 == i32 %368 || ne(i32 %373, i32 0) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-hi:17] i32 %281 == i32 %263 || ne(i32 %281, i32 0) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-hi:18] i32 %461 == i32 %453 || ugt(i32 %461, i32 2) (latch-implied bound, 1-induction)
+    -> Fact[SCEVEQ:19] i32 %349 in phi image (3 incoming)
+    -> Fact[SCEVEQ:20] i32 %69 == SCEV(((-32 * (trunc i64 ((zext i32 %37 to i64) /u 32) to i32)) + %37))
+    -> [heavy] 21 analysis fact(s) on 73 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 228.134936 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %604 = icmp ult ptr %599, %14
+    -> Guard[1] (false edge of ''):  %602 = extractvalue { i32, i1 } %601, 1, !nosanitize !14
+    -> Guard[2] (false edge of ''):  %109 = extractvalue { i32, i1 } %108, 1, !nosanitize !14
+    -> Guard[3] (false edge of ''):  %23 = extractvalue { i32, i1 } %22, 1, !nosanitize !14
+    -> Guard[4] (false edge of ''):  %20 = extractvalue { i32, i1 } %19, 1, !nosanitize !14
+    -> Guard[5] (false edge of ''):  %9 = extractvalue { i32, i1 } %8, 1, !nosanitize !14
+    -> Collected 6 dominating context guard(s).
+    -> [go3] 127 leaf-closure instruction(s) encoded
+    -> Fact[SCEV:0] i32 %502 in [-98301,98303) (SCEV unsigned)
+    -> Fact[SCEV:1] i32 %502 in [-98301,98303) (SCEV signed)
+    -> Fact[PHIINV-hi:2] i32 %502 == i32 %168 || ugt(i32 %502, i32 2) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-hi:3] i32 %416 == i32 %263 || ne(i32 %416, i32 0) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:4] i64 %313 in [0,4294967296) (SCEV unsigned)
+    -> Fact[SCEV:5] i64 %313 in [0,4294967296) (SCEV signed)
+    -> Fact[PHIINV-hi:6] i32 %315 == i32 %306 || ne(i32 %315, i32 0) (latch-implied bound, 1-induction)
+    -> Fact[KB:7] i64 %337 known bits zero=0x31 one=0x0
+    -> Fact[SCEV:8] i64 %337 in [0,4294967233) (SCEV unsigned)
+    -> Fact[SCEV:9] i64 %337 in [0,4294967233) (SCEV signed)
+    -> Fact[SCEVSYM:10] i64 %337 - start(0) <=u 32*BTC(((-32 + (32 * ((zext i32 %37 to i64) /u 32))<nuw><nsw>)<nsw> /u 32)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:11] i64 %337 == i64 0 || ne(i64 %337, i64 %67) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:12] i32 %358 in [0,7) (SCEV unsigned)
+    -> Fact[SCEV:13] i32 %358 in [0,7) (SCEV signed)
+    -> Fact[SCEVSYM:14] i32 %358 - start(0) <=u BTC((-1 + (zext i3 (trunc i32 %349 to i3) to i32))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:15] i32 %358 == i32 0 || ne(i32 %358, i32 %352) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-hi:16] i32 %373 == i32 %368 || ne(i32 %373, i32 0) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-hi:17] i32 %281 == i32 %263 || ne(i32 %281, i32 0) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-hi:18] i32 %461 == i32 %453 || ugt(i32 %461, i32 2) (latch-implied bound, 1-induction)
+    -> Fact[SCEVEQ:19] i32 %349 in phi image (3 incoming)
+    -> Fact[SCEVEQ:20] i32 %69 == SCEV(((-32 * (trunc i64 ((zext i32 %37 to i64) /u 32) to i32)) + %37))
+    -> [heavy] 21 analysis fact(s) on 74 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 224.036289 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %109 = extractvalue { i32, i1 } %108, 1, !nosanitize !14
+    -> Guard[1] (false edge of ''):  %23 = extractvalue { i32, i1 } %22, 1, !nosanitize !14
+    -> Guard[2] (false edge of ''):  %20 = extractvalue { i32, i1 } %19, 1, !nosanitize !14
+    -> Guard[3] (false edge of ''):  %9 = extractvalue { i32, i1 } %8, 1, !nosanitize !14
+    -> Collected 4 dominating context guard(s).
+    -> [go3] 127 leaf-closure instruction(s) encoded
+    -> Fact[SCEV:0] i32 %502 in [-98301,98303) (SCEV unsigned)
+    -> Fact[SCEV:1] i32 %502 in [-98301,98303) (SCEV signed)
+    -> Fact[PHIINV-hi:2] i32 %502 == i32 %168 || ugt(i32 %502, i32 2) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-hi:3] i32 %416 == i32 %263 || ne(i32 %416, i32 0) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:4] i64 %313 in [0,4294967296) (SCEV unsigned)
+    -> Fact[SCEV:5] i64 %313 in [0,4294967296) (SCEV signed)
+    -> Fact[PHIINV-hi:6] i32 %315 == i32 %306 || ne(i32 %315, i32 0) (latch-implied bound, 1-induction)
+    -> Fact[KB:7] i64 %337 known bits zero=0x31 one=0x0
+    -> Fact[SCEV:8] i64 %337 in [0,4294967233) (SCEV unsigned)
+    -> Fact[SCEV:9] i64 %337 in [0,4294967233) (SCEV signed)
+    -> Fact[SCEVSYM:10] i64 %337 - start(0) <=u 32*BTC(((-32 + (32 * ((zext i32 %37 to i64) /u 32))<nuw><nsw>)<nsw> /u 32)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:11] i64 %337 == i64 0 || ne(i64 %337, i64 %67) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:12] i32 %358 in [0,7) (SCEV unsigned)
+    -> Fact[SCEV:13] i32 %358 in [0,7) (SCEV signed)
+    -> Fact[SCEVSYM:14] i32 %358 - start(0) <=u BTC((-1 + (zext i3 (trunc i32 %349 to i3) to i32))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:15] i32 %358 == i32 0 || ne(i32 %358, i32 %352) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-hi:16] i32 %373 == i32 %368 || ne(i32 %373, i32 0) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-hi:17] i32 %281 == i32 %263 || ne(i32 %281, i32 0) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-hi:18] i32 %461 == i32 %453 || ugt(i32 %461, i32 2) (latch-implied bound, 1-induction)
+    -> Fact[SCEVEQ:19] i32 %349 in phi image (3 incoming)
+    -> Fact[SCEVEQ:20] i32 %69 == SCEV(((-32 * (trunc i64 ((zext i32 %37 to i64) /u 32) to i32)) + %37))
+    -> [heavy] 21 analysis fact(s) on 71 boundary value(s)
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 76.242454 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %550 = icmp eq i32 %549, 0
+    -> Guard[1] (true edge of ''):  %129 = icmp eq i32 %128, 0
+    -> Guard[2] (false edge of ''):  %121 = icmp eq i8 %119, 0
+    -> Guard[3] (false edge of ''):  %109 = extractvalue { i32, i1 } %108, 1, !nosanitize !14
+    -> Guard[4] (false edge of ''):  %23 = extractvalue { i32, i1 } %22, 1, !nosanitize !14
+    -> Guard[5] (false edge of ''):  %20 = extractvalue { i32, i1 } %19, 1, !nosanitize !14
+    -> Guard[6] (false edge of ''):  %9 = extractvalue { i32, i1 } %8, 1, !nosanitize !14
+    -> Collected 7 dominating context guard(s).
+    -> [go3] 5 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i8 %119 in [1,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 14 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (2 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.931377 ms]
+    -> [ind L1] BASE (4 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.169619 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.322751 ms]
+    -> [mv] still SAT under 60 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %530 = icmp eq i32 %529, 0
+    -> Guard[1] (true edge of ''):  %213 = icmp eq i32 %212, 0
+    -> Guard[2] (false edge of ''):  %200 = extractvalue { i32, i1 } %199, 1, !nosanitize !14
+    -> Guard[3] (false edge of ''):  %129 = icmp eq i32 %128, 0
+    -> Guard[4] (false edge of ''):  %121 = icmp eq i8 %119, 0
+    -> Guard[5] (false edge of ''):  %109 = extractvalue { i32, i1 } %108, 1, !nosanitize !14
+    -> Guard[6] (false edge of ''):  %23 = extractvalue { i32, i1 } %22, 1, !nosanitize !14
+    -> Guard[7] (false edge of ''):  %20 = extractvalue { i32, i1 } %19, 1, !nosanitize !14
+    -> Guard[8] (false edge of ''):  %9 = extractvalue { i32, i1 } %8, 1, !nosanitize !14
+    -> Collected 9 dominating context guard(s).
+    -> [go3] 34 leaf-closure instruction(s) encoded
+    -> [heavy] 0 analysis fact(s) on 22 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (2 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.333466 ms]
+    -> [ind L1] BASE (4 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.393207 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.976572 ms]
+    -> [mv] minimize: without {%119 <=s 2^3} -> SAT, kept (7.031930e-01 ms)
+    -> [mv] minimize: without {%119 >=s 0} -> SAT, kept (6.453480e-01 ms)
+    -> [mv] loosen: {%119 <=s 2^3} -> {%119 <=s 2^6}: kept tight (6.346390e-01 ms)
+    -> [mv] hypothesis contradicts the context: refusing (H vacuous): {%119 >=s 0, %119 <=s 2^3}
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %261 = icmp ugt i32 %251, %260
+    -> Guard[1] (false edge of ''):  %256 = extractvalue { i32, i1 } %254, 1, !nosanitize !14
+    -> Guard[2] (false edge of ''):  %213 = icmp eq i32 %212, 0
+    -> Guard[3] (false edge of ''):  %200 = extractvalue { i32, i1 } %199, 1, !nosanitize !14
+    -> Guard[4] (false edge of ''):  %129 = icmp eq i32 %128, 0
+    -> Guard[5] (false edge of ''):  %121 = icmp eq i8 %119, 0
+    -> Guard[6] (false edge of ''):  %109 = extractvalue { i32, i1 } %108, 1, !nosanitize !14
+    -> Guard[7] (false edge of ''):  %23 = extractvalue { i32, i1 } %22, 1, !nosanitize !14
+    -> Guard[8] (false edge of ''):  %20 = extractvalue { i32, i1 } %19, 1, !nosanitize !14
+    -> Guard[9] (false edge of ''):  %9 = extractvalue { i32, i1 } %8, 1, !nosanitize !14
+    -> Collected 10 dominating context guard(s).
+    -> [go3] 64 leaf-closure instruction(s) encoded
+    -> Fact[SCEV:0] i32 %502 in [-98301,98303) (SCEV unsigned)
+    -> Fact[SCEV:1] i32 %502 in [-98301,98303) (SCEV signed)
+    -> Fact[PHIINV-hi:2] i32 %502 == i32 %168 || ugt(i32 %502, i32 2) (latch-implied bound, 1-induction)
+    -> [heavy] 3 analysis fact(s) on 31 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (3 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.030069 ms]
+    -> [ind L1] BASE (4 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.222671 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.220935 ms]
+    -> [mv] minimize: without {%119 <=s 2^3} -> SAT, kept (3.359923e+00 ms)
+    -> [mv] minimize: without {%119 >=s 0} -> SAT, kept (2.426912e+00 ms)
+    -> [mv] loosen: {%119 <=s 2^3} -> {%119 <=s 2^6}: kept tight (2.477685e+00 ms)
+    -> [mv] hypothesis contradicts the context: refusing (H vacuous): {%119 >=s 0, %119 <=s 2^3}
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %411 = icmp ult i32 %263, %168
+    -> Guard[1] (false edge of ''):  %296 = icmp ult i32 %37, %263
+    -> Guard[2] (false edge of ''):  %61 = icmp eq i32 %37, 0
+    -> Guard[3] (true edge of ''):  %261 = icmp ugt i32 %251, %260
+    -> Guard[4] (false edge of ''):  %256 = extractvalue { i32, i1 } %254, 1, !nosanitize !14
+    -> Guard[5] (false edge of ''):  %213 = icmp eq i32 %212, 0
+    -> Guard[6] (false edge of ''):  %200 = extractvalue { i32, i1 } %199, 1, !nosanitize !14
+    -> Guard[7] (false edge of ''):  %129 = icmp eq i32 %128, 0
+    -> Guard[8] (false edge of ''):  %121 = icmp eq i8 %119, 0
+    -> Guard[9] (false edge of ''):  %109 = extractvalue { i32, i1 } %108, 1, !nosanitize !14
+    -> Guard[10] (false edge of ''):  %23 = extractvalue { i32, i1 } %22, 1, !nosanitize !14
+    -> Guard[11] (false edge of ''):  %20 = extractvalue { i32, i1 } %19, 1, !nosanitize !14
+    -> Guard[12] (false edge of ''):  %9 = extractvalue { i32, i1 } %8, 1, !nosanitize !14
+    -> Collected 13 dominating context guard(s).
+    -> [go3] 85 leaf-closure instruction(s) encoded
+    -> Fact[PHIINV-hi:0] i32 %416 == i32 %263 || ne(i32 %416, i32 0) (latch-implied bound, 1-induction)
+    -> [heavy] 1 analysis fact(s) on 32 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 742.312657 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %309 = icmp ult i32 %306, %168
+    -> Guard[1] (false edge of ''):  %307 = extractvalue { i32, i1 } %305, 1, !nosanitize !14
+    -> Guard[2] (false edge of ''):  %300 = extractvalue { i32, i1 } %299, 1, !nosanitize !14
+    -> Guard[3] (false edge of ''):  %63 = extractvalue { i32, i1 } %62, 1
+    -> Guard[4] (true edge of ''):  %296 = icmp ult i32 %37, %263
+    -> Guard[5] (false edge of ''):  %61 = icmp eq i32 %37, 0
+    -> Guard[6] (true edge of ''):  %261 = icmp ugt i32 %251, %260
+    -> Guard[7] (false edge of ''):  %256 = extractvalue { i32, i1 } %254, 1, !nosanitize !14
+    -> Guard[8] (false edge of ''):  %213 = icmp eq i32 %212, 0
+    -> Guard[9] (false edge of ''):  %200 = extractvalue { i32, i1 } %199, 1, !nosanitize !14
+    -> Guard[10] (false edge of ''):  %129 = icmp eq i32 %128, 0
+    -> Guard[11] (false edge of ''):  %121 = icmp eq i8 %119, 0
+    -> Guard[12] (false edge of ''):  %109 = extractvalue { i32, i1 } %108, 1, !nosanitize !14
+    -> Guard[13] (false edge of ''):  %23 = extractvalue { i32, i1 } %22, 1, !nosanitize !14
+    -> Guard[14] (false edge of ''):  %20 = extractvalue { i32, i1 } %19, 1, !nosanitize !14
+    -> Guard[15] (false edge of ''):  %9 = extractvalue { i32, i1 } %8, 1, !nosanitize !14
+    -> Collected 16 dominating context guard(s).
+    -> [go3] 87 leaf-closure instruction(s) encoded
+    -> Fact[PHIINV-hi:0] i32 %315 == i32 %306 || ne(i32 %315, i32 0) (latch-implied bound, 1-induction)
+    -> [heavy] 1 analysis fact(s) on 33 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 270.833867 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %300 = extractvalue { i32, i1 } %299, 1, !nosanitize !14
+    -> Guard[1] (false edge of ''):  %63 = extractvalue { i32, i1 } %62, 1
+    -> Guard[2] (true edge of ''):  %296 = icmp ult i32 %37, %263
+    -> Guard[3] (false edge of ''):  %61 = icmp eq i32 %37, 0
+    -> Guard[4] (true edge of ''):  %261 = icmp ugt i32 %251, %260
+    -> Guard[5] (false edge of ''):  %256 = extractvalue { i32, i1 } %254, 1, !nosanitize !14
+    -> Guard[6] (false edge of ''):  %213 = icmp eq i32 %212, 0
+    -> Guard[7] (false edge of ''):  %200 = extractvalue { i32, i1 } %199, 1, !nosanitize !14
+    -> Guard[8] (false edge of ''):  %129 = icmp eq i32 %128, 0
+    -> Guard[9] (false edge of ''):  %121 = icmp eq i8 %119, 0
+    -> Guard[10] (false edge of ''):  %109 = extractvalue { i32, i1 } %108, 1, !nosanitize !14
+    -> Guard[11] (false edge of ''):  %23 = extractvalue { i32, i1 } %22, 1, !nosanitize !14
+    -> Guard[12] (false edge of ''):  %20 = extractvalue { i32, i1 } %19, 1, !nosanitize !14
+    -> Guard[13] (false edge of ''):  %9 = extractvalue { i32, i1 } %8, 1, !nosanitize !14
+    -> Collected 14 dominating context guard(s).
+    -> [go3] 57 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %37 in [1,98302) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 31 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 42.627561 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %63 = extractvalue { i32, i1 } %62, 1
+    -> Guard[1] (true edge of ''):  %296 = icmp ult i32 %37, %263
+    -> Guard[2] (false edge of ''):  %61 = icmp eq i32 %37, 0
+    -> Guard[3] (true edge of ''):  %261 = icmp ugt i32 %251, %260
+    -> Guard[4] (false edge of ''):  %256 = extractvalue { i32, i1 } %254, 1, !nosanitize !14
+    -> Guard[5] (false edge of ''):  %213 = icmp eq i32 %212, 0
+    -> Guard[6] (false edge of ''):  %200 = extractvalue { i32, i1 } %199, 1, !nosanitize !14
+    -> Guard[7] (false edge of ''):  %129 = icmp eq i32 %128, 0
+    -> Guard[8] (false edge of ''):  %121 = icmp eq i8 %119, 0
+    -> Guard[9] (false edge of ''):  %109 = extractvalue { i32, i1 } %108, 1, !nosanitize !14
+    -> Guard[10] (false edge of ''):  %23 = extractvalue { i32, i1 } %22, 1, !nosanitize !14
+    -> Guard[11] (false edge of ''):  %20 = extractvalue { i32, i1 } %19, 1, !nosanitize !14
+    -> Guard[12] (false edge of ''):  %9 = extractvalue { i32, i1 } %8, 1, !nosanitize !14
+    -> Collected 13 dominating context guard(s).
+    -> [go3] 57 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %37 in [1,98302) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 31 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (4 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.757029 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 34.996238 ms]
+    -> [mv] still SAT under 45 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %276 = icmp ult i32 %263, %168
+    -> Guard[1] (false edge of ''):  %271 = extractvalue { i32, i1 } %270, 1, !nosanitize !14
+    -> Guard[2] (true edge of ''):  %61 = icmp eq i32 %37, 0
+    -> Guard[3] (true edge of ''):  %261 = icmp ugt i32 %251, %260
+    -> Guard[4] (false edge of ''):  %256 = extractvalue { i32, i1 } %254, 1, !nosanitize !14
+    -> Guard[5] (false edge of ''):  %213 = icmp eq i32 %212, 0
+    -> Guard[6] (false edge of ''):  %200 = extractvalue { i32, i1 } %199, 1, !nosanitize !14
+    -> Guard[7] (false edge of ''):  %129 = icmp eq i32 %128, 0
+    -> Guard[8] (false edge of ''):  %121 = icmp eq i8 %119, 0
+    -> Guard[9] (false edge of ''):  %109 = extractvalue { i32, i1 } %108, 1, !nosanitize !14
+    -> Guard[10] (false edge of ''):  %23 = extractvalue { i32, i1 } %22, 1, !nosanitize !14
+    -> Guard[11] (false edge of ''):  %20 = extractvalue { i32, i1 } %19, 1, !nosanitize !14
+    -> Guard[12] (false edge of ''):  %9 = extractvalue { i32, i1 } %8, 1, !nosanitize !14
+    -> Collected 13 dominating context guard(s).
+    -> [go3] 85 leaf-closure instruction(s) encoded
+    -> Fact[PHIINV-hi:0] i32 %281 == i32 %263 || ne(i32 %281, i32 0) (latch-implied bound, 1-induction)
+    -> [heavy] 1 analysis fact(s) on 33 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1045.961372 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %61 = icmp eq i32 %37, 0
+    -> Guard[1] (true edge of ''):  %261 = icmp ugt i32 %251, %260
+    -> Guard[2] (false edge of ''):  %256 = extractvalue { i32, i1 } %254, 1, !nosanitize !14
+    -> Guard[3] (false edge of ''):  %213 = icmp eq i32 %212, 0
+    -> Guard[4] (false edge of ''):  %200 = extractvalue { i32, i1 } %199, 1, !nosanitize !14
+    -> Guard[5] (false edge of ''):  %129 = icmp eq i32 %128, 0
+    -> Guard[6] (false edge of ''):  %121 = icmp eq i8 %119, 0
+    -> Guard[7] (false edge of ''):  %109 = extractvalue { i32, i1 } %108, 1, !nosanitize !14
+    -> Guard[8] (false edge of ''):  %23 = extractvalue { i32, i1 } %22, 1, !nosanitize !14
+    -> Guard[9] (false edge of ''):  %20 = extractvalue { i32, i1 } %19, 1, !nosanitize !14
+    -> Guard[10] (false edge of ''):  %9 = extractvalue { i32, i1 } %8, 1, !nosanitize !14
+    -> Collected 11 dominating context guard(s).
+    -> [go3] 57 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %37 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 31 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (4 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.435176 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 29.939784 ms]
+    -> [mv] still SAT under 48 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %213 = icmp eq i32 %212, 0
+    -> Guard[1] (false edge of ''):  %200 = extractvalue { i32, i1 } %199, 1, !nosanitize !14
+    -> Guard[2] (false edge of ''):  %129 = icmp eq i32 %128, 0
+    -> Guard[3] (false edge of ''):  %121 = icmp eq i8 %119, 0
+    -> Guard[4] (false edge of ''):  %109 = extractvalue { i32, i1 } %108, 1, !nosanitize !14
+    -> Guard[5] (false edge of ''):  %23 = extractvalue { i32, i1 } %22, 1, !nosanitize !14
+    -> Guard[6] (false edge of ''):  %20 = extractvalue { i32, i1 } %19, 1, !nosanitize !14
+    -> Guard[7] (false edge of ''):  %9 = extractvalue { i32, i1 } %8, 1, !nosanitize !14
+    -> Collected 8 dominating context guard(s).
+    -> [go3] 57 leaf-closure instruction(s) encoded
+    -> [heavy] 0 analysis fact(s) on 24 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4.757139 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %129 = icmp eq i32 %128, 0
+    -> Guard[1] (false edge of ''):  %121 = icmp eq i8 %119, 0
+    -> Guard[2] (false edge of ''):  %109 = extractvalue { i32, i1 } %108, 1, !nosanitize !14
+    -> Guard[3] (false edge of ''):  %23 = extractvalue { i32, i1 } %22, 1, !nosanitize !14
+    -> Guard[4] (false edge of ''):  %20 = extractvalue { i32, i1 } %19, 1, !nosanitize !14
+    -> Guard[5] (false edge of ''):  %9 = extractvalue { i32, i1 } %8, 1, !nosanitize !14
+    -> Collected 6 dominating context guard(s).
+    -> [go3] 19 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i8 %119 in [1,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 18 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (4 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.056438 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.927855 ms]
+    -> [mv] still SAT under 48 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %135 = icmp eq i32 %134, 0
+    -> Guard[1] (false edge of ''):  %129 = icmp eq i32 %128, 0
+    -> Guard[2] (false edge of ''):  %121 = icmp eq i8 %119, 0
+    -> Guard[3] (false edge of ''):  %109 = extractvalue { i32, i1 } %108, 1, !nosanitize !14
+    -> Guard[4] (false edge of ''):  %23 = extractvalue { i32, i1 } %22, 1, !nosanitize !14
+    -> Guard[5] (false edge of ''):  %20 = extractvalue { i32, i1 } %19, 1, !nosanitize !14
+    -> Guard[6] (false edge of ''):  %9 = extractvalue { i32, i1 } %8, 1, !nosanitize !14
+    -> Collected 7 dominating context guard(s).
+    -> [go3] 19 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i8 %119 in [1,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 15 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (4 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.789475 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.626309 ms]
+    -> [mv] still SAT under 48 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %23 = extractvalue { i32, i1 } %22, 1, !nosanitize !14
+    -> Guard[1] (false edge of ''):  %20 = extractvalue { i32, i1 } %19, 1, !nosanitize !14
+    -> Guard[2] (false edge of ''):  %9 = extractvalue { i32, i1 } %8, 1, !nosanitize !14
+    -> Collected 3 dominating context guard(s).
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> [heavy] 0 analysis fact(s) on 10 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (4 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.972615 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.888519 ms]
+    -> [mv] still SAT under 48 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %20 = extractvalue { i32, i1 } %19, 1, !nosanitize !14
+    -> Guard[1] (false edge of ''):  %9 = extractvalue { i32, i1 } %8, 1, !nosanitize !14
+    -> Collected 2 dominating context guard(s).
+    -> Fact[LVI:0] i32 %7 in [5,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 3 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.318325 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %9 = extractvalue { i32, i1 } %8, 1, !nosanitize !14
+    -> Collected 1 dominating context guard(s).
+    -> Fact[LVI:0] i32 %7 in [5,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 3 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.728615 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 1 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.359556 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %621 = icmp ult ptr %594, %31
+    -> Guard[1] (false edge of ''):  %602 = extractvalue { i32, i1 } %601, 1, !nosanitize !14
+    -> Guard[2] (false edge of ''):  %109 = extractvalue { i32, i1 } %108, 1, !nosanitize !14
+    -> Guard[3] (false edge of ''):  %23 = extractvalue { i32, i1 } %22, 1, !nosanitize !14
+    -> Guard[4] (false edge of ''):  %20 = extractvalue { i32, i1 } %19, 1, !nosanitize !14
+    -> Guard[5] (false edge of ''):  %9 = extractvalue { i32, i1 } %8, 1, !nosanitize !14
+    -> Collected 6 dominating context guard(s).
+    -> [go3] 127 leaf-closure instruction(s) encoded
+    -> Fact[SCEV:0] i32 %502 in [-98301,98303) (SCEV unsigned)
+    -> Fact[SCEV:1] i32 %502 in [-98301,98303) (SCEV signed)
+    -> Fact[PHIINV-hi:2] i32 %502 == i32 %168 || ugt(i32 %502, i32 2) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-hi:3] i32 %416 == i32 %263 || ne(i32 %416, i32 0) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:4] i64 %313 in [0,4294967296) (SCEV unsigned)
+    -> Fact[SCEV:5] i64 %313 in [0,4294967296) (SCEV signed)
+    -> Fact[PHIINV-hi:6] i32 %315 == i32 %306 || ne(i32 %315, i32 0) (latch-implied bound, 1-induction)
+    -> Fact[KB:7] i64 %337 known bits zero=0x31 one=0x0
+    -> Fact[SCEV:8] i64 %337 in [0,4294967233) (SCEV unsigned)
+    -> Fact[SCEV:9] i64 %337 in [0,4294967233) (SCEV signed)
+    -> Fact[SCEVSYM:10] i64 %337 - start(0) <=u 32*BTC(((-32 + (32 * ((zext i32 %37 to i64) /u 32))<nuw><nsw>)<nsw> /u 32)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:11] i64 %337 == i64 0 || ne(i64 %337, i64 %67) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:12] i32 %358 in [0,7) (SCEV unsigned)
+    -> Fact[SCEV:13] i32 %358 in [0,7) (SCEV signed)
+    -> Fact[SCEVSYM:14] i32 %358 - start(0) <=u BTC((-1 + (zext i3 (trunc i32 %349 to i3) to i32))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:15] i32 %358 == i32 0 || ne(i32 %358, i32 %352) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-hi:16] i32 %373 == i32 %368 || ne(i32 %373, i32 0) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-hi:17] i32 %281 == i32 %263 || ne(i32 %281, i32 0) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-hi:18] i32 %461 == i32 %453 || ugt(i32 %461, i32 2) (latch-implied bound, 1-induction)
+    -> Fact[SCEVEQ:19] i32 %349 in phi image (3 incoming)
+    -> Fact[SCEVEQ:20] i32 %69 == SCEV(((-32 * (trunc i64 ((zext i32 %37 to i64) /u 32) to i32)) + %37))
+    -> [heavy] 21 analysis fact(s) on 73 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 283.441040 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %604 = icmp ult ptr %599, %14
+    -> Guard[1] (false edge of ''):  %602 = extractvalue { i32, i1 } %601, 1, !nosanitize !14
+    -> Guard[2] (false edge of ''):  %109 = extractvalue { i32, i1 } %108, 1, !nosanitize !14
+    -> Guard[3] (false edge of ''):  %23 = extractvalue { i32, i1 } %22, 1, !nosanitize !14
+    -> Guard[4] (false edge of ''):  %20 = extractvalue { i32, i1 } %19, 1, !nosanitize !14
+    -> Guard[5] (false edge of ''):  %9 = extractvalue { i32, i1 } %8, 1, !nosanitize !14
+    -> Collected 6 dominating context guard(s).
+    -> [go3] 127 leaf-closure instruction(s) encoded
+    -> Fact[SCEV:0] i32 %502 in [-98301,98303) (SCEV unsigned)
+    -> Fact[SCEV:1] i32 %502 in [-98301,98303) (SCEV signed)
+    -> Fact[PHIINV-hi:2] i32 %502 == i32 %168 || ugt(i32 %502, i32 2) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-hi:3] i32 %416 == i32 %263 || ne(i32 %416, i32 0) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:4] i64 %313 in [0,4294967296) (SCEV unsigned)
+    -> Fact[SCEV:5] i64 %313 in [0,4294967296) (SCEV signed)
+    -> Fact[PHIINV-hi:6] i32 %315 == i32 %306 || ne(i32 %315, i32 0) (latch-implied bound, 1-induction)
+    -> Fact[KB:7] i64 %337 known bits zero=0x31 one=0x0
+    -> Fact[SCEV:8] i64 %337 in [0,4294967233) (SCEV unsigned)
+    -> Fact[SCEV:9] i64 %337 in [0,4294967233) (SCEV signed)
+    -> Fact[SCEVSYM:10] i64 %337 - start(0) <=u 32*BTC(((-32 + (32 * ((zext i32 %37 to i64) /u 32))<nuw><nsw>)<nsw> /u 32)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:11] i64 %337 == i64 0 || ne(i64 %337, i64 %67) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:12] i32 %358 in [0,7) (SCEV unsigned)
+    -> Fact[SCEV:13] i32 %358 in [0,7) (SCEV signed)
+    -> Fact[SCEVSYM:14] i32 %358 - start(0) <=u BTC((-1 + (zext i3 (trunc i32 %349 to i3) to i32))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:15] i32 %358 == i32 0 || ne(i32 %358, i32 %352) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-hi:16] i32 %373 == i32 %368 || ne(i32 %373, i32 0) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-hi:17] i32 %281 == i32 %263 || ne(i32 %281, i32 0) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-hi:18] i32 %461 == i32 %453 || ugt(i32 %461, i32 2) (latch-implied bound, 1-induction)
+    -> Fact[SCEVEQ:19] i32 %349 in phi image (3 incoming)
+    -> Fact[SCEVEQ:20] i32 %69 == SCEV(((-32 * (trunc i64 ((zext i32 %37 to i64) /u 32) to i32)) + %37))
+    -> [heavy] 21 analysis fact(s) on 74 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 431.822835 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %296 = icmp ult i32 %37, %263
+    -> Guard[1] (false edge of ''):  %61 = icmp eq i32 %37, 0
+    -> Guard[2] (true edge of ''):  %261 = icmp ugt i32 %251, %260
+    -> Guard[3] (false edge of ''):  %256 = extractvalue { i32, i1 } %254, 1, !nosanitize !14
+    -> Guard[4] (false edge of ''):  %213 = icmp eq i32 %212, 0
+    -> Guard[5] (false edge of ''):  %200 = extractvalue { i32, i1 } %199, 1, !nosanitize !14
+    -> Guard[6] (false edge of ''):  %129 = icmp eq i32 %128, 0
+    -> Guard[7] (false edge of ''):  %121 = icmp eq i8 %119, 0
+    -> Guard[8] (false edge of ''):  %109 = extractvalue { i32, i1 } %108, 1, !nosanitize !14
+    -> Guard[9] (false edge of ''):  %23 = extractvalue { i32, i1 } %22, 1, !nosanitize !14
+    -> Guard[10] (false edge of ''):  %20 = extractvalue { i32, i1 } %19, 1, !nosanitize !14
+    -> Guard[11] (false edge of ''):  %9 = extractvalue { i32, i1 } %8, 1, !nosanitize !14
+    -> Collected 12 dominating context guard(s).
+    -> [go3] 57 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %37 in [1,98302) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 31 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (4 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.660822 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 27.080783 ms]
+    -> [mv] DEAD UNDER HYPOTHESIS H = {%33 >=s 0} (1 of 48 candidates in core, round 0; re-solve 3.255713e+00 ms; trap loop depth 1, hoist to depth 1)
+  => SUCCESS (fast copy): trap folded in 1 copy inside the H-guarded clone of loop ''
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %231 = icmp ult i32 %230, %218
+    -> Guard[1] (false edge of ''):  %228 = extractvalue { i64, i1 } %226, 1, !nosanitize !14
+    -> Guard[2] (true edge of ''):  %219 = icmp ult i32 %209, %218
+    -> Guard[3] (false edge of ''):  %213 = icmp eq i32 %212, 0
+    -> Guard[4] (false edge of ''):  %200 = extractvalue { i32, i1 } %199, 1, !nosanitize !14
+    -> Guard[5] (false edge of ''):  %129 = icmp eq i32 %128, 0
+    -> Guard[6] (false edge of ''):  %121 = icmp eq i8 %119, 0
+    -> Guard[7] (false edge of ''):  %109 = extractvalue { i32, i1 } %108, 1, !nosanitize !14
+    -> Guard[8] (false edge of ''):  %23 = extractvalue { i32, i1 } %22, 1, !nosanitize !14
+    -> Guard[9] (false edge of ''):  %20 = extractvalue { i32, i1 } %19, 1, !nosanitize !14
+    -> Guard[10] (false edge of ''):  %9 = extractvalue { i32, i1 } %8, 1, !nosanitize !14
+    -> Collected 11 dominating context guard(s).
+    -> [go3] 57 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %209 in [0,7) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 24 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (4 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.527750 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.842325 ms]
+    -> [mv] still SAT under 48 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %219 = icmp ult i32 %209, %218
+    -> Guard[1] (false edge of ''):  %213 = icmp eq i32 %212, 0
+    -> Guard[2] (false edge of ''):  %200 = extractvalue { i32, i1 } %199, 1, !nosanitize !14
+    -> Guard[3] (false edge of ''):  %129 = icmp eq i32 %128, 0
+    -> Guard[4] (false edge of ''):  %121 = icmp eq i8 %119, 0
+    -> Guard[5] (false edge of ''):  %109 = extractvalue { i32, i1 } %108, 1, !nosanitize !14
+    -> Guard[6] (false edge of ''):  %23 = extractvalue { i32, i1 } %22, 1, !nosanitize !14
+    -> Guard[7] (false edge of ''):  %20 = extractvalue { i32, i1 } %19, 1, !nosanitize !14
+    -> Guard[8] (false edge of ''):  %9 = extractvalue { i32, i1 } %8, 1, !nosanitize !14
+    -> Collected 9 dominating context guard(s).
+    -> [go3] 57 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %209 in [0,15) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 23 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (4 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.795765 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.626457 ms]
+    -> [mv] still SAT under 48 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %176 = extractvalue { i64, i1 } %175, 1, !nosanitize !14
+    -> Guard[1] (true edge of ''):  %169 = icmp ult i32 %165, 15
+    -> Guard[2] (false edge of ''):  %129 = icmp eq i32 %128, 0
+    -> Guard[3] (false edge of ''):  %121 = icmp eq i8 %119, 0
+    -> Guard[4] (false edge of ''):  %109 = extractvalue { i32, i1 } %108, 1, !nosanitize !14
+    -> Guard[5] (false edge of ''):  %23 = extractvalue { i32, i1 } %22, 1, !nosanitize !14
+    -> Guard[6] (false edge of ''):  %20 = extractvalue { i32, i1 } %19, 1, !nosanitize !14
+    -> Guard[7] (false edge of ''):  %9 = extractvalue { i32, i1 } %8, 1, !nosanitize !14
+    -> Collected 8 dominating context guard(s).
+    -> [go3] 19 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i8 %119 in [1,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 17 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (4 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.583797 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 12.763720 ms]
+    -> [mv] still SAT under 48 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %169 = icmp ult i32 %165, 15
+    -> Guard[1] (false edge of ''):  %129 = icmp eq i32 %128, 0
+    -> Guard[2] (false edge of ''):  %121 = icmp eq i8 %119, 0
+    -> Guard[3] (false edge of ''):  %109 = extractvalue { i32, i1 } %108, 1, !nosanitize !14
+    -> Guard[4] (false edge of ''):  %23 = extractvalue { i32, i1 } %22, 1, !nosanitize !14
+    -> Guard[5] (false edge of ''):  %20 = extractvalue { i32, i1 } %19, 1, !nosanitize !14
+    -> Guard[6] (false edge of ''):  %9 = extractvalue { i32, i1 } %8, 1, !nosanitize !14
+    -> Collected 7 dominating context guard(s).
+    -> [go3] 19 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i8 %119 in [1,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 16 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (4 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.535093 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.585528 ms]
+    -> [mv] still SAT under 48 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %137 = icmp ult i32 %118, %134
+    -> Guard[1] (false edge of ''):  %135 = icmp eq i32 %134, 0
+    -> Guard[2] (false edge of ''):  %129 = icmp eq i32 %128, 0
+    -> Guard[3] (false edge of ''):  %121 = icmp eq i8 %119, 0
+    -> Guard[4] (false edge of ''):  %109 = extractvalue { i32, i1 } %108, 1, !nosanitize !14
+    -> Guard[5] (false edge of ''):  %23 = extractvalue { i32, i1 } %22, 1, !nosanitize !14
+    -> Guard[6] (false edge of ''):  %20 = extractvalue { i32, i1 } %19, 1, !nosanitize !14
+    -> Guard[7] (false edge of ''):  %9 = extractvalue { i32, i1 } %8, 1, !nosanitize !14
+    -> Collected 8 dominating context guard(s).
+    -> [go3] 19 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %118 in [0,15) (LVI @ )
+    -> Fact[LVI:1] i8 %119 in [1,0) (LVI @ )
+    -> [heavy] 2 analysis fact(s) on 15 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (4 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.263497 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.042326 ms]
+    -> [mv] still SAT under 48 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %84 = extractvalue { i64, i1 } %83, 1, !nosanitize !14
+    -> Guard[1] (true edge of ''):  %77 = icmp ult i32 %73, 15
+    -> Guard[2] (false edge of ''):  %23 = extractvalue { i32, i1 } %22, 1, !nosanitize !14
+    -> Guard[3] (false edge of ''):  %20 = extractvalue { i32, i1 } %19, 1, !nosanitize !14
+    -> Guard[4] (false edge of ''):  %9 = extractvalue { i32, i1 } %8, 1, !nosanitize !14
+    -> Collected 5 dominating context guard(s).
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %73 in [0,15) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (4 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.431754 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.844586 ms]
+    -> [mv] still SAT under 48 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %77 = icmp ult i32 %73, 15
+    -> Guard[1] (false edge of ''):  %23 = extractvalue { i32, i1 } %22, 1, !nosanitize !14
+    -> Guard[2] (false edge of ''):  %20 = extractvalue { i32, i1 } %19, 1, !nosanitize !14
+    -> Guard[3] (false edge of ''):  %9 = extractvalue { i32, i1 } %8, 1, !nosanitize !14
+    -> Collected 4 dominating context guard(s).
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %73 in [0,15) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 8 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (4 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.453081 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.667886 ms]
+    -> [mv] still SAT under 48 hypothesis candidate(s): not versionable
+  => Total Traps Eliminated: 6
+  => Traps Folded In Fast Copies (mv): 1
+  => Total Trap Attempts: 29
+  => Total SMT Queries Executed: 29
+  => Total SMT Query Latency: 3.771384e+03 ms
+  => Average SMT Query Latency: 1.300477e+02 ms
+  => Total DFS & SMT Execution Time: 1.020028e+04 ms
+--------------------------------------------------

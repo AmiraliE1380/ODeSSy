@@ -1,0 +1,560 @@
+[ODeSSy] 29 trap site(s) across 16 function(s); threads=10 [tier: heavy] [frame] [mv] [narrow] [ind]
+
+[Z3 Oracle] Analyzing Function: gzopen
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %54 = icmp eq i8 %53, 0
+    -> Guard[1] (false edge of ''):  %19 = icmp eq i8 %18, 0
+    -> Guard[2] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[3] (false edge of ''):  %5 = or i1 %3, %4
+    -> Collected 4 dominating context guard(s).
+    -> Fact[LVI:0] i8 %53 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 7 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.150059 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.150059e+00 ms
+  => Average SMT Query Latency: 2.150059e+00 ms
+  => Total DFS & SMT Execution Time: 4.131180e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: gzopen64
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %54 = icmp eq i8 %53, 0
+    -> Guard[1] (false edge of ''):  %19 = icmp eq i8 %18, 0
+    -> Guard[2] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[3] (false edge of ''):  %5 = or i1 %3, %4
+    -> Collected 4 dominating context guard(s).
+    -> Fact[LVI:0] i8 %53 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 7 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.052368 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.052368e+00 ms
+  => Average SMT Query Latency: 2.052368e+00 ms
+  => Total DFS & SMT Execution Time: 4.918058e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: gzdopen
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %55 = icmp eq i8 %54, 0
+    -> Guard[1] (false edge of ''):  %23 = icmp eq i8 %22, 0
+    -> Guard[2] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[3] (false edge of ''):  %9 = icmp eq ptr %1, null
+    -> Guard[4] (false edge of ''):  %6 = icmp eq ptr %5, null
+    -> Guard[5] (false edge of ''):  %3 = icmp eq i32 %0, -1
+    -> Collected 6 dominating context guard(s).
+    -> Fact[LVI:0] i8 %54 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 8 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.313354 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.313354e+00 ms
+  => Average SMT Query Latency: 2.313354e+00 ms
+  => Total DFS & SMT Execution Time: 6.430469e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: gzbuffer
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 5.691600e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: gzrewind
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 5.843400e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: gzseek64
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %38 = icmp eq i32 %7, 7247
+    -> Guard[1] (false edge of ''):  %12 = icmp ugt i32 %2, 1
+    -> Guard[2] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 3 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %7 = load i32, ptr %6, align 8, !tbaa !5  vs  %97 = load i32, ptr %6, align 8, !tbaa !5
+         clobber:   %94 = tail call i32 @gzrewind(ptr noundef nonnull %0), !range !25
+    -> Fact[LVI:0] i32 %7 in [7247,7248) (LVI @ )
+    -> Fact[LVI:1] i32 %2 in [0,2) (LVI @ )
+    -> Fact[RM:2] i32 %94 in [-1,1) (!range)
+    -> [heavy] 3 analysis fact(s) on 15 boundary value(s)
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 14.365360 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %50 = icmp sgt i64 %49, -1
+    -> Guard[1] (false edge of ''):  %47 = extractvalue { i64, i1 } %46, 1, !nosanitize !16
+    -> Guard[2] (true edge of ''):  %42 = icmp eq i32 %41, 1
+    -> Guard[3] (true edge of ''):  %38 = icmp eq i32 %7, 7247
+    -> Guard[4] (false edge of ''):  %12 = icmp ugt i32 %2, 1
+    -> Guard[5] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 6 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %45 = load i64, ptr %44, align 8, !tbaa !15  vs  %76 = load i64, ptr %44, align 8, !tbaa !15
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %7 = load i32, ptr %6, align 8, !tbaa !5  vs  %97 = load i32, ptr %6, align 8, !tbaa !5
+         clobber:   %94 = tail call i32 @gzrewind(ptr noundef nonnull %0), !range !25
+    -> Fact[LVI:0] i32 %7 in [7247,7248) (LVI @ )
+    -> Fact[LVI:1] i32 %2 in [0,2) (LVI @ )
+    -> Fact[LVI:2] i32 %41 in [1,2) (LVI @ )
+    -> [heavy] 3 analysis fact(s) on 14 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.147087 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %14 = icmp eq i32 %2, 0
+    -> Guard[1] (false edge of ''):  %12 = icmp ugt i32 %2, 1
+    -> Guard[2] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %2 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 5 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 12.091689 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %12 = icmp ugt i32 %2, 1
+    -> Guard[1] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 2 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %45 = load i64, ptr %44, align 8, !tbaa !15  vs  %76 = load i64, ptr %44, align 8, !tbaa !15
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %7 = load i32, ptr %6, align 8, !tbaa !5  vs  %97 = load i32, ptr %6, align 8, !tbaa !5
+         clobber:   %94 = tail call i32 @gzrewind(ptr noundef nonnull %0), !range !25
+    -> Fact[LVI:0] i32 %7 in [7247,31154) (LVI @ )
+    -> Fact[LVI:1] i32 %2 in [0,2) (LVI @ )
+    -> Fact[RM:2] i32 %94 in [-1,1) (!range)
+    -> [heavy] 3 analysis fact(s) on 19 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 46.448197 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %111 = extractvalue { i32, i1 } %110, 1, !nosanitize !16
+    -> Guard[1] (true edge of ''):  %38 = icmp eq i32 %7, 7247
+    -> Guard[2] (false edge of ''):  %12 = icmp ugt i32 %2, 1
+    -> Guard[3] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 4 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %7 = load i32, ptr %6, align 8, !tbaa !5  vs  %97 = load i32, ptr %6, align 8, !tbaa !5
+         clobber:   %94 = tail call i32 @gzrewind(ptr noundef nonnull %0), !range !25
+    -> Fact[LVI:0] i32 %7 in [7247,7248) (LVI @ )
+    -> Fact[LVI:1] i32 %2 in [0,2) (LVI @ )
+    -> Fact[RM:2] i32 %94 in [-1,1) (!range)
+    -> [heavy] 3 analysis fact(s) on 16 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.553089 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %82 = icmp slt i64 %37, 0
+    -> Guard[1] (true edge of ''):  %38 = icmp eq i32 %7, 7247
+    -> Guard[2] (false edge of ''):  %12 = icmp ugt i32 %2, 1
+    -> Guard[3] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 4 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %7 = load i32, ptr %6, align 8, !tbaa !5  vs  %97 = load i32, ptr %6, align 8, !tbaa !5
+         clobber:   %94 = tail call i32 @gzrewind(ptr noundef nonnull %0), !range !25
+    -> Fact[LVI:0] i32 %7 in [7247,7248) (LVI @ )
+    -> Fact[LVI:1] i32 %2 in [0,2) (LVI @ )
+    -> Fact[LVI:2] i64 %37 in [-9223372036854775808,0) (LVI @ )
+    -> [heavy] 3 analysis fact(s) on 12 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.897698 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %61 = icmp eq i64 %60, -1
+    -> Guard[1] (false edge of ''):  %55 = extractvalue { i64, i1 } %54, 1, !nosanitize !16
+    -> Guard[2] (true edge of ''):  %50 = icmp sgt i64 %49, -1
+    -> Guard[3] (false edge of ''):  %47 = extractvalue { i64, i1 } %46, 1, !nosanitize !16
+    -> Guard[4] (true edge of ''):  %42 = icmp eq i32 %41, 1
+    -> Guard[5] (true edge of ''):  %38 = icmp eq i32 %7, 7247
+    -> Guard[6] (false edge of ''):  %12 = icmp ugt i32 %2, 1
+    -> Guard[7] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 8 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %45 = load i64, ptr %44, align 8, !tbaa !15  vs  %76 = load i64, ptr %44, align 8, !tbaa !15
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %7 = load i32, ptr %6, align 8, !tbaa !5  vs  %97 = load i32, ptr %6, align 8, !tbaa !5
+         clobber:   %94 = tail call i32 @gzrewind(ptr noundef nonnull %0), !range !25
+    -> Fact[LVI:0] i32 %7 in [7247,7248) (LVI @ )
+    -> Fact[LVI:1] i32 %2 in [0,2) (LVI @ )
+    -> Fact[LVI:2] i32 %41 in [1,2) (LVI @ )
+    -> Fact[LVI:3] i64 %60 in [0,-1) (LVI @ )
+    -> [heavy] 4 analysis fact(s) on 16 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 21.939280 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %42 = icmp eq i32 %41, 1
+    -> Guard[1] (true edge of ''):  %38 = icmp eq i32 %7, 7247
+    -> Guard[2] (false edge of ''):  %12 = icmp ugt i32 %2, 1
+    -> Guard[3] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 4 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %45 = load i64, ptr %44, align 8, !tbaa !15  vs  %76 = load i64, ptr %44, align 8, !tbaa !15
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %7 = load i32, ptr %6, align 8, !tbaa !5  vs  %97 = load i32, ptr %6, align 8, !tbaa !5
+         clobber:   %94 = tail call i32 @gzrewind(ptr noundef nonnull %0), !range !25
+    -> Fact[LVI:0] i32 %7 in [7247,7248) (LVI @ )
+    -> Fact[LVI:1] i32 %2 in [0,2) (LVI @ )
+    -> Fact[LVI:2] i32 %41 in [1,2) (LVI @ )
+    -> [heavy] 3 analysis fact(s) on 13 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.238312 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %14 = icmp eq i32 %2, 0
+    -> Guard[1] (false edge of ''):  %12 = icmp ugt i32 %2, 1
+    -> Guard[2] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %2 in [1,2) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 6 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.504809 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 1
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 9
+  => Total SMT Queries Executed: 9
+  => Total SMT Query Latency: 1.271855e+02 ms
+  => Average SMT Query Latency: 1.413172e+01 ms
+  => Total DFS & SMT Execution Time: 1.320464e+03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: gz_error
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %45 = extractvalue { i64, i1 } %44, 1, !nosanitize !18
+    -> Guard[1] (false edge of ''):  %39 = icmp eq ptr %38, null
+    -> Guard[2] (false edge of ''):  %35 = extractvalue { i64, i1 } %34, 1, !nosanitize !18
+    -> Guard[3] (false edge of ''):  %30 = extractvalue { i64, i1 } %29, 1, !nosanitize !18
+    -> Guard[4] (false edge of ''):  %23 = or i1 %22, %21
+    -> Collected 5 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 8 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 34.485863 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %39 = icmp eq ptr %38, null
+    -> Guard[1] (false edge of ''):  %35 = extractvalue { i64, i1 } %34, 1, !nosanitize !18
+    -> Guard[2] (false edge of ''):  %30 = extractvalue { i64, i1 } %29, 1, !nosanitize !18
+    -> Guard[3] (false edge of ''):  %23 = or i1 %22, %21
+    -> Collected 4 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 8 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.408912 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %30 = extractvalue { i64, i1 } %29, 1, !nosanitize !18
+    -> Guard[1] (false edge of ''):  %23 = or i1 %22, %21
+    -> Collected 2 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 5 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 17.221882 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %23 = or i1 %22, %21
+    -> Collected 1 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 5 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.365233 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 4
+  => Total SMT Queries Executed: 4
+  => Total SMT Query Latency: 5.948189e+01 ms
+  => Average SMT Query Latency: 1.487047e+01 ms
+  => Total DFS & SMT Execution Time: 6.090077e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: gzseek
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %38 = icmp eq i32 %7, 7247
+    -> Guard[1] (false edge of ''):  %12 = icmp ugt i32 %2, 1
+    -> Guard[2] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 3 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %7 = load i32, ptr %6, align 8, !tbaa !5  vs  %97 = load i32, ptr %6, align 8, !tbaa !5
+         clobber:   %94 = tail call i32 @gzrewind(ptr noundef nonnull %0), !range !25
+    -> Fact[LVI:0] i32 %7 in [7247,7248) (LVI @ )
+    -> Fact[LVI:1] i32 %2 in [0,2) (LVI @ )
+    -> Fact[RM:2] i32 %94 in [-1,1) (!range)
+    -> [heavy] 3 analysis fact(s) on 15 boundary value(s)
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 10.625234 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %50 = icmp sgt i64 %49, -1
+    -> Guard[1] (false edge of ''):  %47 = extractvalue { i64, i1 } %46, 1, !nosanitize !16
+    -> Guard[2] (true edge of ''):  %42 = icmp eq i32 %41, 1
+    -> Guard[3] (true edge of ''):  %38 = icmp eq i32 %7, 7247
+    -> Guard[4] (false edge of ''):  %12 = icmp ugt i32 %2, 1
+    -> Guard[5] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 6 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %45 = load i64, ptr %44, align 8, !tbaa !15  vs  %76 = load i64, ptr %44, align 8, !tbaa !15
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %7 = load i32, ptr %6, align 8, !tbaa !5  vs  %97 = load i32, ptr %6, align 8, !tbaa !5
+         clobber:   %94 = tail call i32 @gzrewind(ptr noundef nonnull %0), !range !25
+    -> Fact[LVI:0] i32 %7 in [7247,7248) (LVI @ )
+    -> Fact[LVI:1] i32 %2 in [0,2) (LVI @ )
+    -> Fact[LVI:2] i32 %41 in [1,2) (LVI @ )
+    -> [heavy] 3 analysis fact(s) on 14 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.810557 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %14 = icmp eq i32 %2, 0
+    -> Guard[1] (false edge of ''):  %12 = icmp ugt i32 %2, 1
+    -> Guard[2] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %2 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 5 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.377959 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %12 = icmp ugt i32 %2, 1
+    -> Guard[1] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 2 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %45 = load i64, ptr %44, align 8, !tbaa !15  vs  %76 = load i64, ptr %44, align 8, !tbaa !15
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %7 = load i32, ptr %6, align 8, !tbaa !5  vs  %97 = load i32, ptr %6, align 8, !tbaa !5
+         clobber:   %94 = tail call i32 @gzrewind(ptr noundef nonnull %0), !range !25
+    -> Fact[LVI:0] i32 %7 in [7247,31154) (LVI @ )
+    -> Fact[LVI:1] i32 %2 in [0,2) (LVI @ )
+    -> Fact[RM:2] i32 %94 in [-1,1) (!range)
+    -> [heavy] 3 analysis fact(s) on 19 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 25.303967 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %111 = extractvalue { i32, i1 } %110, 1, !nosanitize !16
+    -> Guard[1] (true edge of ''):  %38 = icmp eq i32 %7, 7247
+    -> Guard[2] (false edge of ''):  %12 = icmp ugt i32 %2, 1
+    -> Guard[3] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 4 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %7 = load i32, ptr %6, align 8, !tbaa !5  vs  %97 = load i32, ptr %6, align 8, !tbaa !5
+         clobber:   %94 = tail call i32 @gzrewind(ptr noundef nonnull %0), !range !25
+    -> Fact[LVI:0] i32 %7 in [7247,7248) (LVI @ )
+    -> Fact[LVI:1] i32 %2 in [0,2) (LVI @ )
+    -> Fact[RM:2] i32 %94 in [-1,1) (!range)
+    -> [heavy] 3 analysis fact(s) on 16 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.769234 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %82 = icmp slt i64 %37, 0
+    -> Guard[1] (true edge of ''):  %38 = icmp eq i32 %7, 7247
+    -> Guard[2] (false edge of ''):  %12 = icmp ugt i32 %2, 1
+    -> Guard[3] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 4 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %7 = load i32, ptr %6, align 8, !tbaa !5  vs  %97 = load i32, ptr %6, align 8, !tbaa !5
+         clobber:   %94 = tail call i32 @gzrewind(ptr noundef nonnull %0), !range !25
+    -> Fact[LVI:0] i32 %7 in [7247,7248) (LVI @ )
+    -> Fact[LVI:1] i32 %2 in [0,2) (LVI @ )
+    -> Fact[LVI:2] i64 %37 in [-9223372036854775808,0) (LVI @ )
+    -> [heavy] 3 analysis fact(s) on 12 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.882207 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %61 = icmp eq i64 %60, -1
+    -> Guard[1] (false edge of ''):  %55 = extractvalue { i64, i1 } %54, 1, !nosanitize !16
+    -> Guard[2] (true edge of ''):  %50 = icmp sgt i64 %49, -1
+    -> Guard[3] (false edge of ''):  %47 = extractvalue { i64, i1 } %46, 1, !nosanitize !16
+    -> Guard[4] (true edge of ''):  %42 = icmp eq i32 %41, 1
+    -> Guard[5] (true edge of ''):  %38 = icmp eq i32 %7, 7247
+    -> Guard[6] (false edge of ''):  %12 = icmp ugt i32 %2, 1
+    -> Guard[7] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 8 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %45 = load i64, ptr %44, align 8, !tbaa !15  vs  %76 = load i64, ptr %44, align 8, !tbaa !15
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %7 = load i32, ptr %6, align 8, !tbaa !5  vs  %97 = load i32, ptr %6, align 8, !tbaa !5
+         clobber:   %94 = tail call i32 @gzrewind(ptr noundef nonnull %0), !range !25
+    -> Fact[LVI:0] i32 %7 in [7247,7248) (LVI @ )
+    -> Fact[LVI:1] i32 %2 in [0,2) (LVI @ )
+    -> Fact[LVI:2] i32 %41 in [1,2) (LVI @ )
+    -> Fact[LVI:3] i64 %60 in [0,-1) (LVI @ )
+    -> [heavy] 4 analysis fact(s) on 16 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 19.928755 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %42 = icmp eq i32 %41, 1
+    -> Guard[1] (true edge of ''):  %38 = icmp eq i32 %7, 7247
+    -> Guard[2] (false edge of ''):  %12 = icmp ugt i32 %2, 1
+    -> Guard[3] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 4 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %45 = load i64, ptr %44, align 8, !tbaa !15  vs  %76 = load i64, ptr %44, align 8, !tbaa !15
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %7 = load i32, ptr %6, align 8, !tbaa !5  vs  %97 = load i32, ptr %6, align 8, !tbaa !5
+         clobber:   %94 = tail call i32 @gzrewind(ptr noundef nonnull %0), !range !25
+    -> Fact[LVI:0] i32 %7 in [7247,7248) (LVI @ )
+    -> Fact[LVI:1] i32 %2 in [0,2) (LVI @ )
+    -> Fact[LVI:2] i32 %41 in [1,2) (LVI @ )
+    -> [heavy] 3 analysis fact(s) on 13 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.213892 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %14 = icmp eq i32 %2, 0
+    -> Guard[1] (false edge of ''):  %12 = icmp ugt i32 %2, 1
+    -> Guard[2] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %2 in [1,2) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 6 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.528954 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 1
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 9
+  => Total SMT Queries Executed: 9
+  => Total SMT Query Latency: 8.944076e+01 ms
+  => Average SMT Query Latency: 9.937862e+00 ms
+  => Total DFS & SMT Execution Time: 7.778970e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: gztell64
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %2 = icmp eq ptr %0, null
+    -> Collected 1 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 5 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.833009 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 7.833009e+00 ms
+  => Average SMT Query Latency: 7.833009e+00 ms
+  => Total DFS & SMT Execution Time: 1.078841e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: gztell
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %2 = icmp eq ptr %0, null
+    -> Collected 1 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 5 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.873806 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 8.873806e+00 ms
+  => Average SMT Query Latency: 8.873806e+00 ms
+  => Total DFS & SMT Execution Time: 1.068225e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: gzoffset64
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %13 = icmp eq i32 %12, 7247
+    -> Guard[1] (false edge of ''):  %10 = icmp eq i64 %9, -1
+    -> Guard[2] (false edge of ''):  %2 = icmp eq ptr %0, null
+    -> Collected 3 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %5 = load i32, ptr %4, align 8, !tbaa !5  vs  %12 = load i32, ptr %4, align 8, !tbaa !5
+         clobber:   %9 = tail call i64 @lseek64(i32 noundef %8, i64 noundef 0, i32 noundef 1) #14
+    -> Fact[LVI:0] i64 %9 in [0,-1) (LVI @ )
+    -> Fact[LVI:1] i32 %12 in [7247,7248) (LVI @ )
+    -> [heavy] 2 analysis fact(s) on 5 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.758703 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 3.758703e+00 ms
+  => Average SMT Query Latency: 3.758703e+00 ms
+  => Total DFS & SMT Execution Time: 9.688632e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: gzoffset
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %13 = icmp eq i32 %12, 7247
+    -> Guard[1] (false edge of ''):  %10 = icmp eq i64 %9, -1
+    -> Guard[2] (false edge of ''):  %2 = icmp eq ptr %0, null
+    -> Collected 3 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %5 = load i32, ptr %4, align 8, !tbaa !5  vs  %12 = load i32, ptr %4, align 8, !tbaa !5
+         clobber:   %9 = tail call i64 @lseek64(i32 noundef %8, i64 noundef 0, i32 noundef 1) #14
+    -> Fact[LVI:0] i64 %9 in [0,-1) (LVI @ )
+    -> Fact[LVI:1] i32 %12 in [7247,7248) (LVI @ )
+    -> [heavy] 2 analysis fact(s) on 5 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.524390 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 3.524390e+00 ms
+  => Average SMT Query Latency: 3.524390e+00 ms
+  => Total DFS & SMT Execution Time: 9.897388e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: gzeof
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 4.508400e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: gzerror
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 5.069000e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: gzclearerr
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 5.773900e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: gz_intmax
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.847500e-02 ms
+--------------------------------------------------

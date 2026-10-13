@@ -1,0 +1,1908 @@
+[ODeSSy] 100 trap site(s) across 89 function(s); threads=10 [tier: heavy] [frame] [mv] [narrow] [ind]
+
+[Z3 Oracle] Analyzing Function: ZSTD_dedicatedDictSearch_lazy_loadDictionary
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.284121e+00 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_insertAndFindFirstIndex
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 1 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.108308 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.108308e+00 ms
+  => Average SMT Query Latency: 2.108308e+00 ms
+  => Total DFS & SMT Execution Time: 4.806875e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_row_update
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 8.181500e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_greedy
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.110082e+00 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_greedy_dictMatchState
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 7 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 28.101052 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.810105e+01 ms
+  => Average SMT Query Latency: 2.810105e+01 ms
+  => Total DFS & SMT Execution Time: 7.560664e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_greedy_dedicatedDictSearch
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 7 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 28.742793 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.874279e+01 ms
+  => Average SMT Query Latency: 2.874279e+01 ms
+  => Total DFS & SMT Execution Time: 7.780627e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_greedy_row
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %64 = icmp ugt ptr %63, %8
+    -> Collected 1 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 4 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.604172 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %599 = icmp ugt ptr %598, %8
+    -> Guard[1] (false edge of ''):  %591 = icmp eq i32 %590, 0
+    -> Guard[2] (true edge of ''):  %238 = icmp ult ptr %33, %8
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %590 in [1,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 6 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (4 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 16.749250 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 23.484402 ms]
+    -> [mv] still SAT under 18 hypothesis candidate(s): not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 2
+  => Total SMT Queries Executed: 2
+  => Total SMT Query Latency: 6.675876e+01 ms
+  => Average SMT Query Latency: 3.337938e+01 ms
+  => Total DFS & SMT Execution Time: 3.056838e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_greedy_dictMatchState_row
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 7 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 32.187790 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %65 = icmp ugt ptr %64, %8
+    -> Guard[1] (false edge of ''):  %46 = extractvalue { i64, i1 } %45, 1, !nosanitize !21
+    -> Collected 2 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 11 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 30.274961 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %557 = icmp ugt ptr %556, %8
+    -> Guard[1] (false edge of ''):  %549 = icmp eq i32 %548, 0
+    -> Guard[2] (true edge of ''):  %239 = icmp ult ptr %53, %8
+    -> Guard[3] (false edge of ''):  %46 = extractvalue { i64, i1 } %45, 1, !nosanitize !21
+    -> Collected 4 dominating context guard(s).
+    -> Fact[LVI:0] i32 %548 in [1,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 13 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (4 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.590876 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 37.460126 ms]
+    -> [mv] still SAT under 39 hypothesis candidate(s): not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 3
+  => Total SMT Queries Executed: 3
+  => Total SMT Query Latency: 1.292650e+02 ms
+  => Average SMT Query Latency: 4.308833e+01 ms
+  => Total DFS & SMT Execution Time: 6.847616e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_greedy_dedicatedDictSearch_row
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 7 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 44.824313 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %65 = icmp ugt ptr %64, %8
+    -> Guard[1] (false edge of ''):  %46 = extractvalue { i64, i1 } %45, 1, !nosanitize !21
+    -> Collected 2 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 11 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 37.921287 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %557 = icmp ugt ptr %556, %8
+    -> Guard[1] (false edge of ''):  %549 = icmp eq i32 %548, 0
+    -> Guard[2] (true edge of ''):  %239 = icmp ult ptr %53, %8
+    -> Guard[3] (false edge of ''):  %46 = extractvalue { i64, i1 } %45, 1, !nosanitize !21
+    -> Collected 4 dominating context guard(s).
+    -> Fact[LVI:0] i32 %548 in [1,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 13 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (4 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.440927 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 38.954748 ms]
+    -> [mv] still SAT under 39 hypothesis candidate(s): not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 3
+  => Total SMT Queries Executed: 3
+  => Total SMT Query Latency: 1.587749e+02 ms
+  => Average SMT Query Latency: 5.292495e+01 ms
+  => Total DFS & SMT Execution Time: 8.864203e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_lazy
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.921140e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_lazy_dictMatchState
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 7 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 31.923925 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 3.192393e+01 ms
+  => Average SMT Query Latency: 3.192393e+01 ms
+  => Total DFS & SMT Execution Time: 1.300321e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_lazy_dedicatedDictSearch
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 7 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 29.356662 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.935666e+01 ms
+  => Average SMT Query Latency: 2.935666e+01 ms
+  => Total DFS & SMT Execution Time: 1.112623e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_lazy_row
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %65 = icmp ugt ptr %64, %9
+    -> Collected 1 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 4 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 15.306302 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %749 = icmp ugt ptr %748, %9
+    -> Guard[1] (false edge of ''):  %741 = icmp eq i32 %740, 0
+    -> Guard[2] (false edge of ''):  %366 = icmp ult i64 %365, 4
+    -> Guard[3] (true edge of ''):  %239 = icmp ult ptr %34, %9
+    -> Collected 4 dominating context guard(s).
+    -> Fact[LVI:0] i32 %740 in [1,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 8 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (4 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 18.316365 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 16.544018 ms]
+    -> [mv] still SAT under 18 hypothesis candidate(s): not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 2
+  => Total SMT Queries Executed: 2
+  => Total SMT Query Latency: 5.694052e+01 ms
+  => Average SMT Query Latency: 2.847026e+01 ms
+  => Total DFS & SMT Execution Time: 5.305440e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_lazy_dictMatchState_row
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 7 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 29.170561 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %66 = icmp ugt ptr %65, %9
+    -> Guard[1] (false edge of ''):  %47 = extractvalue { i64, i1 } %46, 1, !nosanitize !21
+    -> Collected 2 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 11 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 31.101572 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %800 = icmp ugt ptr %799, %9
+    -> Guard[1] (false edge of ''):  %792 = icmp eq i32 %791, 0
+    -> Guard[2] (false edge of ''):  %317 = icmp ult i64 %316, 4
+    -> Guard[3] (true edge of ''):  %240 = icmp ult ptr %54, %9
+    -> Guard[4] (false edge of ''):  %47 = extractvalue { i64, i1 } %46, 1, !nosanitize !21
+    -> Collected 5 dominating context guard(s).
+    -> Fact[LVI:0] i32 %791 in [1,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 15 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (4 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 12.095010 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 36.402100 ms]
+    -> [mv] still SAT under 39 hypothesis candidate(s): not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 3
+  => Total SMT Queries Executed: 3
+  => Total SMT Query Latency: 1.393022e+02 ms
+  => Average SMT Query Latency: 4.643406e+01 ms
+  => Total DFS & SMT Execution Time: 8.626355e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_lazy_dedicatedDictSearch_row
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 7 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 28.450687 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %66 = icmp ugt ptr %65, %9
+    -> Guard[1] (false edge of ''):  %47 = extractvalue { i64, i1 } %46, 1, !nosanitize !21
+    -> Collected 2 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 11 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 32.846576 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %800 = icmp ugt ptr %799, %9
+    -> Guard[1] (false edge of ''):  %792 = icmp eq i32 %791, 0
+    -> Guard[2] (false edge of ''):  %317 = icmp ult i64 %316, 4
+    -> Guard[3] (true edge of ''):  %240 = icmp ult ptr %54, %9
+    -> Guard[4] (false edge of ''):  %47 = extractvalue { i64, i1 } %46, 1, !nosanitize !21
+    -> Collected 5 dominating context guard(s).
+    -> Fact[LVI:0] i32 %791 in [1,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 15 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (4 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 12.690234 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 36.628684 ms]
+    -> [mv] still SAT under 39 hypothesis candidate(s): not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 3
+  => Total SMT Queries Executed: 3
+  => Total SMT Query Latency: 1.296426e+02 ms
+  => Average SMT Query Latency: 4.321421e+01 ms
+  => Total DFS & SMT Execution Time: 7.992452e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_lazy2
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 3.363610e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_lazy2_dictMatchState
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 7 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 29.981585 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.998158e+01 ms
+  => Average SMT Query Latency: 2.998158e+01 ms
+  => Total DFS & SMT Execution Time: 9.712181e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_lazy2_dedicatedDictSearch
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 7 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 33.329517 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 3.332952e+01 ms
+  => Average SMT Query Latency: 3.332952e+01 ms
+  => Total DFS & SMT Execution Time: 7.527546e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_lazy2_row
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %66 = icmp ugt ptr %65, %10
+    -> Collected 1 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 4 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.794650 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %891 = icmp ugt ptr %890, %10
+    -> Guard[1] (false edge of ''):  %883 = icmp eq i32 %882, 0
+    -> Guard[2] (false edge of ''):  %367 = icmp ult i64 %366, 4
+    -> Guard[3] (true edge of ''):  %240 = icmp ult ptr %35, %10
+    -> Collected 4 dominating context guard(s).
+    -> Fact[LVI:0] i32 %882 in [1,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 8 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (4 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 18.946136 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 16.898946 ms]
+    -> [mv] still SAT under 18 hypothesis candidate(s): not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 2
+  => Total SMT Queries Executed: 2
+  => Total SMT Query Latency: 5.769628e+01 ms
+  => Average SMT Query Latency: 2.884814e+01 ms
+  => Total DFS & SMT Execution Time: 7.603359e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_lazy2_dictMatchState_row
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 7 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 31.076072 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %67 = icmp ugt ptr %66, %10
+    -> Guard[1] (false edge of ''):  %48 = extractvalue { i64, i1 } %47, 1, !nosanitize !21
+    -> Collected 2 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 11 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 32.867796 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %888 = icmp ugt ptr %887, %10
+    -> Guard[1] (false edge of ''):  %880 = icmp eq i32 %879, 0
+    -> Guard[2] (false edge of ''):  %318 = icmp ult i64 %317, 4
+    -> Guard[3] (true edge of ''):  %241 = icmp ult ptr %55, %10
+    -> Guard[4] (false edge of ''):  %48 = extractvalue { i64, i1 } %47, 1, !nosanitize !21
+    -> Collected 5 dominating context guard(s).
+    -> Fact[LVI:0] i32 %879 in [1,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 15 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (4 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 128.239850 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 57.398520 ms]
+    -> [mv] still SAT under 39 hypothesis candidate(s): not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 3
+  => Total SMT Queries Executed: 3
+  => Total SMT Query Latency: 2.777926e+02 ms
+  => Average SMT Query Latency: 9.259755e+01 ms
+  => Total DFS & SMT Execution Time: 1.120624e+03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_lazy2_dedicatedDictSearch_row
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 7 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 34.553936 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %67 = icmp ugt ptr %66, %10
+    -> Guard[1] (false edge of ''):  %48 = extractvalue { i64, i1 } %47, 1, !nosanitize !21
+    -> Collected 2 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 11 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 33.788045 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %888 = icmp ugt ptr %887, %10
+    -> Guard[1] (false edge of ''):  %880 = icmp eq i32 %879, 0
+    -> Guard[2] (false edge of ''):  %318 = icmp ult i64 %317, 4
+    -> Guard[3] (true edge of ''):  %241 = icmp ult ptr %55, %10
+    -> Guard[4] (false edge of ''):  %48 = extractvalue { i64, i1 } %47, 1, !nosanitize !21
+    -> Collected 5 dominating context guard(s).
+    -> Fact[LVI:0] i32 %879 in [1,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 15 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (4 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 76.078829 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 72.096891 ms]
+    -> [mv] still SAT under 39 hypothesis candidate(s): not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 3
+  => Total SMT Queries Executed: 3
+  => Total SMT Query Latency: 2.445009e+02 ms
+  => Average SMT Query Latency: 8.150031e+01 ms
+  => Total DFS & SMT Execution Time: 1.065081e+03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_btlazy2
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 3.570480e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_btlazy2_dictMatchState
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 7 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 33.011083 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 3.301108e+01 ms
+  => Average SMT Query Latency: 3.301108e+01 ms
+  => Total DFS & SMT Execution Time: 7.180443e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_greedy_extDict
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 3.420280e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_greedy_extDict_row
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %49 = icmp ugt ptr %48, %8
+    -> Collected 1 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 4 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 15.150917 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %548 = icmp ugt ptr %547, %8
+    -> Guard[1] (false edge of ''):  %540 = icmp eq i32 %539, 0
+    -> Guard[2] (true edge of ''):  %223 = icmp ult ptr %38, %8
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %539 in [1,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 6 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (4 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 20.437144 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 23.139349 ms]
+    -> [mv] still SAT under 27 hypothesis candidate(s): not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 2
+  => Total SMT Queries Executed: 2
+  => Total SMT Query Latency: 6.549442e+01 ms
+  => Average SMT Query Latency: 3.274721e+01 ms
+  => Total DFS & SMT Execution Time: 4.447330e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_lazy_extDict
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.785640e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_lazy_extDict_row
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %50 = icmp ugt ptr %49, %9
+    -> Collected 1 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 4 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 15.215772 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %653 = icmp ugt ptr %652, %9
+    -> Guard[1] (false edge of ''):  %645 = icmp eq i32 %644, 0
+    -> Guard[2] (false edge of ''):  %308 = icmp ult i64 %307, 4
+    -> Guard[3] (true edge of ''):  %224 = icmp ult ptr %39, %9
+    -> Collected 4 dominating context guard(s).
+    -> Fact[LVI:0] i32 %644 in [1,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 8 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (4 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 20.487344 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 18.302680 ms]
+    -> [mv] still SAT under 27 hypothesis candidate(s): not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 2
+  => Total SMT Queries Executed: 2
+  => Total SMT Query Latency: 6.351883e+01 ms
+  => Average SMT Query Latency: 3.175942e+01 ms
+  => Total DFS & SMT Execution Time: 6.110760e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_lazy2_extDict
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 3.275190e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_lazy2_extDict_row
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %51 = icmp ugt ptr %50, %10
+    -> Collected 1 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 4 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 15.445580 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %750 = icmp ugt ptr %749, %10
+    -> Guard[1] (false edge of ''):  %742 = icmp eq i32 %741, 0
+    -> Guard[2] (false edge of ''):  %309 = icmp ult i64 %308, 4
+    -> Guard[3] (true edge of ''):  %225 = icmp ult ptr %40, %10
+    -> Collected 4 dominating context guard(s).
+    -> Fact[LVI:0] i32 %741 in [1,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 8 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (4 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 19.721022 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 17.520519 ms]
+    -> [mv] still SAT under 27 hypothesis candidate(s): not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 2
+  => Total SMT Queries Executed: 2
+  => Total SMT Query Latency: 6.248771e+01 ms
+  => Average SMT Query Latency: 3.124386e+01 ms
+  => Total DFS & SMT Execution Time: 6.676380e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_btlazy2_extDict
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 3.100020e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_count_2segments
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 7.864900e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_HcFindBestMatch_noDict_4
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 1 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.272663 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.726630e-01 ms
+  => Average SMT Query Latency: 2.726630e-01 ms
+  => Total DFS & SMT Execution Time: 4.037817e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_HcFindBestMatch_noDict_5
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 1 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.269135 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.691350e-01 ms
+  => Average SMT Query Latency: 2.691350e-01 ms
+  => Total DFS & SMT Execution Time: 3.778362e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_HcFindBestMatch_noDict_6
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 1 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.227225 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.272250e-01 ms
+  => Average SMT Query Latency: 2.272250e-01 ms
+  => Total DFS & SMT Execution Time: 2.248446e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_BtFindBestMatch_noDict_4
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %11 = icmp ugt ptr %10, %1
+    -> Collected 1 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 3 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.036096 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 3.036096e+00 ms
+  => Average SMT Query Latency: 3.036096e+00 ms
+  => Total DFS & SMT Execution Time: 3.911138e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_BtFindBestMatch_noDict_5
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %11 = icmp ugt ptr %10, %1
+    -> Collected 1 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 3 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.922426 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.922426e+00 ms
+  => Average SMT Query Latency: 2.922426e+00 ms
+  => Total DFS & SMT Execution Time: 3.367117e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_BtFindBestMatch_noDict_6
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %11 = icmp ugt ptr %10, %1
+    -> Collected 1 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 3 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.227088 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 3.227088e+00 ms
+  => Average SMT Query Latency: 3.227088e+00 ms
+  => Total DFS & SMT Execution Time: 3.706182e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_noDict_4_4
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %103 = icmp ugt ptr %102, %100
+    -> Guard[1] (true edge of ''):  %45 = icmp ugt i32 %44, 384
+    -> Guard[2] (true edge of ''):  %40 = icmp eq i32 %39, 0
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %39 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.624746 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.462475e+01 ms
+  => Average SMT Query Latency: 1.462475e+01 ms
+  => Total DFS & SMT Execution Time: 6.107380e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_noDict_4_5
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %104 = icmp ugt ptr %103, %101
+    -> Guard[1] (true edge of ''):  %45 = icmp ugt i32 %44, 384
+    -> Guard[2] (true edge of ''):  %40 = icmp eq i32 %39, 0
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %39 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 16.020465 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.602047e+01 ms
+  => Average SMT Query Latency: 1.602047e+01 ms
+  => Total DFS & SMT Execution Time: 6.784267e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_noDict_4_6
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %105 = icmp ugt ptr %104, %102
+    -> Guard[1] (true edge of ''):  %45 = icmp ugt i32 %44, 384
+    -> Guard[2] (true edge of ''):  %40 = icmp eq i32 %39, 0
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %39 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.953809 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.495381e+01 ms
+  => Average SMT Query Latency: 1.495381e+01 ms
+  => Total DFS & SMT Execution Time: 6.168724e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_noDict_5_4
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %103 = icmp ugt ptr %102, %100
+    -> Guard[1] (true edge of ''):  %45 = icmp ugt i32 %44, 384
+    -> Guard[2] (true edge of ''):  %40 = icmp eq i32 %39, 0
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %39 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 15.940798 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.594080e+01 ms
+  => Average SMT Query Latency: 1.594080e+01 ms
+  => Total DFS & SMT Execution Time: 6.772672e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_noDict_5_5
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %104 = icmp ugt ptr %103, %101
+    -> Guard[1] (true edge of ''):  %45 = icmp ugt i32 %44, 384
+    -> Guard[2] (true edge of ''):  %40 = icmp eq i32 %39, 0
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %39 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.615857 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.461586e+01 ms
+  => Average SMT Query Latency: 1.461586e+01 ms
+  => Total DFS & SMT Execution Time: 6.123699e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_noDict_5_6
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %105 = icmp ugt ptr %104, %102
+    -> Guard[1] (true edge of ''):  %45 = icmp ugt i32 %44, 384
+    -> Guard[2] (true edge of ''):  %40 = icmp eq i32 %39, 0
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %39 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.685895 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.468590e+01 ms
+  => Average SMT Query Latency: 1.468590e+01 ms
+  => Total DFS & SMT Execution Time: 6.012403e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_noDict_6_4
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %103 = icmp ugt ptr %102, %100
+    -> Guard[1] (true edge of ''):  %45 = icmp ugt i32 %44, 384
+    -> Guard[2] (true edge of ''):  %40 = icmp eq i32 %39, 0
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %39 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 15.708146 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.570815e+01 ms
+  => Average SMT Query Latency: 1.570815e+01 ms
+  => Total DFS & SMT Execution Time: 6.708216e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_noDict_6_5
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %104 = icmp ugt ptr %103, %101
+    -> Guard[1] (true edge of ''):  %45 = icmp ugt i32 %44, 384
+    -> Guard[2] (true edge of ''):  %40 = icmp eq i32 %39, 0
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %39 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.228648 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.422865e+01 ms
+  => Average SMT Query Latency: 1.422865e+01 ms
+  => Total DFS & SMT Execution Time: 5.966291e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_noDict_6_6
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %105 = icmp ugt ptr %104, %102
+    -> Guard[1] (true edge of ''):  %45 = icmp ugt i32 %44, 384
+    -> Guard[2] (true edge of ''):  %40 = icmp eq i32 %39, 0
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %39 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.439781 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.443978e+01 ms
+  => Average SMT Query Latency: 1.443978e+01 ms
+  => Total DFS & SMT Execution Time: 6.276403e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_HcFindBestMatch_extDict_4
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 1 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.295928 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.959280e-01 ms
+  => Average SMT Query Latency: 2.959280e-01 ms
+  => Total DFS & SMT Execution Time: 2.102063e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_HcFindBestMatch_extDict_5
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 1 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.296930 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.969300e-01 ms
+  => Average SMT Query Latency: 2.969300e-01 ms
+  => Total DFS & SMT Execution Time: 2.096409e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_HcFindBestMatch_extDict_6
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 1 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.299925 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.999250e-01 ms
+  => Average SMT Query Latency: 2.999250e-01 ms
+  => Total DFS & SMT Execution Time: 2.106700e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_BtFindBestMatch_extDict_4
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %11 = icmp ugt ptr %10, %1
+    -> Collected 1 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 3 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.132142 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 3.132142e+00 ms
+  => Average SMT Query Latency: 3.132142e+00 ms
+  => Total DFS & SMT Execution Time: 3.711955e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_BtFindBestMatch_extDict_5
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %11 = icmp ugt ptr %10, %1
+    -> Collected 1 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 3 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.977177 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.977177e+00 ms
+  => Average SMT Query Latency: 2.977177e+00 ms
+  => Total DFS & SMT Execution Time: 4.049733e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_BtFindBestMatch_extDict_6
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %11 = icmp ugt ptr %10, %1
+    -> Collected 1 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 3 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.702992 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.702992e+00 ms
+  => Average SMT Query Latency: 2.702992e+00 ms
+  => Total DFS & SMT Execution Time: 3.716308e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_extDict_4_4
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %110 = icmp ugt ptr %109, %107
+    -> Guard[1] (true edge of ''):  %52 = icmp ugt i32 %51, 384
+    -> Guard[2] (true edge of ''):  %47 = icmp eq i32 %46, 0
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %46 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.965279 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.396528e+01 ms
+  => Average SMT Query Latency: 1.396528e+01 ms
+  => Total DFS & SMT Execution Time: 6.180963e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_extDict_4_5
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %111 = icmp ugt ptr %110, %108
+    -> Guard[1] (true edge of ''):  %52 = icmp ugt i32 %51, 384
+    -> Guard[2] (true edge of ''):  %47 = icmp eq i32 %46, 0
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %46 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.353074 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.435307e+01 ms
+  => Average SMT Query Latency: 1.435307e+01 ms
+  => Total DFS & SMT Execution Time: 6.476566e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_extDict_4_6
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %112 = icmp ugt ptr %111, %109
+    -> Guard[1] (true edge of ''):  %52 = icmp ugt i32 %51, 384
+    -> Guard[2] (true edge of ''):  %47 = icmp eq i32 %46, 0
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %46 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.603180 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.460318e+01 ms
+  => Average SMT Query Latency: 1.460318e+01 ms
+  => Total DFS & SMT Execution Time: 6.688494e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_extDict_5_4
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %110 = icmp ugt ptr %109, %107
+    -> Guard[1] (true edge of ''):  %52 = icmp ugt i32 %51, 384
+    -> Guard[2] (true edge of ''):  %47 = icmp eq i32 %46, 0
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %46 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.427456 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.442746e+01 ms
+  => Average SMT Query Latency: 1.442746e+01 ms
+  => Total DFS & SMT Execution Time: 6.118371e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_extDict_5_5
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %111 = icmp ugt ptr %110, %108
+    -> Guard[1] (true edge of ''):  %52 = icmp ugt i32 %51, 384
+    -> Guard[2] (true edge of ''):  %47 = icmp eq i32 %46, 0
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %46 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.642216 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.464222e+01 ms
+  => Average SMT Query Latency: 1.464222e+01 ms
+  => Total DFS & SMT Execution Time: 7.534826e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_extDict_5_6
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %112 = icmp ugt ptr %111, %109
+    -> Guard[1] (true edge of ''):  %52 = icmp ugt i32 %51, 384
+    -> Guard[2] (true edge of ''):  %47 = icmp eq i32 %46, 0
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %46 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.865788 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.386579e+01 ms
+  => Average SMT Query Latency: 1.386579e+01 ms
+  => Total DFS & SMT Execution Time: 5.804856e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_extDict_6_4
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %110 = icmp ugt ptr %109, %107
+    -> Guard[1] (true edge of ''):  %52 = icmp ugt i32 %51, 384
+    -> Guard[2] (true edge of ''):  %47 = icmp eq i32 %46, 0
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %46 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.054484 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.405448e+01 ms
+  => Average SMT Query Latency: 1.405448e+01 ms
+  => Total DFS & SMT Execution Time: 5.918848e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_extDict_6_5
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %111 = icmp ugt ptr %110, %108
+    -> Guard[1] (true edge of ''):  %52 = icmp ugt i32 %51, 384
+    -> Guard[2] (true edge of ''):  %47 = icmp eq i32 %46, 0
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %46 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.904299 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.390430e+01 ms
+  => Average SMT Query Latency: 1.390430e+01 ms
+  => Total DFS & SMT Execution Time: 5.871715e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_extDict_6_6
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %112 = icmp ugt ptr %111, %109
+    -> Guard[1] (true edge of ''):  %52 = icmp ugt i32 %51, 384
+    -> Guard[2] (true edge of ''):  %47 = icmp eq i32 %46, 0
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %46 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.866809 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.486681e+01 ms
+  => Average SMT Query Latency: 1.486681e+01 ms
+  => Total DFS & SMT Execution Time: 7.203470e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_HcFindBestMatch_dictMatchState_4
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 1 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.275841 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.758410e-01 ms
+  => Average SMT Query Latency: 2.758410e-01 ms
+  => Total DFS & SMT Execution Time: 3.308911e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_HcFindBestMatch_dictMatchState_5
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 1 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.303732 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 3.037320e-01 ms
+  => Average SMT Query Latency: 3.037320e-01 ms
+  => Total DFS & SMT Execution Time: 2.125661e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_HcFindBestMatch_dictMatchState_6
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 1 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.308317 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 3.083170e-01 ms
+  => Average SMT Query Latency: 3.083170e-01 ms
+  => Total DFS & SMT Execution Time: 1.952706e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_BtFindBestMatch_dictMatchState_4
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %11 = icmp ugt ptr %10, %1
+    -> Collected 1 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 3 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.728954 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.728954e+00 ms
+  => Average SMT Query Latency: 2.728954e+00 ms
+  => Total DFS & SMT Execution Time: 3.493473e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_BtFindBestMatch_dictMatchState_5
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %11 = icmp ugt ptr %10, %1
+    -> Collected 1 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 3 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.774044 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.774044e+00 ms
+  => Average SMT Query Latency: 2.774044e+00 ms
+  => Total DFS & SMT Execution Time: 3.834276e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_BtFindBestMatch_dictMatchState_6
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %11 = icmp ugt ptr %10, %1
+    -> Collected 1 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 3 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.838819 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.838819e+00 ms
+  => Average SMT Query Latency: 2.838819e+00 ms
+  => Total DFS & SMT Execution Time: 4.014524e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_dictMatchState_4_4
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %126 = icmp ugt ptr %125, %123
+    -> Guard[1] (true edge of ''):  %68 = icmp ugt i32 %67, 384
+    -> Guard[2] (true edge of ''):  %63 = icmp eq i32 %62, 0
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %62 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.453704 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.345370e+01 ms
+  => Average SMT Query Latency: 1.345370e+01 ms
+  => Total DFS & SMT Execution Time: 4.916617e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_dictMatchState_4_5
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %128 = icmp ugt ptr %127, %125
+    -> Guard[1] (true edge of ''):  %69 = icmp ugt i32 %68, 384
+    -> Guard[2] (true edge of ''):  %64 = icmp eq i32 %63, 0
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %63 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.017000 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.401700e+01 ms
+  => Average SMT Query Latency: 1.401700e+01 ms
+  => Total DFS & SMT Execution Time: 7.317922e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_dictMatchState_4_6
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %130 = icmp ugt ptr %129, %127
+    -> Guard[1] (true edge of ''):  %70 = icmp ugt i32 %69, 384
+    -> Guard[2] (true edge of ''):  %65 = icmp eq i32 %64, 0
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %64 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.520865 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.352087e+01 ms
+  => Average SMT Query Latency: 1.352087e+01 ms
+  => Total DFS & SMT Execution Time: 7.951338e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_dictMatchState_5_4
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %126 = icmp ugt ptr %125, %123
+    -> Guard[1] (true edge of ''):  %68 = icmp ugt i32 %67, 384
+    -> Guard[2] (true edge of ''):  %63 = icmp eq i32 %62, 0
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %62 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.288440 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.328844e+01 ms
+  => Average SMT Query Latency: 1.328844e+01 ms
+  => Total DFS & SMT Execution Time: 7.312385e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_dictMatchState_5_5
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %128 = icmp ugt ptr %127, %125
+    -> Guard[1] (true edge of ''):  %69 = icmp ugt i32 %68, 384
+    -> Guard[2] (true edge of ''):  %64 = icmp eq i32 %63, 0
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %63 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.164030 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.316403e+01 ms
+  => Average SMT Query Latency: 1.316403e+01 ms
+  => Total DFS & SMT Execution Time: 7.726542e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_dictMatchState_5_6
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %130 = icmp ugt ptr %129, %127
+    -> Guard[1] (true edge of ''):  %70 = icmp ugt i32 %69, 384
+    -> Guard[2] (true edge of ''):  %65 = icmp eq i32 %64, 0
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %64 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.016675 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.401667e+01 ms
+  => Average SMT Query Latency: 1.401667e+01 ms
+  => Total DFS & SMT Execution Time: 8.232377e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_dictMatchState_6_4
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %126 = icmp ugt ptr %125, %123
+    -> Guard[1] (true edge of ''):  %68 = icmp ugt i32 %67, 384
+    -> Guard[2] (true edge of ''):  %63 = icmp eq i32 %62, 0
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %62 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.939988 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.393999e+01 ms
+  => Average SMT Query Latency: 1.393999e+01 ms
+  => Total DFS & SMT Execution Time: 9.565730e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_dictMatchState_6_5
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %128 = icmp ugt ptr %127, %125
+    -> Guard[1] (true edge of ''):  %69 = icmp ugt i32 %68, 384
+    -> Guard[2] (true edge of ''):  %64 = icmp eq i32 %63, 0
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %63 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.216208 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.321621e+01 ms
+  => Average SMT Query Latency: 1.321621e+01 ms
+  => Total DFS & SMT Execution Time: 8.707954e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_dictMatchState_6_6
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %130 = icmp ugt ptr %129, %127
+    -> Guard[1] (true edge of ''):  %70 = icmp ugt i32 %69, 384
+    -> Guard[2] (true edge of ''):  %65 = icmp eq i32 %64, 0
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %64 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.805339 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.380534e+01 ms
+  => Average SMT Query Latency: 1.380534e+01 ms
+  => Total DFS & SMT Execution Time: 7.713027e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_HcFindBestMatch_dedicatedDictSearch_4
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 1 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.261731 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.617310e-01 ms
+  => Average SMT Query Latency: 2.617310e-01 ms
+  => Total DFS & SMT Execution Time: 3.997205e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_HcFindBestMatch_dedicatedDictSearch_5
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 1 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.260853 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.608530e-01 ms
+  => Average SMT Query Latency: 2.608530e-01 ms
+  => Total DFS & SMT Execution Time: 2.934021e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_HcFindBestMatch_dedicatedDictSearch_6
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 1 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.191042 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.910420e-01 ms
+  => Average SMT Query Latency: 1.910420e-01 ms
+  => Total DFS & SMT Execution Time: 2.308906e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_dedicatedDictSearch_4_4
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %124 = icmp ugt ptr %123, %121
+    -> Guard[1] (true edge of ''):  %66 = icmp ugt i32 %65, 384
+    -> Guard[2] (true edge of ''):  %61 = icmp eq i32 %60, 0
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %60 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.149120 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.314912e+01 ms
+  => Average SMT Query Latency: 1.314912e+01 ms
+  => Total DFS & SMT Execution Time: 5.651487e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_dedicatedDictSearch_4_5
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %125 = icmp ugt ptr %124, %122
+    -> Guard[1] (true edge of ''):  %66 = icmp ugt i32 %65, 384
+    -> Guard[2] (true edge of ''):  %61 = icmp eq i32 %60, 0
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %60 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 12.500158 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.250016e+01 ms
+  => Average SMT Query Latency: 1.250016e+01 ms
+  => Total DFS & SMT Execution Time: 5.589701e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_dedicatedDictSearch_4_6
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %126 = icmp ugt ptr %125, %123
+    -> Guard[1] (true edge of ''):  %66 = icmp ugt i32 %65, 384
+    -> Guard[2] (true edge of ''):  %61 = icmp eq i32 %60, 0
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %60 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.919181 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.391918e+01 ms
+  => Average SMT Query Latency: 1.391918e+01 ms
+  => Total DFS & SMT Execution Time: 7.217807e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_dedicatedDictSearch_5_4
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %124 = icmp ugt ptr %123, %121
+    -> Guard[1] (true edge of ''):  %66 = icmp ugt i32 %65, 384
+    -> Guard[2] (true edge of ''):  %61 = icmp eq i32 %60, 0
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %60 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.637813 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.363781e+01 ms
+  => Average SMT Query Latency: 1.363781e+01 ms
+  => Total DFS & SMT Execution Time: 8.228733e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_dedicatedDictSearch_5_5
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %125 = icmp ugt ptr %124, %122
+    -> Guard[1] (true edge of ''):  %66 = icmp ugt i32 %65, 384
+    -> Guard[2] (true edge of ''):  %61 = icmp eq i32 %60, 0
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %60 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.584550 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.358455e+01 ms
+  => Average SMT Query Latency: 1.358455e+01 ms
+  => Total DFS & SMT Execution Time: 8.895574e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_dedicatedDictSearch_5_6
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %126 = icmp ugt ptr %125, %123
+    -> Guard[1] (true edge of ''):  %66 = icmp ugt i32 %65, 384
+    -> Guard[2] (true edge of ''):  %61 = icmp eq i32 %60, 0
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %60 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 12.609778 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.260978e+01 ms
+  => Average SMT Query Latency: 1.260978e+01 ms
+  => Total DFS & SMT Execution Time: 8.860867e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_dedicatedDictSearch_6_4
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %124 = icmp ugt ptr %123, %121
+    -> Guard[1] (true edge of ''):  %66 = icmp ugt i32 %65, 384
+    -> Guard[2] (true edge of ''):  %61 = icmp eq i32 %60, 0
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %60 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.735000 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.373500e+01 ms
+  => Average SMT Query Latency: 1.373500e+01 ms
+  => Total DFS & SMT Execution Time: 9.252073e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_dedicatedDictSearch_6_5
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %125 = icmp ugt ptr %124, %122
+    -> Guard[1] (true edge of ''):  %66 = icmp ugt i32 %65, 384
+    -> Guard[2] (true edge of ''):  %61 = icmp eq i32 %60, 0
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %60 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.864371 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.386437e+01 ms
+  => Average SMT Query Latency: 1.386437e+01 ms
+  => Total DFS & SMT Execution Time: 9.785651e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_RowFindBestMatch_dedicatedDictSearch_6_6
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %126 = icmp ugt ptr %125, %123
+    -> Guard[1] (true edge of ''):  %66 = icmp ugt i32 %65, 384
+    -> Guard[2] (true edge of ''):  %61 = icmp eq i32 %60, 0
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i32 %60 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.105802 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.310580e+01 ms
+  => Average SMT Query Latency: 1.310580e+01 ms
+  => Total DFS & SMT Execution Time: 8.180417e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_DUBT_findBestMatch
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %68 = load i32, ptr %67, align 4, !tbaa !23  vs  %122 = load i32, ptr %67, align 4, !tbaa !23
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> [heavy] 0 analysis fact(s) on 1 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.495330 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %82 = icmp ugt i32 %81, %77
+    -> Guard[1] (false edge of ''):  %73 = extractvalue { i32, i1 } %71, 1, !nosanitize !24
+    -> Collected 2 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %68 = load i32, ptr %67, align 4, !tbaa !23  vs  %122 = load i32, ptr %67, align 4, !tbaa !23
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %81 = load i32, ptr %46, align 4, !tbaa !16  vs  %306 = load i32, ptr %46, align 4, !tbaa !16
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> [heavy] 0 analysis fact(s) on 5 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (2 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.748156 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.754275 ms]
+    -> [mv] still SAT under 21 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %414 = icmp ugt i64 %412, %315
+    -> Guard[1] (true edge of ''):  %307 = icmp ugt i32 %306, %64
+    -> Guard[2] (false edge of ''):  %73 = extractvalue { i32, i1 } %71, 1, !nosanitize !24
+    -> Collected 3 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %68 = load i32, ptr %67, align 4, !tbaa !23  vs  %122 = load i32, ptr %67, align 4, !tbaa !23
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %55 = load i32, ptr %54, align 4, !tbaa !20  vs  %146 = load i32, ptr %54, align 4, !tbaa !20
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %53 = load i32, ptr %9, align 4, !tbaa !19  vs  %147 = load i32, ptr %9, align 4, !tbaa !19
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %81 = load i32, ptr %46, align 4, !tbaa !16  vs  %306 = load i32, ptr %46, align 4, !tbaa !16
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %296 = load i32, ptr %295, align 8, !tbaa !29  vs  %521 = load i32, ptr %295, align 8, !tbaa !29
+         clobber:   store i32 0, ptr %475, align 4, !tbaa !16
+    -> Frame refused (clobber between loads):  %55 = load i32, ptr %54, align 4, !tbaa !20  vs  %533 = load i32, ptr %54, align 4, !tbaa !20
+         clobber:   store i32 0, ptr %475, align 4, !tbaa !16
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[PHIINV-hi:0] i32 %314 == i32 %306 || ugt(i32 %314, i32 %64) (latch-implied bound, 1-induction)
+    -> Fact[LVI:1] i64 %315 in [0,-1) (LVI @ )
+    -> Fact[RM:2] i64 %342 in [0,65) (!range)
+    -> Fact[KB:3] i64 %342 known bits zero=0x18446744073709551552 one=0x0
+    -> [heavy] 4 analysis fact(s) on 39 boundary value(s)
+    -> [mv] T3: refused, bound not invariant in the trap loop: (536870912 + (trunc i64 %412 to i32) + (-1 * (trunc i64 %315 to i32)))
+    -> [ind L0] BASE (8 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.076486 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 41.444471 ms]
+    -> [mv] still SAT under 39 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %481 = and i1 %479, %480
+    -> Guard[1] (false edge of ''):  %73 = extractvalue { i32, i1 } %71, 1, !nosanitize !24
+    -> Collected 2 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %68 = load i32, ptr %67, align 4, !tbaa !23  vs  %122 = load i32, ptr %67, align 4, !tbaa !23
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %55 = load i32, ptr %54, align 4, !tbaa !20  vs  %146 = load i32, ptr %54, align 4, !tbaa !20
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %53 = load i32, ptr %9, align 4, !tbaa !19  vs  %147 = load i32, ptr %9, align 4, !tbaa !19
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %81 = load i32, ptr %46, align 4, !tbaa !16  vs  %306 = load i32, ptr %46, align 4, !tbaa !16
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %296 = load i32, ptr %295, align 8, !tbaa !29  vs  %521 = load i32, ptr %295, align 8, !tbaa !29
+         clobber:   store i32 0, ptr %475, align 4, !tbaa !16
+    -> Frame refused (clobber between loads):  %55 = load i32, ptr %54, align 4, !tbaa !20  vs  %533 = load i32, ptr %54, align 4, !tbaa !20
+         clobber:   store i32 0, ptr %475, align 4, !tbaa !16
+    -> [go3] 1 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %5 in [2,3) (LVI @ )
+    -> Fact[PHIINV-hi:1] i32 %314 == i32 %306 || ugt(i32 %314, i32 %64) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-hi:2] i32 %319 == i32 %80 || ne(i32 %319, i32 0) (latch-implied bound, 1-induction)
+    -> Fact[RM:3] i64 %342 in [0,65) (!range)
+    -> Fact[KB:4] i64 %342 known bits zero=0x18446744073709551552 one=0x0
+    -> Fact[RM:5] i32 %431 in [0,33) (!range)
+    -> Fact[KB:6] i32 %431 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:7] i32 %435 in [0,33) (!range)
+    -> Fact[KB:8] i32 %435 known bits zero=0x4294967264 one=0x0
+    -> [heavy] 9 analysis fact(s) on 49 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 45.016178 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %578 = icmp ugt i64 %573, %559
+    -> Guard[1] (true edge of ''):  %552 = icmp ugt i32 %551, %532
+    -> Guard[2] (false edge of ''):  %543 = extractvalue { i32, i1 } %541, 1, !nosanitize !24
+    -> Guard[3] (true edge of ''):  %481 = and i1 %479, %480
+    -> Guard[4] (false edge of ''):  %73 = extractvalue { i32, i1 } %71, 1, !nosanitize !24
+    -> Collected 5 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %68 = load i32, ptr %67, align 4, !tbaa !23  vs  %122 = load i32, ptr %67, align 4, !tbaa !23
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %55 = load i32, ptr %54, align 4, !tbaa !20  vs  %146 = load i32, ptr %54, align 4, !tbaa !20
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %53 = load i32, ptr %9, align 4, !tbaa !19  vs  %147 = load i32, ptr %9, align 4, !tbaa !19
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %81 = load i32, ptr %46, align 4, !tbaa !16  vs  %306 = load i32, ptr %46, align 4, !tbaa !16
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %296 = load i32, ptr %295, align 8, !tbaa !29  vs  %521 = load i32, ptr %295, align 8, !tbaa !29
+         clobber:   store i32 0, ptr %475, align 4, !tbaa !16
+    -> Frame refused (clobber between loads):  %55 = load i32, ptr %54, align 4, !tbaa !20  vs  %533 = load i32, ptr %54, align 4, !tbaa !20
+         clobber:   store i32 0, ptr %475, align 4, !tbaa !16
+    -> [go3] 52 leaf-closure instruction(s) encoded
+    -> Fact[PHIINV-hi:0] i32 %314 == i32 %306 || ugt(i32 %314, i32 %64) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-hi:1] i32 %319 == i32 %80 || ne(i32 %319, i32 0) (latch-implied bound, 1-induction)
+    -> Fact[RM:2] i64 %342 in [0,65) (!range)
+    -> Fact[KB:3] i64 %342 known bits zero=0x18446744073709551552 one=0x0
+    -> Fact[RM:4] i32 %431 in [0,33) (!range)
+    -> Fact[KB:5] i32 %431 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:6] i32 %435 in [0,33) (!range)
+    -> Fact[KB:7] i32 %435 known bits zero=0x4294967264 one=0x0
+    -> Fact[LVI:8] i32 %532 in [0,-1) (LVI @ )
+    -> Fact[LVI:9] i64 %559 in [0,-1) (LVI @ )
+    -> [heavy] 10 analysis fact(s) on 55 boundary value(s)
+    -> [mv] T3: refused, bound not invariant in the trap loop: (536870912 + (trunc i64 ((-1 * %559) + (%562 umin %561) + %572) to i32))
+    -> [ind L0] BASE (5 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.191879 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 69.390059 ms]
+    -> [mv] still SAT under 54 hypothesis candidate(s): not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 5
+  => Total SMT Queries Executed: 5
+  => Total SMT Query Latency: 2.331628e+02 ms
+  => Average SMT Query Latency: 4.663255e+01 ms
+  => Total DFS & SMT Execution Time: 6.796200e+02 ms
+--------------------------------------------------

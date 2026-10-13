@@ -1,0 +1,1711 @@
+[ODeSSy] 23 trap site(s) across 23 function(s); threads=10 [tier: heavy] [frame] [mv] [narrow] [ind]
+
+[Z3 Oracle] Analyzing Function: HUF_readDTableX1_wksp
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %477 = extractvalue { i32, i1 } %476, 1, !nosanitize !17
+    -> Guard[1] (false edge of ''):  %474 = extractvalue { i32, i1 } %472, 1, !nosanitize !17
+    -> Guard[2] (true edge of ''):  %278 = icmp ugt i32 %277, 1
+    -> Guard[3] (false edge of ''):  %129 = extractvalue { i32, i1 } %128, 1, !nosanitize !17
+    -> Guard[4] (false edge of ''):  %124 = extractvalue { i32, i1 } %123, 1, !nosanitize !17
+    -> Guard[5] (true edge of ''):  %15 = icmp ult i64 %14, -119
+    -> Guard[6] (false edge of ''):  %10 = icmp ult i64 %4, 1492
+    -> Collected 7 dominating context guard(s).
+    -> [go3] 11 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %43 known bits zero=0x31 one=0x0
+    -> Fact[SCEV:1] i64 %43 in [0,4294967233) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %43 in [0,4294967233) (SCEV signed)
+    -> Fact[SCEVSYM:3] i64 %43 - start(0) <=u 32*BTC(((-32 + (32 * ((zext i32 %24 to i64) /u 32))<nuw><nsw>)<nsw> /u 32)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:4] i64 %43 == i64 0 || ne(i64 %43, i64 %39) (latch-implied bound, 1-induction)
+    -> Fact[KB:5] i64 %67 known bits zero=0x7 one=0x0
+    -> Fact[SCEV:6] i64 %67 in [0,-7) (SCEV unsigned)
+    -> Fact[SCEV:7] i64 %67 in [-9223372036854775808,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-hi:8] i64 %67 == i64 %62 || ne(i64 %67, i64 %63) (latch-implied bound, 1-induction)
+    -> Fact[KB:9] i64 %84 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:10] i64 %84 in [0,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:11] i64 %84 in [0,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:12] i64 %84 - start(%78) <=u BTC((-1 + (zext i32 %24 to i64) + (-1 * %78)<nsw>)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:13] i64 %84 == i64 %78 || ne(i64 %84, i64 %34) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:14] i64 %84 >=s i64 %78 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:15] i64 %103 in [-9,12) (SCEV unsigned)
+    -> Fact[SCEV:16] i64 %103 in [-9,12) (SCEV signed)
+    -> Fact[KB:17] i64 %283 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:18] i64 %283 in [1,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:19] i64 %283 in [1,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:20] i64 %283 - start(1) <=u BTC((-2 + (zext i32 (1 + ((11 umin (1 + (zext i8 (trunc i32 %17 to i8) to i32))<nuw><nsw>) umax %25)) to i64))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:21] i64 %283 == i64 1 || ne(i64 %283, i64 %281) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:22] i64 %283 >=s i64 1 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:23] i64 %281 known bits zero=0x18446744069414584320 one=0x0
+    -> Fact[KB:24] i64 %78 known bits zero=0x18446744069414584327 one=0x0
+    -> Fact[SCEVEQ:25] i64 %78 in phi image (3 incoming)
+    -> Fact[KB:26] i64 %39 known bits zero=0x18446744069414584351 one=0x0
+    -> Fact[SCEVEQ:27] i64 %39 == SCEV((32 * ((zext i32 %24 to i64) /u 32))<nuw><nsw>)
+    -> Fact[KB:28] i64 %63 known bits zero=0x18446744069414584327 one=0x0
+    -> Fact[SCEVEQ:29] i64 %63 == SCEV((8 * ((zext i32 %24 to i64) /u 8))<nuw><nsw>)
+    -> [heavy] 30 analysis fact(s) on 15 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (3 phi(s) = entry): UNSAT (Dead Code / Impossible Path) [Query Latency: 2.604064 ms]
+    -> [ind L0] STEP (copy: 168 instr, 0 skipped, 59 fresh, 68 fact(s), 3 link(s)): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.632580 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 70.668619 ms]
+    -> [mv] still SAT under 21 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %278 = icmp ugt i32 %277, 1
+    -> Guard[1] (false edge of ''):  %129 = extractvalue { i32, i1 } %128, 1, !nosanitize !17
+    -> Guard[2] (false edge of ''):  %124 = extractvalue { i32, i1 } %123, 1, !nosanitize !17
+    -> Guard[3] (true edge of ''):  %15 = icmp ult i64 %14, -119
+    -> Guard[4] (false edge of ''):  %10 = icmp ult i64 %4, 1492
+    -> Collected 5 dominating context guard(s).
+    -> [go3] 11 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %43 known bits zero=0x31 one=0x0
+    -> Fact[SCEV:1] i64 %43 in [0,4294967233) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %43 in [0,4294967233) (SCEV signed)
+    -> Fact[SCEVSYM:3] i64 %43 - start(0) <=u 32*BTC(((-32 + (32 * ((zext i32 %24 to i64) /u 32))<nuw><nsw>)<nsw> /u 32)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:4] i64 %43 == i64 0 || ne(i64 %43, i64 %39) (latch-implied bound, 1-induction)
+    -> Fact[KB:5] i64 %67 known bits zero=0x7 one=0x0
+    -> Fact[SCEV:6] i64 %67 in [0,-7) (SCEV unsigned)
+    -> Fact[SCEV:7] i64 %67 in [-9223372036854775808,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-hi:8] i64 %67 == i64 %62 || ne(i64 %67, i64 %63) (latch-implied bound, 1-induction)
+    -> Fact[KB:9] i64 %84 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:10] i64 %84 in [0,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:11] i64 %84 in [0,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:12] i64 %84 - start(%78) <=u BTC((-1 + (zext i32 %24 to i64) + (-1 * %78)<nsw>)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:13] i64 %84 == i64 %78 || ne(i64 %84, i64 %34) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:14] i64 %84 >=s i64 %78 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:15] i64 %103 in [-9,12) (SCEV unsigned)
+    -> Fact[SCEV:16] i64 %103 in [-9,12) (SCEV signed)
+    -> Fact[KB:17] i64 %78 known bits zero=0x18446744069414584327 one=0x0
+    -> Fact[SCEVEQ:18] i64 %78 in phi image (3 incoming)
+    -> Fact[KB:19] i64 %39 known bits zero=0x18446744069414584351 one=0x0
+    -> Fact[SCEVEQ:20] i64 %39 == SCEV((32 * ((zext i32 %24 to i64) /u 32))<nuw><nsw>)
+    -> Fact[KB:21] i64 %63 known bits zero=0x18446744069414584327 one=0x0
+    -> Fact[SCEVEQ:22] i64 %63 == SCEV((8 * ((zext i32 %24 to i64) /u 8))<nuw><nsw>)
+    -> [heavy] 23 analysis fact(s) on 12 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (3 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.185105 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.842716 ms]
+    -> [mv] still SAT under 21 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %414 = extractvalue { i32, i1 } %413, 1, !nosanitize !17
+    -> Guard[1] (true edge of ''):  %293 = icmp sgt i32 %287, 0
+    -> Guard[2] (true edge of ''):  %278 = icmp ugt i32 %277, 1
+    -> Guard[3] (false edge of ''):  %129 = extractvalue { i32, i1 } %128, 1, !nosanitize !17
+    -> Guard[4] (false edge of ''):  %124 = extractvalue { i32, i1 } %123, 1, !nosanitize !17
+    -> Guard[5] (true edge of ''):  %15 = icmp ult i64 %14, -119
+    -> Guard[6] (false edge of ''):  %10 = icmp ult i64 %4, 1492
+    -> Collected 7 dominating context guard(s).
+    -> [go3] 12 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %43 known bits zero=0x31 one=0x0
+    -> Fact[SCEV:1] i64 %43 in [0,4294967233) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %43 in [0,4294967233) (SCEV signed)
+    -> Fact[SCEVSYM:3] i64 %43 - start(0) <=u 32*BTC(((-32 + (32 * ((zext i32 %24 to i64) /u 32))<nuw><nsw>)<nsw> /u 32)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:4] i64 %43 == i64 0 || ne(i64 %43, i64 %39) (latch-implied bound, 1-induction)
+    -> Fact[KB:5] i64 %67 known bits zero=0x7 one=0x0
+    -> Fact[SCEV:6] i64 %67 in [0,-7) (SCEV unsigned)
+    -> Fact[SCEV:7] i64 %67 in [-9223372036854775808,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-hi:8] i64 %67 == i64 %62 || ne(i64 %67, i64 %63) (latch-implied bound, 1-induction)
+    -> Fact[KB:9] i64 %84 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:10] i64 %84 in [0,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:11] i64 %84 in [0,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:12] i64 %84 - start(%78) <=u BTC((-1 + (zext i32 %24 to i64) + (-1 * %78)<nsw>)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:13] i64 %84 == i64 %78 || ne(i64 %84, i64 %34) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:14] i64 %84 >=s i64 %78 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:15] i64 %103 in [-9,12) (SCEV unsigned)
+    -> Fact[SCEV:16] i64 %103 in [-9,12) (SCEV signed)
+    -> Fact[KB:17] i64 %283 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:18] i64 %283 in [1,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:19] i64 %283 in [1,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:20] i64 %283 - start(1) <=u BTC((-2 + (zext i32 (1 + ((11 umin (1 + (zext i8 (trunc i32 %17 to i8) to i32))<nuw><nsw>) umax %25)) to i64))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:21] i64 %283 == i64 1 || ne(i64 %283, i64 %281) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:22] i64 %283 >=s i64 1 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:23] i64 %411 in [-2305843009213693952,2305843007066210306) (SCEV unsigned)
+    -> Fact[SCEV:24] i64 %411 in [-2305843009213693952,2305843007066210306) (SCEV signed)
+    -> Fact[KB:25] i32 %412 known bits zero=0x2147483648 one=0x0
+    -> Fact[SCEV:26] i32 %412 in [0,2147483647) (SCEV unsigned)
+    -> Fact[SCEV:27] i32 %412 in [0,2147483647) (SCEV signed)
+    -> Fact[SCEVSYM:28] i32 %412 - start(0) <=u BTC((-1 + %287)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:29] i32 %412 == i32 0 || ne(i32 %412, i32 %287) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:30] i32 %412 >=s i32 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:31] i64 %281 known bits zero=0x18446744069414584320 one=0x0
+    -> Fact[KB:32] i64 %78 known bits zero=0x18446744069414584327 one=0x0
+    -> Fact[SCEVEQ:33] i64 %78 in phi image (3 incoming)
+    -> Fact[KB:34] i64 %39 known bits zero=0x18446744069414584351 one=0x0
+    -> Fact[SCEVEQ:35] i64 %39 == SCEV((32 * ((zext i32 %24 to i64) /u 32))<nuw><nsw>)
+    -> Fact[KB:36] i64 %63 known bits zero=0x18446744069414584327 one=0x0
+    -> Fact[SCEVEQ:37] i64 %63 == SCEV((8 * ((zext i32 %24 to i64) /u 8))<nuw><nsw>)
+    -> [heavy] 38 analysis fact(s) on 17 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (2 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.398583 ms]
+    -> [ind L1] BASE (3 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.871060 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.395725 ms]
+    -> [mv] still SAT under 45 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %293 = icmp sgt i32 %287, 0
+    -> Guard[1] (true edge of ''):  %278 = icmp ugt i32 %277, 1
+    -> Guard[2] (false edge of ''):  %129 = extractvalue { i32, i1 } %128, 1, !nosanitize !17
+    -> Guard[3] (false edge of ''):  %124 = extractvalue { i32, i1 } %123, 1, !nosanitize !17
+    -> Guard[4] (true edge of ''):  %15 = icmp ult i64 %14, -119
+    -> Guard[5] (false edge of ''):  %10 = icmp ult i64 %4, 1492
+    -> Collected 6 dominating context guard(s).
+    -> [go3] 11 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %43 known bits zero=0x31 one=0x0
+    -> Fact[SCEV:1] i64 %43 in [0,4294967233) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %43 in [0,4294967233) (SCEV signed)
+    -> Fact[SCEVSYM:3] i64 %43 - start(0) <=u 32*BTC(((-32 + (32 * ((zext i32 %24 to i64) /u 32))<nuw><nsw>)<nsw> /u 32)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:4] i64 %43 == i64 0 || ne(i64 %43, i64 %39) (latch-implied bound, 1-induction)
+    -> Fact[KB:5] i64 %67 known bits zero=0x7 one=0x0
+    -> Fact[SCEV:6] i64 %67 in [0,-7) (SCEV unsigned)
+    -> Fact[SCEV:7] i64 %67 in [-9223372036854775808,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-hi:8] i64 %67 == i64 %62 || ne(i64 %67, i64 %63) (latch-implied bound, 1-induction)
+    -> Fact[KB:9] i64 %84 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:10] i64 %84 in [0,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:11] i64 %84 in [0,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:12] i64 %84 - start(%78) <=u BTC((-1 + (zext i32 %24 to i64) + (-1 * %78)<nsw>)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:13] i64 %84 == i64 %78 || ne(i64 %84, i64 %34) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:14] i64 %84 >=s i64 %78 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:15] i64 %103 in [-9,12) (SCEV unsigned)
+    -> Fact[SCEV:16] i64 %103 in [-9,12) (SCEV signed)
+    -> Fact[KB:17] i32 %412 known bits zero=0x2147483648 one=0x0
+    -> Fact[SCEV:18] i32 %412 in [0,2147483647) (SCEV unsigned)
+    -> Fact[SCEV:19] i32 %412 in [0,2147483647) (SCEV signed)
+    -> Fact[SCEVSYM:20] i32 %412 - start(0) <=u BTC((-1 + %287)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:21] i32 %412 == i32 0 || ne(i32 %412, i32 %287) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:22] i32 %412 >=s i32 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:23] i64 %78 known bits zero=0x18446744069414584327 one=0x0
+    -> Fact[SCEVEQ:24] i64 %78 in phi image (3 incoming)
+    -> Fact[KB:25] i64 %39 known bits zero=0x18446744069414584351 one=0x0
+    -> Fact[SCEVEQ:26] i64 %39 == SCEV((32 * ((zext i32 %24 to i64) /u 32))<nuw><nsw>)
+    -> Fact[KB:27] i64 %63 known bits zero=0x18446744069414584327 one=0x0
+    -> Fact[SCEVEQ:28] i64 %63 == SCEV((8 * ((zext i32 %24 to i64) /u 8))<nuw><nsw>)
+    -> [heavy] 29 analysis fact(s) on 13 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (2 phi(s) = entry): UNSAT (Dead Code / Impossible Path) [Query Latency: 0.634895 ms]
+    -> [ind L0] STEP (copy: 53 instr, 0 skipped, 29 fresh, 25 fact(s), 2 link(s)): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.941449 ms]
+    -> [ind L1] BASE (3 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.662642 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.175694 ms]
+    -> [mv] minimize: without {%284 <=s 2^15} -> SAT, kept (3.009422e+00 ms)
+    -> [mv] minimize: without {%287 <=s 2^15} -> SAT, kept (2.775278e+00 ms)
+    -> [mv] loosen: {%284 <=s 2^15} -> {%284 <=s 2^30}: UNSAT, adopted (4.149512e+00 ms)
+    -> [mv] loosen: {%287 <=s 2^15} -> {%287 <=s 2^30}: UNSAT, adopted (2.933161e+00 ms)
+    -> [mv] DEAD UNDER HYPOTHESIS H = {%284 <=s 2^30, %287 <=s 2^30} (2 of 51 candidates in core, round 1; re-solve 8.679177e+00 ms; trap loop depth 2, hoist to depth 2)
+  => SUCCESS (fast copy): trap folded in 1 copy inside the H-guarded clone of loop ''
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %396 = extractvalue { i32, i1 } %395, 1, !nosanitize !17
+    -> Guard[1] (true edge of ''):  %293 = icmp sgt i32 %287, 0
+    -> Guard[2] (true edge of ''):  %278 = icmp ugt i32 %277, 1
+    -> Guard[3] (false edge of ''):  %129 = extractvalue { i32, i1 } %128, 1, !nosanitize !17
+    -> Guard[4] (false edge of ''):  %124 = extractvalue { i32, i1 } %123, 1, !nosanitize !17
+    -> Guard[5] (true edge of ''):  %15 = icmp ult i64 %14, -119
+    -> Guard[6] (false edge of ''):  %10 = icmp ult i64 %4, 1492
+    -> Collected 7 dominating context guard(s).
+    -> [go3] 12 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %43 known bits zero=0x31 one=0x0
+    -> Fact[SCEV:1] i64 %43 in [0,4294967233) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %43 in [0,4294967233) (SCEV signed)
+    -> Fact[SCEVSYM:3] i64 %43 - start(0) <=u 32*BTC(((-32 + (32 * ((zext i32 %24 to i64) /u 32))<nuw><nsw>)<nsw> /u 32)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:4] i64 %43 == i64 0 || ne(i64 %43, i64 %39) (latch-implied bound, 1-induction)
+    -> Fact[KB:5] i64 %67 known bits zero=0x7 one=0x0
+    -> Fact[SCEV:6] i64 %67 in [0,-7) (SCEV unsigned)
+    -> Fact[SCEV:7] i64 %67 in [-9223372036854775808,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-hi:8] i64 %67 == i64 %62 || ne(i64 %67, i64 %63) (latch-implied bound, 1-induction)
+    -> Fact[KB:9] i64 %84 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:10] i64 %84 in [0,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:11] i64 %84 in [0,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:12] i64 %84 - start(%78) <=u BTC((-1 + (zext i32 %24 to i64) + (-1 * %78)<nsw>)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:13] i64 %84 == i64 %78 || ne(i64 %84, i64 %34) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:14] i64 %84 >=s i64 %78 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:15] i64 %103 in [-9,12) (SCEV unsigned)
+    -> Fact[SCEV:16] i64 %103 in [-9,12) (SCEV signed)
+    -> Fact[LVI:17] i64 %393 in [-9223372036854775800,-9223372036854775808) (LVI @ )
+    -> Fact[SCEV:18] i64 %393 in [-2147483648,6442450936) (SCEV unsigned)
+    -> Fact[SCEV:19] i64 %393 in [-2147483648,6442450936) (SCEV signed)
+    -> Fact[PHIINV-lo:20] i64 %393 >=s i64 %298 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:21] i32 %394 known bits zero=0x2147483648 one=0x0
+    -> Fact[SCEV:22] i32 %394 in [0,536870912) (SCEV unsigned)
+    -> Fact[SCEV:23] i32 %394 in [0,536870912) (SCEV signed)
+    -> Fact[SCEVSYM:24] i32 %394 - start(0) <=u BTC((((7 + (-1 * %285) + (2147483640 smax %285)) /u 8) umin_seq (-1 + %287))) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:25] i32 %394 == i32 0 || ne(i32 %394, i32 %287) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:26] i32 %394 >=s i32 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:27] i64 %78 known bits zero=0x18446744069414584327 one=0x0
+    -> Fact[SCEVEQ:28] i64 %78 in phi image (3 incoming)
+    -> Fact[KB:29] i64 %39 known bits zero=0x18446744069414584351 one=0x0
+    -> Fact[SCEVEQ:30] i64 %39 == SCEV((32 * ((zext i32 %24 to i64) /u 32))<nuw><nsw>)
+    -> Fact[KB:31] i64 %63 known bits zero=0x18446744069414584327 one=0x0
+    -> Fact[SCEVEQ:32] i64 %63 == SCEV((8 * ((zext i32 %24 to i64) /u 8))<nuw><nsw>)
+    -> [heavy] 33 analysis fact(s) on 15 boundary value(s)
+    -> [mv] T3: not a bounds shape (idx vs invariant count)
+    -> [ind L0] BASE (2 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.236361 ms]
+    -> [ind L1] BASE (3 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.250075 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.843403 ms]
+    -> [mv] still SAT under 36 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %293 = icmp sgt i32 %287, 0
+    -> Guard[1] (true edge of ''):  %278 = icmp ugt i32 %277, 1
+    -> Guard[2] (false edge of ''):  %129 = extractvalue { i32, i1 } %128, 1, !nosanitize !17
+    -> Guard[3] (false edge of ''):  %124 = extractvalue { i32, i1 } %123, 1, !nosanitize !17
+    -> Guard[4] (true edge of ''):  %15 = icmp ult i64 %14, -119
+    -> Guard[5] (false edge of ''):  %10 = icmp ult i64 %4, 1492
+    -> Collected 6 dominating context guard(s).
+    -> [go3] 11 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %43 known bits zero=0x31 one=0x0
+    -> Fact[SCEV:1] i64 %43 in [0,4294967233) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %43 in [0,4294967233) (SCEV signed)
+    -> Fact[SCEVSYM:3] i64 %43 - start(0) <=u 32*BTC(((-32 + (32 * ((zext i32 %24 to i64) /u 32))<nuw><nsw>)<nsw> /u 32)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:4] i64 %43 == i64 0 || ne(i64 %43, i64 %39) (latch-implied bound, 1-induction)
+    -> Fact[KB:5] i64 %67 known bits zero=0x7 one=0x0
+    -> Fact[SCEV:6] i64 %67 in [0,-7) (SCEV unsigned)
+    -> Fact[SCEV:7] i64 %67 in [-9223372036854775808,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-hi:8] i64 %67 == i64 %62 || ne(i64 %67, i64 %63) (latch-implied bound, 1-induction)
+    -> Fact[KB:9] i64 %84 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:10] i64 %84 in [0,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:11] i64 %84 in [0,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:12] i64 %84 - start(%78) <=u BTC((-1 + (zext i32 %24 to i64) + (-1 * %78)<nsw>)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:13] i64 %84 == i64 %78 || ne(i64 %84, i64 %34) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:14] i64 %84 >=s i64 %78 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:15] i64 %103 in [-9,12) (SCEV unsigned)
+    -> Fact[SCEV:16] i64 %103 in [-9,12) (SCEV signed)
+    -> Fact[KB:17] i32 %394 known bits zero=0x2147483648 one=0x0
+    -> Fact[SCEV:18] i32 %394 in [0,536870912) (SCEV unsigned)
+    -> Fact[SCEV:19] i32 %394 in [0,536870912) (SCEV signed)
+    -> Fact[SCEVSYM:20] i32 %394 - start(0) <=u BTC((((7 + (-1 * %285) + (2147483640 smax %285)) /u 8) umin_seq (-1 + %287))) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:21] i32 %394 == i32 0 || ne(i32 %394, i32 %287) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:22] i32 %394 >=s i32 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:23] i64 %78 known bits zero=0x18446744069414584327 one=0x0
+    -> Fact[SCEVEQ:24] i64 %78 in phi image (3 incoming)
+    -> Fact[KB:25] i64 %39 known bits zero=0x18446744069414584351 one=0x0
+    -> Fact[SCEVEQ:26] i64 %39 == SCEV((32 * ((zext i32 %24 to i64) /u 32))<nuw><nsw>)
+    -> Fact[KB:27] i64 %63 known bits zero=0x18446744069414584327 one=0x0
+    -> Fact[SCEVEQ:28] i64 %63 == SCEV((8 * ((zext i32 %24 to i64) /u 8))<nuw><nsw>)
+    -> [heavy] 29 analysis fact(s) on 14 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (2 phi(s) = entry): UNSAT (Dead Code / Impossible Path) [Query Latency: 0.813374 ms]
+    -> [ind L0] STEP (copy: 19 instr, 0 skipped, 6 fresh, 9 fact(s), 2 link(s)): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.138337 ms]
+    -> [ind L1] BASE (3 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.381083 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 16.908847 ms]
+    -> [mv] loosen: {%284 <=s 2^15} -> {%284 <=s 2^30}: UNSAT, adopted (1.513590e+00 ms)
+    -> [mv] DEAD UNDER HYPOTHESIS H = {%284 <=s 2^30} (1 of 39 candidates in core, round 1; re-solve 1.099703e+01 ms; trap loop depth 2, hoist to depth 2)
+    -> [mv] SKIP: clone budget exhausted for this function
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %375 = extractvalue { i32, i1 } %374, 1, !nosanitize !17
+    -> Guard[1] (true edge of ''):  %293 = icmp sgt i32 %287, 0
+    -> Guard[2] (true edge of ''):  %278 = icmp ugt i32 %277, 1
+    -> Guard[3] (false edge of ''):  %129 = extractvalue { i32, i1 } %128, 1, !nosanitize !17
+    -> Guard[4] (false edge of ''):  %124 = extractvalue { i32, i1 } %123, 1, !nosanitize !17
+    -> Guard[5] (true edge of ''):  %15 = icmp ult i64 %14, -119
+    -> Guard[6] (false edge of ''):  %10 = icmp ult i64 %4, 1492
+    -> Collected 7 dominating context guard(s).
+    -> [go3] 12 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %43 known bits zero=0x31 one=0x0
+    -> Fact[SCEV:1] i64 %43 in [0,4294967233) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %43 in [0,4294967233) (SCEV signed)
+    -> Fact[SCEVSYM:3] i64 %43 - start(0) <=u 32*BTC(((-32 + (32 * ((zext i32 %24 to i64) /u 32))<nuw><nsw>)<nsw> /u 32)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:4] i64 %43 == i64 0 || ne(i64 %43, i64 %39) (latch-implied bound, 1-induction)
+    -> Fact[KB:5] i64 %67 known bits zero=0x7 one=0x0
+    -> Fact[SCEV:6] i64 %67 in [0,-7) (SCEV unsigned)
+    -> Fact[SCEV:7] i64 %67 in [-9223372036854775808,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-hi:8] i64 %67 == i64 %62 || ne(i64 %67, i64 %63) (latch-implied bound, 1-induction)
+    -> Fact[KB:9] i64 %84 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:10] i64 %84 in [0,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:11] i64 %84 in [0,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:12] i64 %84 - start(%78) <=u BTC((-1 + (zext i32 %24 to i64) + (-1 * %78)<nsw>)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:13] i64 %84 == i64 %78 || ne(i64 %84, i64 %34) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:14] i64 %84 >=s i64 %78 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:15] i64 %103 in [-9,12) (SCEV unsigned)
+    -> Fact[SCEV:16] i64 %103 in [-9,12) (SCEV signed)
+    -> Fact[LVI:17] i64 %372 in [-9223372036854775804,-9223372036854775808) (LVI @ )
+    -> Fact[SCEV:18] i64 %372 in [-2147483648,6442450940) (SCEV unsigned)
+    -> Fact[SCEV:19] i64 %372 in [-2147483648,6442450940) (SCEV signed)
+    -> Fact[PHIINV-lo:20] i64 %372 >=s i64 %303 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:21] i32 %373 known bits zero=0x2147483648 one=0x0
+    -> Fact[SCEV:22] i32 %373 in [0,1073741824) (SCEV unsigned)
+    -> Fact[SCEV:23] i32 %373 in [0,1073741824) (SCEV signed)
+    -> Fact[SCEVSYM:24] i32 %373 - start(0) <=u BTC((((3 + (-1 * %285) + (2147483644 smax %285)) /u 4) umin_seq (-1 + %287))) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:25] i32 %373 == i32 0 || ne(i32 %373, i32 %287) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:26] i32 %373 >=s i32 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:27] i64 %78 known bits zero=0x18446744069414584327 one=0x0
+    -> Fact[SCEVEQ:28] i64 %78 in phi image (3 incoming)
+    -> Fact[KB:29] i64 %39 known bits zero=0x18446744069414584351 one=0x0
+    -> Fact[SCEVEQ:30] i64 %39 == SCEV((32 * ((zext i32 %24 to i64) /u 32))<nuw><nsw>)
+    -> Fact[KB:31] i64 %63 known bits zero=0x18446744069414584327 one=0x0
+    -> Fact[SCEVEQ:32] i64 %63 == SCEV((8 * ((zext i32 %24 to i64) /u 8))<nuw><nsw>)
+    -> [heavy] 33 analysis fact(s) on 15 boundary value(s)
+    -> [mv] T3: not a bounds shape (idx vs invariant count)
+    -> [ind L0] BASE (2 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.358440 ms]
+    -> [ind L1] BASE (3 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.687805 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.080558 ms]
+    -> [mv] still SAT under 36 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %293 = icmp sgt i32 %287, 0
+    -> Guard[1] (true edge of ''):  %278 = icmp ugt i32 %277, 1
+    -> Guard[2] (false edge of ''):  %129 = extractvalue { i32, i1 } %128, 1, !nosanitize !17
+    -> Guard[3] (false edge of ''):  %124 = extractvalue { i32, i1 } %123, 1, !nosanitize !17
+    -> Guard[4] (true edge of ''):  %15 = icmp ult i64 %14, -119
+    -> Guard[5] (false edge of ''):  %10 = icmp ult i64 %4, 1492
+    -> Collected 6 dominating context guard(s).
+    -> [go3] 11 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %43 known bits zero=0x31 one=0x0
+    -> Fact[SCEV:1] i64 %43 in [0,4294967233) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %43 in [0,4294967233) (SCEV signed)
+    -> Fact[SCEVSYM:3] i64 %43 - start(0) <=u 32*BTC(((-32 + (32 * ((zext i32 %24 to i64) /u 32))<nuw><nsw>)<nsw> /u 32)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:4] i64 %43 == i64 0 || ne(i64 %43, i64 %39) (latch-implied bound, 1-induction)
+    -> Fact[KB:5] i64 %67 known bits zero=0x7 one=0x0
+    -> Fact[SCEV:6] i64 %67 in [0,-7) (SCEV unsigned)
+    -> Fact[SCEV:7] i64 %67 in [-9223372036854775808,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-hi:8] i64 %67 == i64 %62 || ne(i64 %67, i64 %63) (latch-implied bound, 1-induction)
+    -> Fact[KB:9] i64 %84 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:10] i64 %84 in [0,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:11] i64 %84 in [0,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:12] i64 %84 - start(%78) <=u BTC((-1 + (zext i32 %24 to i64) + (-1 * %78)<nsw>)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:13] i64 %84 == i64 %78 || ne(i64 %84, i64 %34) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:14] i64 %84 >=s i64 %78 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:15] i64 %103 in [-9,12) (SCEV unsigned)
+    -> Fact[SCEV:16] i64 %103 in [-9,12) (SCEV signed)
+    -> Fact[KB:17] i32 %373 known bits zero=0x2147483648 one=0x0
+    -> Fact[SCEV:18] i32 %373 in [0,1073741824) (SCEV unsigned)
+    -> Fact[SCEV:19] i32 %373 in [0,1073741824) (SCEV signed)
+    -> Fact[SCEVSYM:20] i32 %373 - start(0) <=u BTC((((3 + (-1 * %285) + (2147483644 smax %285)) /u 4) umin_seq (-1 + %287))) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:21] i32 %373 == i32 0 || ne(i32 %373, i32 %287) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:22] i32 %373 >=s i32 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:23] i64 %78 known bits zero=0x18446744069414584327 one=0x0
+    -> Fact[SCEVEQ:24] i64 %78 in phi image (3 incoming)
+    -> Fact[KB:25] i64 %39 known bits zero=0x18446744069414584351 one=0x0
+    -> Fact[SCEVEQ:26] i64 %39 == SCEV((32 * ((zext i32 %24 to i64) /u 32))<nuw><nsw>)
+    -> Fact[KB:27] i64 %63 known bits zero=0x18446744069414584327 one=0x0
+    -> Fact[SCEVEQ:28] i64 %63 == SCEV((8 * ((zext i32 %24 to i64) /u 8))<nuw><nsw>)
+    -> [heavy] 29 analysis fact(s) on 14 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (2 phi(s) = entry): UNSAT (Dead Code / Impossible Path) [Query Latency: 0.592599 ms]
+    -> [ind L0] STEP (copy: 18 instr, 0 skipped, 5 fresh, 9 fact(s), 2 link(s)): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 19.409525 ms]
+    -> [ind L1] BASE (3 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.313084 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 30.248040 ms]
+    -> [mv] loosen: {%284 <=s 2^15} -> {%284 <=s 2^30}: UNSAT, adopted (1.516851e+00 ms)
+    -> [mv] DEAD UNDER HYPOTHESIS H = {%284 <=s 2^30} (1 of 39 candidates in core, round 1; re-solve 9.455241e+00 ms; trap loop depth 2, hoist to depth 2)
+  => SUCCESS (fast copy): trap folded in 1 copy inside the H-guarded clone of loop ''
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %360 = extractvalue { i32, i1 } %359, 1, !nosanitize !17
+    -> Guard[1] (false edge of ''):  %350 = extractvalue { i32, i1 } %349, 1, !nosanitize !17
+    -> Guard[2] (true edge of ''):  %293 = icmp sgt i32 %287, 0
+    -> Guard[3] (true edge of ''):  %278 = icmp ugt i32 %277, 1
+    -> Guard[4] (false edge of ''):  %129 = extractvalue { i32, i1 } %128, 1, !nosanitize !17
+    -> Guard[5] (false edge of ''):  %124 = extractvalue { i32, i1 } %123, 1, !nosanitize !17
+    -> Guard[6] (true edge of ''):  %15 = icmp ult i64 %14, -119
+    -> Guard[7] (false edge of ''):  %10 = icmp ult i64 %4, 1492
+    -> Collected 8 dominating context guard(s).
+    -> [go3] 12 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %43 known bits zero=0x31 one=0x0
+    -> Fact[SCEV:1] i64 %43 in [0,4294967233) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %43 in [0,4294967233) (SCEV signed)
+    -> Fact[SCEVSYM:3] i64 %43 - start(0) <=u 32*BTC(((-32 + (32 * ((zext i32 %24 to i64) /u 32))<nuw><nsw>)<nsw> /u 32)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:4] i64 %43 == i64 0 || ne(i64 %43, i64 %39) (latch-implied bound, 1-induction)
+    -> Fact[KB:5] i64 %67 known bits zero=0x7 one=0x0
+    -> Fact[SCEV:6] i64 %67 in [0,-7) (SCEV unsigned)
+    -> Fact[SCEV:7] i64 %67 in [-9223372036854775808,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-hi:8] i64 %67 == i64 %62 || ne(i64 %67, i64 %63) (latch-implied bound, 1-induction)
+    -> Fact[KB:9] i64 %84 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:10] i64 %84 in [0,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:11] i64 %84 in [0,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:12] i64 %84 - start(%78) <=u BTC((-1 + (zext i32 %24 to i64) + (-1 * %78)<nsw>)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:13] i64 %84 == i64 %78 || ne(i64 %84, i64 %34) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:14] i64 %84 >=s i64 %78 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:15] i64 %103 in [-9,12) (SCEV unsigned)
+    -> Fact[SCEV:16] i64 %103 in [-9,12) (SCEV signed)
+    -> Fact[LVI:17] i64 %347 in [-9223372036854775806,-9223372036854775808) (LVI @ )
+    -> Fact[SCEV:18] i64 %347 in [-2147483648,6442450940) (SCEV unsigned)
+    -> Fact[SCEV:19] i64 %347 in [-2147483648,6442450940) (SCEV signed)
+    -> Fact[PHIINV-lo:20] i64 %347 >=s i64 %306 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:21] i32 %348 known bits zero=0x2147483648 one=0x0
+    -> Fact[SCEV:22] i32 %348 in [0,2147483647) (SCEV unsigned)
+    -> Fact[SCEV:23] i32 %348 in [0,2147483647) (SCEV signed)
+    -> Fact[SCEVSYM:24] i32 %348 - start(0) <=u BTC((((1 + (-1 * %285) + (2147483646 smax %285)) /u 2) umin_seq (-1 + %287))) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:25] i32 %348 == i32 0 || ne(i32 %348, i32 %287) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:26] i32 %348 >=s i32 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:27] i64 %78 known bits zero=0x18446744069414584327 one=0x0
+    -> Fact[SCEVEQ:28] i64 %78 in phi image (3 incoming)
+    -> Fact[KB:29] i64 %39 known bits zero=0x18446744069414584351 one=0x0
+    -> Fact[SCEVEQ:30] i64 %39 == SCEV((32 * ((zext i32 %24 to i64) /u 32))<nuw><nsw>)
+    -> Fact[KB:31] i64 %63 known bits zero=0x18446744069414584327 one=0x0
+    -> Fact[SCEVEQ:32] i64 %63 == SCEV((8 * ((zext i32 %24 to i64) /u 8))<nuw><nsw>)
+    -> [heavy] 33 analysis fact(s) on 15 boundary value(s)
+    -> [mv] T3: not a bounds shape (idx vs invariant count)
+    -> [ind L0] BASE (2 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.100794 ms]
+    -> [ind L1] BASE (3 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.985077 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.832005 ms]
+    -> [mv] still SAT under 33 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %350 = extractvalue { i32, i1 } %349, 1, !nosanitize !17
+    -> Guard[1] (true edge of ''):  %293 = icmp sgt i32 %287, 0
+    -> Guard[2] (true edge of ''):  %278 = icmp ugt i32 %277, 1
+    -> Guard[3] (false edge of ''):  %129 = extractvalue { i32, i1 } %128, 1, !nosanitize !17
+    -> Guard[4] (false edge of ''):  %124 = extractvalue { i32, i1 } %123, 1, !nosanitize !17
+    -> Guard[5] (true edge of ''):  %15 = icmp ult i64 %14, -119
+    -> Guard[6] (false edge of ''):  %10 = icmp ult i64 %4, 1492
+    -> Collected 7 dominating context guard(s).
+    -> [go3] 12 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %43 known bits zero=0x31 one=0x0
+    -> Fact[SCEV:1] i64 %43 in [0,4294967233) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %43 in [0,4294967233) (SCEV signed)
+    -> Fact[SCEVSYM:3] i64 %43 - start(0) <=u 32*BTC(((-32 + (32 * ((zext i32 %24 to i64) /u 32))<nuw><nsw>)<nsw> /u 32)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:4] i64 %43 == i64 0 || ne(i64 %43, i64 %39) (latch-implied bound, 1-induction)
+    -> Fact[KB:5] i64 %67 known bits zero=0x7 one=0x0
+    -> Fact[SCEV:6] i64 %67 in [0,-7) (SCEV unsigned)
+    -> Fact[SCEV:7] i64 %67 in [-9223372036854775808,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-hi:8] i64 %67 == i64 %62 || ne(i64 %67, i64 %63) (latch-implied bound, 1-induction)
+    -> Fact[KB:9] i64 %84 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:10] i64 %84 in [0,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:11] i64 %84 in [0,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:12] i64 %84 - start(%78) <=u BTC((-1 + (zext i32 %24 to i64) + (-1 * %78)<nsw>)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:13] i64 %84 == i64 %78 || ne(i64 %84, i64 %34) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:14] i64 %84 >=s i64 %78 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:15] i64 %103 in [-9,12) (SCEV unsigned)
+    -> Fact[SCEV:16] i64 %103 in [-9,12) (SCEV signed)
+    -> Fact[LVI:17] i64 %347 in [-9223372036854775806,-9223372036854775808) (LVI @ )
+    -> Fact[SCEV:18] i64 %347 in [-2147483648,6442450940) (SCEV unsigned)
+    -> Fact[SCEV:19] i64 %347 in [-2147483648,6442450940) (SCEV signed)
+    -> Fact[PHIINV-lo:20] i64 %347 >=s i64 %306 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:21] i32 %348 known bits zero=0x2147483648 one=0x0
+    -> Fact[SCEV:22] i32 %348 in [0,2147483647) (SCEV unsigned)
+    -> Fact[SCEV:23] i32 %348 in [0,2147483647) (SCEV signed)
+    -> Fact[SCEVSYM:24] i32 %348 - start(0) <=u BTC((((1 + (-1 * %285) + (2147483646 smax %285)) /u 2) umin_seq (-1 + %287))) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:25] i32 %348 == i32 0 || ne(i32 %348, i32 %287) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:26] i32 %348 >=s i32 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:27] i64 %78 known bits zero=0x18446744069414584327 one=0x0
+    -> Fact[SCEVEQ:28] i64 %78 in phi image (3 incoming)
+    -> Fact[KB:29] i64 %39 known bits zero=0x18446744069414584351 one=0x0
+    -> Fact[SCEVEQ:30] i64 %39 == SCEV((32 * ((zext i32 %24 to i64) /u 32))<nuw><nsw>)
+    -> Fact[KB:31] i64 %63 known bits zero=0x18446744069414584327 one=0x0
+    -> Fact[SCEVEQ:32] i64 %63 == SCEV((8 * ((zext i32 %24 to i64) /u 8))<nuw><nsw>)
+    -> [heavy] 33 analysis fact(s) on 15 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (2 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.441397 ms]
+    -> [ind L1] BASE (3 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.774076 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 41.628484 ms]
+    -> [mv] still SAT under 33 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %293 = icmp sgt i32 %287, 0
+    -> Guard[1] (true edge of ''):  %278 = icmp ugt i32 %277, 1
+    -> Guard[2] (false edge of ''):  %129 = extractvalue { i32, i1 } %128, 1, !nosanitize !17
+    -> Guard[3] (false edge of ''):  %124 = extractvalue { i32, i1 } %123, 1, !nosanitize !17
+    -> Guard[4] (true edge of ''):  %15 = icmp ult i64 %14, -119
+    -> Guard[5] (false edge of ''):  %10 = icmp ult i64 %4, 1492
+    -> Collected 6 dominating context guard(s).
+    -> [go3] 11 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %43 known bits zero=0x31 one=0x0
+    -> Fact[SCEV:1] i64 %43 in [0,4294967233) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %43 in [0,4294967233) (SCEV signed)
+    -> Fact[SCEVSYM:3] i64 %43 - start(0) <=u 32*BTC(((-32 + (32 * ((zext i32 %24 to i64) /u 32))<nuw><nsw>)<nsw> /u 32)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:4] i64 %43 == i64 0 || ne(i64 %43, i64 %39) (latch-implied bound, 1-induction)
+    -> Fact[KB:5] i64 %67 known bits zero=0x7 one=0x0
+    -> Fact[SCEV:6] i64 %67 in [0,-7) (SCEV unsigned)
+    -> Fact[SCEV:7] i64 %67 in [-9223372036854775808,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-hi:8] i64 %67 == i64 %62 || ne(i64 %67, i64 %63) (latch-implied bound, 1-induction)
+    -> Fact[KB:9] i64 %84 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:10] i64 %84 in [0,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:11] i64 %84 in [0,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:12] i64 %84 - start(%78) <=u BTC((-1 + (zext i32 %24 to i64) + (-1 * %78)<nsw>)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:13] i64 %84 == i64 %78 || ne(i64 %84, i64 %34) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:14] i64 %84 >=s i64 %78 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:15] i64 %103 in [-9,12) (SCEV unsigned)
+    -> Fact[SCEV:16] i64 %103 in [-9,12) (SCEV signed)
+    -> Fact[KB:17] i32 %348 known bits zero=0x2147483648 one=0x0
+    -> Fact[SCEV:18] i32 %348 in [0,2147483647) (SCEV unsigned)
+    -> Fact[SCEV:19] i32 %348 in [0,2147483647) (SCEV signed)
+    -> Fact[SCEVSYM:20] i32 %348 - start(0) <=u BTC((((1 + (-1 * %285) + (2147483646 smax %285)) /u 2) umin_seq (-1 + %287))) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:21] i32 %348 == i32 0 || ne(i32 %348, i32 %287) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:22] i32 %348 >=s i32 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:23] i64 %78 known bits zero=0x18446744069414584327 one=0x0
+    -> Fact[SCEVEQ:24] i64 %78 in phi image (3 incoming)
+    -> Fact[KB:25] i64 %39 known bits zero=0x18446744069414584351 one=0x0
+    -> Fact[SCEVEQ:26] i64 %39 == SCEV((32 * ((zext i32 %24 to i64) /u 32))<nuw><nsw>)
+    -> Fact[KB:27] i64 %63 known bits zero=0x18446744069414584327 one=0x0
+    -> Fact[SCEVEQ:28] i64 %63 == SCEV((8 * ((zext i32 %24 to i64) /u 8))<nuw><nsw>)
+    -> [heavy] 29 analysis fact(s) on 14 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (2 phi(s) = entry): UNSAT (Dead Code / Impossible Path) [Query Latency: 1.692238 ms]
+    -> [ind L0] STEP (copy: 21 instr, 0 skipped, 8 fresh, 9 fact(s), 2 link(s)): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 21.065450 ms]
+    -> [ind L1] BASE (3 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.405438 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 32.986373 ms]
+    -> [mv] minimize: without {%284 <=s 2^15} -> SAT, kept (4.829335e+00 ms)
+    -> [mv] minimize: without {%287 <=s 2^15} -> UNSAT, dropped (4.035841e+00 ms)
+    -> [mv] minimize: without {%285 <=s 2^15} -> UNSAT, dropped (4.181002e+00 ms)
+    -> [mv] minimize: without {%285 >=s 0} -> SAT, kept (3.956179e+00 ms)
+    -> [mv] loosen: {%284 <=s 2^15} -> {%284 <=s 2^30}: UNSAT, adopted (4.767611e+00 ms)
+    -> [mv] DEAD UNDER HYPOTHESIS H = {%284 <=s 2^30, %285 >=s 0} (2 of 36 candidates in core, round 1; re-solve 8.095265e+00 ms; trap loop depth 2, hoist to depth 2)
+  => SUCCESS (fast copy): trap folded in 1 copy inside the H-guarded clone of loop ''
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %333 = extractvalue { i32, i1 } %332, 1, !nosanitize !17
+    -> Guard[1] (true edge of ''):  %293 = icmp sgt i32 %287, 0
+    -> Guard[2] (true edge of ''):  %278 = icmp ugt i32 %277, 1
+    -> Guard[3] (false edge of ''):  %129 = extractvalue { i32, i1 } %128, 1, !nosanitize !17
+    -> Guard[4] (false edge of ''):  %124 = extractvalue { i32, i1 } %123, 1, !nosanitize !17
+    -> Guard[5] (true edge of ''):  %15 = icmp ult i64 %14, -119
+    -> Guard[6] (false edge of ''):  %10 = icmp ult i64 %4, 1492
+    -> Collected 7 dominating context guard(s).
+    -> [go3] 11 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %43 known bits zero=0x31 one=0x0
+    -> Fact[SCEV:1] i64 %43 in [0,4294967233) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %43 in [0,4294967233) (SCEV signed)
+    -> Fact[SCEVSYM:3] i64 %43 - start(0) <=u 32*BTC(((-32 + (32 * ((zext i32 %24 to i64) /u 32))<nuw><nsw>)<nsw> /u 32)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:4] i64 %43 == i64 0 || ne(i64 %43, i64 %39) (latch-implied bound, 1-induction)
+    -> Fact[KB:5] i64 %67 known bits zero=0x7 one=0x0
+    -> Fact[SCEV:6] i64 %67 in [0,-7) (SCEV unsigned)
+    -> Fact[SCEV:7] i64 %67 in [-9223372036854775808,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-hi:8] i64 %67 == i64 %62 || ne(i64 %67, i64 %63) (latch-implied bound, 1-induction)
+    -> Fact[KB:9] i64 %84 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:10] i64 %84 in [0,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:11] i64 %84 in [0,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:12] i64 %84 - start(%78) <=u BTC((-1 + (zext i32 %24 to i64) + (-1 * %78)<nsw>)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:13] i64 %84 == i64 %78 || ne(i64 %84, i64 %34) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:14] i64 %84 >=s i64 %78 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:15] i64 %103 in [-9,12) (SCEV unsigned)
+    -> Fact[SCEV:16] i64 %103 in [-9,12) (SCEV signed)
+    -> Fact[KB:17] i32 %331 known bits zero=0x2147483648 one=0x0
+    -> Fact[SCEV:18] i32 %331 in [0,2147483647) (SCEV unsigned)
+    -> Fact[SCEV:19] i32 %331 in [0,2147483647) (SCEV signed)
+    -> Fact[SCEVSYM:20] i32 %331 - start(0) <=u BTC(((2147483647 + (-1 * %285)) umin_seq (-1 + %287))) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:21] i32 %331 == i32 0 || ne(i32 %331, i32 %287) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:22] i32 %331 >=s i32 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:23] i64 %78 known bits zero=0x18446744069414584327 one=0x0
+    -> Fact[SCEVEQ:24] i64 %78 in phi image (3 incoming)
+    -> Fact[KB:25] i64 %39 known bits zero=0x18446744069414584351 one=0x0
+    -> Fact[SCEVEQ:26] i64 %39 == SCEV((32 * ((zext i32 %24 to i64) /u 32))<nuw><nsw>)
+    -> Fact[KB:27] i64 %63 known bits zero=0x18446744069414584327 one=0x0
+    -> Fact[SCEVEQ:28] i64 %63 == SCEV((8 * ((zext i32 %24 to i64) /u 8))<nuw><nsw>)
+    -> [heavy] 29 analysis fact(s) on 14 boundary value(s)
+    -> [mv] T3: not a bounds shape (idx vs invariant count)
+    -> [ind L0] BASE (2 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.169682 ms]
+    -> [ind L1] BASE (3 phi(s) = entry): UNSAT (Dead Code / Impossible Path) [Query Latency: 0.414149 ms]
+    -> [ind L1] STEP (copy: 168 instr, 0 skipped, 59 fresh, 68 fact(s), 3 link(s)): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 25.049736 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 31.272129 ms]
+    -> [mv] minimize: without {%285 <=s 2^15} -> SAT, kept (1.106182e+01 ms)
+    -> [mv] minimize: without {%287 <=s 2^15} -> SAT, kept (2.278817e+00 ms)
+    -> [mv] minimize: without {%285 >=s 0} -> UNSAT, dropped (2.212881e+00 ms)
+    -> [mv] loosen: {%285 <=s 2^15} -> {%285 <=s 2^30}: UNSAT, adopted (1.088948e+00 ms)
+    -> [mv] loosen: {%287 <=s 2^15} -> {%287 <=s 2^30}: kept tight (2.842819e+00 ms)
+    -> [mv] DEAD UNDER HYPOTHESIS H = {%285 <=s 2^30, %287 <=s 2^15} (2 of 36 candidates in core, round 1; re-solve 2.445188e+01 ms; trap loop depth 2, hoist to depth 2)
+  => SUCCESS (fast copy): trap folded in 1 copy inside the H-guarded clone of loop ''
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %293 = icmp sgt i32 %287, 0
+    -> Guard[1] (true edge of ''):  %278 = icmp ugt i32 %277, 1
+    -> Guard[2] (false edge of ''):  %129 = extractvalue { i32, i1 } %128, 1, !nosanitize !17
+    -> Guard[3] (false edge of ''):  %124 = extractvalue { i32, i1 } %123, 1, !nosanitize !17
+    -> Guard[4] (true edge of ''):  %15 = icmp ult i64 %14, -119
+    -> Guard[5] (false edge of ''):  %10 = icmp ult i64 %4, 1492
+    -> Collected 6 dominating context guard(s).
+    -> [go3] 11 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %43 known bits zero=0x31 one=0x0
+    -> Fact[SCEV:1] i64 %43 in [0,4294967233) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %43 in [0,4294967233) (SCEV signed)
+    -> Fact[SCEVSYM:3] i64 %43 - start(0) <=u 32*BTC(((-32 + (32 * ((zext i32 %24 to i64) /u 32))<nuw><nsw>)<nsw> /u 32)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:4] i64 %43 == i64 0 || ne(i64 %43, i64 %39) (latch-implied bound, 1-induction)
+    -> Fact[KB:5] i64 %67 known bits zero=0x7 one=0x0
+    -> Fact[SCEV:6] i64 %67 in [0,-7) (SCEV unsigned)
+    -> Fact[SCEV:7] i64 %67 in [-9223372036854775808,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-hi:8] i64 %67 == i64 %62 || ne(i64 %67, i64 %63) (latch-implied bound, 1-induction)
+    -> Fact[KB:9] i64 %84 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:10] i64 %84 in [0,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:11] i64 %84 in [0,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:12] i64 %84 - start(%78) <=u BTC((-1 + (zext i32 %24 to i64) + (-1 * %78)<nsw>)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:13] i64 %84 == i64 %78 || ne(i64 %84, i64 %34) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:14] i64 %84 >=s i64 %78 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:15] i64 %103 in [-9,12) (SCEV unsigned)
+    -> Fact[SCEV:16] i64 %103 in [-9,12) (SCEV signed)
+    -> Fact[KB:17] i32 %331 known bits zero=0x2147483648 one=0x0
+    -> Fact[SCEV:18] i32 %331 in [0,2147483647) (SCEV unsigned)
+    -> Fact[SCEV:19] i32 %331 in [0,2147483647) (SCEV signed)
+    -> Fact[SCEVSYM:20] i32 %331 - start(0) <=u BTC(((2147483647 + (-1 * %285)) umin_seq (-1 + %287))) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:21] i32 %331 == i32 0 || ne(i32 %331, i32 %287) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:22] i32 %331 >=s i32 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:23] i64 %78 known bits zero=0x18446744069414584327 one=0x0
+    -> Fact[SCEVEQ:24] i64 %78 in phi image (3 incoming)
+    -> Fact[KB:25] i64 %39 known bits zero=0x18446744069414584351 one=0x0
+    -> Fact[SCEVEQ:26] i64 %39 == SCEV((32 * ((zext i32 %24 to i64) /u 32))<nuw><nsw>)
+    -> Fact[KB:27] i64 %63 known bits zero=0x18446744069414584327 one=0x0
+    -> Fact[SCEVEQ:28] i64 %63 == SCEV((8 * ((zext i32 %24 to i64) /u 8))<nuw><nsw>)
+    -> [heavy] 29 analysis fact(s) on 14 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (2 phi(s) = entry): UNSAT (Dead Code / Impossible Path) [Query Latency: 0.639718 ms]
+    -> [ind L0] STEP (copy: 14 instr, 0 skipped, 6 fresh, 10 fact(s), 2 link(s)): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.858394 ms]
+    -> [ind L1] BASE (3 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.677368 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 53.023848 ms]
+    -> [mv] minimize: without {%284 <=s 2^15} -> SAT, kept (4.054673e+00 ms)
+    -> [mv] minimize: without {%287 <=s 2^15} -> SAT, kept (4.945851e+00 ms)
+    -> [mv] minimize: without {%285 <=s 2^15} -> UNSAT, dropped (6.067555e+00 ms)
+    -> [mv] minimize: without {%285 >=s 0} -> UNSAT, dropped (3.978584e+00 ms)
+    -> [mv] loosen: {%284 <=s 2^15} -> {%284 <=s 2^30}: UNSAT, adopted (5.481461e+00 ms)
+    -> [mv] loosen: {%287 <=s 2^15} -> {%287 <=s 2^30}: UNSAT, adopted (8.386284e+00 ms)
+    -> [mv] DEAD UNDER HYPOTHESIS H = {%284 <=s 2^30, %287 <=s 2^30} (2 of 39 candidates in core, round 1; re-solve 1.268202e+01 ms; trap loop depth 2, hoist to depth 2)
+  => SUCCESS (fast copy): trap folded in 1 copy inside the H-guarded clone of loop ''
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %155 = icmp slt i32 %127, 0
+    -> Guard[1] (false edge of ''):  %129 = extractvalue { i32, i1 } %128, 1, !nosanitize !17
+    -> Guard[2] (false edge of ''):  %124 = extractvalue { i32, i1 } %123, 1, !nosanitize !17
+    -> Guard[3] (true edge of ''):  %15 = icmp ult i64 %14, -119
+    -> Guard[4] (false edge of ''):  %10 = icmp ult i64 %4, 1492
+    -> Collected 5 dominating context guard(s).
+    -> [go3] 11 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %43 known bits zero=0x31 one=0x0
+    -> Fact[SCEV:1] i64 %43 in [0,4294967233) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %43 in [0,4294967233) (SCEV signed)
+    -> Fact[SCEVSYM:3] i64 %43 - start(0) <=u 32*BTC(((-32 + (32 * ((zext i32 %24 to i64) /u 32))<nuw><nsw>)<nsw> /u 32)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:4] i64 %43 == i64 0 || ne(i64 %43, i64 %39) (latch-implied bound, 1-induction)
+    -> Fact[KB:5] i64 %67 known bits zero=0x7 one=0x0
+    -> Fact[SCEV:6] i64 %67 in [0,-7) (SCEV unsigned)
+    -> Fact[SCEV:7] i64 %67 in [-9223372036854775808,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-hi:8] i64 %67 == i64 %62 || ne(i64 %67, i64 %63) (latch-implied bound, 1-induction)
+    -> Fact[KB:9] i64 %84 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:10] i64 %84 in [0,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:11] i64 %84 in [0,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:12] i64 %84 - start(%78) <=u BTC((-1 + (zext i32 %24 to i64) + (-1 * %78)<nsw>)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:13] i64 %84 == i64 %78 || ne(i64 %84, i64 %34) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:14] i64 %84 >=s i64 %78 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:15] i64 %103 in [-9,12) (SCEV unsigned)
+    -> Fact[SCEV:16] i64 %103 in [-9,12) (SCEV signed)
+    -> Fact[KB:17] i64 %207 known bits zero=0x9223372036854775811 one=0x0
+    -> Fact[SCEV:18] i64 %207 in [0,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:19] i64 %207 in [0,9223372036854775805) (SCEV signed)
+    -> Fact[PHIINV-lo:20] i64 %207 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:21] i64 %78 known bits zero=0x18446744069414584327 one=0x0
+    -> Fact[SCEVEQ:22] i64 %78 in phi image (3 incoming)
+    -> Fact[KB:23] i64 %39 known bits zero=0x18446744069414584351 one=0x0
+    -> Fact[SCEVEQ:24] i64 %39 == SCEV((32 * ((zext i32 %24 to i64) /u 32))<nuw><nsw>)
+    -> Fact[KB:25] i64 %63 known bits zero=0x18446744069414584327 one=0x0
+    -> Fact[SCEVEQ:26] i64 %63 == SCEV((8 * ((zext i32 %24 to i64) /u 8))<nuw><nsw>)
+    -> [heavy] 27 analysis fact(s) on 10 boundary value(s)
+    -> [mv] T3: not a bounds shape (idx vs invariant count)
+    -> [ind L0] BASE (1 phi(s) = entry): UNSAT (Dead Code / Impossible Path) [Query Latency: 0.144026 ms]
+    -> [ind L0] STEP (copy: 45 instr, 0 skipped, 21 fresh, 4 fact(s), 1 link(s)): UNSAT (Dead Code / Impossible Path) [Query Latency: 0.345130 ms]
+    -> [ind] UNSAT by 1-induction (BASE + STEP)
+    -> UNSAT (Dead Code / Impossible Path) [ind]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %124 = extractvalue { i32, i1 } %123, 1, !nosanitize !17
+    -> Guard[1] (true edge of ''):  %15 = icmp ult i64 %14, -119
+    -> Guard[2] (false edge of ''):  %10 = icmp ult i64 %4, 1492
+    -> Collected 3 dominating context guard(s).
+    -> [go3] 11 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i64 %4 in [1492,0) (LVI @ )
+    -> Fact[LVI:1] i64 %14 in [0,-119) (LVI @ )
+    -> Fact[LVI:2] i32 %24 in [-2147483644,-2147483648) (LVI @ )
+    -> Fact[LVI:3] i32 %25 in [0,257) (LVI @ )
+    -> Fact[KB:4] i64 %43 known bits zero=0x31 one=0x0
+    -> Fact[SCEV:5] i64 %43 in [0,4294967233) (SCEV unsigned)
+    -> Fact[SCEV:6] i64 %43 in [0,4294967233) (SCEV signed)
+    -> Fact[SCEVSYM:7] i64 %43 - start(0) <=u 32*BTC(((-32 + (32 * ((zext i32 %24 to i64) /u 32))<nuw><nsw>)<nsw> /u 32)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:8] i64 %43 == i64 0 || ne(i64 %43, i64 %39) (latch-implied bound, 1-induction)
+    -> Fact[KB:9] i64 %67 known bits zero=0x7 one=0x0
+    -> Fact[SCEV:10] i64 %67 in [0,-7) (SCEV unsigned)
+    -> Fact[SCEV:11] i64 %67 in [-9223372036854775808,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-hi:12] i64 %67 == i64 %62 || ne(i64 %67, i64 %63) (latch-implied bound, 1-induction)
+    -> Fact[KB:13] i64 %84 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:14] i64 %84 in [0,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:15] i64 %84 in [0,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:16] i64 %84 - start(%78) <=u BTC((-1 + (zext i32 %24 to i64) + (-1 * %78)<nsw>)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:17] i64 %84 == i64 %78 || ne(i64 %84, i64 %34) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:18] i64 %84 >=s i64 %78 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:19] i64 %103 in [-9,12) (SCEV unsigned)
+    -> Fact[SCEV:20] i64 %103 in [-9,12) (SCEV signed)
+    -> Fact[LVI:21] i32 %24 in [-2147483644,-2147483648) (LVI @ )
+    -> Fact[KB:22] i64 %78 known bits zero=0x18446744069414584327 one=0x0
+    -> Fact[SCEVEQ:23] i64 %78 in phi image (3 incoming)
+    -> Fact[KB:24] i64 %39 known bits zero=0x18446744069414584351 one=0x0
+    -> Fact[SCEVEQ:25] i64 %39 == SCEV((32 * ((zext i32 %24 to i64) /u 32))<nuw><nsw>)
+    -> Fact[KB:26] i64 %63 known bits zero=0x18446744069414584327 one=0x0
+    -> Fact[SCEVEQ:27] i64 %63 == SCEV((8 * ((zext i32 %24 to i64) /u 8))<nuw><nsw>)
+    -> [heavy] 28 analysis fact(s) on 9 boundary value(s)
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3.615564 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %15 = icmp ult i64 %14, -119
+    -> Guard[1] (false edge of ''):  %10 = icmp ult i64 %4, 1492
+    -> Collected 2 dominating context guard(s).
+    -> Fact[LVI:0] i64 %4 in [1492,0) (LVI @ )
+    -> Fact[LVI:1] i64 %14 in [0,-119) (LVI @ )
+    -> [heavy] 2 analysis fact(s) on 3 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.876397 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %474 = extractvalue { i32, i1 } %472, 1, !nosanitize !17
+    -> Guard[1] (true edge of ''):  %278 = icmp ugt i32 %277, 1
+    -> Guard[2] (false edge of ''):  %129 = extractvalue { i32, i1 } %128, 1, !nosanitize !17
+    -> Guard[3] (false edge of ''):  %124 = extractvalue { i32, i1 } %123, 1, !nosanitize !17
+    -> Guard[4] (true edge of ''):  %15 = icmp ult i64 %14, -119
+    -> Guard[5] (false edge of ''):  %10 = icmp ult i64 %4, 1492
+    -> Collected 6 dominating context guard(s).
+    -> [go3] 11 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %43 known bits zero=0x31 one=0x0
+    -> Fact[SCEV:1] i64 %43 in [0,4294967233) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %43 in [0,4294967233) (SCEV signed)
+    -> Fact[SCEVSYM:3] i64 %43 - start(0) <=u 32*BTC(((-32 + (32 * ((zext i32 %24 to i64) /u 32))<nuw><nsw>)<nsw> /u 32)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:4] i64 %43 == i64 0 || ne(i64 %43, i64 %39) (latch-implied bound, 1-induction)
+    -> Fact[KB:5] i64 %67 known bits zero=0x7 one=0x0
+    -> Fact[SCEV:6] i64 %67 in [0,-7) (SCEV unsigned)
+    -> Fact[SCEV:7] i64 %67 in [-9223372036854775808,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-hi:8] i64 %67 == i64 %62 || ne(i64 %67, i64 %63) (latch-implied bound, 1-induction)
+    -> Fact[KB:9] i64 %84 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:10] i64 %84 in [0,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:11] i64 %84 in [0,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:12] i64 %84 - start(%78) <=u BTC((-1 + (zext i32 %24 to i64) + (-1 * %78)<nsw>)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:13] i64 %84 == i64 %78 || ne(i64 %84, i64 %34) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:14] i64 %84 >=s i64 %78 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:15] i64 %103 in [-9,12) (SCEV unsigned)
+    -> Fact[SCEV:16] i64 %103 in [-9,12) (SCEV signed)
+    -> Fact[KB:17] i64 %283 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:18] i64 %283 in [1,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:19] i64 %283 in [1,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:20] i64 %283 - start(1) <=u BTC((-2 + (zext i32 (1 + ((11 umin (1 + (zext i8 (trunc i32 %17 to i8) to i32))<nuw><nsw>) umax %25)) to i64))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:21] i64 %283 == i64 1 || ne(i64 %283, i64 %281) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:22] i64 %283 >=s i64 1 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:23] i64 %281 known bits zero=0x18446744069414584320 one=0x0
+    -> Fact[KB:24] i64 %78 known bits zero=0x18446744069414584327 one=0x0
+    -> Fact[SCEVEQ:25] i64 %78 in phi image (3 incoming)
+    -> Fact[KB:26] i64 %39 known bits zero=0x18446744069414584351 one=0x0
+    -> Fact[SCEVEQ:27] i64 %39 == SCEV((32 * ((zext i32 %24 to i64) /u 32))<nuw><nsw>)
+    -> Fact[KB:28] i64 %63 known bits zero=0x18446744069414584327 one=0x0
+    -> Fact[SCEVEQ:29] i64 %63 == SCEV((8 * ((zext i32 %24 to i64) /u 8))<nuw><nsw>)
+    -> [heavy] 30 analysis fact(s) on 14 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (3 phi(s) = entry): UNSAT (Dead Code / Impossible Path) [Query Latency: 9.841228 ms]
+    -> [ind L0] STEP (copy: 168 instr, 0 skipped, 59 fresh, 68 fact(s), 3 link(s)): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 33.004177 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 21.199689 ms]
+    -> [mv] still SAT under 21 hypothesis candidate(s): not versionable
+  => Total Traps Eliminated: 2
+  => Traps Folded In Fast Copies (mv): 5
+  => Total Trap Attempts: 17
+  => Total SMT Queries Executed: 17
+  => Total SMT Query Latency: 1.215540e+03 ms
+  => Average SMT Query Latency: 7.150237e+01 ms
+  => Total DFS & SMT Execution Time: 7.859031e+03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: HUF_readDTableX2_wksp
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %317 = icmp sgt i32 %313, 1
+    -> Guard[1] (false edge of ''):  %322 = icmp slt i32 %314, %284
+    -> Guard[2] (false edge of ''):  %311 = icmp eq i32 %298, %301
+    -> Guard[3] (false edge of ''):  %305 = icmp ult i32 %304, %280
+    -> Guard[4] (true edge of ''):  %287 = icmp sgt i32 %284, 1
+    -> Guard[5] (false edge of ''):  %285 = extractvalue { i32, i1 } %283, 1, !nosanitize !25
+    -> Guard[6] (false edge of ''):  %42 = icmp eq i32 %41, 0
+    -> Guard[7] (false edge of ''):  %28 = icmp ugt i32 %27, %13
+    -> Guard[8] (true edge of ''):  %25 = icmp ult i64 %24, -119
+    -> Guard[9] (false edge of ''):  %20 = icmp ugt i32 %13, 12
+    -> Guard[10] (false edge of ''):  %15 = icmp ult i64 %4, 2124
+    -> Collected 11 dominating context guard(s).
+    -> [go3] 26 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %164 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %164 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %164 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %164 == i64 0 || ne(i64 %164, i64 %160) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:4] i64 %207 in [0,4294967296) (SCEV unsigned)
+    -> Fact[SCEV:5] i64 %207 in [0,4294967296) (SCEV signed)
+    -> Fact[KB:6] i64 %208 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:7] i64 %208 in [0,8589934591) (SCEV unsigned)
+    -> Fact[SCEV:8] i64 %208 in [0,8589934591) (SCEV signed)
+    -> Fact[PHIINV-lo:9] i64 %208 >=s i64 %198 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:10] i64 %219 known bits zero=0x7 one=0x0
+    -> Fact[SCEV:11] i64 %219 in [0,-7) (SCEV unsigned)
+    -> Fact[SCEV:12] i64 %219 in [-9223372036854775808,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-hi:13] i64 %219 == i64 0 || ne(i64 %219, i64 %203) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:14] i64 %239 in [0,3) (SCEV unsigned)
+    -> Fact[SCEV:15] i64 %239 in [0,3) (SCEV signed)
+    -> Fact[PHIINV-hi:16] i64 %239 == i64 0 || ne(i64 %239, i64 %235) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:17] i64 %252 in [-4294967296,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:18] i64 %252 in [-4294967296,-9223372036854775808) (SCEV signed)
+    -> Fact[PHIINV-hi:19] i64 %252 == i64 %248 || ne(i64 %252, i64 %200) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:20] i64 %252 >=s i64 %248 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:21] i64 %296 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:22] i64 %296 in [1,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:23] i64 %296 in [1,-9223372036854775808) (SCEV signed)
+    -> Fact[PHIINV-hi:24] i64 %296 == i64 1 || ne(i64 %296, i64 %289) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:25] i64 %296 >=s i64 1 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:26] i64 %238 in [1,0) (SCEV unsigned)
+    -> Fact[SCEV:27] i64 %238 in [-4294967296,4294967298) (SCEV signed)
+    -> Fact[PHIINV-lo:28] i64 %238 >=s i64 %233 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:29] i64 %289 known bits zero=0x18446744071562067968 one=0x0
+    -> Fact[KB:30] i64 %233 known bits zero=0x0 one=0x1
+    -> Fact[SCEVEQ:31] i64 %233 in phi image (3 incoming)
+    -> Fact[KB:32] i64 %204 known bits zero=0x6 one=0x1
+    -> [heavy] 33 analysis fact(s) on 20 boundary value(s)
+    -> [mv] T3: not a bounds shape (idx vs invariant count)
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 0.045111 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %317 = icmp sgt i32 %313, 1
+    -> Guard[1] (false edge of ''):  %322 = icmp slt i32 %314, %284
+    -> Guard[2] (false edge of ''):  %311 = icmp eq i32 %298, %301
+    -> Guard[3] (false edge of ''):  %305 = icmp ult i32 %304, %280
+    -> Guard[4] (true edge of ''):  %287 = icmp sgt i32 %284, 1
+    -> Guard[5] (false edge of ''):  %285 = extractvalue { i32, i1 } %283, 1, !nosanitize !25
+    -> Guard[6] (false edge of ''):  %42 = icmp eq i32 %41, 0
+    -> Guard[7] (false edge of ''):  %28 = icmp ugt i32 %27, %13
+    -> Guard[8] (true edge of ''):  %25 = icmp ult i64 %24, -119
+    -> Guard[9] (false edge of ''):  %20 = icmp ugt i32 %13, 12
+    -> Guard[10] (false edge of ''):  %15 = icmp ult i64 %4, 2124
+    -> Collected 11 dominating context guard(s).
+    -> [go3] 27 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %164 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %164 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %164 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %164 == i64 0 || ne(i64 %164, i64 %160) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:4] i64 %207 in [0,4294967296) (SCEV unsigned)
+    -> Fact[SCEV:5] i64 %207 in [0,4294967296) (SCEV signed)
+    -> Fact[KB:6] i64 %208 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:7] i64 %208 in [0,8589934591) (SCEV unsigned)
+    -> Fact[SCEV:8] i64 %208 in [0,8589934591) (SCEV signed)
+    -> Fact[PHIINV-lo:9] i64 %208 >=s i64 %198 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:10] i64 %219 known bits zero=0x7 one=0x0
+    -> Fact[SCEV:11] i64 %219 in [0,-7) (SCEV unsigned)
+    -> Fact[SCEV:12] i64 %219 in [-9223372036854775808,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-hi:13] i64 %219 == i64 0 || ne(i64 %219, i64 %203) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:14] i64 %239 in [0,3) (SCEV unsigned)
+    -> Fact[SCEV:15] i64 %239 in [0,3) (SCEV signed)
+    -> Fact[PHIINV-hi:16] i64 %239 == i64 0 || ne(i64 %239, i64 %235) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:17] i64 %252 in [-4294967296,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:18] i64 %252 in [-4294967296,-9223372036854775808) (SCEV signed)
+    -> Fact[PHIINV-hi:19] i64 %252 == i64 %248 || ne(i64 %252, i64 %200) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:20] i64 %252 >=s i64 %248 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:21] i64 %296 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:22] i64 %296 in [1,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:23] i64 %296 in [1,-9223372036854775808) (SCEV signed)
+    -> Fact[PHIINV-hi:24] i64 %296 == i64 1 || ne(i64 %296, i64 %289) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:25] i64 %296 >=s i64 1 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:26] i64 %691 in [-2147483648,6442450942) (SCEV unsigned)
+    -> Fact[SCEV:27] i64 %691 in [-2147483648,6442450942) (SCEV signed)
+    -> Fact[SCEVSYM:28] i64 %691 - start((sext i32 %298 to i64)) <=u BTC((-1 + (-1 * %298) + %301)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-lo:29] i64 %691 >=s i64 %689 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:30] i64 %238 in [1,0) (SCEV unsigned)
+    -> Fact[SCEV:31] i64 %238 in [-4294967296,4294967298) (SCEV signed)
+    -> Fact[PHIINV-lo:32] i64 %238 >=s i64 %233 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:33] i64 %289 known bits zero=0x18446744071562067968 one=0x0
+    -> Fact[KB:34] i64 %233 known bits zero=0x0 one=0x1
+    -> Fact[SCEVEQ:35] i64 %233 in phi image (3 incoming)
+    -> Fact[KB:36] i64 %204 known bits zero=0x6 one=0x1
+    -> [heavy] 37 analysis fact(s) on 21 boundary value(s)
+    -> [mv] T3: not a bounds shape (idx vs invariant count)
+    -> [ind L0] BASE (2 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.390718 ms]
+    -> [ind L1] BASE: UNSAT (first lap excluded by the guards)
+    -> [ind L1] STEP (copy: 629 instr, 0 skipped, 283 fresh, 50 fact(s), 1 link(s)): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 12.217397 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 22.096284 ms]
+    -> [mv] still SAT under 48 hypothesis candidate(s): not versionable
+    -> [narrow] retry: whole-query 64->32 with overflow flags
+    -> [go3] 27 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %164 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %164 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %164 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %164 == i64 0 || ne(i64 %164, i64 %160) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:4] i64 %207 in [0,4294967296) (SCEV unsigned)
+    -> Fact[SCEV:5] i64 %207 in [0,4294967296) (SCEV signed)
+    -> Fact[KB:6] i64 %208 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:7] i64 %208 in [0,8589934591) (SCEV unsigned)
+    -> Fact[SCEV:8] i64 %208 in [0,8589934591) (SCEV signed)
+    -> Fact[PHIINV-lo:9] i64 %208 >=s i64 %198 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:10] i64 %219 known bits zero=0x7 one=0x0
+    -> Fact[SCEV:11] i64 %219 in [0,-7) (SCEV unsigned)
+    -> Fact[SCEV:12] i64 %219 in [-9223372036854775808,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-hi:13] i64 %219 == i64 0 || ne(i64 %219, i64 %203) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:14] i64 %239 in [0,3) (SCEV unsigned)
+    -> Fact[SCEV:15] i64 %239 in [0,3) (SCEV signed)
+    -> Fact[PHIINV-hi:16] i64 %239 == i64 0 || ne(i64 %239, i64 %235) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:17] i64 %252 in [-4294967296,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:18] i64 %252 in [-4294967296,-9223372036854775808) (SCEV signed)
+    -> Fact[PHIINV-hi:19] i64 %252 == i64 %248 || ne(i64 %252, i64 %200) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:20] i64 %252 >=s i64 %248 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:21] i64 %296 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:22] i64 %296 in [1,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:23] i64 %296 in [1,-9223372036854775808) (SCEV signed)
+    -> Fact[PHIINV-hi:24] i64 %296 == i64 1 || ne(i64 %296, i64 %289) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:25] i64 %296 >=s i64 1 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:26] i64 %691 in [-2147483648,6442450942) (SCEV unsigned)
+    -> Fact[SCEV:27] i64 %691 in [-2147483648,6442450942) (SCEV signed)
+    -> Fact[SCEVSYM:28] i64 %691 - start((sext i32 %298 to i64)) <=u BTC((-1 + (-1 * %298) + %301)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-lo:29] i64 %691 >=s i64 %689 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:30] i64 %238 in [1,0) (SCEV unsigned)
+    -> Fact[SCEV:31] i64 %238 in [-4294967296,4294967298) (SCEV signed)
+    -> Fact[PHIINV-lo:32] i64 %238 >=s i64 %233 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:33] i64 %289 known bits zero=0x18446744071562067968 one=0x0
+    -> Fact[KB:34] i64 %233 known bits zero=0x0 one=0x1
+    -> Fact[SCEVEQ:35] i64 %233 in phi image (3 incoming)
+    -> Fact[KB:36] i64 %204 known bits zero=0x6 one=0x1
+    -> [heavy] 37 analysis fact(s) on 21 boundary value(s)
+    -> [mv] T3: not a bounds shape (idx vs invariant count)
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 20.755879 ms]
+    -> [narrow] whole-query narrowing refused: numeral does not fit: 4294967295 (exact solver used)
+    -> [mv] minimize: without {%38 <=s 2^15} -> UNSAT, dropped (1.020840e+02 ms)
+    -> [mv] minimize: without {%296 <=s 2^15} -> SAT, kept (5.813596e+01 ms)
+    -> [mv] minimize: without {%296 <=s 2^31} -> UNSAT, dropped (1.153440e+02 ms)
+    -> [mv] minimize: without {%38 >=s 0} -> UNSAT, dropped (1.264430e+02 ms)
+    -> [mv] loosen: {%296 <=s 2^15} -> {%296 <=s 2^30}: UNSAT, adopted (1.066494e+02 ms)
+    -> [mv] loosen: {%296 <=s 2^30} -> {%296 <=s 2^31}: kept tight (9.663470e+00 ms)
+    -> [mv] hypothesis contradicts the context: refusing (H vacuous): {%296 <=s 2^30}
+    -> [narrow] retry: mul-only 16-bit-operand encoding
+    -> [go3] 27 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %164 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %164 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %164 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %164 == i64 0 || ne(i64 %164, i64 %160) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:4] i64 %207 in [0,4294967296) (SCEV unsigned)
+    -> Fact[SCEV:5] i64 %207 in [0,4294967296) (SCEV signed)
+    -> Fact[KB:6] i64 %208 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:7] i64 %208 in [0,8589934591) (SCEV unsigned)
+    -> Fact[SCEV:8] i64 %208 in [0,8589934591) (SCEV signed)
+    -> Fact[PHIINV-lo:9] i64 %208 >=s i64 %198 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:10] i64 %219 known bits zero=0x7 one=0x0
+    -> Fact[SCEV:11] i64 %219 in [0,-7) (SCEV unsigned)
+    -> Fact[SCEV:12] i64 %219 in [-9223372036854775808,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-hi:13] i64 %219 == i64 0 || ne(i64 %219, i64 %203) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:14] i64 %239 in [0,3) (SCEV unsigned)
+    -> Fact[SCEV:15] i64 %239 in [0,3) (SCEV signed)
+    -> Fact[PHIINV-hi:16] i64 %239 == i64 0 || ne(i64 %239, i64 %235) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:17] i64 %252 in [-4294967296,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:18] i64 %252 in [-4294967296,-9223372036854775808) (SCEV signed)
+    -> Fact[PHIINV-hi:19] i64 %252 == i64 %248 || ne(i64 %252, i64 %200) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:20] i64 %252 >=s i64 %248 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:21] i64 %296 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:22] i64 %296 in [1,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:23] i64 %296 in [1,-9223372036854775808) (SCEV signed)
+    -> Fact[PHIINV-hi:24] i64 %296 == i64 1 || ne(i64 %296, i64 %289) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:25] i64 %296 >=s i64 1 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:26] i64 %691 in [-2147483648,6442450942) (SCEV unsigned)
+    -> Fact[SCEV:27] i64 %691 in [-2147483648,6442450942) (SCEV signed)
+    -> Fact[SCEVSYM:28] i64 %691 - start((sext i32 %298 to i64)) <=u BTC((-1 + (-1 * %298) + %301)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-lo:29] i64 %691 >=s i64 %689 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:30] i64 %238 in [1,0) (SCEV unsigned)
+    -> Fact[SCEV:31] i64 %238 in [-4294967296,4294967298) (SCEV signed)
+    -> Fact[PHIINV-lo:32] i64 %238 >=s i64 %233 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:33] i64 %289 known bits zero=0x18446744071562067968 one=0x0
+    -> Fact[KB:34] i64 %233 known bits zero=0x0 one=0x1
+    -> Fact[SCEVEQ:35] i64 %233 in phi image (3 incoming)
+    -> Fact[KB:36] i64 %204 known bits zero=0x6 one=0x1
+    -> [heavy] 37 analysis fact(s) on 21 boundary value(s)
+    -> [mv] T3: not a bounds shape (idx vs invariant count)
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 27.975197 ms]
+    -> [narrow] side condition certified for 1 multiplication(s)
+    -> [mv] minimize: without {%38 <=s 2^15} -> UNSAT, dropped (9.924545e+01 ms)
+    -> [mv] minimize: without {%296 <=s 2^15} -> SAT, kept (3.813941e+01 ms)
+    -> [mv] minimize: without {%296 <=s 2^31} -> UNSAT, dropped (8.143031e+01 ms)
+    -> [mv] minimize: without {%38 >=s 0} -> UNSAT, dropped (1.008408e+02 ms)
+    -> [mv] loosen: {%296 <=s 2^15} -> {%296 <=s 2^30}: UNSAT, adopted (1.005588e+02 ms)
+    -> [mv] loosen: {%296 <=s 2^30} -> {%296 <=s 2^31}: kept tight (1.140284e+01 ms)
+    -> [mv] hypothesis contradicts the context: refusing (H vacuous): {%296 <=s 2^30}
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %678 = icmp eq i64 %366, %289
+    -> Guard[1] (true edge of ''):  %322 = icmp slt i32 %314, %284
+    -> Guard[2] (false edge of ''):  %311 = icmp eq i32 %298, %301
+    -> Guard[3] (false edge of ''):  %305 = icmp ult i32 %304, %280
+    -> Guard[4] (true edge of ''):  %287 = icmp sgt i32 %284, 1
+    -> Guard[5] (false edge of ''):  %285 = extractvalue { i32, i1 } %283, 1, !nosanitize !25
+    -> Guard[6] (false edge of ''):  %42 = icmp eq i32 %41, 0
+    -> Guard[7] (false edge of ''):  %28 = icmp ugt i32 %27, %13
+    -> Guard[8] (true edge of ''):  %25 = icmp ult i64 %24, -119
+    -> Guard[9] (false edge of ''):  %20 = icmp ugt i32 %13, 12
+    -> Guard[10] (false edge of ''):  %15 = icmp ult i64 %4, 2124
+    -> Collected 11 dominating context guard(s).
+    -> [go3] 28 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %164 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %164 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %164 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %164 == i64 0 || ne(i64 %164, i64 %160) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:4] i64 %207 in [0,4294967296) (SCEV unsigned)
+    -> Fact[SCEV:5] i64 %207 in [0,4294967296) (SCEV signed)
+    -> Fact[KB:6] i64 %208 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:7] i64 %208 in [0,8589934591) (SCEV unsigned)
+    -> Fact[SCEV:8] i64 %208 in [0,8589934591) (SCEV signed)
+    -> Fact[PHIINV-lo:9] i64 %208 >=s i64 %198 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:10] i64 %219 known bits zero=0x7 one=0x0
+    -> Fact[SCEV:11] i64 %219 in [0,-7) (SCEV unsigned)
+    -> Fact[SCEV:12] i64 %219 in [-9223372036854775808,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-hi:13] i64 %219 == i64 0 || ne(i64 %219, i64 %203) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:14] i64 %239 in [0,3) (SCEV unsigned)
+    -> Fact[SCEV:15] i64 %239 in [0,3) (SCEV signed)
+    -> Fact[PHIINV-hi:16] i64 %239 == i64 0 || ne(i64 %239, i64 %235) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:17] i64 %252 in [-4294967296,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:18] i64 %252 in [-4294967296,-9223372036854775808) (SCEV signed)
+    -> Fact[PHIINV-hi:19] i64 %252 == i64 %248 || ne(i64 %252, i64 %200) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:20] i64 %252 >=s i64 %248 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:21] i64 %296 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:22] i64 %296 in [1,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:23] i64 %296 in [1,-9223372036854775808) (SCEV signed)
+    -> Fact[PHIINV-hi:24] i64 %296 == i64 1 || ne(i64 %296, i64 %289) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:25] i64 %296 >=s i64 1 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:26] i64 %327 in [-2147483648,6442450942) (SCEV unsigned)
+    -> Fact[SCEV:27] i64 %327 in [-2147483648,6442450942) (SCEV signed)
+    -> Fact[SCEVSYM:28] i64 %327 - start((sext i32 %298 to i64)) <=u BTC((-1 + (-1 * %298) + %301)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-lo:29] i64 %327 >=s i64 %325 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:30] i64 %365 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:31] i64 %365 in [1,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:32] i64 %365 in [1,-9223372036854775808) (SCEV signed)
+    -> Fact[PHIINV-hi:33] i64 %365 == i64 %320 || ne(i64 %365, i64 %289) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:34] i64 %365 >=s i64 %320 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:35] i64 %238 in [1,0) (SCEV unsigned)
+    -> Fact[SCEV:36] i64 %238 in [-4294967296,4294967298) (SCEV signed)
+    -> Fact[PHIINV-lo:37] i64 %238 >=s i64 %233 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:38] i64 %233 known bits zero=0x0 one=0x1
+    -> Fact[SCEVEQ:39] i64 %233 in phi image (3 incoming)
+    -> Fact[KB:40] i64 %204 known bits zero=0x6 one=0x1
+    -> [heavy] 41 analysis fact(s) on 22 boundary value(s)
+    -> [mv] T3: not a bounds shape (idx vs invariant count)
+    -> [ind L0] BASE (2 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.141767 ms]
+    -> [ind L1] BASE (1 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.133397 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 21.283173 ms]
+    -> [mv] still SAT under 54 hypothesis candidate(s): not versionable
+    -> [narrow] retry: whole-query 64->32 with overflow flags
+    -> [go3] 28 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %164 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %164 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %164 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %164 == i64 0 || ne(i64 %164, i64 %160) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:4] i64 %207 in [0,4294967296) (SCEV unsigned)
+    -> Fact[SCEV:5] i64 %207 in [0,4294967296) (SCEV signed)
+    -> Fact[KB:6] i64 %208 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:7] i64 %208 in [0,8589934591) (SCEV unsigned)
+    -> Fact[SCEV:8] i64 %208 in [0,8589934591) (SCEV signed)
+    -> Fact[PHIINV-lo:9] i64 %208 >=s i64 %198 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:10] i64 %219 known bits zero=0x7 one=0x0
+    -> Fact[SCEV:11] i64 %219 in [0,-7) (SCEV unsigned)
+    -> Fact[SCEV:12] i64 %219 in [-9223372036854775808,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-hi:13] i64 %219 == i64 0 || ne(i64 %219, i64 %203) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:14] i64 %239 in [0,3) (SCEV unsigned)
+    -> Fact[SCEV:15] i64 %239 in [0,3) (SCEV signed)
+    -> Fact[PHIINV-hi:16] i64 %239 == i64 0 || ne(i64 %239, i64 %235) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:17] i64 %252 in [-4294967296,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:18] i64 %252 in [-4294967296,-9223372036854775808) (SCEV signed)
+    -> Fact[PHIINV-hi:19] i64 %252 == i64 %248 || ne(i64 %252, i64 %200) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:20] i64 %252 >=s i64 %248 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:21] i64 %296 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:22] i64 %296 in [1,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:23] i64 %296 in [1,-9223372036854775808) (SCEV signed)
+    -> Fact[PHIINV-hi:24] i64 %296 == i64 1 || ne(i64 %296, i64 %289) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:25] i64 %296 >=s i64 1 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:26] i64 %327 in [-2147483648,6442450942) (SCEV unsigned)
+    -> Fact[SCEV:27] i64 %327 in [-2147483648,6442450942) (SCEV signed)
+    -> Fact[SCEVSYM:28] i64 %327 - start((sext i32 %298 to i64)) <=u BTC((-1 + (-1 * %298) + %301)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-lo:29] i64 %327 >=s i64 %325 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:30] i64 %365 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:31] i64 %365 in [1,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:32] i64 %365 in [1,-9223372036854775808) (SCEV signed)
+    -> Fact[PHIINV-hi:33] i64 %365 == i64 %320 || ne(i64 %365, i64 %289) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:34] i64 %365 >=s i64 %320 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:35] i64 %238 in [1,0) (SCEV unsigned)
+    -> Fact[SCEV:36] i64 %238 in [-4294967296,4294967298) (SCEV signed)
+    -> Fact[PHIINV-lo:37] i64 %238 >=s i64 %233 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:38] i64 %233 known bits zero=0x0 one=0x1
+    -> Fact[SCEVEQ:39] i64 %233 in phi image (3 incoming)
+    -> Fact[KB:40] i64 %204 known bits zero=0x6 one=0x1
+    -> [heavy] 41 analysis fact(s) on 22 boundary value(s)
+    -> [mv] T3: not a bounds shape (idx vs invariant count)
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 21.575260 ms]
+    -> [narrow] whole-query narrowing refused: numeral does not fit: 4294967295 (exact solver used)
+    -> [mv] still SAT under 45 hypothesis candidate(s): not versionable
+    -> [narrow] retry: mul-only 16-bit-operand encoding
+    -> [go3] 28 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %164 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %164 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %164 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %164 == i64 0 || ne(i64 %164, i64 %160) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:4] i64 %207 in [0,4294967296) (SCEV unsigned)
+    -> Fact[SCEV:5] i64 %207 in [0,4294967296) (SCEV signed)
+    -> Fact[KB:6] i64 %208 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:7] i64 %208 in [0,8589934591) (SCEV unsigned)
+    -> Fact[SCEV:8] i64 %208 in [0,8589934591) (SCEV signed)
+    -> Fact[PHIINV-lo:9] i64 %208 >=s i64 %198 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:10] i64 %219 known bits zero=0x7 one=0x0
+    -> Fact[SCEV:11] i64 %219 in [0,-7) (SCEV unsigned)
+    -> Fact[SCEV:12] i64 %219 in [-9223372036854775808,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-hi:13] i64 %219 == i64 0 || ne(i64 %219, i64 %203) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:14] i64 %239 in [0,3) (SCEV unsigned)
+    -> Fact[SCEV:15] i64 %239 in [0,3) (SCEV signed)
+    -> Fact[PHIINV-hi:16] i64 %239 == i64 0 || ne(i64 %239, i64 %235) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:17] i64 %252 in [-4294967296,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:18] i64 %252 in [-4294967296,-9223372036854775808) (SCEV signed)
+    -> Fact[PHIINV-hi:19] i64 %252 == i64 %248 || ne(i64 %252, i64 %200) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:20] i64 %252 >=s i64 %248 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:21] i64 %296 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:22] i64 %296 in [1,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:23] i64 %296 in [1,-9223372036854775808) (SCEV signed)
+    -> Fact[PHIINV-hi:24] i64 %296 == i64 1 || ne(i64 %296, i64 %289) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:25] i64 %296 >=s i64 1 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:26] i64 %327 in [-2147483648,6442450942) (SCEV unsigned)
+    -> Fact[SCEV:27] i64 %327 in [-2147483648,6442450942) (SCEV signed)
+    -> Fact[SCEVSYM:28] i64 %327 - start((sext i32 %298 to i64)) <=u BTC((-1 + (-1 * %298) + %301)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-lo:29] i64 %327 >=s i64 %325 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:30] i64 %365 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:31] i64 %365 in [1,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:32] i64 %365 in [1,-9223372036854775808) (SCEV signed)
+    -> Fact[PHIINV-hi:33] i64 %365 == i64 %320 || ne(i64 %365, i64 %289) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:34] i64 %365 >=s i64 %320 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:35] i64 %238 in [1,0) (SCEV unsigned)
+    -> Fact[SCEV:36] i64 %238 in [-4294967296,4294967298) (SCEV signed)
+    -> Fact[PHIINV-lo:37] i64 %238 >=s i64 %233 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:38] i64 %233 known bits zero=0x0 one=0x1
+    -> Fact[SCEVEQ:39] i64 %233 in phi image (3 incoming)
+    -> Fact[KB:40] i64 %204 known bits zero=0x6 one=0x1
+    -> [heavy] 41 analysis fact(s) on 22 boundary value(s)
+    -> [mv] T3: not a bounds shape (idx vs invariant count)
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.555259 ms]
+    -> [mv] still SAT under 45 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %42 = icmp eq i32 %41, 0
+    -> Guard[1] (false edge of ''):  %28 = icmp ugt i32 %27, %13
+    -> Guard[2] (true edge of ''):  %25 = icmp ult i64 %24, -119
+    -> Guard[3] (false edge of ''):  %20 = icmp ugt i32 %13, 12
+    -> Guard[4] (false edge of ''):  %15 = icmp ult i64 %4, 2124
+    -> Collected 5 dominating context guard(s).
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> [heavy] 0 analysis fact(s) on 6 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.819977 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %707 = icmp sgt i32 %701, 0
+    -> Guard[1] (true edge of ''):  %317 = icmp sgt i32 %313, 1
+    -> Guard[2] (false edge of ''):  %322 = icmp slt i32 %314, %284
+    -> Guard[3] (false edge of ''):  %311 = icmp eq i32 %298, %301
+    -> Guard[4] (false edge of ''):  %305 = icmp ult i32 %304, %280
+    -> Guard[5] (true edge of ''):  %287 = icmp sgt i32 %284, 1
+    -> Guard[6] (false edge of ''):  %285 = extractvalue { i32, i1 } %283, 1, !nosanitize !25
+    -> Guard[7] (false edge of ''):  %42 = icmp eq i32 %41, 0
+    -> Guard[8] (false edge of ''):  %28 = icmp ugt i32 %27, %13
+    -> Guard[9] (true edge of ''):  %25 = icmp ult i64 %24, -119
+    -> Guard[10] (false edge of ''):  %20 = icmp ugt i32 %13, 12
+    -> Guard[11] (false edge of ''):  %15 = icmp ult i64 %4, 2124
+    -> Collected 12 dominating context guard(s).
+    -> [go3] 26 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %164 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %164 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %164 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %164 == i64 0 || ne(i64 %164, i64 %160) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:4] i64 %207 in [0,4294967296) (SCEV unsigned)
+    -> Fact[SCEV:5] i64 %207 in [0,4294967296) (SCEV signed)
+    -> Fact[KB:6] i64 %208 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:7] i64 %208 in [0,8589934591) (SCEV unsigned)
+    -> Fact[SCEV:8] i64 %208 in [0,8589934591) (SCEV signed)
+    -> Fact[PHIINV-lo:9] i64 %208 >=s i64 %198 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:10] i64 %219 known bits zero=0x7 one=0x0
+    -> Fact[SCEV:11] i64 %219 in [0,-7) (SCEV unsigned)
+    -> Fact[SCEV:12] i64 %219 in [-9223372036854775808,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-hi:13] i64 %219 == i64 0 || ne(i64 %219, i64 %203) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:14] i64 %239 in [0,3) (SCEV unsigned)
+    -> Fact[SCEV:15] i64 %239 in [0,3) (SCEV signed)
+    -> Fact[PHIINV-hi:16] i64 %239 == i64 0 || ne(i64 %239, i64 %235) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:17] i64 %252 in [-4294967296,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:18] i64 %252 in [-4294967296,-9223372036854775808) (SCEV signed)
+    -> Fact[PHIINV-hi:19] i64 %252 == i64 %248 || ne(i64 %252, i64 %200) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:20] i64 %252 >=s i64 %248 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:21] i64 %296 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:22] i64 %296 in [1,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:23] i64 %296 in [1,-9223372036854775808) (SCEV signed)
+    -> Fact[PHIINV-hi:24] i64 %296 == i64 1 || ne(i64 %296, i64 %289) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:25] i64 %296 >=s i64 1 (monotone nsw increments, 1 arm(s))
+    -> Fact[LVI:26] i32 %701 in [-2147483647,-2147483648) (LVI @ )
+    -> Fact[KB:27] i64 %709 known bits zero=0x9223372036854775815 one=0x0
+    -> Fact[SCEV:28] i64 %709 in [0,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:29] i64 %709 in [0,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-lo:30] i64 %709 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:31] i64 %238 in [1,0) (SCEV unsigned)
+    -> Fact[SCEV:32] i64 %238 in [-4294967296,4294967298) (SCEV signed)
+    -> Fact[PHIINV-lo:33] i64 %238 >=s i64 %233 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:34] i64 %289 known bits zero=0x18446744071562067968 one=0x0
+    -> Fact[KB:35] i64 %233 known bits zero=0x0 one=0x1
+    -> Fact[SCEVEQ:36] i64 %233 in phi image (3 incoming)
+    -> Fact[KB:37] i64 %204 known bits zero=0x6 one=0x1
+    -> [heavy] 38 analysis fact(s) on 22 boundary value(s)
+    -> [mv] T3: not a bounds shape (idx vs invariant count)
+    -> [ind L0] BASE (1 phi(s) = entry): UNSAT (Dead Code / Impossible Path) [Query Latency: 0.133448 ms]
+    -> [ind L0] STEP (copy: 10 instr, 0 skipped, 5 fresh, 4 fact(s), 1 link(s)): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.271750 ms]
+    -> [ind L1] BASE (2 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.334634 ms]
+    -> [ind L2] BASE: UNSAT (first lap excluded by the guards)
+    -> [ind L2] STEP (copy: 629 instr, 0 skipped, 283 fresh, 50 fact(s), 1 link(s)): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 12.407255 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 95.890160 ms]
+    -> [mv] still SAT under 60 hypothesis candidate(s): not versionable
+    -> [narrow] retry: whole-query 64->32 with overflow flags
+    -> [go3] 26 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %164 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %164 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %164 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %164 == i64 0 || ne(i64 %164, i64 %160) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:4] i64 %207 in [0,4294967296) (SCEV unsigned)
+    -> Fact[SCEV:5] i64 %207 in [0,4294967296) (SCEV signed)
+    -> Fact[KB:6] i64 %208 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:7] i64 %208 in [0,8589934591) (SCEV unsigned)
+    -> Fact[SCEV:8] i64 %208 in [0,8589934591) (SCEV signed)
+    -> Fact[PHIINV-lo:9] i64 %208 >=s i64 %198 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:10] i64 %219 known bits zero=0x7 one=0x0
+    -> Fact[SCEV:11] i64 %219 in [0,-7) (SCEV unsigned)
+    -> Fact[SCEV:12] i64 %219 in [-9223372036854775808,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-hi:13] i64 %219 == i64 0 || ne(i64 %219, i64 %203) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:14] i64 %239 in [0,3) (SCEV unsigned)
+    -> Fact[SCEV:15] i64 %239 in [0,3) (SCEV signed)
+    -> Fact[PHIINV-hi:16] i64 %239 == i64 0 || ne(i64 %239, i64 %235) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:17] i64 %252 in [-4294967296,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:18] i64 %252 in [-4294967296,-9223372036854775808) (SCEV signed)
+    -> Fact[PHIINV-hi:19] i64 %252 == i64 %248 || ne(i64 %252, i64 %200) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:20] i64 %252 >=s i64 %248 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:21] i64 %296 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:22] i64 %296 in [1,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:23] i64 %296 in [1,-9223372036854775808) (SCEV signed)
+    -> Fact[PHIINV-hi:24] i64 %296 == i64 1 || ne(i64 %296, i64 %289) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:25] i64 %296 >=s i64 1 (monotone nsw increments, 1 arm(s))
+    -> Fact[LVI:26] i32 %701 in [-2147483647,-2147483648) (LVI @ )
+    -> Fact[KB:27] i64 %709 known bits zero=0x9223372036854775815 one=0x0
+    -> Fact[SCEV:28] i64 %709 in [0,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:29] i64 %709 in [0,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-lo:30] i64 %709 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:31] i64 %238 in [1,0) (SCEV unsigned)
+    -> Fact[SCEV:32] i64 %238 in [-4294967296,4294967298) (SCEV signed)
+    -> Fact[PHIINV-lo:33] i64 %238 >=s i64 %233 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:34] i64 %289 known bits zero=0x18446744071562067968 one=0x0
+    -> Fact[KB:35] i64 %233 known bits zero=0x0 one=0x1
+    -> Fact[SCEVEQ:36] i64 %233 in phi image (3 incoming)
+    -> Fact[KB:37] i64 %204 known bits zero=0x6 one=0x1
+    -> [heavy] 38 analysis fact(s) on 22 boundary value(s)
+    -> [mv] T3: not a bounds shape (idx vs invariant count)
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 111.660829 ms]
+    -> [narrow] whole-query narrowing refused: numeral does not fit: 4294967288 (exact solver used)
+    -> [mv] minimize: without {%38 <=s 2^15} -> UNSAT, dropped (1.132282e+02 ms)
+    -> [mv] minimize: without {%296 <=s 2^15} -> SAT, kept (1.869457e+01 ms)
+    -> [mv] minimize: without {%296 <=s 2^31} -> UNSAT, dropped (1.125593e+02 ms)
+    -> [mv] minimize: without {%38 >=s 0} -> UNSAT, dropped (1.109806e+02 ms)
+    -> [mv] loosen: {%296 <=s 2^15} -> {%296 <=s 2^30}: UNSAT, adopted (1.148403e+02 ms)
+    -> [mv] loosen: {%296 <=s 2^30} -> {%296 <=s 2^31}: kept tight (1.412458e+01 ms)
+    -> [mv] hypothesis contradicts the context: refusing (H vacuous): {%296 <=s 2^30}
+    -> [narrow] retry: mul-only 16-bit-operand encoding
+    -> [go3] 26 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %164 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %164 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %164 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %164 == i64 0 || ne(i64 %164, i64 %160) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:4] i64 %207 in [0,4294967296) (SCEV unsigned)
+    -> Fact[SCEV:5] i64 %207 in [0,4294967296) (SCEV signed)
+    -> Fact[KB:6] i64 %208 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:7] i64 %208 in [0,8589934591) (SCEV unsigned)
+    -> Fact[SCEV:8] i64 %208 in [0,8589934591) (SCEV signed)
+    -> Fact[PHIINV-lo:9] i64 %208 >=s i64 %198 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:10] i64 %219 known bits zero=0x7 one=0x0
+    -> Fact[SCEV:11] i64 %219 in [0,-7) (SCEV unsigned)
+    -> Fact[SCEV:12] i64 %219 in [-9223372036854775808,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-hi:13] i64 %219 == i64 0 || ne(i64 %219, i64 %203) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:14] i64 %239 in [0,3) (SCEV unsigned)
+    -> Fact[SCEV:15] i64 %239 in [0,3) (SCEV signed)
+    -> Fact[PHIINV-hi:16] i64 %239 == i64 0 || ne(i64 %239, i64 %235) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:17] i64 %252 in [-4294967296,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:18] i64 %252 in [-4294967296,-9223372036854775808) (SCEV signed)
+    -> Fact[PHIINV-hi:19] i64 %252 == i64 %248 || ne(i64 %252, i64 %200) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:20] i64 %252 >=s i64 %248 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:21] i64 %296 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:22] i64 %296 in [1,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:23] i64 %296 in [1,-9223372036854775808) (SCEV signed)
+    -> Fact[PHIINV-hi:24] i64 %296 == i64 1 || ne(i64 %296, i64 %289) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:25] i64 %296 >=s i64 1 (monotone nsw increments, 1 arm(s))
+    -> Fact[LVI:26] i32 %701 in [-2147483647,-2147483648) (LVI @ )
+    -> Fact[KB:27] i64 %709 known bits zero=0x9223372036854775815 one=0x0
+    -> Fact[SCEV:28] i64 %709 in [0,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:29] i64 %709 in [0,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-lo:30] i64 %709 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:31] i64 %238 in [1,0) (SCEV unsigned)
+    -> Fact[SCEV:32] i64 %238 in [-4294967296,4294967298) (SCEV signed)
+    -> Fact[PHIINV-lo:33] i64 %238 >=s i64 %233 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:34] i64 %289 known bits zero=0x18446744071562067968 one=0x0
+    -> Fact[KB:35] i64 %233 known bits zero=0x0 one=0x1
+    -> Fact[SCEVEQ:36] i64 %233 in phi image (3 incoming)
+    -> Fact[KB:37] i64 %204 known bits zero=0x6 one=0x1
+    -> [heavy] 38 analysis fact(s) on 22 boundary value(s)
+    -> [mv] T3: not a bounds shape (idx vs invariant count)
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 15.351828 ms]
+    -> [narrow] side condition certified for 1 multiplication(s)
+    -> [mv] minimize: without {%38 <=s 2^15} -> UNSAT, dropped (1.180004e+02 ms)
+    -> [mv] minimize: without {%296 <=s 2^15} -> SAT, kept (2.897898e+01 ms)
+    -> [mv] minimize: without {%296 <=s 2^31} -> UNSAT, dropped (1.066776e+02 ms)
+    -> [mv] minimize: without {%38 >=s 0} -> UNSAT, dropped (1.134155e+02 ms)
+    -> [mv] loosen: {%296 <=s 2^15} -> {%296 <=s 2^30}: UNSAT, adopted (1.151789e+02 ms)
+    -> [mv] loosen: {%296 <=s 2^30} -> {%296 <=s 2^31}: kept tight (6.705057e+00 ms)
+    -> [mv] hypothesis contradicts the context: refusing (H vacuous): {%296 <=s 2^30}
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %346 = icmp sgt i32 %340, 0
+    -> Guard[1] (true edge of ''):  %317 = icmp sgt i32 %313, 1
+    -> Guard[2] (true edge of ''):  %322 = icmp slt i32 %314, %284
+    -> Guard[3] (false edge of ''):  %311 = icmp eq i32 %298, %301
+    -> Guard[4] (false edge of ''):  %305 = icmp ult i32 %304, %280
+    -> Guard[5] (true edge of ''):  %287 = icmp sgt i32 %284, 1
+    -> Guard[6] (false edge of ''):  %285 = extractvalue { i32, i1 } %283, 1, !nosanitize !25
+    -> Guard[7] (false edge of ''):  %42 = icmp eq i32 %41, 0
+    -> Guard[8] (false edge of ''):  %28 = icmp ugt i32 %27, %13
+    -> Guard[9] (true edge of ''):  %25 = icmp ult i64 %24, -119
+    -> Guard[10] (false edge of ''):  %20 = icmp ugt i32 %13, 12
+    -> Guard[11] (false edge of ''):  %15 = icmp ult i64 %4, 2124
+    -> Collected 12 dominating context guard(s).
+    -> [go3] 26 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %164 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %164 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %164 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %164 == i64 0 || ne(i64 %164, i64 %160) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:4] i64 %207 in [0,4294967296) (SCEV unsigned)
+    -> Fact[SCEV:5] i64 %207 in [0,4294967296) (SCEV signed)
+    -> Fact[KB:6] i64 %208 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:7] i64 %208 in [0,8589934591) (SCEV unsigned)
+    -> Fact[SCEV:8] i64 %208 in [0,8589934591) (SCEV signed)
+    -> Fact[PHIINV-lo:9] i64 %208 >=s i64 %198 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:10] i64 %219 known bits zero=0x7 one=0x0
+    -> Fact[SCEV:11] i64 %219 in [0,-7) (SCEV unsigned)
+    -> Fact[SCEV:12] i64 %219 in [-9223372036854775808,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-hi:13] i64 %219 == i64 0 || ne(i64 %219, i64 %203) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:14] i64 %239 in [0,3) (SCEV unsigned)
+    -> Fact[SCEV:15] i64 %239 in [0,3) (SCEV signed)
+    -> Fact[PHIINV-hi:16] i64 %239 == i64 0 || ne(i64 %239, i64 %235) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:17] i64 %252 in [-4294967296,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:18] i64 %252 in [-4294967296,-9223372036854775808) (SCEV signed)
+    -> Fact[PHIINV-hi:19] i64 %252 == i64 %248 || ne(i64 %252, i64 %200) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:20] i64 %252 >=s i64 %248 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:21] i64 %296 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:22] i64 %296 in [1,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:23] i64 %296 in [1,-9223372036854775808) (SCEV signed)
+    -> Fact[PHIINV-hi:24] i64 %296 == i64 1 || ne(i64 %296, i64 %289) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:25] i64 %296 >=s i64 1 (monotone nsw increments, 1 arm(s))
+    -> Fact[LVI:26] i32 %340 in [-2147483647,-2147483648) (LVI @ )
+    -> Fact[KB:27] i64 %348 known bits zero=0x9223372036854775815 one=0x0
+    -> Fact[SCEV:28] i64 %348 in [0,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:29] i64 %348 in [0,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-lo:30] i64 %348 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:31] i64 %238 in [1,0) (SCEV unsigned)
+    -> Fact[SCEV:32] i64 %238 in [-4294967296,4294967298) (SCEV signed)
+    -> Fact[PHIINV-lo:33] i64 %238 >=s i64 %233 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:34] i64 %289 known bits zero=0x18446744071562067968 one=0x0
+    -> Fact[KB:35] i64 %233 known bits zero=0x0 one=0x1
+    -> Fact[SCEVEQ:36] i64 %233 in phi image (3 incoming)
+    -> Fact[KB:37] i64 %204 known bits zero=0x6 one=0x1
+    -> [heavy] 38 analysis fact(s) on 22 boundary value(s)
+    -> [mv] T3: not a bounds shape (idx vs invariant count)
+    -> [ind L0] BASE (1 phi(s) = entry): UNSAT (Dead Code / Impossible Path) [Query Latency: 0.122856 ms]
+    -> [ind L0] STEP (copy: 10 instr, 0 skipped, 5 fresh, 4 fact(s), 1 link(s)): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.286186 ms]
+    -> [ind L1] BASE (2 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.410080 ms]
+    -> [ind L2] BASE (1 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.190329 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 26.742044 ms]
+    -> [mv] still SAT under 66 hypothesis candidate(s): not versionable
+    -> [narrow] retry: whole-query 64->32 with overflow flags
+    -> [go3] 26 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %164 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %164 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %164 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %164 == i64 0 || ne(i64 %164, i64 %160) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:4] i64 %207 in [0,4294967296) (SCEV unsigned)
+    -> Fact[SCEV:5] i64 %207 in [0,4294967296) (SCEV signed)
+    -> Fact[KB:6] i64 %208 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:7] i64 %208 in [0,8589934591) (SCEV unsigned)
+    -> Fact[SCEV:8] i64 %208 in [0,8589934591) (SCEV signed)
+    -> Fact[PHIINV-lo:9] i64 %208 >=s i64 %198 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:10] i64 %219 known bits zero=0x7 one=0x0
+    -> Fact[SCEV:11] i64 %219 in [0,-7) (SCEV unsigned)
+    -> Fact[SCEV:12] i64 %219 in [-9223372036854775808,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-hi:13] i64 %219 == i64 0 || ne(i64 %219, i64 %203) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:14] i64 %239 in [0,3) (SCEV unsigned)
+    -> Fact[SCEV:15] i64 %239 in [0,3) (SCEV signed)
+    -> Fact[PHIINV-hi:16] i64 %239 == i64 0 || ne(i64 %239, i64 %235) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:17] i64 %252 in [-4294967296,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:18] i64 %252 in [-4294967296,-9223372036854775808) (SCEV signed)
+    -> Fact[PHIINV-hi:19] i64 %252 == i64 %248 || ne(i64 %252, i64 %200) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:20] i64 %252 >=s i64 %248 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:21] i64 %296 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:22] i64 %296 in [1,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:23] i64 %296 in [1,-9223372036854775808) (SCEV signed)
+    -> Fact[PHIINV-hi:24] i64 %296 == i64 1 || ne(i64 %296, i64 %289) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:25] i64 %296 >=s i64 1 (monotone nsw increments, 1 arm(s))
+    -> Fact[LVI:26] i32 %340 in [-2147483647,-2147483648) (LVI @ )
+    -> Fact[KB:27] i64 %348 known bits zero=0x9223372036854775815 one=0x0
+    -> Fact[SCEV:28] i64 %348 in [0,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:29] i64 %348 in [0,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-lo:30] i64 %348 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:31] i64 %238 in [1,0) (SCEV unsigned)
+    -> Fact[SCEV:32] i64 %238 in [-4294967296,4294967298) (SCEV signed)
+    -> Fact[PHIINV-lo:33] i64 %238 >=s i64 %233 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:34] i64 %289 known bits zero=0x18446744071562067968 one=0x0
+    -> Fact[KB:35] i64 %233 known bits zero=0x0 one=0x1
+    -> Fact[SCEVEQ:36] i64 %233 in phi image (3 incoming)
+    -> Fact[KB:37] i64 %204 known bits zero=0x6 one=0x1
+    -> [heavy] 38 analysis fact(s) on 22 boundary value(s)
+    -> [mv] T3: not a bounds shape (idx vs invariant count)
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.295562 ms]
+    -> [narrow] whole-query narrowing refused: numeral does not fit: 4294967288 (exact solver used)
+    -> [mv] still SAT under 50 hypothesis candidate(s): not versionable
+    -> [narrow] retry: mul-only 16-bit-operand encoding
+    -> [go3] 26 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %164 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %164 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %164 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %164 == i64 0 || ne(i64 %164, i64 %160) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:4] i64 %207 in [0,4294967296) (SCEV unsigned)
+    -> Fact[SCEV:5] i64 %207 in [0,4294967296) (SCEV signed)
+    -> Fact[KB:6] i64 %208 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:7] i64 %208 in [0,8589934591) (SCEV unsigned)
+    -> Fact[SCEV:8] i64 %208 in [0,8589934591) (SCEV signed)
+    -> Fact[PHIINV-lo:9] i64 %208 >=s i64 %198 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:10] i64 %219 known bits zero=0x7 one=0x0
+    -> Fact[SCEV:11] i64 %219 in [0,-7) (SCEV unsigned)
+    -> Fact[SCEV:12] i64 %219 in [-9223372036854775808,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-hi:13] i64 %219 == i64 0 || ne(i64 %219, i64 %203) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:14] i64 %239 in [0,3) (SCEV unsigned)
+    -> Fact[SCEV:15] i64 %239 in [0,3) (SCEV signed)
+    -> Fact[PHIINV-hi:16] i64 %239 == i64 0 || ne(i64 %239, i64 %235) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:17] i64 %252 in [-4294967296,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:18] i64 %252 in [-4294967296,-9223372036854775808) (SCEV signed)
+    -> Fact[PHIINV-hi:19] i64 %252 == i64 %248 || ne(i64 %252, i64 %200) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:20] i64 %252 >=s i64 %248 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:21] i64 %296 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:22] i64 %296 in [1,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:23] i64 %296 in [1,-9223372036854775808) (SCEV signed)
+    -> Fact[PHIINV-hi:24] i64 %296 == i64 1 || ne(i64 %296, i64 %289) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:25] i64 %296 >=s i64 1 (monotone nsw increments, 1 arm(s))
+    -> Fact[LVI:26] i32 %340 in [-2147483647,-2147483648) (LVI @ )
+    -> Fact[KB:27] i64 %348 known bits zero=0x9223372036854775815 one=0x0
+    -> Fact[SCEV:28] i64 %348 in [0,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:29] i64 %348 in [0,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-lo:30] i64 %348 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:31] i64 %238 in [1,0) (SCEV unsigned)
+    -> Fact[SCEV:32] i64 %238 in [-4294967296,4294967298) (SCEV signed)
+    -> Fact[PHIINV-lo:33] i64 %238 >=s i64 %233 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:34] i64 %289 known bits zero=0x18446744071562067968 one=0x0
+    -> Fact[KB:35] i64 %233 known bits zero=0x0 one=0x1
+    -> Fact[SCEVEQ:36] i64 %233 in phi image (3 incoming)
+    -> Fact[KB:37] i64 %204 known bits zero=0x6 one=0x1
+    -> [heavy] 38 analysis fact(s) on 22 boundary value(s)
+    -> [mv] T3: not a bounds shape (idx vs invariant count)
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 16.999270 ms]
+    -> [mv] still SAT under 50 hypothesis candidate(s): not versionable
+  => Total Traps Eliminated: 1
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 6
+  => Total SMT Queries Executed: 6
+  => Total SMT Query Latency: 1.699567e+03 ms
+  => Average SMT Query Latency: 2.832611e+02 ms
+  => Total DFS & SMT Execution Time: 3.620922e+03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: HUF_decompress1X2_DCtx_wksp
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 3.329200e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: HUF_decompress1X2_usingDTable_internal
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.533570e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: HUF_selectDecoder
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 4.141800e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: HUF_decompress1X_DCtx_wksp
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 6.539500e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: HUF_decompress1X1_DCtx_wksp
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 5.388700e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: HUF_decompress1X_usingDTable
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 4.179400e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: HUF_decompress1X1_usingDTable_internal
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.187740e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: HUF_decompress4X_usingDTable
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 4.324600e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: HUF_decompress4X2_usingDTable_internal
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 6.857610e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: HUF_decompress4X1_usingDTable_internal
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 4.217230e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: HUF_decompress4X_hufOnly_wksp
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 5.662600e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: HUF_decompress1X2_usingDTable_internal_bmi2
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.037704e+00 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: BIT_initDStream
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 7.806400e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: HUF_decompress1X1_usingDTable_internal_bmi2
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.131710e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: HUF_decompress4X2_usingDTable_internal_fast_c_loop
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.070410e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: HUF_decompress4X2_usingDTable_internal_bmi2
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 6.915970e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: HUF_decompress4X2_usingDTable_internal_fast
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.311320e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: HUF_DecompressFastArgs_init
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 7.306300e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: HUF_decompress4X1_usingDTable_internal_fast_c_loop
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.051550e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: HUF_decompress4X1_usingDTable_internal_bmi2
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 4.166130e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: HUF_decompress4X1_usingDTable_internal_fast
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.068100e-01 ms
+--------------------------------------------------

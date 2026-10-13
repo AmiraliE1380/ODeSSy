@@ -1,0 +1,32 @@
+[ODeSSy] 1 trap site(s) across 3 function(s); threads=10
+
+[Z3 Oracle] Analyzing Function: ZSTD_noCompressLiterals
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.399580e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressRleLiteralsBlock
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.442200e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressLiterals
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %20 = icmp eq i32 %9, 0
+    -> Collected 1 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.592386 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.592386e+00 ms
+  => Average SMT Query Latency: 1.592386e+00 ms
+  => Total DFS & SMT Execution Time: 3.203187e+01 ms
+--------------------------------------------------

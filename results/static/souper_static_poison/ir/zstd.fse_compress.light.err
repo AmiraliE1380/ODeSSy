@@ -1,0 +1,194 @@
+[ODeSSy] 13 trap site(s) across 11 function(s); threads=10
+
+[Z3 Oracle] Analyzing Function: FSE_buildCTable_wksp
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.037530e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: FSE_NCountWriteBound
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.006300e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: FSE_writeNCount
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 6.581000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: FSE_writeNCount_generic
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %215 = select i1 %212, i1 %214, i1 false
+    -> Guard[1] (true edge of ''):  %210 = icmp eq i32 %206, 1
+    -> Guard[2] (true edge of ''):  %13 = select i1 %11, i1 %12, i1 false
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.592753 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %144 = extractvalue { i32, i1 } %142, 1, !nosanitize !5
+    -> Guard[1] (false edge of ''):  %139 = extractvalue { i32, i1 } %138, 1, !nosanitize !5
+    -> Guard[2] (true edge of ''):  %134 = icmp sgt i32 %133, -1
+    -> Guard[3] (true edge of ''):  %13 = select i1 %11, i1 %12, i1 false
+    -> Collected 4 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.198141 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %149 = icmp slt i32 %148, %27
+    -> Guard[1] (false edge of ''):  %144 = extractvalue { i32, i1 } %142, 1, !nosanitize !5
+    -> Guard[2] (false edge of ''):  %139 = extractvalue { i32, i1 } %138, 1, !nosanitize !5
+    -> Guard[3] (true edge of ''):  %134 = icmp sgt i32 %133, -1
+    -> Guard[4] (true edge of ''):  %13 = select i1 %11, i1 %12, i1 false
+    -> Collected 5 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.911020 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %47 = icmp eq i32 %46, %9
+    -> Guard[1] (false edge of ''):  %30 = icmp eq i32 %22, 0
+    -> Guard[2] (true edge of ''):  %13 = select i1 %11, i1 %12, i1 false
+    -> Collected 3 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.022247 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %71 = icmp ult i32 %46, %70
+    -> Guard[1] (false edge of ''):  %47 = icmp eq i32 %46, %9
+    -> Guard[2] (false edge of ''):  %30 = icmp eq i32 %22, 0
+    -> Guard[3] (true edge of ''):  %13 = select i1 %11, i1 %12, i1 false
+    -> Collected 4 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.027948 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %173 = icmp slt i32 %147, %27
+    -> Guard[1] (true edge of ''):  %171 = icmp sgt i32 %147, 0
+    -> Guard[2] (false edge of ''):  %167 = extractvalue { i32, i1 } %165, 1, !nosanitize !5
+    -> Guard[3] (false edge of ''):  %160 = extractvalue { i32, i1 } %159, 1, !nosanitize !5
+    -> Guard[4] (false edge of ''):  %144 = extractvalue { i32, i1 } %142, 1, !nosanitize !5
+    -> Guard[5] (false edge of ''):  %139 = extractvalue { i32, i1 } %138, 1, !nosanitize !5
+    -> Guard[6] (true edge of ''):  %134 = icmp sgt i32 %133, -1
+    -> Guard[7] (true edge of ''):  %13 = select i1 %11, i1 %12, i1 false
+    -> Collected 8 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.185741 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %160 = extractvalue { i32, i1 } %159, 1, !nosanitize !5
+    -> Guard[1] (false edge of ''):  %144 = extractvalue { i32, i1 } %142, 1, !nosanitize !5
+    -> Guard[2] (false edge of ''):  %139 = extractvalue { i32, i1 } %138, 1, !nosanitize !5
+    -> Guard[3] (true edge of ''):  %134 = icmp sgt i32 %133, -1
+    -> Guard[4] (true edge of ''):  %13 = select i1 %11, i1 %12, i1 false
+    -> Collected 5 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.119537 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %139 = extractvalue { i32, i1 } %138, 1, !nosanitize !5
+    -> Guard[1] (true edge of ''):  %134 = icmp sgt i32 %133, -1
+    -> Guard[2] (true edge of ''):  %13 = select i1 %11, i1 %12, i1 false
+    -> Collected 3 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.876360 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %134 = icmp sgt i32 %133, -1
+    -> Guard[1] (true edge of ''):  %13 = select i1 %11, i1 %12, i1 false
+    -> Collected 2 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.128421 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %13 = select i1 %11, i1 %12, i1 false
+    -> Collected 1 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.746444 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 10
+  => Total SMT Queries Executed: 10
+  => Total SMT Query Latency: 6.280861e+01 ms
+  => Average SMT Query Latency: 6.280861e+00 ms
+  => Total DFS & SMT Execution Time: 1.055532e+03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: FSE_optimalTableLog_internal
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.100300e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: FSE_optimalTableLog
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 5.987000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: FSE_normalizeCount
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %47 = icmp ugt i32 %39, %31
+    -> Guard[1] (false edge of ''):  %43 = icmp eq i32 %39, 0
+    -> Guard[2] (false edge of ''):  %41 = icmp eq i64 %40, %3
+    -> Guard[3] (false edge of ''):  %19 = icmp ult i32 %8, %18
+    -> Guard[4] (false edge of ''):  %11 = icmp ugt i32 %8, 12
+    -> Guard[5] (false edge of ''):  %9 = icmp ult i32 %8, 5
+    -> Collected 6 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 103.490865 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %47 = icmp ugt i32 %39, %31
+    -> Guard[1] (false edge of ''):  %43 = icmp eq i32 %39, 0
+    -> Guard[2] (false edge of ''):  %41 = icmp eq i64 %40, %3
+    -> Guard[3] (false edge of ''):  %19 = icmp ult i32 %8, %18
+    -> Guard[4] (false edge of ''):  %11 = icmp ugt i32 %8, 12
+    -> Guard[5] (false edge of ''):  %9 = icmp ult i32 %8, 5
+    -> Collected 6 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.638759 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %90 = icmp ugt i32 %89, %4
+    -> Guard[1] (false edge of ''):  %41 = icmp eq i64 %40, %3
+    -> Guard[2] (false edge of ''):  %19 = icmp ult i32 %8, %18
+    -> Guard[3] (false edge of ''):  %11 = icmp ugt i32 %8, 12
+    -> Guard[4] (false edge of ''):  %9 = icmp ult i32 %8, 5
+    -> Collected 5 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 105.920488 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 3
+  => Total SMT Queries Executed: 3
+  => Total SMT Query Latency: 2.110501e+02 ms
+  => Average SMT Query Latency: 7.035004e+01 ms
+  => Total DFS & SMT Execution Time: 4.626092e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: FSE_buildCTable_rle
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 6.650000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: FSE_compress_usingCTable
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.851000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: FSE_compress_usingCTable_generic
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 4.437900e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: FSE_compressBound
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.104000e-03 ms
+--------------------------------------------------

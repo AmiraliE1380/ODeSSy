@@ -1,0 +1,113 @@
+[ODeSSy] 4 trap site(s) across 6 function(s); threads=10 [tier: heavy] [frame] [mv] [narrow]
+
+[Z3 Oracle] Analyzing Function: FSE_buildDTable_wksp
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.149973e+00 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: FSE_buildDTable_internal
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.568440e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: FSE_decompress_wksp_bmi2
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %35 = extractvalue { i32, i1 } %33, 1, !nosanitize !9
+    -> Guard[1] (false edge of ''):  %28 = icmp ugt i32 %27, %4
+    -> Guard[2] (true edge of ''):  %25 = icmp ult i64 %24, -119
+    -> Guard[3] (false edge of ''):  %22 = icmp ult i64 %6, 512
+    -> Guard[4] (true edge of ''):  %17 = icmp eq i32 %7, 0
+    -> Collected 5 dominating context guard(s).
+    -> Fact[LVI:0] i32 %7 in [0,1) (LVI @ )
+    -> Fact[LVI:1] i64 %6 in [512,0) (LVI @ )
+    -> Fact[LVI:2] i64 %24 in [0,-119) (LVI @ )
+    -> [heavy] 3 analysis fact(s) on 5 boundary value(s)
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 0.358419 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %28 = icmp ugt i32 %27, %4
+    -> Guard[1] (true edge of ''):  %25 = icmp ult i64 %24, -119
+    -> Guard[2] (false edge of ''):  %22 = icmp ult i64 %6, 512
+    -> Guard[3] (true edge of ''):  %17 = icmp eq i32 %7, 0
+    -> Collected 4 dominating context guard(s).
+    -> Fact[LVI:0] i32 %7 in [0,1) (LVI @ )
+    -> Fact[LVI:1] i64 %6 in [512,0) (LVI @ )
+    -> Fact[LVI:2] i64 %24 in [0,-119) (LVI @ )
+    -> [heavy] 3 analysis fact(s) on 5 boundary value(s)
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 0.986125 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  => Total Traps Eliminated: 2
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 2
+  => Total SMT Queries Executed: 2
+  => Total SMT Query Latency: 1.344544e+00 ms
+  => Average SMT Query Latency: 6.722720e-01 ms
+  => Total DFS & SMT Execution Time: 9.241254e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: FSE_decompress_wksp_body_bmi2
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %30 = extractvalue { i32, i1 } %28, 1, !nosanitize !9
+    -> Guard[1] (false edge of ''):  %23 = icmp ugt i32 %22, %4
+    -> Guard[2] (true edge of ''):  %20 = icmp ult i64 %19, -119
+    -> Guard[3] (false edge of ''):  %17 = icmp ult i64 %6, 512
+    -> Collected 4 dominating context guard(s).
+    -> Fact[LVI:0] i64 %6 in [512,0) (LVI @ )
+    -> Fact[LVI:1] i64 %19 in [0,-119) (LVI @ )
+    -> [heavy] 2 analysis fact(s) on 4 boundary value(s)
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 0.259304 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %23 = icmp ugt i32 %22, %4
+    -> Guard[1] (true edge of ''):  %20 = icmp ult i64 %19, -119
+    -> Guard[2] (false edge of ''):  %17 = icmp ult i64 %6, 512
+    -> Collected 3 dominating context guard(s).
+    -> Fact[LVI:0] i64 %6 in [512,0) (LVI @ )
+    -> Fact[LVI:1] i64 %19 in [0,-119) (LVI @ )
+    -> [heavy] 2 analysis fact(s) on 4 boundary value(s)
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 1.268882 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  => Total Traps Eliminated: 2
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 2
+  => Total SMT Queries Executed: 2
+  => Total SMT Query Latency: 1.528186e+00 ms
+  => Average SMT Query Latency: 7.640930e-01 ms
+  => Total DFS & SMT Execution Time: 1.364253e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: BIT_initDStream
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 6.042300e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: FSE_initDState
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 7.028700e-02 ms
+--------------------------------------------------

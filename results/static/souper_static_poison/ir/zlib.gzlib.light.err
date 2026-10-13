@@ -1,0 +1,340 @@
+[ODeSSy] 29 trap site(s) across 16 function(s); threads=10
+
+[Z3 Oracle] Analyzing Function: gzopen
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %54 = icmp eq i8 %53, 0
+    -> Guard[1] (false edge of ''):  %19 = icmp eq i8 %18, 0
+    -> Guard[2] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[3] (false edge of ''):  %5 = or i1 %3, %4
+    -> Collected 4 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.675427 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.675427e+00 ms
+  => Average SMT Query Latency: 2.675427e+00 ms
+  => Total DFS & SMT Execution Time: 6.969772e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: gzopen64
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %54 = icmp eq i8 %53, 0
+    -> Guard[1] (false edge of ''):  %19 = icmp eq i8 %18, 0
+    -> Guard[2] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[3] (false edge of ''):  %5 = or i1 %3, %4
+    -> Collected 4 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.364073 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.364073e+00 ms
+  => Average SMT Query Latency: 2.364073e+00 ms
+  => Total DFS & SMT Execution Time: 6.551275e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: gzdopen
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %55 = icmp eq i8 %54, 0
+    -> Guard[1] (false edge of ''):  %23 = icmp eq i8 %22, 0
+    -> Guard[2] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[3] (false edge of ''):  %9 = icmp eq ptr %1, null
+    -> Guard[4] (false edge of ''):  %6 = icmp eq ptr %5, null
+    -> Guard[5] (false edge of ''):  %3 = icmp eq i32 %0, -1
+    -> Collected 6 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.073024 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.073024e+00 ms
+  => Average SMT Query Latency: 2.073024e+00 ms
+  => Total DFS & SMT Execution Time: 6.654497e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: gzbuffer
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 9.687000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: gzrewind
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.289000e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: gzseek64
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %38 = icmp eq i32 %7, 7247
+    -> Guard[1] (false edge of ''):  %12 = icmp ugt i32 %2, 1
+    -> Guard[2] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.205292 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %50 = icmp sgt i64 %49, -1
+    -> Guard[1] (false edge of ''):  %47 = extractvalue { i64, i1 } %46, 1, !nosanitize !16
+    -> Guard[2] (true edge of ''):  %42 = icmp eq i32 %41, 1
+    -> Guard[3] (true edge of ''):  %38 = icmp eq i32 %7, 7247
+    -> Guard[4] (false edge of ''):  %12 = icmp ugt i32 %2, 1
+    -> Guard[5] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 6 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.524231 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %14 = icmp eq i32 %2, 0
+    -> Guard[1] (false edge of ''):  %12 = icmp ugt i32 %2, 1
+    -> Guard[2] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 3 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.588078 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %12 = icmp ugt i32 %2, 1
+    -> Guard[1] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 2 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 16.864896 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %111 = extractvalue { i32, i1 } %110, 1, !nosanitize !16
+    -> Guard[1] (true edge of ''):  %38 = icmp eq i32 %7, 7247
+    -> Guard[2] (false edge of ''):  %12 = icmp ugt i32 %2, 1
+    -> Guard[3] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 4 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.787533 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %82 = icmp slt i64 %37, 0
+    -> Guard[1] (true edge of ''):  %38 = icmp eq i32 %7, 7247
+    -> Guard[2] (false edge of ''):  %12 = icmp ugt i32 %2, 1
+    -> Guard[3] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 4 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.404644 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %61 = icmp eq i64 %60, -1
+    -> Guard[1] (false edge of ''):  %55 = extractvalue { i64, i1 } %54, 1, !nosanitize !16
+    -> Guard[2] (true edge of ''):  %50 = icmp sgt i64 %49, -1
+    -> Guard[3] (false edge of ''):  %47 = extractvalue { i64, i1 } %46, 1, !nosanitize !16
+    -> Guard[4] (true edge of ''):  %42 = icmp eq i32 %41, 1
+    -> Guard[5] (true edge of ''):  %38 = icmp eq i32 %7, 7247
+    -> Guard[6] (false edge of ''):  %12 = icmp ugt i32 %2, 1
+    -> Guard[7] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 8 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.437390 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %42 = icmp eq i32 %41, 1
+    -> Guard[1] (true edge of ''):  %38 = icmp eq i32 %7, 7247
+    -> Guard[2] (false edge of ''):  %12 = icmp ugt i32 %2, 1
+    -> Guard[3] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 4 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.606894 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %14 = icmp eq i32 %2, 0
+    -> Guard[1] (false edge of ''):  %12 = icmp ugt i32 %2, 1
+    -> Guard[2] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 3 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.948107 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 9
+  => Total SMT Queries Executed: 9
+  => Total SMT Query Latency: 6.336706e+01 ms
+  => Average SMT Query Latency: 7.040785e+00 ms
+  => Total DFS & SMT Execution Time: 6.685564e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: gz_error
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %45 = extractvalue { i64, i1 } %44, 1, !nosanitize !18
+    -> Guard[1] (false edge of ''):  %39 = icmp eq ptr %38, null
+    -> Guard[2] (false edge of ''):  %35 = extractvalue { i64, i1 } %34, 1, !nosanitize !18
+    -> Guard[3] (false edge of ''):  %30 = extractvalue { i64, i1 } %29, 1, !nosanitize !18
+    -> Guard[4] (false edge of ''):  %23 = or i1 %22, %21
+    -> Collected 5 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.122508 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %39 = icmp eq ptr %38, null
+    -> Guard[1] (false edge of ''):  %35 = extractvalue { i64, i1 } %34, 1, !nosanitize !18
+    -> Guard[2] (false edge of ''):  %30 = extractvalue { i64, i1 } %29, 1, !nosanitize !18
+    -> Guard[3] (false edge of ''):  %23 = or i1 %22, %21
+    -> Collected 4 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.290262 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %30 = extractvalue { i64, i1 } %29, 1, !nosanitize !18
+    -> Guard[1] (false edge of ''):  %23 = or i1 %22, %21
+    -> Collected 2 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.147053 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %23 = or i1 %22, %21
+    -> Collected 1 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.691537 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 4
+  => Total SMT Queries Executed: 4
+  => Total SMT Query Latency: 2.525136e+01 ms
+  => Average SMT Query Latency: 6.312840e+00 ms
+  => Total DFS & SMT Execution Time: 2.259752e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: gzseek
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %38 = icmp eq i32 %7, 7247
+    -> Guard[1] (false edge of ''):  %12 = icmp ugt i32 %2, 1
+    -> Guard[2] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.135565 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %50 = icmp sgt i64 %49, -1
+    -> Guard[1] (false edge of ''):  %47 = extractvalue { i64, i1 } %46, 1, !nosanitize !16
+    -> Guard[2] (true edge of ''):  %42 = icmp eq i32 %41, 1
+    -> Guard[3] (true edge of ''):  %38 = icmp eq i32 %7, 7247
+    -> Guard[4] (false edge of ''):  %12 = icmp ugt i32 %2, 1
+    -> Guard[5] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 6 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.235649 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %14 = icmp eq i32 %2, 0
+    -> Guard[1] (false edge of ''):  %12 = icmp ugt i32 %2, 1
+    -> Guard[2] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 3 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.425458 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %12 = icmp ugt i32 %2, 1
+    -> Guard[1] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 2 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.421000 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %111 = extractvalue { i32, i1 } %110, 1, !nosanitize !16
+    -> Guard[1] (true edge of ''):  %38 = icmp eq i32 %7, 7247
+    -> Guard[2] (false edge of ''):  %12 = icmp ugt i32 %2, 1
+    -> Guard[3] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 4 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.349729 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %82 = icmp slt i64 %37, 0
+    -> Guard[1] (true edge of ''):  %38 = icmp eq i32 %7, 7247
+    -> Guard[2] (false edge of ''):  %12 = icmp ugt i32 %2, 1
+    -> Guard[3] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 4 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.981834 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %61 = icmp eq i64 %60, -1
+    -> Guard[1] (false edge of ''):  %55 = extractvalue { i64, i1 } %54, 1, !nosanitize !16
+    -> Guard[2] (true edge of ''):  %50 = icmp sgt i64 %49, -1
+    -> Guard[3] (false edge of ''):  %47 = extractvalue { i64, i1 } %46, 1, !nosanitize !16
+    -> Guard[4] (true edge of ''):  %42 = icmp eq i32 %41, 1
+    -> Guard[5] (true edge of ''):  %38 = icmp eq i32 %7, 7247
+    -> Guard[6] (false edge of ''):  %12 = icmp ugt i32 %2, 1
+    -> Guard[7] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 8 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.204876 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %42 = icmp eq i32 %41, 1
+    -> Guard[1] (true edge of ''):  %38 = icmp eq i32 %7, 7247
+    -> Guard[2] (false edge of ''):  %12 = icmp ugt i32 %2, 1
+    -> Guard[3] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 4 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.551763 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %14 = icmp eq i32 %2, 0
+    -> Guard[1] (false edge of ''):  %12 = icmp ugt i32 %2, 1
+    -> Guard[2] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 3 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.148214 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 9
+  => Total SMT Queries Executed: 9
+  => Total SMT Query Latency: 5.945409e+01 ms
+  => Average SMT Query Latency: 6.606010e+00 ms
+  => Total DFS & SMT Execution Time: 4.207572e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: gztell64
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %2 = icmp eq ptr %0, null
+    -> Collected 1 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.998057 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 4.998057e+00 ms
+  => Average SMT Query Latency: 4.998057e+00 ms
+  => Total DFS & SMT Execution Time: 4.232934e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: gztell
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %2 = icmp eq ptr %0, null
+    -> Collected 1 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.829229 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 4.829229e+00 ms
+  => Average SMT Query Latency: 4.829229e+00 ms
+  => Total DFS & SMT Execution Time: 3.731934e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: gzoffset64
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %13 = icmp eq i32 %12, 7247
+    -> Guard[1] (false edge of ''):  %10 = icmp eq i64 %9, -1
+    -> Guard[2] (false edge of ''):  %2 = icmp eq ptr %0, null
+    -> Collected 3 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.548318 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.548318e+00 ms
+  => Average SMT Query Latency: 2.548318e+00 ms
+  => Total DFS & SMT Execution Time: 3.236024e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: gzoffset
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %13 = icmp eq i32 %12, 7247
+    -> Guard[1] (false edge of ''):  %10 = icmp eq i64 %9, -1
+    -> Guard[2] (false edge of ''):  %2 = icmp eq ptr %0, null
+    -> Collected 3 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.703010 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.703010e+00 ms
+  => Average SMT Query Latency: 2.703010e+00 ms
+  => Total DFS & SMT Execution Time: 2.883977e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: gzeof
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 6.938000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: gzerror
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 5.983000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: gzclearerr
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.416100e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: gz_intmax
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 7.327000e-03 ms
+--------------------------------------------------

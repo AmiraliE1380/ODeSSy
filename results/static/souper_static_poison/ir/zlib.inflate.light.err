@@ -1,0 +1,1614 @@
+[ODeSSy] 106 trap site(s) across 18 function(s); threads=10
+
+[Z3 Oracle] Analyzing Function: inflateResetKeep
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.508300e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: inflateReset
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.732000e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: inflateReset2
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.517900e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: inflateInit2_
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.064800e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: inflateInit_
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.527400e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: inflatePrime
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %42 = icmp ugt i32 %41, 32
+    -> Guard[1] (false edge of ''):  %38 = extractvalue { i32, i1 } %37, 1, !nosanitize !19
+    -> Guard[2] (false edge of ''):  %33 = icmp ugt i32 %1, 16
+    -> Guard[3] (false edge of ''):  %28 = icmp slt i32 %1, 0
+    -> Guard[4] (false edge of ''):  %26 = icmp eq i32 %1, 0
+    -> Guard[5] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[6] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[7] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[8] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[9] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[10] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 11 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.260810 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %33 = icmp ugt i32 %1, 16
+    -> Guard[1] (false edge of ''):  %28 = icmp slt i32 %1, 0
+    -> Guard[2] (false edge of ''):  %26 = icmp eq i32 %1, 0
+    -> Guard[3] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[4] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[5] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[6] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[7] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[8] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 9 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.510761 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 2
+  => Total SMT Queries Executed: 2
+  => Total SMT Query Latency: 8.771571e+00 ms
+  => Average SMT Query Latency: 4.385785e+00 ms
+  => Total DFS & SMT Execution Time: 1.378322e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: inflate
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %2418 = extractvalue { i32, i1 } %2416, 1, !nosanitize !26
+    -> Guard[1] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[2] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[3] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[4] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[5] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[6] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[7] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 8 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.283793 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[1] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[2] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[3] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[4] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[5] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[6] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 7 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.573588 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[1] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[2] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[3] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[4] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[5] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[6] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 7 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 179.552929 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %1967 = icmp eq i32 %1966, 0
+    -> Guard[1] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[2] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[3] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[4] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[5] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[6] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[7] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 8 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.688306 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %1939 = extractvalue { i32, i1 } %1938, 1, !nosanitize !26
+    -> Guard[1] (false edge of ''):  %1936 = extractvalue { i32, i1 } %1934, 1, !nosanitize !26
+    -> Guard[2] (false edge of ''):  %1892 = extractvalue { i32, i1 } %1890, 1, !nosanitize !26
+    -> Guard[3] (false edge of ''):  %1888 = icmp eq i32 %95, 0
+    -> Guard[4] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[5] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[6] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[7] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[8] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[9] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[10] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 11 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.400907 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %1936 = extractvalue { i32, i1 } %1934, 1, !nosanitize !26
+    -> Guard[1] (false edge of ''):  %1892 = extractvalue { i32, i1 } %1890, 1, !nosanitize !26
+    -> Guard[2] (false edge of ''):  %1888 = icmp eq i32 %95, 0
+    -> Guard[3] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[4] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[5] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[6] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[7] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[8] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[9] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 10 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.119433 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %1892 = extractvalue { i32, i1 } %1890, 1, !nosanitize !26
+    -> Guard[1] (false edge of ''):  %1888 = icmp eq i32 %95, 0
+    -> Guard[2] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[3] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[4] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[5] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[6] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[7] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[8] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 9 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 9.085728 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %1906 = icmp ugt i32 %1897, %1905
+    -> Guard[1] (true edge of ''):  %1895 = icmp ugt i32 %1894, %1891
+    -> Guard[2] (false edge of ''):  %1892 = extractvalue { i32, i1 } %1890, 1, !nosanitize !26
+    -> Guard[3] (false edge of ''):  %1888 = icmp eq i32 %95, 0
+    -> Guard[4] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[5] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[6] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[7] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[8] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[9] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[10] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 11 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.149610 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %1888 = icmp eq i32 %95, 0
+    -> Guard[1] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[2] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[3] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[4] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[5] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[6] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[7] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 8 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.610651 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %1863 = extractvalue { i32, i1 } %1862, 1, !nosanitize !26
+    -> Guard[1] (false edge of ''):  %1825 = icmp eq i32 %1819, 0
+    -> Guard[2] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[3] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[4] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[5] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[6] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[7] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[8] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 9 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.798645 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[1] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[2] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[3] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[4] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[5] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[6] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 7 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 202.379571 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %1643 = extractvalue { i32, i1 } %1642, 1, !nosanitize !26
+    -> Guard[1] (false edge of ''):  %1605 = icmp eq i32 %1599, 0
+    -> Guard[2] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[3] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[4] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[5] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[6] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[7] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[8] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 9 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.127322 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %1437 = select i1 %1435, i1 %1436, i1 false
+    -> Guard[1] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[2] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[3] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[4] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[5] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[6] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[7] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 8 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 12.280268 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %1385 = icmp eq i64 %1384, 4294967295
+    -> Guard[1] (false edge of ''):  %1375 = icmp ugt i32 %1374, %1164
+    -> Guard[2] (false edge of ''):  %1372 = extractvalue { i32, i1 } %1371, 1, !nosanitize !26
+    -> Guard[3] (false edge of ''):  %1227 = icmp ult i16 %1226, 16
+    -> Guard[4] (true edge of ''):  %1166 = icmp ult i32 %1165, %1164
+    -> Guard[5] (false edge of ''):  %1162 = extractvalue { i32, i1 } %1161, 1, !nosanitize !26
+    -> Guard[6] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[7] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[8] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[9] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[10] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[11] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[12] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 13 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.168459 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %1227 = icmp ult i16 %1226, 16
+    -> Guard[1] (true edge of ''):  %1166 = icmp ult i32 %1165, %1164
+    -> Guard[2] (false edge of ''):  %1162 = extractvalue { i32, i1 } %1161, 1, !nosanitize !26
+    -> Guard[3] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[4] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[5] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[6] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[7] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[8] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[9] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 10 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.148762 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %1227 = icmp ult i16 %1226, 16
+    -> Guard[1] (true edge of ''):  %1166 = icmp ult i32 %1165, %1164
+    -> Guard[2] (false edge of ''):  %1162 = extractvalue { i32, i1 } %1161, 1, !nosanitize !26
+    -> Guard[3] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[4] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[5] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[6] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[7] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[8] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[9] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 10 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.133144 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %1279 = icmp eq i32 %1232, 0
+    -> Guard[1] (false edge of ''):  %1227 = icmp ult i16 %1226, 16
+    -> Guard[2] (true edge of ''):  %1166 = icmp ult i32 %1165, %1164
+    -> Guard[3] (false edge of ''):  %1162 = extractvalue { i32, i1 } %1161, 1, !nosanitize !26
+    -> Guard[4] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[5] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[6] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[7] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[8] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[9] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[10] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 11 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.176080 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %1227 = icmp ult i16 %1226, 16
+    -> Guard[1] (true edge of ''):  %1166 = icmp ult i32 %1165, %1164
+    -> Guard[2] (false edge of ''):  %1162 = extractvalue { i32, i1 } %1161, 1, !nosanitize !26
+    -> Guard[3] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[4] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[5] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[6] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[7] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[8] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[9] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 10 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.990101 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %1018 = extractvalue { i32, i1 } %1016, 1, !nosanitize !26
+    -> Guard[1] (false edge of ''):  %1013 = extractvalue { i32, i1 } %1011, 1, !nosanitize !26
+    -> Guard[2] (false edge of ''):  %1008 = icmp eq i32 %1007, 0
+    -> Guard[3] (false edge of ''):  %1004 = icmp eq i32 %1003, 0
+    -> Guard[4] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[5] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[6] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[7] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[8] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[9] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[10] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 11 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.842583 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %1013 = extractvalue { i32, i1 } %1011, 1, !nosanitize !26
+    -> Guard[1] (false edge of ''):  %1008 = icmp eq i32 %1007, 0
+    -> Guard[2] (false edge of ''):  %1004 = icmp eq i32 %1003, 0
+    -> Guard[3] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[4] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[5] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[6] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[7] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[8] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[9] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 10 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5.077034 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %1008 = icmp eq i32 %1007, 0
+    -> Guard[1] (false edge of ''):  %1004 = icmp eq i32 %1003, 0
+    -> Guard[2] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[3] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[4] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[5] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[6] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[7] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[8] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 9 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 17.235257 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[1] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[2] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[3] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[4] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[5] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[6] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 7 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3.225029 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %864 = icmp eq i32 %863, 0
+    -> Guard[1] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[2] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[3] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[4] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[5] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[6] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[7] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 8 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 11.982997 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %685 = select i1 %683, i1 %684, i1 false
+    -> Guard[1] (false edge of ''):  %659 = icmp eq i32 %652, 0
+    -> Guard[2] (false edge of ''):  %657 = icmp eq i32 %656, 0
+    -> Guard[3] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[4] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[5] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[6] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[7] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[8] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[9] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 10 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.144539 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %622 = select i1 %620, i1 %621, i1 false
+    -> Guard[1] (false edge of ''):  %596 = icmp eq i32 %589, 0
+    -> Guard[2] (false edge of ''):  %594 = icmp eq i32 %593, 0
+    -> Guard[3] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[4] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[5] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[6] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[7] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[8] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[9] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 10 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.134213 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %570 = extractvalue { i32, i1 } %568, 1, !nosanitize !26
+    -> Guard[1] (false edge of ''):  %522 = icmp eq i32 %521, 0
+    -> Guard[2] (false edge of ''):  %518 = icmp eq i32 %517, 0
+    -> Guard[3] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[4] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[5] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[6] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[7] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[8] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[9] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 10 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.146857 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %522 = icmp eq i32 %521, 0
+    -> Guard[1] (false edge of ''):  %518 = icmp eq i32 %517, 0
+    -> Guard[2] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[3] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[4] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[5] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[6] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[7] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[8] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 9 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3.998433 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %547 = icmp ugt i32 %546, %538
+    -> Guard[1] (false edge of ''):  %544 = extractvalue { i32, i1 } %543, 1, !nosanitize !26
+    -> Guard[2] (true edge of ''):  %539 = icmp ult i32 %534, %538
+    -> Guard[3] (false edge of ''):  %535 = extractvalue { i32, i1 } %533, 1, !nosanitize !26
+    -> Guard[4] (false edge of ''):  %529 = icmp eq ptr %528, null
+    -> Guard[5] (false edge of ''):  %525 = icmp eq ptr %524, null
+    -> Guard[6] (false edge of ''):  %522 = icmp eq i32 %521, 0
+    -> Guard[7] (false edge of ''):  %518 = icmp eq i32 %517, 0
+    -> Guard[8] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[9] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[10] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[11] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[12] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[13] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[14] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 15 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.135124 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %529 = icmp eq ptr %528, null
+    -> Guard[1] (false edge of ''):  %525 = icmp eq ptr %524, null
+    -> Guard[2] (false edge of ''):  %522 = icmp eq i32 %521, 0
+    -> Guard[3] (false edge of ''):  %518 = icmp eq i32 %517, 0
+    -> Guard[4] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[5] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[6] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[7] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[8] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[9] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[10] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 11 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.961298 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %2474 = extractvalue { i32, i1 } %2473, 1, !nosanitize !26
+    -> Guard[1] (false edge of ''):  %2467 = extractvalue { i32, i1 } %2466, 1, !nosanitize !26
+    -> Guard[2] (false edge of ''):  %2440 = extractvalue { i64, i1 } %2439, 1, !nosanitize !26
+    -> Guard[3] (false edge of ''):  %2435 = extractvalue { i64, i1 } %2434, 1, !nosanitize !26
+    -> Guard[4] (false edge of ''):  %2429 = extractvalue { i64, i1 } %2428, 1, !nosanitize !26
+    -> Guard[5] (false edge of ''):  %2423 = extractvalue { i32, i1 } %2421, 1, !nosanitize !26
+    -> Guard[6] (false edge of ''):  %2418 = extractvalue { i32, i1 } %2416, 1, !nosanitize !26
+    -> Guard[7] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[8] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[9] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[10] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[11] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[12] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[13] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 14 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.171451 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %2467 = extractvalue { i32, i1 } %2466, 1, !nosanitize !26
+    -> Guard[1] (false edge of ''):  %2440 = extractvalue { i64, i1 } %2439, 1, !nosanitize !26
+    -> Guard[2] (false edge of ''):  %2435 = extractvalue { i64, i1 } %2434, 1, !nosanitize !26
+    -> Guard[3] (false edge of ''):  %2429 = extractvalue { i64, i1 } %2428, 1, !nosanitize !26
+    -> Guard[4] (false edge of ''):  %2423 = extractvalue { i32, i1 } %2421, 1, !nosanitize !26
+    -> Guard[5] (false edge of ''):  %2418 = extractvalue { i32, i1 } %2416, 1, !nosanitize !26
+    -> Guard[6] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[7] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[8] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[9] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[10] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[11] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[12] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 13 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 11.304764 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %2440 = extractvalue { i64, i1 } %2439, 1, !nosanitize !26
+    -> Guard[1] (false edge of ''):  %2435 = extractvalue { i64, i1 } %2434, 1, !nosanitize !26
+    -> Guard[2] (false edge of ''):  %2429 = extractvalue { i64, i1 } %2428, 1, !nosanitize !26
+    -> Guard[3] (false edge of ''):  %2423 = extractvalue { i32, i1 } %2421, 1, !nosanitize !26
+    -> Guard[4] (false edge of ''):  %2418 = extractvalue { i32, i1 } %2416, 1, !nosanitize !26
+    -> Guard[5] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[6] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[7] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[8] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[9] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[10] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[11] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 12 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.134219 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %2435 = extractvalue { i64, i1 } %2434, 1, !nosanitize !26
+    -> Guard[1] (false edge of ''):  %2429 = extractvalue { i64, i1 } %2428, 1, !nosanitize !26
+    -> Guard[2] (false edge of ''):  %2423 = extractvalue { i32, i1 } %2421, 1, !nosanitize !26
+    -> Guard[3] (false edge of ''):  %2418 = extractvalue { i32, i1 } %2416, 1, !nosanitize !26
+    -> Guard[4] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[5] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[6] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[7] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[8] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[9] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[10] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 11 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 12.927877 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %2429 = extractvalue { i64, i1 } %2428, 1, !nosanitize !26
+    -> Guard[1] (false edge of ''):  %2423 = extractvalue { i32, i1 } %2421, 1, !nosanitize !26
+    -> Guard[2] (false edge of ''):  %2418 = extractvalue { i32, i1 } %2416, 1, !nosanitize !26
+    -> Guard[3] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[4] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[5] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[6] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[7] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[8] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[9] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 10 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 13.035367 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %2423 = extractvalue { i32, i1 } %2421, 1, !nosanitize !26
+    -> Guard[1] (false edge of ''):  %2418 = extractvalue { i32, i1 } %2416, 1, !nosanitize !26
+    -> Guard[2] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[3] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[4] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[5] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[6] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[7] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[8] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 9 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.866013 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %2148 = icmp eq i32 %2144, 0
+    -> Guard[1] (true edge of ''):  %2146 = icmp ult i32 %2096, 8
+    -> Guard[2] (false edge of ''):  %2140 = extractvalue { i64, i1 } %2139, 1, !nosanitize !26
+    -> Guard[3] (false edge of ''):  %2134 = icmp eq i32 %2130, 0
+    -> Guard[4] (true edge of ''):  %2132 = icmp ult i32 %2096, 16
+    -> Guard[5] (false edge of ''):  %2126 = extractvalue { i64, i1 } %2125, 1, !nosanitize !26
+    -> Guard[6] (false edge of ''):  %2120 = icmp eq i32 %2116, 0
+    -> Guard[7] (true edge of ''):  %2118 = icmp ult i32 %2096, 24
+    -> Guard[8] (false edge of ''):  %2112 = extractvalue { i64, i1 } %2111, 1, !nosanitize !26
+    -> Guard[9] (false edge of ''):  %2106 = icmp eq i32 %2094, 0
+    -> Guard[10] (true edge of ''):  %2103 = icmp ult i32 %2096, 32
+    -> Guard[11] (false edge of ''):  %2101 = icmp eq i32 %2100, 0
+    -> Guard[12] (false edge of ''):  %2098 = icmp eq i32 %2092, 0
+    -> Guard[13] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[14] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[15] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[16] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[17] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[18] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[19] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 20 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.215461 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %2134 = icmp eq i32 %2130, 0
+    -> Guard[1] (true edge of ''):  %2132 = icmp ult i32 %2096, 16
+    -> Guard[2] (false edge of ''):  %2126 = extractvalue { i64, i1 } %2125, 1, !nosanitize !26
+    -> Guard[3] (false edge of ''):  %2120 = icmp eq i32 %2116, 0
+    -> Guard[4] (true edge of ''):  %2118 = icmp ult i32 %2096, 24
+    -> Guard[5] (false edge of ''):  %2112 = extractvalue { i64, i1 } %2111, 1, !nosanitize !26
+    -> Guard[6] (false edge of ''):  %2106 = icmp eq i32 %2094, 0
+    -> Guard[7] (true edge of ''):  %2103 = icmp ult i32 %2096, 32
+    -> Guard[8] (false edge of ''):  %2101 = icmp eq i32 %2100, 0
+    -> Guard[9] (false edge of ''):  %2098 = icmp eq i32 %2092, 0
+    -> Guard[10] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[11] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[12] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[13] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[14] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[15] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[16] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 17 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.295645 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %2120 = icmp eq i32 %2116, 0
+    -> Guard[1] (true edge of ''):  %2118 = icmp ult i32 %2096, 24
+    -> Guard[2] (false edge of ''):  %2112 = extractvalue { i64, i1 } %2111, 1, !nosanitize !26
+    -> Guard[3] (false edge of ''):  %2106 = icmp eq i32 %2094, 0
+    -> Guard[4] (true edge of ''):  %2103 = icmp ult i32 %2096, 32
+    -> Guard[5] (false edge of ''):  %2101 = icmp eq i32 %2100, 0
+    -> Guard[6] (false edge of ''):  %2098 = icmp eq i32 %2092, 0
+    -> Guard[7] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[8] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[9] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[10] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[11] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[12] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[13] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 14 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.909543 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %2106 = icmp eq i32 %2094, 0
+    -> Guard[1] (true edge of ''):  %2103 = icmp ult i32 %2096, 32
+    -> Guard[2] (false edge of ''):  %2101 = icmp eq i32 %2100, 0
+    -> Guard[3] (false edge of ''):  %2098 = icmp eq i32 %2092, 0
+    -> Guard[4] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[5] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[6] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[7] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[8] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[9] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[10] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 11 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.552881 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %2044 = extractvalue { i64, i1 } %2043, 1, !nosanitize !26
+    -> Guard[1] (false edge of ''):  %2039 = extractvalue { i32, i1 } %2037, 1, !nosanitize !26
+    -> Guard[2] (false edge of ''):  %1967 = icmp eq i32 %1966, 0
+    -> Guard[3] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[4] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[5] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[6] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[7] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[8] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[9] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 10 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.149857 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %2039 = extractvalue { i32, i1 } %2037, 1, !nosanitize !26
+    -> Guard[1] (false edge of ''):  %1967 = icmp eq i32 %1966, 0
+    -> Guard[2] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[3] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[4] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[5] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[6] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[7] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[8] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 9 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.346955 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %2014 = icmp eq i32 %2010, 0
+    -> Guard[1] (true edge of ''):  %2012 = icmp ult i32 %97, 8
+    -> Guard[2] (false edge of ''):  %2006 = extractvalue { i64, i1 } %2005, 1, !nosanitize !26
+    -> Guard[3] (false edge of ''):  %2000 = icmp eq i32 %1996, 0
+    -> Guard[4] (true edge of ''):  %1998 = icmp ult i32 %97, 16
+    -> Guard[5] (false edge of ''):  %1992 = extractvalue { i64, i1 } %1991, 1, !nosanitize !26
+    -> Guard[6] (false edge of ''):  %1986 = icmp eq i32 %1982, 0
+    -> Guard[7] (true edge of ''):  %1984 = icmp ult i32 %97, 24
+    -> Guard[8] (false edge of ''):  %1978 = extractvalue { i64, i1 } %1977, 1, !nosanitize !26
+    -> Guard[9] (false edge of ''):  %1972 = icmp eq i32 %94, 0
+    -> Guard[10] (true edge of ''):  %1969 = icmp ult i32 %97, 32
+    -> Guard[11] (false edge of ''):  %1967 = icmp eq i32 %1966, 0
+    -> Guard[12] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[13] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[14] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[15] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[16] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[17] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[18] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 19 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.152677 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %2000 = icmp eq i32 %1996, 0
+    -> Guard[1] (true edge of ''):  %1998 = icmp ult i32 %97, 16
+    -> Guard[2] (false edge of ''):  %1992 = extractvalue { i64, i1 } %1991, 1, !nosanitize !26
+    -> Guard[3] (false edge of ''):  %1986 = icmp eq i32 %1982, 0
+    -> Guard[4] (true edge of ''):  %1984 = icmp ult i32 %97, 24
+    -> Guard[5] (false edge of ''):  %1978 = extractvalue { i64, i1 } %1977, 1, !nosanitize !26
+    -> Guard[6] (false edge of ''):  %1972 = icmp eq i32 %94, 0
+    -> Guard[7] (true edge of ''):  %1969 = icmp ult i32 %97, 32
+    -> Guard[8] (false edge of ''):  %1967 = icmp eq i32 %1966, 0
+    -> Guard[9] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[10] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[11] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[12] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[13] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[14] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[15] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 16 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.196007 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %1986 = icmp eq i32 %1982, 0
+    -> Guard[1] (true edge of ''):  %1984 = icmp ult i32 %97, 24
+    -> Guard[2] (false edge of ''):  %1978 = extractvalue { i64, i1 } %1977, 1, !nosanitize !26
+    -> Guard[3] (false edge of ''):  %1972 = icmp eq i32 %94, 0
+    -> Guard[4] (true edge of ''):  %1969 = icmp ult i32 %97, 32
+    -> Guard[5] (false edge of ''):  %1967 = icmp eq i32 %1966, 0
+    -> Guard[6] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[7] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[8] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[9] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[10] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[11] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[12] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 13 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.954945 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %1972 = icmp eq i32 %94, 0
+    -> Guard[1] (true edge of ''):  %1969 = icmp ult i32 %97, 32
+    -> Guard[2] (false edge of ''):  %1967 = icmp eq i32 %1966, 0
+    -> Guard[3] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[4] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[5] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[6] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[7] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[8] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[9] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 10 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.688185 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %1870 = extractvalue { i32, i1 } %1868, 1, !nosanitize !26
+    -> Guard[1] (false edge of ''):  %1863 = extractvalue { i32, i1 } %1862, 1, !nosanitize !26
+    -> Guard[2] (false edge of ''):  %1825 = icmp eq i32 %1819, 0
+    -> Guard[3] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[4] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[5] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[6] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[7] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[8] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[9] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 10 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.139749 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %1825 = icmp eq i32 %1819, 0
+    -> Guard[1] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[2] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[3] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[4] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[5] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[6] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[7] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 8 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 16.391943 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %1835 = icmp eq i32 %1833, 0
+    -> Guard[1] (true edge of ''):  %1827 = icmp ult i32 %1823, %1819
+    -> Guard[2] (false edge of ''):  %1825 = icmp eq i32 %1819, 0
+    -> Guard[3] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[4] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[5] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[6] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[7] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[8] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[9] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 10 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.140541 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %1804 = extractvalue { i32, i1 } %1802, 1, !nosanitize !26
+    -> Guard[1] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[2] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[3] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[4] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[5] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[6] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[7] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 8 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.329780 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %1722 = icmp ult i8 %1721, 16
+    -> Guard[1] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[2] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[3] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[4] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[5] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[6] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[7] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 8 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 38.436450 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %1747 = icmp eq i32 %1745, 0
+    -> Guard[1] (true edge of ''):  %1739 = icmp ugt i32 %1738, %1716
+    -> Guard[2] (true edge of ''):  %1722 = icmp ult i8 %1721, 16
+    -> Guard[3] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[4] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[5] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[6] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[7] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[8] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[9] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 10 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.259482 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %1688 = icmp eq i32 %1686, 0
+    -> Guard[1] (true edge of ''):  %1680 = icmp ult i32 %1667, %1679
+    -> Guard[2] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[3] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[4] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[5] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[6] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[7] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[8] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 9 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.129735 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %1650 = extractvalue { i32, i1 } %1648, 1, !nosanitize !26
+    -> Guard[1] (false edge of ''):  %1643 = extractvalue { i32, i1 } %1642, 1, !nosanitize !26
+    -> Guard[2] (false edge of ''):  %1605 = icmp eq i32 %1599, 0
+    -> Guard[3] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[4] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[5] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[6] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[7] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[8] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[9] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 10 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.140328 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %1605 = icmp eq i32 %1599, 0
+    -> Guard[1] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[2] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[3] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[4] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[5] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[6] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[7] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 8 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 11.023212 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %1615 = icmp eq i32 %1613, 0
+    -> Guard[1] (true edge of ''):  %1607 = icmp ult i32 %1603, %1599
+    -> Guard[2] (false edge of ''):  %1605 = icmp eq i32 %1599, 0
+    -> Guard[3] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[4] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[5] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[6] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[7] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[8] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[9] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 10 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.149615 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %1528 = icmp eq i32 %1526, 0
+    -> Guard[1] (true edge of ''):  %1520 = icmp ugt i32 %1519, %1496
+    -> Guard[2] (true edge of ''):  %1503 = icmp ult i8 %1502, 15
+    -> Guard[3] (false edge of ''):  %1437 = select i1 %1435, i1 %1436, i1 false
+    -> Guard[4] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[5] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[6] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[7] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[8] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[9] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[10] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 11 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.139124 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %1468 = icmp eq i32 %1466, 0
+    -> Guard[1] (true edge of ''):  %1460 = icmp ult i32 %1433, %1459
+    -> Guard[2] (false edge of ''):  %1437 = select i1 %1435, i1 %1436, i1 false
+    -> Guard[3] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[4] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[5] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[6] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[7] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[8] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[9] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 10 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.181234 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %1375 = icmp ugt i32 %1374, %1164
+    -> Guard[1] (false edge of ''):  %1372 = extractvalue { i32, i1 } %1371, 1, !nosanitize !26
+    -> Guard[2] (false edge of ''):  %1227 = icmp ult i16 %1226, 16
+    -> Guard[3] (true edge of ''):  %1166 = icmp ult i32 %1165, %1164
+    -> Guard[4] (false edge of ''):  %1162 = extractvalue { i32, i1 } %1161, 1, !nosanitize !26
+    -> Guard[5] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[6] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[7] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[8] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[9] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[10] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[11] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 12 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 18.440482 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %1227 = icmp ult i16 %1226, 16
+    -> Guard[1] (true edge of ''):  %1166 = icmp ult i32 %1165, %1164
+    -> Guard[2] (false edge of ''):  %1162 = extractvalue { i32, i1 } %1161, 1, !nosanitize !26
+    -> Guard[3] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[4] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[5] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[6] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[7] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[8] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[9] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 10 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 19.012144 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %1333 = icmp eq i32 %1331, 0
+    -> Guard[1] (true edge of ''):  %1247 = icmp ult i32 %1222, %1246
+    -> Guard[2] (false edge of ''):  %1227 = icmp ult i16 %1226, 16
+    -> Guard[3] (true edge of ''):  %1166 = icmp ult i32 %1165, %1164
+    -> Guard[4] (false edge of ''):  %1162 = extractvalue { i32, i1 } %1161, 1, !nosanitize !26
+    -> Guard[5] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[6] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[7] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[8] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[9] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[10] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[11] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 12 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.906343 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %1298 = icmp eq i32 %1296, 0
+    -> Guard[1] (true edge of ''):  %1235 = icmp ult i32 %1222, %1234
+    -> Guard[2] (false edge of ''):  %1227 = icmp ult i16 %1226, 16
+    -> Guard[3] (true edge of ''):  %1166 = icmp ult i32 %1165, %1164
+    -> Guard[4] (false edge of ''):  %1162 = extractvalue { i32, i1 } %1161, 1, !nosanitize !26
+    -> Guard[5] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[6] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[7] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[8] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[9] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[10] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[11] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 12 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.004398 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %1256 = icmp eq i32 %1254, 0
+    -> Guard[1] (true edge of ''):  %1241 = icmp ult i32 %1222, %1240
+    -> Guard[2] (false edge of ''):  %1227 = icmp ult i16 %1226, 16
+    -> Guard[3] (true edge of ''):  %1166 = icmp ult i32 %1165, %1164
+    -> Guard[4] (false edge of ''):  %1162 = extractvalue { i32, i1 } %1161, 1, !nosanitize !26
+    -> Guard[5] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[6] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[7] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[8] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[9] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[10] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[11] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 12 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.124029 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %1195 = icmp eq i32 %1193, 0
+    -> Guard[1] (true edge of ''):  %1187 = icmp ult i32 %1180, %1186
+    -> Guard[2] (true edge of ''):  %1166 = icmp ult i32 %1165, %1164
+    -> Guard[3] (false edge of ''):  %1162 = extractvalue { i32, i1 } %1161, 1, !nosanitize !26
+    -> Guard[4] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[5] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[6] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[7] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[8] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[9] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[10] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 11 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.376261 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[1] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[2] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[3] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[4] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[5] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[6] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 7 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.626709 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %1110 = icmp eq i32 %1105, 0
+    -> Guard[1] (true edge of ''):  %1107 = icmp ult i32 %1103, 3
+    -> Guard[2] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[3] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[4] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[5] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[6] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[7] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[8] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 9 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.504871 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %1040 = icmp eq i32 %1036, 0
+    -> Guard[1] (true edge of ''):  %1038 = icmp ult i32 %97, 6
+    -> Guard[2] (false edge of ''):  %1032 = extractvalue { i64, i1 } %1031, 1, !nosanitize !26
+    -> Guard[3] (false edge of ''):  %110 = icmp eq i32 %94, 0
+    -> Guard[4] (true edge of ''):  %107 = icmp ult i32 %97, 14
+    -> Guard[5] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[6] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[7] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[8] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[9] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[10] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[11] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 12 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.143038 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %110 = icmp eq i32 %94, 0
+    -> Guard[1] (true edge of ''):  %107 = icmp ult i32 %97, 14
+    -> Guard[2] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[3] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[4] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[5] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[6] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[7] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[8] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 9 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.352537 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %963 = icmp eq i32 %959, 0
+    -> Guard[1] (true edge of ''):  %961 = icmp eq i32 %919, 0
+    -> Guard[2] (false edge of ''):  %955 = extractvalue { i64, i1 } %954, 1, !nosanitize !26
+    -> Guard[3] (false edge of ''):  %949 = icmp eq i32 %945, 0
+    -> Guard[4] (true edge of ''):  %947 = icmp ult i32 %919, 16
+    -> Guard[5] (false edge of ''):  %941 = extractvalue { i64, i1 } %940, 1, !nosanitize !26
+    -> Guard[6] (false edge of ''):  %935 = icmp eq i32 %931, 0
+    -> Guard[7] (true edge of ''):  %933 = icmp ult i32 %919, 24
+    -> Guard[8] (false edge of ''):  %927 = extractvalue { i64, i1 } %926, 1, !nosanitize !26
+    -> Guard[9] (false edge of ''):  %921 = icmp eq i32 %94, 0
+    -> Guard[10] (true edge of ''):  %917 = icmp ult i32 %916, 32
+    -> Guard[11] (false edge of ''):  %912 = extractvalue { i32, i1 } %911, 1, !nosanitize !26
+    -> Guard[12] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[13] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[14] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[15] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[16] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[17] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[18] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 19 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.478126 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %949 = icmp eq i32 %945, 0
+    -> Guard[1] (true edge of ''):  %947 = icmp ult i32 %919, 16
+    -> Guard[2] (false edge of ''):  %941 = extractvalue { i64, i1 } %940, 1, !nosanitize !26
+    -> Guard[3] (false edge of ''):  %935 = icmp eq i32 %931, 0
+    -> Guard[4] (true edge of ''):  %933 = icmp ult i32 %919, 24
+    -> Guard[5] (false edge of ''):  %927 = extractvalue { i64, i1 } %926, 1, !nosanitize !26
+    -> Guard[6] (false edge of ''):  %921 = icmp eq i32 %94, 0
+    -> Guard[7] (true edge of ''):  %917 = icmp ult i32 %916, 32
+    -> Guard[8] (false edge of ''):  %912 = extractvalue { i32, i1 } %911, 1, !nosanitize !26
+    -> Guard[9] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[10] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[11] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[12] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[13] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[14] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[15] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 16 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.784769 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %935 = icmp eq i32 %931, 0
+    -> Guard[1] (true edge of ''):  %933 = icmp ult i32 %919, 24
+    -> Guard[2] (false edge of ''):  %927 = extractvalue { i64, i1 } %926, 1, !nosanitize !26
+    -> Guard[3] (false edge of ''):  %921 = icmp eq i32 %94, 0
+    -> Guard[4] (true edge of ''):  %917 = icmp ult i32 %916, 32
+    -> Guard[5] (false edge of ''):  %912 = extractvalue { i32, i1 } %911, 1, !nosanitize !26
+    -> Guard[6] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[7] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[8] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[9] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[10] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[11] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[12] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 13 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.640321 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %921 = icmp eq i32 %94, 0
+    -> Guard[1] (true edge of ''):  %917 = icmp ult i32 %916, 32
+    -> Guard[2] (false edge of ''):  %912 = extractvalue { i32, i1 } %911, 1, !nosanitize !26
+    -> Guard[3] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[4] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[5] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[6] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[7] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[8] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[9] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 10 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.490572 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %869 = icmp eq i32 %860, 0
+    -> Guard[1] (true edge of ''):  %866 = icmp ult i32 %862, 3
+    -> Guard[2] (true edge of ''):  %864 = icmp eq i32 %863, 0
+    -> Guard[3] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[4] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[5] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[6] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[7] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[8] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[9] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 10 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.318827 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %825 = icmp eq i32 %821, 0
+    -> Guard[1] (true edge of ''):  %823 = icmp ult i32 %97, 8
+    -> Guard[2] (false edge of ''):  %817 = extractvalue { i64, i1 } %816, 1, !nosanitize !26
+    -> Guard[3] (false edge of ''):  %811 = icmp eq i32 %807, 0
+    -> Guard[4] (true edge of ''):  %809 = icmp ult i32 %97, 16
+    -> Guard[5] (false edge of ''):  %803 = extractvalue { i64, i1 } %802, 1, !nosanitize !26
+    -> Guard[6] (false edge of ''):  %797 = icmp eq i32 %793, 0
+    -> Guard[7] (true edge of ''):  %795 = icmp ult i32 %97, 24
+    -> Guard[8] (false edge of ''):  %789 = extractvalue { i64, i1 } %788, 1, !nosanitize !26
+    -> Guard[9] (false edge of ''):  %115 = icmp eq i32 %94, 0
+    -> Guard[10] (true edge of ''):  %112 = icmp ult i32 %97, 32
+    -> Guard[11] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[12] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[13] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[14] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[15] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[16] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[17] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 18 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.142231 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %811 = icmp eq i32 %807, 0
+    -> Guard[1] (true edge of ''):  %809 = icmp ult i32 %97, 16
+    -> Guard[2] (false edge of ''):  %803 = extractvalue { i64, i1 } %802, 1, !nosanitize !26
+    -> Guard[3] (false edge of ''):  %797 = icmp eq i32 %793, 0
+    -> Guard[4] (true edge of ''):  %795 = icmp ult i32 %97, 24
+    -> Guard[5] (false edge of ''):  %789 = extractvalue { i64, i1 } %788, 1, !nosanitize !26
+    -> Guard[6] (false edge of ''):  %115 = icmp eq i32 %94, 0
+    -> Guard[7] (true edge of ''):  %112 = icmp ult i32 %97, 32
+    -> Guard[8] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[9] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[10] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[11] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[12] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[13] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[14] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 15 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.149666 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %797 = icmp eq i32 %793, 0
+    -> Guard[1] (true edge of ''):  %795 = icmp ult i32 %97, 24
+    -> Guard[2] (false edge of ''):  %789 = extractvalue { i64, i1 } %788, 1, !nosanitize !26
+    -> Guard[3] (false edge of ''):  %115 = icmp eq i32 %94, 0
+    -> Guard[4] (true edge of ''):  %112 = icmp ult i32 %97, 32
+    -> Guard[5] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[6] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[7] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[8] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[9] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[10] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[11] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 12 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.526373 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %115 = icmp eq i32 %94, 0
+    -> Guard[1] (true edge of ''):  %112 = icmp ult i32 %97, 32
+    -> Guard[2] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[3] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[4] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[5] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[6] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[7] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[8] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 9 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.922569 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %739 = icmp eq i32 %735, 0
+    -> Guard[1] (true edge of ''):  %737 = icmp ult i32 %717, 8
+    -> Guard[2] (false edge of ''):  %731 = extractvalue { i64, i1 } %730, 1, !nosanitize !26
+    -> Guard[3] (false edge of ''):  %725 = icmp eq i32 %715, 0
+    -> Guard[4] (true edge of ''):  %722 = icmp ult i32 %717, 16
+    -> Guard[5] (false edge of ''):  %720 = icmp eq i32 %719, 0
+    -> Guard[6] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[7] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[8] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[9] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[10] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[11] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[12] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 13 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.138028 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %725 = icmp eq i32 %715, 0
+    -> Guard[1] (true edge of ''):  %722 = icmp ult i32 %717, 16
+    -> Guard[2] (false edge of ''):  %720 = icmp eq i32 %719, 0
+    -> Guard[3] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[4] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[5] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[6] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[7] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[8] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[9] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 10 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.192717 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %539 = icmp ult i32 %534, %538
+    -> Guard[1] (false edge of ''):  %535 = extractvalue { i32, i1 } %533, 1, !nosanitize !26
+    -> Guard[2] (false edge of ''):  %529 = icmp eq ptr %528, null
+    -> Guard[3] (false edge of ''):  %525 = icmp eq ptr %524, null
+    -> Guard[4] (false edge of ''):  %522 = icmp eq i32 %521, 0
+    -> Guard[5] (false edge of ''):  %518 = icmp eq i32 %517, 0
+    -> Guard[6] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[7] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[8] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[9] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[10] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[11] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[12] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 13 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.141112 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %463 = icmp eq i32 %459, 0
+    -> Guard[1] (true edge of ''):  %461 = icmp ult i32 %446, 8
+    -> Guard[2] (false edge of ''):  %455 = extractvalue { i64, i1 } %454, 1, !nosanitize !26
+    -> Guard[3] (false edge of ''):  %449 = icmp eq i32 %444, 0
+    -> Guard[4] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[5] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[6] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[7] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[8] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[9] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[10] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 11 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.200874 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %449 = icmp eq i32 %444, 0
+    -> Guard[1] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[2] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[3] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[4] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[5] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[6] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[7] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 8 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.130030 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %394 = icmp eq i32 %390, 0
+    -> Guard[1] (true edge of ''):  %392 = icmp ult i32 %375, 8
+    -> Guard[2] (false edge of ''):  %386 = extractvalue { i64, i1 } %385, 1, !nosanitize !26
+    -> Guard[3] (false edge of ''):  %380 = icmp eq i32 %377, 0
+    -> Guard[4] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[5] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[6] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[7] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[8] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[9] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[10] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 11 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.126323 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %380 = icmp eq i32 %377, 0
+    -> Guard[1] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[2] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[3] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[4] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[5] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[6] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[7] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 8 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.115559 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %334 = icmp eq i32 %330, 0
+    -> Guard[1] (true edge of ''):  %332 = icmp ult i32 %287, 8
+    -> Guard[2] (false edge of ''):  %326 = extractvalue { i64, i1 } %325, 1, !nosanitize !26
+    -> Guard[3] (false edge of ''):  %320 = icmp eq i32 %316, 0
+    -> Guard[4] (true edge of ''):  %318 = icmp ult i32 %287, 16
+    -> Guard[5] (false edge of ''):  %312 = extractvalue { i64, i1 } %311, 1, !nosanitize !26
+    -> Guard[6] (false edge of ''):  %306 = icmp eq i32 %302, 0
+    -> Guard[7] (true edge of ''):  %304 = icmp ult i32 %287, 24
+    -> Guard[8] (false edge of ''):  %298 = extractvalue { i64, i1 } %297, 1, !nosanitize !26
+    -> Guard[9] (false edge of ''):  %292 = icmp eq i32 %289, 0
+    -> Guard[10] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[11] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[12] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[13] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[14] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[15] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[16] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 17 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.194224 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %320 = icmp eq i32 %316, 0
+    -> Guard[1] (true edge of ''):  %318 = icmp ult i32 %287, 16
+    -> Guard[2] (false edge of ''):  %312 = extractvalue { i64, i1 } %311, 1, !nosanitize !26
+    -> Guard[3] (false edge of ''):  %306 = icmp eq i32 %302, 0
+    -> Guard[4] (true edge of ''):  %304 = icmp ult i32 %287, 24
+    -> Guard[5] (false edge of ''):  %298 = extractvalue { i64, i1 } %297, 1, !nosanitize !26
+    -> Guard[6] (false edge of ''):  %292 = icmp eq i32 %289, 0
+    -> Guard[7] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[8] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[9] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[10] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[11] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[12] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[13] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 14 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.120059 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %306 = icmp eq i32 %302, 0
+    -> Guard[1] (true edge of ''):  %304 = icmp ult i32 %287, 24
+    -> Guard[2] (false edge of ''):  %298 = extractvalue { i64, i1 } %297, 1, !nosanitize !26
+    -> Guard[3] (false edge of ''):  %292 = icmp eq i32 %289, 0
+    -> Guard[4] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[5] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[6] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[7] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[8] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[9] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[10] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 11 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.233594 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %292 = icmp eq i32 %289, 0
+    -> Guard[1] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[2] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[3] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[4] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[5] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[6] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[7] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 8 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.642073 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %233 = icmp eq i32 %229, 0
+    -> Guard[1] (true edge of ''):  %231 = icmp ult i32 %97, 8
+    -> Guard[2] (false edge of ''):  %225 = extractvalue { i64, i1 } %224, 1, !nosanitize !26
+    -> Guard[3] (false edge of ''):  %120 = icmp eq i32 %94, 0
+    -> Guard[4] (true edge of ''):  %117 = icmp ult i32 %97, 16
+    -> Guard[5] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[6] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[7] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[8] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[9] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[10] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[11] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 12 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.225740 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %120 = icmp eq i32 %94, 0
+    -> Guard[1] (true edge of ''):  %117 = icmp ult i32 %97, 16
+    -> Guard[2] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[3] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[4] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[5] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[6] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[7] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[8] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 9 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.448029 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %145 = icmp eq i32 %141, 0
+    -> Guard[1] (true edge of ''):  %143 = icmp ult i32 %97, 8
+    -> Guard[2] (false edge of ''):  %135 = extractvalue { i64, i1 } %134, 1, !nosanitize !26
+    -> Guard[3] (false edge of ''):  %128 = icmp eq i32 %94, 0
+    -> Guard[4] (true edge of ''):  %125 = icmp ult i32 %97, 16
+    -> Guard[5] (false edge of ''):  %123 = icmp eq i32 %122, 0
+    -> Guard[6] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[7] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[8] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[9] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[10] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[11] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[12] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 13 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.633269 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %128 = icmp eq i32 %94, 0
+    -> Guard[1] (true edge of ''):  %125 = icmp ult i32 %97, 16
+    -> Guard[2] (false edge of ''):  %123 = icmp eq i32 %122, 0
+    -> Guard[3] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[4] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[5] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[6] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[7] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[8] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[9] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 10 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.610455 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %2372 = extractvalue { i32, i1 } %2371, 1, !nosanitize !26
+    -> Guard[1] (true edge of ''):  %2360 = icmp ugt i32 %2359, %2333
+    -> Guard[2] (false edge of ''):  %2331 = extractvalue { i32, i1 } %2330, 1, !nosanitize !26
+    -> Guard[3] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[4] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[5] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[6] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[7] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[8] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[9] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 10 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 22.079040 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %2360 = icmp ugt i32 %2359, %2333
+    -> Guard[1] (false edge of ''):  %2331 = extractvalue { i32, i1 } %2330, 1, !nosanitize !26
+    -> Guard[2] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[3] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[4] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[5] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[6] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[7] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[8] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 9 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 22.533564 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %2407 = icmp ult i32 %2406, %2402
+    -> Guard[1] (false edge of ''):  %2398 = extractvalue { i32, i1 } %2397, 1, !nosanitize !26
+    -> Guard[2] (true edge of ''):  %2387 = icmp eq i32 %2384, 0
+    -> Guard[3] (false edge of ''):  %2385 = extractvalue { i32, i1 } %2383, 1, !nosanitize !26
+    -> Guard[4] (false edge of ''):  %2372 = extractvalue { i32, i1 } %2371, 1, !nosanitize !26
+    -> Guard[5] (true edge of ''):  %2360 = icmp ugt i32 %2359, %2333
+    -> Guard[6] (false edge of ''):  %2331 = extractvalue { i32, i1 } %2330, 1, !nosanitize !26
+    -> Guard[7] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[8] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[9] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[10] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[11] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[12] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[13] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 14 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 11.500607 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %2387 = icmp eq i32 %2384, 0
+    -> Guard[1] (false edge of ''):  %2385 = extractvalue { i32, i1 } %2383, 1, !nosanitize !26
+    -> Guard[2] (false edge of ''):  %2372 = extractvalue { i32, i1 } %2371, 1, !nosanitize !26
+    -> Guard[3] (true edge of ''):  %2360 = icmp ugt i32 %2359, %2333
+    -> Guard[4] (false edge of ''):  %2331 = extractvalue { i32, i1 } %2330, 1, !nosanitize !26
+    -> Guard[5] (false edge of ''):  %28 = icmp eq ptr %27, null
+    -> Guard[6] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[7] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[8] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[9] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[10] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[11] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 12 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 11.319519 ms]
+  => Total Traps Eliminated: 4
+  => Total Trap Attempts: 95
+  => Total SMT Queries Executed: 95
+  => Total SMT Query Latency: 1.275443e+03 ms
+  => Average SMT Query Latency: 1.342571e+01 ms
+  => Total DFS & SMT Execution Time: 1.830601e+04 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: inflateEnd
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.519200e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: inflateGetDictionary
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %30 = and i1 %29, %28
+    -> Guard[1] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[2] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[3] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[4] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[5] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[6] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 7 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.453529 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.453529e+00 ms
+  => Average SMT Query Latency: 1.453529e+00 ms
+  => Total DFS & SMT Execution Time: 2.557240e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: inflateSetDictionary
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %81 = extractvalue { i32, i1 } %80, 1, !nosanitize !25
+    -> Guard[1] (true edge of ''):  %69 = icmp ugt i32 %68, %2
+    -> Guard[2] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[3] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[4] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[5] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[6] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[7] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 8 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 2.872550 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %69 = icmp ugt i32 %68, %2
+    -> Guard[1] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[2] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[3] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[4] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[5] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[6] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 7 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.024290 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %113 = icmp ult i32 %112, %108
+    -> Guard[1] (false edge of ''):  %104 = extractvalue { i32, i1 } %103, 1, !nosanitize !25
+    -> Guard[2] (true edge of ''):  %93 = icmp eq i32 %90, 0
+    -> Guard[3] (false edge of ''):  %91 = extractvalue { i32, i1 } %89, 1, !nosanitize !25
+    -> Guard[4] (false edge of ''):  %81 = extractvalue { i32, i1 } %80, 1, !nosanitize !25
+    -> Guard[5] (true edge of ''):  %69 = icmp ugt i32 %68, %2
+    -> Guard[6] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[7] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[8] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[9] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[10] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[11] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 12 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.322750 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %93 = icmp eq i32 %90, 0
+    -> Guard[1] (false edge of ''):  %91 = extractvalue { i32, i1 } %89, 1, !nosanitize !25
+    -> Guard[2] (false edge of ''):  %81 = extractvalue { i32, i1 } %80, 1, !nosanitize !25
+    -> Guard[3] (true edge of ''):  %69 = icmp ugt i32 %68, %2
+    -> Guard[4] (true edge of ''):  %24 = icmp ult i32 %23, 32
+    -> Guard[5] (true edge of ''):  %19 = icmp eq ptr %18, %0
+    -> Guard[6] (false edge of ''):  %16 = icmp eq ptr %15, null
+    -> Guard[7] (false edge of ''):  %12 = icmp eq ptr %11, null
+    -> Guard[8] (false edge of ''):  %8 = icmp eq ptr %7, null
+    -> Guard[9] (false edge of ''):  %4 = icmp eq ptr %0, null
+    -> Collected 10 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.002615 ms]
+  => Total Traps Eliminated: 1
+  => Total Trap Attempts: 4
+  => Total SMT Queries Executed: 4
+  => Total SMT Query Latency: 1.122221e+01 ms
+  => Average SMT Query Latency: 2.805551e+00 ms
+  => Total DFS & SMT Execution Time: 1.968076e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: inflateGetHeader
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.105900e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: inflateSync
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %23 = icmp ult i32 %22, 32
+    -> Guard[1] (true edge of ''):  %18 = icmp eq ptr %17, %0
+    -> Guard[2] (false edge of ''):  %15 = icmp eq ptr %14, null
+    -> Guard[3] (false edge of ''):  %11 = icmp eq ptr %10, null
+    -> Guard[4] (false edge of ''):  %7 = icmp eq ptr %6, null
+    -> Guard[5] (false edge of ''):  %3 = icmp eq ptr %0, null
+    -> Collected 6 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.105625 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %33 = icmp eq i32 %21, 16211
+    -> Guard[1] (true edge of ''):  %23 = icmp ult i32 %22, 32
+    -> Guard[2] (true edge of ''):  %18 = icmp eq ptr %17, %0
+    -> Guard[3] (false edge of ''):  %15 = icmp eq ptr %14, null
+    -> Guard[4] (false edge of ''):  %11 = icmp eq ptr %10, null
+    -> Guard[5] (false edge of ''):  %7 = icmp eq ptr %6, null
+    -> Guard[6] (false edge of ''):  %3 = icmp eq ptr %0, null
+    -> Collected 7 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 0.132387 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %166 = extractvalue { i32, i1 } %165, 1, !nosanitize !21
+    -> Guard[1] (true edge of ''):  %23 = icmp ult i32 %22, 32
+    -> Guard[2] (true edge of ''):  %18 = icmp eq ptr %17, %0
+    -> Guard[3] (false edge of ''):  %15 = icmp eq ptr %14, null
+    -> Guard[4] (false edge of ''):  %11 = icmp eq ptr %10, null
+    -> Guard[5] (false edge of ''):  %7 = icmp eq ptr %6, null
+    -> Guard[6] (false edge of ''):  %3 = icmp eq ptr %0, null
+    -> Collected 7 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.155285 ms]
+  => Total Traps Eliminated: 1
+  => Total Trap Attempts: 3
+  => Total SMT Queries Executed: 3
+  => Total SMT Query Latency: 2.039330e+01 ms
+  => Average SMT Query Latency: 6.797766e+00 ms
+  => Total DFS & SMT Execution Time: 1.589900e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: inflateSyncPoint
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.174500e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: inflateCopy
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.896900e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: inflateUndermine
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 7.078000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: inflateValidate
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.080400e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: inflateMark
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %22 = icmp ult i32 %21, 32
+    -> Guard[1] (true edge of ''):  %17 = icmp eq ptr %16, %0
+    -> Guard[2] (false edge of ''):  %14 = icmp eq ptr %13, null
+    -> Guard[3] (false edge of ''):  %10 = icmp eq ptr %9, null
+    -> Guard[4] (false edge of ''):  %6 = icmp eq ptr %5, null
+    -> Guard[5] (false edge of ''):  %2 = icmp eq ptr %0, null
+    -> Collected 6 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.376499 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.376499e+00 ms
+  => Average SMT Query Latency: 1.376499e+00 ms
+  => Total DFS & SMT Execution Time: 2.668487e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: inflateCodesUsed
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 9.501000e-03 ms
+--------------------------------------------------

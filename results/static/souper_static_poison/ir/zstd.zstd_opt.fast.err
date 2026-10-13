@@ -1,0 +1,2417 @@
+[ODeSSy] 32 trap site(s) across 27 function(s); threads=10 [tier: heavy] [frame] [mv] [narrow]
+
+[Z3 Oracle] Analyzing Function: ZSTD_updateTree
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.145643e+00 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_btopt
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 4.701400e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_opt0
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %587 = icmp eq i32 %586, 1
+    -> Guard[1] (false edge of ''):  %582 = icmp ult i32 %573, %581
+    -> Guard[2] (true edge of ''):  %564 = select i1 %560, i1 %563, i1 false
+    -> Guard[3] (false edge of ''):  %550 = icmp eq i32 %549, 0
+    -> Guard[4] (false edge of ''):  %539 = extractvalue { i32, i1 } %537, 1, !nosanitize !45
+    -> Guard[5] (true edge of ''):  %522 = icmp sgt i32 %521, %517
+    -> Guard[6] (false edge of ''):  %515 = extractvalue { i32, i1 } %514, 1, !nosanitize !45
+    -> Guard[7] (false edge of ''):  %512 = icmp eq i32 %313, %314
+    -> Guard[8] (false edge of ''):  %508 = icmp ugt ptr %316, %16
+    -> Guard[9] (false edge of ''):  %448 = extractvalue { i32, i1 } %446, 1, !nosanitize !45
+    -> Guard[10] (false edge of ''):  %442 = extractvalue { i32, i1 } %441, 1, !nosanitize !45
+    -> Guard[11] (false edge of ''):  %349 = extractvalue { i32, i1 } %347, 1, !nosanitize !45
+    -> Guard[12] (false edge of ''):  %311 = icmp eq i32 %308, 0
+    -> Guard[13] (true edge of ''):  %306 = icmp eq i64 %305, %196
+    -> Guard[14] (true edge of ''):  %186 = icmp eq i64 %185, %93
+    -> Guard[15] (false edge of ''):  %166 = icmp ugt i32 %165, %37
+    -> Guard[16] (false edge of ''):  %111 = icmp eq i32 %110, 0
+    -> Guard[17] (true edge of ''):  %61 = icmp ult ptr %60, %16
+    -> Collected 18 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %208 = load i32, ptr %65, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(12) %68, ptr noundef nonnull align 4 dereferenceable(12) %2, i64 12, i1 false)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %328 = load i32, ptr %65, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %351 = load i32, ptr %65, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %524 = load i32, ptr %65, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %586 = load i32, ptr %65, align 8, !tbaa !34
+         clobber:   call fastcc void @ZSTD_optLdm_processMatchCandidate(ptr noundef nonnull %11, ptr noundef %45, ptr noundef nonnull %13, i32 noundef %546, i32 noundef %548, i32 noundef %39)
+    -> [go3] 9 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %172 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %172 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %172 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %172 == i64 0 || ne(i64 %172, i64 %93) (latch-implied bound, 1-induction)
+    -> Fact[KB:4] i64 %198 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:5] i64 %198 in [0,4294967295) (SCEV unsigned)
+    -> Fact[SCEV:6] i64 %198 in [0,4294967295) (SCEV signed)
+    -> Fact[SCEVSYM:7] i64 %198 - start(0) <=u BTC((-1 + (1 umax (zext i32 %110 to i64)))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:8] i64 %198 == i64 0 || ne(i64 %198, i64 %196) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:9] i64 %198 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[RM:10] i32 %206 in [0,33) (!range)
+    -> Fact[KB:11] i32 %206 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:12] i32 %244 == i32 %199 || ule(i32 %244, i32 %203) (latch-implied bound, 1-induction)
+    -> Fact[RM:13] i32 %248 in [0,33) (!range)
+    -> Fact[KB:14] i32 %248 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:15] i32 %269 in [0,33) (!range)
+    -> Fact[KB:16] i32 %269 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:17] i32 %292 in [0,33) (!range)
+    -> Fact[KB:18] i32 %292 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:19] i32 %213 == i32 %199 || ule(i32 %213, i32 %203) (latch-implied bound, 1-induction)
+    -> Fact[RM:20] i32 %215 in [0,33) (!range)
+    -> Fact[KB:21] i32 %215 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:22] i32 %339 in [0,33) (!range)
+    -> Fact[KB:23] i32 %339 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:24] i32 %395 in [0,33) (!range)
+    -> Fact[KB:25] i32 %395 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:26] i32 %405 in [0,33) (!range)
+    -> Fact[KB:27] i32 %405 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:28] i32 %361 in [0,33) (!range)
+    -> Fact[KB:29] i32 %361 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:30] i32 %434 in [0,33) (!range)
+    -> Fact[KB:31] i32 %434 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:32] i32 %378 in [0,33) (!range)
+    -> Fact[KB:33] i32 %378 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:34] i32 %381 in [0,33) (!range)
+    -> Fact[KB:35] i32 %381 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:36] i32 %531 in [0,33) (!range)
+    -> Fact[KB:37] i32 %531 known bits zero=0x4294967264 one=0x0
+    -> Fact[KB:38] i64 %568 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:39] i64 %568 in [0,4294967295) (SCEV unsigned)
+    -> Fact[SCEV:40] i64 %568 in [0,4294967295) (SCEV signed)
+    -> Fact[SCEVSYM:41] i64 %568 - start(0) <=u BTC((-1 + (zext i32 %549 to i64))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:42] i64 %568 == i64 0 || ne(i64 %568, i64 %566) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:43] i64 %568 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[RM:44] i32 %584 in [0,33) (!range)
+    -> Fact[KB:45] i32 %584 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:46] i32 %676 in [0,33) (!range)
+    -> Fact[KB:47] i32 %676 known bits zero=0x4294967264 one=0x0
+    -> Fact[LVI:48] i32 %676 in [0,32) (LVI @ )
+    -> Fact[RM:49] i32 %697 in [0,33) (!range)
+    -> Fact[KB:50] i32 %697 known bits zero=0x4294967264 one=0x0
+    -> Fact[KB:51] i64 %566 known bits zero=0x18446744069414584320 one=0x0
+    -> [heavy] 52 analysis fact(s) on 64 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.298409 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %587 = icmp eq i32 %586, 1
+    -> Guard[1] (false edge of ''):  %582 = icmp ult i32 %573, %581
+    -> Guard[2] (true edge of ''):  %564 = select i1 %560, i1 %563, i1 false
+    -> Guard[3] (false edge of ''):  %550 = icmp eq i32 %549, 0
+    -> Guard[4] (false edge of ''):  %539 = extractvalue { i32, i1 } %537, 1, !nosanitize !45
+    -> Guard[5] (true edge of ''):  %522 = icmp sgt i32 %521, %517
+    -> Guard[6] (false edge of ''):  %515 = extractvalue { i32, i1 } %514, 1, !nosanitize !45
+    -> Guard[7] (false edge of ''):  %512 = icmp eq i32 %313, %314
+    -> Guard[8] (false edge of ''):  %508 = icmp ugt ptr %316, %16
+    -> Guard[9] (false edge of ''):  %448 = extractvalue { i32, i1 } %446, 1, !nosanitize !45
+    -> Guard[10] (false edge of ''):  %442 = extractvalue { i32, i1 } %441, 1, !nosanitize !45
+    -> Guard[11] (false edge of ''):  %349 = extractvalue { i32, i1 } %347, 1, !nosanitize !45
+    -> Guard[12] (false edge of ''):  %311 = icmp eq i32 %308, 0
+    -> Guard[13] (true edge of ''):  %306 = icmp eq i64 %305, %196
+    -> Guard[14] (true edge of ''):  %186 = icmp eq i64 %185, %93
+    -> Guard[15] (false edge of ''):  %166 = icmp ugt i32 %165, %37
+    -> Guard[16] (false edge of ''):  %111 = icmp eq i32 %110, 0
+    -> Guard[17] (true edge of ''):  %61 = icmp ult ptr %60, %16
+    -> Collected 18 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %208 = load i32, ptr %65, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(12) %68, ptr noundef nonnull align 4 dereferenceable(12) %2, i64 12, i1 false)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %328 = load i32, ptr %65, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %351 = load i32, ptr %65, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %524 = load i32, ptr %65, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %586 = load i32, ptr %65, align 8, !tbaa !34
+         clobber:   call fastcc void @ZSTD_optLdm_processMatchCandidate(ptr noundef nonnull %11, ptr noundef %45, ptr noundef nonnull %13, i32 noundef %546, i32 noundef %548, i32 noundef %39)
+    -> [go3] 9 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %172 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %172 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %172 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %172 == i64 0 || ne(i64 %172, i64 %93) (latch-implied bound, 1-induction)
+    -> Fact[KB:4] i64 %198 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:5] i64 %198 in [0,4294967295) (SCEV unsigned)
+    -> Fact[SCEV:6] i64 %198 in [0,4294967295) (SCEV signed)
+    -> Fact[SCEVSYM:7] i64 %198 - start(0) <=u BTC((-1 + (1 umax (zext i32 %110 to i64)))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:8] i64 %198 == i64 0 || ne(i64 %198, i64 %196) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:9] i64 %198 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[RM:10] i32 %206 in [0,33) (!range)
+    -> Fact[KB:11] i32 %206 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:12] i32 %244 == i32 %199 || ule(i32 %244, i32 %203) (latch-implied bound, 1-induction)
+    -> Fact[RM:13] i32 %248 in [0,33) (!range)
+    -> Fact[KB:14] i32 %248 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:15] i32 %269 in [0,33) (!range)
+    -> Fact[KB:16] i32 %269 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:17] i32 %292 in [0,33) (!range)
+    -> Fact[KB:18] i32 %292 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:19] i32 %213 == i32 %199 || ule(i32 %213, i32 %203) (latch-implied bound, 1-induction)
+    -> Fact[RM:20] i32 %215 in [0,33) (!range)
+    -> Fact[KB:21] i32 %215 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:22] i32 %339 in [0,33) (!range)
+    -> Fact[KB:23] i32 %339 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:24] i32 %395 in [0,33) (!range)
+    -> Fact[KB:25] i32 %395 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:26] i32 %405 in [0,33) (!range)
+    -> Fact[KB:27] i32 %405 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:28] i32 %361 in [0,33) (!range)
+    -> Fact[KB:29] i32 %361 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:30] i32 %434 in [0,33) (!range)
+    -> Fact[KB:31] i32 %434 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:32] i32 %378 in [0,33) (!range)
+    -> Fact[KB:33] i32 %378 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:34] i32 %381 in [0,33) (!range)
+    -> Fact[KB:35] i32 %381 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:36] i32 %531 in [0,33) (!range)
+    -> Fact[KB:37] i32 %531 known bits zero=0x4294967264 one=0x0
+    -> Fact[KB:38] i64 %568 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:39] i64 %568 in [0,4294967295) (SCEV unsigned)
+    -> Fact[SCEV:40] i64 %568 in [0,4294967295) (SCEV signed)
+    -> Fact[SCEVSYM:41] i64 %568 - start(0) <=u BTC((-1 + (zext i32 %549 to i64))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:42] i64 %568 == i64 0 || ne(i64 %568, i64 %566) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:43] i64 %568 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[RM:44] i32 %584 in [0,33) (!range)
+    -> Fact[KB:45] i32 %584 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:46] i32 %600 in [0,33) (!range)
+    -> Fact[KB:47] i32 %600 known bits zero=0x4294967264 one=0x0
+    -> Fact[KB:48] i64 %566 known bits zero=0x18446744069414584320 one=0x0
+    -> [heavy] 49 analysis fact(s) on 60 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.313651 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %522 = icmp sgt i32 %521, %517
+    -> Guard[1] (false edge of ''):  %515 = extractvalue { i32, i1 } %514, 1, !nosanitize !45
+    -> Guard[2] (false edge of ''):  %512 = icmp eq i32 %313, %314
+    -> Guard[3] (false edge of ''):  %508 = icmp ugt ptr %316, %16
+    -> Guard[4] (false edge of ''):  %448 = extractvalue { i32, i1 } %446, 1, !nosanitize !45
+    -> Guard[5] (false edge of ''):  %442 = extractvalue { i32, i1 } %441, 1, !nosanitize !45
+    -> Guard[6] (false edge of ''):  %349 = extractvalue { i32, i1 } %347, 1, !nosanitize !45
+    -> Guard[7] (false edge of ''):  %311 = icmp eq i32 %308, 0
+    -> Guard[8] (true edge of ''):  %306 = icmp eq i64 %305, %196
+    -> Guard[9] (true edge of ''):  %186 = icmp eq i64 %185, %93
+    -> Guard[10] (false edge of ''):  %166 = icmp ugt i32 %165, %37
+    -> Guard[11] (false edge of ''):  %111 = icmp eq i32 %110, 0
+    -> Guard[12] (true edge of ''):  %61 = icmp ult ptr %60, %16
+    -> Collected 13 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %208 = load i32, ptr %65, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(12) %68, ptr noundef nonnull align 4 dereferenceable(12) %2, i64 12, i1 false)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %328 = load i32, ptr %65, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %351 = load i32, ptr %65, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %524 = load i32, ptr %65, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %586 = load i32, ptr %65, align 8, !tbaa !34
+         clobber:   call fastcc void @ZSTD_optLdm_processMatchCandidate(ptr noundef nonnull %11, ptr noundef %45, ptr noundef nonnull %13, i32 noundef %546, i32 noundef %548, i32 noundef %39)
+    -> [go3] 9 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %172 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %172 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %172 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %172 == i64 0 || ne(i64 %172, i64 %93) (latch-implied bound, 1-induction)
+    -> Fact[KB:4] i64 %198 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:5] i64 %198 in [0,4294967295) (SCEV unsigned)
+    -> Fact[SCEV:6] i64 %198 in [0,4294967295) (SCEV signed)
+    -> Fact[SCEVSYM:7] i64 %198 - start(0) <=u BTC((-1 + (1 umax (zext i32 %110 to i64)))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:8] i64 %198 == i64 0 || ne(i64 %198, i64 %196) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:9] i64 %198 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[RM:10] i32 %206 in [0,33) (!range)
+    -> Fact[KB:11] i32 %206 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:12] i32 %244 == i32 %199 || ule(i32 %244, i32 %203) (latch-implied bound, 1-induction)
+    -> Fact[RM:13] i32 %248 in [0,33) (!range)
+    -> Fact[KB:14] i32 %248 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:15] i32 %269 in [0,33) (!range)
+    -> Fact[KB:16] i32 %269 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:17] i32 %292 in [0,33) (!range)
+    -> Fact[KB:18] i32 %292 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:19] i32 %213 == i32 %199 || ule(i32 %213, i32 %203) (latch-implied bound, 1-induction)
+    -> Fact[RM:20] i32 %215 in [0,33) (!range)
+    -> Fact[KB:21] i32 %215 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:22] i32 %339 in [0,33) (!range)
+    -> Fact[KB:23] i32 %339 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:24] i32 %395 in [0,33) (!range)
+    -> Fact[KB:25] i32 %395 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:26] i32 %405 in [0,33) (!range)
+    -> Fact[KB:27] i32 %405 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:28] i32 %361 in [0,33) (!range)
+    -> Fact[KB:29] i32 %361 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:30] i32 %434 in [0,33) (!range)
+    -> Fact[KB:31] i32 %434 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:32] i32 %378 in [0,33) (!range)
+    -> Fact[KB:33] i32 %378 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:34] i32 %381 in [0,33) (!range)
+    -> Fact[KB:35] i32 %381 known bits zero=0x4294967264 one=0x0
+    -> Fact[LVI:36] i32 %521 in [-2147483519,-2147483648) (LVI @ )
+    -> Fact[RM:37] i32 %531 in [0,33) (!range)
+    -> Fact[KB:38] i32 %531 known bits zero=0x4294967264 one=0x0
+    -> [heavy] 39 analysis fact(s) on 49 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.190628 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %512 = icmp eq i32 %313, %314
+    -> Guard[1] (false edge of ''):  %508 = icmp ugt ptr %316, %16
+    -> Guard[2] (false edge of ''):  %448 = extractvalue { i32, i1 } %446, 1, !nosanitize !45
+    -> Guard[3] (false edge of ''):  %442 = extractvalue { i32, i1 } %441, 1, !nosanitize !45
+    -> Guard[4] (false edge of ''):  %349 = extractvalue { i32, i1 } %347, 1, !nosanitize !45
+    -> Guard[5] (false edge of ''):  %311 = icmp eq i32 %308, 0
+    -> Guard[6] (true edge of ''):  %306 = icmp eq i64 %305, %196
+    -> Guard[7] (true edge of ''):  %186 = icmp eq i64 %185, %93
+    -> Guard[8] (false edge of ''):  %166 = icmp ugt i32 %165, %37
+    -> Guard[9] (false edge of ''):  %111 = icmp eq i32 %110, 0
+    -> Guard[10] (true edge of ''):  %61 = icmp ult ptr %60, %16
+    -> Collected 11 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %208 = load i32, ptr %65, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(12) %68, ptr noundef nonnull align 4 dereferenceable(12) %2, i64 12, i1 false)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %328 = load i32, ptr %65, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %351 = load i32, ptr %65, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %524 = load i32, ptr %65, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %586 = load i32, ptr %65, align 8, !tbaa !34
+         clobber:   call fastcc void @ZSTD_optLdm_processMatchCandidate(ptr noundef nonnull %11, ptr noundef %45, ptr noundef nonnull %13, i32 noundef %546, i32 noundef %548, i32 noundef %39)
+    -> [go3] 9 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %172 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %172 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %172 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %172 == i64 0 || ne(i64 %172, i64 %93) (latch-implied bound, 1-induction)
+    -> Fact[KB:4] i64 %198 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:5] i64 %198 in [0,4294967295) (SCEV unsigned)
+    -> Fact[SCEV:6] i64 %198 in [0,4294967295) (SCEV signed)
+    -> Fact[SCEVSYM:7] i64 %198 - start(0) <=u BTC((-1 + (1 umax (zext i32 %110 to i64)))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:8] i64 %198 == i64 0 || ne(i64 %198, i64 %196) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:9] i64 %198 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[RM:10] i32 %206 in [0,33) (!range)
+    -> Fact[KB:11] i32 %206 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:12] i32 %244 == i32 %199 || ule(i32 %244, i32 %203) (latch-implied bound, 1-induction)
+    -> Fact[RM:13] i32 %248 in [0,33) (!range)
+    -> Fact[KB:14] i32 %248 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:15] i32 %269 in [0,33) (!range)
+    -> Fact[KB:16] i32 %269 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:17] i32 %292 in [0,33) (!range)
+    -> Fact[KB:18] i32 %292 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:19] i32 %213 == i32 %199 || ule(i32 %213, i32 %203) (latch-implied bound, 1-induction)
+    -> Fact[RM:20] i32 %215 in [0,33) (!range)
+    -> Fact[KB:21] i32 %215 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:22] i32 %339 in [0,33) (!range)
+    -> Fact[KB:23] i32 %339 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:24] i32 %395 in [0,33) (!range)
+    -> Fact[KB:25] i32 %395 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:26] i32 %405 in [0,33) (!range)
+    -> Fact[KB:27] i32 %405 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:28] i32 %361 in [0,33) (!range)
+    -> Fact[KB:29] i32 %361 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:30] i32 %434 in [0,33) (!range)
+    -> Fact[KB:31] i32 %434 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:32] i32 %378 in [0,33) (!range)
+    -> Fact[KB:33] i32 %378 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:34] i32 %381 in [0,33) (!range)
+    -> Fact[KB:35] i32 %381 known bits zero=0x4294967264 one=0x0
+    -> [heavy] 36 analysis fact(s) on 45 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.206197 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %442 = extractvalue { i32, i1 } %441, 1, !nosanitize !45
+    -> Guard[1] (false edge of ''):  %349 = extractvalue { i32, i1 } %347, 1, !nosanitize !45
+    -> Guard[2] (false edge of ''):  %311 = icmp eq i32 %308, 0
+    -> Guard[3] (true edge of ''):  %306 = icmp eq i64 %305, %196
+    -> Guard[4] (true edge of ''):  %186 = icmp eq i64 %185, %93
+    -> Guard[5] (false edge of ''):  %166 = icmp ugt i32 %165, %37
+    -> Guard[6] (false edge of ''):  %111 = icmp eq i32 %110, 0
+    -> Guard[7] (true edge of ''):  %61 = icmp ult ptr %60, %16
+    -> Collected 8 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %208 = load i32, ptr %65, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(12) %68, ptr noundef nonnull align 4 dereferenceable(12) %2, i64 12, i1 false)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %328 = load i32, ptr %65, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %351 = load i32, ptr %65, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %524 = load i32, ptr %65, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %586 = load i32, ptr %65, align 8, !tbaa !34
+         clobber:   call fastcc void @ZSTD_optLdm_processMatchCandidate(ptr noundef nonnull %11, ptr noundef %45, ptr noundef nonnull %13, i32 noundef %546, i32 noundef %548, i32 noundef %39)
+    -> [go3] 2 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %172 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %172 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %172 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %172 == i64 0 || ne(i64 %172, i64 %93) (latch-implied bound, 1-induction)
+    -> Fact[KB:4] i64 %198 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:5] i64 %198 in [0,4294967295) (SCEV unsigned)
+    -> Fact[SCEV:6] i64 %198 in [0,4294967295) (SCEV signed)
+    -> Fact[SCEVSYM:7] i64 %198 - start(0) <=u BTC((-1 + (1 umax (zext i32 %110 to i64)))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:8] i64 %198 == i64 0 || ne(i64 %198, i64 %196) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:9] i64 %198 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[RM:10] i32 %206 in [0,33) (!range)
+    -> Fact[KB:11] i32 %206 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:12] i32 %244 == i32 %199 || ule(i32 %244, i32 %203) (latch-implied bound, 1-induction)
+    -> Fact[RM:13] i32 %248 in [0,33) (!range)
+    -> Fact[KB:14] i32 %248 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:15] i32 %269 in [0,33) (!range)
+    -> Fact[KB:16] i32 %269 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:17] i32 %292 in [0,33) (!range)
+    -> Fact[KB:18] i32 %292 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:19] i32 %213 == i32 %199 || ule(i32 %213, i32 %203) (latch-implied bound, 1-induction)
+    -> Fact[RM:20] i32 %215 in [0,33) (!range)
+    -> Fact[KB:21] i32 %215 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:22] i32 %339 in [0,33) (!range)
+    -> Fact[KB:23] i32 %339 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:24] i32 %395 in [0,33) (!range)
+    -> Fact[KB:25] i32 %395 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:26] i32 %405 in [0,33) (!range)
+    -> Fact[KB:27] i32 %405 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:28] i32 %361 in [0,33) (!range)
+    -> Fact[KB:29] i32 %361 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:30] i32 %434 in [0,33) (!range)
+    -> Fact[KB:31] i32 %434 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:32] i32 %378 in [0,33) (!range)
+    -> Fact[KB:33] i32 %378 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:34] i32 %381 in [0,33) (!range)
+    -> Fact[KB:35] i32 %381 known bits zero=0x4294967264 one=0x0
+    -> [heavy] 36 analysis fact(s) on 41 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.202140 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %311 = icmp eq i32 %308, 0
+    -> Guard[1] (true edge of ''):  %306 = icmp eq i64 %305, %196
+    -> Guard[2] (true edge of ''):  %186 = icmp eq i64 %185, %93
+    -> Guard[3] (false edge of ''):  %166 = icmp ugt i32 %165, %37
+    -> Guard[4] (false edge of ''):  %111 = icmp eq i32 %110, 0
+    -> Guard[5] (true edge of ''):  %61 = icmp ult ptr %60, %16
+    -> Collected 6 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %208 = load i32, ptr %65, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(12) %68, ptr noundef nonnull align 4 dereferenceable(12) %2, i64 12, i1 false)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %328 = load i32, ptr %65, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %351 = load i32, ptr %65, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %524 = load i32, ptr %65, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %586 = load i32, ptr %65, align 8, !tbaa !34
+         clobber:   call fastcc void @ZSTD_optLdm_processMatchCandidate(ptr noundef nonnull %11, ptr noundef %45, ptr noundef nonnull %13, i32 noundef %546, i32 noundef %548, i32 noundef %39)
+    -> [go3] 2 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %172 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %172 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %172 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %172 == i64 0 || ne(i64 %172, i64 %93) (latch-implied bound, 1-induction)
+    -> Fact[KB:4] i64 %198 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:5] i64 %198 in [0,4294967295) (SCEV unsigned)
+    -> Fact[SCEV:6] i64 %198 in [0,4294967295) (SCEV signed)
+    -> Fact[SCEVSYM:7] i64 %198 - start(0) <=u BTC((-1 + (1 umax (zext i32 %110 to i64)))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:8] i64 %198 == i64 0 || ne(i64 %198, i64 %196) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:9] i64 %198 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[RM:10] i32 %206 in [0,33) (!range)
+    -> Fact[KB:11] i32 %206 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:12] i32 %244 == i32 %199 || ule(i32 %244, i32 %203) (latch-implied bound, 1-induction)
+    -> Fact[RM:13] i32 %248 in [0,33) (!range)
+    -> Fact[KB:14] i32 %248 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:15] i32 %269 in [0,33) (!range)
+    -> Fact[KB:16] i32 %269 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:17] i32 %292 in [0,33) (!range)
+    -> Fact[KB:18] i32 %292 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:19] i32 %213 == i32 %199 || ule(i32 %213, i32 %203) (latch-implied bound, 1-induction)
+    -> Fact[RM:20] i32 %215 in [0,33) (!range)
+    -> Fact[KB:21] i32 %215 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:22] i32 %339 in [0,33) (!range)
+    -> Fact[KB:23] i32 %339 known bits zero=0x4294967264 one=0x0
+    -> [heavy] 24 analysis fact(s) on 29 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.187833 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %280 = extractvalue { i32, i1 } %279, 1, !nosanitize !45
+    -> Guard[1] (false edge of ''):  %209 = icmp eq i32 %208, 1
+    -> Guard[2] (false edge of ''):  %204 = icmp ugt i32 %199, %203
+    -> Guard[3] (true edge of ''):  %186 = icmp eq i64 %185, %93
+    -> Guard[4] (false edge of ''):  %166 = icmp ugt i32 %165, %37
+    -> Guard[5] (false edge of ''):  %111 = icmp eq i32 %110, 0
+    -> Guard[6] (true edge of ''):  %61 = icmp ult ptr %60, %16
+    -> Collected 7 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %208 = load i32, ptr %65, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(12) %68, ptr noundef nonnull align 4 dereferenceable(12) %2, i64 12, i1 false)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %328 = load i32, ptr %65, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %351 = load i32, ptr %65, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %524 = load i32, ptr %65, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %586 = load i32, ptr %65, align 8, !tbaa !34
+         clobber:   call fastcc void @ZSTD_optLdm_processMatchCandidate(ptr noundef nonnull %11, ptr noundef %45, ptr noundef nonnull %13, i32 noundef %546, i32 noundef %548, i32 noundef %39)
+    -> [go3] 2 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %172 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %172 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %172 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %172 == i64 0 || ne(i64 %172, i64 %93) (latch-implied bound, 1-induction)
+    -> Fact[RM:4] i32 %206 in [0,33) (!range)
+    -> Fact[KB:5] i32 %206 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:6] i32 %248 in [0,33) (!range)
+    -> Fact[KB:7] i32 %248 known bits zero=0x4294967264 one=0x0
+    -> Fact[LVI:8] i32 %248 in [0,32) (LVI @ )
+    -> Fact[RM:9] i32 %269 in [0,33) (!range)
+    -> Fact[KB:10] i32 %269 known bits zero=0x4294967264 one=0x0
+    -> Fact[LVI:11] i32 %269 in [0,32) (LVI @ )
+    -> Fact[RM:12] i32 %292 in [0,33) (!range)
+    -> Fact[KB:13] i32 %292 known bits zero=0x4294967264 one=0x0
+    -> [heavy] 14 analysis fact(s) on 19 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.231303 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %209 = icmp eq i32 %208, 1
+    -> Guard[1] (false edge of ''):  %204 = icmp ugt i32 %199, %203
+    -> Guard[2] (true edge of ''):  %186 = icmp eq i64 %185, %93
+    -> Guard[3] (false edge of ''):  %166 = icmp ugt i32 %165, %37
+    -> Guard[4] (false edge of ''):  %111 = icmp eq i32 %110, 0
+    -> Guard[5] (true edge of ''):  %61 = icmp ult ptr %60, %16
+    -> Collected 6 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %208 = load i32, ptr %65, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(12) %68, ptr noundef nonnull align 4 dereferenceable(12) %2, i64 12, i1 false)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %328 = load i32, ptr %65, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %351 = load i32, ptr %65, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %524 = load i32, ptr %65, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %586 = load i32, ptr %65, align 8, !tbaa !34
+         clobber:   call fastcc void @ZSTD_optLdm_processMatchCandidate(ptr noundef nonnull %11, ptr noundef %45, ptr noundef nonnull %13, i32 noundef %546, i32 noundef %548, i32 noundef %39)
+    -> [go3] 2 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %172 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %172 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %172 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %172 == i64 0 || ne(i64 %172, i64 %93) (latch-implied bound, 1-induction)
+    -> Fact[RM:4] i32 %206 in [0,33) (!range)
+    -> Fact[KB:5] i32 %206 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:6] i32 %248 in [0,33) (!range)
+    -> Fact[KB:7] i32 %248 known bits zero=0x4294967264 one=0x0
+    -> Fact[LVI:8] i32 %248 in [0,32) (LVI @ )
+    -> Fact[RM:9] i32 %269 in [0,33) (!range)
+    -> Fact[KB:10] i32 %269 known bits zero=0x4294967264 one=0x0
+    -> [heavy] 11 analysis fact(s) on 17 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.746350 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %209 = icmp eq i32 %208, 1
+    -> Guard[1] (false edge of ''):  %204 = icmp ugt i32 %199, %203
+    -> Guard[2] (true edge of ''):  %186 = icmp eq i64 %185, %93
+    -> Guard[3] (false edge of ''):  %166 = icmp ugt i32 %165, %37
+    -> Guard[4] (false edge of ''):  %111 = icmp eq i32 %110, 0
+    -> Guard[5] (true edge of ''):  %61 = icmp ult ptr %60, %16
+    -> Collected 6 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %208 = load i32, ptr %65, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(12) %68, ptr noundef nonnull align 4 dereferenceable(12) %2, i64 12, i1 false)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %328 = load i32, ptr %65, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %351 = load i32, ptr %65, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %524 = load i32, ptr %65, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %586 = load i32, ptr %65, align 8, !tbaa !34
+         clobber:   call fastcc void @ZSTD_optLdm_processMatchCandidate(ptr noundef nonnull %11, ptr noundef %45, ptr noundef nonnull %13, i32 noundef %546, i32 noundef %548, i32 noundef %39)
+    -> [go3] 2 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %172 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %172 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %172 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %172 == i64 0 || ne(i64 %172, i64 %93) (latch-implied bound, 1-induction)
+    -> Fact[RM:4] i32 %206 in [0,33) (!range)
+    -> Fact[KB:5] i32 %206 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:6] i32 %215 in [0,33) (!range)
+    -> Fact[KB:7] i32 %215 known bits zero=0x4294967264 one=0x0
+    -> [heavy] 8 analysis fact(s) on 13 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.298841 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %349 = extractvalue { i32, i1 } %347, 1, !nosanitize !45
+    -> Guard[1] (false edge of ''):  %311 = icmp eq i32 %308, 0
+    -> Guard[2] (true edge of ''):  %306 = icmp eq i64 %305, %196
+    -> Guard[3] (true edge of ''):  %186 = icmp eq i64 %185, %93
+    -> Guard[4] (false edge of ''):  %166 = icmp ugt i32 %165, %37
+    -> Guard[5] (false edge of ''):  %111 = icmp eq i32 %110, 0
+    -> Guard[6] (true edge of ''):  %61 = icmp ult ptr %60, %16
+    -> Collected 7 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %208 = load i32, ptr %65, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(12) %68, ptr noundef nonnull align 4 dereferenceable(12) %2, i64 12, i1 false)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %328 = load i32, ptr %65, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %351 = load i32, ptr %65, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %524 = load i32, ptr %65, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %115 = load i32, ptr %65, align 8, !tbaa !34  vs  %586 = load i32, ptr %65, align 8, !tbaa !34
+         clobber:   call fastcc void @ZSTD_optLdm_processMatchCandidate(ptr noundef nonnull %11, ptr noundef %45, ptr noundef nonnull %13, i32 noundef %546, i32 noundef %548, i32 noundef %39)
+    -> [go3] 2 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %172 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %172 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %172 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %172 == i64 0 || ne(i64 %172, i64 %93) (latch-implied bound, 1-induction)
+    -> Fact[KB:4] i64 %198 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:5] i64 %198 in [0,4294967295) (SCEV unsigned)
+    -> Fact[SCEV:6] i64 %198 in [0,4294967295) (SCEV signed)
+    -> Fact[SCEVSYM:7] i64 %198 - start(0) <=u BTC((-1 + (1 umax (zext i32 %110 to i64)))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:8] i64 %198 == i64 0 || ne(i64 %198, i64 %196) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:9] i64 %198 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[RM:10] i32 %206 in [0,33) (!range)
+    -> Fact[KB:11] i32 %206 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:12] i32 %244 == i32 %199 || ule(i32 %244, i32 %203) (latch-implied bound, 1-induction)
+    -> Fact[RM:13] i32 %248 in [0,33) (!range)
+    -> Fact[KB:14] i32 %248 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:15] i32 %269 in [0,33) (!range)
+    -> Fact[KB:16] i32 %269 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:17] i32 %292 in [0,33) (!range)
+    -> Fact[KB:18] i32 %292 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:19] i32 %213 == i32 %199 || ule(i32 %213, i32 %203) (latch-implied bound, 1-induction)
+    -> Fact[RM:20] i32 %215 in [0,33) (!range)
+    -> Fact[KB:21] i32 %215 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:22] i32 %339 in [0,33) (!range)
+    -> Fact[KB:23] i32 %339 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:24] i32 %395 in [0,33) (!range)
+    -> Fact[KB:25] i32 %395 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:26] i32 %405 in [0,33) (!range)
+    -> Fact[KB:27] i32 %405 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:28] i32 %361 in [0,33) (!range)
+    -> Fact[KB:29] i32 %361 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:30] i32 %434 in [0,33) (!range)
+    -> Fact[KB:31] i32 %434 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:32] i32 %378 in [0,33) (!range)
+    -> Fact[KB:33] i32 %378 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:34] i32 %381 in [0,33) (!range)
+    -> Fact[KB:35] i32 %381 known bits zero=0x4294967264 one=0x0
+    -> [heavy] 36 analysis fact(s) on 41 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.175585 ms]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 10
+  => Total SMT Queries Executed: 10
+  => Total SMT Query Latency: 1.028509e+02 ms
+  => Average SMT Query Latency: 1.028509e+01 ms
+  => Total DFS & SMT Execution Time: 2.276420e+03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_btultra
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.887000e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_opt2
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %942 = icmp eq i32 %941, 1
+    -> Guard[1] (false edge of ''):  %937 = icmp ult i32 %928, %936
+    -> Guard[2] (true edge of ''):  %919 = select i1 %915, i1 %918, i1 false
+    -> Guard[3] (false edge of ''):  %905 = icmp eq i32 %904, 0
+    -> Guard[4] (false edge of ''):  %894 = extractvalue { i32, i1 } %892, 1, !nosanitize !45
+    -> Guard[5] (false edge of ''):  %874 = icmp eq i32 %335, %824
+    -> Guard[6] (false edge of ''):  %872 = icmp ugt ptr %338, %17
+    -> Guard[7] (false edge of ''):  %494 = extractvalue { i32, i1 } %492, 1, !nosanitize !45
+    -> Guard[8] (false edge of ''):  %488 = extractvalue { i32, i1 } %487, 1, !nosanitize !45
+    -> Guard[9] (false edge of ''):  %374 = extractvalue { i32, i1 } %372, 1, !nosanitize !45
+    -> Guard[10] (false edge of ''):  %333 = icmp eq i32 %330, 0
+    -> Guard[11] (true edge of ''):  %328 = icmp eq i64 %327, %209
+    -> Guard[12] (true edge of ''):  %199 = icmp eq i64 %198, %96
+    -> Guard[13] (false edge of ''):  %179 = icmp ugt i32 %178, %38
+    -> Guard[14] (false edge of ''):  %114 = icmp eq i32 %113, 0
+    -> Guard[15] (true edge of ''):  %62 = icmp ult ptr %61, %17
+    -> Collected 16 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %221 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(12) %69, ptr noundef nonnull align 4 dereferenceable(12) %2, i64 12, i1 false)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %350 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %376 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %511 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %347 = load i32, ptr %74, align 8, !tbaa !53  vs  %546 = load i32, ptr %74, align 8, !tbaa !53
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %876 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %941 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call fastcc void @ZSTD_optLdm_processMatchCandidate(ptr noundef nonnull %12, ptr noundef %46, ptr noundef nonnull %14, i32 noundef %901, i32 noundef %903, i32 noundef %40)
+    -> [go3] 9 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %185 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %185 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %185 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %185 == i64 0 || ne(i64 %185, i64 %96) (latch-implied bound, 1-induction)
+    -> Fact[KB:4] i64 %211 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:5] i64 %211 in [0,4294967295) (SCEV unsigned)
+    -> Fact[SCEV:6] i64 %211 in [0,4294967295) (SCEV signed)
+    -> Fact[SCEVSYM:7] i64 %211 - start(0) <=u BTC((-1 + (1 umax (zext i32 %113 to i64)))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:8] i64 %211 == i64 0 || ne(i64 %211, i64 %209) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:9] i64 %211 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[RM:10] i32 %219 in [0,33) (!range)
+    -> Fact[KB:11] i32 %219 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:12] i32 %260 == i32 %212 || ule(i32 %260, i32 %216) (latch-implied bound, 1-induction)
+    -> Fact[RM:13] i32 %264 in [0,33) (!range)
+    -> Fact[KB:14] i32 %264 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:15] i32 %286 in [0,33) (!range)
+    -> Fact[KB:16] i32 %286 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:17] i32 %311 in [0,33) (!range)
+    -> Fact[KB:18] i32 %311 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:19] i32 %224 == i32 %212 || ule(i32 %224, i32 %216) (latch-implied bound, 1-induction)
+    -> Fact[RM:20] i32 %226 in [0,33) (!range)
+    -> Fact[KB:21] i32 %226 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:22] i32 %361 in [0,33) (!range)
+    -> Fact[KB:23] i32 %361 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:24] i32 %431 in [0,33) (!range)
+    -> Fact[KB:25] i32 %431 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:26] i32 %443 in [0,33) (!range)
+    -> Fact[KB:27] i32 %443 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:28] i32 %386 in [0,33) (!range)
+    -> Fact[KB:29] i32 %386 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:30] i32 %476 in [0,33) (!range)
+    -> Fact[KB:31] i32 %476 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:32] i32 %406 in [0,33) (!range)
+    -> Fact[KB:33] i32 %406 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:34] i32 %412 in [0,33) (!range)
+    -> Fact[KB:35] i32 %412 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:36] i32 %519 in [0,33) (!range)
+    -> Fact[KB:37] i32 %519 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:38] i32 %528 in [0,33) (!range)
+    -> Fact[KB:39] i32 %528 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:40] i32 %565 in [0,33) (!range)
+    -> Fact[KB:41] i32 %565 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:42] i32 %586 in [0,33) (!range)
+    -> Fact[KB:43] i32 %586 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:44] i32 %595 in [0,33) (!range)
+    -> Fact[KB:45] i32 %595 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:46] i32 %633 in [0,33) (!range)
+    -> Fact[KB:47] i32 %633 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:48] i32 %689 in [0,33) (!range)
+    -> Fact[KB:49] i32 %689 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:50] i32 %660 in [0,33) (!range)
+    -> Fact[KB:51] i32 %660 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:52] i32 %749 in [0,33) (!range)
+    -> Fact[KB:53] i32 %749 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:54] i32 %722 in [0,33) (!range)
+    -> Fact[KB:55] i32 %722 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:56] i32 %701 in [0,33) (!range)
+    -> Fact[KB:57] i32 %701 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:58] i32 %707 in [0,33) (!range)
+    -> Fact[KB:59] i32 %707 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:60] i32 %883 in [0,33) (!range)
+    -> Fact[KB:61] i32 %883 known bits zero=0x4294967264 one=0x0
+    -> Fact[KB:62] i64 %923 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:63] i64 %923 in [0,4294967295) (SCEV unsigned)
+    -> Fact[SCEV:64] i64 %923 in [0,4294967295) (SCEV signed)
+    -> Fact[SCEVSYM:65] i64 %923 - start(0) <=u BTC((-1 + (zext i32 %904 to i64))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:66] i64 %923 == i64 0 || ne(i64 %923, i64 %921) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:67] i64 %923 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[RM:68] i32 %939 in [0,33) (!range)
+    -> Fact[KB:69] i32 %939 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:70] i32 %1032 in [0,33) (!range)
+    -> Fact[KB:71] i32 %1032 known bits zero=0x4294967264 one=0x0
+    -> Fact[LVI:72] i32 %1032 in [0,32) (LVI @ )
+    -> Fact[RM:73] i32 %1054 in [0,33) (!range)
+    -> Fact[KB:74] i32 %1054 known bits zero=0x4294967264 one=0x0
+    -> Fact[KB:75] i64 %921 known bits zero=0x18446744069414584320 one=0x0
+    -> [heavy] 76 analysis fact(s) on 111 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.347078 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %942 = icmp eq i32 %941, 1
+    -> Guard[1] (false edge of ''):  %937 = icmp ult i32 %928, %936
+    -> Guard[2] (true edge of ''):  %919 = select i1 %915, i1 %918, i1 false
+    -> Guard[3] (false edge of ''):  %905 = icmp eq i32 %904, 0
+    -> Guard[4] (false edge of ''):  %894 = extractvalue { i32, i1 } %892, 1, !nosanitize !45
+    -> Guard[5] (false edge of ''):  %874 = icmp eq i32 %335, %824
+    -> Guard[6] (false edge of ''):  %872 = icmp ugt ptr %338, %17
+    -> Guard[7] (false edge of ''):  %494 = extractvalue { i32, i1 } %492, 1, !nosanitize !45
+    -> Guard[8] (false edge of ''):  %488 = extractvalue { i32, i1 } %487, 1, !nosanitize !45
+    -> Guard[9] (false edge of ''):  %374 = extractvalue { i32, i1 } %372, 1, !nosanitize !45
+    -> Guard[10] (false edge of ''):  %333 = icmp eq i32 %330, 0
+    -> Guard[11] (true edge of ''):  %328 = icmp eq i64 %327, %209
+    -> Guard[12] (true edge of ''):  %199 = icmp eq i64 %198, %96
+    -> Guard[13] (false edge of ''):  %179 = icmp ugt i32 %178, %38
+    -> Guard[14] (false edge of ''):  %114 = icmp eq i32 %113, 0
+    -> Guard[15] (true edge of ''):  %62 = icmp ult ptr %61, %17
+    -> Collected 16 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %221 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(12) %69, ptr noundef nonnull align 4 dereferenceable(12) %2, i64 12, i1 false)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %350 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %376 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %511 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %347 = load i32, ptr %74, align 8, !tbaa !53  vs  %546 = load i32, ptr %74, align 8, !tbaa !53
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %876 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %941 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call fastcc void @ZSTD_optLdm_processMatchCandidate(ptr noundef nonnull %12, ptr noundef %46, ptr noundef nonnull %14, i32 noundef %901, i32 noundef %903, i32 noundef %40)
+    -> [go3] 9 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %185 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %185 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %185 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %185 == i64 0 || ne(i64 %185, i64 %96) (latch-implied bound, 1-induction)
+    -> Fact[KB:4] i64 %211 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:5] i64 %211 in [0,4294967295) (SCEV unsigned)
+    -> Fact[SCEV:6] i64 %211 in [0,4294967295) (SCEV signed)
+    -> Fact[SCEVSYM:7] i64 %211 - start(0) <=u BTC((-1 + (1 umax (zext i32 %113 to i64)))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:8] i64 %211 == i64 0 || ne(i64 %211, i64 %209) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:9] i64 %211 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[RM:10] i32 %219 in [0,33) (!range)
+    -> Fact[KB:11] i32 %219 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:12] i32 %260 == i32 %212 || ule(i32 %260, i32 %216) (latch-implied bound, 1-induction)
+    -> Fact[RM:13] i32 %264 in [0,33) (!range)
+    -> Fact[KB:14] i32 %264 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:15] i32 %286 in [0,33) (!range)
+    -> Fact[KB:16] i32 %286 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:17] i32 %311 in [0,33) (!range)
+    -> Fact[KB:18] i32 %311 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:19] i32 %224 == i32 %212 || ule(i32 %224, i32 %216) (latch-implied bound, 1-induction)
+    -> Fact[RM:20] i32 %226 in [0,33) (!range)
+    -> Fact[KB:21] i32 %226 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:22] i32 %361 in [0,33) (!range)
+    -> Fact[KB:23] i32 %361 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:24] i32 %431 in [0,33) (!range)
+    -> Fact[KB:25] i32 %431 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:26] i32 %443 in [0,33) (!range)
+    -> Fact[KB:27] i32 %443 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:28] i32 %386 in [0,33) (!range)
+    -> Fact[KB:29] i32 %386 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:30] i32 %476 in [0,33) (!range)
+    -> Fact[KB:31] i32 %476 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:32] i32 %406 in [0,33) (!range)
+    -> Fact[KB:33] i32 %406 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:34] i32 %412 in [0,33) (!range)
+    -> Fact[KB:35] i32 %412 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:36] i32 %519 in [0,33) (!range)
+    -> Fact[KB:37] i32 %519 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:38] i32 %528 in [0,33) (!range)
+    -> Fact[KB:39] i32 %528 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:40] i32 %565 in [0,33) (!range)
+    -> Fact[KB:41] i32 %565 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:42] i32 %586 in [0,33) (!range)
+    -> Fact[KB:43] i32 %586 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:44] i32 %595 in [0,33) (!range)
+    -> Fact[KB:45] i32 %595 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:46] i32 %633 in [0,33) (!range)
+    -> Fact[KB:47] i32 %633 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:48] i32 %689 in [0,33) (!range)
+    -> Fact[KB:49] i32 %689 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:50] i32 %660 in [0,33) (!range)
+    -> Fact[KB:51] i32 %660 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:52] i32 %749 in [0,33) (!range)
+    -> Fact[KB:53] i32 %749 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:54] i32 %722 in [0,33) (!range)
+    -> Fact[KB:55] i32 %722 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:56] i32 %701 in [0,33) (!range)
+    -> Fact[KB:57] i32 %701 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:58] i32 %707 in [0,33) (!range)
+    -> Fact[KB:59] i32 %707 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:60] i32 %883 in [0,33) (!range)
+    -> Fact[KB:61] i32 %883 known bits zero=0x4294967264 one=0x0
+    -> Fact[KB:62] i64 %923 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:63] i64 %923 in [0,4294967295) (SCEV unsigned)
+    -> Fact[SCEV:64] i64 %923 in [0,4294967295) (SCEV signed)
+    -> Fact[SCEVSYM:65] i64 %923 - start(0) <=u BTC((-1 + (zext i32 %904 to i64))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:66] i64 %923 == i64 0 || ne(i64 %923, i64 %921) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:67] i64 %923 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[RM:68] i32 %939 in [0,33) (!range)
+    -> Fact[KB:69] i32 %939 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:70] i32 %948 == i32 %928 || uge(i32 %948, i32 %936) (latch-implied bound, 1-induction)
+    -> Fact[RM:71] i32 %953 in [0,33) (!range)
+    -> Fact[KB:72] i32 %953 known bits zero=0x4294967264 one=0x0
+    -> Fact[KB:73] i64 %921 known bits zero=0x18446744069414584320 one=0x0
+    -> [heavy] 74 analysis fact(s) on 106 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.208057 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %874 = icmp eq i32 %335, %824
+    -> Guard[1] (false edge of ''):  %872 = icmp ugt ptr %338, %17
+    -> Guard[2] (false edge of ''):  %494 = extractvalue { i32, i1 } %492, 1, !nosanitize !45
+    -> Guard[3] (false edge of ''):  %488 = extractvalue { i32, i1 } %487, 1, !nosanitize !45
+    -> Guard[4] (false edge of ''):  %374 = extractvalue { i32, i1 } %372, 1, !nosanitize !45
+    -> Guard[5] (false edge of ''):  %333 = icmp eq i32 %330, 0
+    -> Guard[6] (true edge of ''):  %328 = icmp eq i64 %327, %209
+    -> Guard[7] (true edge of ''):  %199 = icmp eq i64 %198, %96
+    -> Guard[8] (false edge of ''):  %179 = icmp ugt i32 %178, %38
+    -> Guard[9] (false edge of ''):  %114 = icmp eq i32 %113, 0
+    -> Guard[10] (true edge of ''):  %62 = icmp ult ptr %61, %17
+    -> Collected 11 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %221 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(12) %69, ptr noundef nonnull align 4 dereferenceable(12) %2, i64 12, i1 false)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %350 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %376 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %511 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %347 = load i32, ptr %74, align 8, !tbaa !53  vs  %546 = load i32, ptr %74, align 8, !tbaa !53
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %876 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %941 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call fastcc void @ZSTD_optLdm_processMatchCandidate(ptr noundef nonnull %12, ptr noundef %46, ptr noundef nonnull %14, i32 noundef %901, i32 noundef %903, i32 noundef %40)
+    -> [go3] 9 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %185 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %185 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %185 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %185 == i64 0 || ne(i64 %185, i64 %96) (latch-implied bound, 1-induction)
+    -> Fact[KB:4] i64 %211 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:5] i64 %211 in [0,4294967295) (SCEV unsigned)
+    -> Fact[SCEV:6] i64 %211 in [0,4294967295) (SCEV signed)
+    -> Fact[SCEVSYM:7] i64 %211 - start(0) <=u BTC((-1 + (1 umax (zext i32 %113 to i64)))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:8] i64 %211 == i64 0 || ne(i64 %211, i64 %209) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:9] i64 %211 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[RM:10] i32 %219 in [0,33) (!range)
+    -> Fact[KB:11] i32 %219 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:12] i32 %260 == i32 %212 || ule(i32 %260, i32 %216) (latch-implied bound, 1-induction)
+    -> Fact[RM:13] i32 %264 in [0,33) (!range)
+    -> Fact[KB:14] i32 %264 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:15] i32 %286 in [0,33) (!range)
+    -> Fact[KB:16] i32 %286 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:17] i32 %311 in [0,33) (!range)
+    -> Fact[KB:18] i32 %311 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:19] i32 %224 == i32 %212 || ule(i32 %224, i32 %216) (latch-implied bound, 1-induction)
+    -> Fact[RM:20] i32 %226 in [0,33) (!range)
+    -> Fact[KB:21] i32 %226 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:22] i32 %361 in [0,33) (!range)
+    -> Fact[KB:23] i32 %361 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:24] i32 %431 in [0,33) (!range)
+    -> Fact[KB:25] i32 %431 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:26] i32 %443 in [0,33) (!range)
+    -> Fact[KB:27] i32 %443 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:28] i32 %386 in [0,33) (!range)
+    -> Fact[KB:29] i32 %386 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:30] i32 %476 in [0,33) (!range)
+    -> Fact[KB:31] i32 %476 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:32] i32 %406 in [0,33) (!range)
+    -> Fact[KB:33] i32 %406 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:34] i32 %412 in [0,33) (!range)
+    -> Fact[KB:35] i32 %412 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:36] i32 %519 in [0,33) (!range)
+    -> Fact[KB:37] i32 %519 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:38] i32 %528 in [0,33) (!range)
+    -> Fact[KB:39] i32 %528 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:40] i32 %565 in [0,33) (!range)
+    -> Fact[KB:41] i32 %565 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:42] i32 %586 in [0,33) (!range)
+    -> Fact[KB:43] i32 %586 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:44] i32 %595 in [0,33) (!range)
+    -> Fact[KB:45] i32 %595 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:46] i32 %633 in [0,33) (!range)
+    -> Fact[KB:47] i32 %633 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:48] i32 %689 in [0,33) (!range)
+    -> Fact[KB:49] i32 %689 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:50] i32 %660 in [0,33) (!range)
+    -> Fact[KB:51] i32 %660 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:52] i32 %749 in [0,33) (!range)
+    -> Fact[KB:53] i32 %749 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:54] i32 %722 in [0,33) (!range)
+    -> Fact[KB:55] i32 %722 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:56] i32 %701 in [0,33) (!range)
+    -> Fact[KB:57] i32 %701 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:58] i32 %707 in [0,33) (!range)
+    -> Fact[KB:59] i32 %707 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:60] i32 %883 in [0,33) (!range)
+    -> Fact[KB:61] i32 %883 known bits zero=0x4294967264 one=0x0
+    -> [heavy] 62 analysis fact(s) on 95 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.219492 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %762 = extractvalue { i32, i1 } %761, 1, !nosanitize !45
+    -> Guard[1] (false edge of ''):  %612 = extractvalue { i32, i1 } %610, 1, !nosanitize !45
+    -> Guard[2] (false edge of ''):  %607 = extractvalue { i32, i1 } %606, 1, !nosanitize !45
+    -> Guard[3] (true edge of ''):  %544 = select i1 %542, i1 %543, i1 false
+    -> Guard[4] (false edge of ''):  %539 = extractvalue { i32, i1 } %538, 1, !nosanitize !45
+    -> Guard[5] (true edge of ''):  %509 = icmp eq i32 %508, 0
+    -> Guard[6] (false edge of ''):  %498 = icmp sgt i32 %493, %497
+    -> Guard[7] (false edge of ''):  %494 = extractvalue { i32, i1 } %492, 1, !nosanitize !45
+    -> Guard[8] (false edge of ''):  %488 = extractvalue { i32, i1 } %487, 1, !nosanitize !45
+    -> Guard[9] (false edge of ''):  %374 = extractvalue { i32, i1 } %372, 1, !nosanitize !45
+    -> Guard[10] (false edge of ''):  %333 = icmp eq i32 %330, 0
+    -> Guard[11] (true edge of ''):  %328 = icmp eq i64 %327, %209
+    -> Guard[12] (true edge of ''):  %199 = icmp eq i64 %198, %96
+    -> Guard[13] (false edge of ''):  %179 = icmp ugt i32 %178, %38
+    -> Guard[14] (false edge of ''):  %114 = icmp eq i32 %113, 0
+    -> Guard[15] (true edge of ''):  %62 = icmp ult ptr %61, %17
+    -> Collected 16 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %221 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(12) %69, ptr noundef nonnull align 4 dereferenceable(12) %2, i64 12, i1 false)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %350 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %376 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %511 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %347 = load i32, ptr %74, align 8, !tbaa !53  vs  %546 = load i32, ptr %74, align 8, !tbaa !53
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %876 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %941 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call fastcc void @ZSTD_optLdm_processMatchCandidate(ptr noundef nonnull %12, ptr noundef %46, ptr noundef nonnull %14, i32 noundef %901, i32 noundef %903, i32 noundef %40)
+    -> [go3] 2 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %185 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %185 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %185 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %185 == i64 0 || ne(i64 %185, i64 %96) (latch-implied bound, 1-induction)
+    -> Fact[KB:4] i64 %211 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:5] i64 %211 in [0,4294967295) (SCEV unsigned)
+    -> Fact[SCEV:6] i64 %211 in [0,4294967295) (SCEV signed)
+    -> Fact[SCEVSYM:7] i64 %211 - start(0) <=u BTC((-1 + (1 umax (zext i32 %113 to i64)))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:8] i64 %211 == i64 0 || ne(i64 %211, i64 %209) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:9] i64 %211 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[RM:10] i32 %219 in [0,33) (!range)
+    -> Fact[KB:11] i32 %219 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:12] i32 %260 == i32 %212 || ule(i32 %260, i32 %216) (latch-implied bound, 1-induction)
+    -> Fact[RM:13] i32 %264 in [0,33) (!range)
+    -> Fact[KB:14] i32 %264 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:15] i32 %286 in [0,33) (!range)
+    -> Fact[KB:16] i32 %286 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:17] i32 %311 in [0,33) (!range)
+    -> Fact[KB:18] i32 %311 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:19] i32 %224 == i32 %212 || ule(i32 %224, i32 %216) (latch-implied bound, 1-induction)
+    -> Fact[RM:20] i32 %226 in [0,33) (!range)
+    -> Fact[KB:21] i32 %226 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:22] i32 %361 in [0,33) (!range)
+    -> Fact[KB:23] i32 %361 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:24] i32 %431 in [0,33) (!range)
+    -> Fact[KB:25] i32 %431 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:26] i32 %443 in [0,33) (!range)
+    -> Fact[KB:27] i32 %443 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:28] i32 %386 in [0,33) (!range)
+    -> Fact[KB:29] i32 %386 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:30] i32 %476 in [0,33) (!range)
+    -> Fact[KB:31] i32 %476 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:32] i32 %406 in [0,33) (!range)
+    -> Fact[KB:33] i32 %406 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:34] i32 %412 in [0,33) (!range)
+    -> Fact[KB:35] i32 %412 known bits zero=0x4294967264 one=0x0
+    -> Fact[LVI:36] i32 %508 in [0,1) (LVI @ )
+    -> Fact[RM:37] i32 %519 in [0,33) (!range)
+    -> Fact[KB:38] i32 %519 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:39] i32 %528 in [0,33) (!range)
+    -> Fact[KB:40] i32 %528 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:41] i32 %565 in [0,33) (!range)
+    -> Fact[KB:42] i32 %565 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:43] i32 %586 in [0,33) (!range)
+    -> Fact[KB:44] i32 %586 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:45] i32 %595 in [0,33) (!range)
+    -> Fact[KB:46] i32 %595 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:47] i32 %633 in [0,33) (!range)
+    -> Fact[KB:48] i32 %633 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:49] i32 %689 in [0,33) (!range)
+    -> Fact[KB:50] i32 %689 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:51] i32 %660 in [0,33) (!range)
+    -> Fact[KB:52] i32 %660 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:53] i32 %749 in [0,33) (!range)
+    -> Fact[KB:54] i32 %749 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:55] i32 %722 in [0,33) (!range)
+    -> Fact[KB:56] i32 %722 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:57] i32 %701 in [0,33) (!range)
+    -> Fact[KB:58] i32 %701 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:59] i32 %707 in [0,33) (!range)
+    -> Fact[KB:60] i32 %707 known bits zero=0x4294967264 one=0x0
+    -> [heavy] 61 analysis fact(s) on 85 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.522945 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %512 = icmp eq i32 %511, 1
+    -> Guard[1] (false edge of ''):  %547 = icmp eq i32 %546, 2
+    -> Guard[2] (false edge of ''):  %612 = extractvalue { i32, i1 } %610, 1, !nosanitize !45
+    -> Guard[3] (false edge of ''):  %607 = extractvalue { i32, i1 } %606, 1, !nosanitize !45
+    -> Guard[4] (true edge of ''):  %544 = select i1 %542, i1 %543, i1 false
+    -> Guard[5] (false edge of ''):  %539 = extractvalue { i32, i1 } %538, 1, !nosanitize !45
+    -> Guard[6] (true edge of ''):  %509 = icmp eq i32 %508, 0
+    -> Guard[7] (false edge of ''):  %498 = icmp sgt i32 %493, %497
+    -> Guard[8] (false edge of ''):  %494 = extractvalue { i32, i1 } %492, 1, !nosanitize !45
+    -> Guard[9] (false edge of ''):  %488 = extractvalue { i32, i1 } %487, 1, !nosanitize !45
+    -> Guard[10] (false edge of ''):  %374 = extractvalue { i32, i1 } %372, 1, !nosanitize !45
+    -> Guard[11] (false edge of ''):  %333 = icmp eq i32 %330, 0
+    -> Guard[12] (true edge of ''):  %328 = icmp eq i64 %327, %209
+    -> Guard[13] (true edge of ''):  %199 = icmp eq i64 %198, %96
+    -> Guard[14] (false edge of ''):  %179 = icmp ugt i32 %178, %38
+    -> Guard[15] (false edge of ''):  %114 = icmp eq i32 %113, 0
+    -> Guard[16] (true edge of ''):  %62 = icmp ult ptr %61, %17
+    -> Collected 17 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %221 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(12) %69, ptr noundef nonnull align 4 dereferenceable(12) %2, i64 12, i1 false)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %350 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %376 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %511 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %347 = load i32, ptr %74, align 8, !tbaa !53  vs  %546 = load i32, ptr %74, align 8, !tbaa !53
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %876 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %941 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call fastcc void @ZSTD_optLdm_processMatchCandidate(ptr noundef nonnull %12, ptr noundef %46, ptr noundef nonnull %14, i32 noundef %901, i32 noundef %903, i32 noundef %40)
+    -> [go3] 2 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %185 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %185 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %185 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %185 == i64 0 || ne(i64 %185, i64 %96) (latch-implied bound, 1-induction)
+    -> Fact[KB:4] i64 %211 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:5] i64 %211 in [0,4294967295) (SCEV unsigned)
+    -> Fact[SCEV:6] i64 %211 in [0,4294967295) (SCEV signed)
+    -> Fact[SCEVSYM:7] i64 %211 - start(0) <=u BTC((-1 + (1 umax (zext i32 %113 to i64)))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:8] i64 %211 == i64 0 || ne(i64 %211, i64 %209) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:9] i64 %211 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[RM:10] i32 %219 in [0,33) (!range)
+    -> Fact[KB:11] i32 %219 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:12] i32 %260 == i32 %212 || ule(i32 %260, i32 %216) (latch-implied bound, 1-induction)
+    -> Fact[RM:13] i32 %264 in [0,33) (!range)
+    -> Fact[KB:14] i32 %264 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:15] i32 %286 in [0,33) (!range)
+    -> Fact[KB:16] i32 %286 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:17] i32 %311 in [0,33) (!range)
+    -> Fact[KB:18] i32 %311 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:19] i32 %224 == i32 %212 || ule(i32 %224, i32 %216) (latch-implied bound, 1-induction)
+    -> Fact[RM:20] i32 %226 in [0,33) (!range)
+    -> Fact[KB:21] i32 %226 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:22] i32 %361 in [0,33) (!range)
+    -> Fact[KB:23] i32 %361 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:24] i32 %431 in [0,33) (!range)
+    -> Fact[KB:25] i32 %431 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:26] i32 %443 in [0,33) (!range)
+    -> Fact[KB:27] i32 %443 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:28] i32 %386 in [0,33) (!range)
+    -> Fact[KB:29] i32 %386 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:30] i32 %476 in [0,33) (!range)
+    -> Fact[KB:31] i32 %476 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:32] i32 %406 in [0,33) (!range)
+    -> Fact[KB:33] i32 %406 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:34] i32 %412 in [0,33) (!range)
+    -> Fact[KB:35] i32 %412 known bits zero=0x4294967264 one=0x0
+    -> Fact[LVI:36] i32 %508 in [0,1) (LVI @ )
+    -> Fact[RM:37] i32 %519 in [0,33) (!range)
+    -> Fact[KB:38] i32 %519 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:39] i32 %528 in [0,33) (!range)
+    -> Fact[KB:40] i32 %528 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:41] i32 %565 in [0,33) (!range)
+    -> Fact[KB:42] i32 %565 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:43] i32 %586 in [0,33) (!range)
+    -> Fact[KB:44] i32 %586 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:45] i32 %595 in [0,33) (!range)
+    -> Fact[KB:46] i32 %595 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:47] i32 %633 in [0,33) (!range)
+    -> Fact[KB:48] i32 %633 known bits zero=0x4294967264 one=0x0
+    -> [heavy] 49 analysis fact(s) on 71 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.175282 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %512 = icmp eq i32 %511, 1
+    -> Guard[1] (false edge of ''):  %547 = icmp eq i32 %546, 2
+    -> Guard[2] (false edge of ''):  %612 = extractvalue { i32, i1 } %610, 1, !nosanitize !45
+    -> Guard[3] (false edge of ''):  %607 = extractvalue { i32, i1 } %606, 1, !nosanitize !45
+    -> Guard[4] (true edge of ''):  %544 = select i1 %542, i1 %543, i1 false
+    -> Guard[5] (false edge of ''):  %539 = extractvalue { i32, i1 } %538, 1, !nosanitize !45
+    -> Guard[6] (true edge of ''):  %509 = icmp eq i32 %508, 0
+    -> Guard[7] (false edge of ''):  %498 = icmp sgt i32 %493, %497
+    -> Guard[8] (false edge of ''):  %494 = extractvalue { i32, i1 } %492, 1, !nosanitize !45
+    -> Guard[9] (false edge of ''):  %488 = extractvalue { i32, i1 } %487, 1, !nosanitize !45
+    -> Guard[10] (false edge of ''):  %374 = extractvalue { i32, i1 } %372, 1, !nosanitize !45
+    -> Guard[11] (false edge of ''):  %333 = icmp eq i32 %330, 0
+    -> Guard[12] (true edge of ''):  %328 = icmp eq i64 %327, %209
+    -> Guard[13] (true edge of ''):  %199 = icmp eq i64 %198, %96
+    -> Guard[14] (false edge of ''):  %179 = icmp ugt i32 %178, %38
+    -> Guard[15] (false edge of ''):  %114 = icmp eq i32 %113, 0
+    -> Guard[16] (true edge of ''):  %62 = icmp ult ptr %61, %17
+    -> Collected 17 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %221 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(12) %69, ptr noundef nonnull align 4 dereferenceable(12) %2, i64 12, i1 false)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %350 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %376 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %511 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %347 = load i32, ptr %74, align 8, !tbaa !53  vs  %546 = load i32, ptr %74, align 8, !tbaa !53
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %876 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %941 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call fastcc void @ZSTD_optLdm_processMatchCandidate(ptr noundef nonnull %12, ptr noundef %46, ptr noundef nonnull %14, i32 noundef %901, i32 noundef %903, i32 noundef %40)
+    -> [go3] 2 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %185 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %185 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %185 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %185 == i64 0 || ne(i64 %185, i64 %96) (latch-implied bound, 1-induction)
+    -> Fact[KB:4] i64 %211 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:5] i64 %211 in [0,4294967295) (SCEV unsigned)
+    -> Fact[SCEV:6] i64 %211 in [0,4294967295) (SCEV signed)
+    -> Fact[SCEVSYM:7] i64 %211 - start(0) <=u BTC((-1 + (1 umax (zext i32 %113 to i64)))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:8] i64 %211 == i64 0 || ne(i64 %211, i64 %209) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:9] i64 %211 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[RM:10] i32 %219 in [0,33) (!range)
+    -> Fact[KB:11] i32 %219 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:12] i32 %260 == i32 %212 || ule(i32 %260, i32 %216) (latch-implied bound, 1-induction)
+    -> Fact[RM:13] i32 %264 in [0,33) (!range)
+    -> Fact[KB:14] i32 %264 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:15] i32 %286 in [0,33) (!range)
+    -> Fact[KB:16] i32 %286 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:17] i32 %311 in [0,33) (!range)
+    -> Fact[KB:18] i32 %311 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:19] i32 %224 == i32 %212 || ule(i32 %224, i32 %216) (latch-implied bound, 1-induction)
+    -> Fact[RM:20] i32 %226 in [0,33) (!range)
+    -> Fact[KB:21] i32 %226 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:22] i32 %361 in [0,33) (!range)
+    -> Fact[KB:23] i32 %361 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:24] i32 %431 in [0,33) (!range)
+    -> Fact[KB:25] i32 %431 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:26] i32 %443 in [0,33) (!range)
+    -> Fact[KB:27] i32 %443 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:28] i32 %386 in [0,33) (!range)
+    -> Fact[KB:29] i32 %386 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:30] i32 %476 in [0,33) (!range)
+    -> Fact[KB:31] i32 %476 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:32] i32 %406 in [0,33) (!range)
+    -> Fact[KB:33] i32 %406 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:34] i32 %412 in [0,33) (!range)
+    -> Fact[KB:35] i32 %412 known bits zero=0x4294967264 one=0x0
+    -> Fact[LVI:36] i32 %508 in [0,1) (LVI @ )
+    -> Fact[LVI:37] i32 %511 in [1,2) (LVI @ )
+    -> Fact[RM:38] i32 %519 in [0,33) (!range)
+    -> Fact[KB:39] i32 %519 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:40] i32 %528 in [0,33) (!range)
+    -> Fact[KB:41] i32 %528 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:42] i32 %565 in [0,33) (!range)
+    -> Fact[KB:43] i32 %565 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:44] i32 %586 in [0,33) (!range)
+    -> Fact[KB:45] i32 %586 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:46] i32 %595 in [0,33) (!range)
+    -> Fact[KB:47] i32 %595 known bits zero=0x4294967264 one=0x0
+    -> [heavy] 48 analysis fact(s) on 68 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 0.061901 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %547 = icmp eq i32 %546, 2
+    -> Guard[1] (false edge of ''):  %612 = extractvalue { i32, i1 } %610, 1, !nosanitize !45
+    -> Guard[2] (false edge of ''):  %607 = extractvalue { i32, i1 } %606, 1, !nosanitize !45
+    -> Guard[3] (true edge of ''):  %544 = select i1 %542, i1 %543, i1 false
+    -> Guard[4] (false edge of ''):  %539 = extractvalue { i32, i1 } %538, 1, !nosanitize !45
+    -> Guard[5] (true edge of ''):  %509 = icmp eq i32 %508, 0
+    -> Guard[6] (false edge of ''):  %498 = icmp sgt i32 %493, %497
+    -> Guard[7] (false edge of ''):  %494 = extractvalue { i32, i1 } %492, 1, !nosanitize !45
+    -> Guard[8] (false edge of ''):  %488 = extractvalue { i32, i1 } %487, 1, !nosanitize !45
+    -> Guard[9] (false edge of ''):  %374 = extractvalue { i32, i1 } %372, 1, !nosanitize !45
+    -> Guard[10] (false edge of ''):  %333 = icmp eq i32 %330, 0
+    -> Guard[11] (true edge of ''):  %328 = icmp eq i64 %327, %209
+    -> Guard[12] (true edge of ''):  %199 = icmp eq i64 %198, %96
+    -> Guard[13] (false edge of ''):  %179 = icmp ugt i32 %178, %38
+    -> Guard[14] (false edge of ''):  %114 = icmp eq i32 %113, 0
+    -> Guard[15] (true edge of ''):  %62 = icmp ult ptr %61, %17
+    -> Collected 16 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %221 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(12) %69, ptr noundef nonnull align 4 dereferenceable(12) %2, i64 12, i1 false)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %350 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %376 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %511 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %347 = load i32, ptr %74, align 8, !tbaa !53  vs  %546 = load i32, ptr %74, align 8, !tbaa !53
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %876 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %941 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call fastcc void @ZSTD_optLdm_processMatchCandidate(ptr noundef nonnull %12, ptr noundef %46, ptr noundef nonnull %14, i32 noundef %901, i32 noundef %903, i32 noundef %40)
+    -> [go3] 2 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %185 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %185 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %185 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %185 == i64 0 || ne(i64 %185, i64 %96) (latch-implied bound, 1-induction)
+    -> Fact[KB:4] i64 %211 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:5] i64 %211 in [0,4294967295) (SCEV unsigned)
+    -> Fact[SCEV:6] i64 %211 in [0,4294967295) (SCEV signed)
+    -> Fact[SCEVSYM:7] i64 %211 - start(0) <=u BTC((-1 + (1 umax (zext i32 %113 to i64)))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:8] i64 %211 == i64 0 || ne(i64 %211, i64 %209) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:9] i64 %211 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[RM:10] i32 %219 in [0,33) (!range)
+    -> Fact[KB:11] i32 %219 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:12] i32 %260 == i32 %212 || ule(i32 %260, i32 %216) (latch-implied bound, 1-induction)
+    -> Fact[RM:13] i32 %264 in [0,33) (!range)
+    -> Fact[KB:14] i32 %264 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:15] i32 %286 in [0,33) (!range)
+    -> Fact[KB:16] i32 %286 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:17] i32 %311 in [0,33) (!range)
+    -> Fact[KB:18] i32 %311 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:19] i32 %224 == i32 %212 || ule(i32 %224, i32 %216) (latch-implied bound, 1-induction)
+    -> Fact[RM:20] i32 %226 in [0,33) (!range)
+    -> Fact[KB:21] i32 %226 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:22] i32 %361 in [0,33) (!range)
+    -> Fact[KB:23] i32 %361 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:24] i32 %431 in [0,33) (!range)
+    -> Fact[KB:25] i32 %431 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:26] i32 %443 in [0,33) (!range)
+    -> Fact[KB:27] i32 %443 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:28] i32 %386 in [0,33) (!range)
+    -> Fact[KB:29] i32 %386 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:30] i32 %476 in [0,33) (!range)
+    -> Fact[KB:31] i32 %476 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:32] i32 %406 in [0,33) (!range)
+    -> Fact[KB:33] i32 %406 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:34] i32 %412 in [0,33) (!range)
+    -> Fact[KB:35] i32 %412 known bits zero=0x4294967264 one=0x0
+    -> Fact[LVI:36] i32 %508 in [0,1) (LVI @ )
+    -> Fact[RM:37] i32 %519 in [0,33) (!range)
+    -> Fact[KB:38] i32 %519 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:39] i32 %528 in [0,33) (!range)
+    -> Fact[KB:40] i32 %528 known bits zero=0x4294967264 one=0x0
+    -> Fact[LVI:41] i32 %546 in [2,3) (LVI @ )
+    -> Fact[RM:42] i32 %565 in [0,33) (!range)
+    -> Fact[KB:43] i32 %565 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:44] i32 %586 in [0,33) (!range)
+    -> Fact[KB:45] i32 %586 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:46] i32 %595 in [0,33) (!range)
+    -> Fact[KB:47] i32 %595 known bits zero=0x4294967264 one=0x0
+    -> [heavy] 48 analysis fact(s) on 68 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.131293 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %607 = extractvalue { i32, i1 } %606, 1, !nosanitize !45
+    -> Guard[1] (true edge of ''):  %544 = select i1 %542, i1 %543, i1 false
+    -> Guard[2] (false edge of ''):  %539 = extractvalue { i32, i1 } %538, 1, !nosanitize !45
+    -> Guard[3] (true edge of ''):  %509 = icmp eq i32 %508, 0
+    -> Guard[4] (false edge of ''):  %498 = icmp sgt i32 %493, %497
+    -> Guard[5] (false edge of ''):  %494 = extractvalue { i32, i1 } %492, 1, !nosanitize !45
+    -> Guard[6] (false edge of ''):  %488 = extractvalue { i32, i1 } %487, 1, !nosanitize !45
+    -> Guard[7] (false edge of ''):  %374 = extractvalue { i32, i1 } %372, 1, !nosanitize !45
+    -> Guard[8] (false edge of ''):  %333 = icmp eq i32 %330, 0
+    -> Guard[9] (true edge of ''):  %328 = icmp eq i64 %327, %209
+    -> Guard[10] (true edge of ''):  %199 = icmp eq i64 %198, %96
+    -> Guard[11] (false edge of ''):  %179 = icmp ugt i32 %178, %38
+    -> Guard[12] (false edge of ''):  %114 = icmp eq i32 %113, 0
+    -> Guard[13] (true edge of ''):  %62 = icmp ult ptr %61, %17
+    -> Collected 14 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %221 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(12) %69, ptr noundef nonnull align 4 dereferenceable(12) %2, i64 12, i1 false)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %350 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %376 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %511 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %347 = load i32, ptr %74, align 8, !tbaa !53  vs  %546 = load i32, ptr %74, align 8, !tbaa !53
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %876 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %941 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call fastcc void @ZSTD_optLdm_processMatchCandidate(ptr noundef nonnull %12, ptr noundef %46, ptr noundef nonnull %14, i32 noundef %901, i32 noundef %903, i32 noundef %40)
+    -> [go3] 2 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %185 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %185 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %185 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %185 == i64 0 || ne(i64 %185, i64 %96) (latch-implied bound, 1-induction)
+    -> Fact[KB:4] i64 %211 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:5] i64 %211 in [0,4294967295) (SCEV unsigned)
+    -> Fact[SCEV:6] i64 %211 in [0,4294967295) (SCEV signed)
+    -> Fact[SCEVSYM:7] i64 %211 - start(0) <=u BTC((-1 + (1 umax (zext i32 %113 to i64)))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:8] i64 %211 == i64 0 || ne(i64 %211, i64 %209) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:9] i64 %211 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[RM:10] i32 %219 in [0,33) (!range)
+    -> Fact[KB:11] i32 %219 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:12] i32 %260 == i32 %212 || ule(i32 %260, i32 %216) (latch-implied bound, 1-induction)
+    -> Fact[RM:13] i32 %264 in [0,33) (!range)
+    -> Fact[KB:14] i32 %264 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:15] i32 %286 in [0,33) (!range)
+    -> Fact[KB:16] i32 %286 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:17] i32 %311 in [0,33) (!range)
+    -> Fact[KB:18] i32 %311 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:19] i32 %224 == i32 %212 || ule(i32 %224, i32 %216) (latch-implied bound, 1-induction)
+    -> Fact[RM:20] i32 %226 in [0,33) (!range)
+    -> Fact[KB:21] i32 %226 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:22] i32 %361 in [0,33) (!range)
+    -> Fact[KB:23] i32 %361 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:24] i32 %431 in [0,33) (!range)
+    -> Fact[KB:25] i32 %431 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:26] i32 %443 in [0,33) (!range)
+    -> Fact[KB:27] i32 %443 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:28] i32 %386 in [0,33) (!range)
+    -> Fact[KB:29] i32 %386 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:30] i32 %476 in [0,33) (!range)
+    -> Fact[KB:31] i32 %476 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:32] i32 %406 in [0,33) (!range)
+    -> Fact[KB:33] i32 %406 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:34] i32 %412 in [0,33) (!range)
+    -> Fact[KB:35] i32 %412 known bits zero=0x4294967264 one=0x0
+    -> Fact[LVI:36] i32 %508 in [0,1) (LVI @ )
+    -> Fact[RM:37] i32 %519 in [0,33) (!range)
+    -> Fact[KB:38] i32 %519 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:39] i32 %528 in [0,33) (!range)
+    -> Fact[KB:40] i32 %528 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:41] i32 %565 in [0,33) (!range)
+    -> Fact[KB:42] i32 %565 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:43] i32 %586 in [0,33) (!range)
+    -> Fact[KB:44] i32 %586 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:45] i32 %595 in [0,33) (!range)
+    -> Fact[KB:46] i32 %595 known bits zero=0x4294967264 one=0x0
+    -> [heavy] 47 analysis fact(s) on 68 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.172644 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %512 = icmp eq i32 %511, 1
+    -> Guard[1] (false edge of ''):  %547 = icmp eq i32 %546, 2
+    -> Guard[2] (true edge of ''):  %544 = select i1 %542, i1 %543, i1 false
+    -> Guard[3] (false edge of ''):  %539 = extractvalue { i32, i1 } %538, 1, !nosanitize !45
+    -> Guard[4] (true edge of ''):  %509 = icmp eq i32 %508, 0
+    -> Guard[5] (false edge of ''):  %498 = icmp sgt i32 %493, %497
+    -> Guard[6] (false edge of ''):  %494 = extractvalue { i32, i1 } %492, 1, !nosanitize !45
+    -> Guard[7] (false edge of ''):  %488 = extractvalue { i32, i1 } %487, 1, !nosanitize !45
+    -> Guard[8] (false edge of ''):  %374 = extractvalue { i32, i1 } %372, 1, !nosanitize !45
+    -> Guard[9] (false edge of ''):  %333 = icmp eq i32 %330, 0
+    -> Guard[10] (true edge of ''):  %328 = icmp eq i64 %327, %209
+    -> Guard[11] (true edge of ''):  %199 = icmp eq i64 %198, %96
+    -> Guard[12] (false edge of ''):  %179 = icmp ugt i32 %178, %38
+    -> Guard[13] (false edge of ''):  %114 = icmp eq i32 %113, 0
+    -> Guard[14] (true edge of ''):  %62 = icmp ult ptr %61, %17
+    -> Collected 15 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %221 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(12) %69, ptr noundef nonnull align 4 dereferenceable(12) %2, i64 12, i1 false)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %350 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %376 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %511 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %347 = load i32, ptr %74, align 8, !tbaa !53  vs  %546 = load i32, ptr %74, align 8, !tbaa !53
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %876 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %941 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call fastcc void @ZSTD_optLdm_processMatchCandidate(ptr noundef nonnull %12, ptr noundef %46, ptr noundef nonnull %14, i32 noundef %901, i32 noundef %903, i32 noundef %40)
+    -> [go3] 2 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %185 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %185 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %185 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %185 == i64 0 || ne(i64 %185, i64 %96) (latch-implied bound, 1-induction)
+    -> Fact[KB:4] i64 %211 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:5] i64 %211 in [0,4294967295) (SCEV unsigned)
+    -> Fact[SCEV:6] i64 %211 in [0,4294967295) (SCEV signed)
+    -> Fact[SCEVSYM:7] i64 %211 - start(0) <=u BTC((-1 + (1 umax (zext i32 %113 to i64)))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:8] i64 %211 == i64 0 || ne(i64 %211, i64 %209) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:9] i64 %211 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[RM:10] i32 %219 in [0,33) (!range)
+    -> Fact[KB:11] i32 %219 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:12] i32 %260 == i32 %212 || ule(i32 %260, i32 %216) (latch-implied bound, 1-induction)
+    -> Fact[RM:13] i32 %264 in [0,33) (!range)
+    -> Fact[KB:14] i32 %264 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:15] i32 %286 in [0,33) (!range)
+    -> Fact[KB:16] i32 %286 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:17] i32 %311 in [0,33) (!range)
+    -> Fact[KB:18] i32 %311 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:19] i32 %224 == i32 %212 || ule(i32 %224, i32 %216) (latch-implied bound, 1-induction)
+    -> Fact[RM:20] i32 %226 in [0,33) (!range)
+    -> Fact[KB:21] i32 %226 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:22] i32 %361 in [0,33) (!range)
+    -> Fact[KB:23] i32 %361 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:24] i32 %431 in [0,33) (!range)
+    -> Fact[KB:25] i32 %431 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:26] i32 %443 in [0,33) (!range)
+    -> Fact[KB:27] i32 %443 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:28] i32 %386 in [0,33) (!range)
+    -> Fact[KB:29] i32 %386 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:30] i32 %476 in [0,33) (!range)
+    -> Fact[KB:31] i32 %476 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:32] i32 %406 in [0,33) (!range)
+    -> Fact[KB:33] i32 %406 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:34] i32 %412 in [0,33) (!range)
+    -> Fact[KB:35] i32 %412 known bits zero=0x4294967264 one=0x0
+    -> Fact[LVI:36] i32 %508 in [0,1) (LVI @ )
+    -> Fact[RM:37] i32 %519 in [0,33) (!range)
+    -> Fact[KB:38] i32 %519 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:39] i32 %528 in [0,33) (!range)
+    -> Fact[KB:40] i32 %528 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:41] i32 %565 in [0,33) (!range)
+    -> Fact[KB:42] i32 %565 known bits zero=0x4294967264 one=0x0
+    -> [heavy] 43 analysis fact(s) on 63 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.179839 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %512 = icmp eq i32 %511, 1
+    -> Guard[1] (false edge of ''):  %547 = icmp eq i32 %546, 2
+    -> Guard[2] (true edge of ''):  %544 = select i1 %542, i1 %543, i1 false
+    -> Guard[3] (false edge of ''):  %539 = extractvalue { i32, i1 } %538, 1, !nosanitize !45
+    -> Guard[4] (true edge of ''):  %509 = icmp eq i32 %508, 0
+    -> Guard[5] (false edge of ''):  %498 = icmp sgt i32 %493, %497
+    -> Guard[6] (false edge of ''):  %494 = extractvalue { i32, i1 } %492, 1, !nosanitize !45
+    -> Guard[7] (false edge of ''):  %488 = extractvalue { i32, i1 } %487, 1, !nosanitize !45
+    -> Guard[8] (false edge of ''):  %374 = extractvalue { i32, i1 } %372, 1, !nosanitize !45
+    -> Guard[9] (false edge of ''):  %333 = icmp eq i32 %330, 0
+    -> Guard[10] (true edge of ''):  %328 = icmp eq i64 %327, %209
+    -> Guard[11] (true edge of ''):  %199 = icmp eq i64 %198, %96
+    -> Guard[12] (false edge of ''):  %179 = icmp ugt i32 %178, %38
+    -> Guard[13] (false edge of ''):  %114 = icmp eq i32 %113, 0
+    -> Guard[14] (true edge of ''):  %62 = icmp ult ptr %61, %17
+    -> Collected 15 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %221 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(12) %69, ptr noundef nonnull align 4 dereferenceable(12) %2, i64 12, i1 false)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %350 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %376 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %511 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %347 = load i32, ptr %74, align 8, !tbaa !53  vs  %546 = load i32, ptr %74, align 8, !tbaa !53
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %876 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %941 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call fastcc void @ZSTD_optLdm_processMatchCandidate(ptr noundef nonnull %12, ptr noundef %46, ptr noundef nonnull %14, i32 noundef %901, i32 noundef %903, i32 noundef %40)
+    -> [go3] 2 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %185 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %185 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %185 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %185 == i64 0 || ne(i64 %185, i64 %96) (latch-implied bound, 1-induction)
+    -> Fact[KB:4] i64 %211 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:5] i64 %211 in [0,4294967295) (SCEV unsigned)
+    -> Fact[SCEV:6] i64 %211 in [0,4294967295) (SCEV signed)
+    -> Fact[SCEVSYM:7] i64 %211 - start(0) <=u BTC((-1 + (1 umax (zext i32 %113 to i64)))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:8] i64 %211 == i64 0 || ne(i64 %211, i64 %209) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:9] i64 %211 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[RM:10] i32 %219 in [0,33) (!range)
+    -> Fact[KB:11] i32 %219 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:12] i32 %260 == i32 %212 || ule(i32 %260, i32 %216) (latch-implied bound, 1-induction)
+    -> Fact[RM:13] i32 %264 in [0,33) (!range)
+    -> Fact[KB:14] i32 %264 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:15] i32 %286 in [0,33) (!range)
+    -> Fact[KB:16] i32 %286 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:17] i32 %311 in [0,33) (!range)
+    -> Fact[KB:18] i32 %311 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:19] i32 %224 == i32 %212 || ule(i32 %224, i32 %216) (latch-implied bound, 1-induction)
+    -> Fact[RM:20] i32 %226 in [0,33) (!range)
+    -> Fact[KB:21] i32 %226 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:22] i32 %361 in [0,33) (!range)
+    -> Fact[KB:23] i32 %361 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:24] i32 %431 in [0,33) (!range)
+    -> Fact[KB:25] i32 %431 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:26] i32 %443 in [0,33) (!range)
+    -> Fact[KB:27] i32 %443 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:28] i32 %386 in [0,33) (!range)
+    -> Fact[KB:29] i32 %386 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:30] i32 %476 in [0,33) (!range)
+    -> Fact[KB:31] i32 %476 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:32] i32 %406 in [0,33) (!range)
+    -> Fact[KB:33] i32 %406 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:34] i32 %412 in [0,33) (!range)
+    -> Fact[KB:35] i32 %412 known bits zero=0x4294967264 one=0x0
+    -> Fact[LVI:36] i32 %508 in [0,1) (LVI @ )
+    -> Fact[LVI:37] i32 %511 in [1,2) (LVI @ )
+    -> Fact[RM:38] i32 %519 in [0,33) (!range)
+    -> Fact[KB:39] i32 %519 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:40] i32 %528 in [0,33) (!range)
+    -> Fact[KB:41] i32 %528 known bits zero=0x4294967264 one=0x0
+    -> [heavy] 42 analysis fact(s) on 60 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 0.198281 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %547 = icmp eq i32 %546, 2
+    -> Guard[1] (true edge of ''):  %544 = select i1 %542, i1 %543, i1 false
+    -> Guard[2] (false edge of ''):  %539 = extractvalue { i32, i1 } %538, 1, !nosanitize !45
+    -> Guard[3] (true edge of ''):  %509 = icmp eq i32 %508, 0
+    -> Guard[4] (false edge of ''):  %498 = icmp sgt i32 %493, %497
+    -> Guard[5] (false edge of ''):  %494 = extractvalue { i32, i1 } %492, 1, !nosanitize !45
+    -> Guard[6] (false edge of ''):  %488 = extractvalue { i32, i1 } %487, 1, !nosanitize !45
+    -> Guard[7] (false edge of ''):  %374 = extractvalue { i32, i1 } %372, 1, !nosanitize !45
+    -> Guard[8] (false edge of ''):  %333 = icmp eq i32 %330, 0
+    -> Guard[9] (true edge of ''):  %328 = icmp eq i64 %327, %209
+    -> Guard[10] (true edge of ''):  %199 = icmp eq i64 %198, %96
+    -> Guard[11] (false edge of ''):  %179 = icmp ugt i32 %178, %38
+    -> Guard[12] (false edge of ''):  %114 = icmp eq i32 %113, 0
+    -> Guard[13] (true edge of ''):  %62 = icmp ult ptr %61, %17
+    -> Collected 14 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %221 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(12) %69, ptr noundef nonnull align 4 dereferenceable(12) %2, i64 12, i1 false)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %350 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %376 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %511 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %347 = load i32, ptr %74, align 8, !tbaa !53  vs  %546 = load i32, ptr %74, align 8, !tbaa !53
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %876 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %941 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call fastcc void @ZSTD_optLdm_processMatchCandidate(ptr noundef nonnull %12, ptr noundef %46, ptr noundef nonnull %14, i32 noundef %901, i32 noundef %903, i32 noundef %40)
+    -> [go3] 2 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %185 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %185 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %185 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %185 == i64 0 || ne(i64 %185, i64 %96) (latch-implied bound, 1-induction)
+    -> Fact[KB:4] i64 %211 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:5] i64 %211 in [0,4294967295) (SCEV unsigned)
+    -> Fact[SCEV:6] i64 %211 in [0,4294967295) (SCEV signed)
+    -> Fact[SCEVSYM:7] i64 %211 - start(0) <=u BTC((-1 + (1 umax (zext i32 %113 to i64)))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:8] i64 %211 == i64 0 || ne(i64 %211, i64 %209) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:9] i64 %211 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[RM:10] i32 %219 in [0,33) (!range)
+    -> Fact[KB:11] i32 %219 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:12] i32 %260 == i32 %212 || ule(i32 %260, i32 %216) (latch-implied bound, 1-induction)
+    -> Fact[RM:13] i32 %264 in [0,33) (!range)
+    -> Fact[KB:14] i32 %264 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:15] i32 %286 in [0,33) (!range)
+    -> Fact[KB:16] i32 %286 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:17] i32 %311 in [0,33) (!range)
+    -> Fact[KB:18] i32 %311 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:19] i32 %224 == i32 %212 || ule(i32 %224, i32 %216) (latch-implied bound, 1-induction)
+    -> Fact[RM:20] i32 %226 in [0,33) (!range)
+    -> Fact[KB:21] i32 %226 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:22] i32 %361 in [0,33) (!range)
+    -> Fact[KB:23] i32 %361 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:24] i32 %431 in [0,33) (!range)
+    -> Fact[KB:25] i32 %431 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:26] i32 %443 in [0,33) (!range)
+    -> Fact[KB:27] i32 %443 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:28] i32 %386 in [0,33) (!range)
+    -> Fact[KB:29] i32 %386 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:30] i32 %476 in [0,33) (!range)
+    -> Fact[KB:31] i32 %476 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:32] i32 %406 in [0,33) (!range)
+    -> Fact[KB:33] i32 %406 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:34] i32 %412 in [0,33) (!range)
+    -> Fact[KB:35] i32 %412 known bits zero=0x4294967264 one=0x0
+    -> Fact[LVI:36] i32 %508 in [0,1) (LVI @ )
+    -> Fact[RM:37] i32 %519 in [0,33) (!range)
+    -> Fact[KB:38] i32 %519 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:39] i32 %528 in [0,33) (!range)
+    -> Fact[KB:40] i32 %528 known bits zero=0x4294967264 one=0x0
+    -> Fact[LVI:41] i32 %546 in [2,3) (LVI @ )
+    -> [heavy] 42 analysis fact(s) on 60 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.191587 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %488 = extractvalue { i32, i1 } %487, 1, !nosanitize !45
+    -> Guard[1] (false edge of ''):  %374 = extractvalue { i32, i1 } %372, 1, !nosanitize !45
+    -> Guard[2] (false edge of ''):  %333 = icmp eq i32 %330, 0
+    -> Guard[3] (true edge of ''):  %328 = icmp eq i64 %327, %209
+    -> Guard[4] (true edge of ''):  %199 = icmp eq i64 %198, %96
+    -> Guard[5] (false edge of ''):  %179 = icmp ugt i32 %178, %38
+    -> Guard[6] (false edge of ''):  %114 = icmp eq i32 %113, 0
+    -> Guard[7] (true edge of ''):  %62 = icmp ult ptr %61, %17
+    -> Collected 8 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %221 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(12) %69, ptr noundef nonnull align 4 dereferenceable(12) %2, i64 12, i1 false)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %350 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %376 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %511 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %347 = load i32, ptr %74, align 8, !tbaa !53  vs  %546 = load i32, ptr %74, align 8, !tbaa !53
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %876 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %941 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call fastcc void @ZSTD_optLdm_processMatchCandidate(ptr noundef nonnull %12, ptr noundef %46, ptr noundef nonnull %14, i32 noundef %901, i32 noundef %903, i32 noundef %40)
+    -> [go3] 2 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %185 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %185 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %185 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %185 == i64 0 || ne(i64 %185, i64 %96) (latch-implied bound, 1-induction)
+    -> Fact[KB:4] i64 %211 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:5] i64 %211 in [0,4294967295) (SCEV unsigned)
+    -> Fact[SCEV:6] i64 %211 in [0,4294967295) (SCEV signed)
+    -> Fact[SCEVSYM:7] i64 %211 - start(0) <=u BTC((-1 + (1 umax (zext i32 %113 to i64)))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:8] i64 %211 == i64 0 || ne(i64 %211, i64 %209) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:9] i64 %211 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[RM:10] i32 %219 in [0,33) (!range)
+    -> Fact[KB:11] i32 %219 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:12] i32 %260 == i32 %212 || ule(i32 %260, i32 %216) (latch-implied bound, 1-induction)
+    -> Fact[RM:13] i32 %264 in [0,33) (!range)
+    -> Fact[KB:14] i32 %264 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:15] i32 %286 in [0,33) (!range)
+    -> Fact[KB:16] i32 %286 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:17] i32 %311 in [0,33) (!range)
+    -> Fact[KB:18] i32 %311 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:19] i32 %224 == i32 %212 || ule(i32 %224, i32 %216) (latch-implied bound, 1-induction)
+    -> Fact[RM:20] i32 %226 in [0,33) (!range)
+    -> Fact[KB:21] i32 %226 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:22] i32 %361 in [0,33) (!range)
+    -> Fact[KB:23] i32 %361 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:24] i32 %431 in [0,33) (!range)
+    -> Fact[KB:25] i32 %431 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:26] i32 %443 in [0,33) (!range)
+    -> Fact[KB:27] i32 %443 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:28] i32 %386 in [0,33) (!range)
+    -> Fact[KB:29] i32 %386 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:30] i32 %476 in [0,33) (!range)
+    -> Fact[KB:31] i32 %476 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:32] i32 %406 in [0,33) (!range)
+    -> Fact[KB:33] i32 %406 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:34] i32 %412 in [0,33) (!range)
+    -> Fact[KB:35] i32 %412 known bits zero=0x4294967264 one=0x0
+    -> [heavy] 36 analysis fact(s) on 49 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.143923 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %333 = icmp eq i32 %330, 0
+    -> Guard[1] (true edge of ''):  %328 = icmp eq i64 %327, %209
+    -> Guard[2] (true edge of ''):  %199 = icmp eq i64 %198, %96
+    -> Guard[3] (false edge of ''):  %179 = icmp ugt i32 %178, %38
+    -> Guard[4] (false edge of ''):  %114 = icmp eq i32 %113, 0
+    -> Guard[5] (true edge of ''):  %62 = icmp ult ptr %61, %17
+    -> Collected 6 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %221 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(12) %69, ptr noundef nonnull align 4 dereferenceable(12) %2, i64 12, i1 false)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %350 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %376 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %511 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %347 = load i32, ptr %74, align 8, !tbaa !53  vs  %546 = load i32, ptr %74, align 8, !tbaa !53
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %876 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %941 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call fastcc void @ZSTD_optLdm_processMatchCandidate(ptr noundef nonnull %12, ptr noundef %46, ptr noundef nonnull %14, i32 noundef %901, i32 noundef %903, i32 noundef %40)
+    -> [go3] 2 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %185 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %185 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %185 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %185 == i64 0 || ne(i64 %185, i64 %96) (latch-implied bound, 1-induction)
+    -> Fact[KB:4] i64 %211 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:5] i64 %211 in [0,4294967295) (SCEV unsigned)
+    -> Fact[SCEV:6] i64 %211 in [0,4294967295) (SCEV signed)
+    -> Fact[SCEVSYM:7] i64 %211 - start(0) <=u BTC((-1 + (1 umax (zext i32 %113 to i64)))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:8] i64 %211 == i64 0 || ne(i64 %211, i64 %209) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:9] i64 %211 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[RM:10] i32 %219 in [0,33) (!range)
+    -> Fact[KB:11] i32 %219 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:12] i32 %260 == i32 %212 || ule(i32 %260, i32 %216) (latch-implied bound, 1-induction)
+    -> Fact[RM:13] i32 %264 in [0,33) (!range)
+    -> Fact[KB:14] i32 %264 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:15] i32 %286 in [0,33) (!range)
+    -> Fact[KB:16] i32 %286 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:17] i32 %311 in [0,33) (!range)
+    -> Fact[KB:18] i32 %311 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:19] i32 %224 == i32 %212 || ule(i32 %224, i32 %216) (latch-implied bound, 1-induction)
+    -> Fact[RM:20] i32 %226 in [0,33) (!range)
+    -> Fact[KB:21] i32 %226 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:22] i32 %361 in [0,33) (!range)
+    -> Fact[KB:23] i32 %361 known bits zero=0x4294967264 one=0x0
+    -> [heavy] 24 analysis fact(s) on 33 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.177235 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %299 = extractvalue { i32, i1 } %298, 1, !nosanitize !45
+    -> Guard[1] (false edge of ''):  %222 = icmp eq i32 %221, 1
+    -> Guard[2] (false edge of ''):  %217 = icmp ugt i32 %212, %216
+    -> Guard[3] (true edge of ''):  %199 = icmp eq i64 %198, %96
+    -> Guard[4] (false edge of ''):  %179 = icmp ugt i32 %178, %38
+    -> Guard[5] (false edge of ''):  %114 = icmp eq i32 %113, 0
+    -> Guard[6] (true edge of ''):  %62 = icmp ult ptr %61, %17
+    -> Collected 7 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %221 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(12) %69, ptr noundef nonnull align 4 dereferenceable(12) %2, i64 12, i1 false)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %350 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %376 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %511 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %876 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %941 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call fastcc void @ZSTD_optLdm_processMatchCandidate(ptr noundef nonnull %12, ptr noundef %46, ptr noundef nonnull %14, i32 noundef %901, i32 noundef %903, i32 noundef %40)
+    -> [go3] 2 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %185 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %185 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %185 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %185 == i64 0 || ne(i64 %185, i64 %96) (latch-implied bound, 1-induction)
+    -> Fact[RM:4] i32 %219 in [0,33) (!range)
+    -> Fact[KB:5] i32 %219 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:6] i32 %264 in [0,33) (!range)
+    -> Fact[KB:7] i32 %264 known bits zero=0x4294967264 one=0x0
+    -> Fact[LVI:8] i32 %264 in [0,32) (LVI @ )
+    -> Fact[RM:9] i32 %286 in [0,33) (!range)
+    -> Fact[KB:10] i32 %286 known bits zero=0x4294967264 one=0x0
+    -> Fact[LVI:11] i32 %286 in [0,32) (LVI @ )
+    -> Fact[RM:12] i32 %311 in [0,33) (!range)
+    -> Fact[KB:13] i32 %311 known bits zero=0x4294967264 one=0x0
+    -> [heavy] 14 analysis fact(s) on 22 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.381204 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %222 = icmp eq i32 %221, 1
+    -> Guard[1] (false edge of ''):  %217 = icmp ugt i32 %212, %216
+    -> Guard[2] (true edge of ''):  %199 = icmp eq i64 %198, %96
+    -> Guard[3] (false edge of ''):  %179 = icmp ugt i32 %178, %38
+    -> Guard[4] (false edge of ''):  %114 = icmp eq i32 %113, 0
+    -> Guard[5] (true edge of ''):  %62 = icmp ult ptr %61, %17
+    -> Collected 6 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %221 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(12) %69, ptr noundef nonnull align 4 dereferenceable(12) %2, i64 12, i1 false)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %350 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %376 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %511 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %876 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %941 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call fastcc void @ZSTD_optLdm_processMatchCandidate(ptr noundef nonnull %12, ptr noundef %46, ptr noundef nonnull %14, i32 noundef %901, i32 noundef %903, i32 noundef %40)
+    -> [go3] 2 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %185 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %185 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %185 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %185 == i64 0 || ne(i64 %185, i64 %96) (latch-implied bound, 1-induction)
+    -> Fact[RM:4] i32 %219 in [0,33) (!range)
+    -> Fact[KB:5] i32 %219 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:6] i32 %264 in [0,33) (!range)
+    -> Fact[KB:7] i32 %264 known bits zero=0x4294967264 one=0x0
+    -> Fact[LVI:8] i32 %264 in [0,32) (LVI @ )
+    -> Fact[RM:9] i32 %286 in [0,33) (!range)
+    -> Fact[KB:10] i32 %286 known bits zero=0x4294967264 one=0x0
+    -> [heavy] 11 analysis fact(s) on 19 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.244845 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %236 = extractvalue { i32, i1 } %235, 1, !nosanitize !45
+    -> Guard[1] (true edge of ''):  %222 = icmp eq i32 %221, 1
+    -> Guard[2] (false edge of ''):  %217 = icmp ugt i32 %212, %216
+    -> Guard[3] (true edge of ''):  %199 = icmp eq i64 %198, %96
+    -> Guard[4] (false edge of ''):  %179 = icmp ugt i32 %178, %38
+    -> Guard[5] (false edge of ''):  %114 = icmp eq i32 %113, 0
+    -> Guard[6] (true edge of ''):  %62 = icmp ult ptr %61, %17
+    -> Collected 7 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %221 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(12) %69, ptr noundef nonnull align 4 dereferenceable(12) %2, i64 12, i1 false)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %350 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %376 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %511 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %876 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %941 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call fastcc void @ZSTD_optLdm_processMatchCandidate(ptr noundef nonnull %12, ptr noundef %46, ptr noundef nonnull %14, i32 noundef %901, i32 noundef %903, i32 noundef %40)
+    -> [go3] 2 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %185 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %185 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %185 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %185 == i64 0 || ne(i64 %185, i64 %96) (latch-implied bound, 1-induction)
+    -> Fact[RM:4] i32 %219 in [0,33) (!range)
+    -> Fact[KB:5] i32 %219 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:6] i32 %224 == i32 %212 || ule(i32 %224, i32 %216) (latch-implied bound, 1-induction)
+    -> Fact[RM:7] i32 %226 in [0,33) (!range)
+    -> Fact[KB:8] i32 %226 known bits zero=0x4294967264 one=0x0
+    -> Fact[LVI:9] i32 %226 in [0,32) (LVI @ )
+    -> [heavy] 10 analysis fact(s) on 14 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.433030 ms]
+    -> [mv] still SAT under 27 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %222 = icmp eq i32 %221, 1
+    -> Guard[1] (false edge of ''):  %217 = icmp ugt i32 %212, %216
+    -> Guard[2] (true edge of ''):  %199 = icmp eq i64 %198, %96
+    -> Guard[3] (false edge of ''):  %179 = icmp ugt i32 %178, %38
+    -> Guard[4] (false edge of ''):  %114 = icmp eq i32 %113, 0
+    -> Guard[5] (true edge of ''):  %62 = icmp ult ptr %61, %17
+    -> Collected 6 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %221 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(12) %69, ptr noundef nonnull align 4 dereferenceable(12) %2, i64 12, i1 false)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %350 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %376 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %511 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %876 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %941 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call fastcc void @ZSTD_optLdm_processMatchCandidate(ptr noundef nonnull %12, ptr noundef %46, ptr noundef nonnull %14, i32 noundef %901, i32 noundef %903, i32 noundef %40)
+    -> [go3] 2 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %185 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %185 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %185 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %185 == i64 0 || ne(i64 %185, i64 %96) (latch-implied bound, 1-induction)
+    -> Fact[RM:4] i32 %219 in [0,33) (!range)
+    -> Fact[KB:5] i32 %219 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:6] i32 %224 == i32 %212 || ule(i32 %224, i32 %216) (latch-implied bound, 1-induction)
+    -> Fact[RM:7] i32 %226 in [0,33) (!range)
+    -> Fact[KB:8] i32 %226 known bits zero=0x4294967264 one=0x0
+    -> [heavy] 9 analysis fact(s) on 14 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.133699 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %612 = extractvalue { i32, i1 } %610, 1, !nosanitize !45
+    -> Guard[1] (false edge of ''):  %607 = extractvalue { i32, i1 } %606, 1, !nosanitize !45
+    -> Guard[2] (true edge of ''):  %544 = select i1 %542, i1 %543, i1 false
+    -> Guard[3] (false edge of ''):  %539 = extractvalue { i32, i1 } %538, 1, !nosanitize !45
+    -> Guard[4] (true edge of ''):  %509 = icmp eq i32 %508, 0
+    -> Guard[5] (false edge of ''):  %498 = icmp sgt i32 %493, %497
+    -> Guard[6] (false edge of ''):  %494 = extractvalue { i32, i1 } %492, 1, !nosanitize !45
+    -> Guard[7] (false edge of ''):  %488 = extractvalue { i32, i1 } %487, 1, !nosanitize !45
+    -> Guard[8] (false edge of ''):  %374 = extractvalue { i32, i1 } %372, 1, !nosanitize !45
+    -> Guard[9] (false edge of ''):  %333 = icmp eq i32 %330, 0
+    -> Guard[10] (true edge of ''):  %328 = icmp eq i64 %327, %209
+    -> Guard[11] (true edge of ''):  %199 = icmp eq i64 %198, %96
+    -> Guard[12] (false edge of ''):  %179 = icmp ugt i32 %178, %38
+    -> Guard[13] (false edge of ''):  %114 = icmp eq i32 %113, 0
+    -> Guard[14] (true edge of ''):  %62 = icmp ult ptr %61, %17
+    -> Collected 15 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %221 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(12) %69, ptr noundef nonnull align 4 dereferenceable(12) %2, i64 12, i1 false)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %350 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %376 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %511 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %347 = load i32, ptr %74, align 8, !tbaa !53  vs  %546 = load i32, ptr %74, align 8, !tbaa !53
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %876 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %941 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call fastcc void @ZSTD_optLdm_processMatchCandidate(ptr noundef nonnull %12, ptr noundef %46, ptr noundef nonnull %14, i32 noundef %901, i32 noundef %903, i32 noundef %40)
+    -> [go3] 2 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %185 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %185 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %185 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %185 == i64 0 || ne(i64 %185, i64 %96) (latch-implied bound, 1-induction)
+    -> Fact[KB:4] i64 %211 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:5] i64 %211 in [0,4294967295) (SCEV unsigned)
+    -> Fact[SCEV:6] i64 %211 in [0,4294967295) (SCEV signed)
+    -> Fact[SCEVSYM:7] i64 %211 - start(0) <=u BTC((-1 + (1 umax (zext i32 %113 to i64)))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:8] i64 %211 == i64 0 || ne(i64 %211, i64 %209) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:9] i64 %211 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[RM:10] i32 %219 in [0,33) (!range)
+    -> Fact[KB:11] i32 %219 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:12] i32 %260 == i32 %212 || ule(i32 %260, i32 %216) (latch-implied bound, 1-induction)
+    -> Fact[RM:13] i32 %264 in [0,33) (!range)
+    -> Fact[KB:14] i32 %264 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:15] i32 %286 in [0,33) (!range)
+    -> Fact[KB:16] i32 %286 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:17] i32 %311 in [0,33) (!range)
+    -> Fact[KB:18] i32 %311 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:19] i32 %224 == i32 %212 || ule(i32 %224, i32 %216) (latch-implied bound, 1-induction)
+    -> Fact[RM:20] i32 %226 in [0,33) (!range)
+    -> Fact[KB:21] i32 %226 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:22] i32 %361 in [0,33) (!range)
+    -> Fact[KB:23] i32 %361 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:24] i32 %431 in [0,33) (!range)
+    -> Fact[KB:25] i32 %431 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:26] i32 %443 in [0,33) (!range)
+    -> Fact[KB:27] i32 %443 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:28] i32 %386 in [0,33) (!range)
+    -> Fact[KB:29] i32 %386 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:30] i32 %476 in [0,33) (!range)
+    -> Fact[KB:31] i32 %476 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:32] i32 %406 in [0,33) (!range)
+    -> Fact[KB:33] i32 %406 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:34] i32 %412 in [0,33) (!range)
+    -> Fact[KB:35] i32 %412 known bits zero=0x4294967264 one=0x0
+    -> Fact[LVI:36] i32 %508 in [0,1) (LVI @ )
+    -> Fact[RM:37] i32 %519 in [0,33) (!range)
+    -> Fact[KB:38] i32 %519 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:39] i32 %528 in [0,33) (!range)
+    -> Fact[KB:40] i32 %528 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:41] i32 %565 in [0,33) (!range)
+    -> Fact[KB:42] i32 %565 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:43] i32 %586 in [0,33) (!range)
+    -> Fact[KB:44] i32 %586 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:45] i32 %595 in [0,33) (!range)
+    -> Fact[KB:46] i32 %595 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:47] i32 %633 in [0,33) (!range)
+    -> Fact[KB:48] i32 %633 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:49] i32 %689 in [0,33) (!range)
+    -> Fact[KB:50] i32 %689 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:51] i32 %660 in [0,33) (!range)
+    -> Fact[KB:52] i32 %660 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:53] i32 %749 in [0,33) (!range)
+    -> Fact[KB:54] i32 %749 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:55] i32 %722 in [0,33) (!range)
+    -> Fact[KB:56] i32 %722 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:57] i32 %701 in [0,33) (!range)
+    -> Fact[KB:58] i32 %701 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:59] i32 %707 in [0,33) (!range)
+    -> Fact[KB:60] i32 %707 known bits zero=0x4294967264 one=0x0
+    -> [heavy] 61 analysis fact(s) on 85 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNKNOWN (Solver gave up) [Query Latency: 15.770759 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %544 = select i1 %542, i1 %543, i1 false
+    -> Guard[1] (false edge of ''):  %539 = extractvalue { i32, i1 } %538, 1, !nosanitize !45
+    -> Guard[2] (true edge of ''):  %509 = icmp eq i32 %508, 0
+    -> Guard[3] (false edge of ''):  %498 = icmp sgt i32 %493, %497
+    -> Guard[4] (false edge of ''):  %494 = extractvalue { i32, i1 } %492, 1, !nosanitize !45
+    -> Guard[5] (false edge of ''):  %488 = extractvalue { i32, i1 } %487, 1, !nosanitize !45
+    -> Guard[6] (false edge of ''):  %374 = extractvalue { i32, i1 } %372, 1, !nosanitize !45
+    -> Guard[7] (false edge of ''):  %333 = icmp eq i32 %330, 0
+    -> Guard[8] (true edge of ''):  %328 = icmp eq i64 %327, %209
+    -> Guard[9] (true edge of ''):  %199 = icmp eq i64 %198, %96
+    -> Guard[10] (false edge of ''):  %179 = icmp ugt i32 %178, %38
+    -> Guard[11] (false edge of ''):  %114 = icmp eq i32 %113, 0
+    -> Guard[12] (true edge of ''):  %62 = icmp ult ptr %61, %17
+    -> Collected 13 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %221 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(12) %69, ptr noundef nonnull align 4 dereferenceable(12) %2, i64 12, i1 false)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %350 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %376 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %511 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %347 = load i32, ptr %74, align 8, !tbaa !53  vs  %546 = load i32, ptr %74, align 8, !tbaa !53
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %876 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %941 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call fastcc void @ZSTD_optLdm_processMatchCandidate(ptr noundef nonnull %12, ptr noundef %46, ptr noundef nonnull %14, i32 noundef %901, i32 noundef %903, i32 noundef %40)
+    -> [go3] 2 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %185 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %185 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %185 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %185 == i64 0 || ne(i64 %185, i64 %96) (latch-implied bound, 1-induction)
+    -> Fact[KB:4] i64 %211 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:5] i64 %211 in [0,4294967295) (SCEV unsigned)
+    -> Fact[SCEV:6] i64 %211 in [0,4294967295) (SCEV signed)
+    -> Fact[SCEVSYM:7] i64 %211 - start(0) <=u BTC((-1 + (1 umax (zext i32 %113 to i64)))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:8] i64 %211 == i64 0 || ne(i64 %211, i64 %209) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:9] i64 %211 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[RM:10] i32 %219 in [0,33) (!range)
+    -> Fact[KB:11] i32 %219 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:12] i32 %260 == i32 %212 || ule(i32 %260, i32 %216) (latch-implied bound, 1-induction)
+    -> Fact[RM:13] i32 %264 in [0,33) (!range)
+    -> Fact[KB:14] i32 %264 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:15] i32 %286 in [0,33) (!range)
+    -> Fact[KB:16] i32 %286 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:17] i32 %311 in [0,33) (!range)
+    -> Fact[KB:18] i32 %311 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:19] i32 %224 == i32 %212 || ule(i32 %224, i32 %216) (latch-implied bound, 1-induction)
+    -> Fact[RM:20] i32 %226 in [0,33) (!range)
+    -> Fact[KB:21] i32 %226 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:22] i32 %361 in [0,33) (!range)
+    -> Fact[KB:23] i32 %361 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:24] i32 %431 in [0,33) (!range)
+    -> Fact[KB:25] i32 %431 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:26] i32 %443 in [0,33) (!range)
+    -> Fact[KB:27] i32 %443 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:28] i32 %386 in [0,33) (!range)
+    -> Fact[KB:29] i32 %386 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:30] i32 %476 in [0,33) (!range)
+    -> Fact[KB:31] i32 %476 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:32] i32 %406 in [0,33) (!range)
+    -> Fact[KB:33] i32 %406 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:34] i32 %412 in [0,33) (!range)
+    -> Fact[KB:35] i32 %412 known bits zero=0x4294967264 one=0x0
+    -> Fact[LVI:36] i32 %508 in [0,1) (LVI @ )
+    -> Fact[RM:37] i32 %519 in [0,33) (!range)
+    -> Fact[KB:38] i32 %519 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:39] i32 %528 in [0,33) (!range)
+    -> Fact[KB:40] i32 %528 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:41] i32 %565 in [0,33) (!range)
+    -> Fact[KB:42] i32 %565 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:43] i32 %586 in [0,33) (!range)
+    -> Fact[KB:44] i32 %586 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:45] i32 %595 in [0,33) (!range)
+    -> Fact[KB:46] i32 %595 known bits zero=0x4294967264 one=0x0
+    -> [heavy] 47 analysis fact(s) on 68 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.174804 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %509 = icmp eq i32 %508, 0
+    -> Guard[1] (false edge of ''):  %498 = icmp sgt i32 %493, %497
+    -> Guard[2] (false edge of ''):  %494 = extractvalue { i32, i1 } %492, 1, !nosanitize !45
+    -> Guard[3] (false edge of ''):  %488 = extractvalue { i32, i1 } %487, 1, !nosanitize !45
+    -> Guard[4] (false edge of ''):  %374 = extractvalue { i32, i1 } %372, 1, !nosanitize !45
+    -> Guard[5] (false edge of ''):  %333 = icmp eq i32 %330, 0
+    -> Guard[6] (true edge of ''):  %328 = icmp eq i64 %327, %209
+    -> Guard[7] (true edge of ''):  %199 = icmp eq i64 %198, %96
+    -> Guard[8] (false edge of ''):  %179 = icmp ugt i32 %178, %38
+    -> Guard[9] (false edge of ''):  %114 = icmp eq i32 %113, 0
+    -> Guard[10] (true edge of ''):  %62 = icmp ult ptr %61, %17
+    -> Collected 11 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %221 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(12) %69, ptr noundef nonnull align 4 dereferenceable(12) %2, i64 12, i1 false)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %350 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %376 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %511 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %347 = load i32, ptr %74, align 8, !tbaa !53  vs  %546 = load i32, ptr %74, align 8, !tbaa !53
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %876 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %941 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call fastcc void @ZSTD_optLdm_processMatchCandidate(ptr noundef nonnull %12, ptr noundef %46, ptr noundef nonnull %14, i32 noundef %901, i32 noundef %903, i32 noundef %40)
+    -> [go3] 2 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %185 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %185 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %185 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %185 == i64 0 || ne(i64 %185, i64 %96) (latch-implied bound, 1-induction)
+    -> Fact[KB:4] i64 %211 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:5] i64 %211 in [0,4294967295) (SCEV unsigned)
+    -> Fact[SCEV:6] i64 %211 in [0,4294967295) (SCEV signed)
+    -> Fact[SCEVSYM:7] i64 %211 - start(0) <=u BTC((-1 + (1 umax (zext i32 %113 to i64)))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:8] i64 %211 == i64 0 || ne(i64 %211, i64 %209) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:9] i64 %211 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[RM:10] i32 %219 in [0,33) (!range)
+    -> Fact[KB:11] i32 %219 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:12] i32 %260 == i32 %212 || ule(i32 %260, i32 %216) (latch-implied bound, 1-induction)
+    -> Fact[RM:13] i32 %264 in [0,33) (!range)
+    -> Fact[KB:14] i32 %264 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:15] i32 %286 in [0,33) (!range)
+    -> Fact[KB:16] i32 %286 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:17] i32 %311 in [0,33) (!range)
+    -> Fact[KB:18] i32 %311 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:19] i32 %224 == i32 %212 || ule(i32 %224, i32 %216) (latch-implied bound, 1-induction)
+    -> Fact[RM:20] i32 %226 in [0,33) (!range)
+    -> Fact[KB:21] i32 %226 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:22] i32 %361 in [0,33) (!range)
+    -> Fact[KB:23] i32 %361 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:24] i32 %431 in [0,33) (!range)
+    -> Fact[KB:25] i32 %431 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:26] i32 %443 in [0,33) (!range)
+    -> Fact[KB:27] i32 %443 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:28] i32 %386 in [0,33) (!range)
+    -> Fact[KB:29] i32 %386 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:30] i32 %476 in [0,33) (!range)
+    -> Fact[KB:31] i32 %476 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:32] i32 %406 in [0,33) (!range)
+    -> Fact[KB:33] i32 %406 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:34] i32 %412 in [0,33) (!range)
+    -> Fact[KB:35] i32 %412 known bits zero=0x4294967264 one=0x0
+    -> Fact[LVI:36] i32 %508 in [0,1) (LVI @ )
+    -> Fact[RM:37] i32 %519 in [0,33) (!range)
+    -> Fact[KB:38] i32 %519 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:39] i32 %528 in [0,33) (!range)
+    -> Fact[KB:40] i32 %528 known bits zero=0x4294967264 one=0x0
+    -> [heavy] 41 analysis fact(s) on 57 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.192307 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %374 = extractvalue { i32, i1 } %372, 1, !nosanitize !45
+    -> Guard[1] (false edge of ''):  %333 = icmp eq i32 %330, 0
+    -> Guard[2] (true edge of ''):  %328 = icmp eq i64 %327, %209
+    -> Guard[3] (true edge of ''):  %199 = icmp eq i64 %198, %96
+    -> Guard[4] (false edge of ''):  %179 = icmp ugt i32 %178, %38
+    -> Guard[5] (false edge of ''):  %114 = icmp eq i32 %113, 0
+    -> Guard[6] (true edge of ''):  %62 = icmp ult ptr %61, %17
+    -> Collected 7 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %221 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(12) %69, ptr noundef nonnull align 4 dereferenceable(12) %2, i64 12, i1 false)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %350 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %376 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %511 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %347 = load i32, ptr %74, align 8, !tbaa !53  vs  %546 = load i32, ptr %74, align 8, !tbaa !53
+         clobber:   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(28) %496, ptr noundef nonnull align 4 dereferenceable(28) %341, i64 28, i1 false), !tbaa.struct !60
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %876 = load i32, ptr %66, align 8, !tbaa !34
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %118 = load i32, ptr %66, align 8, !tbaa !34  vs  %941 = load i32, ptr %66, align 8, !tbaa !34
+         clobber:   call fastcc void @ZSTD_optLdm_processMatchCandidate(ptr noundef nonnull %12, ptr noundef %46, ptr noundef nonnull %14, i32 noundef %901, i32 noundef %903, i32 noundef %40)
+    -> [go3] 2 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %185 known bits zero=0x1 one=0x0
+    -> Fact[SCEV:1] i64 %185 in [0,-1) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %185 in [-9223372036854775808,9223372036854775807) (SCEV signed)
+    -> Fact[PHIINV-hi:3] i64 %185 == i64 0 || ne(i64 %185, i64 %96) (latch-implied bound, 1-induction)
+    -> Fact[KB:4] i64 %211 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:5] i64 %211 in [0,4294967295) (SCEV unsigned)
+    -> Fact[SCEV:6] i64 %211 in [0,4294967295) (SCEV signed)
+    -> Fact[SCEVSYM:7] i64 %211 - start(0) <=u BTC((-1 + (1 umax (zext i32 %113 to i64)))<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:8] i64 %211 == i64 0 || ne(i64 %211, i64 %209) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:9] i64 %211 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[RM:10] i32 %219 in [0,33) (!range)
+    -> Fact[KB:11] i32 %219 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:12] i32 %260 == i32 %212 || ule(i32 %260, i32 %216) (latch-implied bound, 1-induction)
+    -> Fact[RM:13] i32 %264 in [0,33) (!range)
+    -> Fact[KB:14] i32 %264 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:15] i32 %286 in [0,33) (!range)
+    -> Fact[KB:16] i32 %286 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:17] i32 %311 in [0,33) (!range)
+    -> Fact[KB:18] i32 %311 known bits zero=0x4294967264 one=0x0
+    -> Fact[PHIINV-hi:19] i32 %224 == i32 %212 || ule(i32 %224, i32 %216) (latch-implied bound, 1-induction)
+    -> Fact[RM:20] i32 %226 in [0,33) (!range)
+    -> Fact[KB:21] i32 %226 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:22] i32 %361 in [0,33) (!range)
+    -> Fact[KB:23] i32 %361 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:24] i32 %431 in [0,33) (!range)
+    -> Fact[KB:25] i32 %431 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:26] i32 %443 in [0,33) (!range)
+    -> Fact[KB:27] i32 %443 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:28] i32 %386 in [0,33) (!range)
+    -> Fact[KB:29] i32 %386 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:30] i32 %476 in [0,33) (!range)
+    -> Fact[KB:31] i32 %476 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:32] i32 %406 in [0,33) (!range)
+    -> Fact[KB:33] i32 %406 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:34] i32 %412 in [0,33) (!range)
+    -> Fact[KB:35] i32 %412 known bits zero=0x4294967264 one=0x0
+    -> [heavy] 36 analysis fact(s) on 49 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNKNOWN (Solver gave up) [Query Latency: 12.905977 ms]
+  => Total Traps Eliminated: 2
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 21
+  => Total SMT Queries Executed: 21
+  => Total SMT Query Latency: 2.112936e+02 ms
+  => Average SMT Query Latency: 1.006160e+01 ms
+  => Total DFS & SMT Execution Time: 7.168843e+03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_btultra2
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 4.292800e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_btopt_dictMatchState
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.835700e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_btopt_extDict
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.215400e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_btultra_dictMatchState
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.168300e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_compressBlock_btultra_extDict
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 3.309500e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_insertBt1
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 1 boundary value(s)
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.817005 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 3.817005e+00 ms
+  => Average SMT Query Latency: 3.817005e+00 ms
+  => Total DFS & SMT Execution Time: 1.986529e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_count_2segments
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 8.916700e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_opt_getNextMatchAndUpdateSeqStore
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 9.532300e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_rescaleFreqs
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.541320e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_optLdm_processMatchCandidate
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 7.517100e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_btGetAllMatches_noDict_3
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.768680e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_btGetAllMatches_noDict_4
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.386490e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_btGetAllMatches_noDict_5
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.161940e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_btGetAllMatches_noDict_6
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.133330e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_btGetAllMatches_extDict_3
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.269710e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_btGetAllMatches_extDict_4
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.472520e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_btGetAllMatches_extDict_5
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.371910e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_btGetAllMatches_extDict_6
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.371230e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_btGetAllMatches_dictMatchState_3
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.460040e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_btGetAllMatches_dictMatchState_4
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.678720e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_btGetAllMatches_dictMatchState_5
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.680280e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_btGetAllMatches_dictMatchState_6
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.638530e-01 ms
+--------------------------------------------------

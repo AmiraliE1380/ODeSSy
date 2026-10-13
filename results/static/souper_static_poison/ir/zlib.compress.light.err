@@ -1,0 +1,154 @@
+[ODeSSy] 16 trap site(s) across 6 function(s); threads=10
+
+[Z3 Oracle] Analyzing Function: compress2_z
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %43 = icmp eq i32 %42, 0
+    -> Guard[1] (true edge of ''):  %20 = icmp eq i32 %19, 0
+    -> Guard[2] (false edge of ''):  %16 = and i1 %15, %14
+    -> Guard[3] (false edge of ''):  %11 = or i1 %10, %9
+    -> Collected 4 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.247493 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %31 = icmp eq i32 %28, 0
+    -> Guard[1] (true edge of ''):  %20 = icmp eq i32 %19, 0
+    -> Guard[2] (false edge of ''):  %16 = and i1 %15, %14
+    -> Guard[3] (false edge of ''):  %11 = or i1 %10, %9
+    -> Collected 4 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4.377515 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  => Total Traps Eliminated: 1
+  => Total Trap Attempts: 2
+  => Total SMT Queries Executed: 2
+  => Total SMT Query Latency: 1.462501e+01 ms
+  => Average SMT Query Latency: 7.312504e+00 ms
+  => Total DFS & SMT Execution Time: 1.682748e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: compress2
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %41 = icmp eq i32 %40, 0
+    -> Guard[1] (true edge of ''):  %18 = icmp eq i32 %17, 0
+    -> Guard[2] (false edge of ''):  %14 = and i1 %13, %12
+    -> Guard[3] (false edge of ''):  %10 = and i1 %9, %8
+    -> Collected 4 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3.141556 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %29 = icmp eq i32 %26, 0
+    -> Guard[1] (true edge of ''):  %18 = icmp eq i32 %17, 0
+    -> Guard[2] (false edge of ''):  %14 = and i1 %13, %12
+    -> Guard[3] (false edge of ''):  %10 = and i1 %9, %8
+    -> Collected 4 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3.201334 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  => Total Traps Eliminated: 2
+  => Total Trap Attempts: 2
+  => Total SMT Queries Executed: 2
+  => Total SMT Query Latency: 6.342890e+00 ms
+  => Average SMT Query Latency: 3.171445e+00 ms
+  => Total DFS & SMT Execution Time: 1.518666e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: compress_z
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %42 = icmp eq i32 %41, 0
+    -> Guard[1] (true edge of ''):  %19 = icmp eq i32 %18, 0
+    -> Guard[2] (false edge of ''):  %15 = and i1 %14, %13
+    -> Guard[3] (false edge of ''):  %10 = or i1 %9, %8
+    -> Collected 4 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5.491132 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %30 = icmp eq i32 %27, 0
+    -> Guard[1] (true edge of ''):  %19 = icmp eq i32 %18, 0
+    -> Guard[2] (false edge of ''):  %15 = and i1 %14, %13
+    -> Guard[3] (false edge of ''):  %10 = or i1 %9, %8
+    -> Collected 4 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4.366348 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  => Total Traps Eliminated: 2
+  => Total Trap Attempts: 2
+  => Total SMT Queries Executed: 2
+  => Total SMT Query Latency: 9.857480e+00 ms
+  => Average SMT Query Latency: 4.928740e+00 ms
+  => Total DFS & SMT Execution Time: 1.576499e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: compress
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %40 = icmp eq i32 %39, 0
+    -> Guard[1] (true edge of ''):  %17 = icmp eq i32 %16, 0
+    -> Guard[2] (false edge of ''):  %13 = and i1 %12, %11
+    -> Guard[3] (false edge of ''):  %9 = and i1 %8, %7
+    -> Collected 4 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3.369393 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %28 = icmp eq i32 %25, 0
+    -> Guard[1] (true edge of ''):  %17 = icmp eq i32 %16, 0
+    -> Guard[2] (false edge of ''):  %13 = and i1 %12, %11
+    -> Guard[3] (false edge of ''):  %9 = and i1 %8, %7
+    -> Collected 4 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3.076895 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  => Total Traps Eliminated: 2
+  => Total Trap Attempts: 2
+  => Total SMT Queries Executed: 2
+  => Total SMT Query Latency: 6.446288e+00 ms
+  => Average SMT Query Latency: 3.223144e+00 ms
+  => Total DFS & SMT Execution Time: 1.532171e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: compressBound_z
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %15 = extractvalue { i64, i1 } %14, 1, !nosanitize !5
+    -> Guard[1] (false edge of ''):  %10 = extractvalue { i64, i1 } %9, 1, !nosanitize !5
+    -> Guard[2] (false edge of ''):  %4 = extractvalue { i64, i1 } %3, 1, !nosanitize !5
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.468334 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %10 = extractvalue { i64, i1 } %9, 1, !nosanitize !5
+    -> Guard[1] (false edge of ''):  %4 = extractvalue { i64, i1 } %3, 1, !nosanitize !5
+    -> Collected 2 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.248382 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %4 = extractvalue { i64, i1 } %3, 1, !nosanitize !5
+    -> Collected 1 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.970975 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.302960 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 4
+  => Total SMT Queries Executed: 4
+  => Total SMT Query Latency: 1.799065e+01 ms
+  => Average SMT Query Latency: 4.497663e+00 ms
+  => Total DFS & SMT Execution Time: 2.620444e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: compressBound
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %15 = extractvalue { i64, i1 } %14, 1, !nosanitize !5
+    -> Guard[1] (false edge of ''):  %10 = extractvalue { i64, i1 } %9, 1, !nosanitize !5
+    -> Guard[2] (false edge of ''):  %4 = extractvalue { i64, i1 } %3, 1, !nosanitize !5
+    -> Collected 3 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.074637 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %10 = extractvalue { i64, i1 } %9, 1, !nosanitize !5
+    -> Guard[1] (false edge of ''):  %4 = extractvalue { i64, i1 } %3, 1, !nosanitize !5
+    -> Collected 2 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.118619 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %4 = extractvalue { i64, i1 } %3, 1, !nosanitize !5
+    -> Collected 1 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.779381 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.299012 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 4
+  => Total SMT Queries Executed: 4
+  => Total SMT Query Latency: 1.627165e+01 ms
+  => Average SMT Query Latency: 4.067912e+00 ms
+  => Total DFS & SMT Execution Time: 2.152885e+02 ms
+--------------------------------------------------

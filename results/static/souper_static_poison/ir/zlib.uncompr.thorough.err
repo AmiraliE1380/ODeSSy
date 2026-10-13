@@ -1,0 +1,435 @@
+[ODeSSy] 24 trap site(s) across 4 function(s); threads=10 [tier: heavy] [frame] [mv] [narrow] [ind]
+
+[Z3 Oracle] Analyzing Function: uncompress2_z
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %77 = extractvalue { i64, i1 } %76, 1, !nosanitize !16
+    -> Guard[1] (false edge of ''):  %73 = extractvalue { i64, i1 } %71, 1, !nosanitize !16
+    -> Guard[2] (false edge of ''):  %66 = extractvalue { i64, i1 } %64, 1, !nosanitize !16
+    -> Guard[3] (false edge of ''):  %60 = icmp eq i32 %59, 0
+    -> Guard[4] (true edge of ''):  %23 = icmp eq i32 %22, 0
+    -> Guard[5] (false edge of ''):  %18 = and i1 %17, %16
+    -> Guard[6] (false edge of ''):  %13 = or i1 %12, %11
+    -> Guard[7] (false edge of ''):  %6 = icmp eq ptr %3, null
+    -> Collected 8 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %48 = load i32, ptr %20, align 8, !tbaa !13  vs  %62 = load i32, ptr %20, align 8, !tbaa !13
+         clobber:   %59 = call i32 @inflate(ptr noundef nonnull %5, i32 noundef 0) #6
+    -> Frame refused (clobber between loads):  %8 = load i64, ptr %3, align 8, !tbaa !5  vs  %75 = load i64, ptr %3, align 8, !tbaa !5
+         clobber:   %59 = call i32 @inflate(ptr noundef nonnull %5, i32 noundef 0) #6
+    -> Frame refused (clobber between loads):  %15 = load i64, ptr %1, align 8, !tbaa !5  vs  %80 = load i64, ptr %1, align 8, !tbaa !5
+         clobber:   store i64 %79, ptr %3, align 8, !tbaa !5
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %59 in [1,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 17 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 32.336655 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %73 = extractvalue { i64, i1 } %71, 1, !nosanitize !16
+    -> Guard[1] (false edge of ''):  %66 = extractvalue { i64, i1 } %64, 1, !nosanitize !16
+    -> Guard[2] (false edge of ''):  %60 = icmp eq i32 %59, 0
+    -> Guard[3] (true edge of ''):  %23 = icmp eq i32 %22, 0
+    -> Guard[4] (false edge of ''):  %18 = and i1 %17, %16
+    -> Guard[5] (false edge of ''):  %13 = or i1 %12, %11
+    -> Guard[6] (false edge of ''):  %6 = icmp eq ptr %3, null
+    -> Collected 7 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %48 = load i32, ptr %20, align 8, !tbaa !13  vs  %62 = load i32, ptr %20, align 8, !tbaa !13
+         clobber:   %59 = call i32 @inflate(ptr noundef nonnull %5, i32 noundef 0) #6
+    -> Frame refused (clobber between loads):  %8 = load i64, ptr %3, align 8, !tbaa !5  vs  %75 = load i64, ptr %3, align 8, !tbaa !5
+         clobber:   %59 = call i32 @inflate(ptr noundef nonnull %5, i32 noundef 0) #6
+    -> Frame refused (clobber between loads):  %15 = load i64, ptr %1, align 8, !tbaa !5  vs  %80 = load i64, ptr %1, align 8, !tbaa !5
+         clobber:   store i64 %79, ptr %3, align 8, !tbaa !5
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %59 in [1,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 16 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 27.253604 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %49 = icmp eq i32 %48, 0
+    -> Guard[1] (true edge of ''):  %23 = icmp eq i32 %22, 0
+    -> Guard[2] (false edge of ''):  %18 = and i1 %17, %16
+    -> Guard[3] (false edge of ''):  %13 = or i1 %12, %11
+    -> Guard[4] (false edge of ''):  %6 = icmp eq ptr %3, null
+    -> Collected 5 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %48 = load i32, ptr %20, align 8, !tbaa !13  vs  %62 = load i32, ptr %20, align 8, !tbaa !13
+         clobber:   %59 = call i32 @inflate(ptr noundef nonnull %5, i32 noundef 0) #6
+    -> Frame refused (clobber between loads):  %8 = load i64, ptr %3, align 8, !tbaa !5  vs  %75 = load i64, ptr %3, align 8, !tbaa !5
+         clobber:   %59 = call i32 @inflate(ptr noundef nonnull %5, i32 noundef 0) #6
+    -> Frame refused (clobber between loads):  %15 = load i64, ptr %1, align 8, !tbaa !5  vs  %80 = load i64, ptr %1, align 8, !tbaa !5
+         clobber:   store i64 %79, ptr %3, align 8, !tbaa !5
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %48 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 10 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4.542948 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %37 = icmp eq i32 %34, 0
+    -> Guard[1] (true edge of ''):  %23 = icmp eq i32 %22, 0
+    -> Guard[2] (false edge of ''):  %18 = and i1 %17, %16
+    -> Guard[3] (false edge of ''):  %13 = or i1 %12, %11
+    -> Guard[4] (false edge of ''):  %6 = icmp eq ptr %3, null
+    -> Collected 5 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %8 = load i64, ptr %3, align 8, !tbaa !5  vs  %75 = load i64, ptr %3, align 8, !tbaa !5
+         clobber:   %59 = call i32 @inflate(ptr noundef nonnull %5, i32 noundef 0) #6
+    -> Frame refused (clobber between loads):  %15 = load i64, ptr %1, align 8, !tbaa !5  vs  %80 = load i64, ptr %1, align 8, !tbaa !5
+         clobber:   store i64 %79, ptr %3, align 8, !tbaa !5
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %34 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 10 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4.171661 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %66 = extractvalue { i64, i1 } %64, 1, !nosanitize !16
+    -> Guard[1] (false edge of ''):  %60 = icmp eq i32 %59, 0
+    -> Guard[2] (true edge of ''):  %23 = icmp eq i32 %22, 0
+    -> Guard[3] (false edge of ''):  %18 = and i1 %17, %16
+    -> Guard[4] (false edge of ''):  %13 = or i1 %12, %11
+    -> Guard[5] (false edge of ''):  %6 = icmp eq ptr %3, null
+    -> Collected 6 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %48 = load i32, ptr %20, align 8, !tbaa !13  vs  %62 = load i32, ptr %20, align 8, !tbaa !13
+         clobber:   %59 = call i32 @inflate(ptr noundef nonnull %5, i32 noundef 0) #6
+    -> Frame refused (clobber between loads):  %8 = load i64, ptr %3, align 8, !tbaa !5  vs  %75 = load i64, ptr %3, align 8, !tbaa !5
+         clobber:   %59 = call i32 @inflate(ptr noundef nonnull %5, i32 noundef 0) #6
+    -> Frame refused (clobber between loads):  %15 = load i64, ptr %1, align 8, !tbaa !5  vs  %80 = load i64, ptr %1, align 8, !tbaa !5
+         clobber:   store i64 %79, ptr %3, align 8, !tbaa !5
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %59 in [1,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 15 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 22.258609 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %60 = icmp eq i32 %59, 0
+    -> Guard[1] (true edge of ''):  %23 = icmp eq i32 %22, 0
+    -> Guard[2] (false edge of ''):  %18 = and i1 %17, %16
+    -> Guard[3] (false edge of ''):  %13 = or i1 %12, %11
+    -> Guard[4] (false edge of ''):  %6 = icmp eq ptr %3, null
+    -> Collected 5 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %48 = load i32, ptr %20, align 8, !tbaa !13  vs  %62 = load i32, ptr %20, align 8, !tbaa !13
+         clobber:   %59 = call i32 @inflate(ptr noundef nonnull %5, i32 noundef 0) #6
+    -> Frame refused (clobber between loads):  %8 = load i64, ptr %3, align 8, !tbaa !5  vs  %75 = load i64, ptr %3, align 8, !tbaa !5
+         clobber:   %59 = call i32 @inflate(ptr noundef nonnull %5, i32 noundef 0) #6
+    -> Frame refused (clobber between loads):  %15 = load i64, ptr %1, align 8, !tbaa !5  vs  %80 = load i64, ptr %1, align 8, !tbaa !5
+         clobber:   store i64 %79, ptr %3, align 8, !tbaa !5
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %59 in [1,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 12 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 16.578653 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 2
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 6
+  => Total SMT Queries Executed: 6
+  => Total SMT Query Latency: 1.071421e+02 ms
+  => Average SMT Query Latency: 1.785702e+01 ms
+  => Total DFS & SMT Execution Time: 5.342218e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: uncompress2
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %72 = extractvalue { i64, i1 } %71, 1, !nosanitize !16
+    -> Guard[1] (false edge of ''):  %69 = extractvalue { i64, i1 } %67, 1, !nosanitize !16
+    -> Guard[2] (false edge of ''):  %62 = extractvalue { i64, i1 } %60, 1, !nosanitize !16
+    -> Guard[3] (false edge of ''):  %56 = icmp eq i32 %55, 0
+    -> Guard[4] (true edge of ''):  %19 = icmp eq i32 %18, 0
+    -> Guard[5] (false edge of ''):  %14 = and i1 %13, %12
+    -> Guard[6] (false edge of ''):  %10 = and i1 %9, %8
+    -> Collected 7 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %44 = load i32, ptr %16, align 8, !tbaa !13  vs  %58 = load i32, ptr %16, align 8, !tbaa !13
+         clobber:   %55 = call i32 @inflate(ptr noundef nonnull %5, i32 noundef 0) #6
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %55 in [1,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 13 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 42.158867 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %69 = extractvalue { i64, i1 } %67, 1, !nosanitize !16
+    -> Guard[1] (false edge of ''):  %62 = extractvalue { i64, i1 } %60, 1, !nosanitize !16
+    -> Guard[2] (false edge of ''):  %56 = icmp eq i32 %55, 0
+    -> Guard[3] (true edge of ''):  %19 = icmp eq i32 %18, 0
+    -> Guard[4] (false edge of ''):  %14 = and i1 %13, %12
+    -> Guard[5] (false edge of ''):  %10 = and i1 %9, %8
+    -> Collected 6 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %44 = load i32, ptr %16, align 8, !tbaa !13  vs  %58 = load i32, ptr %16, align 8, !tbaa !13
+         clobber:   %55 = call i32 @inflate(ptr noundef nonnull %5, i32 noundef 0) #6
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %55 in [1,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 13 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 24.630405 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %45 = icmp eq i32 %44, 0
+    -> Guard[1] (true edge of ''):  %19 = icmp eq i32 %18, 0
+    -> Guard[2] (false edge of ''):  %14 = and i1 %13, %12
+    -> Guard[3] (false edge of ''):  %10 = and i1 %9, %8
+    -> Collected 4 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %44 = load i32, ptr %16, align 8, !tbaa !13  vs  %58 = load i32, ptr %16, align 8, !tbaa !13
+         clobber:   %55 = call i32 @inflate(ptr noundef nonnull %5, i32 noundef 0) #6
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %44 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 8 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5.692186 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %33 = icmp eq i32 %30, 0
+    -> Guard[1] (true edge of ''):  %19 = icmp eq i32 %18, 0
+    -> Guard[2] (false edge of ''):  %14 = and i1 %13, %12
+    -> Guard[3] (false edge of ''):  %10 = and i1 %9, %8
+    -> Collected 4 dominating context guard(s).
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %30 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 8 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5.888619 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %62 = extractvalue { i64, i1 } %60, 1, !nosanitize !16
+    -> Guard[1] (false edge of ''):  %56 = icmp eq i32 %55, 0
+    -> Guard[2] (true edge of ''):  %19 = icmp eq i32 %18, 0
+    -> Guard[3] (false edge of ''):  %14 = and i1 %13, %12
+    -> Guard[4] (false edge of ''):  %10 = and i1 %9, %8
+    -> Collected 5 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %44 = load i32, ptr %16, align 8, !tbaa !13  vs  %58 = load i32, ptr %16, align 8, !tbaa !13
+         clobber:   %55 = call i32 @inflate(ptr noundef nonnull %5, i32 noundef 0) #6
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %55 in [1,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 13 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.896820 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %56 = icmp eq i32 %55, 0
+    -> Guard[1] (true edge of ''):  %19 = icmp eq i32 %18, 0
+    -> Guard[2] (false edge of ''):  %14 = and i1 %13, %12
+    -> Guard[3] (false edge of ''):  %10 = and i1 %9, %8
+    -> Collected 4 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %44 = load i32, ptr %16, align 8, !tbaa !13  vs  %58 = load i32, ptr %16, align 8, !tbaa !13
+         clobber:   %55 = call i32 @inflate(ptr noundef nonnull %5, i32 noundef 0) #6
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %55 in [1,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 10 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.289555 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 2
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 6
+  => Total SMT Queries Executed: 6
+  => Total SMT Query Latency: 1.075565e+02 ms
+  => Average SMT Query Latency: 1.792608e+01 ms
+  => Total DFS & SMT Execution Time: 9.929981e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: uncompress_z
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %72 = icmp ugt i64 %62, %3
+    -> Guard[1] (false edge of ''):  %70 = extractvalue { i64, i1 } %68, 1, !nosanitize !16
+    -> Guard[2] (false edge of ''):  %63 = extractvalue { i64, i1 } %61, 1, !nosanitize !16
+    -> Guard[3] (false edge of ''):  %57 = icmp eq i32 %56, 0
+    -> Guard[4] (true edge of ''):  %20 = icmp eq i32 %19, 0
+    -> Guard[5] (false edge of ''):  %15 = and i1 %14, %13
+    -> Guard[6] (false edge of ''):  %10 = or i1 %9, %8
+    -> Collected 7 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %45 = load i32, ptr %17, align 8, !tbaa !13  vs  %59 = load i32, ptr %17, align 8, !tbaa !13
+         clobber:   %56 = call i32 @inflate(ptr noundef nonnull %5, i32 noundef 0) #6
+    -> Frame refused (clobber between loads):  %12 = load i64, ptr %1, align 8, !tbaa !5  vs  %74 = load i64, ptr %1, align 8, !tbaa !5
+         clobber:   %56 = call i32 @inflate(ptr noundef nonnull %5, i32 noundef 0) #6
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %56 in [1,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 15 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 18.702003 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %70 = extractvalue { i64, i1 } %68, 1, !nosanitize !16
+    -> Guard[1] (false edge of ''):  %63 = extractvalue { i64, i1 } %61, 1, !nosanitize !16
+    -> Guard[2] (false edge of ''):  %57 = icmp eq i32 %56, 0
+    -> Guard[3] (true edge of ''):  %20 = icmp eq i32 %19, 0
+    -> Guard[4] (false edge of ''):  %15 = and i1 %14, %13
+    -> Guard[5] (false edge of ''):  %10 = or i1 %9, %8
+    -> Collected 6 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %45 = load i32, ptr %17, align 8, !tbaa !13  vs  %59 = load i32, ptr %17, align 8, !tbaa !13
+         clobber:   %56 = call i32 @inflate(ptr noundef nonnull %5, i32 noundef 0) #6
+    -> Frame refused (clobber between loads):  %12 = load i64, ptr %1, align 8, !tbaa !5  vs  %74 = load i64, ptr %1, align 8, !tbaa !5
+         clobber:   %56 = call i32 @inflate(ptr noundef nonnull %5, i32 noundef 0) #6
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %56 in [1,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 14 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 31.110161 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %46 = icmp eq i32 %45, 0
+    -> Guard[1] (true edge of ''):  %20 = icmp eq i32 %19, 0
+    -> Guard[2] (false edge of ''):  %15 = and i1 %14, %13
+    -> Guard[3] (false edge of ''):  %10 = or i1 %9, %8
+    -> Collected 4 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %45 = load i32, ptr %17, align 8, !tbaa !13  vs  %59 = load i32, ptr %17, align 8, !tbaa !13
+         clobber:   %56 = call i32 @inflate(ptr noundef nonnull %5, i32 noundef 0) #6
+    -> Frame refused (clobber between loads):  %12 = load i64, ptr %1, align 8, !tbaa !5  vs  %74 = load i64, ptr %1, align 8, !tbaa !5
+         clobber:   %56 = call i32 @inflate(ptr noundef nonnull %5, i32 noundef 0) #6
+    -> Fact[LVI:0] i32 %45 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 6.937244 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %34 = icmp eq i32 %31, 0
+    -> Guard[1] (true edge of ''):  %20 = icmp eq i32 %19, 0
+    -> Guard[2] (false edge of ''):  %15 = and i1 %14, %13
+    -> Guard[3] (false edge of ''):  %10 = or i1 %9, %8
+    -> Collected 4 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %12 = load i64, ptr %1, align 8, !tbaa !5  vs  %74 = load i64, ptr %1, align 8, !tbaa !5
+         clobber:   %56 = call i32 @inflate(ptr noundef nonnull %5, i32 noundef 0) #6
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %31 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 8.037055 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %63 = extractvalue { i64, i1 } %61, 1, !nosanitize !16
+    -> Guard[1] (false edge of ''):  %57 = icmp eq i32 %56, 0
+    -> Guard[2] (true edge of ''):  %20 = icmp eq i32 %19, 0
+    -> Guard[3] (false edge of ''):  %15 = and i1 %14, %13
+    -> Guard[4] (false edge of ''):  %10 = or i1 %9, %8
+    -> Collected 5 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %45 = load i32, ptr %17, align 8, !tbaa !13  vs  %59 = load i32, ptr %17, align 8, !tbaa !13
+         clobber:   %56 = call i32 @inflate(ptr noundef nonnull %5, i32 noundef 0) #6
+    -> Frame refused (clobber between loads):  %12 = load i64, ptr %1, align 8, !tbaa !5  vs  %74 = load i64, ptr %1, align 8, !tbaa !5
+         clobber:   %56 = call i32 @inflate(ptr noundef nonnull %5, i32 noundef 0) #6
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %56 in [1,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 14 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 21.812912 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %57 = icmp eq i32 %56, 0
+    -> Guard[1] (true edge of ''):  %20 = icmp eq i32 %19, 0
+    -> Guard[2] (false edge of ''):  %15 = and i1 %14, %13
+    -> Guard[3] (false edge of ''):  %10 = or i1 %9, %8
+    -> Collected 4 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %45 = load i32, ptr %17, align 8, !tbaa !13  vs  %59 = load i32, ptr %17, align 8, !tbaa !13
+         clobber:   %56 = call i32 @inflate(ptr noundef nonnull %5, i32 noundef 0) #6
+    -> Frame refused (clobber between loads):  %12 = load i64, ptr %1, align 8, !tbaa !5  vs  %74 = load i64, ptr %1, align 8, !tbaa !5
+         clobber:   %56 = call i32 @inflate(ptr noundef nonnull %5, i32 noundef 0) #6
+    -> Fact[LVI:0] i32 %56 in [1,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 11 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 17.743192 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 2
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 6
+  => Total SMT Queries Executed: 6
+  => Total SMT Query Latency: 1.043426e+02 ms
+  => Average SMT Query Latency: 1.739043e+01 ms
+  => Total DFS & SMT Execution Time: 9.473242e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: uncompress
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %70 = icmp ugt i64 %60, %3
+    -> Guard[1] (false edge of ''):  %68 = extractvalue { i64, i1 } %66, 1, !nosanitize !16
+    -> Guard[2] (false edge of ''):  %61 = extractvalue { i64, i1 } %59, 1, !nosanitize !16
+    -> Guard[3] (false edge of ''):  %55 = icmp eq i32 %54, 0
+    -> Guard[4] (true edge of ''):  %18 = icmp eq i32 %17, 0
+    -> Guard[5] (false edge of ''):  %13 = and i1 %12, %11
+    -> Guard[6] (false edge of ''):  %9 = and i1 %8, %7
+    -> Collected 7 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %43 = load i32, ptr %15, align 8, !tbaa !13  vs  %57 = load i32, ptr %15, align 8, !tbaa !13
+         clobber:   %54 = call i32 @inflate(ptr noundef nonnull %5, i32 noundef 0) #6
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %54 in [1,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 13 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 43.923040 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %68 = extractvalue { i64, i1 } %66, 1, !nosanitize !16
+    -> Guard[1] (false edge of ''):  %61 = extractvalue { i64, i1 } %59, 1, !nosanitize !16
+    -> Guard[2] (false edge of ''):  %55 = icmp eq i32 %54, 0
+    -> Guard[3] (true edge of ''):  %18 = icmp eq i32 %17, 0
+    -> Guard[4] (false edge of ''):  %13 = and i1 %12, %11
+    -> Guard[5] (false edge of ''):  %9 = and i1 %8, %7
+    -> Collected 6 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %43 = load i32, ptr %15, align 8, !tbaa !13  vs  %57 = load i32, ptr %15, align 8, !tbaa !13
+         clobber:   %54 = call i32 @inflate(ptr noundef nonnull %5, i32 noundef 0) #6
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %54 in [1,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 13 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 29.693345 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %44 = icmp eq i32 %43, 0
+    -> Guard[1] (true edge of ''):  %18 = icmp eq i32 %17, 0
+    -> Guard[2] (false edge of ''):  %13 = and i1 %12, %11
+    -> Guard[3] (false edge of ''):  %9 = and i1 %8, %7
+    -> Collected 4 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %43 = load i32, ptr %15, align 8, !tbaa !13  vs  %57 = load i32, ptr %15, align 8, !tbaa !13
+         clobber:   %54 = call i32 @inflate(ptr noundef nonnull %5, i32 noundef 0) #6
+    -> Fact[LVI:0] i32 %43 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 8 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5.077366 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %32 = icmp eq i32 %29, 0
+    -> Guard[1] (true edge of ''):  %18 = icmp eq i32 %17, 0
+    -> Guard[2] (false edge of ''):  %13 = and i1 %12, %11
+    -> Guard[3] (false edge of ''):  %9 = and i1 %8, %7
+    -> Collected 4 dominating context guard(s).
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %29 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 8 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5.242076 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %61 = extractvalue { i64, i1 } %59, 1, !nosanitize !16
+    -> Guard[1] (false edge of ''):  %55 = icmp eq i32 %54, 0
+    -> Guard[2] (true edge of ''):  %18 = icmp eq i32 %17, 0
+    -> Guard[3] (false edge of ''):  %13 = and i1 %12, %11
+    -> Guard[4] (false edge of ''):  %9 = and i1 %8, %7
+    -> Collected 5 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %43 = load i32, ptr %15, align 8, !tbaa !13  vs  %57 = load i32, ptr %15, align 8, !tbaa !13
+         clobber:   %54 = call i32 @inflate(ptr noundef nonnull %5, i32 noundef 0) #6
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %54 in [1,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 13 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.220625 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %55 = icmp eq i32 %54, 0
+    -> Guard[1] (true edge of ''):  %18 = icmp eq i32 %17, 0
+    -> Guard[2] (false edge of ''):  %13 = and i1 %12, %11
+    -> Guard[3] (false edge of ''):  %9 = and i1 %8, %7
+    -> Collected 4 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %43 = load i32, ptr %15, align 8, !tbaa !13  vs  %57 = load i32, ptr %15, align 8, !tbaa !13
+         clobber:   %54 = call i32 @inflate(ptr noundef nonnull %5, i32 noundef 0) #6
+    -> Fact[LVI:0] i32 %54 in [1,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 10 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 17.659035 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 2
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 6
+  => Total SMT Queries Executed: 6
+  => Total SMT Query Latency: 1.158155e+02 ms
+  => Average SMT Query Latency: 1.930258e+01 ms
+  => Total DFS & SMT Execution Time: 1.014403e+03 ms
+--------------------------------------------------

@@ -1,0 +1,396 @@
+[ODeSSy] 6 trap site(s) across 20 function(s); threads=10 [tier: heavy] [frame] [mv] [narrow]
+
+[Z3 Oracle] Analyzing Function: ZSTD_getcBlockSize
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.091176e+00 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decodeLiteralsBlock_wrapper
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 8.240000e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decodeLiteralsBlock
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.130100e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_buildFSETable
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.457070e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_buildFSETable_body_bmi2
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.006112e+00 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decodeSeqHeaders
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 7.368200e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_buildSeqTable
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 8.217300e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decompressBlock_internal
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 7.719800e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decompressSequencesLong
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %1551 = select i1 %1549, i1 %1550, i1 false
+    -> Guard[1] (false edge of ''):  %56 = icmp eq i64 %4, 0
+    -> Guard[2] (false edge of ''):  %37 = icmp eq i32 %5, 0
+    -> Guard[3] (true edge of ''):  %12 = icmp eq i32 %11, 0
+    -> Collected 4 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %17 = load i32, ptr %16, align 8, !tbaa !18  vs  %798 = load i32, ptr %16, align 8, !tbaa !18
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %805 = load i64, ptr %804, align 8  vs  %966 = load i64, ptr %804, align 8, !tbaa !81
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %17 = load i32, ptr %16, align 8, !tbaa !18  vs  %1575 = load i32, ptr %16, align 8, !tbaa !18
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %17 = load i32, ptr %16, align 8, !tbaa !18  vs  %1584 = load i32, ptr %16, align 8, !tbaa !18
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> [go3] 106 leaf-closure instruction(s) encoded
+    -> Fact[RM:0] i32 %121 in [0,33) (!range)
+    -> Fact[KB:1] i32 %121 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:2] i32 %129 in [0,33) (!range)
+    -> Fact[KB:3] i32 %129 known bits zero=0x4294967264 one=0x0
+    -> Fact[KB:4] i64 %311 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:5] i64 %311 in [0,8) (SCEV unsigned)
+    -> Fact[SCEV:6] i64 %311 in [0,8) (SCEV signed)
+    -> Fact[PHIINV-hi:7] i64 %311 == i64 0 || ne(i64 %311, i64 %291) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:8] i64 %311 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEVSYM:9] i32 %560 - start(%296) <=u BTC((-1 + (-1 * %296) + %5)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:10] i32 %560 == i32 %296 || ne(i32 %560, i32 %5) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:11] i32 %560 >=s i32 %296 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:12] i64 %1475 known bits zero=0x3 one=0x0
+    -> Fact[SCEV:13] i64 %1475 in [0,-3) (SCEV unsigned)
+    -> Fact[SCEV:14] i64 %1475 in [-9223372036854775808,9223372036854775805) (SCEV signed)
+    -> Fact[PHIINV-hi:15] i64 %1475 == i64 0 || ne(i64 %1475, i64 %1469) (latch-implied bound, 1-induction)
+    -> Fact[KB:16] i64 %1294 known bits zero=0x3 one=0x0
+    -> Fact[SCEV:17] i64 %1294 in [0,-3) (SCEV unsigned)
+    -> Fact[SCEV:18] i64 %1294 in [-9223372036854775808,9223372036854775805) (SCEV signed)
+    -> Fact[PHIINV-hi:19] i64 %1294 == i64 0 || ne(i64 %1294, i64 %1288) (latch-implied bound, 1-induction)
+    -> Fact[KB:20] i64 %925 known bits zero=0x31 one=0x0
+    -> Fact[SCEV:21] i64 %925 in [0,-31) (SCEV unsigned)
+    -> Fact[SCEV:22] i64 %925 in [-9223372036854775808,9223372036854775777) (SCEV signed)
+    -> Fact[PHIINV-hi:23] i64 %925 == i64 0 || ne(i64 %925, i64 %923) (latch-implied bound, 1-induction)
+    -> Fact[KB:24] i64 %947 known bits zero=0x7 one=0x0
+    -> Fact[SCEV:25] i64 %947 in [0,-7) (SCEV unsigned)
+    -> Fact[SCEV:26] i64 %947 in [-9223372036854775808,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-hi:27] i64 %947 == i64 %942 || ne(i64 %947, i64 %943) (latch-implied bound, 1-induction)
+    -> Fact[KB:28] i64 %840 known bits zero=0x31 one=0x0
+    -> Fact[SCEV:29] i64 %840 in [0,-31) (SCEV unsigned)
+    -> Fact[SCEV:30] i64 %840 in [-9223372036854775808,9223372036854775777) (SCEV signed)
+    -> Fact[PHIINV-hi:31] i64 %840 == i64 0 || ne(i64 %840, i64 %838) (latch-implied bound, 1-induction)
+    -> Fact[KB:32] i64 %862 known bits zero=0x7 one=0x0
+    -> Fact[SCEV:33] i64 %862 in [0,-7) (SCEV unsigned)
+    -> Fact[SCEV:34] i64 %862 in [-9223372036854775808,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-hi:35] i64 %862 == i64 %857 || ne(i64 %862, i64 %858) (latch-implied bound, 1-induction)
+    -> Fact[KB:36] i64 %1106 known bits zero=0x3 one=0x0
+    -> Fact[SCEV:37] i64 %1106 in [0,-3) (SCEV unsigned)
+    -> Fact[SCEV:38] i64 %1106 in [-9223372036854775808,9223372036854775805) (SCEV signed)
+    -> Fact[PHIINV-hi:39] i64 %1106 == i64 0 || ne(i64 %1106, i64 %1100) (latch-implied bound, 1-induction)
+    -> Fact[SCEVEQ:40] i32 %296 in phi image (2 incoming)
+    -> [heavy] 41 analysis fact(s) on 190 boundary value(s)
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.206136 ms]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.020614e+01 ms
+  => Average SMT Query Latency: 1.020614e+01 ms
+  => Total DFS & SMT Execution Time: 3.882119e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decompressSequencesSplitLitBuffer
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %698 = icmp ult i64 %697, -119
+    -> Guard[1] (false edge of ''):  %42 = icmp eq i64 %4, 0
+    -> Guard[2] (false edge of ''):  %30 = icmp eq i32 %5, 0
+    -> Guard[3] (true edge of ''):  %14 = icmp eq i32 %13, 0
+    -> Collected 4 dominating context guard(s).
+    -> [go3] 67 leaf-closure instruction(s) encoded
+    -> Fact[PHIINV-hi:0] i32 %274 == i32 %5 || ne(i32 %274, i32 0) (latch-implied bound, 1-induction)
+    -> Fact[KB:1] i64 %657 known bits zero=0x3 one=0x0
+    -> Fact[SCEV:2] i64 %657 in [0,-3) (SCEV unsigned)
+    -> Fact[SCEV:3] i64 %657 in [-9223372036854775808,9223372036854775805) (SCEV signed)
+    -> Fact[PHIINV-hi:4] i64 %657 == i64 0 || ne(i64 %657, i64 %651) (latch-implied bound, 1-induction)
+    -> [heavy] 5 analysis fact(s) on 63 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.302540 ms]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.030254e+01 ms
+  => Average SMT Query Latency: 1.030254e+01 ms
+  => Total DFS & SMT Execution Time: 1.809602e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decompressSequences
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %696 = icmp ult i64 %695, -119
+    -> Guard[1] (false edge of ''):  %50 = icmp eq i64 %4, 0
+    -> Guard[2] (false edge of ''):  %38 = icmp eq i32 %5, 0
+    -> Guard[3] (true edge of ''):  %12 = icmp eq i32 %11, 0
+    -> Collected 4 dominating context guard(s).
+    -> [go3] 67 leaf-closure instruction(s) encoded
+    -> Fact[PHIINV-hi:0] i32 %283 == i32 %5 || ne(i32 %283, i32 0) (latch-implied bound, 1-induction)
+    -> Fact[KB:1] i64 %655 known bits zero=0x3 one=0x0
+    -> Fact[SCEV:2] i64 %655 in [0,-3) (SCEV unsigned)
+    -> Fact[SCEV:3] i64 %655 in [-9223372036854775808,9223372036854775805) (SCEV signed)
+    -> Fact[PHIINV-hi:4] i64 %655 == i64 0 || ne(i64 %655, i64 %649) (latch-implied bound, 1-induction)
+    -> [heavy] 5 analysis fact(s) on 53 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.154513 ms]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.015451e+01 ms
+  => Average SMT Query Latency: 1.015451e+01 ms
+  => Total DFS & SMT Execution Time: 1.760466e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_checkContinuity
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.974000e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decompressBlock_deprecated
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 4.741000e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decompressBlock
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 5.363600e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decompressSequencesLong_bmi2
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %1542 = select i1 %1540, i1 %1541, i1 false
+    -> Guard[1] (false edge of ''):  %50 = icmp eq i64 %4, 0
+    -> Guard[2] (false edge of ''):  %31 = icmp eq i32 %5, 0
+    -> Collected 3 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %11 = load i32, ptr %10, align 8, !tbaa !5  vs  %790 = load i32, ptr %10, align 8, !tbaa !5
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %797 = load i64, ptr %796, align 8, !tbaa !71  vs  %958 = load i64, ptr %796, align 8, !tbaa !71
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %797 = load i64, ptr %796, align 8, !tbaa !71  vs  %962 = load i64, ptr %796, align 8
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %11 = load i32, ptr %10, align 8, !tbaa !5  vs  %1564 = load i32, ptr %10, align 8, !tbaa !5
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %11 = load i32, ptr %10, align 8, !tbaa !5  vs  %1573 = load i32, ptr %10, align 8, !tbaa !5
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> [go3] 104 leaf-closure instruction(s) encoded
+    -> Fact[RM:0] i32 %115 in [0,33) (!range)
+    -> Fact[KB:1] i32 %115 known bits zero=0x4294967264 one=0x0
+    -> Fact[RM:2] i32 %123 in [0,33) (!range)
+    -> Fact[KB:3] i32 %123 known bits zero=0x4294967264 one=0x0
+    -> Fact[KB:4] i64 %303 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:5] i64 %303 in [0,8) (SCEV unsigned)
+    -> Fact[SCEV:6] i64 %303 in [0,8) (SCEV signed)
+    -> Fact[PHIINV-hi:7] i64 %303 == i64 0 || ne(i64 %303, i64 %285) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:8] i64 %303 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEVSYM:9] i32 %552 - start(%290) <=u BTC((-1 + (-1 * %290) + %5)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:10] i32 %552 == i32 %290 || ne(i32 %552, i32 %5) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:11] i32 %552 >=s i32 %290 (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:12] i64 %1466 known bits zero=0x3 one=0x0
+    -> Fact[SCEV:13] i64 %1466 in [0,-3) (SCEV unsigned)
+    -> Fact[SCEV:14] i64 %1466 in [-9223372036854775808,9223372036854775805) (SCEV signed)
+    -> Fact[PHIINV-hi:15] i64 %1466 == i64 0 || ne(i64 %1466, i64 %1460) (latch-implied bound, 1-induction)
+    -> Fact[KB:16] i64 %1289 known bits zero=0x3 one=0x0
+    -> Fact[SCEV:17] i64 %1289 in [0,-3) (SCEV unsigned)
+    -> Fact[SCEV:18] i64 %1289 in [-9223372036854775808,9223372036854775805) (SCEV signed)
+    -> Fact[PHIINV-hi:19] i64 %1289 == i64 0 || ne(i64 %1289, i64 %1283) (latch-implied bound, 1-induction)
+    -> Fact[KB:20] i64 %917 known bits zero=0x31 one=0x0
+    -> Fact[SCEV:21] i64 %917 in [0,-31) (SCEV unsigned)
+    -> Fact[SCEV:22] i64 %917 in [-9223372036854775808,9223372036854775777) (SCEV signed)
+    -> Fact[PHIINV-hi:23] i64 %917 == i64 0 || ne(i64 %917, i64 %915) (latch-implied bound, 1-induction)
+    -> Fact[KB:24] i64 %939 known bits zero=0x7 one=0x0
+    -> Fact[SCEV:25] i64 %939 in [0,-7) (SCEV unsigned)
+    -> Fact[SCEV:26] i64 %939 in [-9223372036854775808,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-hi:27] i64 %939 == i64 %934 || ne(i64 %939, i64 %935) (latch-implied bound, 1-induction)
+    -> Fact[KB:28] i64 %832 known bits zero=0x31 one=0x0
+    -> Fact[SCEV:29] i64 %832 in [0,-31) (SCEV unsigned)
+    -> Fact[SCEV:30] i64 %832 in [-9223372036854775808,9223372036854775777) (SCEV signed)
+    -> Fact[PHIINV-hi:31] i64 %832 == i64 0 || ne(i64 %832, i64 %830) (latch-implied bound, 1-induction)
+    -> Fact[KB:32] i64 %854 known bits zero=0x7 one=0x0
+    -> Fact[SCEV:33] i64 %854 in [0,-7) (SCEV unsigned)
+    -> Fact[SCEV:34] i64 %854 in [-9223372036854775808,9223372036854775801) (SCEV signed)
+    -> Fact[PHIINV-hi:35] i64 %854 == i64 %849 || ne(i64 %854, i64 %850) (latch-implied bound, 1-induction)
+    -> Fact[KB:36] i64 %1094 known bits zero=0x3 one=0x0
+    -> Fact[SCEV:37] i64 %1094 in [0,-3) (SCEV unsigned)
+    -> Fact[SCEV:38] i64 %1094 in [-9223372036854775808,9223372036854775805) (SCEV signed)
+    -> Fact[PHIINV-hi:39] i64 %1094 == i64 0 || ne(i64 %1094, i64 %1088) (latch-implied bound, 1-induction)
+    -> Fact[SCEVEQ:40] i32 %290 in phi image (2 incoming)
+    -> [heavy] 41 analysis fact(s) on 199 boundary value(s)
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.215335 ms]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.021533e+01 ms
+  => Average SMT Query Latency: 1.021533e+01 ms
+  => Total DFS & SMT Execution Time: 4.357514e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_execSequenceEnd
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.024510e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_safecopy
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.072630e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_execSequenceEndSplitLitBuffer
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.011550e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decompressSequencesSplitLitBuffer_bmi2
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %692 = icmp ult i64 %691, -119
+    -> Guard[1] (false edge of ''):  %36 = icmp eq i64 %4, 0
+    -> Guard[2] (false edge of ''):  %24 = icmp eq i32 %5, 0
+    -> Collected 3 dominating context guard(s).
+    -> [go3] 67 leaf-closure instruction(s) encoded
+    -> Fact[PHIINV-hi:0] i32 %268 == i32 %5 || ne(i32 %268, i32 0) (latch-implied bound, 1-induction)
+    -> Fact[KB:1] i64 %651 known bits zero=0x3 one=0x0
+    -> Fact[SCEV:2] i64 %651 in [0,-3) (SCEV unsigned)
+    -> Fact[SCEV:3] i64 %651 in [-9223372036854775808,9223372036854775805) (SCEV signed)
+    -> Fact[PHIINV-hi:4] i64 %651 == i64 0 || ne(i64 %651, i64 %645) (latch-implied bound, 1-induction)
+    -> [heavy] 5 analysis fact(s) on 62 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.226940 ms]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.022694e+01 ms
+  => Average SMT Query Latency: 1.022694e+01 ms
+  => Total DFS & SMT Execution Time: 2.719991e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTD_decompressSequences_bmi2
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %690 = icmp ult i64 %689, -119
+    -> Guard[1] (false edge of ''):  %44 = icmp eq i64 %4, 0
+    -> Guard[2] (false edge of ''):  %32 = icmp eq i32 %5, 0
+    -> Collected 3 dominating context guard(s).
+    -> [go3] 67 leaf-closure instruction(s) encoded
+    -> Fact[PHIINV-hi:0] i32 %277 == i32 %5 || ne(i32 %277, i32 0) (latch-implied bound, 1-induction)
+    -> Fact[KB:1] i64 %649 known bits zero=0x3 one=0x0
+    -> Fact[SCEV:2] i64 %649 in [0,-3) (SCEV unsigned)
+    -> Fact[SCEV:3] i64 %649 in [-9223372036854775808,9223372036854775805) (SCEV signed)
+    -> Fact[PHIINV-hi:4] i64 %649 == i64 0 || ne(i64 %649, i64 %643) (latch-implied bound, 1-induction)
+    -> [heavy] 5 analysis fact(s) on 52 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNKNOWN (Solver gave up) [Query Latency: 10.206205 ms]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.020621e+01 ms
+  => Average SMT Query Latency: 1.020621e+01 ms
+  => Total DFS & SMT Execution Time: 2.803873e+02 ms
+--------------------------------------------------

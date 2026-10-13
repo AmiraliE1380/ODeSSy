@@ -1,0 +1,145 @@
+[ODeSSy] 11 trap site(s) across 8 function(s); threads=10
+
+[Z3 Oracle] Analyzing Function: get_crc_table
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 9.207700e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: crc32_z
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %153 = extractvalue { i64, i1 } %151, 1, !nosanitize !5
+    -> Guard[1] (true edge of ''):  %8 = icmp ugt i64 %2, 46
+    -> Guard[2] (false edge of ''):  %4 = icmp eq ptr %1, null
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 26.116736 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %8 = icmp ugt i64 %2, 46
+    -> Guard[1] (false edge of ''):  %4 = icmp eq ptr %1, null
+    -> Collected 2 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 121.472075 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 2
+  => Total SMT Queries Executed: 2
+  => Total SMT Query Latency: 1.475888e+02 ms
+  => Average SMT Query Latency: 7.379441e+01 ms
+  => Total DFS & SMT Execution Time: 5.062134e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: crc32
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %154 = extractvalue { i64, i1 } %152, 1, !nosanitize !5
+    -> Guard[1] (true edge of ''):  %9 = icmp ugt i32 %2, 46
+    -> Guard[2] (false edge of ''):  %5 = icmp eq ptr %1, null
+    -> Collected 3 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 21.297444 ms]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %9 = icmp ugt i32 %2, 46
+    -> Guard[1] (false edge of ''):  %5 = icmp eq ptr %1, null
+    -> Collected 2 dominating context guard(s).
+    -> UNKNOWN (Solver gave up) [Query Latency: 105.749393 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 2
+  => Total SMT Queries Executed: 2
+  => Total SMT Query Latency: 1.270468e+02 ms
+  => Average SMT Query Latency: 6.352342e+01 ms
+  => Total DFS & SMT Execution Time: 4.431144e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: crc32_combine_gen64
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %22 = icmp eq i64 %21, 0
+    -> Guard[1] (false edge of ''):  %10 = icmp eq i64 %9, 0
+    -> Guard[2] (false edge of ''):  %4 = icmp eq i64 %0, 0
+    -> Guard[3] (false edge of ''):  %2 = icmp slt i64 %0, 0
+    -> Collected 4 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 0.403773 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  => Total Traps Eliminated: 1
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 4.037730e-01 ms
+  => Average SMT Query Latency: 4.037730e-01 ms
+  => Total DFS & SMT Execution Time: 6.306085e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: crc32_combine_gen
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %22 = icmp eq i64 %21, 0
+    -> Guard[1] (false edge of ''):  %10 = icmp eq i64 %9, 0
+    -> Guard[2] (false edge of ''):  %4 = icmp eq i64 %0, 0
+    -> Guard[3] (false edge of ''):  %2 = icmp slt i64 %0, 0
+    -> Collected 4 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 0.598507 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  => Total Traps Eliminated: 1
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 5.985070e-01 ms
+  => Average SMT Query Latency: 5.985070e-01 ms
+  => Total DFS & SMT Execution Time: 6.113895e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: crc32_combine_op
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %12 = icmp eq i64 %11, 0
+    -> Guard[1] (false edge of ''):  %4 = icmp eq i64 %2, 0
+    -> Collected 2 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 0.471179 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  => Total Traps Eliminated: 1
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 4.711790e-01 ms
+  => Average SMT Query Latency: 4.711790e-01 ms
+  => Total DFS & SMT Execution Time: 6.855934e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: crc32_combine64
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %24 = icmp eq i64 %23, 0
+    -> Guard[1] (false edge of ''):  %12 = icmp eq i64 %11, 0
+    -> Guard[2] (false edge of ''):  %6 = icmp eq i64 %2, 0
+    -> Guard[3] (false edge of ''):  %4 = icmp slt i64 %2, 0
+    -> Collected 4 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 0.461948 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %57 = icmp eq i64 %56, 0
+    -> Guard[1] (false edge of ''):  %4 = icmp slt i64 %2, 0
+    -> Collected 2 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 0.436468 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  => Total Traps Eliminated: 2
+  => Total Trap Attempts: 2
+  => Total SMT Queries Executed: 2
+  => Total SMT Query Latency: 8.984160e-01 ms
+  => Average SMT Query Latency: 4.492080e-01 ms
+  => Total DFS & SMT Execution Time: 1.363068e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: crc32_combine
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %24 = icmp eq i64 %23, 0
+    -> Guard[1] (false edge of ''):  %12 = icmp eq i64 %11, 0
+    -> Guard[2] (false edge of ''):  %6 = icmp eq i64 %2, 0
+    -> Guard[3] (false edge of ''):  %4 = icmp slt i64 %2, 0
+    -> Collected 4 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 0.509773 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %57 = icmp eq i64 %56, 0
+    -> Guard[1] (false edge of ''):  %4 = icmp slt i64 %2, 0
+    -> Collected 2 dominating context guard(s).
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 75.403124 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  => Total Traps Eliminated: 2
+  => Total Trap Attempts: 2
+  => Total SMT Queries Executed: 2
+  => Total SMT Query Latency: 7.591290e+01 ms
+  => Average SMT Query Latency: 3.795645e+01 ms
+  => Total DFS & SMT Execution Time: 1.769764e+02 ms
+--------------------------------------------------

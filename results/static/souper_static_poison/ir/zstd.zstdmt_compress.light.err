@@ -1,0 +1,116 @@
+[ODeSSy] 2 trap site(s) across 12 function(s); threads=10
+
+[Z3 Oracle] Analyzing Function: ZSTDMT_createCCtx_advanced
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 8.183900e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTDMT_freeCCtx
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.034060e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTDMT_freeBufferPool
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.418300e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTDMT_sizeof_CCtx
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.874500e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTDMT_updateCParams_whileCompressing
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 8.314000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTDMT_getFrameProgression
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.368500e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTDMT_toFlushNow
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 5.753000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTDMT_initCStream_internal
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.106635 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 2.106635e+00 ms
+  => Average SMT Query Latency: 2.106635e+00 ms
+  => Total DFS & SMT Execution Time: 4.222581e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTDMT_nextInputSizeHint
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 6.827000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTDMT_compressStream_generic
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 2.162200e-01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTDMT_expandBufferPool
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.700200e-02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: ZSTDMT_compressionJob
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %9 = icmp eq i32 %8, 0
+    -> Collected 1 dominating context guard(s).
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.116721 ms]
+  => Total Traps Eliminated: 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 1.116721e+00 ms
+  => Average SMT Query Latency: 1.116721e+00 ms
+  => Total DFS & SMT Execution Time: 3.743097e+01 ms
+--------------------------------------------------

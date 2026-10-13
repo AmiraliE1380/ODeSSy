@@ -1,0 +1,219 @@
+[ODeSSy] 16 trap site(s) across 6 function(s); threads=10 [tier: heavy] [frame] [mv] [narrow] [ind]
+
+[Z3 Oracle] Analyzing Function: compress2_z
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %43 = icmp eq i32 %42, 0
+    -> Guard[1] (true edge of ''):  %20 = icmp eq i32 %19, 0
+    -> Guard[2] (false edge of ''):  %16 = and i1 %15, %14
+    -> Guard[3] (false edge of ''):  %11 = or i1 %10, %9
+    -> Collected 4 dominating context guard(s).
+    -> Fact[LVI:0] i32 %42 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5.697019 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %31 = icmp eq i32 %28, 0
+    -> Guard[1] (true edge of ''):  %20 = icmp eq i32 %19, 0
+    -> Guard[2] (false edge of ''):  %16 = and i1 %15, %14
+    -> Guard[3] (false edge of ''):  %11 = or i1 %10, %9
+    -> Collected 4 dominating context guard(s).
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %28 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 4.267722 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  => Total Traps Eliminated: 2
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 2
+  => Total SMT Queries Executed: 2
+  => Total SMT Query Latency: 9.964741e+00 ms
+  => Average SMT Query Latency: 4.982371e+00 ms
+  => Total DFS & SMT Execution Time: 1.025128e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: compress2
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %41 = icmp eq i32 %40, 0
+    -> Guard[1] (true edge of ''):  %18 = icmp eq i32 %17, 0
+    -> Guard[2] (false edge of ''):  %14 = and i1 %13, %12
+    -> Guard[3] (false edge of ''):  %10 = and i1 %9, %8
+    -> Collected 4 dominating context guard(s).
+    -> Fact[LVI:0] i32 %40 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 8 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 3.459463 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %29 = icmp eq i32 %26, 0
+    -> Guard[1] (true edge of ''):  %18 = icmp eq i32 %17, 0
+    -> Guard[2] (false edge of ''):  %14 = and i1 %13, %12
+    -> Guard[3] (false edge of ''):  %10 = and i1 %9, %8
+    -> Collected 4 dominating context guard(s).
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %26 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 8 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 7.852387 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  => Total Traps Eliminated: 2
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 2
+  => Total SMT Queries Executed: 2
+  => Total SMT Query Latency: 1.131185e+01 ms
+  => Average SMT Query Latency: 5.655925e+00 ms
+  => Total DFS & SMT Execution Time: 1.564452e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: compress_z
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %42 = icmp eq i32 %41, 0
+    -> Guard[1] (true edge of ''):  %19 = icmp eq i32 %18, 0
+    -> Guard[2] (false edge of ''):  %15 = and i1 %14, %13
+    -> Guard[3] (false edge of ''):  %10 = or i1 %9, %8
+    -> Collected 4 dominating context guard(s).
+    -> Fact[LVI:0] i32 %41 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 12.057760 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %30 = icmp eq i32 %27, 0
+    -> Guard[1] (true edge of ''):  %19 = icmp eq i32 %18, 0
+    -> Guard[2] (false edge of ''):  %15 = and i1 %14, %13
+    -> Guard[3] (false edge of ''):  %10 = or i1 %9, %8
+    -> Collected 4 dominating context guard(s).
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %27 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 9.225820 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  => Total Traps Eliminated: 2
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 2
+  => Total SMT Queries Executed: 2
+  => Total SMT Query Latency: 2.128358e+01 ms
+  => Average SMT Query Latency: 1.064179e+01 ms
+  => Total DFS & SMT Execution Time: 2.418866e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: compress
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %40 = icmp eq i32 %39, 0
+    -> Guard[1] (true edge of ''):  %17 = icmp eq i32 %16, 0
+    -> Guard[2] (false edge of ''):  %13 = and i1 %12, %11
+    -> Guard[3] (false edge of ''):  %9 = and i1 %8, %7
+    -> Collected 4 dominating context guard(s).
+    -> Fact[LVI:0] i32 %39 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 8 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 7.809310 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %28 = icmp eq i32 %25, 0
+    -> Guard[1] (true edge of ''):  %17 = icmp eq i32 %16, 0
+    -> Guard[2] (false edge of ''):  %13 = and i1 %12, %11
+    -> Guard[3] (false edge of ''):  %9 = and i1 %8, %7
+    -> Collected 4 dominating context guard(s).
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i32 %25 in [0,1) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 8 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 5.732675 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  => Total Traps Eliminated: 2
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 2
+  => Total SMT Queries Executed: 2
+  => Total SMT Query Latency: 1.354199e+01 ms
+  => Average SMT Query Latency: 6.770993e+00 ms
+  => Total DFS & SMT Execution Time: 3.266540e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: compressBound_z
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %15 = extractvalue { i64, i1 } %14, 1, !nosanitize !5
+    -> Guard[1] (false edge of ''):  %10 = extractvalue { i64, i1 } %9, 1, !nosanitize !5
+    -> Guard[2] (false edge of ''):  %4 = extractvalue { i64, i1 } %3, 1, !nosanitize !5
+    -> Collected 3 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 1 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.732100 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %10 = extractvalue { i64, i1 } %9, 1, !nosanitize !5
+    -> Guard[1] (false edge of ''):  %4 = extractvalue { i64, i1 } %3, 1, !nosanitize !5
+    -> Collected 2 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 1 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 11.455193 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %4 = extractvalue { i64, i1 } %3, 1, !nosanitize !5
+    -> Collected 1 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 1 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.799789 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 1 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.877759 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 4
+  => Total SMT Queries Executed: 4
+  => Total SMT Query Latency: 2.786484e+01 ms
+  => Average SMT Query Latency: 6.966210e+00 ms
+  => Total DFS & SMT Execution Time: 7.671544e+02 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: compressBound
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %15 = extractvalue { i64, i1 } %14, 1, !nosanitize !5
+    -> Guard[1] (false edge of ''):  %10 = extractvalue { i64, i1 } %9, 1, !nosanitize !5
+    -> Guard[2] (false edge of ''):  %4 = extractvalue { i64, i1 } %3, 1, !nosanitize !5
+    -> Collected 3 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 1 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.766044 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %10 = extractvalue { i64, i1 } %9, 1, !nosanitize !5
+    -> Guard[1] (false edge of ''):  %4 = extractvalue { i64, i1 } %3, 1, !nosanitize !5
+    -> Collected 2 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 1 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.372841 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %4 = extractvalue { i64, i1 } %3, 1, !nosanitize !5
+    -> Collected 1 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 1 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.769436 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 1 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.589792 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 4
+  => Total SMT Queries Executed: 4
+  => Total SMT Query Latency: 2.149811e+01 ms
+  => Average SMT Query Latency: 5.374528e+00 ms
+  => Total DFS & SMT Execution Time: 4.083636e+02 ms
+--------------------------------------------------
