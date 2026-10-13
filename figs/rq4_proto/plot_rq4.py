@@ -35,7 +35,7 @@ plt.rcParams.update({
     "ytick.major.width": 0.6, "pdf.fonttype": 42, "ps.fonttype": 42,
 })
 
-LIB_COLOR = {"zlib": "#1f4e79", "zstd": "#c55a11"}
+LIB_COLOR = {"zlib": "#1f4e79", "zstd": "#1f4e79"}   # one color for ODeSSy in both panels
 SOUPER_COLOR = "black"
 W = 3.3                                  # acmsmall single column, inches
 CEGIS = (8749.0, 0)                      # Souper CEGIS on zlib's deflate.c (souper_pilot)
@@ -125,7 +125,7 @@ def variant_A(d, logy, name):
 
 
 def variant_B(d, logy, name):
-    fig, axes = plt.subplots(1, 2, figsize=(W, 2.0), sharex=True)
+    fig, axes = plt.subplots(1, 2, figsize=(1.5 * W, 2.0), sharex=True)
     for ax, lib in zip(axes, ("zlib", "zstd")):
         style(ax, logy)
         frontier(ax, lib, d, LIB_COLOR[lib])
@@ -139,7 +139,7 @@ def variant_B(d, logy, name):
         ax.set_title(f"{lib} ({ {'zlib': 14, 'zstd': 18}[lib] } modules)", fontsize=7, pad=3)
     axes[0].set_ylabel("checks removed" + (" (log)" if logy else ""))
     fig.supxlabel("compile time, summed over modules (s, log)", fontsize=7, y=0.02)
-    fig.tight_layout(pad=0.3, w_pad=0.8)
+    fig.tight_layout(pad=0.3, w_pad=2.5)
     save(fig, name)
 
 
