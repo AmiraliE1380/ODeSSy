@@ -472,7 +472,7 @@ This paper makes the following contributions:
 \item \textbf{\tool{}} (\S\ref{sec:system}): an LLVM pass and online optimizer
   as an instantiation of super-analysis. \tool{} eliminates safety checks and unlocks further optimizations. It supports C/C++, Swift, Rust, and Julia as frontends and can enable hot-path transformations and speedups.
 \item \textbf{Robust Performance Improvement} (\S\ref{sec:results}):
-  our systematic evaluation of \tool{} on an x86 server show removing hot-loop checks has a cascading effect, unlocking further transformations (unrolling, vectorization, etc.) that enables up to $4.01\times$ speedups for widely used kernels and libraries. \tool{} proofs are generally cheap, which makes it usable as an online pass in the development loop. Multi-threading and per-query budgets make \tool{}'s analysis up to $2.1\times$ faster. A further comparison with Souper (a synthesizing superoptimizer) shows that \tool{} removes several times more checks, in most configurations in less time.
+  our systematic evaluation of \tool{} on an x86 server show removing hot-loop checks has a cascading effect, unlocking further transformations (unrolling, vectorization, etc.) that enables up to $4.01\times$ speedups for widely used kernels and libraries. \tool{} proofs are generally cheap, which makes it usable as an online pass in the development loop. Multi-threading and per-query budgets make \tool{}'s analysis up to $2.0\times$ faster. A further comparison with Souper (a synthesizing superoptimizer) shows that \tool{} removes several times more checks, in most configurations in less time.
 \end{itemize}
 %% =====================================================================
 \section{Paradigms of Aggressive Compiler Optimization}
@@ -1570,8 +1570,8 @@ proofs to 0, crc32 from 11 to 0) and heap invariance (GEMM from 9 to
 only the solver. On zlib's largest module, Fast's queries finish in
 milliseconds, and most of its 496\,s go to importing LLVM's analyses
 and to guard synthesis, which the budget does not limit. Per-trap jobs are share-nothing, and the
-thread dial of Figure~\ref{fig:matrix} gives $1.9\times$ at 4 workers
-and less at 8 and 10 (Amdahl: serial discovery, fact import, and
+thread dial of Figure~\ref{fig:matrix} gives $1.8\times$ at 4 workers
+and nothing more at 8 and 10 (Amdahl: serial discovery, fact import, and
 guard synthesis).
 \paragraph{Whole-compile cost.}
 The ratio that matters to a developer is that of whole compiles, not of
@@ -1638,9 +1638,12 @@ release builds already make with link-time and profile-guided
 optimization. With this split, \tool{} stays an online pass during
 development and becomes a thorough one at release.
 \paragraph{The dial.}
-Figure~\ref{fig:matrix} is the central cost result. On zlib's
-\texttt{deflate.c}, \pct{97} of the proofs (69 of 71) survive a 1\,s
-per-query budget and \pct{92} survive 100\,ms; the full set needs
+Figure~\ref{fig:matrix} is the central cost result. It is measured
+without inductive encoding, a separate knob whose fact import runs
+serially through the turnstile (\S\ref{sec:pipeline}) and would confound
+the two dials; with it, the module proves 71 checks instead of 65. On zlib's
+\texttt{deflate.c}, \pct{98} of the proofs (64 of 65) survive a 1\,s
+per-query budget and \pct{91} survive 100\,ms; the full set needs
 10\,s. The query latencies (Figure~\ref{fig:latency}, Appendix~\ref{sec:app-full}) show why the dial costs so little at
 the top: across 4{,}946 queries on all benchmarks the median proof takes
 7.2\,ms and \pct{93} take under a second, so a budget removes the
@@ -1650,14 +1653,14 @@ majority of queries.
 \begin{figure}
 \centering
 \includegraphics[width=\columnwidth]{dial_matrix_x86_current.pdf}
-\caption{\tool{}'s latency for zlib's \texttt{deflate.c} with sweep over number of threads vs solver timeout. The configuration is Thorough. Multi-threading and strict timeouts can make \tool{} up to $2.1\times$ faster. A strict timeout of 10ms will preserve a majority of proofs.}
+\caption{\tool{}'s latency for zlib's \texttt{deflate.c} with sweep over number of threads vs solver timeout. The configuration is Thorough without inductive encoding. Multi-threading and strict timeouts can make \tool{} up to $2.0\times$ faster. A strict timeout of 10ms will preserve a majority of proofs.}
 \Description{A five-by-five heatmap, rows are 1, 2, 4, 8 and 10 worker
 threads, columns are per-query timeouts from 1 millisecond to 10
 seconds. Cells are colored from red for slow to green for fast on a log
 scale and annotated with wall-clock seconds and proof counts. Wall-clock
-falls from 45.3 seconds at one thread and 10 seconds to 22.5
+falls from 34.4 seconds at one thread and 1 second to 17.2
 seconds at four threads and 1 millisecond; proof counts rise left to
-right from about 20 to 71 in every row.}
+right from about 20 to 65 in every row.}
 \label{fig:matrix}
 \end{figure}
 \subsection{RQ4: How does super-analysis compare with superoptimization?}
