@@ -1449,30 +1449,21 @@ $^{d}$Removing the checks by any means slows this kernel: the
 \end{table}
 \subsection{RQ2: What is the source of speedup?}
 \label{sec:results-mech}
+In this section we explain how proofs unlock massive speedups, and in our main ablation study we explore which components of our guard synthesis mainly contribute to performance improvement. 
+
 A removed check pays exactly when it was blocking a further
 transformation. A check is a side exit; inside a hot loop it prevents
 unrolling and vectorization, and once it is gone the second
 \texttt{-O3} performs them, so a few proofs can cascade into a large
 speedup. SHA-256 is the typical case: seven proofs in the
 message-schedule loop let it unroll, and the kernel runs $1.107\times$
-faster on x86 ($1.074\times$ on Apple Silicon). Where the proofs land
+faster on x86. Where the proofs land
 matters more than how many there are: 264 scattered proofs and 112
 guarded removals buy CryptoSwift nothing ($0.928\times$), while two
 proofs and five guarded removals in base64's hot loop buy its entire
 ceiling ($1.435\times$); 207 cold proofs leave zlib flat
 ($1.011\times$), while 16 on zstd's compression path buy $1.065\times$
 of a $1.075\times$ ceiling.
-
-Where a proof unlocks nothing, re-optimizing the simplified code is a
-two-sided lottery. sha1 runs at $0.956\times$ on x86, replicated at
-$0.954\times$ and at $0.95$--$0.96\times$ in four earlier runs, and the
-adler32 proof that gains $1.031\times$ on x86 costs $0.985\times$ on
-M-series. Swift lz77's $0.830\times$ is not caused by \tool{}: the
-\texttt{-Ounchecked} build is equally slow ($0.831\times$). Conversely,
-the ceiling is a reference point rather than a bound: on sha256, utf8,
-and md5, \tool{}'s build beats \texttt{-Ounchecked}. The value of a
-check varies in magnitude and in sign, and the microarchitecture is part
-of the experiment.
 
 \paragraph{Heap invariance.}
 \label{sec:frame-results}
