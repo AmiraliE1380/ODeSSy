@@ -1267,8 +1267,7 @@ on as many real inputs as the proof allows.
 
 \paragraph{Vacuity.} A guard that contradicts the context makes the trap
 trivially unreachable, and the fast copy dead code. We therefore check
-that $\Gamma \wedge H$ is satisfiable, and refuse the guard otherwise ---
-the same self-distrust as the proof audit of \S\ref{sec:audit}.
+that $\Gamma \wedge H$ is satisfiable, and refuse the guard otherwise.
 
 \paragraph{Transformation.} Every operand of $H$ must dominate the
 loop's preheader, so that $H$ can be evaluated there. The loop is
