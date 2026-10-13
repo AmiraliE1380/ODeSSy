@@ -84,3 +84,8 @@ zstd,fse_compress,base23,0.13,4,-
 zstd,fse_compress,thorough,3.69,4,0
 zstd,fse_compress,fast,1.11,4,0
 zstd,fse_compress,light,0.45,4,0
+zstd,huf_compress,base18,0.49,28,-
+zstd,huf_compress,base23,0.46,28,-
+zstd,huf_compress,thorough,44.28,26,2
+zstd,huf_compress,fast,27.31,27,1
+zstd,huf_compress,light,3.36,27,1
