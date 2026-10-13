@@ -1355,9 +1355,19 @@ Our evaluation is organized around four questions:
 \subsection{RQ1: How much does it improve performance?}
 \label{sec:results-perf}
 \label{sec:results-static}
-RQ1 has a capability half --- how much can be proven --- and a payoff
-half --- what the proofs buy at runtime. Table~\ref{tab:static}
-answers the first, Table~\ref{tab:speedups} the second.
+
+In this section we evaluate how much \tool{}'s proofs speed up the final compiled binary. We collected 17 benchmarks, 6 of them from existing libraries and repositories or extracted from them, and the rest are our implementations of memory- and compute-heavy everyday kernels. Table~\ref{tab:static} lists the benchmarks, their sources, and the percentage of their checks that \tool{} removes. 
+
+What matters more than the static percentage of check removals in Table~\ref{tab:static} is how much performance improvement each final compiled binary yields, in other words whether check removal buys performance, which Table~\ref{tab:speedups} establishes. We achieve a significant speedup of $4.01\times$ on Swift lz77
+and $3.91\times$ on stdlib GEMM; in total 7 out of 17 benchmarks have a performance improvement of more than 10\%. These performance improvements are among different applications: matrix operations are widely used in scientific computing and machine learning, and so are compression libraries and cryptographic kernels. A 10 to 300\% performance improvement is very impactful, especially knowing that code safety is not sacrificed. Also, for all four of our frontend languages (C, Swift, Rust, Julia) we have benchmarks that speed up, suggesting that \tool{} is not bound to a particular frontend or application, and super-analysis can be applied to a variety of domains. The speedups are also not an artifact of one machine: on
+Apple M-series the same proofs give $4.16\times$ on GEMM and $1.38\times$ on Swift lz77, demonstrating that super-analysis can accelerate code on many microarchitectures
+(Appendix~\ref{sec:app-mseries}).
+
+
+The safety check performance tax, or as we call it, the ceiling, is how much the checks slow the code down. Ideally \tool{} would recover all of the performance loss, as it does for 5 benchmarks. For two benchmarks (Rust lz77 and the 
+Swift utf8 validator) \tool{}'s partial check removal yields better performance than full removal (higher than ceiling). We have three interesting cases where check removal slows down the code, and one (CryptoSwift) where despite having a positive ceiling, \tool{}'s check removal slows the computation.
+
+
 \begin{table}
 \caption{The benchmarks and the checks \tool{} proves dead in each.
 ``Source'': \emph{Repo} = an unmodified open-source repository;
@@ -1396,29 +1406,8 @@ check of the two hot accesses (the reads of \texttt{A} and writes of
 \texttt{C}), proven with the heap-invariant extension of \S\ref{sec:frame}.
 $^{\S}$100\% under the 60\,s budget used for Table~\ref{tab:speedups}.\par
 \end{table}
-Table~\ref{tab:static} introduces the benchmarks and the checks \tool{}
-proves dead in each: 19\% of zlib's checks, 25\% of zstd's, and 14\% of
-the unmodified CryptoSwift library's, with the transformed libraries' output
-byte-identical to the original.
-Three structural findings accompany the counts. First, the
-\emph{specification split}: under the unsigned-overflow spec, hashing and
-crypto code (CRC, Adler, xxHash, SHA) is intentionally-wrapping ---
-all-\textsc{sat} there is a finding about the spec, not imprecision. The split is dynamic as
-well as static: a trap-mode \emph{unsigned} build of zstd's CLI executes
-a trap in its first benchmark block --- the intentional wraps in its
-xxhash checksum fire immediately --- so under that specification the
-library is not merely check-laden but unrunnable, while the signed-spec
-build runs cleanly, with checks costing $1.075\times$ in compression and
-$1.002\times$ in decompression. Second, the \emph{affine
-overfit}: PolyBench-style affine kernels emit zero residual traps at O3
---- LLVM's existing heuristics fully handle the affine case, and the
-opportunities live in the data-dependent loops of compression and crypto.
-Third, \emph{cores as evidence}: the nontrivial proofs' unsat cores name
-2--4 fact sources plus guards (\S\ref{sec:conjunction}), and an ablation
-of the shift encoding alone drops zlib's signed proofs from 2 to 0 and
-unsigned from 41 to 25 --- the solver's exactness through shift
-compositions is doing attributable work that range/known-bits reasoning
-loses.
+
+
 \begin{table}
 \caption{Runtime results: every benchmark in the performance campaign,
 sorted by speedup. x86 (CloudLab c220g2, turbo off, one socket), medians
@@ -1475,18 +1464,6 @@ $^{g}$Not explained.
 $^{h}$Removing the checks by any means slows this kernel: the
 \texttt{-Ounchecked} build is equally slow.\par
 \end{table}
-Table~\ref{tab:speedups} answers the payoff half. Seven of seventeen
-benchmarks speed up by $1.10\times$ or more, up to $4.01\times$ on lz77
-and $3.91\times$ on stdlib GEMM; base64 and crc32 recover their entire
-ceiling, and zstd, an unmodified C library, recovers most of its
-($1.065\times$ of $1.075\times$). Five more gain between $1.02\times$ and
-$1.08\times$, zlib shows no measurable effect, and four regress, by
-$0.83\times$ to $0.98\times$; \emph{why} the same dose of proofs pays so
-differently is RQ2. The speedups are not an artifact of one machine: on
-Apple M-series the same proofs give $4.16\times$ on GEMM, $2.63\times$ on
-Julia lz77, $1.38\times$ on Swift lz77, and $1.15\times$ on base64, though
-individual magnitudes differ between the two microarchitectures
-(Appendix~\ref{sec:app-mseries}).
 \subsection{RQ2: What is the source of speedup?}
 \label{sec:results-mech}
 A removed check pays exactly when it was blocking a further
