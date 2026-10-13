@@ -477,6 +477,30 @@ This paper makes the following contributions:
 %% =====================================================================
 \section{Paradigms of Aggressive Compiler Optimization}
 \label{sec:related}
+Every optimizer is an analysis that licenses a rewrite and a
+transformation that performs it, and each of the two can be cheap or
+expensive. Figure~\ref{fig:quadrants} maps the four paradigms of
+aggressive optimization that result. We describe each paradigm in turn,
+and then the design space they span.
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{quadrants.pdf}
+\caption{Every optimizer is an
+analysis that licenses a rewrite plus a transformation that performs it,
+and each can be cheap or expensive. Conventional optimization keeps both
+cheap; superoptimization makes both expensive. Super-analysis takes one
+asymmetric corner where a solver licenses rewrites. Super-transformation takes the other: exhaustive search over
+combinations of rewrites. Both asymmetric corners
+are under-explored.}
+\Description{A two-by-two matrix. Columns: transformation cost, cheap
+versus expensive. Rows: analysis cost, cheap versus expensive. Cheap/cheap
+is Conventional Optimization (LLVM -O3). Cheap analysis with expensive
+transformation is Super-Transformation (e.g., equality saturation), marked
+under-explored. Expensive analysis with cheap transformation is
+Super-Analysis (ODeSSy). Expensive/expensive is Superoptimization (Souper,
+STOKE).}
+\label{fig:quadrants}
+\end{figure}
 
 \paragraph{Conventional optimization.} Conventional compiler optimization passes (like in LLVM) consist of analysis modules and transformation rules that consume the analysis to produce more efficient code. Both components are lightweight and fast, sacrificing precision to save compile time and provide rapid feedback. Multiple families of optimizers deviate from this simple fast compilation methodology, including superoptimizers and equality saturation methods.
 
@@ -513,30 +537,8 @@ four paradigms on one map, by what each spends on analysis and what it
 spends on transformation; \S\ref{sec:superanalysis} develops the
 paradigm.
 
-%% =====================================================================
-\section{Super-Analysis}
-\label{sec:superanalysis}
-\subsection{The design space}
+\paragraph{The design space.}
 \label{sec:design-space}
-\begin{figure}[t]
-\centering
-\includegraphics[width=\linewidth]{quadrants.pdf}
-\caption{Every optimizer is an
-analysis that licenses a rewrite plus a transformation that performs it,
-and each can be cheap or expensive. Conventional optimization keeps both
-cheap; superoptimization makes both expensive. Super-analysis takes one
-asymmetric corner where a solver licenses rewrites. Super-transformation takes the other: exhaustive search over
-combinations of rewrites. Both asymmetric corners
-are under-explored.}
-\Description{A two-by-two matrix. Columns: transformation cost, cheap
-versus expensive. Rows: analysis cost, cheap versus expensive. Cheap/cheap
-is Conventional Optimization (LLVM -O3). Cheap analysis with expensive
-transformation is Super-Transformation (e.g., equality saturation), marked
-under-explored. Expensive analysis with cheap transformation is
-Super-Analysis (ODeSSy). Expensive/expensive is Superoptimization (Souper,
-STOKE).}
-\label{fig:quadrants}
-\end{figure}
 Conventional optimization and superoptimization differ in \emph{which
 component} pays for precision. Every optimizer is two things: an
 \emph{analysis} that establishes the facts licensing a rewrite, and a
@@ -607,6 +609,10 @@ summarize code it never sees. The proofs of
 \S\ref{sec:conjunction} and \S\ref{sec:frame} combine
 facts from several analyses and from code far from the check, demonstrating the more global reasoning of a super-analyzer.
 
+
+%% =====================================================================
+\section{Super-Analysis}
+\label{sec:superanalysis}
 \subsection{Encoding program context}
 \label{sec:encoding}
 A super-analyzer decides a property of a single \emph{program point} ---
