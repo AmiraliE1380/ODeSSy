@@ -333,7 +333,7 @@ middle, and Superoptimization (Souper, STOKE) on the right.}
 \label{fig:spectrum}
 \end{figure}
 
-This paper argues for a previously absent middle ground we call \emph{super-analysis}
+This paper argues for an unexplored middle ground we call \emph{super-analysis}
 (Figure~\ref{fig:spectrum}): use
 the expensive solver-based analysis for \emph{analysis only}, and leave transformation
 to the conventional machinery that already exists. No program is synthesized and
@@ -358,7 +358,7 @@ complex conjunction is, in principle, an entailment
 problem --- exactly what an SMT solver decides and exactly what a
 heuristic cannot. We inspect the unsat core of every proof, so this
 claim is not an intuition but a measurement: the cores name the
-contributing analyses, and the majority of our nontrivial proofs draw multiple sources at once.
+contributing analyses, and the cores we inspected draw on several sources at once.
 
 
 We instantiate super-analysis in \tool{}\footnote{On-Demand SMT System.},
@@ -369,7 +369,7 @@ languages (Swift bounds and overflow checks, Rust panics, Julia bounds
 errors) compile to trap-guarded branches
 (Figure~\ref{fig:simple-example}) whose hot-path cost is the
 standing tax of memory safety --- we measure it at up to $1.075\times$ on
-the zstd library under signed-overflow checks and up to $4.17\times$ and $5.11\times$ on native-language kernels (Julia GEMM and Swift nbody, respectively).
+the zstd library under signed-overflow checks and up to $4.17\times$ on a native-language kernel (Julia GEMM).
 Today the only recourse to avoid this performance tax is to turn checks \emph{off}
 wholesale (\texttt{-Ounchecked}, \texttt{--check-bounds=no}), trading away
 the safety guarantee entirely. \tool{} offers the sound alternative:
@@ -480,7 +480,7 @@ This paper makes the following contributions:
 \item \textbf{\tool{}} (\S\ref{sec:system}): an LLVM pass and online optimizer
   as an instantiation of super-analysis. \tool{} eliminates safety checks and unlocks further optimizations. It supports C/C++, Swift, Rust, and Julia as frontends and can enable hot-path transformations and speedups.
 \item \textbf{Robust Performance Improvement} (\S\ref{sec:results}):
-  our systematic evaluation of \tool{} on an x86 server shows removing hot-loop checks has a cascading effect, unlocking further transformations (unrolling, vectorization, etc.) that enable up to $4.01\times$ speedups for widely used kernels and libraries. \tool{} proofs are generally cheap, which makes it usable as an online pass in the development loop. Multi-threading and per-query budgets make \tool{}'s analysis up to $2.0\times$ faster. A further comparison with Souper (a synthesizing superoptimizer) shows that \tool{} removes several times more checks, in most configurations in less time.
+  our systematic evaluation of \tool{} on an x86 server shows removing hot-loop checks has a cascading effect, unlocking further transformations (unrolling, vectorization, etc.) that enable up to $4.01\times$ speedups for widely used kernels and libraries. \tool{} proofs are generally cheap, which makes it usable as an online pass in the development loop. Multi-threading and per-query budgets make \tool{}'s analysis up to $2.0\times$ faster. A further comparison with Souper (a synthesizing superoptimizer) shows that Thorough removes significantly more checks in less time.
 \end{itemize}
 %% =====================================================================
 \section{Paradigms of Aggressive Compiler Optimization}
@@ -703,8 +703,7 @@ access \texttt{A[i,l]} runs on every iteration of the innermost loop,
 the hottest loop of the program, and as a
 side exit from that loop it keeps LLVM from vectorizing and unrolling
 the loop as fully as the check-free version: with the checks turned off
-this kernel runs $4.17\times$ faster on x86, and Swift's n-body
-simulation $5.11\times$. Today the only way to recover that performance
+this kernel runs $4.17\times$ faster on x86. Today the only way to recover that performance
 is to turn checks off wholesale (\texttt{@inbounds},
 \texttt{--check-bounds=no}, \texttt{-Ounchecked}), giving up the guarantee
 for the whole loop or program. \tool{} instead removes only the checks it
@@ -1032,11 +1031,7 @@ core of each proof names the fact sources and mechanisms that contributed
 to it; these are the labels in the cores of \S\ref{sec:conjunction} and
 \S\ref{sec:frame-results}. 
 
-Three tiers name the configurations
-used throughout the paper: \emph{light}, \emph{heavy} (analysis facts
-+ \texttt{ldeq}, under which two loads of the same pointer in one block,
-with no store between them, share one variable), and \emph{full} (heavy + the \texttt{frame} facts of
-\S\ref{sec:frame-machinery}). Each tier adds knobs that further constrain the solver. Besides these, the user sets the two latency dials, \texttt{timeout=} and \texttt{threads=} (\S\ref{sec:results-cost}); Appendix~\ref{sec:app-knobs} lists every knob.
+Fast and Thorough (\S\ref{sec:results-cost}) combine these knobs. Besides these, the user sets the two latency dials, \texttt{timeout=} and \texttt{threads=} (\S\ref{sec:results-cost}); Appendix~\ref{sec:app-knobs} lists every knob.
 
 \subsection{Encoding loops inductively}
 \label{sec:app-machinery}
@@ -1306,7 +1301,7 @@ the performance improvements are almost the same
 (Appendix~\ref{sec:app-mseries}).
 
 
-The safety check performance tax, or as we call it, the ceiling, is how much the checks slow the code down. Ideally \tool{} would recover all of the performance loss, as it does for 5 benchmarks. For four benchmarks (Rust lz77, the Swift utf8 validator, Swift sha256, and md5) \tool{}'s partial check removal yields better performance than full removal (higher than ceiling). We have three interesting cases where check removal slows down the code, and one (CryptoSwift) where despite having a positive ceiling, \tool{}'s check removal slows the computation. Removing a check that blocks no further transformation leaves the second \texttt{-O3} free to make different code-generation choices, which can cost as well as gain (\S\ref{sec:results-mech}).
+The safety check performance tax, or as we call it, the ceiling, is how much the checks slow the code down. Ideally \tool{} would recover all of the performance loss, and it recovers nearly all of it for 5 benchmarks. For four benchmarks (Rust lz77, the Swift utf8 validator, Swift sha256, and md5) \tool{}'s partial check removal yields better performance than full removal (higher than ceiling). We have three interesting cases where check removal slows down the code, and one (CryptoSwift) where despite having a positive ceiling, \tool{}'s check removal slows the computation. Removing a check that blocks no further transformation leaves the second \texttt{-O3} free to make different code-generation choices, which can cost as well as gain (\S\ref{sec:results-mech}).
 
 
 \begin{table}
@@ -1586,9 +1581,7 @@ against that LLVM's \texttt{-O3} alone. Souper's per-query budget is
 identical queries is left on, as shipped. Swift, Rust, and Julia are
 excluded because their front ends emit IR newer than LLVM~18.
 
-We use the same clang frontend from LLVM 18 to generate the input of the optimizing pipelines, and both leave nearly the same
-checks behind --- 476 in zlib under both, 254 and 251 in zstd --- so both
-tools start from the same population of checks. Thorough and Fast use ten
+Thorough and Fast use ten
 threads.
 
 \begin{figure}[t]
@@ -1615,7 +1608,7 @@ Thorough removes 62 checks in 1{,}668\,s, where Souper removes 7 in
 2{,}407\,s, and Fast removes 37 in 525\,s; most of Thorough's time is
 spent on a single module, \texttt{trees.c} (Figure~\ref{fig:modules}).
 On zstd, Thorough removes 12 checks in 155\,s, where Souper removes 5 in
-4{,}304\,s, and Fast removes 3 in 52\,s, which is a $27.8\times$ difference. 
+4{,}304\,s, a $27.8\times$ difference in time, and Fast removes 3 in 52\,s. 
 
 \begin{figure}[t]
 \centering
