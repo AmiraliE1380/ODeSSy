@@ -41,6 +41,26 @@ function gemm2!(C, A, B)
     return C
 end
 
+# gemm3!: only the two accesses ODeSSy proves after the poison-sound encoder
+# (9 of 16 edges): the A read and the C write. The B read and C read stay checked.
+function gemm3!(C, A, B)
+    m, n = size(C); k = size(A, 2)
+    size(A, 1) == m || throw(DimensionMismatch("A rows"))
+    size(B, 1) == k || throw(DimensionMismatch("B rows"))
+    size(B, 2) == n || throw(DimensionMismatch("B cols"))
+    for j in 1:n, l in 1:k
+        b = B[l, j]
+        for i in 1:m
+            tmp = C[i, j] + (@inbounds A[i, l]) * b
+            @inbounds C[i, j] = tmp
+        end
+    end
+    return C
+end
+
+# ARM=proven times gemm3! (ODeSSy's proofs) as the second arm instead of gemm2! (all four)
+const ARM2 = get(ENV, "ARM", "all") == "proven" ? gemm3! : gemm2!
+
 using Random
 const REPS = length(ARGS) >= 1 ? parse(Int, ARGS[1]) : 11
 med(x) = sort(x)[div(length(x) + 1, 2)]
@@ -55,18 +75,18 @@ const SHAPES = length(ARGS) >= 2 ?
     (8, 2048, 2048), (32, 2048, 2048), (2048, 32, 2048), (2048, 2048, 32),
     ]
 
-println("# GEMM dimension sweep: arm1 = all checks, arm2 = all @inbounds (== ODeSSy, 16/16 proven)")
+println("# GEMM dimension sweep: arm1 = all checks, arm2 = ", ARM2 === gemm3! ? "A read + C write @inbounds (ODeSSy, 9/16 proven)" : "all four @inbounds (ceiling)")
 println("# REPS=$REPS rotated reps per shape, medians of seconds; gate = bitwise-equal C")
 println("#   m     n     k    flops(G)   arm1_s    arm2_s   speedup  ceiling%  gate")
 for (m, n, k) in SHAPES
     Random.seed!(42)
     A0 = rand(m, k); B0 = rand(k, n)
     C1 = zeros(m, n); C2 = zeros(m, n)
-    gemm1!(C1, A0, B0); gemm2!(C2, A0, B0)          # warm + gate
+    gemm1!(C1, A0, B0); ARM2(C2, A0, B0)          # warm + gate
     gate = C1 == C2 ? "ok" : "MISMATCH"
     t1 = Float64[]; t2 = Float64[]
     for r in 1:REPS
-        order = [(gemm1!, t1), (gemm2!, t2)]
+        order = [(gemm1!, t1), (ARM2, t2)]
         for (f, acc) in circshift(order, r)
             C = zeros(m, n)
             push!(acc, @elapsed f(C, A0, B0))
