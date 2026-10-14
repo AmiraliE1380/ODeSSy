@@ -1,0 +1,6 @@
+outputs identical: arm2==arm1 true   arm3==arm1 true
+N=512 REPS=21  (medians, seconds)
+arm1 baseline      : 0.1876
+arm2 all-inbounds  : 0.0536   speedup vs arm1: 3.498x
+arm3 odessy-proven : 0.0586   speedup vs arm1: 3.199x
+arm3 recovers 96.3% of the arm2 gap
