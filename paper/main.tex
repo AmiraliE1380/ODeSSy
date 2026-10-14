@@ -1304,8 +1304,7 @@ the performance improvements are almost the same
 (Appendix~\ref{sec:app-mseries}).
 
 
-The safety check performance tax, or as we call it, the ceiling, is how much the checks slow the code down. Ideally \tool{} would recover all of the performance loss, as it does for 5 benchmarks. For two benchmarks (Rust lz77 and the 
-Swift utf8 validator) \tool{}'s partial check removal yields better performance than full removal (higher than ceiling). We have three interesting cases where check removal slows down the code, and one (CryptoSwift) where despite having a positive ceiling, \tool{}'s check removal slows the computation. Removing a check that blocks no further transformation leaves the second \texttt{-O3} free to make different code-generation choices, which can cost as well as gain (\S\ref{sec:results-mech}).
+The safety check performance tax, or as we call it, the ceiling, is how much the checks slow the code down. Ideally \tool{} would recover all of the performance loss, as it does for 5 benchmarks. For four benchmarks (Rust lz77, the Swift utf8 validator, Swift sha256, and md5) \tool{}'s partial check removal yields better performance than full removal (higher than ceiling). We have three interesting cases where check removal slows down the code, and one (CryptoSwift) where despite having a positive ceiling, \tool{}'s check removal slows the computation. Removing a check that blocks no further transformation leaves the second \texttt{-O3} free to make different code-generation choices, which can cost as well as gain (\S\ref{sec:results-mech}).
 
 
 \begin{table}
@@ -1452,7 +1451,7 @@ benchmarks whose speedup involves guard synthesis.
 \begin{table}
 \caption{Guard-synthesis ablation. Each
 pipeline has two columns: the speedup over the unchanged checked
-program, and the number of checks it proves dead. Pipeline (i) is the best or tied on every benchmark. Pipelines (ii) and (iii) which consist of only using one \tool{} component are still significantly better than full LLVM pipelines.}
+program, and the number of checks it proves dead. Pipeline (i) is the best or tied on every benchmark. Pipelines (ii) and (iii), which use only one \tool{} component, are better than or equal to (iv) and (v) in most cases.}
 \label{tab:ablation}
 \small
 \setlength{\tabcolsep}{3pt}
@@ -1478,9 +1477,9 @@ of the 4 checks. $^{c}$At the 10\,s budget (i) leaves one access checked; the fu
 guarded copy of Table~\ref{tab:speedups} reaches $1.107\times$.\par
 \end{table}
 
-\emph{Pipeline (i) is the best or tied on every benchmark}, demonstrating that the combination of guard synthesis and \tool{} proofs is the most powerful and fruitful. Pipeline (i) not only matches or beats every other pipeline, but also proves every check any other pipeline proves, with one exception: two GEMM checks that only (iii) proves. It is the only pipeline powerful enough to recover $4.013\times$ performance of Julia's lz77. 
+\emph{Pipeline (i) is the best or tied on every benchmark}, demonstrating that the combination of guard synthesis and \tool{} proofs is the most powerful and fruitful. Pipeline (i) either matches or beats every other pipeline. It is the only pipeline powerful enough to recover $4.013\times$ performance of Julia's lz77. 
 
-Using guard synthesis or \tool{} proofs alone still recovers a lot of performance and yields a lot of proofs, although it is hard to say exactly which of the two (ii) and (iii) is the better. Both of them are clearly more powerful than full LLVM pipelines (iv) and (v). \emph{This restates the main thesis of the paper: solver-based expensive analysis pays back.} We believe our guard synthesis algorithm and templates are powerful, though \emph{it beats LLVM's IRCE not just because of our smart design choices, but because our guard synthesis is solver-guided from the beginning.}
+Using guard synthesis or \tool{} proofs alone still recovers a lot of performance and yields a lot of proofs, although it is hard to say exactly which of the two (ii) and (iii) is the better. Both of them are better than or equal to the full LLVM pipelines (iv) and (v) in most cases. \emph{This restates the main thesis of the paper: solver-based expensive analysis pays back.} We believe our guard synthesis algorithm and templates are powerful, though \emph{it beats LLVM's IRCE not just because of our smart design choices, but because our guard synthesis is solver-guided from the beginning.}
  
 
 \subsection{RQ3: Is \tool{} fast enough for real-world use?}
@@ -1574,8 +1573,9 @@ we also ran Souper in its CEGIS synthesis mode.
 
 \paragraph{Setup.} Souper pins LLVM~18, whose parser cannot read the IR
 of newer front ends, so the comparison covers only the C libraries which can be compiled
-with LLVM~18's clang. Each module is emitted \emph{once} and both tools
-read the same file; \tool{}'s LLVM reads it as bitcode, which newer LLVM
+with LLVM~18's clang. Each module is emitted by clang~18 and both tools read the emitted IR;
+\tool{}'s runs used a packaged clang~18 whose output leaves exactly the same
+checks as Souper's build (476 in zlib, 254 and 251 in zstd). \tool{}'s LLVM reads it as bitcode, which newer LLVM
 versions are guaranteed to accept. Each tool runs with its own pinned
 LLVM and its own pinned Z3
 (Souper: Z3 4.13; \tool{}: Z3 4.8.12), is followed by its own LLVM's \texttt{-O3}, and is compared
