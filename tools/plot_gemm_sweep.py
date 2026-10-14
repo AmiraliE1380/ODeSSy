@@ -50,7 +50,7 @@ def main():
     ax1.set_xscale("log", base=2)
     ax1.set_xticks(xs); ax1.set_xticklabels([str(x) for x in xs], fontsize=7)
     ax1.set_xlabel("m = n = k", fontsize=8)
-    ax1.set_ylabel("speedup, checks $\\to$ @inbounds", fontsize=8)
+    ax1.set_ylabel("speedup over the checked kernel", fontsize=8)
     ax1.set_ylim(0, max(ys) * 1.25)
     ax1.axhline(1.0, color="#999999", linewidth=0.8, linestyle="--")
     ax1.set_title("square scaling", fontsize=8.5)
