@@ -477,11 +477,9 @@ This paper makes the following contributions:
 %% =====================================================================
 \section{Paradigms of Aggressive Compiler Optimization}
 \label{sec:related}
-Every optimizer is an analysis that licenses a rewrite and a
+Every optimizing pass consists of an analysis that licenses a rewrite and a
 transformation that performs it, and each of the two can be cheap or
-expensive. Figure~\ref{fig:quadrants} maps the four paradigms of
-aggressive optimization that result. We describe each paradigm in turn,
-and then the design space they span.
+expensive. By taking the expensive or cheap route for each two components we get to the different optimization families in Figure~\ref{fig:quadrants}, which include conventional optimization and superoptimization. We introduce two paradigms that are widely underexplored, super-transformation which equality saturation is a strict form of it, and super-analysis which is the main topic of this paper. To the best of our knowledge we have for the first time systematically described the landscape of optimization paradigms, how they relate and how they differ. 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{quadrants.pdf}
@@ -502,7 +500,7 @@ STOKE).}
 \label{fig:quadrants}
 \end{figure}
 
-\paragraph{Conventional optimization.} Conventional compiler optimization passes (like in LLVM) consist of analysis modules and transformation rules that consume the analysis to produce more efficient code. Both components are lightweight and fast, sacrificing precision to save compile time and provide rapid feedback. Multiple families of optimizers deviate from this simple fast compilation methodology, including superoptimizers and equality saturation methods.
+\paragraph{Conventional optimization.} Conventional compiler optimization passes (like in LLVM) consist of analysis modules and transformation rules that consume the analysis to produce more efficient code. Both components are lightweight and fast, sacrificing precision to save compile time and provide rapid feedback. All the other families of optimizers deviate from this simple fast compilation methodology to perform more aggressive transformations.
 
 \paragraph{Superoptimization.} A superoptimizer tries to search a large space of programs for a faster or shorter alternative to the initial code.
 Massalin's original superoptimizer~\cite{massalin1987superoptimizer}
@@ -518,101 +516,32 @@ synthesizes replacement code for bounded peephole windows and verifies each
 candidate with an SMT solver. In every sound superoptimizer the search proposes code and the solver
 verifies it, so the solver is invoked \emph{per candidate}. 
 
+Conventional optimization and superoptimization have been widely explored in the literature; the asymmetric corners of Figure~\ref{fig:quadrants} are underexplored. We call the paradigm of cheap analysis and expensive transformation super-transformation, which is an exhaustive search over candidate transformations, coupled with cheap analysis. The corner that this paper extensively explores and instantiates is super-analysis: expensive (solver-based) analysis that enables cheap conventional transformations. We can state that superoptimization is a combination of super-transformation (synthesis as the most aggressive exhaustive search for alternative code) and super-analysis (solver-based equivalence checking in sound superoptimizers), making it super expensive.
+
 
 \paragraph{Equality Saturation.}
 Equality
-saturation~\cite{tate2009equality} searches the same kind of space by a
-different route: rather than synthesizing candidates ,it saturates an
+saturation~\cite{tate2009equality} is a disciplined subset of super-transformation: rather than synthesizing candidates, it saturates an
 e-graph with the combinations of a fixed rewrite-rule set and extracts
 the cheapest result. This aggressive search ranges over combinations of rewrite rules rather than over
 arbitrary programs, so no candidate needs an equivalence proof as the applied rules are sound and preserve equivalence.
 
-\paragraph{Super-analysis.} This paper introduces a fourth route. A
+\paragraph{Super-analysis.} This paper introduces this fourth route. A
 super-analyzer spends the solver on \emph{analysis} alone: the solver
 decides whether a rewrite is licensed --- here, whether a safety check
 can ever fire --- and the compiler's existing, conventional
 transformations perform the rewrite. No replacement code is searched
-for, synthesized, or verified. Figure~\ref{fig:quadrants} places the
-four paradigms on one map, by what each spends on analysis and what it
-spends on transformation; \S\ref{sec:superanalysis} develops the
+for, synthesized, or verified. \S\ref{sec:superanalysis} develops the
 paradigm.
 
-\paragraph{The design space.}
-\label{sec:design-space}
-Conventional optimization and superoptimization differ in \emph{which
-component} pays for precision. Every optimizer is two things: an
-\emph{analysis} that establishes the facts licensing a rewrite, and a
-\emph{transformation} that produces the replacement code. Either can be
-cheap or expensive, which gives the four-way design space of
-Figure~\ref{fig:quadrants}. A conventional pass has cheap analysis and
-cheap transformation, and both are heuristic. A superoptimizer makes both
-expensive: the search proposes code, the solver verifies it. Super-analysis
-splits the difference asymmetrically: expensive, precise
-analysis; cheap, conventional transformation. Analysis is partially provided by an expensive SMT query, licensing known transformations. Super-analysis can be strategically used by a compiler to manage the high latency of the solver, making it online and keeping it in the programmer's rapid develop and test loop. As we show in \S\ref{sec:results} removing a safety check in a hot loop by proving it unreachable can unlock valuable transformations (unrolling, vectorization, etc.)
-
-\paragraph{The other asymmetric corner.}
-The remaining cell --- cheap analysis, expensive transformation --- is
-the mirror image of super-analysis, and we call it
-\emph{super-transformation}: an exhaustive search for alternative code.
-Synthesis, as practiced by superoptimizers, is its most aggressive form,
-because the candidates are arbitrary programs. Equality
-saturation~\cite{tate2009equality} is its disciplined form: it exhausts
-the sequences and combinations of a fixed set of rewrite rules, which is
-still an exhaustive search for replacement code, but over a space every
-point of which is correct by construction. That is what keeps equality
-saturation in the cheap-analysis row. Each rule is an equality proven
-sound once, offline, so no candidate requires a proof of its own at
-compile time. The expense is entirely on the transformation side: saturating
-the e-graph and then extracting the cheapest term from it, which the
-original work posed to a pseudo-boolean solver and later systems solve
-greedily~\cite{willsey2021egg} or with ILP~\cite{yang2021tensat}. Synthesis lands in the superoptimization cell
-precisely because it lacks this guarantee: an arbitrary candidate carries
-no proof, so each one must be verified, and the analysis becomes
-expensive as well.
-The matrix therefore states the thesis of this paper exactly.
-Superoptimization is super-analysis \emph{plus} super-transformation; we
-take the first half and leave the second to the compiler's existing
-rules. Both asymmetric corners are under-explored relative to the two
-diagonal ones.
-
-Procedurally, superoptimization and super-analysis are both applied
-point by point, and they differ in what happens at a point. The superoptimizer runs a search: its cost is the number of
-candidates it tries times the cost of verifying each, the number of
-candidates grows with the size of the fragment, and nothing bounds it
-except the budget. This makes superoptimization super expensive. The super-analyzer has no search at all. The points
-it visits come from a work list that the compiler chooses, which makes
-its use of the solver \emph{strategic} --- the compiler decides where
-precision is worth paying for --- and the solver is consulted only
-where the conventional analysis has already failed, which makes it
-\emph{surgical}. The transformation that follows is the compiler's own.
-
-A
-superoptimizer's dominant expense is not the solver but the
-\emph{synthesis loop} that feeds it: a search over candidate programs,
-each candidate requiring its own equivalence query. Super-analysis deletes
-that outer loop. What remains is one decision procedure invocation per
-check site --- not a search --- and a cheap transformation the
-compiler performs. This is why the two paradigms differ by orders
-of magnitude in latency while sharing the same underlying technology, and
-why super-analysis can run inside the development pipeline rather than beside it
-(\S\ref{sec:results-cost}).
-
-The same asymmetry decides how much of the program each paradigm can
-see. A synthesizing search must enumerate or sample candidate
-replacements, and the space of candidates grows exponentially with the
-size of the code being replaced, so superoptimizers confine themselves
-to small, mostly local windows: a peephole, a basic block, a loop-free
-kernel. A super-analyzer does not have such a limitation; It can reason globally and the context it is given can be as large as the analysis
-can encode: many basic blocks and their merge points, every dominating
-branch condition, and facts imported from loop and heap analyses or called procedures that
-summarize code it never sees. The proofs of
-\S\ref{sec:conjunction} and \S\ref{sec:frame} combine
-facts from several analyses and from code far from the check, demonstrating the more global reasoning of a super-analyzer.
-
+Super-analysis shares the verification engine with superoptimization, though the difference in philosophy and architecture makes them radically different in terms of effectiveness and \emph{scaling}. Superoptimizers spend an expensive SMT equivalence checking query per synthesized candidate, making them very slow. A super-analyzing compiler uses the expensive analysis more strategically, consulting the solver whenever its conventional analysis fail and the solver latency is worth the potential unlocked optimization. This makes super-analysis generally faster, something we show in \ref{sec:results-souper}. The unscalable nature of synthesis also limits it to small window peephole optimizations, whereas a super-analyzer can reason more globally. For example it can derive and consume post-conditions of complex loops and functions which is beyond the scope of peephole optimizations.
 
 %% =====================================================================
 \section{Super-Analysis}
 \label{sec:superanalysis}
+
+In this section we describe a general recipe for building a compiler super-analyzer.
+
 \subsection{Encoding program context}
 \label{sec:encoding}
 A super-analyzer decides a property of a single \emph{program point} ---
