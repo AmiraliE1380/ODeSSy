@@ -1299,8 +1299,8 @@ Our evaluation is organized around four questions:
 In this section we evaluate how much \tool{}'s proofs speed up the final compiled binary. We collected 17 benchmarks, 6 of them from existing libraries and repositories or extracted from them, and the rest are our implementations of memory- and compute-heavy everyday kernels. Table~\ref{tab:static} lists the benchmarks, their sources, and the percentage of their checks that \tool{} removes. 
 
 What matters more than the static percentage of check removals in Table~\ref{tab:static} is how much performance improvement each final compiled binary yields, in other words whether check removal buys performance, which Table~\ref{tab:speedups} establishes. We achieve a significant speedup of $4.01\times$ on Julia lz77
-and $3.91\times$ on stdlib GEMM; in total 7 out of 17 benchmarks have a performance improvement of more than 10\%. These performance improvements are among different applications: matrix operations are widely used in scientific computing and machine learning, and so are compression libraries and cryptographic kernels. A 10 to 300\% performance improvement is very impactful, especially knowing that code safety is not sacrificed. Also, for all four of our frontend languages (C, Swift, Rust, Julia) we have benchmarks that speed up, suggesting that \tool{} is not bound to a particular frontend or application, and super-analysis can be applied to a variety of domains. The speedups are also not an artifact of one machine: on
-Apple M-series the same proofs give $4.16\times$ on GEMM and $1.38\times$ on Swift lz77, demonstrating that super-analysis can accelerate code on many microarchitectures
+and $3.91\times$ on stdlib GEMM; in total 7 out of 17 benchmarks have a performance improvement of more than 10\%. These performance improvements are among different applications: matrix operations are widely used in scientific computing and machine learning, and so are compression libraries and cryptographic kernels. A 10 to 300\% performance improvement is very impactful, especially knowing that code safety is not sacrificed. Also, for all four of our frontend languages (C, Swift, Rust, Julia) we have benchmarks that speed up, suggesting that \tool{} is not bound to a particular frontend or application, and super-analysis can be applied to a variety of domains. The results are similar on another architecture: on Apple M-series,
+the performance improvements are almost the same
 (Appendix~\ref{sec:app-mseries}).
 
 
@@ -1734,14 +1734,7 @@ per-repetition CSVs is prepared for submission.
 Table~\ref{tab:speedups-full} gives the measurements behind
 Table~\ref{tab:speedups}: median times, the speedup against the
 double-O3 control, the noise floor, and an independent replicate where
-one was run. Benchmarks with no runtime experiment split into two
-further tables. Table~\ref{tab:frontier} is the \emph{frontier}:
-benchmarks with a real, measured ceiling that the current fact sources
-leave entirely (or almost entirely) unrecovered --- each row prices a
-residue class of \S\ref{sec:future}. Table~\ref{tab:static-only}
-collects the static-only runs, where no ceiling exists to recover --- by
-measurement (a $\leq$noise gap), or because the specification that emits the checks is
-dynamically un-runnable in trap mode (\S\ref{sec:results-static}).
+one was run.
 Earlier M-series measurements are in Appendix~\ref{sec:app-mseries}.
 \begin{table}[t]
 \caption{Measurements behind Table~\ref{tab:speedups} (x86 c220g2,
@@ -1889,67 +1882,16 @@ Dashed vertical lines mark the medians at 5.2 milliseconds for SAT and
 milliseconds to several seconds.}
 \label{fig:latency}
 \end{figure}
-\begin{table}
-\caption{The frontier: benchmarks with a measured, unrecovered
-checked-vs-unchecked ceiling and no (or unusably few) proofs at the
-current fact sources. Each ceiling prices a residue class of
-\S\ref{sec:future}.}
-\label{tab:frontier}
-\small
-\begin{tabular}{llrlrl}
-\toprule
-Benchmark & Lang & Elim & Platform & Ceiling & Residue\\
-\midrule
-nbody & Swift & 0 & M \& x86 & $5.10/5.11\times$ & (b), call-carried\\
-filt (DSP.jl) & Julia & 4/19 & x86 & $1.583\times$ & partial edge set\\
-\bottomrule
-\end{tabular}\\
-\raggedright\footnotesize Julia filt: the x86 emission proves only 4 of
-19 edges (6 on M-series, where the ceiling is $\leq 1\times$) --- too few
-to license any hot access. Base64, crc32, and the Julia lz77, matmul,
-and sha256 kernels, which earlier versions of the pass left here, are
-now recovered by guard synthesis and appear in
-Table~\ref{tab:speedups}.\par
-\end{table}
-\begin{table}
-\caption{Static-only runs: no ceiling exists to recover, by
-measurement or by construction.}
-\label{tab:static-only}
-\small
-\begin{tabular}{llrlrl}
-\toprule
-Benchmark & Lang & Elim & Platform & Ceiling & Why static-only\\
-\midrule
-poly (Horner) & Julia & 1 & both & $1.000\times$ & no ceiling, either ISA\\
-zlib decomp.\ (both spec) & C & --- & x86 & n/a & traps fire; un-runnable\\
-zstd comp.\ (unsigned) & C & --- & x86 & n/a & traps fire; un-runnable\\
-\bottomrule
-\end{tabular}\\
-\raggedright\footnotesize The two
-un-runnable rows have no measurable ceiling of any kind: the sanitized
-binary executes an intentional-wraparound trap on its first blocks, so
-a checked-vs-unchecked comparison cannot be run --- the runnable
-signed-spec zstd build appears in Table~\ref{tab:speedups}.\par
-\end{table}
 \begin{figure}
 \centering
 \includegraphics[width=0.92\textwidth]{gemm_sweep.pdf}
-\caption{GEMM speedup of the all-annotated build (all four accesses
-\texttt{@inbounds}; at $N{=}512$ the two accesses \tool{} proves recover
-nearly all of it, \S\ref{sec:frame-results}) over the all-checks baseline, as a
-function of the problem shape ($C = m{\times}n$, $A = m{\times}k$,
-$B = k{\times}n$; Xeon c220g2, medians of 11 rotated repetitions,
-bitwise-equal outputs at every shape). \emph{Left:} square scaling.
-\emph{Right:} aspect ratios at roughly constant work and short inner
-loops. The gain is present at every shape ($1.5\times$--$6.8\times$)
-and is governed by the memory regime of the inner loop over $m$, which
-the eliminated checks unblock for vectorization: while its column
-working set is cache-resident the unlock pays $4$--$7\times$; at
-$m \geq 2048$ (the $2048^3$ and $4096^3$ points and the $m{=}2048$
-bars) the loop streams 16--32\,KB columns from memory and bandwidth,
-not checks, becomes the limiter --- the floor descends from
-$1.9\times$ to $1.5\times$ at $4096^3$ (137\,GFLOP, medians of 5) and
-does not approach $1\times$.}
+\caption{GEMM speedup with all four accesses \texttt{@inbounds} (the
+ceiling; at $N{=}512$ the two accesses \tool{} proves reach $3.91\times$ of
+$4.17\times$, \S\ref{sec:frame-results}) over the checked baseline, by
+problem shape ($C = m{\times}n$, $A = m{\times}k$, $B = k{\times}n$; x86,
+medians of 11 repetitions). \emph{Left:} square matrices. \emph{Right:}
+other aspect ratios. The gain holds at every shape ($1.5$--$6.8\times$)
+and shrinks once the inner loop's columns no longer fit in cache.}
 \Description{Two panels. Left, a line chart of speedup versus square
 matrix dimension from 64 to 4096 on a log axis: about 6.8x and 6.2x at
 64 and 128, about 4.1 to 4.4x from 256 to 1024, 1.9x at 2048, and
@@ -1970,8 +1912,7 @@ Right, a bar chart of seven non-square shapes with speedups between
 \label{sec:future}
 The checks \tool{} leaves behind are not a random remainder. They fall
 into four classes, each defined by the \emph{kind} of fact that is
-missing rather than by the benchmark it appears in. The last column of
-Table~\ref{tab:frontier} labels each unrecovered ceiling with its class.
+missing rather than by the benchmark it appears in.
 
 \paragraph{(a) Symbolic trip counts --- solved.}
 A loop counter bounded by an SSA-valued expression rather than a
@@ -1990,8 +1931,7 @@ guard that constrains one load says nothing about the next. Heap
 invariance (\S\ref{sec:frame}) closes the intraprocedural case where the
 two loads read a provably unclobbered location --- this is what takes
 stdlib GEMM from 0 to 9 of 16 --- but the interprocedural and
-call-carried cases remain, and they own the largest unrecovered
-ceilings in Table~\ref{tab:frontier}.
+call-carried cases remain.
 
 \paragraph{(c) Anchor gaps --- solved.}
 One check site reached by several predecessors, or several sites sharing
@@ -2103,7 +2043,6 @@ swift.org 6.3.3 toolchain. The solver budget is per query. Where an x86
 number exists it is quoted for orientation only; the two machines are
 not compared directly.
 
-\subsection{Runtime}
 \begin{table}[h]
 \caption{M-series runtime results (\tool{} vs.\ base / double-O3
 control). ``rules'' is the heavy fact tier with the \texttt{PHIINV}
@@ -2112,23 +2051,22 @@ hand-versioned Julia copies mirroring what the pass does to the frozen
 kernel's IR; they are runtime proxies, not machinery output.}
 \label{tab:app-runtime}
 \small
-\begin{tabular}{llrrl}
+\begin{tabular}{llrl}
 \toprule
-Benchmark & Config & Elim / folds & Speedup & Ceiling\\
+Benchmark & Config & Speedup & Ceiling\\
 \midrule
-gemm.jl \emph{arm3} (proven blocks only) & frame & 9 & $4.16\times$ & $4.19\times$\\
-lz77.jl \emph{arm} A$+$B & rules, 60\,s & 4/4 & $2.63\times$ & $2.63\times$\\
-lz77.jl \emph{arm} B only & rules, 300\,ms & 2/4 & $1.52\times$ & $2.63\times$\\
-matmul.jl \emph{arm}, $n{=}128$ & \texttt{mv;narrow} & 3/3 & $1.21\times$ & $1.22\times$\\
-matmul.jl \emph{arm}, $n{=}512$ & \texttt{mv;narrow} & 3/3 & $1.02\times$ & $1.02\times$\\
-lz77 & Swift, rules, 1\,s & 5/25 & $1.376\times$ & $1.360\times$\\
-base64 & Swift, \texttt{mv} & 7/27 & $1.151\times$ & $1.226\times$\\
-sha256 & Swift, rules (pinned 6.3.3) & 7/36 & $1.083\times$ & $1.028\times$\\
-crc32 & Swift, \texttt{mv} & 6 folds & $1.045\times$ & $1.007\times$ (lottery)\\
-CryptoSwift & Swift, \texttt{mv} / \texttt{mv-light} & 211$+$101 / 98 & $1.019\times$ / $1.014\times$ & $1.196\times$ (x86)\\
-CryptoSwift & Swift, \texttt{ind} & 261 & $1.011\times^{b}$ & $1.196\times$ (x86)\\
-crc32 & Swift, \texttt{ind} & 4 & $1.003\times$ (noise) & $<1.01\times$\\
-lz77 & Rust, rules & 1/3 & $0.732\times$ & none ($0.957\times$)\\
+gemm.jl \emph{arm3} (proven blocks only) & frame & $4.16\times$ & $4.19\times$\\
+lz77.jl \emph{arm} A$+$B & rules, 60\,s & $2.63\times$ & $2.63\times$\\
+lz77.jl \emph{arm} B only & rules, 300\,ms & $1.52\times$ & $2.63\times$\\
+matmul.jl \emph{arm}, $n{=}128$ & \texttt{mv;narrow} & $1.21\times$ & $1.22\times$\\
+matmul.jl \emph{arm}, $n{=}512$ & \texttt{mv;narrow} & $1.02\times$ & $1.02\times$\\
+lz77 & Swift, rules, 1\,s & $1.376\times$ & $1.360\times$\\
+base64 & Swift, \texttt{mv} & $1.151\times$ & $1.226\times$\\
+sha256 & Swift, rules (pinned 6.3.3) & $1.083\times$ & $1.028\times$\\
+CryptoSwift & Swift, \texttt{mv} / \texttt{mv-light} & $1.019\times$ / $1.014\times$ & $1.196\times$ (x86)\\
+CryptoSwift & Swift, \texttt{ind} & $1.011\times^{b}$ & $1.196\times$ (x86)\\
+crc32 & Swift, \texttt{ind} & $1.003\times$ (noise) & $<1.01\times$\\
+lz77 & Rust, rules & $0.732\times$ & none ($0.957\times$)\\
 \bottomrule
 \end{tabular}\\
 \raggedright\footnotesize $^{b}$REPS$=$10; the rules-only control in
@@ -2137,23 +2075,6 @@ by 1.2\%, so this is suggestive pending the pinned x86 protocol. zstd
 under \texttt{ind} is inconclusive on M-series (30\,ms workload).\par
 \end{table}
 
-\subsection{Prediction record}
-Each mechanism's prediction was written before its code. Outcomes:
-PHIINV --- Swift lz77 $0 \to 5$ and lz77.jl $0 \to 4$ as predicted.
-Multi-versioning --- base64 folds and lz77.jl folds as predicted;
-predicted CryptoSwift folds obtained. Narrowing --- matmul.jl 3/3 only
-after the unpredicted linearization step; the monotonicity-lemma
-variant was tried, did not help, and was removed. FRAME~v2 (unifying
-Julia size reloads across blocks) --- premise falsified: the reloads
-carry no alias metadata and MemorySSA reports a clobber; abandoned.
-Inductive encoding --- predicted 13/13 recovered with rules off,
-observed 12/13 plus one further miss (Rust lz77); the shared cause is
-the auxiliary \emph{hx} invariant. Cross-level composition facts ---
-predicted to recover both misses, falsified (composition was not the
-blocker), mechanism removed. Pointer-$\phi$ linking --- predicted no
-gain because pointers are havoced; held. Out-of-sample sweep ---
-predicted $+5$ to $+30$ on CryptoSwift and $\approx 0$ on C libraries;
-observed $+43$ on CryptoSwift and $+11$ on zstd (falsified upward),
-$0$ on zlib (held); superset property held on every corpus.
+
 
 \end{document}
