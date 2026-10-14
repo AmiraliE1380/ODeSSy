@@ -312,7 +312,7 @@ make millions of decisions in milliseconds, each justified by a
 heuristic or a lightweight analysis that reasons locally and gives up
 early. They are perfect for online use in the programmer's develop-and-test loop. \emph{Superoptimizers}~\cite{massalin1987superoptimizer,
 schkufza2013stoke, sasnauskas2017souper} search for faster replacement
-code and use a solver to prove each candidate correct. They find more optimal code as they aggressively search the space of candidate programs, and they use a solver to verify that the found candidates are correct.
+code and use a solver to prove each candidate correct. They find more optimal code as they exhaustively search the space of candidate programs, and the solver acts as an equivalence checking oracle.
 
 Each class pays for its strength, and has critical weaknesses. Conventional optimizers are fast, but they miss
 optimizations whose safety needs deeper reasoning. Their lightweight conventional heuristics give up and are unable to provide sufficient analysis for many cases~\cite{taneja2020knownbits}. Superoptimizers are more aggressive in optimization as they find
@@ -338,7 +338,7 @@ This paper argues for an unexplored middle ground we call \emph{super-analysis}
 the expensive solver-based analysis for \emph{analysis only}, and leave transformation
 to the conventional machinery that already exists. No program is synthesized and
 no search over the infinite space of programs is performed. The solver answers exactly one kind of question
---- \emph{is this program point reachable under this context?} --- and a
+--- for example \emph{is this program point reachable under this context?} --- and a
 standard, trivially correct transformation (deleting an unreachable branch)
 consumes the answer.
 We use an SMT solver as an analysis oracle and feed it with the encoded formula $\mathit{Context} \wedge \mathit{Query}$ and ask if it is satisfiable. Soundness is preserved by construction: an
@@ -424,7 +424,7 @@ trap: call void @llvm.ubsantrap(i8 18)  ; aborts
 \caption{A Swift SHA-256 message-schedule loop (top) and one of its
 bounds checks, which survives \texttt{swiftc -O} and LLVM O3, at the IR
 level (bottom); checks highlighted. Conventional analysis cannot remove
-the check from the hot loop, which imposes a performance tax: scalar
+the check from the hot loop, imposing a high performance tax: scalar
 evolution gives $t - 16 < 48$ and a return-value range gives
 \texttt{w.count} $= 64$, but no analysis logically conjoins the two facts and
 proves that the trap is unreachable.}
@@ -524,7 +524,7 @@ synthesizes replacement code for bounded peephole windows and verifies each
 candidate with an SMT solver. In every sound superoptimizer the search proposes code and the solver
 verifies it, so the solver is invoked \emph{per candidate}. 
 
-Conventional optimization and superoptimization have been widely explored in the literature; the asymmetric corners of Figure~\ref{fig:quadrants} are underexplored. We call the paradigm of cheap analysis and expensive transformation super-transformation, which is an exhaustive search over candidate transformations, coupled with cheap analysis. The corner that this paper extensively explores and instantiates is super-analysis: expensive (solver-based) analysis that enables cheap conventional transformations. We can state that superoptimization is a combination of super-transformation (synthesis as the most aggressive exhaustive search for alternative code) and super-analysis (solver-based equivalence checking in sound superoptimizers), making it super expensive.
+Conventional optimization and superoptimization have been widely explored in the literature; while the asymmetric corners of Figure~\ref{fig:quadrants} are underexplored. We call the paradigm of cheap analysis and expensive transformation super-transformation, which is an exhaustive search over candidate transformations, coupled with cheap analysis. The corner that this paper extensively explores and instantiates is super-analysis: expensive (solver-based) analysis that enables cheap conventional transformations. We can state that superoptimization is a combination of super-transformation (synthesis as the most aggressive exhaustive search for alternative code) and super-analysis (solver-based equivalence checking in sound superoptimizers), making it super expensive.
 
 
 \paragraph{Equality Saturation.}
@@ -553,8 +553,8 @@ In this section we describe a general recipe for building a compiler super-analy
 \subsection{Encoding program context}
 \label{sec:encoding}
 A super-analyzer decides a property of a single \emph{program point} ---
-here, whether a trap is reachable. But the property is never decided by
-the point itself; it is decided by the \emph{context} that leads there.
+here, whether a trap is reachable. The property is decided by
+the \emph{context} that leads to the point.
 The core machinery of the paradigm is therefore a translation: render
 the context of a program point as a logical formula, and ask the solver
 whether the property is consistent with it.
@@ -685,7 +685,7 @@ signed integer overflow --- with a test and a branch to a block that
 stops the program if the test fails. Every front end we support inserts
 them. In C and C++, UndefinedBehaviorSanitizer~\cite{ubsanDocs} adds a
 check for each kind of undefined behavior it is asked to catch; in trap
-mode each one ends in a call to \texttt{llvm.ubsantrap}. Swift checks
+mode each one ends in a call to \texttt{llvm.ubsantrap}. Safer languages inject safety checks as part of their semantics. Swift checks
 every array access and every arithmetic overflow by default, in
 optimized builds too, and stops with \texttt{llvm.trap}~\cite{swiftBook}.
 Rust checks every slice and array index, and every arithmetic operation
@@ -770,7 +770,7 @@ is not dead for every execution. Consider the Julia LZ77 compressor in our bench
 \texttt{data[i+len]} only while \texttt{i+len <= n}, where $n$ is the
 length of \texttt{data}, a value known only at run time. In
 unbounded integer arithmetic this test makes the bounds check on
-\texttt{data[i+len]} redundant. In 64-bit arithmetic it does not: Julia
+\texttt{data[i+len]} redundant. In 64-bit arithmetic it does not: when \texttt{n} is very close to $2^{63}$ but slightly less, \texttt{i+len} may exceed this bound. In this case Julia
 integer arithmetic silently overflows, and the solver answers with a satisfying assignment in which \texttt{i+len} overflows to $-2^{63}$, passing the programmer's safety guard \texttt{i+len <= n} but triggering an out-of-bounds index (negative index) at \texttt{data[i+len]}. This vulnerability truly exists, and the safety check must remain for this array access.
 
 Yet no real call looks like these models: an array of nearly $2^{63}$
