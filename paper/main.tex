@@ -300,23 +300,23 @@ elimination, undefined behavior, LLVM}
 \label{sec:intro}
 Optimizing compilers decide how fast software runs. Every program in a
 compiled language, from operating systems to an artificial intelligence training kernel, passes
-through compiler optimization in an intermediate representation (IR) level. A compiler infrastructure such as
+through compiler optimization at an intermediate representation (IR) level. A compiler infrastructure such as
 LLVM~\cite{lattner2004llvm} serves many input languages at once, including C and C++,
-Swift, Rust, and Julia all compiled to it's IR and aggressively optimized through it. Almost all software nowadays go through such optimization pipelines, so the effectiveness of optimizers heavily influence the performance of the software we use. 
+Swift, Rust, and Julia, all compiled to its IR and aggressively optimized through it. Almost all software nowadays goes through such optimization pipelines, so the effectiveness of optimizers heavily influences the performance of the software we use. 
 
 Aggressive compiler
-optimization currently fall into two classes. \emph{Conventional optimizers},
+optimization currently falls into two classes. \emph{Conventional optimizers},
 such as LLVM's \texttt{-O3} pipeline, apply a fixed sequence of
 analyses and rewrites. They are fast: they
 make millions of decisions in milliseconds, each justified by a
 heuristic or a lightweight analysis that reasons locally and gives up
-early. They are perfect for online use in the programmers develop and test loop. \emph{Superoptimizers}~\cite{massalin1987superoptimizer,
+early. They are perfect for online use in the programmer's develop-and-test loop. \emph{Superoptimizers}~\cite{massalin1987superoptimizer,
 schkufza2013stoke, sasnauskas2017souper} search for faster replacement
 code and use a solver to prove each candidate correct. They find more optimal code as they aggressively search the space of candidate programs, and they use a solver to verify that the found candidates are correct.
 
-Each class pays for its strength, and have critical weaknesses. Conventional optimizers as fast, but they miss
-optimizations whose safety needs deeper reasoning. Their lightweight conventional heuristics give up and is unable to provide sufficient analysis for many case (cite Regehr's testing LLVM analysis paper.) Superoptimizers are more aggressive in optimization as they find
-code heuristics cannot, but their search is expensive and coupled with the solver's expensive check, as each candidate code found should be verified correct. Because of this superoptimizers take up to hours to run, so they are confined to small code windows and run offline,
+Each class pays for its strength, and has critical weaknesses. Conventional optimizers are fast, but they miss
+optimizations whose safety needs deeper reasoning. Their lightweight conventional heuristics give up and are unable to provide sufficient analysis for many cases~\cite{taneja2020knownbits}. Superoptimizers are more aggressive in optimization as they find
+code heuristics cannot, but their search is expensive and coupled with the solver's expensive check, as each candidate code found should be verified correct. Because of this, superoptimizers take up to hours to run, so they are confined to small code windows and run offline,
 outside the everyday development and testing loops.
 \begin{figure}[t]
 \centering
