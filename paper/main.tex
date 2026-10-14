@@ -298,18 +298,25 @@ elimination, undefined behavior, LLVM}
 %% =====================================================================
 \section{Introduction}
 \label{sec:intro}
-Compiler optimization research today occupies two distant extremes of a
-cost-precision spectrum. At one end, conventional optimizers such as
-LLVM's O3 pipeline~\cite{lattner2004llvm} make millions of decisions in
-milliseconds, each justified by an ad-hoc heuristic or a lightweight
-dataflow analysis; the heuristics are fast precisely because each one
-reasons locally and gives up early. At the
-other end, superoptimizers~\cite{massalin1987superoptimizer,
-schkufza2013stoke, sasnauskas2017souper} hand the entire problem ---
-analysis \emph{and} transformation --- to an expensive decision procedure
-that aggressively searches for replacement code, achieving precision that heuristics
-cannot match at costs that confine them to peephole windows and offline
-runs.
+Optimizing compilers decide how fast software runs. Every program in a
+compiled language, from operating systems to scientific code, passes
+through one, and a single compiler infrastructure such as
+LLVM~\cite{lattner2004llvm} serves many languages at once: C and C++,
+Swift, Rust, and Julia all compile through it. Aggressive compiler
+optimization falls into two classes. \emph{Conventional optimizers},
+such as LLVM's \texttt{-O3} pipeline, apply a fixed sequence of
+analyses and rewrites. \emph{Superoptimizers}~\cite{massalin1987superoptimizer,
+schkufza2013stoke, sasnauskas2017souper} search for faster replacement
+code and use a solver to prove each candidate correct.
+
+Each class pays for its strength. Conventional optimizers are fast: they
+make millions of decisions in milliseconds, each justified by a
+heuristic or a lightweight analysis that reasons locally and gives up
+early. That speed is also their weakness, since they miss
+optimizations whose safety needs deeper reasoning. Superoptimizers find
+code heuristics cannot, but their search is expensive: it takes minutes
+to hours, so they are confined to small code windows and run offline,
+outside the everyday compile.
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{spectrum.pdf}
@@ -1045,7 +1052,7 @@ non-unit stride, or exit in several places. It is also not the most precise loop
 proves such checks by one-step induction over the loop, with no trip
 count and no invariant synthesis. Each loop-header phi has the form
 \[
-\phi = \mathtt{phi}\ [\phi_{\mathit{init}},\ \mathit{preheader}],\ [\phi_{\mathit{ind}},\ \mathit{latch}],
+\phi = \mathtt{phi}\ [\phi_{\mathit{init}},\ \mathit{preheader}],\ [\phi_{\mathit{ind}},\ \mathit{BackEdge}],
 \]
 where $\phi_{\mathit{init}}$ is the value on entry to the loop and
 $\phi_{\mathit{ind}}$ the value the back edge carries, computed in the
