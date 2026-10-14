@@ -325,7 +325,7 @@ outside the everyday development and testing loops.
 optimization. Conventional pipelines are online but heuristic and
 incomplete; superoptimizers are precise but offline. Super-analysis
 occupies the unpopulated middle: on-demand SMT proofs at bounded latency,
-with no program synthesis, inside the compilation pipeline.}
+with no program synthesis, usable online.}
 \Description{A horizontal axis from online/low-latency on the left to
 offline/high-latency on the right. Three boxes sit along it: Conventional
 Optimization (LLVM -O3) on the left, Super-Analysis (ODeSSy) in the
@@ -358,8 +358,7 @@ complex conjunction is, in principle, an entailment
 problem --- exactly what an SMT solver decides and exactly what a
 heuristic cannot. We inspect the unsat core of every proof, so this
 claim is not an intuition but a measurement: the cores name the
-contributing analyses, and the majority of our nontrivial proofs draw on
-two to four sources at once.
+contributing analyses, and the majority of our nontrivial proofs draw multiple sources at once.
 
 
 We instantiate super-analysis in \tool{}\footnote{On-Demand SMT System.},
@@ -427,7 +426,7 @@ bounds checks, which survives \texttt{swiftc -O} and LLVM O3, at the IR
 level (bottom); checks highlighted. Conventional analysis cannot remove
 the check from the hot loop, which imposes a performance tax: scalar
 evolution gives $t - 16 < 48$ and a return-value range gives
-\texttt{w.count} $= 64$, but no analysis conjoins the two facts and
+\texttt{w.count} $= 64$, but no analysis logically conjoins the two facts and
 prove that the trap is unreachable.}
 \Description{Above, a Swift listing of the SHA-256 message schedule
 loop with the injected check, if t minus 16 is greater or equal to the
