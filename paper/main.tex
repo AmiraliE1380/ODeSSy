@@ -1334,7 +1334,7 @@ sha1 & Swift & Ours & 8\%\\
 md5 & Swift & Ours & 4\%\\
 lz77 & Rust & Ours & 50\%\\
 matmul & Rust & Ours & 50\%\\
-gemm & Julia & Repo & 50\%\\
+gemm & Julia & Repo & 56\%\\
 sha256 & Julia & Ours & 88\%\\
 matmul & Julia & Ours & 100\%\\
 lz77 & Julia & Ours & 50\%$^{\S}$\\
@@ -1478,7 +1478,7 @@ of the 4 checks. $^{c}$At the 10\,s budget (i) leaves one access checked; the fu
 guarded copy of Table~\ref{tab:speedups} reaches $1.107\times$.\par
 \end{table}
 
-\emph{Pipeline (i) is the best or tied on every benchmark}, demonstrating that the combination of guard synthesis and \tool{} proofs is the most powerful and fruitful. Pipeline (i) not only beats every other pipeline, but generates every single proof any other pipeline generates. It is the only pipeline powerful enough to recover $4.013\times$ performance of Julia's lz77. 
+\emph{Pipeline (i) is the best or tied on every benchmark}, demonstrating that the combination of guard synthesis and \tool{} proofs is the most powerful and fruitful. Pipeline (i) not only matches or beats every other pipeline, but also proves every check any other pipeline proves, with one exception: two GEMM checks that only (iii) proves. It is the only pipeline powerful enough to recover $4.013\times$ performance of Julia's lz77. 
 
 Using guard synthesis or \tool{} proofs alone still recovers a lot of performance and yields a lot of proofs, although it is hard to say exactly which of the two (ii) and (iii) is the better. Both of them are clearly more powerful than full LLVM pipelines (iv) and (v). \emph{This restates the main thesis of the paper: solver-based expensive analysis pays back.} We believe our guard synthesis algorithm and templates are powerful, though \emph{it beats LLVM's IRCE not just because of our smart design choices, but because our guard synthesis is solver-guided from the beginning.}
  
