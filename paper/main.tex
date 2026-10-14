@@ -1004,9 +1004,10 @@ engine rather than to an exponential DNF.
 We encode LLVM's semantics of poison and
 \texttt{freeze}~\cite{lee2017taming}, following
 Alive2~\cite{lopes2021alive2}, which capture how undefined behavior
-spreads through a program; loaded values are assumed not to be
-poison~\cite{lee2018reconciling} (the \texttt{poison-loads} knob drops
-this assumption).
+spreads through a program. Loaded values are assumed not to be poison: memory holds only values the
+program stored, and poison can be stored only after undefined behavior that
+the source languages either forbid in safe code (Rust, Swift) or check (our
+UBSan specifications). The \texttt{poison-loads} knob drops this assumption.
 
 The query is then $\mathit{Guards} \wedge \mathit{Definitions} \wedge
 c$: satisfiable exactly by the machine states, consistent with
