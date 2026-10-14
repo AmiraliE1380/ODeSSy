@@ -667,7 +667,7 @@ br i1 %oob, label %trap
 (schematic LLVM IR of Julia's standard-library GEMM, check highlighted). The guard
 gives $n_1 = m$ and the loop bounds $i$ by $m$, so the check is dead if
 $n_2 = n_1$, which holds only if the store never overwrites \texttt{A}'s
-length: a fact about the heap that no scalar analysis supplies.}
+length: a heap fact scalar analyses don't supply.}
 \Description{A schematic LLVM IR listing: a load of A's length before
 the loop, named n1, compared with the loop bound m by a dimension guard;
 inside the loop, highlighted in one rounded pink box, a second load of
@@ -811,8 +811,7 @@ else:
 \caption{Guard synthesis and loop cloning. A loop whose safety checks
 cannot be proved dead for every execution (left) is cloned behind a
 synthesized guard (right). The guard is invariant w.r.t the loop and is checked once.
-When it holds, the fast copy runs with checks removed, because the
-solver has proved every check unreachable under the guard. When
+When it holds, the fast copy runs with checks removed, and when
 it fails, the original slow loop runs.}
 \Description{On the left, a slow loop, commented as having safety
 checks. An arrow points right, to an if-else: if the synthesized guard
@@ -907,11 +906,8 @@ in the system converges on declining to optimize.
 \caption{The encoding rules. $\den{x}$ is the bit-vector term for SSA
 value \texttt{x}, at \texttt{x}'s own width $w$; all arithmetic is
 modulo $2^w$. $P(x)$ is a Boolean that holds when \texttt{x} is poison,
-following LLVM's semantics of poison and \texttt{freeze}~\cite{lee2017taming}
-and Alive2's encoding of them~\cite{lopes2021alive2}; each rule also sets
-$P(z)$ to the disjunction of its operands' $P$ (for \texttt{select} and
-\texttt{phi}, of the chosen operand's). Instructions not in the table (and
-non-integer types) fall through to the last row --- the soundness floor.}
+following LLVM's semantics of poison and \texttt{freeze}; each rule also sets
+$P(z)$ to the disjunction of its operands' $P$.}
 \label{tab:encoding}
 \centering
 %% One column (acmsmall): the natural width of this table exceeds the
@@ -1352,7 +1348,7 @@ $^{\S}$100\% under the 60\,s budget used for Table~\ref{tab:speedups}.\par
 \begin{table}
 \caption{Runtime results: every benchmark in the performance campaign. Medians
 of 30 shuffled repetitions, byte-identical output across all builds.
-Speedup is median baseline time over median \tool{} time; the baseline
+Speedup is median \tool{} time over median baseline time; the baseline
 is the checked program through the same \texttt{-O3} pipeline.}
 \label{tab:speedups}
 \small
@@ -1818,13 +1814,11 @@ Table~\ref{tab:compile} gives the compile cost summarized in
 distribution on the two C libraries.
 \begin{table}
 \caption{Compile cost of two configurations on every benchmark of
-Table~\ref{tab:speedups} (x86 c220g2, turbo off, one socket; each module
-compiled on its own, one at a time). \emph{Thorough} is the
+Table~\ref{tab:speedups}. \emph{Thorough} is the
 configuration used for the performance improvement tables (10\,s per query, ten
 threads, inductive encoding and guard synthesis); \emph{Fast} keeps the
 imported analyses, heap facts, and guard synthesis at 10\,ms per query
-on 10 threads, without inductive encoding. Julia SHA-256 proves 14 checks
-on one thread (Table~\ref{tab:static}), 11 on ten.}
+on 10 threads, without inductive encoding. For zlib and zstd the time reported in parenthesis is the time took for the largest module.}
 \label{tab:compile}
 \small
 \setlength{\tabcolsep}{3pt}
@@ -1861,13 +1855,10 @@ Total & & 5138 & & & 885 & & 380\\
 \centering
 \includegraphics[width=\textwidth]{module_latency.pdf}
 \caption{Per-module \tool{} stage time for the two C libraries, modules
-sorted by Thorough time (x86, one module at a time, log scale). Bars:
-Thorough and Fast; dashed line: one minute. Under Thorough, 13 of zlib's 14
+sorted by Thorough time, 10 threads for each tier. Under Thorough, 13 of zlib's 14
 modules and all 18 of zstd's finish in about a minute or less (medians 5.0\,s
 and 1.4\,s); the zlib total of Table~\ref{tab:compile} is set by one
-outlier, \texttt{trees.c}. Fast is lower on every
-module that takes more than half a second under Thorough (median
-$2.9\times$, up to $54\times$).}
+outlier, \texttt{trees.c}.}
 \Description{Two bar-chart panels on a logarithmic time axis from 0.01 to
 over 1000 seconds. Left, zlib's 14 modules; right, zstd's 18 modules, each
 sorted from slowest to fastest under Thorough. Each module has two bars
