@@ -891,7 +891,9 @@ every analysis query passes through a ticket turnstile keyed on
 discovery index, serializing them in one canonical order. That single
 mechanism buys thread safety \emph{and} reproducibility: verdicts,
 output IR, and logs are identical for \texttt{threads=1} and
-\texttt{threads=N} (\S\ref{sec:audit}). \emph{Serial
+\texttt{threads=N}, unless a query finishes close to its time budget, where
+CPU contention can decide whether it completes (at 10\,s per query, three
+Julia SHA-256 proofs and four of CryptoSwift's 377; \S\ref{sec:audit}). \emph{Serial
 transform}: the main thread folds each proven branch to a constant in
 discovery order --- the only IR mutation in the pass --- and standard
 \texttt{simplifycfg}/\texttt{adce} reclaim the dead blocks. Workers
@@ -1225,7 +1227,7 @@ which bounds the inputs, so it is used only to certify guards.
 We take multiple measures to ensure the absence of data races,
 parallelism bugs, and encoding bugs. These checks run in a debug mode as each one would impose a performance tax on the pass. First,
 verdicts, output IR, and logs must be identical for \texttt{threads=1}
-and \texttt{threads=N}, which we verify by \texttt{diff}.
+and \texttt{threads=N} up to the time-budget exception of \S\ref{sec:pipeline}, which we verify by \texttt{diff}.
 
 To make sure our tool is sound, no
 \textsc{unsat} is accepted at face value and is inspected. We perform a \texttt{vacuity} test, meaning that we remove the trap condition from the \texttt{UNSAT} proof and query the solver again with all the other constraints. If
@@ -1722,7 +1724,7 @@ Evaluation and archived in a public repository with a DOI.
 \appendix
 \section{Reproducibility Summary}
 Verdicts, output IR, and logs are invariant in \texttt{threads=N} by the
-ticket-turnstile construction (\S\ref{sec:pipeline}); the acceptance test is a
+ticket-turnstile construction, up to queries that finish close to their time budget (\S\ref{sec:pipeline}); the acceptance test is a
 \texttt{diff} of \texttt{threads=1} vs.\ \texttt{threads=8} outputs.
 Hardware is specified to the CloudLab node type (\texttt{c220g2}), whose
 full specification is published; all timed runs disable turbo and pin to
