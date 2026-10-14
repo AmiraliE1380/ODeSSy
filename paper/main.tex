@@ -362,7 +362,7 @@ contributing analyses, and the majority of our nontrivial proofs draw multiple s
 
 
 We instantiate super-analysis in \tool{}\footnote{On-Demand SMT System.},
-an LLVM module pass targeting one of the most consequential class of
+an LLVM module pass targeting one of the most consequential classes of
 provably-dead code in modern software: \emph{safety checks}. Sanitizers
 such as UBSan~\cite{ubsanDocs} and the native checks of memory-safe
 languages (Swift bounds and overflow checks, Rust panics, Julia bounds
@@ -427,7 +427,7 @@ level (bottom); checks highlighted. Conventional analysis cannot remove
 the check from the hot loop, which imposes a performance tax: scalar
 evolution gives $t - 16 < 48$ and a return-value range gives
 \texttt{w.count} $= 64$, but no analysis logically conjoins the two facts and
-prove that the trap is unreachable.}
+proves that the trap is unreachable.}
 \Description{Above, a Swift listing of the SHA-256 message schedule
 loop with the injected check, if t minus 16 is greater or equal to the
 array count then trap, highlighted in a rounded pink box. Below, five lines of LLVM IR showing the
@@ -466,7 +466,7 @@ of analysis --- from the question it defers: when to use it.
 This paper makes the following contributions:
 \begin{itemize}
 \item \textbf{Super-analysis} (\S\ref{sec:superanalysis}): an aggressive compilation paradigm
-  positioning between conventional heuristic-based optimization and superoptimization in terms of compiler latency and precision. The general recipe for this paradigm is to use solvers as an analysis oracle, while applying cheap conventional rules-based transformation for optimization. We identify heap reasoning as
+  positioned between conventional heuristic-based optimization and superoptimization in terms of compiler latency and precision. The general recipe for this paradigm is to use solvers as an analysis oracle, while applying cheap conventional rules-based transformation for optimization. We identify heap reasoning as
   a crucial analysis problem, formalize it, and show that
   super-analysis can more effectively reason over heap and memory safety
   of certain transformations.
@@ -480,14 +480,14 @@ This paper makes the following contributions:
 \item \textbf{\tool{}} (\S\ref{sec:system}): an LLVM pass and online optimizer
   as an instantiation of super-analysis. \tool{} eliminates safety checks and unlocks further optimizations. It supports C/C++, Swift, Rust, and Julia as frontends and can enable hot-path transformations and speedups.
 \item \textbf{Robust Performance Improvement} (\S\ref{sec:results}):
-  our systematic evaluation of \tool{} on an x86 server show removing hot-loop checks has a cascading effect, unlocking further transformations (unrolling, vectorization, etc.) that enables up to $4.01\times$ speedups for widely used kernels and libraries. \tool{} proofs are generally cheap, which makes it usable as an online pass in the development loop. Multi-threading and per-query budgets make \tool{}'s analysis up to $2.0\times$ faster. A further comparison with Souper (a synthesizing superoptimizer) shows that \tool{} removes several times more checks, in most configurations in less time.
+  our systematic evaluation of \tool{} on an x86 server shows removing hot-loop checks has a cascading effect, unlocking further transformations (unrolling, vectorization, etc.) that enable up to $4.01\times$ speedups for widely used kernels and libraries. \tool{} proofs are generally cheap, which makes it usable as an online pass in the development loop. Multi-threading and per-query budgets make \tool{}'s analysis up to $2.0\times$ faster. A further comparison with Souper (a synthesizing superoptimizer) shows that \tool{} removes several times more checks, in most configurations in less time.
 \end{itemize}
 %% =====================================================================
 \section{Paradigms of Aggressive Compiler Optimization}
 \label{sec:related}
 Every optimizing pass consists of an analysis that licenses a rewrite and a
 transformation that performs it, and each of the two can be cheap or
-expensive. By taking the expensive or cheap route for each two components we get to the different optimization families in Figure~\ref{fig:quadrants}, which include conventional optimization and superoptimization. We introduce two paradigms that are widely underexplored, super-transformation which equality saturation is a strict form of it, and super-analysis which is the main topic of this paper. To the best of our knowledge we have for the first time systematically described the landscape of optimization paradigms, how they relate and how they differ. 
+expensive. By taking the expensive or cheap route for each of the two components we get to the different optimization families in Figure~\ref{fig:quadrants}, which include conventional optimization and superoptimization. We introduce two paradigms that are widely underexplored, super-transformation, of which equality saturation is a strict form, and super-analysis which is the main topic of this paper. To the best of our knowledge we have for the first time systematically described the landscape of optimization paradigms, how they relate and how they differ. 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{quadrants.pdf}
@@ -542,7 +542,7 @@ transformations perform the rewrite. No replacement code is searched
 for, synthesized, or verified. \S\ref{sec:superanalysis} develops the
 paradigm.
 
-Super-analysis shares the verification engine with superoptimization, though the difference in philosophy and architecture makes them radically different in terms of effectiveness and \emph{scaling}. Superoptimizers spend an expensive SMT equivalence checking query per synthesized candidate, making them very slow. A super-analyzing compiler uses the expensive analysis more strategically, consulting the solver whenever its conventional analysis fail and the solver latency is worth the potential unlocked optimization. This makes super-analysis generally faster, something we show in \ref{sec:results-souper}. The unscalable nature of synthesis also limits it to small window peephole optimizations, whereas a super-analyzer can reason more globally. For example it can derive and consume post-conditions of complex loops and functions which is beyond the scope of peephole optimizations.
+Super-analysis shares the verification engine with superoptimization, though the difference in philosophy and architecture makes them radically different in terms of effectiveness and \emph{scaling}. Superoptimizers spend an expensive SMT equivalence checking query per synthesized candidate, making them very slow. A super-analyzing compiler uses the expensive analysis more strategically, consulting the solver whenever its conventional analysis fails and the solver latency is worth the potential unlocked optimization. This makes super-analysis generally faster, something we show in \S\ref{sec:results-souper}. The unscalable nature of synthesis also limits it to small window peephole optimizations, whereas a super-analyzer can reason more globally. For example it can derive and consume post-conditions of complex loops and functions which is beyond the scope of peephole optimizations.
 
 %% =====================================================================
 \section{Super-Analysis}
@@ -560,7 +560,7 @@ the context of a program point as a logical formula, and ask the solver
 whether the property is consistent with it.
 
 The translation proceeds \emph{backwards} from the point of interest.
-In this paper we are concerned safety checks and trap conditions, so starting at the trap condition, it walks the chain of definitions that
+In this paper we are concerned with safety checks and trap conditions, so starting at the trap condition, it walks the chain of definitions that
 feed it and the branch conditions that dominate it, and renders each
 instruction as an exact equation over bit-vectors --- arithmetic,
 comparisons, shifts, overflow intrinsics, and the control flow
@@ -718,7 +718,7 @@ example as a step in release builds.
 %% =====================================================================
 \section{Making Super-Analysis Work}
 \label{sec:making}
-\S\ref{sec:superanalysis} gave the general framework and recipe for super-analysis, this section collects the techniques that make
+\S\ref{sec:superanalysis} gave the general framework and recipe for super-analysis; this section collects the techniques that make
 it practical and useful. Like
 \S\ref{sec:superanalysis}, it is a general recipe, independent of
 LLVM and applicable to any compiler. Encoding a program point's context may not provide enough constraints for a useful proof, therefore we import the lightweight facts a
@@ -772,7 +772,7 @@ is not dead for every execution. Consider the Julia LZ77 compressor in our bench
 length of \texttt{data}, a value known only at run time. In
 unbounded integer arithmetic this test makes the bounds check on
 \texttt{data[i+len]} redundant. In 64-bit arithmetic it does not: Julia
-integer arithmetic silently overflows, and the solver answers with a satisfying assignment in which \texttt{i+len} overflows to $-2^{63}$, passing the programmer's safety guard \texttt{i+len <= n} but triggering  index out of bound (negative index) at \texttt{data[i+len]}. This vulnerability truly exists, and the safety check must remain for this array access.
+integer arithmetic silently overflows, and the solver answers with a satisfying assignment in which \texttt{i+len} overflows to $-2^{63}$, passing the programmer's safety guard \texttt{i+len <= n} but triggering an out-of-bounds index (negative index) at \texttt{data[i+len]}. This vulnerability truly exists, and the safety check must remain for this array access.
 
 Yet no real call looks like these models: an array of nearly $2^{63}$
 bytes, about 9 exabytes, exists on no machine, and for every array that
@@ -810,7 +810,7 @@ else:
 \end{minipage}
 \caption{Guard synthesis and loop cloning. A loop whose safety checks
 cannot be proved dead for every execution (left) is cloned behind a
-synthesized guard (right). The guard is invariant w.r.t the loop and is checked once.
+synthesized guard (right). The guard is invariant w.r.t.\ the loop and is checked once.
 When it holds, the fast copy runs with checks removed, and when
 it fails, the original slow loop runs.}
 \Description{On the left, a slow loop, commented as having safety
@@ -1088,7 +1088,7 @@ not thread-safe, so the facts are imported through the turnstile of
 We add a heap and pointer reasoning machinery to our pass. The \texttt{frame} encoding knob supplies the heap fact of \S\ref{sec:frame}:
 two loads of the same location return the same value if no store
 between them can write that location. Two notions from LLVM decide this.
-A store (or call) \emph{clobbers} a load if it may rewrite in the location
+A store (or call) \emph{clobbers} a load if it may write to the location
 the load reads. \emph{MemorySSA} is LLVM's analysis that links each load
 to the most recent memory write that may clobber it, using alias
 analysis to skip writes that provably touch other locations.
@@ -1235,7 +1235,7 @@ genuinely contradictory guard chain --- the elimination is
 self-distrusting: on zstd it surrendered 61 likely-sound eliminations
 whose guard chains are jointly infeasible for the actual constants,
 because the tool cannot distinguish that situation from its own bugs;
-vacuous counts are reported in every static audit and are zero in vast majority of cases, so a vacuous proof can be considered a warning. The timed builds run without this audit to avoid an extra SMT query, for speed; guard
+vacuous counts are reported in every static audit and are zero in the vast majority of cases, so a vacuous proof can be considered a warning. The timed builds run without this audit to avoid an extra SMT query, for speed; guard
 synthesis checks its own guards for vacuity in every build
 (\S\ref{sec:guards-impl}).
 
@@ -1425,7 +1425,7 @@ from the innermost loop, and with the read of \texttt{A} and the write of
 check-free version. Julia's JIT cannot consume the pass output, so we
 annotate exactly the two proven accesses \texttt{@inbounds} and leave the
 reads of \texttt{B} and \texttt{C} checked: the kernel runs $3.911\times$
-faster on x86, of the $4.174\times$ that removing all four checks gives. The performance improvement os robust as the unchecked kernel is
+faster on x86, of the $4.174\times$ that removing all four checks gives. The performance improvement is robust as the unchecked kernel is
 significantly faster at every one of 14 problem shapes, by $1.5$--$6.8\times$
 (Figure~\ref{fig:gemm-sweep}, Appendix~\ref{sec:app-full}).
 
@@ -1452,7 +1452,7 @@ benchmarks whose speedup involves guard synthesis.
 \begin{table}
 \caption{Guard-synthesis ablation. Each
 pipeline has two columns: the speedup over the unchanged checked
-program, and the number of checks it proves dead. Pipeline (i) beats alternatives at every term. Pipelines (ii) and (iii) which consist of only using one \tool{} component are still significantly better than full LLVM pipelines.}
+program, and the number of checks it proves dead. Pipeline (i) is the best or tied on every benchmark. Pipelines (ii) and (iii) which consist of only using one \tool{} component are still significantly better than full LLVM pipelines.}
 \label{tab:ablation}
 \small
 \setlength{\tabcolsep}{3pt}
@@ -1498,7 +1498,7 @@ median of 2.3\,s, and 11 of them compile in under 10\,s; the slowest is
 Julia SHA-256, at 128\,s. \emph{Fast} takes a median of 0.53\,s and at
 most 2.3\,s, against about 0.1\,s for a conventional \texttt{-O3}. On
 the three repositories Thorough takes 147\,s (CryptoSwift), 117\,s
-(zstd), and 1624\,s (zlib), and Fast 70\,s, 33\,s, and 539\,s. These are massive repositories, and a developer often carse more about per module latency as each module is compiled individually in the development loop. The median zlib module takes 5.0\,s
+(zstd), and 1624\,s (zlib), and Fast 70\,s, 33\,s, and 539\,s. These are massive repositories, and a developer often cares more about per-module latency as each module is compiled individually in the development loop. The median zlib module takes 5.0\,s
 under Thorough and 1.6\,s under Fast, the median zstd module 1.4\,s
 and 0.41\,s, and 24 of the 32 modules compile in under 10\,s under
 Thorough, 29 under Fast. Zlib's \texttt{trees.c} is an outlier which takes
@@ -1553,7 +1553,7 @@ Appendix~\ref{sec:app-full}).
 \begin{figure}
 \centering
 \includegraphics[width=\columnwidth]{dial_matrix_x86_current.pdf}
-\caption{\tool{}'s latency for zlib's \texttt{deflate.c} with sweep over number of threads vs solver timeout. The configuration is Thorough without inductive encoding. Multi-threading and strict timeouts can make \tool{} up to $2.0\times$ faster. A strict timeout of 10ms will preserve a majority of proofs. Parallelism is a more effective measure for reducing latency without loosing proofs.}
+\caption{\tool{}'s latency for zlib's \texttt{deflate.c} with sweep over number of threads vs solver timeout. The configuration is Thorough without inductive encoding. Multi-threading and strict timeouts can make \tool{} up to $2.0\times$ faster. A strict timeout of 10ms will preserve a majority of proofs. Parallelism is a more effective measure for reducing latency without losing proofs.}
 \Description{A five-by-five heatmap, rows are 1, 2, 4, 8 and 10 worker
 threads, columns are per-query timeouts from 1 millisecond to 10
 seconds. Cells are colored from red for slow to green for fast on a log
@@ -1632,7 +1632,7 @@ seconds.}
 \end{figure}
 
 \paragraph{One module in detail.} We wanted to see how the more aggressive Souper mode, Counterexample-Guided Inductive Synthesis (CEGIS) performs. Figure~\ref{fig:souper-deflate} shows
-the two two tools on zlib's compressor, \texttt{deflate.c}, on the same
+the two tools on zlib's compressor, \texttt{deflate.c}, on the same
 input. \tool{} removes 8 checks, in 14\,s under Fast and 21\,s under
 Thorough. Souper's constant mode takes 119\,s and removes nothing. Its
 synthesis mode ran for
@@ -1705,7 +1705,7 @@ that it is sufficient and consistent before the loop is cloned.
 %% =====================================================================
 \section{Conclusion}
 \label{sec:conclusion}
-We introduced super-analysis, an alternative paradigm of aggressive compiler optimization which uses a solver for analysis only. We show that this paradigm is effective: it can speedup our benchmarks up to $4.01\times$ on x86. We also show that it is relatively fast: Super-analysis can be used online, and the cost of compilation can be controlled by parallelization and strict SMT timeout budgets. Our implementation, \tool{} targeted safety check removal and loop cloning under synthesized guards. Future work consists of extending this paradigm into other analyses and optimizations.
+We introduced super-analysis, an alternative paradigm of aggressive compiler optimization which uses a solver for analysis only. We show that this paradigm is effective: it can speed up our benchmarks up to $4.01\times$ on x86. We also show that it is relatively fast: Super-analysis can be used online, and the cost of compilation can be controlled by parallelization and strict SMT timeout budgets. Our implementation, \tool{}, targets safety check removal and loop cloning under synthesized guards. Future work consists of extending this paradigm into other analyses and optimizations.
 %% =====================================================================
 \section*{Data-Availability Statement}
 The \tool{} pass, the benchmark sources and inputs, the harnesses that
@@ -1811,7 +1811,7 @@ Table~\ref{tab:speedups}. \emph{Thorough} is the
 configuration used for the performance improvement tables (10\,s per query, ten
 threads, inductive encoding and guard synthesis); \emph{Fast} keeps the
 imported analyses, heap facts, and guard synthesis at 10\,ms per query
-on 10 threads, without inductive encoding. For zlib and zstd the time reported in parenthesis is the time took for the largest module.}
+on 10 threads, without inductive encoding. For zlib and zstd the time reported in parenthesis is the time taken by the largest module.}
 \label{tab:compile}
 \small
 \setlength{\tabcolsep}{3pt}
