@@ -48,3 +48,5 @@ dataflow_popl_02.pdf
 *_popl_*.pdf
 # root-level run logs belong in results/logs/
 /*.log
+# compiled paper PDFs downloaded from Overleaf
+/Super_Analysis*.pdf
