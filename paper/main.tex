@@ -181,6 +181,43 @@
   howpublished = {USENIX ATC},
   year = {2019}
 }
+@inproceedings{lerner2002composing,
+  author = {Sorin Lerner and David Grove and Craig Chambers},
+  title = {Composing Dataflow Analyses and Transformations},
+  booktitle = {POPL},
+  year = {2002}
+}
+@article{click1995combining,
+  author = {Cliff Click and Keith D. Cooper},
+  title = {Combining Analyses, Combining Optimizations},
+  journal = {ACM Trans. Program. Lang. Syst.},
+  volume = {17},
+  number = {2},
+  pages = {181--196},
+  year = {1995}
+}
+@article{wegman1991constant,
+  author = {Mark N. Wegman and F. Kenneth Zadeck},
+  title = {Constant Propagation with Conditional Branches},
+  journal = {ACM Trans. Program. Lang. Syst.},
+  volume = {13},
+  number = {2},
+  pages = {181--210},
+  year = {1991}
+}
+@inproceedings{cousot1979systematic,
+  author = {Patrick Cousot and Radhia Cousot},
+  title = {Systematic Design of Program Analysis Frameworks},
+  booktitle = {POPL},
+  pages = {269--282},
+  year = {1979}
+}
+@inproceedings{gulwani2006combining,
+  author = {Sumit Gulwani and Ashish Tiwari},
+  title = {Combining Abstract Interpreters},
+  booktitle = {PLDI},
+  year = {2006}
+}
 \end{filecontents*}
 %%
 \documentclass[acmsmall,screen,review,anonymous]{acmart}
@@ -253,7 +290,7 @@
 Aggressive compiler optimization today occupies two distant extremes.
 Conventional optimizers run in milliseconds but reason through ad-hoc
 heuristics that miss opportunities; superoptimizers synthesize faster code
-but take hours, confining them to small kernels and offline use. We introduce
+but take hours, confining them to small kernels and offline use. We adopt and extend
 \emph{super-analysis}, a middle ground that uses an SMT solver purely for
 \emph{analysis} while transformations remain conventional, avoiding
 program synthesis entirely. The key argument for super-analysis is that conventional compilers have rich transformations rules, but proving them to be safe requires complex reasoning: proving a safety check dead often needs facts from four
@@ -341,6 +378,7 @@ no search over the infinite space of programs is performed. The solver answers e
 --- \emph{is this program point reachable under this context?} --- and a
 standard, trivially correct transformation (deleting an unreachable branch)
 consumes the answer.
+The term has been used before for analyses that solve several dataflow problems simultaneously~\cite{wegman1991constant, click1995combining, lerner2002composing}; these combine analyses inside one lattice-based fixpoint, a cheap case of super-analysis. We generalize the notion: a decision procedure combines facts from any analysis, at a cost that places super-analysis between conventional optimization and superoptimization (\S\ref{sec:related}).
 We use an SMT solver as an analysis oracle and feed it with the encoded formula $\mathit{Context} \wedge \mathit{Query}$ and ask if it is satisfiable. Soundness is preserved by construction: an
 \textsc{unsat} verdict is a proof, a \textsc{sat} or \textsc{unknown}
 verdict changes nothing.
@@ -540,7 +578,7 @@ decides whether a rewrite is licensed --- here, whether a safety check
 can ever fire --- and the compiler's existing, conventional
 transformations perform the rewrite. No replacement code is searched
 for, synthesized, or verified. \S\ref{sec:superanalysis} develops the
-paradigm.
+paradigm. The combined analyses that Lerner et al.~\cite{lerner2002composing} call super-analyses fit the same paradigm: they make analysis more expensive and combine different fact sources to license conventional transformations; ours is one of its most aggressive forms, as an SMT solver decides the conjunction of facts from any analysis rather than a product-lattice fixpoint.
 
 Super-analysis shares the verification engine with superoptimization, though the difference in philosophy and architecture makes them radically different in terms of effectiveness and \emph{scaling}. Superoptimizers spend an expensive SMT equivalence checking query per synthesized candidate, making them very slow. A super-analyzing compiler uses the expensive analysis more strategically, consulting the solver whenever its conventional analysis fails and the solver latency is worth the potential unlocked optimization. This makes super-analysis generally faster, something we show in \S\ref{sec:results-souper}. The unscalable nature of synthesis also limits it to small window peephole optimizations, whereas a super-analyzer can reason more globally. For example it can derive and consume post-conditions of complex loops and functions which is beyond the scope of peephole optimizations.
 
@@ -761,7 +799,7 @@ IR and produces facts in its own domain, and no pass computes the
 satisfiability of their conjunction --- nor could a fixed pipeline, since
 which facts matter is different at every check site. Deciding such
 conjunctions is the definitional competence of an SMT
-solver~\cite{demoura2008z3}, making super-analysis necessary rather than merely convenient.
+solver~\cite{demoura2008z3}, making super-analysis necessary rather than merely convenient. Combining analyses is the classic answer to this problem~\cite{click1995combining, lerner2002composing}; those combinations stay within one product lattice, whereas the solver decides the conjunction of facts from different domains directly.
 
 \subsection{Guard Synthesis and Loop Cloning}
 \label{sec:guards}
@@ -1647,6 +1685,9 @@ measure LLVM~18 against LLVM~23 rather than the two tools.
 \S\ref{sec:related} placed super-analysis among the paradigms of
 aggressive optimization; here we compare it with work that shares its
 tools or its target.
+
+\paragraph{Combining analyses.}
+Cousot and Cousot's reduced product~\cite{cousot1979systematic} combines abstract domains; Wegman and Zadeck~\cite{wegman1991constant} and Click and Cooper~\cite{click1995combining} combine specific analyses by hand; Lerner et al.~\cite{lerner2002composing} compose them automatically into a super-analysis; and Gulwani and Tiwari~\cite{gulwani2006combining} combine abstract interpreters through a logical product, in the tradition of the theory combination that underlies SMT solvers. \tool{} uses an SMT solver directly as the combiner, applied to the facts that existing compiler analyses already compute.
 
 \paragraph{SMT for compiler analysis.}
 Closer in spirit to our work is Taneja et al.~\cite{taneja2020knownbits},
