@@ -290,7 +290,7 @@
 Aggressive compiler optimization today occupies two distant extremes.
 Conventional optimizers run in milliseconds but reason through ad-hoc
 heuristics that miss opportunities; superoptimizers synthesize faster code
-but take hours, confining them to small kernels and offline use. We adopt and extend
+but take hours, confining them to small kernels and offline use. We develop and extend
 \emph{super-analysis}, a middle ground that uses an SMT solver purely for
 \emph{analysis} while transformations remain conventional, avoiding
 program synthesis entirely. The key argument for super-analysis is that conventional compilers have rich transformations rules, but proving them to be safe requires complex reasoning: proving a safety check dead often needs facts from four
@@ -372,14 +372,15 @@ middle, and Superoptimization (Souper, STOKE) on the right.}
 
 This paper argues for an under-explored middle ground we call \emph{super-analysis}
 (Figure~\ref{fig:spectrum}): use
-the expensive solver-based analysis for \emph{analysis only}, and leave transformation
+the expensive solver-based analysis, and leave transformation
 to the conventional machinery that already exists. No program is synthesized and
 no search over the infinite space of programs is performed. The solver answers exactly one kind of question
 --- \emph{is this program point reachable under this context?} --- and a
-standard, trivially correct transformation (deleting an unreachable branch)
+standard, trivial transformation (deleting an unreachable branch)
 consumes the answer.
-The term has been used before for analyses that solve several dataflow problems simultaneously~\cite{wegman1991constant, click1995combining, lerner2002composing}; these communicate only through proposed rewrites inside one lattice-based fixpoint, the cheap end of super-analysis. We generalize the notion: a decision procedure combines facts from any analysis, at a cost that places super-analysis between conventional optimization and superoptimization (\S\ref{sec:related}).
-We use an SMT solver as an analysis oracle and feed it with the encoded formula $\mathit{Context} \wedge \mathit{Query}$ and ask if it is satisfiable. Soundness is preserved by construction: an
+
+The term "super-analysis" has been used before for combining analyses that solve several dataflow problems simultaneously~\cite{wegman1991constant, click1995combining, lerner2002composing}. In this prior instantiation of the paradigm, different analyses modules propose rewrites, and each update their own analysis simultaneously given the proposal, which is the cheap end of super-analysis. We generalize the notion: a decision procedure combines facts from the program context and other analyses, at a cost that places super-analysis between conventional optimization and superoptimization (\S\ref{sec:related}). Our version of super-analysis is more aggressive and goes through a different route: we
+use an SMT solver as an analysis oracle and feed it with the encoded formula $\mathit{Context} \wedge \mathit{Query}$ and ask if it is satisfiable. Soundness is preserved by construction: an
 \textsc{unsat} verdict is a proof, a \textsc{sat} or \textsc{unknown}
 verdict changes nothing.
 
@@ -572,7 +573,7 @@ e-graph with the combinations of a fixed rewrite-rule set and extracts
 the cheapest result. This aggressive search ranges over combinations of rewrite rules rather than over
 arbitrary programs, so no candidate needs an equivalence proof as the applied rules are sound and preserve equivalence.
 
-\paragraph{Super-analysis.} This paper introduces this fourth route. A
+\paragraph{Super-analysis.} This paper explores this fourth route. A
 super-analyzer spends the solver on \emph{analysis} alone: the solver
 decides whether a rewrite is licensed --- here, whether a safety check
 can ever fire --- and the compiler's existing, conventional
@@ -799,7 +800,7 @@ IR and produces facts in its own domain, and no pass computes the
 satisfiability of their conjunction --- nor could a fixed pipeline, since
 which facts matter is different at every check site. Deciding such
 conjunctions is the definitional competence of an SMT
-solver~\cite{demoura2008z3}, making super-analysis necessary rather than merely convenient. Combining analyses is the classic answer to this problem~\cite{click1995combining, lerner2002composing}; those combinations stay within one product lattice, whereas the solver decides the conjunction of facts from different domains directly.
+solver~\cite{demoura2008z3}, making super-analysis necessary rather than merely convenient. Previous work has combined analyses iteratively or using a product lattice~\cite{click1995combining, lerner2002composing}, whereas we use an SMT solver to directly conjoin the facts.
 
 \subsection{Guard Synthesis and Loop Cloning}
 \label{sec:guards}
@@ -1741,7 +1742,7 @@ that it is sufficient and consistent before the loop is cloned.
 %% =====================================================================
 \section{Conclusion}
 \label{sec:conclusion}
-We introduced super-analysis, an alternative paradigm of aggressive compiler optimization which uses a solver for analysis only. We show that this paradigm is effective: it can speed up our benchmarks up to $4.01\times$ on x86. We also show that it is relatively fast: Super-analysis can be used online, and the cost of compilation can be controlled by parallelization and strict SMT timeout budgets. Our implementation, \tool{}, targets safety check removal and loop cloning under synthesized guards. Future work consists of extending this paradigm into other analyses and optimizations.
+We develop and extend super-analysis, an alternative paradigm of aggressive compiler optimization which uses a solver for analysis only. We show that this paradigm is effective: it can speed up our benchmarks up to $4.01\times$ on x86. We also show that it is relatively fast: Super-analysis can be used online, and the cost of compilation can be controlled by parallelization and strict SMT timeout budgets. Our implementation, \tool{}, targets safety check removal and loop cloning under synthesized guards. Future work consists of extending this paradigm into other analyses and optimizations.
 %% =====================================================================
 \section*{Data-Availability Statement}
 The \tool{} pass, the benchmark sources and inputs, the harnesses that
