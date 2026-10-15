@@ -525,7 +525,7 @@ This paper makes the following contributions:
 \label{sec:related}
 Every optimizing pass consists of an analysis that licenses a rewrite and a
 transformation that performs it, and each of the two can be cheap or
-expensive. By taking the expensive or cheap route for each of the two components, we get to the different optimization families in Figure~\ref{fig:quadrants}, which include conventional optimization and superoptimization. We introduce two paradigms that are widely underexplored, super-transformation, of which equality saturation is a strict form, and super-analysis, which is the main topic of this paper. We systematically described the landscape of optimization paradigms, how they relate and how they differ. 
+expensive. By taking the expensive or cheap route for each of the two components, we get to the different optimization families in Figure~\ref{fig:quadrants}, which include conventional optimization and superoptimization. We introduce two under-explored paradigms: (1) \emph{super-transformation}, of which equality saturation is a strict form, and (2) \emph{super-analysis}, a generalization of the combined analyses of Click and Cooper~\cite{click1995combining} and Lerner et al.~\cite{lerner2002composing}, and the focus of this paper. We systematically describe the design space these paradigms span, along two axes, the cost of analysis and the cost of transformation, and how they relate to each other. 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{quadrants.pdf}
