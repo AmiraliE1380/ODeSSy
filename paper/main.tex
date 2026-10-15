@@ -1939,50 +1939,6 @@ speedups between 1.2x and 4.1x.}
 \label{fig:gemm-sweep}
 \end{figure}
 
-\section{Residue: What the Current Fact Sources Cannot Prove}
-\label{sec:future}
-The checks \tool{} leaves behind are not a random remainder. They fall
-into four classes, each defined by the \emph{kind} of fact that is
-missing rather than by the benchmark it appears in.
-
-\paragraph{(a) Symbolic trip counts --- solved.}
-A loop counter bounded by an SSA-valued expression rather than a
-constant. Dominance-based guard collection cannot see the bound, because
-the back-edge test that establishes it does not dominate the check. The
-\textsc{scevsym} fact source (\S\ref{sec:system-facts}) supplies it:
-umin-exact for single-exit loops, a symbolic maximum for multi-exit
-loops, exact division for strided counts. This class is closed.
-
-\paragraph{(b) Heap and interprocedural length invariants.}
-The length that bounds an index lives in memory, not in a register:
-Swift's \texttt{array.count} on a runtime allocation, Rust's \texttt{Vec}
-length behind opaque provenance, Julia's array-header \texttt{size}
-field on an argument. Each load of it is a fresh SMT variable, so a
-guard that constrains one load says nothing about the next. Heap
-invariance (\S\ref{sec:frame}) closes the intraprocedural case where the
-two loads read a provably unclobbered location --- this is what takes
-stdlib GEMM from 0 to 9 of 16 --- but the interprocedural and
-call-carried cases remain.
-
-\paragraph{(c) Anchor gaps --- solved.}
-One check site reached by several predecessors, or several sites sharing
-one error block, so that a single query has to hold on paths with
-incompatible contexts. Splitting the obligation per incoming edge, and
-allowing partial elimination of a shared error block, closes it.
-
-\paragraph{(d) Non-unit and variable stride induction.}
-Scalar evolution computes no trip count at all, in any form, for a loop
-whose back-edge test compares an unsigned counter advancing by a stride greater
-than one --- base64 at stride 3, crc32 at stride 4, UTF-8 validation at
-a data-dependent stride of 1 to 4. No amount of trip-count machinery
-helps, because there is no trip count to translate. The remedy is to
-stop asking for one: encode the induction structurally, as a base case
-plus a step case over a copy of the loop body
-(\S\ref{sec:app-machinery}). That closes crc32's four
-stride-4 bounds checks; base64 and UTF-8 remain, the former because its
-residue is also class~(b). Guard synthesis (\S\ref{sec:guards}) reaches
-base64's hot checks instead, in a guarded copy of the loop.
-
 \section{Definitional Encoding of Loop Bounds}
 \label{sec:app-defs}
 Two refinements make trip-count facts usable on vectorized loops, each
