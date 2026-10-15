@@ -525,7 +525,7 @@ This paper makes the following contributions:
 \label{sec:related}
 Every optimizing pass consists of an analysis that licenses a rewrite and a
 transformation that performs it, and each of the two can be cheap or
-expensive. By taking the expensive or cheap route for each of the two components, we get to the different optimization families in Figure~\ref{fig:quadrants}, which include conventional optimization and superoptimization. We introduce two under-explored paradigms: (1) \emph{super-transformation}, of which equality saturation is a strict form, and (2) \emph{super-analysis}, a generalization of the combined analyses of Click and Cooper~\cite{click1995combining} and Lerner et al.~\cite{lerner2002composing}, and the focus of this paper. We systematically describe the design space these paradigms span, along two axes, the cost of analysis and the cost of transformation, and how they relate to each other. 
+expensive. By taking the expensive or cheap route for each of the two components, we get to the different optimization families in Figure~\ref{fig:quadrants}, which include conventional optimization and superoptimization. We introduce two under-explored paradigms: (1) \emph{super-transformation}, of which equality saturation is a strict form, and (2) \emph{super-analysis}, a generalization of the combined analyses of Click and Cooper~\cite{click1995combining} and Lerner et al.~\cite{lerner2002composing}, and the focus of this paper. We systematically describe the design space these paradigms span, and how they differ and compare. 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{quadrants.pdf}
@@ -1514,7 +1514,7 @@ guarded copy of Table~\ref{tab:speedups} reaches $1.107\times$.\par
 
 \emph{Pipeline (i) is the best or tied on every benchmark}, demonstrating that the combination of guard synthesis and \tool{} proofs is the most powerful and fruitful. Pipeline (i) either matches or beats every other pipeline. It is the only pipeline powerful enough to recover $4.013\times$ performance of Julia's lz77. 
 
-Using guard synthesis or \tool{} proofs alone still recovers a lot of performance and yields a lot of proofs, although it is hard to say exactly which of the two (ii) and (iii) is the better. Both of them are better than or equal to the full LLVM pipelines (iv) and (v) in most cases. \emph{This restates the main thesis of the paper: solver-based expensive analysis pays back.} We believe our guard synthesis algorithm and templates are powerful, though \emph{it beats LLVM's IRCE not just because of our smart design choices, but because our guard synthesis is solver-guided from the beginning.}
+Using guard synthesis or \tool{} proofs alone still recovers a lot of performance and yields a lot of proofs, although it is hard to say exactly which of the two (ii) and (iii) is the better. Both of them are better than or equal to the full LLVM pipelines (iv) and (v) in most cases. \emph{This restates the main thesis of the paper: solver-based expensive analysis pays back.} We believe our guard synthesis algorithm and templates are powerful, though it beats LLVM's IRCE not just because of our smart design choices, but \emph{because our guard synthesis is solver-guided from the beginning.}
  
 
 \subsection{RQ3: Is \tool{} fast enough for real-world use?}
@@ -1741,7 +1741,7 @@ that it is sufficient and consistent before the loop is cloned.
 %% =====================================================================
 \section{Conclusion}
 \label{sec:conclusion}
-We develop and extend super-analysis, an alternative paradigm of aggressive compiler optimization. Our instantiation of super-analysis uses a solver for analysis only. We show that this paradigm is effective: it can speed up our benchmarks up to $4.01\times$ on x86. We also show that it is relatively fast: Super-analysis can be used online, and the cost of compilation can be controlled by parallelization and strict SMT timeout budgets. Our implementation, \tool{}, targets safety check removal and loop cloning under synthesized guards. Future work consists of extending this paradigm into other analyses and optimizations.
+We develop and extend super-analysis, an alternative paradigm of aggressive compiler optimization. Our instantiation of super-analysis uses a solver for analysis only, keeping transformations conventional. We show that this paradigm is effective: it can speed up our benchmarks up to $4.01\times$ on x86. We also show that it is relatively fast: Super-analysis can be used online, and the cost of compilation can be controlled by parallelization and strict SMT timeout budgets. Our implementation, \tool{}, targets safety check removal and loop cloning under synthesized guards. Future work consists of extending this paradigm into other analyses and optimizations.
 %% =====================================================================
 \section*{Data-Availability Statement}
 The \tool{} pass, the benchmark sources and inputs, the harnesses that
