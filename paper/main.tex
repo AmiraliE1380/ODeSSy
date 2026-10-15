@@ -292,7 +292,7 @@ Conventional optimizers run in milliseconds but reason through ad-hoc
 heuristics that miss opportunities; superoptimizers synthesize faster code
 but take hours, confining them to small kernels and offline use. We develop and extend
 \emph{super-analysis}, a middle ground that uses expensive solver-based analysis while transformations remain conventional, avoiding
-program synthesis entirely. The key argument for super-analysis is that conventional compilers have rich transformations rules, but proving them to be safe requires complex reasoning: proving a safety check dead often needs facts from four
+program synthesis entirely. The key argument for super-analysis is that conventional compilers have rich transformation rules, but proving them to be safe requires complex reasoning: proving a safety check dead often needs facts from four
 independent LLVM analyses \emph{simultaneously} --- a conjunctive entailment
 problem suited to an SMT solver, not to any single dataflow pass.
 
@@ -380,11 +380,11 @@ consumes the answer.
 
 The term super-analysis was used by Lerner et al.~\cite{lerner2002composing} for different analyses combined into one lattice-based fixpoint, extending earlier hand-combined analyses~\cite{wegman1991constant, click1995combining}; we generalize it into a paradigm: expensive, unconventional analysis enabling conventional transformations. Our version of super-analysis is the most aggressive form, where an SMT solver is used as an analysis oracle (\S\ref{sec:related}).
 We feed the solver with the formula $\mathit{Context} \wedge \mathit{Query}$, and ask for satisfiability. An
-\textsc{unsat} verdict is a proof that licenses our transformations, a \textsc{sat} or \textsc{unknown}
+\textsc{unsat} verdict is a proof that licenses our transformations; a \textsc{sat} or \textsc{unknown}
 verdict changes nothing.
 
 
-SMT-based compiler analysis is more precise than native lightweight compiler analysis. Our central empirical finding is that the missed opportunities require complex reasoning  over multiple domains and from different fact sources to prove safe. Proving
+SMT-based compiler analysis is more precise than native lightweight compiler analysis. Our central empirical finding is that the missed opportunities require complex reasoning over multiple domains and from different fact sources to prove safe. Proving
 one bounds check dead in a real SHA-256 kernel
 (Figure~\ref{fig:simple-example}) requires the return-value
 range of one function, a scalar-evolution loop bound, a value-range fact
@@ -525,7 +525,7 @@ This paper makes the following contributions:
 \label{sec:related}
 Every optimizing pass consists of an analysis that licenses a rewrite and a
 transformation that performs it, and each of the two can be cheap or
-expensive. By taking the expensive or cheap route for each of the two components we get to the different optimization families in Figure~\ref{fig:quadrants}, which include conventional optimization and superoptimization. We introduce two paradigms that are widely underexplored, super-transformation, of which equality saturation is a strict form, and super-analysis which is the main topic of this paper. To the best of our knowledge we have for the first time systematically described the landscape of optimization paradigms, how they relate and how they differ. 
+expensive. By taking the expensive or cheap route for each of the two components, we get to the different optimization families in Figure~\ref{fig:quadrants}, which include conventional optimization and superoptimization. We introduce two paradigms that are widely underexplored, super-transformation, of which equality saturation is a strict form, and super-analysis, which is the main topic of this paper. To the best of our knowledge we have for the first time systematically described the landscape of optimization paradigms, how they relate and how they differ. 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{quadrants.pdf}
@@ -580,7 +580,7 @@ transformations perform the rewrite. No replacement code is searched
 for, synthesized, or verified. \S\ref{sec:superanalysis} develops the
 paradigm. The combined analyses that Lerner et al.~\cite{lerner2002composing} call super-analyses belong to this paradigm: they combine several analyses into one, more precise than running them separately and more expensive than any one of them, while the transformations they license stay conventional. They sit at its cheap end: the analyses never share facts directly. Each analysis proposes a rewrite which updates other analyses simultaneously. Logical products of abstract domains~\cite{gulwani2006combining} combine facts more directly; ours is the most aggressive form, in which an SMT solver decides the conjunction of every analysis's facts, together with an exact encoding of the code. We use super-analysis to denote the aggressive, solver-based version from this point. 
 
-\paragraph{How paradigms relate.} Our super-analysis methodology shares the verification engine with superoptimizers, though the difference in philosophy and architecture makes them radically different in terms of effectiveness and \emph{scaling}. Superoptimizers spend an expensive SMT equivalence checking query per synthesized candidate, making them very slow. A super-analyzing compiler uses the expensive analysis more strategically, consulting the solver whenever its conventional analysis fails and the solver latency is worth the potential unlocked optimization. This makes super-analysis generally faster, something we show in \S\ref{sec:results-souper}. The unscalable nature of synthesis also limits it to small window peephole optimizations, whereas a super-analyzer can reason more globally. For example it can derive and consume post-conditions of complex loops and functions which is beyond the scope of peephole optimizations.
+\paragraph{How paradigms relate.} Our super-analysis methodology shares the verification engine with superoptimizers, though the difference in philosophy and architecture makes them radically different in terms of effectiveness and \emph{scaling}. Superoptimizers spend an expensive SMT equivalence-checking query per synthesized candidate, making them very slow. A super-analyzing compiler uses the expensive analysis more strategically, consulting the solver whenever its conventional analysis fails and the solver latency is worth the potential unlocked optimization. This makes super-analysis generally faster, something we show in \S\ref{sec:results-souper}. The unscalable nature of synthesis also limits it to small-window peephole optimizations, whereas a super-analyzer can reason more globally. For example, it can derive and consume post-conditions of complex loops and functions, which are beyond the scope of peephole optimizations.
 
 %% =====================================================================
 \section{Super-Analysis}
