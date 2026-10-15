@@ -378,7 +378,7 @@ no search over the infinite space of programs is performed. The solver answers e
 standard, trivial transformation (deleting an unreachable branch)
 consumes the answer.
 
-The term super-analysis was used by Lerner et al.~\cite{lerner2002composing} for different analyses combined into one lattice-based fixpoint, extending earlier hand-combined analyses~\cite{wegman1991constant, click1995combining}; we generalize it into a paradigm: expensive, unconventional analysis used by conventional transformations. Our version of super-analysis is the most aggressive form, where an SMT solver is used as an analysis oracle (\S\ref{sec:related}).
+The term super-analysis was used by Lerner et al.~\cite{lerner2002composing} for different analyses combined into one lattice-based fixpoint, extending earlier hand-combined analyses~\cite{wegman1991constant, click1995combining}; we generalize it into a paradigm: expensive, unconventional analysis enabling conventional transformations. Our version of super-analysis is the most aggressive form, where an SMT solver is used as an analysis oracle (\S\ref{sec:related}).
 We feed the solver with the formula $\mathit{Context} \wedge \mathit{Query}$, and ask for satisfiability. An
 \textsc{unsat} verdict is a proof that licenses our transformations, a \textsc{sat} or \textsc{unknown}
 verdict changes nothing.
@@ -518,7 +518,7 @@ This paper makes the following contributions:
 \item \textbf{\tool{}} (\S\ref{sec:system}): an LLVM pass and online optimizer
   as an instantiation of super-analysis. \tool{} eliminates safety checks and unlocks further optimizations. It supports C/C++, Swift, Rust, and Julia as frontends and can enable hot-path transformations and speedups.
 \item \textbf{Robust Performance Improvement} (\S\ref{sec:results}):
-  our systematic evaluation of \tool{} on an x86 server shows removing hot-loop checks has a cascading effect, unlocking further transformations (unrolling, vectorization, etc.) that enable up to $4.01\times$ speedups for widely used kernels and libraries. \tool{} proofs are generally cheap, which makes it usable as an online pass in the development loop. Multi-threading and per-query budgets make \tool{}'s analysis up to $2.0\times$ faster. A further comparison with Souper (a synthesizing superoptimizer) shows that Thorough removes significantly more checks in less time.
+  our systematic evaluation of \tool{} on an x86 server shows removing hot-loop checks has a cascading effect, unlocking further transformations (unrolling, vectorization, etc.) that enable up to $4.01\times$ speedups for widely used kernels and libraries. \tool{} proofs are generally cheap, which makes it usable as an online pass in the development loop. Multi-threading and per-query budgets make \tool{}'s analysis up to $2.0\times$ faster. A further comparison with Souper (a synthesizing superoptimizer) shows that \tool{} removes significantly more checks in less time.
 \end{itemize}
 %% =====================================================================
 \section{Paradigms of Aggressive Compiler Optimization}
