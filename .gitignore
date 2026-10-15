@@ -50,3 +50,4 @@ dataflow_popl_02.pdf
 /*.log
 # compiled paper PDFs downloaded from Overleaf
 /Super_Analysis*.pdf
+/Super_Analysis*.zip
