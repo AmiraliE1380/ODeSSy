@@ -41,3 +41,4 @@ paper/quadrants.png
 results/static/guard_vs_llvm/*/*.ll
 # raw induction-sweep logs; tracked as results/static/ind_sweep_logs.tgz
 results/static/ind_sweep/
+dataflow_popl_02.pdf

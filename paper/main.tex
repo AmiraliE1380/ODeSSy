@@ -770,7 +770,7 @@ is not dead for every execution. Consider the Julia LZ77 compressor in our bench
 \texttt{data[i+len]} only while \texttt{i+len <= n}, where $n$ is the
 length of \texttt{data}, a value known only at run time. In
 unbounded integer arithmetic this test makes the bounds check on
-\texttt{data[i+len]} redundant. In 64-bit arithmetic it does not: if \texttt{n} is close to $2^{63}$, \texttt{i+len} can exceed $2^{63}-1$, the largest 64-bit integer. In this case Julia
+\texttt{data[i+len]} redundant. In 64-bit arithmetic it does not: if \texttt{n} is close to $2^{63}-1$, \texttt{i+len} can exceed $2^{63}-1$, the largest 64-bit integer. In this case Julia
 integer arithmetic silently overflows, and the solver answers with a satisfying assignment in which \texttt{i+len} overflows to $-2^{63}$, passing the programmer's safety guard \texttt{i+len <= n} but triggering an out-of-bounds index (negative index) at \texttt{data[i+len]}. This vulnerability truly exists, and the safety check must remain for this array access.
 
 Yet no real call looks like these models: an array of nearly $2^{63}$
