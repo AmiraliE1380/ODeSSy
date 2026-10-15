@@ -51,3 +51,8 @@ dataflow_popl_02.pdf
 # compiled paper PDFs downloaded from Overleaf
 /Super_Analysis*.pdf
 /Super_Analysis*.zip
+
+# OOPSLA submission files downloaded from HotCRP, and unpacked copies
+/oopsla27-*.pdf
+/oopsla27-*.zip
+/supp/
