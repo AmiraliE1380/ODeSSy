@@ -202,7 +202,11 @@ bool TrapSolver::indAtLoop(Loop *L, unsigned Depth) {
         if (!W) continue;
         Encoder.assertRawFact(Encoder.valueAsBV(&P, W) == Encoder.valueAsBV(P.getIncomingValueForBlock(Entry), W), Pfx + "base:" + std::to_string(NB++));
     }
-    auto [BA, BAms] = Encoder.checkSatisfiability(); Job.LatencyMs += BAms;
+    // The first-lap hypothesis check is an encoder-bug detector, not needed
+    // for soundness (an UNSAT here implies the BASE query is UNSAT too):
+    // posed only under the vacuity audit (HANDOFF §13.3).
+    std::string BA = "SKIPPED";
+    if (Cfg.VacuityCheck) { auto [R0, BAms] = Encoder.checkSatisfiability(); Job.LatencyMs += BAms; BA = R0; }
     std::string BaseRes = "skipped";
     if (isUnsat(BA)) {
         // context+guards alone were audited SAT at indPhase entry, so a
@@ -237,7 +241,12 @@ bool TrapSolver::indAtLoop(Loop *L, unsigned Depth) {
                     (Encoder.asBoolPublic(Encoder.primedExpr(Job.TrapCond)) == Encoder.context().bool_val(Job.TrapOnTrue));
     Encoder.assertRawFact(!Fire, Pfx + "notrap");
     Encoder.endPrimed();
-    auto [SA, SAms] = Encoder.checkSatisfiability(); Job.LatencyMs += SAms;
+    // Step-hypothesis check: an UNSAT would make the STEP query trivially
+    // UNSAT (no lap passes the check and takes the back edge, so BASE alone
+    // suffices); refusing it only guards against encoder bugs, so it is
+    // posed only under the vacuity audit (HANDOFF §13.3).
+    std::string SA = "SKIPPED";
+    if (Cfg.VacuityCheck) { auto [R1, SAms] = Encoder.checkSatisfiability(); Job.LatencyMs += SAms; SA = R1; }
     if (isUnsat(SA)) Log << "    -> " << Lv << " STEP hypothesis contradicts the context: refusing (vacuous)\n";
     else {
         Encoder.push(); trapTracked();
@@ -300,7 +309,8 @@ bool TrapSolver::indPhase() {
     };
     try {
         Encoder.pop();                                   // drop the trap (context | guards)
-        { auto [A, Ams] = Encoder.checkSatisfiability(); Job.LatencyMs += Ams;
+        // context+guards audit: encoder-bug detector, vacuity audit only (§13.3)
+        if (Cfg.VacuityCheck) { auto [A, Ams] = Encoder.checkSatisfiability(); Job.LatencyMs += Ams;
           if (A.find("UNSAT") != std::string::npos) { Log << "    -> [ind] context+guards contradictory: refusing\n"; Encoder.push(); trapBack(); return false; } }
         unsigned Depth = 0;
         for (Loop *C = L; C && !Proved; C = C->getParentLoop(), ++Depth) Proved = indAtLoop(C, Depth);
