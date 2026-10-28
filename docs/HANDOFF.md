@@ -3605,3 +3605,138 @@ Does not remove the need for the loads assumption on gemm's size loads.
   fse_compress and zstd_decompress_block, gained elsewhere), CryptoSwift.
 * Decide on the loads-defined assumption (knob + paper sentence citing
   lee2018reconciling) and on the §12.5 induction.
+
+## 13. After the OOPSLA'27 R1 submission: next steps (Oct 27 2026)
+
+Submitted Oct 14 2026 as OOPSLA'27 paper #366 (main PDF 24 pp, appendix +
+anonymized artifact as supplementary). Paper fix after submission: guard
+synthesis runs only after a SAT direct query (§5.6 and Algorithm 2 had said
+"SAT or UNKNOWN"; the code, TrapSolver.cpp `if (Cfg.MultiVersion && ...
+find("SAT"))`, never runs it on UNKNOWN). `ind` does run on SAT or UNKNOWN.
+
+### 13.1 Where the serial time is (measured structure, not yet profiled)
+* Stage 1 discovery: serial, main thread.
+* Stage 2: one job per trap edge, parallel across jobs; but inside a job
+  every query is sequential, and fact import (heavy, ind, T3 prep) passes
+  the FactGate turnstile one job at a time, in discovery order.
+* Induction (`indPhase`/`indAtLoop`): 1 context check, then per loop level
+  4 queries in sequence (base-context, base, step-hypothesis, step), then
+  the next enclosing loop. A 3-deep trap: up to 13 queries.
+* Guard synthesis (`mvPhase`): verification (round 0, then round 1),
+  one query per minimization drop, one per loosening rung, the vacuity
+  query, x2 for narrow Q_A/Q_B variants. Dozens per trap, sequential.
+* Stage 2b narrow retry: fully serial on the main thread (it needs SE/LVI
+  without the gate). Dominant on zlib trees.c.
+* Effect: the deflate.c dial tops out at 2.0x (4 workers).
+
+### 13.2 Decision: the solver query is the unit of parallel work
+* Stage 1 snapshots every analysis fact a job needs (RM/KB/LVI/SCEV/SCEVSYM
+  terms, per value, shared by the jobs of a function), serially. Workers
+  never call an LLVM analysis afterwards: the turnstile disappears.
+  LLVM already memoizes SE/LVI/KB within one compile, so the win is
+  (a) no turnstile waits, (b) each fact is translated to Z3 once.
+* One queue of query tasks, a worker pool, results committed in discovery
+  order (as today). A task that needs a previous result (the next
+  minimization drop uses H minus the last successful drop) is enqueued by
+  the completion of its predecessor: dynamic task spawning, no static
+  graph. Optional speculation: test all single drops at once, keep the
+  successful ones, recheck the combination with one query.
+* Independent tasks run at once: the base pair and step pair of each loop
+  level, all loop levels, the verification query and the vacuity query.
+* The narrow retry becomes ordinary tasks (needs the Stage-1 snapshot).
+* Watch: more parallel queries near a budget increase contention-driven
+  verdict differences (threads=1 vs N, the Julia SHA-256 14-vs-11 gap).
+
+### 13.3 Vacuity queries: keep, but gate the induction ones
+* Guard vacuity (Gamma AND H unsat): KEEP. Removing it is sound (a
+  contradictory H is false on every real execution, so the fast copy never
+  runs) but costs a never-run loop clone (code size, second -O3 time),
+  inflates the reported guarded-removal counts, and loses a bug detector.
+  It is one query against dozens in minimization; run it in parallel with
+  verification.
+* Induction base-context and step-hypothesis checks: not needed for
+  soundness. If the step hypothesis is unsat, no iteration passes the check
+  and takes the back edge, so the base case alone proves the trap dead;
+  the code refuses as "vacuous" only to catch encoder bugs. Gate both
+  (and the pre-ind context check) under the `vacuity` knob: -2 queries per
+  loop level in production. No IR simplification follows from them (an
+  unsat context may be an encoder bug, so nothing is folded).
+
+### 13.4 Guard synthesis from the SAT model (planned)
+Today the candidates come from templates T1-T3; the SAT model is only
+logged (so §4.2's "guided by those models" overstates the code).
+* Prune: if the model's loop-invariant values are realistic (lengths and
+  counts far below the sane-range rungs), the trap is reachable on
+  realistic inputs and no guard helps: skip mvPhase (saves dozens of
+  queries).
+* Target: if the model shows a huge value (e.g. n near 2^63), propose
+  bounds just below it first (counterexample-guided candidate order).
+
+### 13.5 Caching (Tatlock: "cache it")
+What Souper does (lib/Extractor/Solver.cpp, README):
+* MemCachingSolver (default, in RAM) and ExternalCachingSolver (Redis via
+  KVStore, `-souper-external-cache`; on by default in sclang).
+* Key: the full canonical Souper-IR text of the query, built by
+  GetReplacementLHSString(BPCs, PCs, LHS, Context): the LHS DAG plus its
+  path conditions and block path conditions, printed with canonical value
+  names. Not hashed by Souper (the raw string is the Redis key); keys longer
+  than MaxLHSSize are not cached.
+* Value: the RHS string (empty = no replacement), or a "noinfer" marker.
+* No versioning: "stop Redis and delete its dump file any time Souper is
+  upgraded".
+* It hits often because a Souper query is a small, self-contained,
+  location-independent peephole DAG.
+Why that alone does not fit ODeSSy: our query is the whole context slice
+plus imported facts; building it (slice, encoding, fact import) is the main
+cost on slow modules (trees.c), so a formula-keyed cache saves only solver
+time, and identical formulas across functions should be rare.
+
+Design:
+* L1, per-function verdict cache (the main win). Key = SHA-256 over:
+  a canonical serialization of the optimized function (names, metadata
+  IDs and debug locations replaced by canonical numbering, metadata
+  CONTENTS included; LLVM's StructuralHash is a 64-bit change detector,
+  usable as a fast pre-filter but not as the key; FunctionComparator gives
+  the name-independent equivalence notion), the attributes and
+  return-range/metadata of every callee (facts are imported from callees),
+  the knob string, the encoder version, the LLVM version. Value = every
+  trap-edge verdict (in canonical edge order) and every synthesized guard.
+  Store the canonical form too and compare on a hit. A hit skips encoding,
+  fact import and solving.
+* Granularity: the function, not the trap slice. Imported facts come from
+  whole-function analyses (loop bounds, ranges); the same slice in a
+  function changed elsewhere can receive different facts, and an UNSAT that
+  used the old facts may not hold. Keying on the facts would require
+  computing them, which is the cost being avoided.
+* UNKNOWN is stored with its budget and reused only for budgets <= it;
+  SAT/UNSAT reuse at any budget.
+* Hash width: never 32 bits (a collision applies another function's
+  "remove this check" verdict to different code). SHA-256 (256 bits).
+* L2, per-query cache (Souper-style, canonical SMT-LIB with sorted
+  assertions and first-occurrence variable renaming): only if profiling
+  after L1 shows repeated identical queries.
+* Storage: an on-disk directory keyed by hash (ccache-like) or SQLite.
+* Evaluation: replay the last N commits of zlib and zstd; build commit k
+  with the cache from k-1; report cold, warm, hit rate, and Souper with
+  its own external cache ON (fair comparison; the paper ran it OFF).
+
+### 13.6 Profile before implementing
+Add timers around encodePhase, factPhase (including turnstile wait),
+solvePhase, mvPhase, indPhase, and Stage 2b; sum them for zlib trees.c and
+deflate.c and for CryptoSwift. Decide L1 cache vs snapshot vs query-level
+scheduling by where the time actually goes.
+
+### 13.7 Remaining todo for the arXiv version
+* Paper: full rewrite pass; make the combiner ladder (separate passes,
+  combined fixpoint [Lerner et al.], logical product, decision procedure)
+  the spine of §2 instead of an inserted paragraph.
+* Rerun every experiment on one node and record the hostname (the GEMM
+  campaign node 010809 gave 3.91x, node 011007 gives 3.20x; recovery
+  96-98% on both); bootstrap confidence intervals on the 30 repetitions.
+* Fact-source ablation table (proofs lost without heavy/frame/ind/mv).
+* Fast vs Souper on zstd (3 vs 5 checks): close or explain.
+* De-anonymize: \documentclass[acmsmall,screen,nonacm]{acmart}, authors,
+  acknowledgments (and the generative-AI disclosure).
+* Artifact: a Docker image instead of the CloudLab image. The CloudLab image
+  is odessy-c220g2-oct26 (Oct 13, 8.6 GB, /opt/llvm + /opt/odessy-preserve
+  tarballs); no profile uses it yet; boot test pending.
