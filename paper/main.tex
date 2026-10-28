@@ -1160,7 +1160,7 @@ and only a small fraction of alias queries affects them~\cite{relaxingalias2025}
 \label{sec:guards-impl}
 \tool{} attempts guard synthesis (pass parameters \texttt{mv} and
 \texttt{narrow}) only for a trap whose direct query returned
-\textsc{sat} or \textsc{unknown}, and only when the trap sits inside a
+\textsc{sat}, and only when the trap sits inside a
 loop. A trap that is already proved dead never reaches this step, so
 guard synthesis can add proofs but never lose one. It proceeds in five
 steps (Algorithm~\ref{alg:guards}): generate candidate guards, verify
@@ -1172,8 +1172,8 @@ the guard for vacuity, and transform the loop.
 \label{alg:guards}
 \small
 \begin{algorithmic}[1]
-\Require the direct query $\Gamma \wedge c$ returned \textsc{sat} or
-  \textsc{unknown} \Comment{$\Gamma$: context, facts, guards}
+\Require the direct query $\Gamma \wedge c$ returned \textsc{sat}
+  \Comment{$\Gamma$: context, facts, guards}
 \State $C \gets$ candidates from templates T1--T3 over values
   invariant in $L$ \Comment{generation}
 \If{$\mathrm{check\mbox{-}sat}(\Gamma \wedge c \wedge \bigwedge C) \neq
