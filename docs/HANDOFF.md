@@ -3753,3 +3753,52 @@ scheduling by where the time actually goes.
 5. poison-loads sensitivity numbers; optional §12.5 induction.
 6. Rerun all experiments on one recorded node; CIs; fact-source ablation.
 7. Paper pass and de-anonymization; Docker artifact (§13.7).
+
+## 14. Mock review (AI reviewer, Oct 28 2026): Weak Reject, borderline after discussion
+Concerns, with our assessment and effort:
+1. Headline speedups not pass output: all Julia rows (lz77 4.01x, GEMM 3.91x)
+   are hand-applied @inbounds / hand-versioned copies. Fix options:
+   reframe as "proof-licensed annotations" (hours); or an end-to-end Julia
+   path (JIT plugin hook or a static IR compilation via PackageCompiler /
+   julia --output-o: weeks, uncertain).
+2. Configuration inconsistency: lz77 4.01x needs a 60 s budget (2/4 checks at
+   10 s). Fix: report the 10 s row as the default, 60 s as a marked extra
+   (hours).
+3. Related work: discuss LLVM ConstraintElimination (Fourier-Motzkin over
+   dominating linear facts; it already runs inside -O3, so every surviving
+   check escaped it: say why: non-linear, no SCEV/range/heap facts);
+   constraint-based BCE (Pugh's Omega test; Xi & Pfenning DML, PLDI'98);
+   verifiers (Dafny/Boogie, Prusti, Kani, Creusot) that discharge index
+   obligations but do not optimize; Souper's dataflow-inference mode
+   (Taneja et al., already cited). Effort: 1 day (text + citations).
+   "Paradigm needs more than one instantiation": answer in text.
+4. Souper comparison weak (constant mode, different LLVM/Z3, no runtime).
+   Our view: the comparison is about latency and reach on the same input,
+   CEGIS was also run, and the limits are stated. Optional: Souper's
+   inference mode as a third arm (days).
+5. Soundness informal: no theorem; narrow re-encoding "sound under H"
+   unproved; loads assumed non-poison; vacuity audit off in timed builds;
+   "minimal" unsat cores (Z3 cores are not minimal by default: wording).
+   Fix: Alive2 translation validation of every transformed function
+   (pre vs post ODeSSy, before the second -O3) as a debug/validation mode
+   and a reported result (1-2 weeks incl. handling Alive2 timeouts); a
+   short soundness argument per mechanism in the paper (days); poison-loads
+   sensitivity numbers (1 run).
+6. Performance overstated: 4/17 slow down (CryptoSwift 0.928x with a 1.069x
+   ceiling) vs "either a win or marginal" in §1; results above ceiling;
+   medians only; many own kernels. Fix: wording (hours); bootstrap CIs
+   (1 day once reruns exist); more third-party benchmarks (weeks).
+7. "Online" not supported: Thorough whole-compile median 4.39x, max 209x;
+   trees.c 1485 s; Fig. 10 excludes trees.c while Table 7 reports it
+   (reconcile: Fig. 10 is from the serial run that did not finish trees.c;
+   Table 7 from the parallel run); Fast keeps 43% of proofs and has runtime
+   numbers on only 4 kernels. Fix: §13 scheduler + cache; Fast runtime on
+   all kernels (rerun campaign).
+Minor: Appendix E reported truncated (check the PDF); Appendix D knob
+strings overflow the margin; §6 title "Experimental Setup" holds all
+results; Fig. 6 "majority" = 40/65 (62%), say so; T1-T3 generality vs
+hand-tuning (test on more benchmarks); "no fixed pipeline ever will" is
+asserted, not shown.
+Plan: keep the §13.8 schedule; address 2, 3, 6-wording, minor text items
+with the arXiv paper pass; Alive2 validation and the 1/5 decisions after
+seeing the real OOPSLA reviews (rebuttal cycle).
