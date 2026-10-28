@@ -1,3 +1,4 @@
+#include "Profile.h"
 #include "FactEncoder.h"
 #include "llvm/ADT/PostOrderIterator.h"
 #include "llvm/ADT/SmallPtrSet.h"
@@ -124,9 +125,11 @@ void FactEncoder::preEncodeScevLeafClosure() {
         if (!SE->isSCEVable(Phi->getType())) continue;
         auto *AR = dyn_cast<SCEVAddRecExpr>(SE->getSCEV(Phi));
         if (!AR || AR->getLoop() != L || !AR->isAffine()) continue;
-        const SCEV *BTC = SE->getBackedgeTakenCount(L);
-        if (isa<SCEVCouldNotCompute>(BTC))
-            BTC = SE->getSymbolicMaxBackedgeTakenCount(L);
+        const SCEV *BTC;
+        { odessy::ProfAnalysis PA(odessy::P_SCEVSYM, L, nullptr);
+          BTC = SE->getBackedgeTakenCount(L);
+          if (isa<SCEVCouldNotCompute>(BTC))
+              BTC = SE->getSymbolicMaxBackedgeTakenCount(L); }
         if (isa<SCEVCouldNotCompute>(BTC)) continue;
         Collect(BTC);
         Collect(AR->getStart());
@@ -317,7 +320,8 @@ void FactEncoder::processScevLeaves(BasicBlock *PredBB) {
             continue;
         }
         if (SE && SE->isSCEVable(I->getType())) {
-            const SCEV *S = SE->getSCEV(I);
+            const SCEV *S;
+            { odessy::ProfAnalysis PA(odessy::P_SCEV, I, nullptr); S = SE->getSCEV(I); }
             if (!isa<SCEVUnknown>(S) && !isa<SCEVCouldNotCompute>(S)) {
                 bool OK = true;
                 unsigned WE = 0;
@@ -344,7 +348,7 @@ bool FactEncoder::tryRangeMetadata(Value *V) {
     if (!MD) return false;
     // Union of the metadata's [lo,hi) pairs. Violation => poison (LangRef),
     // same soundness argument as nsw.
-    ConstantRange CR = getConstantRangeFromMetadata(*MD);
+    ConstantRange CR = [&] { odessy::ProfAnalysis PA(odessy::P_RM, V, nullptr); return getConstantRangeFromMetadata(*MD); }();
     std::string Lbl = mkLabel("RM");
     if (!Encoder.assertRange(V, CR, Audit ? Lbl : std::string()))
         return false;
@@ -378,7 +382,7 @@ bool FactEncoder::tryRangeAttr(Value *V) {
 }
 
 bool FactEncoder::tryKnownBits(Value *V) {
-    KnownBits KB = computeKnownBits(V, DL);
+    KnownBits KB = [&] { odessy::ProfAnalysis PA(odessy::P_KB, V, nullptr); return computeKnownBits(V, DL); }();
     if (KB.isUnknown()) return false;
     std::string Lbl = mkLabel("KB");
     if (!Encoder.assertKnownBits(V, KB, Audit ? Lbl : std::string()))
@@ -403,8 +407,8 @@ bool FactEncoder::tryLVI(Value *V, BasicBlock *PredBB) {
         return false;
     }
     // UndefAllowed=false: the conservative range (holds even for undef).
-    ConstantRange CR =
-        LVI->getConstantRange(V, PredBB->getTerminator(), /*UndefAllowed=*/false);
+    ConstantRange CR = [&] { odessy::ProfAnalysis PA(odessy::P_LVI, V, PredBB);
+        return LVI->getConstantRange(V, PredBB->getTerminator(), /*UndefAllowed=*/false); }();
     std::string Lbl = mkLabel("LVI");
     if (!Encoder.assertRange(V, CR, Audit ? Lbl : std::string()))
         return false;
@@ -422,7 +426,7 @@ bool FactEncoder::trySCEV(Value *V) {
     auto *Phi = dyn_cast<PHINode>(V);
     if (!Phi) return false;
     if (!SE->isSCEVable(Phi->getType())) return false;
-    const SCEV *S = SE->getSCEV(Phi);
+    const SCEV *S = [&] { odessy::ProfAnalysis PA(odessy::P_SCEV, Phi, nullptr); return SE->getSCEV(Phi); }();
     if (isa<SCEVCouldNotCompute>(S)) return false;   // paranoia
     if (isa<SCEVUnknown>(S)) return false;           // no structure => full range
     // VALUE facts over the phi's whole evolution (every iteration), so no
@@ -430,14 +434,14 @@ bool FactEncoder::trySCEV(Value *V) {
     // signed ranges come from different SCEV reasoning and either may be
     // the informative one. assertRange skips full sets on its own.
     bool Added = false;
-    ConstantRange UR = SE->getUnsignedRange(S);
+    ConstantRange UR = [&] { odessy::ProfAnalysis PA(odessy::P_SCEV, S, (const void *)1); return SE->getUnsignedRange(S); }();
     std::string L1 = mkLabel("SCEV");
     if (Encoder.assertRange(V, UR, Audit ? L1 : std::string())) {
         Log << "    -> Fact[" << L1 << "] " << valueStr(V)
             << " in " << rangeStr(UR) << " (SCEV unsigned)\n";
         ++NumFacts; Added = true;
     }
-    ConstantRange SR = SE->getSignedRange(S);
+    ConstantRange SR = [&] { odessy::ProfAnalysis PA(odessy::P_SCEV, S, (const void *)2); return SE->getSignedRange(S); }();
     std::string L2 = mkLabel("SCEV");
     if (Encoder.assertRange(V, SR, Audit ? L2 : std::string())) {
         Log << "    -> Fact[" << L2 << "] " << valueStr(V)
@@ -696,6 +700,7 @@ bool FactEncoder::trySCEVSym(Value *V) {
         if (Ovf) return false;
     }
 
+    odessy::ProfAnalysis PABTC(odessy::P_SCEVSYM, L, (const void *)1);
     const SCEV *BTC = SE->getBackedgeTakenCount(L);
     if (isa<SCEVCouldNotCompute>(BTC)) {
         // MULTI-EXIT FALLBACK: when the trap edge is itself a loop exit

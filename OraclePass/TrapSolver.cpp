@@ -1,3 +1,4 @@
+#include "Profile.h"
 #include "TrapSolver.h"
 #include <unordered_set>
 #include "FactEncoder.h"
@@ -43,6 +44,7 @@ TrapSolver::TrapSolver(const SolverConfig &Cfg, const FunctionCtx &FC,
 }
 
 bool TrapSolver::encodePhase() {
+    odessy::ProfScope PS(&odessy::JobProfile::EncodeMs);
     try {
         // PHASE 2: FORWARD ENCODE (Reverse Post-Order so defs are encoded
         // before uses in the acyclic CFG -- prevents branch conditions
@@ -85,6 +87,7 @@ bool TrapSolver::encodePhase() {
 bool TrapSolver::factPhase() {
     if (!Cfg.HeavyMode)
         return true;
+    odessy::ProfScope PS(&odessy::JobProfile::FactMs);
     try {
         // PHASE 2.5 (HEAVY TIER ONLY): BOUNDARY ANALYSIS FACTS
         // Free variables = over-approximation boundaries. Assert what
@@ -299,6 +302,7 @@ void TrapSolver::prepareInd() {
 // query was not UNSAT. Tries the trap's loop, then each enclosing loop.
 // Postcondition: same solver shape (trap re-asserted).
 bool TrapSolver::indPhase() {
+    odessy::ProfScope PS(&odessy::JobProfile::IndMs);
     if (!FC.LI || !FC.DT) return false;
     Loop *L = FC.LI->getLoopFor(Job.PredBB);
     if (!L) { Log << "    -> [ind] trap not in a loop\n"; return false; }
@@ -367,6 +371,7 @@ void TrapSolver::solvePhase() {
         auto [ResultString, QueryLatency] = Encoder.checkSatisfiability();
         Job.Queried = true;
         Job.LatencyMs = QueryLatency;
+        if (odessy::CurProf) odessy::CurProf->DirectMs += QueryLatency;
         profileQuery("main", ResultString, QueryLatency);
         bool IsUnsat = (ResultString.find("UNSAT") != std::string::npos);
         // Item 1 (HANDOFF §10.49): two-obligation inductive query when the
@@ -620,6 +625,7 @@ z3::expr TrapSolver::scevToBV(const SCEV *S, bool &OK, unsigned W) {
 }
 
 void TrapSolver::mvPhase() {
+    odessy::ProfScope PS(&odessy::JobProfile::MvMs);
     if (!FC.LI) return;
     // Whole-query narrowing (§10.38): rewrite defs/guards/trap once; on
     // refusal fall back to the exact solver path (this solver's encoding is
@@ -887,7 +893,7 @@ void TrapSolver::mvPhase() {
             auto run = [&](z3::solver &S, const z3::expr &Extra) {
                 S.add(Extra);
                 auto T0 = std::chrono::steady_clock::now();
-                z3::check_result R = S.check();
+                auto PQ0 = std::chrono::steady_clock::now(); z3::check_result R = S.check(); odessy::profQuery(odessy::profMsSince(PQ0));
                 CR.Ms += std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - T0).count();
                 return R;
             };

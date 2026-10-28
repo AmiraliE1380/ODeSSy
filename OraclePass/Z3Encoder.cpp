@@ -1,3 +1,4 @@
+#include "Profile.h"
 #include "Z3Encoder.h"
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/IR/CFG.h"
@@ -902,6 +903,7 @@ std::pair<std::string, double> Z3Encoder::checkSatisfiability() {
     
     std::chrono::duration<double, std::milli> latency = end_time - start_time;
     double raw_latency = latency.count();
+    odessy::profQuery(raw_latency);
 
     std::string status;
     switch (result) {

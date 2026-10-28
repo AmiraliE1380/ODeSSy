@@ -17,6 +17,7 @@
 // may only touch them while holding the FactGate ticket (Scheduler.h),
 // which serializes those queries in discovery order.
 // =====================================================================
+#include "Profile.h"
 #include <cstddef>
 #include <set>
 #include <string>
@@ -89,6 +90,7 @@ struct TrapJob {
     bool Queried = false;                // check() actually ran
     double LatencyMs = 0.0;              // solver latency (incl. vacuity ctx query)
     double WorkerMs = 0.0;               // encode+facts+solve wall clock (stats only)
+    JobProfile Prof;                     // profile-stages knob (stats only)
 
     // --- log text, appended stage by stage, emitted in Index order ---
     // Stage 1 writes discovery lines, the worker appends verdict lines,

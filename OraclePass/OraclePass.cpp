@@ -35,6 +35,7 @@
 // wiretaps (raw errs() from encode internals) are only meaningful at
 // threads=1.
 // =====================================================================
+#include "Profile.h"
 #include "llvm/Transforms/Utils/Cloning.h"
 #include "llvm/Transforms/Utils/LoopUtils.h"
 #include "llvm/Transforms/Utils/BasicBlockUtils.h"
@@ -227,6 +228,7 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
         Cfg.PoisonLoads = PoisonLoads;
         if (ProfileMs) sys::fs::create_directories("logs/profile");
 
+        auto PSPass0 = std::chrono::steady_clock::now();
         // =============================================================
         // STAGE 1: serial discovery (main thread; IR read-only)
         // =============================================================
@@ -315,9 +317,12 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
         // =============================================================
         // STAGE 2: parallel solve (workers; IR read-only; verdicts only)
         // =============================================================
+        double PSStage1Ms = odessy::profMsSince(PSPass0);
+        auto PSStage2 = std::chrono::steady_clock::now();
         odessy::FactGate Gate;
         auto WorkerBody = [&](size_t i) {
             odessy::TrapJob &J = Jobs[i];
+            odessy::CurProf = odessy::ProfStagesEnabled ? &J.Prof : nullptr;
             auto T0 = std::chrono::steady_clock::now();
             bool GatePassed = false;
             try {
@@ -329,7 +334,9 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
                         // Every heavy job passes the gate exactly once, in
                         // discovery order, even when the encode aborted
                         // (pass-through keeps the turnstile advancing).
-                        Gate.acquire(J.Index);
+                        { auto GW = std::chrono::steady_clock::now();
+                          Gate.acquire(J.Index);
+                          if (odessy::CurProf) odessy::CurProf->GateWaitMs += odessy::profMsSince(GW); }
                         if (Proceed) Proceed = S.factPhase();
                         Gate.release(J.Index);
                         GatePassed = true;
@@ -348,8 +355,11 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
                 Gate.release(J.Index);
             }
             J.WorkerMs = msSince(T0);
+            odessy::CurProf = nullptr;
         };
         odessy::runJobs(NThreads, Jobs.size(), WorkerBody);
+        double PSStage2Ms = odessy::profMsSince(PSStage2);
+        auto PSStage2b = std::chrono::steady_clock::now();
 
         // =============================================================
         // STAGE 2b: NARROW-MUL RETRY (serial, main thread; F1 step 2,
@@ -367,6 +377,11 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
                 if (!HasMul) continue;
                 raw_string_ostream OS(J.LogText);
                 const odessy::FunctionCtx &FC = FCs[CtxOf.lookup(J.F)];
+                // Stage-2b time goes to NarrowMs only (CurProf stays null so
+                // the retry's encode/fact/query time is not double-counted).
+                auto PSN0 = std::chrono::steady_clock::now();
+                struct PSNAdd { odessy::TrapJob &J; std::chrono::steady_clock::time_point T;
+                    ~PSNAdd() { if (odessy::ProfStagesEnabled) J.Prof.NarrowMs += odessy::profMsSince(T); } } PSNA{J, PSN0};
                 OS << "    -> [narrow] retry: whole-query 64->32 with overflow flags\n";
                 { odessy::TrapSolver S(Cfg, FC, J, /*Narrow=*/1); if (S.encodePhase() && S.factPhase()) S.solvePhase(); }
                 if (!J.MVEliminate) {
@@ -376,6 +391,9 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
             }
         }
 
+        odessy::CurProf = nullptr;
+        double PSStage2bMs = odessy::profMsSince(PSStage2b);
+        auto PSStage3 = std::chrono::steady_clock::now();
         // =============================================================
         // STAGE 3a: THE KILL (serial, discovery order -- the only IR
         // mutation in the whole pass)
@@ -634,6 +652,29 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
             errs() << FuncText;   // full mirror (superset of the old stderr)
         }
 
+        if (odessy::ProfStagesEnabled) {
+            double PSStage3Ms = odessy::profMsSince(PSStage3);
+            double PSTotalMs = odessy::profMsSince(PSPass0);
+            // One line per job, then one module line; the harness greps
+            // "[profile-stages]" from stderr (HANDOFF §13.6).
+            errs() << "[profile-stages] job,index,encode_ms,gate_wait_ms,fact_ms";
+            for (int k = 0; k < odessy::P_NKINDS; ++k)
+                errs() << "," << odessy::profKindName(k) << "_ms," << odessy::profKindName(k) << "_calls,"
+                       << odessy::profKindName(k) << "_repeats";
+            errs() << ",direct_ms,ind_ms,mv_ms,narrow_ms,queries,query_ms,worker_ms\n";
+            for (odessy::TrapJob &J : Jobs) {
+                const odessy::JobProfile &P = J.Prof;
+                errs() << "[profile-stages] job," << J.Index << "," << P.EncodeMs << "," << P.GateWaitMs << "," << P.FactMs;
+                for (int k = 0; k < odessy::P_NKINDS; ++k)
+                    errs() << "," << P.AnalysisMs[k] << "," << P.AnalysisCalls[k] << "," << P.AnalysisRepeats[k];
+                errs() << "," << P.DirectMs << "," << P.IndMs << "," << P.MvMs << "," << P.NarrowMs
+                       << "," << P.Queries << "," << P.QueryMs << "," << J.WorkerMs << "\n";
+            }
+            errs() << "[profile-stages] module,jobs=" << Jobs.size() << ",threads=" << NThreads
+                   << ",stage1_ms=" << PSStage1Ms << ",stage2_ms=" << PSStage2Ms
+                   << ",stage2b_ms=" << PSStage2bMs << ",stage3_ms=" << PSStage3Ms
+                   << ",total_ms=" << PSTotalMs << "\n";
+        }
         return ModuleEliminated > 0 ? PreservedAnalyses::none()
                                     : PreservedAnalyses::all();
     }
@@ -696,6 +737,8 @@ llvmGetPassPluginInfo() {
                                     if (P.getAsInteger(10, NBits) || NBits < 8 || NBits > 32) return false;
                                     Narrow = true;
                                 }
+                                else if (P == "profile-stages")
+                                    odessy::ProfStagesEnabled = true;
                                 else if (P == "profile")
                                     Profile = 1000;
                                 else if (P.consume_front("profile=")) {
