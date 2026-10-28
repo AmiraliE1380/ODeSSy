@@ -3619,9 +3619,9 @@ find("SAT"))`, never runs it on UNKNOWN). `ind` does run on SAT or UNKNOWN.
 * Stage 2: one job per trap edge, parallel across jobs; but inside a job
   every query is sequential, and fact import (heavy, ind, T3 prep) passes
   the FactGate turnstile one job at a time, in discovery order.
-* Induction (`indPhase`/`indAtLoop`): 1 context check, then per loop level
-  4 queries in sequence (base-context, base, step-hypothesis, step), then
-  the next enclosing loop. A 3-deep trap: up to 13 queries.
+* Induction (`indPhase`/`indAtLoop`): was 1 context check + 4 queries per
+  loop level; since 92864a0, 2 per level (BASE, STEP) outside `vacuity`,
+  still sequential, then the next enclosing loop.
 * Guard synthesis (`mvPhase`): verification (round 0, then round 1),
   one query per minimization drop, one per loosening rung, the vacuity
   query, x2 for narrow Q_A/Q_B variants. Dozens per trap, sequential.
@@ -3654,8 +3654,12 @@ find("SAT"))`, never runs it on UNKNOWN). `ind` does run on SAT or UNKNOWN.
   inflates the reported guarded-removal counts, and loses a bug detector.
   It is one query against dozens in minimization; run it in parallel with
   verification.
-* Induction base-context and step-hypothesis checks: not needed for
-  soundness. If the step hypothesis is unsat, no iteration passes the check
+* DONE (92864a0): induction's context, first-lap and step-hypothesis
+  checks are posed only under `vacuity`; production ind = 2 queries per
+  loop level (BASE, STEP), tried innermost loop first. Julia SHA-256: same
+  10 proofs, 4.56 s -> 4.02 s; tests 30/12.
+* Why that is sound: the induction base-context and step-hypothesis checks
+  are not needed for soundness. If the step hypothesis is unsat, no iteration passes the check
   and takes the back edge, so the base case alone proves the trap dead;
   the code refuses as "vacuous" only to catch encoder bugs. Gate both
   (and the pre-ind context check) under the `vacuity` knob: -2 queries per
@@ -3720,7 +3724,7 @@ Design:
   with the cache from k-1; report cold, warm, hit rate, and Souper with
   its own external cache ON (fair comparison; the paper ran it OFF).
 
-### 13.6 Profile before implementing
+### 13.6 Profile before implementing (FIRST TASK)
 Add timers around encodePhase, factPhase (including turnstile wait),
 solvePhase, mvPhase, indPhase, and Stage 2b; sum them for zlib trees.c and
 deflate.c and for CryptoSwift. Decide L1 cache vs snapshot vs query-level
@@ -3740,3 +3744,12 @@ scheduling by where the time actually goes.
 * Artifact: a Docker image instead of the CloudLab image. The CloudLab image
   is odessy-c220g2-oct26 (Oct 13, 8.6 GB, /opt/llvm + /opt/odessy-preserve
   tarballs); no profile uses it yet; boot test pending.
+
+### 13.8 Implementation order (agreed)
+1. Profiling timers (§13.6).
+2. Query-level scheduler + Stage-1 fact snapshot (§13.2).
+3. Model-guided guard-synthesis pruning (§13.4).
+4. Per-function verdict cache + commit-replay experiment (§13.5).
+5. poison-loads sensitivity numbers; optional §12.5 induction.
+6. Rerun all experiments on one recorded node; CIs; fact-source ablation.
+7. Paper pass and de-anonymization; Docker artifact (§13.7).
