@@ -3748,6 +3748,9 @@ mac_1028_narrow; knob profile-stages, tools/profile_summary.py):
   FIX (done): retry only when the exact mv verification was UNKNOWN
   (TrapJob::MVUnknown). trees 264 s -> 62 s (4.3x), matmul still 3/3,
   CryptoSwift/zstd unchanged, tests 30/12.
+  Check on all 17 guard-ablation kernels (tag.ll of guard_ablation_0927,
+  Thorough): output IR byte-identical before/after for all 17; retries
+  skipped only on Rust lz77 and Rust matmul (2 each, both SAT, no guard).
 * Remaining serial Stage 2b: matmul 3 retries x 21 s, serial => run the
   retry as a second step of the same job inside the pool.
 
@@ -3762,6 +3765,10 @@ mac_1028_narrow; knob profile-stages, tools/profile_summary.py):
 * Fast vs Souper on zstd (3 vs 5 checks): close or explain.
 * De-anonymize: \documentclass[acmsmall,screen,nonacm]{acmart}, authors,
   acknowledgments (and the generative-AI disclosure).
+* [Amir, side note] Inspect the soundness of the narrow mechanism
+  (OraclePass/Narrow.{h,cpp}, §10.37-10.39): the 64->32 whole-query
+  rewrite with overflow flags, the 16-bit mul-only rewrite, and the
+  side-condition certificate mvPhase adds before a narrow guard is accepted.
 * Artifact: a Docker image instead of the CloudLab image. The CloudLab image
   is odessy-c220g2-oct26 (Oct 13, 8.6 GB, /opt/llvm + /opt/odessy-preserve
   tarballs); no profile uses it yet; boot test pending.
