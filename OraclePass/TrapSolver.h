@@ -76,8 +76,10 @@ class TrapSolver {
 public:
     // Narrow: 0 exact, 1 whole-query 64->32 with overflow flags (§10.38),
     // 2 mul-only 16-bit-operand rewrite (§10.37 fallback).
+    // LogTo: buffer for the log lines (default Job.LogText); the parallel
+    // narrow retry logs each pass separately and splices them in order.
     TrapSolver(const SolverConfig &Cfg, const FunctionCtx &FC, TrapJob &Job,
-               unsigned Narrow = 0);
+               unsigned Narrow = 0, std::string *LogTo = nullptr);
 
     // PHASE 2. False => aborted (unsupported instruction / exception):
     // keep the trap, skip the query.

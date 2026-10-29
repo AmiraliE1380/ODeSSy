@@ -46,6 +46,10 @@ def summarize(path):
     ana_tot = sum(ana.values())
     rest_fact = max(fact - ana_tot, 0.0)
     other = max(worker - enc - wait - fact - direct - ind - mv, 0.0)
+    G = lambda k: S(k) if jobs and k in jobs[0] else 0.0
+    setup, teardown = G("setup_ms"), G("teardown_ms")
+    push = G("assert_ms")   # guard asserts + Solver.push(): Z3 internalizes the context here
+    solve_rest = max(G("solve_ms") - direct - ind - mv - push, 0.0)
     name = os.path.basename(path)[:-4]
     return dict(run=name, jobs=int(mod["jobs"]), threads=int(mod["threads"]),
                 total_s=mod["total_ms"] / 1e3, stage1_s=mod["stage1_ms"] / 1e3,
@@ -53,6 +57,7 @@ def summarize(path):
                 stage3_s=mod["stage3_ms"] / 1e3, jobsum_s=worker / 1e3,
                 encode=enc, gate_wait=wait, analysis=ana_tot, fact_rest=rest_fact,
                 direct=direct, ind=ind, mv=mv, other=other,
+                setup=setup, push=push, solve_rest=solve_rest, teardown=teardown,
                 queries=int(S("queries")), query_s=S("query_ms") / 1e3,
                 **{f"{k}_ms": ana[k] for k in KINDS},
                 **{f"{k}_calls": calls[k] for k in KINDS},
@@ -71,6 +76,11 @@ def main():
         print(f"{r['run']:34s} {r['jobs']:5d} {r['total_s']:8.1f} | {r['stage1_s']:6.1f} {r['stage2_s']:7.1f} {r['stage2b_s']:7.1f} {r['stage3_s']:6.1f} |"
               f"                           {pct(r['encode'],T):>7s} {pct(r['gate_wait'],T):>6s} {pct(r['analysis'],T):>6s} {pct(r['fact_rest'],T):>8s}"
               f" {pct(r['direct'],T):>7s} {pct(r['ind'],T):>6s} {pct(r['mv'],T):>6s} {pct(r['other'],T):>6s} | {r['queries']:7d}")
+    print("\n'other' split (share of summed job time): Z3 setup (TrapSolver ctor), assert+push before the direct query, rest of solvePhase, teardown (dtor), unattributed:")
+    for r in rows:
+        T = r["jobsum_s"] * 1e3
+        rem = max(r["other"] - r["setup"] - r["push"] - r["solve_rest"] - r["teardown"], 0.0)
+        print(f"  {r['run']:34s} other {pct(r['other'],T)}  setup {pct(r['setup'],T)}  push {pct(r['push'],T)}  solve-rest {pct(r['solve_rest'],T)}  teardown {pct(r['teardown'],T)}  unattributed {pct(rem,T)}")
     print("\nLLVM analysis calls (ms / calls / repeats of the same (value, analysis, context)):")
     for r in rows:
         parts = [f"{k} {r[k+'_ms']:.0f}/{r[k+'_calls']}/{r[k+'_rep']}" for k in KINDS]

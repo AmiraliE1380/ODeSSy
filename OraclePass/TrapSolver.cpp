@@ -31,9 +31,9 @@ using namespace llvm;
 namespace odessy {
 
 TrapSolver::TrapSolver(const SolverConfig &Cfg, const FunctionCtx &FC,
-                       TrapJob &Job, unsigned Narrow)
+                       TrapJob &Job, unsigned Narrow, std::string *LogTo)
     : Cfg(Cfg), FC(FC), Job(Job), Encoder(Cfg.QueryTimeoutMs), NarrowMode(Narrow),
-      Log(Job.LogText) {
+      Log(LogTo ? *LogTo : Job.LogText) {
     if (Cfg.VacuityCheck || Cfg.MultiVersion)   // MV reads cores too
         Encoder.enableUnsatCores();
     if (Narrow == 2) Encoder.enableNarrowMul(64, Cfg.NarrowBits);   // mul-only fallback
@@ -325,6 +325,8 @@ bool TrapSolver::indPhase() {
 }
 
 void TrapSolver::solvePhase() {
+    odessy::ProfScope PS(&odessy::JobProfile::SolveMs);
+    auto PSA0 = std::chrono::steady_clock::now();
     try {
         // PHASE 2.75 (FRAME only): cross-BB load unification facts from
         // Stage 1's MemorySSA frame walk (HANDOFF §8.1). Each validated
@@ -368,6 +370,7 @@ void TrapSolver::solvePhase() {
         else
             Encoder.assertCondition(Job.TrapCond, Job.TrapOnTrue);
 
+        if (odessy::CurProf) odessy::CurProf->AssertMs += odessy::profMsSince(PSA0);
         auto [ResultString, QueryLatency] = Encoder.checkSatisfiability();
         Job.Queried = true;
         Job.LatencyMs = QueryLatency;

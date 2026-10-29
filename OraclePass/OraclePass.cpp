@@ -44,6 +44,7 @@
 #include "llvm/IR/IRBuilder.h"
 #include "llvm/Transforms/Utils/ScalarEvolutionExpander.h"
 #include <map>
+#include <optional>
 #include <algorithm>
 #include "Scheduler.h"
 #include "TrapDiscovery.h"
@@ -328,7 +329,9 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
             try {
                 if (J.SliceOK) {
                     const odessy::FunctionCtx &FC = FCs[CtxOf.lookup(J.F)];
-                    odessy::TrapSolver S(Cfg, FC, J);
+                    std::optional<odessy::TrapSolver> SO;
+                    { odessy::ProfScope PS(&odessy::JobProfile::SetupMs); SO.emplace(Cfg, FC, J); }
+                    odessy::TrapSolver &S = *SO;
                     bool Proceed = S.encodePhase();
                     if (HeavyMode) {
                         // Every heavy job passes the gate exactly once, in
@@ -342,6 +345,8 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
                         GatePassed = true;
                     }
                     if (Proceed) S.solvePhase();
+                    odessy::ProfScope PS(&odessy::JobProfile::TeardownMs);
+                    SO.reset();
                 }
             } catch (...) {
                 // Phases fence their own exceptions; anything reaching
@@ -370,39 +375,68 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
         // Main thread: SE/LVI need no gate.
         // =============================================================
         if (MultiVersion && NarrowMul) {
+            // Encode + facts of both passes run here, serially in discovery
+            // order (they need SE/LVI); the solves, which touch neither,
+            // run in the pool. Pass 2 is prepared up front and solved only
+            // if pass 1 found no guard. Each pass logs into its own buffer,
+            // spliced into LogText in the serial order.
+            struct NarrowRetry {
+                odessy::TrapJob *J;
+                std::string Log[2];
+                std::unique_ptr<odessy::TrapSolver> S[2];
+                bool Ready[2] = {false, false};
+                odessy::JobProfile P[2];
+                double PrepMs[2] = {0, 0}, SolveMs[2] = {0, 0};
+                bool Ran2 = false;
+            };
+            std::vector<NarrowRetry> NR;
             for (odessy::TrapJob &J : Jobs) {
                 if (!J.SliceOK || J.Eliminate || J.MVEliminate || !J.MVUnknown) continue;
                 bool HasMul = false;
                 for (Value *V : J.Visited)
                     if (auto *BO = dyn_cast<BinaryOperator>(V))
                         if (BO->getOpcode() == Instruction::Mul && BO->getType()->isIntegerTy(64)) { HasMul = true; break; }
-                if (!HasMul) continue;
-                raw_string_ostream OS(J.LogText);
-                const odessy::FunctionCtx &FC = FCs[CtxOf.lookup(J.F)];
-                // Stage-2b time goes to NarrowMs only (CurProf stays null so
-                // the retry's encode/fact/query time is not double-counted).
-                auto PSN0 = std::chrono::steady_clock::now();
-                struct PSNAdd { odessy::TrapJob &J; std::chrono::steady_clock::time_point T;
-                    ~PSNAdd() { if (odessy::ProfStagesEnabled) J.Prof.NarrowMs += odessy::profMsSince(T); } } PSNA{J, PSN0};
-                // Per-pass breakdown in its own record, emitted as a
-                // [profile-stages] narrow line (not added to the job's).
-                auto NarrowPass = [&](unsigned Mode) {
-                    odessy::JobProfile NP;
+                if (HasMul) NR.push_back(NarrowRetry{&J});
+            }
+            for (NarrowRetry &R : NR) {
+                const odessy::FunctionCtx &FC = FCs[CtxOf.lookup(R.J->F)];
+                for (unsigned k = 0; k < 2; ++k) {
                     auto T0 = std::chrono::steady_clock::now();
-                    if (odessy::ProfStagesEnabled) odessy::CurProf = &NP;
-                    { odessy::TrapSolver S(Cfg, FC, J, Mode); if (S.encodePhase() && S.factPhase()) S.solvePhase(); }
+                    odessy::CurProf = odessy::ProfStagesEnabled ? &R.P[k] : nullptr;
+                    R.S[k] = std::make_unique<odessy::TrapSolver>(Cfg, FC, *R.J, k + 1, &R.Log[k]);
+                    R.Ready[k] = R.S[k]->encodePhase() && R.S[k]->factPhase();
                     odessy::CurProf = nullptr;
-                    if (odessy::ProfStagesEnabled)
-                        errs() << "[profile-stages] narrow," << J.Index << "," << J.Prof.Verdict << J.Prof.MvVerdict << "," << Mode
-                               << "," << J.MVEliminate << "," << NP.EncodeMs << "," << NP.FactMs << ","
-                               << NP.DirectMs << "," << NP.MvMs << "," << NP.Queries << ","
-                               << odessy::profMsSince(T0) << "\n";
-                };
-                OS << "    -> [narrow] retry: whole-query 64->32 with overflow flags\n";
-                NarrowPass(1);
-                if (!J.MVEliminate) {
-                    OS << "    -> [narrow] retry: mul-only " << NarrowBits << "-bit-operand encoding\n";
-                    NarrowPass(2);
+                    R.PrepMs[k] = odessy::profMsSince(T0);
+                }
+            }
+            odessy::runJobs(NThreads, NR.size(), [&](size_t i) {
+                NarrowRetry &R = NR[i];
+                for (unsigned k = 0; k < 2; ++k) {
+                    if (k == 1 && R.J->MVEliminate) break;
+                    R.Ran2 = (k == 1);
+                    auto T0 = std::chrono::steady_clock::now();
+                    odessy::CurProf = odessy::ProfStagesEnabled ? &R.P[k] : nullptr;
+                    if (R.Ready[k]) R.S[k]->solvePhase();
+                    odessy::CurProf = nullptr;
+                    R.SolveMs[k] = odessy::profMsSince(T0);
+                }
+                R.S[0].reset(); R.S[1].reset();
+            });
+            for (NarrowRetry &R : NR) {
+                odessy::TrapJob &J = *R.J;
+                raw_string_ostream OS(J.LogText);
+                OS << "    -> [narrow] retry: whole-query 64->32 with overflow flags\n" << R.Log[0];
+                if (R.Ran2)
+                    OS << "    -> [narrow] retry: mul-only " << NarrowBits << "-bit-operand encoding\n" << R.Log[1];
+                // Stage-2b time goes to NarrowMs and the narrow lines only
+                // (not double-counted into the job's own record).
+                for (unsigned k = 0; k <= unsigned(R.Ran2); ++k) {
+                    double Ms = R.PrepMs[k] + R.SolveMs[k];
+                    if (!odessy::ProfStagesEnabled) continue;
+                    J.Prof.NarrowMs += Ms;
+                    errs() << "[profile-stages] narrow," << J.Index << "," << J.Prof.Verdict << J.Prof.MvVerdict << "," << k + 1
+                           << "," << (J.MVEliminate && k == unsigned(R.Ran2)) << "," << R.P[k].EncodeMs << "," << R.P[k].FactMs << ","
+                           << R.P[k].DirectMs << "," << R.P[k].MvMs << "," << R.P[k].Queries << "," << Ms << "\n";
                 }
             }
         }
@@ -677,14 +711,15 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
             for (int k = 0; k < odessy::P_NKINDS; ++k)
                 errs() << "," << odessy::profKindName(k) << "_ms," << odessy::profKindName(k) << "_calls,"
                        << odessy::profKindName(k) << "_repeats";
-            errs() << ",direct_ms,ind_ms,mv_ms,narrow_ms,queries,query_ms,worker_ms\n";
+            errs() << ",direct_ms,ind_ms,mv_ms,narrow_ms,queries,query_ms,setup_ms,solve_ms,assert_ms,teardown_ms,worker_ms\n";
             for (odessy::TrapJob &J : Jobs) {
                 const odessy::JobProfile &P = J.Prof;
                 errs() << "[profile-stages] job," << J.Index << "," << P.EncodeMs << "," << P.GateWaitMs << "," << P.FactMs;
                 for (int k = 0; k < odessy::P_NKINDS; ++k)
                     errs() << "," << P.AnalysisMs[k] << "," << P.AnalysisCalls[k] << "," << P.AnalysisRepeats[k];
                 errs() << "," << P.DirectMs << "," << P.IndMs << "," << P.MvMs << "," << P.NarrowMs
-                       << "," << P.Queries << "," << P.QueryMs << "," << J.WorkerMs << "\n";
+                       << "," << P.Queries << "," << P.QueryMs << "," << P.SetupMs << "," << P.SolveMs
+                       << "," << P.AssertMs << "," << P.TeardownMs << "," << J.WorkerMs << "\n";
             }
             errs() << "[profile-stages] module,jobs=" << Jobs.size() << ",threads=" << NThreads
                    << ",stage1_ms=" << PSStage1Ms << ",stage2_ms=" << PSStage2Ms

@@ -27,6 +27,8 @@ struct JobProfile {
     unsigned AnalysisCalls[P_NKINDS] = {};
     unsigned AnalysisRepeats[P_NKINDS] = {};   // same (kind, value, context) asked before
     double DirectMs = 0, IndMs = 0, MvMs = 0, NarrowMs = 0;
+    double SetupMs = 0, SolveMs = 0, TeardownMs = 0;   // TrapSolver ctor / solvePhase / dtor
+    double AssertMs = 0;                       // solvePhase before the direct check()
     unsigned Queries = 0;                      // every solver check() of the job
     double QueryMs = 0;
     char Verdict = '-';                        // exact direct query: U(nsat) S(at) ?(unknown)

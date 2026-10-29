@@ -3753,6 +3753,19 @@ mac_1028_narrow; knob profile-stages, tools/profile_summary.py):
   skipped only on Rust lz77 and Rust matmul (2 each, both SAT, no guard).
 * Remaining serial Stage 2b: matmul 3 retries x 21 s, serial => run the
   retry as a second step of the same job inside the pool.
+  DONE (Oct 28): encode + facts of both narrow passes stay serial in
+  discovery order (SE/LVI); the solves run in the pool; each pass logs to
+  its own buffer, spliced in the old order. matmul.jl t4 76 s -> 33 s
+  (2.3x); output IR byte-identical on all 17 guard-ablation kernels and
+  matmul at t1. (Julia lz77 once differed in a guard constant, 2^31 vs
+  2^62: its loosening query takes ~6 s of the 10 s budget and timed out in
+  one run; 3 reruns match. Pre-existing timing sensitivity, not narrow.)
+* Fast "other" (results/profile_stages/mac_1028_other): fully attributed.
+  Solver.push() before the direct query is 24-53% of job time (Z3
+  internalizes the whole context there, so it is solver work moved out of
+  check()); context teardown 8-20%; context setup 1-12%. Fast mode is
+  therefore Z3-bound too; levers: fewer/smaller contexts (verdict cache),
+  not LLVM-side work.
 
 ### 13.7 Remaining todo for the arXiv version
 * Paper: full rewrite pass; make the combiner ladder (separate passes,
