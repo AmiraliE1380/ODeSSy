@@ -3809,16 +3809,43 @@ mac_1028_narrow; knob profile-stages, tools/profile_summary.py):
   is odessy-c220g2-oct26 (Oct 13, 8.6 GB, /opt/llvm + /opt/odessy-preserve
   tarballs); no profile uses it yet; boot test pending.
 
-### 13.8 Implementation order (agreed)
-1. Profiling timers (§13.6). DONE; narrow trigger fixed.
-2. Query-level scheduler (§13.2): narrow retry into the pool; ind alongside
-   the direct query; BASE/STEP in parallel; mv templates in parallel.
-   Stage-1 fact snapshot only if the gate wait grows.
-3. Model-guided guard-synthesis pruning (§13.4).
-4. Per-function verdict cache + commit-replay experiment (§13.5).
-5. poison-loads sensitivity numbers; optional §12.5 induction.
-6. Rerun all experiments on one recorded node; CIs; fact-source ablation.
-7. Paper pass and de-anonymization; Docker artifact (§13.7).
+### 13.8 Implementation order (agreed, updated Oct 29 2026)
+TERMINOLOGY (use these words from now on): for a check inside a loop,
+* BASIC query: the loop body (with context, facts, guards) and the trap,
+  the merging phis free. Called "direct" / "main" in the code and in older
+  notes.
+* BASE query: induction base, the merging phis take the preheader route.
+* STEP query: induction step, the phis take the back edge from a previous
+  lap (primed copy of the body) on which the trap did not fire.
+A check is dead iff BASIC is UNSAT, or BASE and STEP are both UNSAT at one
+loop level.
+
+DECISION (Oct 29): the default is SEQUENTIAL: BASIC first; only if it is
+not UNSAT, BASE then STEP per loop level, on the job's own solver. The
+parallel race of all three (knob ind-par) is off: slower on the 4-P-core
+Mac (§13.6). BASIC alone decides most dead checks (CryptoSwift: 146 by
+BASIC, 50 by induction).
+
+!! BEFORE ANY COMPILE-LATENCY CAMPAIGN (dial matrix, compile cost, pipeline
+!! cost, profile-stages reruns): whoever writes the scripts or starts the
+!! campaign must FIRST settle sequential vs parallel induction on the
+!! 10-core server: run scratch-style A/B (default vs ind-par) on the six
+!! profile modules + 17 guard-ablation kernels at threads=10, compare wall
+!! time and require byte-identical IR (modulo the deflate bug below). Use
+!! ind-par in the campaign only if it wins there; record the choice in the
+!! campaign's README/commit message.
+
+| # | item | status |
+|---|---|---|
+| 1 | Profiling timers; narrow trigger (UNKNOWN only); narrow solves in the pool; Fast "other" attributed | DONE (trees 4.3x, matmul 2.3x) |
+| 2 | Fix the deflate output nondeterminism (Stage 3 guard materialization) | NEXT; paper claims byte-identical output |
+| 3 | Model-guided guard-synthesis pruning (§13.4); mv templates in parallel | zstd: one check, 42 s of mv |
+| 4 | Per-function verdict cache + commit-replay experiment (§13.5) | biggest lever; Fast and Thorough are Z3-bound |
+| 5 | Induction: settle sequential vs ind-par on the server (see box); optional single delayed/idle-core ind lane | before any latency campaign |
+| 6 | poison-loads sensitivity numbers; optional §12.5 induction | |
+| 7 | Rerun all experiments on one recorded node; CIs; fact-source ablation; note timeout-sensitive results (Julia lz77 loosening ~6 s of 10 s) | |
+| 8 | Paper pass and de-anonymization; Docker artifact (§13.7) | |
+| - | [Amir] inspect soundness of the narrow mechanism (§13.7) | side note |
 
 ## 14. Mock review (AI reviewer, Oct 28 2026): Weak Reject, borderline after discussion
 Concerns, with our assessment and effort:
