@@ -1,0 +1,394 @@
+[ODeSSy] 16 trap site(s) across 2 function(s); threads=4 [tier: heavy] [frame] [mv] [narrow] [ind] [traps=bounds_error,boundserror]
+
+[Z3 Oracle] Analyzing Function: julia_sha256_sum_147
+  [tier: heavy]
+  -> Trap source: essentials.jl:919
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of 'pass.preheader'):  %6 = icmp slt i64 %value_phi8, 1
+    -> Guard[1] (false edge of 'top'):  %3 = icmp slt i64 %"iters::Int64", 1, !dbg !58
+    -> Collected 2 dominating context guard(s).
+    -> [go3] 10 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %value_phi12 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:1] i64 %value_phi12 in [1,144115188075855872) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %value_phi12 in [1,144115188075855872) (SCEV signed)
+    -> Fact[SCEVSYM:3] i64 %value_phi12 - start(1) <=u BTC((-1 + %value_phi8)<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-lo:4] i64 %value_phi12 >=s i64 1 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEVSYM:5] i64 %value_phi22.postloop - start(%value_phi22.copy) <=u BTC(((16 + (-1 * %value_phi22.copy)<nsw>)<nsw> umin (1 + (-1 * %value_phi22.copy)<nsw> + ((-1 + %value_phi22.copy)<nsw> umax %"new::Array.size.0.copyload")))) (SCEV symbolic trip count, sub-form)
+    -> Fact[SCEV:6] i64 %value_phi22 in [1,17) (SCEV unsigned)
+    -> Fact[SCEV:7] i64 %value_phi22 in [1,17) (SCEV signed)
+    -> Fact[SCEVEQ:8] i64 %value_phi22.copy in phi image (2 incoming)
+    -> [heavy] 9 analysis fact(s) on 14 boundary value(s)
+    -> [mv] T3 symbolic index bound: max(idx) = (-4 + (64 * %value_phi8)<nsw>)
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 73.931833 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Trap source: essentials.jl:919
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of 'L41'):  %.not485 = icmp eq i64 %12, 0, !dbg !67
+    -> Guard[1] (false edge of 'pass.preheader'):  %6 = icmp slt i64 %value_phi8, 1
+    -> Guard[2] (false edge of 'top'):  %3 = icmp slt i64 %"iters::Int64", 1, !dbg !58
+    -> Collected 3 dominating context guard(s).
+    -> [go3] 3 leaf-closure instruction(s) encoded
+    -> Fact[KB:0] i64 %value_phi12 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:1] i64 %value_phi12 in [1,144115188075855872) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %value_phi12 in [1,144115188075855872) (SCEV signed)
+    -> Fact[SCEVSYM:3] i64 %value_phi12 - start(1) <=u BTC((-1 + %value_phi8)<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-lo:4] i64 %value_phi12 >=s i64 1 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEV:5] i64 %value_phi22 in [1,17) (SCEV unsigned)
+    -> Fact[SCEV:6] i64 %value_phi22 in [1,17) (SCEV signed)
+    -> [heavy] 7 analysis fact(s) on 6 boundary value(s)
+    -> [mv] T3 symbolic index bound: max(idx) = (-68 + (4 * (1 umax (16 umin ((1 + (-1 smax (0 smin %"new::Array.size.0.copyload")))<nsw> * ((-1 * (0 smin %"new::Array.size.0.copyload")) + %"new::Array.size.0.copyload"))<nuw><nsw>)))<nuw><nsw> + (64 * %value_phi8)<nsw>)
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 43.763917 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Trap source: essentials.jl:919
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of 'L53.postloop'):  %.not.postloop = icmp ult i64 %125, %"data::Array.size.0.copyload", !dbg !79
+    -> Guard[1] (false edge of 'pass.preheader'):  %6 = icmp slt i64 %value_phi8, 1
+    -> Guard[2] (false edge of 'top'):  %3 = icmp slt i64 %"iters::Int64", 1, !dbg !58
+    -> Collected 3 dominating context guard(s).
+    -> [go3] 10 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i64 %"data::Array.size.0.copyload" in [1,0) (LVI @ L73.postloop)
+    -> Fact[KB:1] i64 %value_phi12 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:2] i64 %value_phi12 in [1,144115188075855872) (SCEV unsigned)
+    -> Fact[SCEV:3] i64 %value_phi12 in [1,144115188075855872) (SCEV signed)
+    -> Fact[SCEVSYM:4] i64 %value_phi12 - start(1) <=u BTC((-1 + %value_phi8)<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-lo:5] i64 %value_phi12 >=s i64 1 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEVSYM:6] i64 %value_phi22.postloop - start(%value_phi22.copy) <=u BTC(((16 + (-1 * %value_phi22.copy)<nsw>)<nsw> umin (1 + (-1 * %value_phi22.copy)<nsw> + ((-1 + %value_phi22.copy)<nsw> umax %"new::Array.size.0.copyload")))) (SCEV symbolic trip count, sub-form)
+    -> Fact[SCEV:7] i64 %value_phi22 in [1,17) (SCEV unsigned)
+    -> Fact[SCEV:8] i64 %value_phi22 in [1,17) (SCEV signed)
+    -> Fact[SCEVEQ:9] i64 %value_phi22.copy in phi image (2 incoming)
+    -> [heavy] 10 analysis fact(s) on 14 boundary value(s)
+    -> [mv] T3 symbolic index bound: max(idx) = (-3 + (64 * %value_phi8)<nsw>)
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 42.923833 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Trap source: essentials.jl:919
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of 'L53'):  %.not = icmp ult i64 %15, %"data::Array.size.0.copyload", !dbg !79
+    -> Guard[1] (false edge of 'L41'):  %.not485 = icmp eq i64 %12, 0, !dbg !67
+    -> Guard[2] (false edge of 'pass.preheader'):  %6 = icmp slt i64 %value_phi8, 1
+    -> Guard[3] (false edge of 'top'):  %3 = icmp slt i64 %"iters::Int64", 1, !dbg !58
+    -> Collected 4 dominating context guard(s).
+    -> [go3] 3 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i64 %"data::Array.size.0.copyload" in [1,0) (LVI @ L73)
+    -> Fact[KB:1] i64 %value_phi12 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:2] i64 %value_phi12 in [1,144115188075855872) (SCEV unsigned)
+    -> Fact[SCEV:3] i64 %value_phi12 in [1,144115188075855872) (SCEV signed)
+    -> Fact[SCEVSYM:4] i64 %value_phi12 - start(1) <=u BTC((-1 + %value_phi8)<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-lo:5] i64 %value_phi12 >=s i64 1 (monotone nsw increments, 1 arm(s))
+    -> Fact[LVI:6] i64 %value_phi22 in [1,0) (LVI @ L73)
+    -> Fact[SCEV:7] i64 %value_phi22 in [1,17) (SCEV unsigned)
+    -> Fact[SCEV:8] i64 %value_phi22 in [1,17) (SCEV signed)
+    -> [heavy] 9 analysis fact(s) on 6 boundary value(s)
+    -> [mv] T3 symbolic index bound: max(idx) = (-67 + (4 * (1 umax (16 umin ((1 + (-1 smax (0 smin %"new::Array.size.0.copyload")))<nsw> * ((-1 * (0 smin %"new::Array.size.0.copyload")) + %"new::Array.size.0.copyload"))<nuw><nsw>)))<nuw><nsw> + (64 * %value_phi8)<nsw>)
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 17.766500 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Trap source: essentials.jl:919
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of 'L73.postloop'):  %.not281.postloop = icmp ult i64 %126, %"data::Array.size.0.copyload", !dbg !79
+    -> Guard[1] (true edge of 'L53.postloop'):  %.not.postloop = icmp ult i64 %125, %"data::Array.size.0.copyload", !dbg !79
+    -> Guard[2] (false edge of 'pass.preheader'):  %6 = icmp slt i64 %value_phi8, 1
+    -> Guard[3] (false edge of 'top'):  %3 = icmp slt i64 %"iters::Int64", 1, !dbg !58
+    -> Collected 4 dominating context guard(s).
+    -> [go3] 10 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i64 %"data::Array.size.0.copyload" in [2,0) (LVI @ L94.postloop)
+    -> Fact[KB:1] i64 %value_phi12 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:2] i64 %value_phi12 in [1,144115188075855872) (SCEV unsigned)
+    -> Fact[SCEV:3] i64 %value_phi12 in [1,144115188075855872) (SCEV signed)
+    -> Fact[SCEVSYM:4] i64 %value_phi12 - start(1) <=u BTC((-1 + %value_phi8)<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-lo:5] i64 %value_phi12 >=s i64 1 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEVSYM:6] i64 %value_phi22.postloop - start(%value_phi22.copy) <=u BTC(((16 + (-1 * %value_phi22.copy)<nsw>)<nsw> umin (1 + (-1 * %value_phi22.copy)<nsw> + ((-1 + %value_phi22.copy)<nsw> umax %"new::Array.size.0.copyload")))) (SCEV symbolic trip count, sub-form)
+    -> Fact[SCEV:7] i64 %value_phi22 in [1,17) (SCEV unsigned)
+    -> Fact[SCEV:8] i64 %value_phi22 in [1,17) (SCEV signed)
+    -> Fact[SCEVEQ:9] i64 %value_phi22.copy in phi image (2 incoming)
+    -> [heavy] 10 analysis fact(s) on 14 boundary value(s)
+    -> [mv] T3 symbolic index bound: max(idx) = (-2 + (64 * %value_phi8)<nsw>)
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 60.068291 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Trap source: essentials.jl:919
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of 'L73'):  %.not281 = icmp ult i64 %17, %"data::Array.size.0.copyload", !dbg !79
+    -> Guard[1] (true edge of 'L53'):  %.not = icmp ult i64 %15, %"data::Array.size.0.copyload", !dbg !79
+    -> Guard[2] (false edge of 'L41'):  %.not485 = icmp eq i64 %12, 0, !dbg !67
+    -> Guard[3] (false edge of 'pass.preheader'):  %6 = icmp slt i64 %value_phi8, 1
+    -> Guard[4] (false edge of 'top'):  %3 = icmp slt i64 %"iters::Int64", 1, !dbg !58
+    -> Collected 5 dominating context guard(s).
+    -> [go3] 3 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i64 %"data::Array.size.0.copyload" in [2,0) (LVI @ L94)
+    -> Fact[KB:1] i64 %value_phi12 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:2] i64 %value_phi12 in [1,144115188075855872) (SCEV unsigned)
+    -> Fact[SCEV:3] i64 %value_phi12 in [1,144115188075855872) (SCEV signed)
+    -> Fact[SCEVSYM:4] i64 %value_phi12 - start(1) <=u BTC((-1 + %value_phi8)<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-lo:5] i64 %value_phi12 >=s i64 1 (monotone nsw increments, 1 arm(s))
+    -> Fact[LVI:6] i64 %value_phi22 in [1,0) (LVI @ L94)
+    -> Fact[SCEV:7] i64 %value_phi22 in [1,17) (SCEV unsigned)
+    -> Fact[SCEV:8] i64 %value_phi22 in [1,17) (SCEV signed)
+    -> [heavy] 9 analysis fact(s) on 6 boundary value(s)
+    -> [mv] T3 symbolic index bound: max(idx) = (-66 + (4 * (1 umax (16 umin ((1 + (-1 smax (0 smin %"new::Array.size.0.copyload")))<nsw> * ((-1 * (0 smin %"new::Array.size.0.copyload")) + %"new::Array.size.0.copyload"))<nuw><nsw>)))<nuw><nsw> + (64 * %value_phi8)<nsw>)
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 18.708833 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Trap source: essentials.jl:919
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of 'L94.postloop'):  %.not282.postloop = icmp ult i64 %127, %"data::Array.size.0.copyload", !dbg !79
+    -> Guard[1] (true edge of 'L73.postloop'):  %.not281.postloop = icmp ult i64 %126, %"data::Array.size.0.copyload", !dbg !79
+    -> Guard[2] (true edge of 'L53.postloop'):  %.not.postloop = icmp ult i64 %125, %"data::Array.size.0.copyload", !dbg !79
+    -> Guard[3] (false edge of 'pass.preheader'):  %6 = icmp slt i64 %value_phi8, 1
+    -> Guard[4] (false edge of 'top'):  %3 = icmp slt i64 %"iters::Int64", 1, !dbg !58
+    -> Collected 5 dominating context guard(s).
+    -> [go3] 10 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i64 %"data::Array.size.0.copyload" in [3,0) (LVI @ L116.postloop)
+    -> Fact[KB:1] i64 %value_phi12 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:2] i64 %value_phi12 in [1,144115188075855872) (SCEV unsigned)
+    -> Fact[SCEV:3] i64 %value_phi12 in [1,144115188075855872) (SCEV signed)
+    -> Fact[SCEVSYM:4] i64 %value_phi12 - start(1) <=u BTC((-1 + %value_phi8)<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-lo:5] i64 %value_phi12 >=s i64 1 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEVSYM:6] i64 %value_phi22.postloop - start(%value_phi22.copy) <=u BTC(((16 + (-1 * %value_phi22.copy)<nsw>)<nsw> umin (1 + (-1 * %value_phi22.copy)<nsw> + ((-1 + %value_phi22.copy)<nsw> umax %"new::Array.size.0.copyload")))) (SCEV symbolic trip count, sub-form)
+    -> Fact[SCEV:7] i64 %value_phi22 in [1,17) (SCEV unsigned)
+    -> Fact[SCEV:8] i64 %value_phi22 in [1,17) (SCEV signed)
+    -> Fact[SCEVEQ:9] i64 %value_phi22.copy in phi image (2 incoming)
+    -> [heavy] 10 analysis fact(s) on 14 boundary value(s)
+    -> [mv] T3 symbolic index bound: max(idx) = (-1 + (64 * %value_phi8)<nsw>)
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 34.468959 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Trap source: essentials.jl:919
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of 'L94'):  %.not282 = icmp ult i64 %19, %"data::Array.size.0.copyload", !dbg !79
+    -> Guard[1] (true edge of 'L73'):  %.not281 = icmp ult i64 %17, %"data::Array.size.0.copyload", !dbg !79
+    -> Guard[2] (true edge of 'L53'):  %.not = icmp ult i64 %15, %"data::Array.size.0.copyload", !dbg !79
+    -> Guard[3] (false edge of 'L41'):  %.not485 = icmp eq i64 %12, 0, !dbg !67
+    -> Guard[4] (false edge of 'pass.preheader'):  %6 = icmp slt i64 %value_phi8, 1
+    -> Guard[5] (false edge of 'top'):  %3 = icmp slt i64 %"iters::Int64", 1, !dbg !58
+    -> Collected 6 dominating context guard(s).
+    -> [go3] 3 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i64 %"data::Array.size.0.copyload" in [3,0) (LVI @ L116)
+    -> Fact[KB:1] i64 %value_phi12 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:2] i64 %value_phi12 in [1,144115188075855872) (SCEV unsigned)
+    -> Fact[SCEV:3] i64 %value_phi12 in [1,144115188075855872) (SCEV signed)
+    -> Fact[SCEVSYM:4] i64 %value_phi12 - start(1) <=u BTC((-1 + %value_phi8)<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-lo:5] i64 %value_phi12 >=s i64 1 (monotone nsw increments, 1 arm(s))
+    -> Fact[LVI:6] i64 %value_phi22 in [1,0) (LVI @ L116)
+    -> Fact[SCEV:7] i64 %value_phi22 in [1,17) (SCEV unsigned)
+    -> Fact[SCEV:8] i64 %value_phi22 in [1,17) (SCEV signed)
+    -> [heavy] 9 analysis fact(s) on 6 boundary value(s)
+    -> [mv] T3 symbolic index bound: max(idx) = (-65 + (4 * (1 umax (16 umin ((1 + (-1 smax (0 smin %"new::Array.size.0.copyload")))<nsw> * ((-1 * (0 smin %"new::Array.size.0.copyload")) + %"new::Array.size.0.copyload"))<nuw><nsw>)))<nuw><nsw> + (64 * %value_phi8)<nsw>)
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 26.244167 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Trap source: array.jl:990
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of 'L116.postloop'):  %.not283.postloop = icmp ult i64 %128, %"data::Array.size.0.copyload", !dbg !79
+    -> Guard[1] (true edge of 'L94.postloop'):  %.not282.postloop = icmp ult i64 %127, %"data::Array.size.0.copyload", !dbg !79
+    -> Guard[2] (true edge of 'L73.postloop'):  %.not281.postloop = icmp ult i64 %126, %"data::Array.size.0.copyload", !dbg !79
+    -> Guard[3] (true edge of 'L53.postloop'):  %.not.postloop = icmp ult i64 %125, %"data::Array.size.0.copyload", !dbg !79
+    -> Guard[4] (false edge of 'pass.preheader'):  %6 = icmp slt i64 %value_phi8, 1
+    -> Guard[5] (false edge of 'top'):  %3 = icmp slt i64 %"iters::Int64", 1, !dbg !58
+    -> Collected 6 dominating context guard(s).
+    -> [go3] 10 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i64 %"data::Array.size.0.copyload" in [4,0) (LVI @ L138.postloop)
+    -> Fact[KB:1] i64 %value_phi12 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[SCEV:2] i64 %value_phi12 in [1,144115188075855872) (SCEV unsigned)
+    -> Fact[SCEV:3] i64 %value_phi12 in [1,144115188075855872) (SCEV signed)
+    -> Fact[SCEVSYM:4] i64 %value_phi12 - start(1) <=u BTC((-1 + %value_phi8)<nsw>) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-lo:5] i64 %value_phi12 >=s i64 1 (monotone nsw increments, 1 arm(s))
+    -> Fact[SCEVSYM:6] i64 %value_phi22.postloop - start(%value_phi22.copy) <=u BTC(((16 + (-1 * %value_phi22.copy)<nsw>)<nsw> umin (1 + (-1 * %value_phi22.copy)<nsw> + ((-1 + %value_phi22.copy)<nsw> umax %"new::Array.size.0.copyload")))) (SCEV symbolic trip count, sub-form)
+    -> Fact[SCEV:7] i64 %value_phi22 in [1,17) (SCEV unsigned)
+    -> Fact[SCEV:8] i64 %value_phi22 in [1,17) (SCEV signed)
+    -> Fact[SCEVEQ:9] i64 %value_phi22.copy in phi image (2 incoming)
+    -> [heavy] 10 analysis fact(s) on 14 boundary value(s)
+    -> [mv] T3 symbolic index bound: max(idx) = 15
+    -> [ind L0] BASE (1 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 25.591792 ms]
+    -> [ind L1] BASE (11 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.754209 ms]
+    -> [ind L2] BASE (4 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 8.071458 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 34.044083 ms]
+    -> [mv] minimize: without {%"new::Array.size.0.copyload" <=s 2^31} -> UNSAT, dropped (3.837041e+00 ms)
+    -> [mv] DEAD UNDER HYPOTHESIS H = {%"new::Array.size.0.copyload" >u (15)} (1 of 61 candidates in core, round 1; re-solve 1.355021e+01 ms; trap loop depth 3, hoist to depth 3)
+  => SUCCESS (fast copy): trap folded in 1 copy inside the H-guarded clone of loop 'L53.postloop'
+  -> Trap source: essentials.jl:919
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of 'pass.preheader'):  %6 = icmp slt i64 %value_phi8, 1
+    -> Guard[1] (false edge of 'top'):  %3 = icmp slt i64 %"iters::Int64", 1, !dbg !58
+    -> Collected 2 dominating context guard(s).
+    -> [go3] 4 leaf-closure instruction(s) encoded
+    -> Fact[SCEVSYM:0] i64 %value_phi81.postloop - start(%value_phi81.copy) <=u BTC(((64 + (-1 * %value_phi81.copy)<nsw>)<nsw> umin (1 + (-1 * %value_phi81.copy)<nsw> + ((-1 + %value_phi81.copy)<nsw> umax %"new::Array.size84.0.copyload")) umin (3 + (-1 * %value_phi81.copy)<nsw> + ((-3 + %value_phi81.copy)<nsw> umax %"new::Array.size84.0.copyload")) umin (8 + (-1 * %value_phi81.copy)<nsw> + ((-8 + %value_phi81.copy)<nsw> umax %"new::Array.size84.0.copyload")) umin (16 + (-1 * %value_phi81.copy)<nsw> + ((-16 + %value_phi81.copy)<nsw> umax %"new::Array.size84.0.copyload")) umin (17 + (-1 * %value_phi81.copy)<nsw> + ((-17 + %value_phi81.copy)<nsw> umax %"new::Array.size84.0.copyload")))) (SCEV symbolic trip count, sub-form)
+    -> Fact[SCEV:1] i64 %value_phi81 in [17,65) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %value_phi81 in [17,65) (SCEV signed)
+    -> Fact[SCEVEQ:3] i64 %value_phi81.copy in phi image (2 incoming)
+    -> [heavy] 4 analysis fact(s) on 7 boundary value(s)
+    -> [mv] T3 symbolic index bound: max(idx) = 48
+    -> [ind L0] BASE (1 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.512417 ms]
+    -> [ind L1] BASE (11 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 19.356084 ms]
+    -> [ind L2] BASE (4 phi(s) = entry): UNSAT (Dead Code / Impossible Path) [Query Latency: 18.465000 ms]
+    -> [ind L2] STEP (copy: 324 instr, 0 skipped, 96 fresh, 20 fact(s), 4 link(s)): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1201.458208 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 46.480333 ms]
+    -> [mv] minimize: without {%"new::Array.size84.0.copyload" <=s 2^31} -> UNSAT, dropped (2.783252e+02 ms)
+    -> [mv] minimize: without {%"new::Array.size84.0.copyload" >=s 0} -> UNSAT, dropped (2.044478e+02 ms)
+    -> [mv] DEAD UNDER HYPOTHESIS H = {%"new::Array.size84.0.copyload" >u (48)} (1 of 55 candidates in core, round 1; re-solve 1.944113e+02 ms; trap loop depth 3, hoist to depth 2)
+  => SUCCESS (fast copy): trap folded in 1 copy inside the H-guarded clone of loop 'L41'
+  -> Trap source: essentials.jl:919
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of 'L175.postloop'):  %.not286.postloop = icmp ult i64 %146, %"new::Array.size84.0.copyload", !dbg !110
+    -> Guard[1] (false edge of 'pass.preheader'):  %6 = icmp slt i64 %value_phi8, 1
+    -> Guard[2] (false edge of 'top'):  %3 = icmp slt i64 %"iters::Int64", 1, !dbg !58
+    -> Collected 3 dominating context guard(s).
+    -> [go3] 4 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i64 %"new::Array.size84.0.copyload" in [1,0) (LVI @ L237.postloop)
+    -> Fact[SCEVSYM:1] i64 %value_phi81.postloop - start(%value_phi81.copy) <=u BTC(((64 + (-1 * %value_phi81.copy)<nsw>)<nsw> umin (1 + (-1 * %value_phi81.copy)<nsw> + ((-1 + %value_phi81.copy)<nsw> umax %"new::Array.size84.0.copyload")) umin (3 + (-1 * %value_phi81.copy)<nsw> + ((-3 + %value_phi81.copy)<nsw> umax %"new::Array.size84.0.copyload")) umin (8 + (-1 * %value_phi81.copy)<nsw> + ((-8 + %value_phi81.copy)<nsw> umax %"new::Array.size84.0.copyload")) umin (16 + (-1 * %value_phi81.copy)<nsw> + ((-16 + %value_phi81.copy)<nsw> umax %"new::Array.size84.0.copyload")) umin (17 + (-1 * %value_phi81.copy)<nsw> + ((-17 + %value_phi81.copy)<nsw> umax %"new::Array.size84.0.copyload")))) (SCEV symbolic trip count, sub-form)
+    -> Fact[SCEV:2] i64 %value_phi81 in [17,65) (SCEV unsigned)
+    -> Fact[SCEV:3] i64 %value_phi81 in [17,65) (SCEV signed)
+    -> Fact[SCEVEQ:4] i64 %value_phi81.copy in phi image (2 incoming)
+    -> Fact[LVI:5] i64 %"new::Array.size84.0.copyload" in [1,0) (LVI @ L237.postloop)
+    -> [heavy] 6 analysis fact(s) on 7 boundary value(s)
+    -> [mv] T3 symbolic index bound: max(idx) = 61
+    -> [ind L0] BASE (1 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 31.619208 ms]
+    -> [ind L1] BASE (11 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.985542 ms]
+    -> [ind L2] BASE (4 phi(s) = entry): UNSAT (Dead Code / Impossible Path) [Query Latency: 30.242333 ms]
+    -> [ind L2] STEP (copy: 324 instr, 0 skipped, 96 fresh, 20 fact(s), 4 link(s)): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1062.453708 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 109.704708 ms]
+    -> [mv] minimize: without {%"new::Array.size84.0.copyload" <=s 2^31} -> UNSAT, dropped (2.591240e+02 ms)
+    -> [mv] minimize: without {%"new::Array.size84.0.copyload" >=s 0} -> UNSAT, dropped (2.388326e+02 ms)
+    -> [mv] DEAD UNDER HYPOTHESIS H = {%"new::Array.size84.0.copyload" >u (61)} (1 of 55 candidates in core, round 1; re-solve 2.499952e+02 ms; trap loop depth 3, hoist to depth 2)
+  => SUCCESS (fast copy): trap folded in 1 copy inside the H-guarded clone of loop 'L41'
+  -> Trap source: essentials.jl:919
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of 'L237.postloop'):  %.not289.postloop = icmp ult i64 %154, %"new::Array.size84.0.copyload", !dbg !116
+    -> Guard[1] (true edge of 'L175.postloop'):  %.not286.postloop = icmp ult i64 %146, %"new::Array.size84.0.copyload", !dbg !110
+    -> Guard[2] (false edge of 'pass.preheader'):  %6 = icmp slt i64 %value_phi8, 1
+    -> Guard[3] (false edge of 'top'):  %3 = icmp slt i64 %"iters::Int64", 1, !dbg !58
+    -> Collected 4 dominating context guard(s).
+    -> [go3] 4 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i64 %"new::Array.size84.0.copyload" in [1,0) (LVI @ L303.postloop)
+    -> Fact[SCEVSYM:1] i64 %value_phi81.postloop - start(%value_phi81.copy) <=u BTC(((64 + (-1 * %value_phi81.copy)<nsw>)<nsw> umin (1 + (-1 * %value_phi81.copy)<nsw> + ((-1 + %value_phi81.copy)<nsw> umax %"new::Array.size84.0.copyload")) umin (3 + (-1 * %value_phi81.copy)<nsw> + ((-3 + %value_phi81.copy)<nsw> umax %"new::Array.size84.0.copyload")) umin (8 + (-1 * %value_phi81.copy)<nsw> + ((-8 + %value_phi81.copy)<nsw> umax %"new::Array.size84.0.copyload")) umin (16 + (-1 * %value_phi81.copy)<nsw> + ((-16 + %value_phi81.copy)<nsw> umax %"new::Array.size84.0.copyload")) umin (17 + (-1 * %value_phi81.copy)<nsw> + ((-17 + %value_phi81.copy)<nsw> umax %"new::Array.size84.0.copyload")))) (SCEV symbolic trip count, sub-form)
+    -> Fact[SCEV:2] i64 %value_phi81 in [17,65) (SCEV unsigned)
+    -> Fact[SCEV:3] i64 %value_phi81 in [17,65) (SCEV signed)
+    -> Fact[SCEVEQ:4] i64 %value_phi81.copy in phi image (2 incoming)
+    -> Fact[LVI:5] i64 %"new::Array.size84.0.copyload" in [1,0) (LVI @ L303.postloop)
+    -> [heavy] 6 analysis fact(s) on 7 boundary value(s)
+    -> [mv] T3 symbolic index bound: max(idx) = 47
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 129.003583 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Trap source: essentials.jl:919
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of 'L303.postloop'):  %.not292.postloop = icmp ult i64 %161, %"new::Array.size84.0.copyload", !dbg !117
+    -> Guard[1] (true edge of 'L237.postloop'):  %.not289.postloop = icmp ult i64 %154, %"new::Array.size84.0.copyload", !dbg !116
+    -> Guard[2] (true edge of 'L175.postloop'):  %.not286.postloop = icmp ult i64 %146, %"new::Array.size84.0.copyload", !dbg !110
+    -> Guard[3] (false edge of 'pass.preheader'):  %6 = icmp slt i64 %value_phi8, 1
+    -> Guard[4] (false edge of 'top'):  %3 = icmp slt i64 %"iters::Int64", 1, !dbg !58
+    -> Collected 5 dominating context guard(s).
+    -> [go3] 4 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i64 %"new::Array.size84.0.copyload" in [1,0) (LVI @ L324.postloop)
+    -> Fact[SCEVSYM:1] i64 %value_phi81.postloop - start(%value_phi81.copy) <=u BTC(((64 + (-1 * %value_phi81.copy)<nsw>)<nsw> umin (1 + (-1 * %value_phi81.copy)<nsw> + ((-1 + %value_phi81.copy)<nsw> umax %"new::Array.size84.0.copyload")) umin (3 + (-1 * %value_phi81.copy)<nsw> + ((-3 + %value_phi81.copy)<nsw> umax %"new::Array.size84.0.copyload")) umin (8 + (-1 * %value_phi81.copy)<nsw> + ((-8 + %value_phi81.copy)<nsw> umax %"new::Array.size84.0.copyload")) umin (16 + (-1 * %value_phi81.copy)<nsw> + ((-16 + %value_phi81.copy)<nsw> umax %"new::Array.size84.0.copyload")) umin (17 + (-1 * %value_phi81.copy)<nsw> + ((-17 + %value_phi81.copy)<nsw> umax %"new::Array.size84.0.copyload")))) (SCEV symbolic trip count, sub-form)
+    -> Fact[SCEV:2] i64 %value_phi81 in [17,65) (SCEV unsigned)
+    -> Fact[SCEV:3] i64 %value_phi81 in [17,65) (SCEV signed)
+    -> Fact[SCEVEQ:4] i64 %value_phi81.copy in phi image (2 incoming)
+    -> Fact[LVI:5] i64 %"new::Array.size84.0.copyload" in [1,0) (LVI @ L324.postloop)
+    -> [heavy] 6 analysis fact(s) on 7 boundary value(s)
+    -> [mv] T3 symbolic index bound: max(idx) = 56
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 27.950542 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Trap source: array.jl:990
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of 'L324.postloop'):  %.not293.postloop = icmp ult i64 %162, %"new::Array.size84.0.copyload", !dbg !117
+    -> Guard[1] (true edge of 'L303.postloop'):  %.not292.postloop = icmp ult i64 %161, %"new::Array.size84.0.copyload", !dbg !117
+    -> Guard[2] (true edge of 'L237.postloop'):  %.not289.postloop = icmp ult i64 %154, %"new::Array.size84.0.copyload", !dbg !116
+    -> Guard[3] (true edge of 'L175.postloop'):  %.not286.postloop = icmp ult i64 %146, %"new::Array.size84.0.copyload", !dbg !110
+    -> Guard[4] (false edge of 'pass.preheader'):  %6 = icmp slt i64 %value_phi8, 1
+    -> Guard[5] (false edge of 'top'):  %3 = icmp slt i64 %"iters::Int64", 1, !dbg !58
+    -> Collected 6 dominating context guard(s).
+    -> [go3] 4 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i64 %"new::Array.size84.0.copyload" in [1,0) (LVI @ L343.postloop)
+    -> Fact[SCEVSYM:1] i64 %value_phi81.postloop - start(%value_phi81.copy) <=u BTC(((64 + (-1 * %value_phi81.copy)<nsw>)<nsw> umin (1 + (-1 * %value_phi81.copy)<nsw> + ((-1 + %value_phi81.copy)<nsw> umax %"new::Array.size84.0.copyload")) umin (3 + (-1 * %value_phi81.copy)<nsw> + ((-3 + %value_phi81.copy)<nsw> umax %"new::Array.size84.0.copyload")) umin (8 + (-1 * %value_phi81.copy)<nsw> + ((-8 + %value_phi81.copy)<nsw> umax %"new::Array.size84.0.copyload")) umin (16 + (-1 * %value_phi81.copy)<nsw> + ((-16 + %value_phi81.copy)<nsw> umax %"new::Array.size84.0.copyload")) umin (17 + (-1 * %value_phi81.copy)<nsw> + ((-17 + %value_phi81.copy)<nsw> umax %"new::Array.size84.0.copyload")))) (SCEV symbolic trip count, sub-form)
+    -> Fact[SCEV:2] i64 %value_phi81 in [17,65) (SCEV unsigned)
+    -> Fact[SCEV:3] i64 %value_phi81 in [17,65) (SCEV signed)
+    -> Fact[SCEVEQ:4] i64 %value_phi81.copy in phi image (2 incoming)
+    -> Fact[LVI:5] i64 %"new::Array.size84.0.copyload" in [1,0) (LVI @ L343.postloop)
+    -> [heavy] 6 analysis fact(s) on 7 boundary value(s)
+    -> [mv] T3 symbolic index bound: max(idx) = 63
+    -> [ind L0] BASE (1 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.557709 ms]
+    -> [ind L1] BASE (11 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.216500 ms]
+    -> [ind L2] BASE (4 phi(s) = entry): UNSAT (Dead Code / Impossible Path) [Query Latency: 80.416125 ms]
+    -> [ind L2] STEP (copy: 324 instr, 0 skipped, 96 fresh, 20 fact(s), 4 link(s)): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1228.061791 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 22.453333 ms]
+    -> [mv] minimize: without {%"new::Array.size84.0.copyload" <=s 2^31} -> UNSAT, dropped (1.545898e+02 ms)
+    -> [mv] minimize: without {%"new::Array.size84.0.copyload" >=s 0} -> UNSAT, dropped (7.870617e+01 ms)
+    -> [mv] DEAD UNDER HYPOTHESIS H = {%"new::Array.size84.0.copyload" >u (63)} (1 of 55 candidates in core, round 1; re-solve 1.408565e+02 ms; trap loop depth 3, hoist to depth 2)
+  => SUCCESS (fast copy): trap folded in 1 copy inside the H-guarded clone of loop 'L41'
+  -> Trap source: essentials.jl:919
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of 'pass.preheader'):  %6 = icmp slt i64 %value_phi8, 1
+    -> Guard[1] (false edge of 'top'):  %3 = icmp slt i64 %"iters::Int64", 1, !dbg !58
+    -> Collected 2 dominating context guard(s).
+    -> [go3] 4 leaf-closure instruction(s) encoded
+    -> Fact[SCEVSYM:0] i64 %value_phi203.postloop - start(%value_phi203.copy) <=u BTC(((64 + (-1 * %value_phi203.copy)<nsw>)<nsw> umin (1 + (-1 * %value_phi203.copy)<nsw> + ((-1 + %value_phi203.copy)<nsw> umax %.size.0.copyload)) umin (1 + (-1 * %value_phi203.copy)<nsw> + ((-1 + %value_phi203.copy)<nsw> umax %"new::Array.size225.0.copyload")))) (SCEV symbolic trip count, sub-form)
+    -> Fact[SCEV:1] i64 %value_phi203 in [1,65) (SCEV unsigned)
+    -> Fact[SCEV:2] i64 %value_phi203 in [1,65) (SCEV signed)
+    -> Fact[SCEVEQ:3] i64 %value_phi203.copy in phi image (2 incoming)
+    -> [heavy] 4 analysis fact(s) on 8 boundary value(s)
+    -> [mv] T3 symbolic index bound: max(idx) = 63
+    -> [ind L0] BASE (9 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.323458 ms]
+    -> [ind L1] BASE (11 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.272042 ms]
+    -> [ind L2] BASE (4 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.954292 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.707625 ms]
+    -> [mv] minimize: without {%.size.0.copyload <=s 2^31} -> UNSAT, dropped (1.983758e+01 ms)
+    -> [mv] minimize: without {%.size.0.copyload >=s 0} -> UNSAT, dropped (1.295221e+01 ms)
+    -> [mv] DEAD UNDER HYPOTHESIS H = {%.size.0.copyload >u (63)} (1 of 88 candidates in core, round 1; re-solve 1.396829e+01 ms; trap loop depth 3, hoist to depth 3)
+  => SUCCESS (fast copy): trap folded in 1 copy inside the H-guarded clone of loop 'L381.postloop'
+  -> Trap source: essentials.jl:919
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of 'L381.postloop'):  %.not296.postloop = icmp ult i64 %178, %.size.0.copyload, !dbg !149
+    -> Guard[1] (false edge of 'pass.preheader'):  %6 = icmp slt i64 %value_phi8, 1
+    -> Guard[2] (false edge of 'top'):  %3 = icmp slt i64 %"iters::Int64", 1, !dbg !58
+    -> Collected 3 dominating context guard(s).
+    -> [go3] 4 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i64 %.size.0.copyload in [1,0) (LVI @ L420.postloop)
+    -> Fact[LVI:1] i64 %value_phi203.postloop in [1,0) (LVI @ L420.postloop)
+    -> Fact[SCEVSYM:2] i64 %value_phi203.postloop - start(%value_phi203.copy) <=u BTC(((64 + (-1 * %value_phi203.copy)<nsw>)<nsw> umin (1 + (-1 * %value_phi203.copy)<nsw> + ((-1 + %value_phi203.copy)<nsw> umax %.size.0.copyload)) umin (1 + (-1 * %value_phi203.copy)<nsw> + ((-1 + %value_phi203.copy)<nsw> umax %"new::Array.size225.0.copyload")))) (SCEV symbolic trip count, sub-form)
+    -> Fact[SCEV:3] i64 %value_phi203 in [1,65) (SCEV unsigned)
+    -> Fact[SCEV:4] i64 %value_phi203 in [1,65) (SCEV signed)
+    -> Fact[SCEVEQ:5] i64 %value_phi203.copy in phi image (2 incoming)
+    -> Fact[LVI:6] i64 %.size.0.copyload in [1,0) (LVI @ L420.postloop)
+    -> [heavy] 7 analysis fact(s) on 8 boundary value(s)
+    -> [mv] T3 symbolic index bound: max(idx) = 63
+    -> [ind L0] BASE (9 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.290500 ms]
+    -> [ind L1] BASE (11 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.574292 ms]
+    -> [ind L2] BASE (4 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.441875 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 13.659542 ms]
+    -> [mv] minimize: without {%.size.0.copyload <=s 2^31} -> UNSAT, dropped (1.329100e+01 ms)
+    -> [mv] minimize: without {%"new::Array.size225.0.copyload" <=s 2^31} -> UNSAT, dropped (1.025121e+01 ms)
+    -> [mv] minimize: without {%.size.0.copyload >=s 0} -> UNSAT, dropped (2.662621e+01 ms)
+    -> [mv] minimize: without {%"new::Array.size225.0.copyload" >=s 0} -> UNSAT, dropped (1.340192e+01 ms)
+    -> [mv] DEAD UNDER HYPOTHESIS H = {%"new::Array.size225.0.copyload" >u (63)} (1 of 88 candidates in core, round 1; re-solve 1.385871e+01 ms; trap loop depth 3, hoist to depth 3)
+  => SUCCESS (fast copy): trap folded in 1 copy inside the H-guarded clone of loop 'L381.postloop'
+  => Total Traps Eliminated: 10
+  => Traps Folded In Fast Copies (mv): 6
+  => Total Trap Attempts: 16
+  => Total SMT Queries Executed: 16
+  => Total SMT Query Latency: 7.467642e+03 ms
+  => Average SMT Query Latency: 4.667276e+02 ms
+  => Total DFS & SMT Execution Time: 7.916227e+03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: jfptr_sha256_sum_148
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 1.150000e-02 ms
+--------------------------------------------------
+[profile-stages] job,index,encode_ms,gate_wait_ms,fact_ms,RM_ms,RM_calls,RM_repeats,KB_ms,KB_calls,KB_repeats,LVI_ms,LVI_calls,LVI_repeats,SCEV_ms,SCEV_calls,SCEV_repeats,SCEVSYM_ms,SCEVSYM_calls,SCEVSYM_repeats,direct_ms,ind_ms,mv_ms,narrow_ms,queries,query_ms,setup_ms,solve_ms,assert_ms,teardown_ms,decided,worker_ms
+[profile-stages] job,0,1.382090e-01,8.300000e-05,1.398983e+01,0.000000e+00,0,0,2.278600e-02,159,86,7.550000e-02,10,1,4.068370e-01,140,80,3.330020e-01,21,11,7.393183e+01,9.288750e-01,0.000000e+00,0.000000e+00,1,7.393183e+01,5.154042e+00,7.502746e+01,1.265420e-01,1.868937e+01,D,1.263736e+02
+[profile-stages] job,1,1.842910e-01,2.695808e+01,3.800500e+00,0.000000e+00,0,0,1.445600e-02,145,145,9.708000e-03,6,0,5.237000e-03,131,131,1.857960e-01,20,19,4.376392e+01,4.316250e-01,0.000000e+00,0.000000e+00,1,4.376392e+01,5.221042e+00,6.709408e+01,2.286304e+01,2.523733e+01,D,1.326350e+02
+[profile-stages] job,2,1.961250e-01,3.482088e+01,1.623696e+01,0.000000e+00,0,0,2.392000e-02,159,159,3.168000e-03,11,1,9.082000e-03,140,140,2.300830e-01,21,21,4.292383e+01,7.650000e-01,0.000000e+00,0.000000e+00,1,4.292383e+01,5.026208e+00,4.422837e+01,4.986670e-01,1.767329e+01,D,1.333733e+02
+[profile-stages] job,3,1.937500e-01,6.585192e+01,8.188708e+00,0.000000e+00,0,0,5.274200e-02,145,145,5.294000e-03,7,0,1.704100e-02,131,131,4.079580e-01,20,20,1.776650e+01,1.523375e+00,0.000000e+00,0.000000e+00,1,1.776650e+01,5.095000e+00,4.222142e+01,2.289092e+01,1.564492e+01,D,1.425008e+02
+[profile-stages] job,4,1.270410e-01,4.170000e-04,1.459904e+01,0.000000e+00,0,0,2.670400e-02,159,159,4.085000e-03,11,1,1.015900e-02,140,140,2.252100e-01,21,21,6.006829e+01,1.519958e+00,0.000000e+00,0.000000e+00,1,6.006829e+01,1.793125e+00,6.212408e+01,4.957920e-01,1.816942e+01,D,1.099721e+02
+[profile-stages] job,5,1.688330e-01,2.027808e+01,3.764709e+00,0.000000e+00,0,0,1.532800e-02,145,145,2.542000e-03,7,0,5.030000e-03,131,131,1.814570e-01,20,20,1.870883e+01,3.440833e+00,0.000000e+00,0.000000e+00,1,1.870883e+01,2.731875e+00,4.053538e+01,1.834504e+01,2.148033e+01,D,9.288767e+01
+[profile-stages] job,6,1.152500e-01,2.712008e+01,1.954892e+01,0.000000e+00,0,0,2.832800e-02,159,159,4.792000e-03,11,1,8.999000e-03,140,140,2.760390e-01,21,21,3.446896e+01,1.172833e+00,0.000000e+00,0.000000e+00,1,3.446896e+01,2.701542e+00,3.632738e+01,6.455000e-01,1.444383e+01,D,1.161032e+02
+[profile-stages] job,7,1.454170e-01,5.365817e+01,4.853334e+00,0.000000e+00,0,0,2.187000e-02,145,145,6.208000e-03,7,0,7.623000e-03,131,131,2.094170e-01,20,20,2.624417e+01,8.429100e-02,0.000000e+00,0.000000e+00,1,2.624417e+01,2.157874e+00,5.049112e+01,2.410508e+01,1.694458e+01,D,1.323641e+02
+[profile-stages] job,8,1.352500e-01,3.330000e-04,1.451554e+01,0.000000e+00,0,0,2.487700e-02,159,159,3.334000e-03,11,1,9.581000e-03,140,140,2.394980e-01,21,21,3.404408e+01,2.499217e+01,2.806896e+01,0.000000e+00,5,5.901421e+01,1.291417e+00,8.786087e+01,7.168750e-01,1.542967e+01,-,1.352914e+02
+[profile-stages] job,9,1.057910e-01,1.956162e+01,5.626167e+00,0.000000e+00,0,0,3.316100e-02,151,149,5.983400e-02,6,1,7.584000e-03,135,135,4.723330e-01,19,18,4.648033e+01,1.406705e+03,6.858518e+02,0.000000e+00,6,7.307080e+02,1.370125e+00,2.139970e+03,8.700410e-01,1.468950e+01,-,2.187008e+03
+[profile-stages] job,10,1.040830e-01,1.755021e+01,1.057046e+01,0.000000e+00,0,0,4.613000e-02,151,151,3.999000e-03,7,1,1.341900e-02,135,135,5.118320e-01,19,19,1.097047e+02,1.191513e+03,7.635112e+02,0.000000e+00,6,8.713128e+02,1.404874e+00,2.065851e+03,1.071334e+00,1.351187e+01,-,2.114863e+03
+[profile-stages] job,11,1.179160e-01,8.356666e+00,1.077763e+01,0.000000e+00,0,0,4.808300e-02,151,151,3.791000e-03,7,1,1.299800e-02,135,135,5.018770e-01,19,19,1.290036e+02,1.679946e+01,0.000000e+00,0.000000e+00,1,1.290036e+02,1.439166e+00,1.470359e+02,1.193458e+00,9.493084e+00,D,1.832038e+02
+[profile-stages] job,12,1.203750e-01,2.500000e-04,5.681208e+00,0.000000e+00,0,0,2.892500e-02,151,151,2.335000e-03,7,1,8.999000e-03,135,135,2.828350e-01,19,19,2.795054e+01,1.122625e+00,0.000000e+00,0.000000e+00,1,2.795054e+01,1.268000e+00,3.044767e+01,1.332750e+00,4.848500e+00,D,4.827679e+01
+[profile-stages] job,13,1.278330e-01,2.090000e-04,5.470667e+00,0.000000e+00,0,0,2.819500e-02,151,151,2.290000e-03,7,1,7.781000e-03,135,135,2.824130e-01,19,19,2.245333e+01,1.556454e+03,3.816833e+02,0.000000e+00,6,4.025438e+02,1.338125e+00,1.962220e+03,1.586541e+00,1.587921e+01,-,1.991392e+03
+[profile-stages] job,14,1.132080e-01,2.500000e-04,4.438208e+00,0.000000e+00,0,0,2.500500e-02,160,158,9.583000e-03,8,2,8.452000e-03,144,144,3.843760e-01,19,18,9.707625e+00,5.922733e+01,5.127412e+01,0.000000e+00,6,5.968525e+01,1.209209e+00,1.211140e+02,8.671250e-01,3.087541e+00,-,1.345963e+02
+[profile-stages] job,15,1.084170e-01,4.200000e-05,4.218958e+00,0.000000e+00,0,0,3.029800e-02,160,160,4.041000e-03,9,2,9.906000e-03,144,144,2.418740e-01,19,19,1.365954e+01,2.264933e+01,8.206125e+01,0.000000e+00,8,9.422671e+01,1.196832e+00,1.194297e+02,1.005375e+00,3.541167e+00,-,1.328731e+02
+[profile-stages] module,jobs=16,threads=4,stage1_ms=2.582792e+00,stage2_ms=2.423405e+03,stage2b_ms=1.542000e-03,stage3_ms=7.375000e-01,total_ms=2.426727e+03

@@ -26,7 +26,8 @@ def load(path):
             hdr = body.split(",")[1:]
         elif body.startswith("job,"):
             vals = body.split(",")[1:]
-            jobs.append({h: float(v) for h, v in zip(hdr, vals)})
+            num = lambda v: float(v) if v.replace(".", "", 1).replace("e", "", 1).replace("+", "").replace("-", "").isdigit() else v
+            jobs.append({h: num(v) for h, v in zip(hdr, vals)})
         elif body.startswith("module,"):
             for kv in body.split(",")[1:]:
                 k, v = kv.split("=")

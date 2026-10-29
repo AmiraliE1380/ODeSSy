@@ -332,7 +332,24 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
                     std::optional<odessy::TrapSolver> SO;
                     { odessy::ProfScope PS(&odessy::JobProfile::SetupMs); SO.emplace(Cfg, FC, J); }
                     odessy::TrapSolver &S = *SO;
+                    // Parallel `ind` lanes (HANDOFF §13.8 item 2): same
+                    // encoding and facts, own contexts; logs spliced by S.
+                    std::string LaneLog[2];
+                    std::optional<odessy::TrapSolver> LB, LS;
+                    bool Lanes = Cfg.Inductive && odessy::IndParEnabled && !Cfg.VacuityCheck &&
+                                 FC.LI && FC.LI->getLoopFor(J.PredBB);
+                    if (Lanes) {
+                        odessy::ProfScope PS(&odessy::JobProfile::SetupMs);
+                        LB.emplace(Cfg, FC, J, 0, &LaneLog[0]); LB->setLane(1);
+                        LS.emplace(Cfg, FC, J, 0, &LaneLog[1]); LS->setLane(2);
+                    }
                     bool Proceed = S.encodePhase();
+                    if (Lanes) {
+                        odessy::JobProfile *Keep = odessy::CurProf;
+                        odessy::CurProf = nullptr;   // lane encode/facts: not the job's own
+                        Lanes = LB->encodePhase() && LS->encodePhase();
+                        odessy::CurProf = Keep;
+                    }
                     if (HeavyMode) {
                         // Every heavy job passes the gate exactly once, in
                         // discovery order, even when the encode aborted
@@ -341,12 +358,19 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
                           Gate.acquire(J.Index);
                           if (odessy::CurProf) odessy::CurProf->GateWaitMs += odessy::profMsSince(GW); }
                         if (Proceed) Proceed = S.factPhase();
+                        if (Proceed && Lanes) {
+                            odessy::JobProfile *Keep = odessy::CurProf;
+                            odessy::CurProf = nullptr;
+                            Lanes = LB->factPhase() && LS->factPhase();
+                            odessy::CurProf = Keep;
+                        }
                         Gate.release(J.Index);
                         GatePassed = true;
                     }
+                    if (Lanes) S.attachLanes(&*LB, &*LS);
                     if (Proceed) S.solvePhase();
                     odessy::ProfScope PS(&odessy::JobProfile::TeardownMs);
-                    SO.reset();
+                    SO.reset(); LB.reset(); LS.reset();
                 }
             } catch (...) {
                 // Phases fence their own exceptions; anything reaching
@@ -711,7 +735,7 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
             for (int k = 0; k < odessy::P_NKINDS; ++k)
                 errs() << "," << odessy::profKindName(k) << "_ms," << odessy::profKindName(k) << "_calls,"
                        << odessy::profKindName(k) << "_repeats";
-            errs() << ",direct_ms,ind_ms,mv_ms,narrow_ms,queries,query_ms,setup_ms,solve_ms,assert_ms,teardown_ms,worker_ms\n";
+            errs() << ",direct_ms,ind_ms,mv_ms,narrow_ms,queries,query_ms,setup_ms,solve_ms,assert_ms,teardown_ms,decided,worker_ms\n";
             for (odessy::TrapJob &J : Jobs) {
                 const odessy::JobProfile &P = J.Prof;
                 errs() << "[profile-stages] job," << J.Index << "," << P.EncodeMs << "," << P.GateWaitMs << "," << P.FactMs;
@@ -719,7 +743,7 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
                     errs() << "," << P.AnalysisMs[k] << "," << P.AnalysisCalls[k] << "," << P.AnalysisRepeats[k];
                 errs() << "," << P.DirectMs << "," << P.IndMs << "," << P.MvMs << "," << P.NarrowMs
                        << "," << P.Queries << "," << P.QueryMs << "," << P.SetupMs << "," << P.SolveMs
-                       << "," << P.AssertMs << "," << P.TeardownMs << "," << J.WorkerMs << "\n";
+                       << "," << P.AssertMs << "," << P.TeardownMs << "," << P.Decided << "," << J.WorkerMs << "\n";
             }
             errs() << "[profile-stages] module,jobs=" << Jobs.size() << ",threads=" << NThreads
                    << ",stage1_ms=" << PSStage1Ms << ",stage2_ms=" << PSStage2Ms
@@ -788,6 +812,8 @@ llvmGetPassPluginInfo() {
                                     if (P.getAsInteger(10, NBits) || NBits < 8 || NBits > 32) return false;
                                     Narrow = true;
                                 }
+                                else if (P == "ind-par")
+                                    odessy::IndParEnabled = true;
                                 else if (P == "profile-stages")
                                     odessy::ProfStagesEnabled = true;
                                 else if (P == "profile")

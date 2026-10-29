@@ -3766,6 +3766,29 @@ mac_1028_narrow; knob profile-stages, tools/profile_summary.py):
   check()); context teardown 8-20%; context setup 1-12%. Fast mode is
   therefore Z3-bound too; levers: fewer/smaller contexts (verdict cache),
   not LLVM-side work.
+* Parallel ind (Oct 29; knob ind-par, OFF by default;
+  results/profile_stages/mac_1029_indpar/compare.txt). Direct query, a BASE
+  lane and a STEP lane, each with its own context (encode + facts repeated
+  in the job's FactGate slot), racing; dead iff direct UNSAT or BASE and
+  STEP UNSAT at one level; final results interrupt the rest; logs spliced
+  in the sequential order. Output IR byte-identical to the sequential path
+  on 22 of 23 inputs (deflate: see the nondeterminism bug below).
+  SLOWER on a saturated pool (Mac, 4 P-cores, threads=4): trees 66 -> 95 s,
+  deflate 3.8 -> 10 s, CryptoSwift 58 -> 64 s; faster only on SHA-256
+  (3.5 -> 2.5 s). Two causes: 12 threads on 4 cores slow every query
+  (trees summed direct 162 -> 229 s), and the STEP lane runs STEP at
+  levels whose BASE then fails (the sequential path never does; deflate
+  ind 0.9 -> 21.8 s). Decided-by counts (CryptoSwift): 146 checks by
+  direct, 50 by ind.
+  NEXT (if revisited): one ind lane running the sequential BASE->STEP
+  order, started only when the pool has an idle core or the direct query
+  is still running after a delay.
+* BUG (pre-existing, found Oct 29): zlib deflate Thorough t4 output is not
+  deterministic: one guard (mv.h8, H = {%270 >=s 0}) is materialized on
+  load %25 in some runs and load %3 in others, with the default path,
+  identical logs. Likely pointer-ordered iteration in Stage 3 guard
+  materialization. The paper's "byte-identical for any THREADS" claim
+  needs this fixed or qualified.
 
 ### 13.7 Remaining todo for the arXiv version
 * Paper: full rewrite pass; make the combiner ladder (separate passes,

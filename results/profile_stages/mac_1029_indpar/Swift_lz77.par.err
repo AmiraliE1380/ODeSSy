@@ -1,0 +1,653 @@
+[ODeSSy] 27 trap site(s) across 14 function(s); threads=4 [tier: heavy] [frame] [mv] [narrow] [ind] [traps=odessy.chk]
+
+[Z3 Oracle] Analyzing Function: main
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> Fact[RM:0] i64 %5 in [0,9223372036854775807) (!range)
+    -> Fact[KB:1] i64 %5 known bits zero=0x9223372036854775808 one=0x0
+    -> [heavy] 2 analysis fact(s) on 1 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.093167 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %18 = icmp eq i64 %17, 0
+    -> Guard[1] (false edge of 'entry'):  %6 = icmp samesign ult i64 %5, 2
+    -> Collected 2 dominating context guard(s).
+    -> Fact[RM:0] i64 %5 in [0,9223372036854775807) (!range)
+    -> Fact[KB:1] i64 %5 known bits zero=0x9223372036854775808 one=0x0
+    -> [heavy] 2 analysis fact(s) on 20 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.071208 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %39 = icmp eq i8 %38, 1
+    -> Guard[1] (false edge of ''):  %18 = icmp eq i64 %17, 0
+    -> Guard[2] (false edge of 'entry'):  %6 = icmp samesign ult i64 %5, 2
+    -> Collected 3 dominating context guard(s).
+    -> Fact[RM:0] i64 %5 in [0,9223372036854775807) (!range)
+    -> Fact[KB:1] i64 %5 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[RM:2] i64 %115 in [0,9223372036854775807) (!range)
+    -> Fact[KB:3] i64 %115 known bits zero=0x9223372036854775808 one=0x0
+    -> [heavy] 4 analysis fact(s) on 21 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.985084 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %.not52 = icmp eq ptr %126, null
+    -> Guard[1] (false edge of ''):  %116 = icmp samesign ult i64 %115, 3
+    -> Guard[2] (false edge of ''):  %39 = icmp eq i8 %38, 1
+    -> Guard[3] (false edge of ''):  %18 = icmp eq i64 %17, 0
+    -> Guard[4] (false edge of 'entry'):  %6 = icmp samesign ult i64 %5, 2
+    -> Collected 5 dominating context guard(s).
+    -> Fact[RM:0] i64 %5 in [0,9223372036854775807) (!range)
+    -> Fact[KB:1] i64 %5 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[RM:2] i64 %115 in [0,9223372036854775807) (!range)
+    -> Fact[KB:3] i64 %115 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[LVI:4] i64 %115 in [3,9223372036854775807) (LVI @ )
+    -> [heavy] 5 analysis fact(s) on 24 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.405000 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %.not53 = icmp eq i64 %151, 0
+    -> Guard[1] (false edge of ''):  %148 = icmp eq i64 %145, 0
+    -> Guard[2] (false edge of ''):  %146 = icmp slt i64 %145, 0
+    -> Guard[3] (true edge of ''):  %.not52 = icmp eq ptr %126, null
+    -> Guard[4] (false edge of ''):  %116 = icmp samesign ult i64 %115, 3
+    -> Guard[5] (false edge of ''):  %39 = icmp eq i8 %38, 1
+    -> Guard[6] (false edge of ''):  %18 = icmp eq i64 %17, 0
+    -> Guard[7] (false edge of 'entry'):  %6 = icmp samesign ult i64 %5, 2
+    -> Collected 8 dominating context guard(s).
+    -> Fact[RM:0] i64 %5 in [0,9223372036854775807) (!range)
+    -> Fact[KB:1] i64 %5 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[RM:2] i64 %115 in [0,9223372036854775807) (!range)
+    -> Fact[KB:3] i64 %115 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[RM:4] i64 %151 in [0,9223372036854775807) (!range)
+    -> Fact[KB:5] i64 %151 known bits zero=0x9223372036854775808 one=0x0
+    -> [heavy] 6 analysis fact(s) on 26 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (3 phi(s) = entry): UNSAT (Dead Code / Impossible Path) [Query Latency: 0.237416 ms]
+    -> [ind L0] STEP (copy: 60 instr, 0 skipped, 21 fresh, 13 fact(s), 3 link(s)): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 14.332833 ms]
+    -> [ind L1] BASE (2 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.719875 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.530834 ms]
+    -> [mv] still SAT under 24 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %227 = extractvalue { i64, i1 } %226, 1
+    -> Guard[1] (false edge of ''):  %.not53 = icmp eq i64 %151, 0
+    -> Guard[2] (false edge of ''):  %148 = icmp eq i64 %145, 0
+    -> Guard[3] (false edge of ''):  %146 = icmp slt i64 %145, 0
+    -> Guard[4] (true edge of ''):  %.not52 = icmp eq ptr %126, null
+    -> Guard[5] (false edge of ''):  %116 = icmp samesign ult i64 %115, 3
+    -> Guard[6] (false edge of ''):  %39 = icmp eq i8 %38, 1
+    -> Guard[7] (false edge of ''):  %18 = icmp eq i64 %17, 0
+    -> Guard[8] (false edge of 'entry'):  %6 = icmp samesign ult i64 %5, 2
+    -> Collected 9 dominating context guard(s).
+    -> Fact[RM:0] i64 %5 in [0,9223372036854775807) (!range)
+    -> Fact[KB:1] i64 %5 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[RM:2] i64 %115 in [0,9223372036854775807) (!range)
+    -> Fact[KB:3] i64 %115 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[RM:4] i64 %151 in [0,9223372036854775807) (!range)
+    -> Fact[KB:5] i64 %151 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[LVI:6] i64 %163 in [-9223372036854775808,9223372036854775807) (LVI @ )
+    -> Fact[PHIINV-hi:7] i64 %164 == i64 0 || slt(i64 %164, i64 %151) (latch-implied bound, 1-induction)
+    -> [heavy] 8 analysis fact(s) on 27 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 0.189166 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %216 = icmp sgt i64 %211, 3
+    -> Guard[1] (false edge of ''):  %or.cond19 = select i1 %213, i1 %214, i1 false
+    -> Guard[2] (false edge of ''):  %.not53 = icmp eq i64 %151, 0
+    -> Guard[3] (false edge of ''):  %148 = icmp eq i64 %145, 0
+    -> Guard[4] (false edge of ''):  %146 = icmp slt i64 %145, 0
+    -> Guard[5] (true edge of ''):  %.not52 = icmp eq ptr %126, null
+    -> Guard[6] (false edge of ''):  %116 = icmp samesign ult i64 %115, 3
+    -> Guard[7] (false edge of ''):  %39 = icmp eq i8 %38, 1
+    -> Guard[8] (false edge of ''):  %18 = icmp eq i64 %17, 0
+    -> Guard[9] (false edge of 'entry'):  %6 = icmp samesign ult i64 %5, 2
+    -> Collected 10 dominating context guard(s).
+    -> [go3] 3 leaf-closure instruction(s) encoded
+    -> Fact[RM:0] i64 %5 in [0,9223372036854775807) (!range)
+    -> Fact[KB:1] i64 %5 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[RM:2] i64 %115 in [0,9223372036854775807) (!range)
+    -> Fact[KB:3] i64 %115 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[RM:4] i64 %151 in [0,9223372036854775807) (!range)
+    -> Fact[KB:5] i64 %151 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[PHIINV-hi:6] i64 %164 == i64 0 || slt(i64 %164, i64 %151) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-hi:7] i64 %173 == i64 0 || slt(i64 %173, i64 255) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:8] i64 %174 in [0,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:9] i64 %174 in [0,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:10] i64 %174 - start((-1024 + (1024 smax %164))<nsw>) <=u BTC((1023 + (-1 * (1024 smax %164))<nsw> + ((-1023 + (1024 smax %164))<nsw> smax %164))) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:11] i64 %174 == i64 %.ph || slt(i64 %174, i64 %164) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:12] i64 %174 >=s i64 %.ph (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:13] i64 %176 known bits zero=0x9223372036854775809 one=0x0
+    -> Fact[SCEV:14] i64 %176 in [0,255) (SCEV unsigned)
+    -> Fact[SCEV:15] i64 %176 in [0,255) (SCEV signed)
+    -> Fact[PHIINV-lo:16] i64 %176 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[RM:17] i64 %151 in [0,9223372036854775807) (!range)
+    -> Fact[KB:18] i64 %151 known bits zero=0x9223372036854775808 one=0x0
+    -> [heavy] 19 analysis fact(s) on 35 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (3 phi(s) = entry): UNSAT (Dead Code / Impossible Path) [Query Latency: 0.288166 ms]
+    -> [ind L0] STEP (copy: 60 instr, 0 skipped, 21 fresh, 13 fact(s), 3 link(s)): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 50.147209 ms]
+    -> [ind L1] BASE (2 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.087584 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.667583 ms]
+    -> [mv] still SAT under 24 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %219 = extractvalue { i64, i1 } %218, 1
+    -> Guard[1] (true edge of ''):  %216 = icmp sgt i64 %211, 3
+    -> Guard[2] (false edge of ''):  %or.cond19 = select i1 %213, i1 %214, i1 false
+    -> Guard[3] (false edge of ''):  %.not53 = icmp eq i64 %151, 0
+    -> Guard[4] (false edge of ''):  %148 = icmp eq i64 %145, 0
+    -> Guard[5] (false edge of ''):  %146 = icmp slt i64 %145, 0
+    -> Guard[6] (true edge of ''):  %.not52 = icmp eq ptr %126, null
+    -> Guard[7] (false edge of ''):  %116 = icmp samesign ult i64 %115, 3
+    -> Guard[8] (false edge of ''):  %39 = icmp eq i8 %38, 1
+    -> Guard[9] (false edge of ''):  %18 = icmp eq i64 %17, 0
+    -> Guard[10] (false edge of 'entry'):  %6 = icmp samesign ult i64 %5, 2
+    -> Collected 11 dominating context guard(s).
+    -> [go3] 3 leaf-closure instruction(s) encoded
+    -> Fact[RM:0] i64 %5 in [0,9223372036854775807) (!range)
+    -> Fact[KB:1] i64 %5 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[RM:2] i64 %115 in [0,9223372036854775807) (!range)
+    -> Fact[KB:3] i64 %115 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[RM:4] i64 %151 in [0,9223372036854775807) (!range)
+    -> Fact[KB:5] i64 %151 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[LVI:6] i64 %163 in [-9223372036854775808,9223372036854775805) (LVI @ )
+    -> Fact[PHIINV-hi:7] i64 %164 == i64 0 || slt(i64 %164, i64 %151) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-hi:8] i64 %173 == i64 0 || slt(i64 %173, i64 255) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:9] i64 %174 in [0,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:10] i64 %174 in [0,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:11] i64 %174 - start((-1024 + (1024 smax %164))<nsw>) <=u BTC((1023 + (-1 * (1024 smax %164))<nsw> + ((-1023 + (1024 smax %164))<nsw> smax %164))) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:12] i64 %174 == i64 %.ph || slt(i64 %174, i64 %164) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:13] i64 %174 >=s i64 %.ph (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:14] i64 %176 known bits zero=0x9223372036854775809 one=0x0
+    -> Fact[SCEV:15] i64 %176 in [0,255) (SCEV unsigned)
+    -> Fact[SCEV:16] i64 %176 in [0,255) (SCEV signed)
+    -> Fact[PHIINV-lo:17] i64 %176 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[RM:18] i64 %151 in [0,9223372036854775807) (!range)
+    -> Fact[KB:19] i64 %151 known bits zero=0x9223372036854775808 one=0x0
+    -> [heavy] 20 analysis fact(s) on 35 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (3 phi(s) = entry): UNSAT (Dead Code / Impossible Path) [Query Latency: 0.420375 ms]
+    -> [ind L0] STEP (copy: 60 instr, 0 skipped, 21 fresh, 13 fact(s), 3 link(s)): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 29.010708 ms]
+    -> [ind L1] BASE (2 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 21.151417 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 20.840084 ms]
+    -> [mv] loosen: {%151 <=s 2^31} -> {%151 <=s 2^62}: UNSAT, adopted (8.783500e+00 ms)
+    -> [mv] DEAD UNDER HYPOTHESIS H = {%151 <=s 2^62} (1 of 24 candidates in core, round 0; re-solve 1.065667e+01 ms; trap loop depth 2, hoist to depth 1)
+  => SUCCESS (fast copy): trap folded in 1 copy inside the H-guarded clone of loop ''
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %204 = icmp samesign ult i64 %173, %.lcssa
+    -> Guard[1] (false edge of ''):  %.not53 = icmp eq i64 %151, 0
+    -> Guard[2] (false edge of ''):  %148 = icmp eq i64 %145, 0
+    -> Guard[3] (false edge of ''):  %146 = icmp slt i64 %145, 0
+    -> Guard[4] (true edge of ''):  %.not52 = icmp eq ptr %126, null
+    -> Guard[5] (false edge of ''):  %116 = icmp samesign ult i64 %115, 3
+    -> Guard[6] (false edge of ''):  %39 = icmp eq i8 %38, 1
+    -> Guard[7] (false edge of ''):  %18 = icmp eq i64 %17, 0
+    -> Guard[8] (false edge of 'entry'):  %6 = icmp samesign ult i64 %5, 2
+    -> Collected 9 dominating context guard(s).
+    -> [go3] 3 leaf-closure instruction(s) encoded
+    -> Fact[RM:0] i64 %5 in [0,9223372036854775807) (!range)
+    -> Fact[KB:1] i64 %5 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[RM:2] i64 %115 in [0,9223372036854775807) (!range)
+    -> Fact[KB:3] i64 %115 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[RM:4] i64 %151 in [0,9223372036854775807) (!range)
+    -> Fact[KB:5] i64 %151 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[PHIINV-hi:6] i64 %164 == i64 0 || slt(i64 %164, i64 %151) (latch-implied bound, 1-induction)
+    -> Fact[LVI:7] i64 %173 in [0,-1) (LVI @ )
+    -> Fact[PHIINV-hi:8] i64 %173 == i64 0 || slt(i64 %173, i64 255) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:9] i64 %174 in [0,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:10] i64 %174 in [0,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:11] i64 %174 - start((-1024 + (1024 smax %164))<nsw>) <=u BTC((1023 + (-1 * (1024 smax %164))<nsw> + ((-1023 + (1024 smax %164))<nsw> smax %164))) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:12] i64 %174 == i64 %.ph || slt(i64 %174, i64 %164) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:13] i64 %174 >=s i64 %.ph (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:14] i64 %176 known bits zero=0x9223372036854775809 one=0x0
+    -> Fact[SCEV:15] i64 %176 in [0,255) (SCEV unsigned)
+    -> Fact[SCEV:16] i64 %176 in [0,255) (SCEV signed)
+    -> Fact[PHIINV-lo:17] i64 %176 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[RM:18] i64 %151 in [0,9223372036854775807) (!range)
+    -> Fact[KB:19] i64 %151 known bits zero=0x9223372036854775808 one=0x0
+    -> [heavy] 20 analysis fact(s) on 34 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 0.662750 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %192 = icmp slt i64 %191, %151
+    -> Guard[1] (false edge of ''):  %exitcond.not = icmp eq i64 %176, 254
+    -> Guard[2] (true edge of ''):  %187 = icmp eq i8 %184, %186
+    -> Guard[3] (true edge of ''):  %.not56 = icmp ult i64 %164, %151
+    -> Guard[4] (true edge of ''):  %.not55 = icmp ult i64 %180, %151
+    -> Guard[5] (true edge of ''):  %178 = icmp slt i64 %177, %151
+    -> Guard[6] (false edge of ''):  %.not53 = icmp eq i64 %151, 0
+    -> Guard[7] (false edge of ''):  %148 = icmp eq i64 %145, 0
+    -> Guard[8] (false edge of ''):  %146 = icmp slt i64 %145, 0
+    -> Guard[9] (true edge of ''):  %.not52 = icmp eq ptr %126, null
+    -> Guard[10] (false edge of ''):  %116 = icmp samesign ult i64 %115, 3
+    -> Guard[11] (false edge of ''):  %39 = icmp eq i8 %38, 1
+    -> Guard[12] (false edge of ''):  %18 = icmp eq i64 %17, 0
+    -> Guard[13] (false edge of 'entry'):  %6 = icmp samesign ult i64 %5, 2
+    -> Collected 14 dominating context guard(s).
+    -> [go3] 3 leaf-closure instruction(s) encoded
+    -> Fact[RM:0] i64 %5 in [0,9223372036854775807) (!range)
+    -> Fact[KB:1] i64 %5 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[RM:2] i64 %115 in [0,9223372036854775807) (!range)
+    -> Fact[KB:3] i64 %115 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[RM:4] i64 %151 in [0,9223372036854775807) (!range)
+    -> Fact[KB:5] i64 %151 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[LVI:6] i64 %151 in [2,0) (LVI @ )
+    -> Fact[PHIINV-hi:7] i64 %164 == i64 0 || slt(i64 %164, i64 %151) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:8] i64 %174 in [0,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:9] i64 %174 in [0,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:10] i64 %174 - start((-1024 + (1024 smax %164))<nsw>) <=u BTC((1023 + (-1 * (1024 smax %164))<nsw> + ((-1023 + (1024 smax %164))<nsw> smax %164))) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:11] i64 %174 == i64 %.ph || slt(i64 %174, i64 %164) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:12] i64 %174 >=s i64 %.ph (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:13] i64 %176 known bits zero=0x9223372036854775809 one=0x0
+    -> Fact[SCEV:14] i64 %176 in [0,255) (SCEV unsigned)
+    -> Fact[SCEV:15] i64 %176 in [0,255) (SCEV signed)
+    -> Fact[PHIINV-lo:16] i64 %176 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[RM:17] i64 %151 in [0,9223372036854775807) (!range)
+    -> Fact[KB:18] i64 %151 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[LVI:19] i64 %151 in [2,0) (LVI @ )
+    -> [heavy] 20 analysis fact(s) on 31 boundary value(s)
+    -> [mv] T3: latch-derived trip-count bound for loop depth 4 (latch ): (127 umin (((-1 * %164) + ((1 + %164) smax %151)) /u 2) umin (({(1024 + (-1 * (1024 smax %164))<nsw>)<nsw>,+,-1}<nsw><%171> + ({(-1023 + (1024 smax %164))<nsw>,+,1}<nuw><%171> umax %151)) /u 2) umin (({(1025 + (-1 * (1024 smax %164))<nsw>)<nsw>,+,-1}<nsw><%171> + ({(-1024 + (1024 smax %164))<nsw>,+,1}<nuw><nsw><%171> umax %151)) /u 2) umin ((1 + (-1 * %164) + (%151 smax %164)) /u 2))
+    -> [mv] T3 symbolic index bound: max(idx) = ((2 * (127 umin (((-1 * %164) + ((1 + %164) smax %151)) /u 2) umin ((1 + (-1 * ((-1023 + (1024 smax %164))<nsw> smax %164))<nsw> + (((-1023 + (1024 smax %164))<nsw> smax %164) umax %151)) /u 2) umin ((1 + (-1 * %164) + (%151 smax %164)) /u 2) umin ((2 + (-1 * ((-1023 + (1024 smax %164))<nsw> smax %164))<nsw> + ((-1 + ((-1023 + (1024 smax %164))<nsw> smax %164))<nsw> umax %151)) /u 2)))<nuw><nsw> + ((-1023 + (1024 smax %164))<nsw> smax %164))
+    -> [ind L0] BASE (1 phi(s) = entry): UNSAT (Dead Code / Impossible Path) [Query Latency: 132.431084 ms]
+    -> [ind L0] STEP (copy: 22 instr, 0 skipped, 9 fresh, 7 fact(s), 1 link(s)): UNSAT (Dead Code / Impossible Path) [Query Latency: 294.397375 ms]
+    -> [ind] UNSAT by 1-induction (BASE + STEP)
+    -> UNSAT (Dead Code / Impossible Path) [ind]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %178 = icmp slt i64 %177, %151
+    -> Guard[1] (false edge of ''):  %.not53 = icmp eq i64 %151, 0
+    -> Guard[2] (false edge of ''):  %148 = icmp eq i64 %145, 0
+    -> Guard[3] (false edge of ''):  %146 = icmp slt i64 %145, 0
+    -> Guard[4] (true edge of ''):  %.not52 = icmp eq ptr %126, null
+    -> Guard[5] (false edge of ''):  %116 = icmp samesign ult i64 %115, 3
+    -> Guard[6] (false edge of ''):  %39 = icmp eq i8 %38, 1
+    -> Guard[7] (false edge of ''):  %18 = icmp eq i64 %17, 0
+    -> Guard[8] (false edge of 'entry'):  %6 = icmp samesign ult i64 %5, 2
+    -> Collected 9 dominating context guard(s).
+    -> [go3] 3 leaf-closure instruction(s) encoded
+    -> Fact[RM:0] i64 %5 in [0,9223372036854775807) (!range)
+    -> Fact[KB:1] i64 %5 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[RM:2] i64 %115 in [0,9223372036854775807) (!range)
+    -> Fact[KB:3] i64 %115 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[RM:4] i64 %151 in [0,9223372036854775807) (!range)
+    -> Fact[KB:5] i64 %151 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[LVI:6] i64 %151 in [-9223372036854775807,-9223372036854775808) (LVI @ )
+    -> Fact[PHIINV-hi:7] i64 %164 == i64 0 || slt(i64 %164, i64 %151) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:8] i64 %174 in [0,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:9] i64 %174 in [0,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:10] i64 %174 - start((-1024 + (1024 smax %164))<nsw>) <=u BTC((1023 + (-1 * (1024 smax %164))<nsw> + ((-1023 + (1024 smax %164))<nsw> smax %164))) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:11] i64 %174 == i64 %.ph || slt(i64 %174, i64 %164) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:12] i64 %174 >=s i64 %.ph (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:13] i64 %176 known bits zero=0x9223372036854775809 one=0x0
+    -> Fact[SCEV:14] i64 %176 in [0,255) (SCEV unsigned)
+    -> Fact[SCEV:15] i64 %176 in [0,255) (SCEV signed)
+    -> Fact[PHIINV-lo:16] i64 %176 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[RM:17] i64 %151 in [0,9223372036854775807) (!range)
+    -> Fact[KB:18] i64 %151 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[LVI:19] i64 %151 in [-9223372036854775807,-9223372036854775808) (LVI @ )
+    -> [heavy] 20 analysis fact(s) on 29 boundary value(s)
+    -> [mv] T3: latch-derived trip-count bound for loop depth 4 (latch ): (127 umin (((-1 * %164) + ((1 + %164) smax %151)) /u 2) umin (({(1024 + (-1 * (1024 smax %164))<nsw>)<nsw>,+,-1}<nsw><%171> + ({(-1023 + (1024 smax %164))<nsw>,+,1}<nuw><%171> umax %151)) /u 2) umin (({(1025 + (-1 * (1024 smax %164))<nsw>)<nsw>,+,-1}<nsw><%171> + ({(-1024 + (1024 smax %164))<nsw>,+,1}<nuw><nsw><%171> umax %151)) /u 2) umin ((1 + (-1 * %164) + (%151 smax %164)) /u 2))
+    -> [mv] T3 symbolic index bound: max(idx) = (-1 + (2 * (127 umin (((-1 * %164) + ((1 + %164) smax %151)) /u 2) umin ((1 + (-1 * ((-1023 + (1024 smax %164))<nsw> smax %164))<nsw> + (((-1023 + (1024 smax %164))<nsw> smax %164) umax %151)) /u 2) umin ((1 + (-1 * %164) + (%151 smax %164)) /u 2) umin ((2 + (-1 * ((-1023 + (1024 smax %164))<nsw> smax %164))<nsw> + ((-1 + ((-1023 + (1024 smax %164))<nsw> smax %164))<nsw> umax %151)) /u 2)))<nuw><nsw> + ((-1023 + (1024 smax %164))<nsw> smax %164))
+    -> [ind L0] BASE (1 phi(s) = entry): UNSAT (Dead Code / Impossible Path) [Query Latency: 62.675833 ms]
+    -> [ind L0] STEP (copy: 22 instr, 0 skipped, 9 fresh, 7 fact(s), 1 link(s)): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.697542 ms]
+    -> [ind L1] BASE (3 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 7.105333 ms]
+    -> [ind L2] BASE (3 phi(s) = entry): UNSAT (Dead Code / Impossible Path) [Query Latency: 0.543334 ms]
+    -> [ind L2] STEP (copy: 60 instr, 0 skipped, 21 fresh, 13 fact(s), 3 link(s)): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 50.579084 ms]
+    -> [ind L3] BASE (2 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 28.747833 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 17.075125 ms]
+    -> [mv] T3 bound not translatable to bit-vectors: skipped
+    -> [mv] minimize: without {%151 <=s 2^31} -> UNSAT, dropped (6.802321e+01 ms)
+    -> [mv] minimize: without {%164 <=s 2^31} -> UNSAT, dropped (9.401171e+01 ms)
+    -> [mv] minimize: without {%174 <=s 2^31} -> UNSAT, dropped (1.441221e+02 ms)
+    -> [mv] DEAD UNDER HYPOTHESIS H = {%164 >=s 0} (1 of 42 candidates in core, round 1; re-solve 1.346050e+02 ms; trap loop depth 4, hoist to depth 3)
+  => SUCCESS (fast copy): trap folded in 1 copy inside the H-guarded clone of loop ''
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %.not55 = icmp ult i64 %180, %151
+    -> Guard[1] (true edge of ''):  %178 = icmp slt i64 %177, %151
+    -> Guard[2] (false edge of ''):  %.not53 = icmp eq i64 %151, 0
+    -> Guard[3] (false edge of ''):  %148 = icmp eq i64 %145, 0
+    -> Guard[4] (false edge of ''):  %146 = icmp slt i64 %145, 0
+    -> Guard[5] (true edge of ''):  %.not52 = icmp eq ptr %126, null
+    -> Guard[6] (false edge of ''):  %116 = icmp samesign ult i64 %115, 3
+    -> Guard[7] (false edge of ''):  %39 = icmp eq i8 %38, 1
+    -> Guard[8] (false edge of ''):  %18 = icmp eq i64 %17, 0
+    -> Guard[9] (false edge of 'entry'):  %6 = icmp samesign ult i64 %5, 2
+    -> Collected 10 dominating context guard(s).
+    -> [go3] 3 leaf-closure instruction(s) encoded
+    -> Fact[RM:0] i64 %5 in [0,9223372036854775807) (!range)
+    -> Fact[KB:1] i64 %5 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[RM:2] i64 %115 in [0,9223372036854775807) (!range)
+    -> Fact[KB:3] i64 %115 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[RM:4] i64 %151 in [0,9223372036854775807) (!range)
+    -> Fact[KB:5] i64 %151 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[LVI:6] i64 %151 in [-9223372036854775807,-9223372036854775808) (LVI @ )
+    -> Fact[PHIINV-hi:7] i64 %164 == i64 0 || slt(i64 %164, i64 %151) (latch-implied bound, 1-induction)
+    -> Fact[SCEV:8] i64 %174 in [0,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:9] i64 %174 in [0,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:10] i64 %174 - start((-1024 + (1024 smax %164))<nsw>) <=u BTC((1023 + (-1 * (1024 smax %164))<nsw> + ((-1023 + (1024 smax %164))<nsw> smax %164))) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:11] i64 %174 == i64 %.ph || slt(i64 %174, i64 %164) (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:12] i64 %174 >=s i64 %.ph (monotone nsw increments, 1 arm(s))
+    -> Fact[KB:13] i64 %176 known bits zero=0x9223372036854775809 one=0x0
+    -> Fact[SCEV:14] i64 %176 in [0,255) (SCEV unsigned)
+    -> Fact[SCEV:15] i64 %176 in [0,255) (SCEV signed)
+    -> Fact[PHIINV-lo:16] i64 %176 >=s i64 0 (monotone nsw increments, 1 arm(s))
+    -> Fact[RM:17] i64 %151 in [0,9223372036854775807) (!range)
+    -> Fact[KB:18] i64 %151 known bits zero=0x9223372036854775808 one=0x0
+    -> Fact[LVI:19] i64 %151 in [-9223372036854775807,-9223372036854775808) (LVI @ )
+    -> [heavy] 20 analysis fact(s) on 29 boundary value(s)
+    -> [mv] T3: not a bounds shape (idx vs invariant count)
+    -> [ind L0] BASE (1 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.167291 ms]
+    -> [ind L1] BASE (3 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.617458 ms]
+    -> [ind L2] BASE (3 phi(s) = entry): UNSAT (Dead Code / Impossible Path) [Query Latency: 0.260042 ms]
+    -> [ind L2] STEP (copy: 60 instr, 0 skipped, 21 fresh, 13 fact(s), 3 link(s)): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.982375 ms]
+    -> [ind L3] BASE (2 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.760125 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.622541 ms]
+    -> [mv] minimize: without {%151 <=s 2^31} -> UNSAT, dropped (1.941660e-01 ms)
+    -> [mv] minimize: without {%164 <=s 2^31} -> UNSAT, dropped (1.543330e-01 ms)
+    -> [mv] DEAD UNDER HYPOTHESIS H = {%164 >=s 0} (1 of 42 candidates in core, round 1; re-solve 5.064458e+00 ms; trap loop depth 4, hoist to depth 3)
+  => SUCCESS (fast copy): trap folded in 1 copy inside the H-guarded clone of loop ''
+  => Total Traps Eliminated: 3
+  => Traps Folded In Fast Copies (mv): 3
+  => Total Trap Attempts: 12
+  => Total SMT Queries Executed: 12
+  => Total SMT Query Latency: 1.813666e+03 ms
+  => Average SMT Query Latency: 1.511388e+02 ms
+  => Total DFS & SMT Execution Time: 1.339474e+03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: $ss17FixedWidthIntegerPsE_5radixxSgqd___SitcSyRd__lufcADSRys5UInt8VGXEfU_AGSiADs5Error_psAARzSSRsd__r__lIetyyrzo_Tpq5Si_Tg5
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 1 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.112292 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 1 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.090417 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 2
+  => Total SMT Queries Executed: 2
+  => Total SMT Query Latency: 2.027090e-01 ms
+  => Average SMT Query Latency: 1.013545e-01 ms
+  => Total DFS & SMT Execution Time: 1.783458e+00 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: $ss13_parseInteger5ascii5radixq_Sgx_SitSyRzs010FixedWidthB0R_r0_lFSSSiADSSRszsAER_r0_lIetgyr_Tpq5Si_Tg5
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %.not = icmp eq i64 %19, 0
+    -> Collected 1 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 10 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.551083 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of ''):  %.not = icmp eq i64 %19, 0
+    -> Collected 1 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 10 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.398084 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 2
+  => Total SMT Queries Executed: 2
+  => Total SMT Query Latency: 9.491670e-01 ms
+  => Average SMT Query Latency: 4.745835e-01 ms
+  => Total DFS & SMT Execution Time: 3.758667e+00 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: $sSS8_copyingyS2SFZ
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 8.458000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: $sSS8_copyingySSSsFZ
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %11 = icmp eq i64 %10, 0
+    -> Guard[1] (false edge of 'entry'):  %8 = icmp eq i64 %7, 0
+    -> Collected 2 dominating context guard(s).
+    -> Fact[LVI:0] i64 %6 in [1152921504606846976,0) (LVI @ )
+    -> Fact[LVI:1] i64 %10 in [1,0) (LVI @ )
+    -> [heavy] 2 analysis fact(s) on 3 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.320709 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 1
+  => Total SMT Queries Executed: 1
+  => Total SMT Query Latency: 3.207090e-01 ms
+  => Average SMT Query Latency: 3.207090e-01 ms
+  => Total DFS & SMT Execution Time: 1.835876e+00 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: $sSlsE5countSivgSs8UTF8ViewV_Tgq5
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %6 = icmp eq i64 %5, 0
+    -> Collected 1 dominating context guard(s).
+    -> Fact[LVI:0] i64 %4 in [1152921504606846976,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 4 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.150708 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %29 = icmp samesign ult i64 %27, %28
+    -> Guard[1] (false edge of ''):  %6 = icmp eq i64 %5, 0
+    -> Collected 2 dominating context guard(s).
+    -> Fact[LVI:0] i64 %4 in [1152921504606846976,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 6 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.355917 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 2
+  => Total SMT Queries Executed: 2
+  => Total SMT Query Latency: 2.506625e+00 ms
+  => Average SMT Query Latency: 1.253313e+00 ms
+  => Total DFS & SMT Execution Time: 6.489000e+00 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: $ss22_ContiguousArrayBufferV19_uninitializedCount15minimumCapacityAByxGSi_SitcfCs5UInt8V_Tt1gq5
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 9.000000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: $sSTsE21_copySequenceContents12initializing8IteratorQz_SitSry7ElementQzG_tFSs8UTF8ViewV_Tgq5
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %11 = icmp eq i64 %2, 0
+    -> Guard[1] (false edge of 'entry'):  %8 = icmp eq i64 %1, 0
+    -> Collected 2 dominating context guard(s).
+    -> Fact[LVI:0] i64 %1 in [1,0) (LVI @ )
+    -> Fact[LVI:1] i64 %2 in [1,0) (LVI @ )
+    -> [heavy] 2 analysis fact(s) on 2 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.093417 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %17 = icmp eq i64 %16, %14
+    -> Guard[1] (false edge of ''):  %13 = icmp slt i64 %2, 0
+    -> Guard[2] (false edge of ''):  %11 = icmp eq i64 %2, 0
+    -> Guard[3] (false edge of 'entry'):  %8 = icmp eq i64 %1, 0
+    -> Collected 4 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 8 boundary value(s)
+    -> [mv] T3: trap condition not an ICmp
+    -> [ind L0] BASE (3 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.497208 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.755375 ms]
+    -> [mv] still SAT under 24 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %21 = icmp eq i64 %20, 0
+    -> Guard[1] (false edge of ''):  %48 = or i1 %46, %47
+    -> Guard[2] (false edge of ''):  %17 = icmp eq i64 %16, %14
+    -> Guard[3] (false edge of ''):  %13 = icmp slt i64 %2, 0
+    -> Guard[4] (false edge of ''):  %11 = icmp eq i64 %2, 0
+    -> Guard[5] (false edge of 'entry'):  %8 = icmp eq i64 %1, 0
+    -> Collected 6 dominating context guard(s).
+    -> Fact[LVI:0] i64 %19 in [1152921504606846976,0) (LVI @ )
+    -> [heavy] 1 analysis fact(s) on 9 boundary value(s)
+    -> [mv] T3: refused, bound not invariant in the trap loop: (%72 /u 65536)
+    -> [ind L0] BASE (3 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 1.298458 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.658542 ms]
+    -> [mv] hypothesis contradicts the context: refusing (H vacuous): {%35 >u 281474976710655}
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 3
+  => Total SMT Queries Executed: 3
+  => Total SMT Query Latency: 1.114275e+01 ms
+  => Average SMT Query Latency: 3.714250e+00 ms
+  => Total DFS & SMT Execution Time: 2.494942e+01 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: $ss11_StringGutsV27_slowEnsureMatchingEncodingySS5IndexVAEF
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 7.958000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: $ss32_copyCollectionToContiguousArrayys0dE0Vy7ElementQzGxSlRzlFs0E5SliceVys5UInt8VG_Tg5
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 2 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.701250 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %9 = icmp eq i64 %6, 0
+    -> Guard[1] (false edge of 'entry'):  %7 = extractvalue { i64, i1 } %5, 1
+    -> Collected 2 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 2 boundary value(s)
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 0.024583 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  => Total Traps Eliminated: 1
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 2
+  => Total SMT Queries Executed: 2
+  => Total SMT Query Latency: 7.258330e-01 ms
+  => Average SMT Query Latency: 3.629165e-01 ms
+  => Total DFS & SMT Execution Time: 3.163750e+00 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: $ss32_copyCollectionToContiguousArrayys0dE0Vy7ElementQzGxSlRzlF20FoundationEssentials4DataV_Tgq5
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 2 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.531125 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of ''):  %27 = icmp eq i64 %26, 0
+    -> Collected 1 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 5 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.406417 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Collected 0 dominating context guard(s).
+    -> [heavy] 0 analysis fact(s) on 1 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.706500 ms]
+    -> [mv] trap not inside a loop: not versionable
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 3
+  => Total SMT Queries Executed: 3
+  => Total SMT Query Latency: 1.644042e+00 ms
+  => Average SMT Query Latency: 5.480140e-01 ms
+  => Total DFS & SMT Execution Time: 5.768124e+00 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: $s20FoundationEssentials4DataV15_RepresentationOWOe
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 7.583000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: __swift_instantiateConcreteTypeFromMangledName
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 6.083000e-03 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: $s20FoundationEssentials4DataV8IteratorV_SitWOh
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 5.833000e-03 ms
+--------------------------------------------------
+[profile-stages] job,index,encode_ms,gate_wait_ms,fact_ms,RM_ms,RM_calls,RM_repeats,KB_ms,KB_calls,KB_repeats,LVI_ms,LVI_calls,LVI_repeats,SCEV_ms,SCEV_calls,SCEV_repeats,SCEVSYM_ms,SCEVSYM_calls,SCEVSYM_repeats,direct_ms,ind_ms,mv_ms,narrow_ms,queries,query_ms,setup_ms,solve_ms,assert_ms,teardown_ms,decided,worker_ms
+[profile-stages] job,0,1.132090e-01,2.920000e-04,3.680420e-01,3.000000e-03,1,0,3.334000e-03,1,0,0.000000e+00,0,0,0.000000e+00,0,0,0.000000e+00,0,0,9.316700e-02,1.250000e-04,1.167000e-03,0.000000e+00,1,9.316700e-02,1.754042e+00,3.780830e-01,2.784160e-01,1.211670e-01,-,2.738250e+00
+[profile-stages] job,1,9.022500e-01,4.200000e-05,3.222910e-01,1.670000e-04,1,1,2.751000e-03,11,1,2.541600e-02,3,0,1.670000e-04,3,0,0.000000e+00,0,0,5.071208e+00,7.090000e-04,2.080000e-04,0.000000e+00,1,5.071208e+00,1.749500e+00,5.598625e+00,5.233340e-01,4.212920e-01,-,9.000417e+00
+[profile-stages] job,2,9.049170e-01,3.287920e-01,3.080000e-01,2.920000e-04,2,1,2.583000e-03,12,11,4.833000e-03,3,0,1.670000e-04,3,3,0.000000e+00,0,0,1.985084e+00,1.250000e-04,2.920000e-04,0.000000e+00,1,1.985084e+00,1.744209e+00,5.612333e+00,3.623958e+00,5.098750e-01,-,9.413708e+00
+[profile-stages] job,3,9.064170e-01,6.421660e-01,3.647910e-01,2.080000e-04,2,2,2.461000e-03,13,12,1.100100e-02,4,0,8.300000e-05,3,3,0.000000e+00,0,0,1.405000e+00,1.125000e-03,2.500000e-04,0.000000e+00,1,1.405000e+00,1.742209e+00,4.982375e+00,3.568125e+00,6.155830e-01,-,9.256583e+00
+[profile-stages] job,4,4.574590e-01,0.000000e+00,2.174375e+00,3.750000e-04,5,4,1.029000e-02,48,32,5.158400e-02,7,0,4.192920e-01,35,18,1.005410e-01,5,2,1.530834e+00,2.277263e+01,2.191584e+00,0.000000e+00,3,3.162877e+00,2.662667e+00,2.967575e+01,3.146959e+00,2.939833e+00,-,4.071675e+01
+[profile-stages] job,5,4.217500e-01,2.920000e-04,2.335042e+00,2.080000e-04,5,5,8.246000e-03,49,49,1.249900e-02,8,0,1.791000e-03,36,36,1.035840e-01,5,5,1.891660e-01,5.695800e-02,0.000000e+00,0.000000e+00,1,1.891660e-01,3.305708e+00,3.550334e+00,3.282250e+00,7.012920e-01,D,1.344304e+01
+[profile-stages] job,6,8.193330e-01,2.469417e+00,3.373000e+00,2.080000e-04,6,6,6.576000e-03,59,58,1.737500e-02,14,2,1.795000e-03,45,45,1.346240e-01,9,7,9.667583e+00,5.199262e+01,3.560250e+00,0.000000e+00,3,1.250296e+01,3.701084e+00,6.951333e+01,4.262708e+00,5.156458e+00,-,9.088625e+01
+[profile-stages] job,7,9.943750e-01,9.375750e+00,3.239208e+00,2.500000e-04,6,6,8.172000e-03,59,59,9.626000e-03,14,2,2.417000e-03,45,45,1.328760e-01,9,9,2.084008e+01,2.335112e+01,2.203804e+01,0.000000e+00,4,4.169992e+01,3.852250e+00,7.355588e+01,7.294542e+00,7.175792e+00,-,1.065812e+02
+[profile-stages] job,8,5.022080e-01,9.772708e+00,5.159209e+00,4.590000e-04,7,7,1.424900e-02,68,68,5.376000e-03,13,2,3.709000e-03,54,54,2.242490e-01,11,11,6.627500e-01,7.748340e-01,0.000000e+00,0.000000e+00,1,6.627500e-01,1.442751e+00,5.632875e+00,4.162541e+00,4.737042e+00,D,3.284463e+01
+[profile-stages] job,9,4.594170e-01,8.300000e-05,3.973500e+00,4.170000e-04,8,8,9.461000e-03,72,72,8.915000e-03,14,2,2.625000e-03,58,58,1.680840e-01,12,12,3.022305e+02,2.952080e-01,0.000000e+00,0.000000e+00,1,3.022305e+02,1.431375e+00,3.069242e+02,4.364542e+00,4.401917e+00,I,3.224754e+02
+[profile-stages] job,10,8.432500e-01,3.330000e-04,4.586042e+00,1.082000e-03,8,8,1.921300e-02,70,70,6.541000e-03,12,2,4.827000e-03,58,58,2.192070e-01,12,12,1.707512e+01,1.557936e+02,4.476272e+02,0.000000e+00,7,4.629132e+02,1.876500e+00,6.251682e+02,4.627000e+00,7.386708e+00,-,6.456344e+02
+[profile-stages] job,11,6.471250e-01,3.330000e-04,6.809375e+00,1.251000e-03,8,8,2.537200e-02,70,70,5.706000e-03,12,2,6.081000e-03,58,58,3.432070e-01,12,12,1.622541e+00,1.876567e+01,8.997916e+00,0.000000e+00,6,8.778873e+00,1.456333e+00,3.325654e+01,3.825041e+00,4.761375e+00,-,5.296929e+01
+[profile-stages] job,12,4.670900e-02,8.300000e-05,1.408300e-02,0.000000e+00,0,0,7.920000e-04,1,0,7.042000e-03,1,0,0.000000e+00,0,0,0.000000e+00,0,0,1.122920e-01,3.330000e-04,2.500000e-04,0.000000e+00,1,1.122920e-01,4.901670e-01,3.006250e-01,1.839580e-01,6.504100e-02,-,9.189580e-01
+[profile-stages] job,13,2.979200e-02,4.200000e-05,6.209000e-03,0.000000e+00,0,0,2.920000e-04,1,1,1.916000e-03,1,0,0.000000e+00,0,0,0.000000e+00,0,0,9.041700e-02,1.042000e-03,2.920000e-04,0.000000e+00,1,9.041700e-02,3.347500e-01,2.428750e-01,1.419160e-01,1.901670e-01,-,8.052090e-01
+[profile-stages] job,14,2.247920e-01,2.910000e-04,3.758400e-02,0.000000e+00,0,0,2.168000e-03,5,0,1.733400e-02,2,0,0.000000e+00,0,0,0.000000e+00,0,0,5.510830e-01,2.080000e-04,2.500000e-04,0.000000e+00,1,5.510830e-01,5.881670e-01,1.138167e+00,5.841670e-01,1.205410e-01,-,2.111709e+00
+[profile-stages] job,15,1.127500e-01,0.000000e+00,1.454100e-02,0.000000e+00,0,0,1.124000e-03,5,5,3.541000e-03,2,0,0.000000e+00,0,0,0.000000e+00,0,0,3.980840e-01,5.830000e-04,6.250000e-04,0.000000e+00,1,3.980840e-01,3.792090e-01,7.248340e-01,3.212500e-01,2.620000e-01,-,1.494833e+00
+[profile-stages] job,16,7.737500e-02,3.330000e-04,3.288750e-01,0.000000e+00,0,0,2.667000e-03,3,0,2.012400e-02,2,0,0.000000e+00,0,0,0.000000e+00,0,0,3.207090e-01,3.750000e-04,2.080000e-04,0.000000e+00,1,3.207090e-01,5.936250e-01,6.382500e-01,3.133330e-01,1.556670e-01,-,1.796584e+00
+[profile-stages] job,17,1.572080e-01,1.660000e-04,2.654590e-01,0.000000e+00,0,0,2.125000e-03,4,0,1.575100e-02,3,0,0.000000e+00,0,0,0.000000e+00,0,0,1.150708e+00,6.670000e-04,1.670000e-04,0.000000e+00,1,1.150708e+00,5.954160e-01,1.489958e+00,3.331660e-01,2.738750e-01,-,2.784042e+00
+[profile-stages] job,18,1.820000e-01,4.100000e-05,2.826250e-01,0.000000e+00,0,0,2.709000e-03,6,4,1.929200e-02,4,0,0.000000e+00,0,0,0.000000e+00,0,0,1.355917e+00,3.330000e-04,1.670000e-04,0.000000e+00,1,1.355917e+00,5.922910e-01,2.271542e+00,9.111670e-01,3.151670e-01,-,3.645958e+00
+[profile-stages] job,19,3.729100e-02,4.200000e-05,1.707500e-01,0.000000e+00,0,0,7.500000e-04,2,0,8.084000e-03,2,0,0.000000e+00,0,0,0.000000e+00,0,0,9.341700e-02,3.330000e-04,1.250000e-04,0.000000e+00,1,9.341700e-02,3.700000e-01,2.443750e-01,1.480830e-01,6.608400e-02,-,8.925830e-01
+[profile-stages] job,20,9.870800e-02,4.100000e-05,4.784160e-01,0.000000e+00,0,0,1.962000e-03,17,4,3.233200e-02,7,0,4.808500e-02,5,1,9.709000e-03,1,0,7.553750e-01,4.872250e+00,2.030459e+00,0.000000e+00,2,2.353792e+00,1.387208e+00,7.895916e+00,2.052500e-01,1.177834e+00,-,1.148483e+01
+[profile-stages] job,21,1.271250e-01,1.250000e-04,5.305410e-01,0.000000e+00,0,0,4.999000e-03,18,18,8.876000e-03,7,0,4.580000e-04,5,5,9.625000e-03,1,1,6.585420e-01,5.039000e+00,1.409208e+00,0.000000e+00,3,1.415292e+00,1.388417e+00,7.691667e+00,5.519580e-01,2.024916e+00,-,1.244146e+01
+[profile-stages] job,22,4.541700e-02,4.100000e-05,2.025000e-02,0.000000e+00,0,0,6.660000e-04,2,0,9.999000e-03,2,0,0.000000e+00,0,0,0.000000e+00,0,0,7.012500e-01,5.420000e-04,2.910000e-04,0.000000e+00,1,7.012500e-01,4.007090e-01,9.117500e-01,2.045840e-01,1.425000e-01,-,1.523083e+00
+[profile-stages] job,23,4.954200e-02,8.400000e-05,1.479200e-02,0.000000e+00,0,0,5.420000e-04,2,2,6.042000e-03,2,0,0.000000e+00,0,0,0.000000e+00,0,0,2.458300e-02,0.000000e+00,0.000000e+00,0.000000e+00,1,2.458300e-02,4.055420e-01,7.233750e-01,6.918330e-01,4.148330e-01,-,1.609667e+00
+[profile-stages] job,24,3.691700e-02,4.100000e-05,4.542000e-03,0.000000e+00,0,0,2.920000e-04,2,0,0.000000e+00,0,0,0.000000e+00,0,0,0.000000e+00,0,0,5.311250e-01,1.250000e-04,8.400000e-05,0.000000e+00,1,5.311250e-01,4.219580e-01,7.139170e-01,1.805420e-01,1.796660e-01,-,1.358416e+00
+[profile-stages] job,25,8.212500e-02,4.100000e-05,2.037500e-02,0.000000e+00,0,0,5.420000e-04,5,2,9.916000e-03,2,0,0.000000e+00,0,0,0.000000e+00,0,0,4.064170e-01,8.300000e-05,2.500000e-04,0.000000e+00,1,4.064170e-01,6.061250e-01,1.242833e+00,8.342080e-01,2.311670e-01,-,2.187041e+00
+[profile-stages] job,26,4.512500e-02,2.392080e-01,1.616600e-02,0.000000e+00,0,0,8.750000e-04,1,1,1.500000e-03,1,0,0.000000e+00,0,0,0.000000e+00,0,0,7.065000e-01,4.590000e-04,2.080000e-04,0.000000e+00,1,7.065000e-01,4.234170e-01,1.142333e+00,4.298750e-01,2.833340e-01,-,2.151667e+00
+[profile-stages] module,jobs=27,threads=4,stage1_ms=4.167250e+00,stage2_ms=7.009792e+02,stage2b_ms=1.917000e-03,stage3_ms=4.894590e-01,total_ms=7.056380e+02

@@ -29,11 +29,40 @@
 #include "llvm/Support/raw_ostream.h"
 
 namespace llvm { class SCEV; }
+#include <atomic>
 #include <memory>
+#include <mutex>
 #include <optional>
+#include <string>
+#include <vector>
 #include "Narrow.h"
 
 namespace odessy {
+
+// oracle-pass<ind-par>: run `ind` in two lanes racing the direct query
+// (HANDOFF §13.8 item 2) instead of after it on the job's own solver.
+// Off by default: on a saturated pool it is slower (HANDOFF §13.6).
+inline bool IndParEnabled = false;
+
+// Parallel `ind` (HANDOFF §13.8 item 2). The direct query runs on the
+// job's solver while two lane solvers (own z3::contexts, same encoding and
+// facts) run every loop level's BASE and STEP. Verdict rule as before:
+// dead iff direct UNSAT, or BASE and STEP UNSAT at some level. A terminal
+// result interrupts the others (z3::context::interrupt is the one call
+// that may cross threads). Per-level status and log fragments are
+// collected here and spliced into the log in the sequential order.
+struct IndShared {
+    std::mutex M;
+    std::atomic<bool> Stop{false}, Proved{false};
+    unsigned Levels = 0;
+    std::vector<bool> Refused;
+    std::vector<int> BaseSt, StepSt;        // 0 pending, 1 UNSAT, 2 not UNSAT / skipped
+    std::vector<std::string> BaseLog, StepLog;
+    z3::context *Ctx[3] = {nullptr, nullptr, nullptr};   // direct, BASE lane, STEP lane
+    void interruptAll(int Except) {
+        for (int i = 0; i < 3; ++i) if (i != Except && Ctx[i]) Ctx[i]->interrupt();
+    }
+};
 
 struct SolverConfig {
     bool VacuityCheck = false;
@@ -92,6 +121,13 @@ public:
     // PHASE 3. Fills Job.Eliminate / Job.Queried / Job.LatencyMs.
     void solvePhase();
 
+    // Parallel `ind`: Lane 1 runs BASE, Lane 2 runs STEP, over every loop
+    // level; a lane writes nothing to the TrapJob. attachLanes is called on
+    // the job's own solver before factPhase.
+    void setLane(unsigned L) { Lane = L; }
+    void attachLanes(TrapSolver *B, TrapSolver *S) { LaneB = B; LaneS = S; }
+    void laneRun(IndShared &Sh);
+
 private:
     // PHASE 3.5 (MV only, after a SAT verdict, solver still holding the
     // context|trap scope): hypothesis mining + re-solve. Fills Job.MVHyp
@@ -111,6 +147,13 @@ private:
 
     // One loop level of indPhase. Solver: context | guards on entry/exit.
     bool indAtLoop(llvm::Loop *L, unsigned Depth);
+    // The two halves of indAtLoop; each leaves the solver as it found it.
+    bool indEdges(llvm::Loop *L, llvm::BasicBlock *&Latch, llvm::BasicBlock *&Entry);
+    std::string indBase(llvm::Loop *L, unsigned Depth, llvm::BasicBlock *Entry);
+    std::string indStep(llvm::Loop *L, unsigned Depth, llvm::BasicBlock *Latch);
+    // FRAME facts + guards (the context | guards part of solvePhase).
+    void assertContext();
+    void addLat(double Ms) { if (Lane) LaneLat += Ms; else Job.LatencyMs += Ms; }
     // Under the FactGate (end of factPhase): build each loop level's copy
     // and capture its scalar-evolution facts, so indAtLoop can run outside
     // the gate, in parallel, without touching the analyses.
@@ -131,7 +174,11 @@ private:
     struct NarrowSet { std::unique_ptr<Narrower> N; std::vector<z3::expr> Defs32, Guards32, Facts32; std::optional<z3::expr> Trap32; };
     NarrowSet NS[2];
     std::unique_ptr<Narrower> WholeN;   // = NS[1].N (flags/links/inputs for Q_B and diagnostics)
-    llvm::raw_string_ostream Log;   // appends to Job.LogText
+    std::string *LogBuf;            // Job.LogText or the caller's buffer
+    llvm::raw_string_ostream Log;   // appends to *LogBuf
+    unsigned Lane = 0;
+    TrapSolver *LaneB = nullptr, *LaneS = nullptr;
+    double LaneLat = 0;
 };
 
 } // namespace odessy

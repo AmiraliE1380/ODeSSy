@@ -29,6 +29,7 @@ struct JobProfile {
     double DirectMs = 0, IndMs = 0, MvMs = 0, NarrowMs = 0;
     double SetupMs = 0, SolveMs = 0, TeardownMs = 0;   // TrapSolver ctor / solvePhase / dtor
     double AssertMs = 0;                       // solvePhase before the direct check()
+    char Decided = '-';                        // parallel ind: D(irect) or I(nd) proved the job
     unsigned Queries = 0;                      // every solver check() of the job
     double QueryMs = 0;
     char Verdict = '-';                        // exact direct query: U(nsat) S(at) ?(unknown)

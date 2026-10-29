@@ -1,0 +1,555 @@
+[ODeSSy] 19 trap site(s) across 1 function(s); threads=4 [tier: heavy] [frame] [mv] [narrow] [ind] [traps=bounds_error,boundserror,odessy.chk]
+
+[Z3 Oracle] Analyzing Function: japi1_filt!_145
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of 'top'):  %12 = icmp slt i64 %11, 1, !dbg !59
+    -> Collected 1 dominating context guard(s).
+    -> Fact[LVI:0] i64 %11 in [1,-9223372036854775808) (LVI @ L23.preheader)
+    -> [heavy] 1 analysis fact(s) on 2 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.120291 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of 'L23.preheader'):  %.not183 = icmp eq i64 %.size.0.copyload.fr, 0
+    -> Guard[1] (false edge of 'top'):  %12 = icmp slt i64 %11, 1, !dbg !59
+    -> Collected 2 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %.size23.0.copyload = load i64, ptr %.size_ptr22, align 8  vs  %.size53.0.copyload.us.us.us = load i64, ptr %.size_ptr22, align 8
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Fact[LVI:0] i64 %11 in [1,-9223372036854775808) (LVI @ L23.preheader.split)
+    -> [heavy] 1 analysis fact(s) on 3 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.216875 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of 'L23.preheader.split.split.split.split.us'):  %.not191 = icmp ult i64 %.size.0.copyload.fr, %.size110.0.copyload.fr
+    -> Guard[1] (true edge of 'L23.preheader.split.split.split'):  %.not190 = icmp ult i64 %.size.0.copyload.fr, %.size23.0.copyload.fr
+    -> Guard[2] (false edge of 'L23.preheader.split.split'):  %14 = icmp slt i64 %13, 1
+    -> Guard[3] (false edge of 'L23.preheader.split'):  %.not184 = icmp eq i64 %.size23.0.copyload.fr, 0
+    -> Guard[4] (false edge of 'L23.preheader'):  %.not183 = icmp eq i64 %.size.0.copyload.fr, 0
+    -> Guard[5] (false edge of 'top'):  %12 = icmp slt i64 %11, 1, !dbg !59
+    -> Collected 6 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %.size23.0.copyload = load i64, ptr %.size_ptr22, align 8  vs  %.size53.0.copyload.us.us.us = load i64, ptr %.size_ptr22, align 8
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %.size110.0.copyload = load i64, ptr %.size_ptr65, align 8  vs  %.size66.0.copyload.us.us.us = load i64, ptr %.size_ptr65, align 8
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[SCEV:0] i64 %value_phi6.us231.us.us in [1,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:1] i64 %value_phi6.us231.us.us in [1,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:2] i64 %value_phi6.us231.us.us - start(1) <=u BTC((%11 umin_seq ((-1 + (0 smax %11))<nsw> umin %.size138.0.copyload))) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hx:3] (i64 1 <=u i64 %29) -> i64 %value_phi6.us231.us.us <=u i64 %29 (header-exit eq bound, unit step, 1-induction)
+    -> [heavy] 4 analysis fact(s) on 6 boundary value(s)
+    -> [mv] T3: not a bounds shape (idx vs invariant count)
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 68.603000 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of 'L23.preheader.split.split.split.us.split.us'):  %.not191 = icmp ult i64 %.size.0.copyload.fr, %.size110.0.copyload.fr
+    -> Guard[1] (true edge of 'L23.preheader.split.split.split.us'):  %.not190 = icmp ult i64 %.size.0.copyload.fr, %.size23.0.copyload.fr
+    -> Guard[2] (true edge of 'L23.preheader.split.split'):  %14 = icmp slt i64 %13, 1
+    -> Guard[3] (false edge of 'L23.preheader.split'):  %.not184 = icmp eq i64 %.size23.0.copyload.fr, 0
+    -> Guard[4] (false edge of 'L23.preheader'):  %.not183 = icmp eq i64 %.size.0.copyload.fr, 0
+    -> Guard[5] (false edge of 'top'):  %12 = icmp slt i64 %11, 1, !dbg !59
+    -> Collected 6 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %.size23.0.copyload = load i64, ptr %.size_ptr22, align 8  vs  %.size53.0.copyload.us.us.us = load i64, ptr %.size_ptr22, align 8
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %.size110.0.copyload = load i64, ptr %.size_ptr65, align 8  vs  %.size66.0.copyload.us.us.us = load i64, ptr %.size_ptr65, align 8
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[SCEV:0] i64 %value_phi6.us221.us.us.us in [1,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:1] i64 %value_phi6.us221.us.us.us in [1,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:2] i64 %value_phi6.us221.us.us.us - start(1) <=u BTC((%11 umin_seq ((-1 + (0 smax %11))<nsw> umin %.size138.0.copyload))) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hx:3] (i64 1 <=u i64 %16) -> i64 %value_phi6.us221.us.us.us <=u i64 %16 (header-exit eq bound, unit step, 1-induction)
+    -> [heavy] 4 analysis fact(s) on 6 boundary value(s)
+    -> [mv] T3: not a bounds shape (idx vs invariant count)
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 52.230500 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of 'L23.preheader.split.split.split'):  %.not190 = icmp ult i64 %.size.0.copyload.fr, %.size23.0.copyload.fr
+    -> Guard[1] (false edge of 'L23.preheader.split.split'):  %14 = icmp slt i64 %13, 1
+    -> Guard[2] (false edge of 'L23.preheader.split'):  %.not184 = icmp eq i64 %.size23.0.copyload.fr, 0
+    -> Guard[3] (false edge of 'L23.preheader'):  %.not183 = icmp eq i64 %.size.0.copyload.fr, 0
+    -> Guard[4] (false edge of 'top'):  %12 = icmp slt i64 %11, 1, !dbg !59
+    -> Collected 5 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %.size23.0.copyload = load i64, ptr %.size_ptr22, align 8  vs  %.size53.0.copyload.us.us.us = load i64, ptr %.size_ptr22, align 8
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> [go3] 23 leaf-closure instruction(s) encoded
+    -> Fact[SCEVSYM:0] i64 %value_phi37 - start(%bc.resume.val) <=u BTC((((-1 * %bc.resume.val) + (1 umax %.size110.0.copyload.fr)) umin ((-1 * %bc.resume.val) + (1 umax %.size.0.copyload.fr)) umin ((-1 * %bc.resume.val) + (1 umax %.size23.0.copyload.fr)) umin ((-1 * %bc.resume.val) + (0 smax (-1 + %.size.0.copyload.fr))))) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hx:1] (i64 %bc.resume.val <=u i64 %umax295) -> i64 %value_phi37 <=u i64 %umax295 (header-exit eq bound, unit step, 1-induction)
+    -> Fact[KB:2] i64 %index known bits zero=0x15 one=0x0
+    -> Fact[SCEV:3] i64 %index in [0,-15) (SCEV unsigned)
+    -> Fact[SCEV:4] i64 %index in [-9223372036854775808,9223372036854775793) (SCEV signed)
+    -> Fact[SCEVSYM:5] i64 %index - start(0) <=u 16*BTC(((-15 + (-1 * %167)<nsw> + ((-1 + (1 umax %.size110.0.copyload.fr)) umin (-1 + (1 umax %.size.0.copyload.fr)) umin (-1 + (1 umax %.size23.0.copyload.fr)) umin (-1 + (0 smax (-1 + %.size.0.copyload.fr)))<nsw>)) /u 16)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:6] i64 %index == i64 0 || ne(i64 %index, i64 %n.vec) (latch-implied bound, 1-induction)
+    -> Fact[SCEVEQ:7] i64 %bc.resume.val in phi image (4 incoming)
+    -> Fact[SCEVEQ:8] i64 %.size110.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:9] i64 %.size.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:10] i64 %.size23.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[KB:11] i64 %167 known bits zero=0x18446744073709551584 one=0x0
+    -> Fact[SCEVEQ:12] i64 %ind.end == SCEV((2 + (-1 * %167)<nsw> + ((-1 + (1 umax %.size110.0.copyload.fr)) umin (-1 + (1 umax %.size.0.copyload.fr)) umin (-1 + (1 umax %.size23.0.copyload.fr)) umin (-1 + (0 smax (-1 + %.size.0.copyload.fr)))<nsw>)))
+    -> [heavy] 13 analysis fact(s) on 14 boundary value(s)
+    -> [mv] T3: not a bounds shape (idx vs invariant count)
+    -> [ind L0] BASE (1 phi(s) = entry): UNSAT (Dead Code / Impossible Path) [Query Latency: 59.677167 ms]
+    -> [ind L0] STEP (copy: 18 instr, 0 skipped, 12 fresh, 8 fact(s), 1 link(s)): UNSAT (Dead Code / Impossible Path) [Query Latency: 350.040583 ms]
+    -> [ind] UNSAT by 1-induction (BASE + STEP)
+    -> UNSAT (Dead Code / Impossible Path) [ind]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of 'L23.preheader.split.split.split.split.us'):  %.not191 = icmp ult i64 %.size.0.copyload.fr, %.size110.0.copyload.fr
+    -> Guard[1] (true edge of 'L23.preheader.split.split.split'):  %.not190 = icmp ult i64 %.size.0.copyload.fr, %.size23.0.copyload.fr
+    -> Guard[2] (false edge of 'L23.preheader.split.split'):  %14 = icmp slt i64 %13, 1
+    -> Guard[3] (false edge of 'L23.preheader.split'):  %.not184 = icmp eq i64 %.size23.0.copyload.fr, 0
+    -> Guard[4] (false edge of 'L23.preheader'):  %.not183 = icmp eq i64 %.size.0.copyload.fr, 0
+    -> Guard[5] (false edge of 'top'):  %12 = icmp slt i64 %11, 1, !dbg !59
+    -> Collected 6 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %.size23.0.copyload = load i64, ptr %.size_ptr22, align 8  vs  %.size53.0.copyload.us.us.us = load i64, ptr %.size_ptr22, align 8
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %.size110.0.copyload = load i64, ptr %.size_ptr65, align 8  vs  %.size66.0.copyload.us.us.us = load i64, ptr %.size_ptr65, align 8
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> [go3] 23 leaf-closure instruction(s) encoded
+    -> Fact[SCEVSYM:0] i64 %value_phi37.us - start(%bc.resume.val387) <=u BTC((((-1 * %bc.resume.val387) + (1 umax %.size110.0.copyload.fr)) umin ((-1 * %bc.resume.val387) + (1 umax %.size.0.copyload.fr)) umin ((-1 * %bc.resume.val387) + (1 umax %.size23.0.copyload.fr)) umin ((-1 * %bc.resume.val387) + (0 smax (-1 + %.size.0.copyload.fr))))) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hx:1] (i64 %bc.resume.val387 <=u i64 %umax289) -> i64 %value_phi37.us <=u i64 %umax289 (header-exit eq bound, unit step, 1-induction)
+    -> Fact[KB:2] i64 %index389 known bits zero=0x15 one=0x0
+    -> Fact[SCEV:3] i64 %index389 in [0,-15) (SCEV unsigned)
+    -> Fact[SCEV:4] i64 %index389 in [-9223372036854775808,9223372036854775793) (SCEV signed)
+    -> Fact[SCEVSYM:5] i64 %index389 - start(0) <=u 16*BTC(((-15 + (-1 * %109)<nsw> + ((-1 + (1 umax %.size110.0.copyload.fr)) umin (-1 + (1 umax %.size.0.copyload.fr)) umin (-1 + (1 umax %.size23.0.copyload.fr)) umin (-1 + (0 smax (-1 + %.size.0.copyload.fr)))<nsw>)) /u 16)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:6] i64 %index389 == i64 0 || ne(i64 %index389, i64 %n.vec385) (latch-implied bound, 1-induction)
+    -> Fact[SCEVEQ:7] i64 %bc.resume.val387 in phi image (4 incoming)
+    -> Fact[SCEVEQ:8] i64 %.size110.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:9] i64 %.size.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:10] i64 %.size23.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[KB:11] i64 %109 known bits zero=0x18446744073709551584 one=0x0
+    -> Fact[SCEVEQ:12] i64 %ind.end386 == SCEV((2 + (-1 * %109)<nsw> + ((-1 + (1 umax %.size110.0.copyload.fr)) umin (-1 + (1 umax %.size.0.copyload.fr)) umin (-1 + (1 umax %.size23.0.copyload.fr)) umin (-1 + (0 smax (-1 + %.size.0.copyload.fr)))<nsw>)))
+    -> [heavy] 13 analysis fact(s) on 14 boundary value(s)
+    -> [mv] T3: not a bounds shape (idx vs invariant count)
+    -> UNSAT (Dead Code / Impossible Path) [Query Latency: 415.408708 ms]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of 'L23.us230.us.us'):  %exitcond287.not = icmp eq i64 %value_phi6.us231.us.us, %29, !dbg !69
+    -> Guard[1] (true edge of 'L23.preheader.split.split.split.split.us'):  %.not191 = icmp ult i64 %.size.0.copyload.fr, %.size110.0.copyload.fr
+    -> Guard[2] (true edge of 'L23.preheader.split.split.split'):  %.not190 = icmp ult i64 %.size.0.copyload.fr, %.size23.0.copyload.fr
+    -> Guard[3] (false edge of 'L23.preheader.split.split'):  %14 = icmp slt i64 %13, 1
+    -> Guard[4] (false edge of 'L23.preheader.split'):  %.not184 = icmp eq i64 %.size23.0.copyload.fr, 0
+    -> Guard[5] (false edge of 'L23.preheader'):  %.not183 = icmp eq i64 %.size.0.copyload.fr, 0
+    -> Guard[6] (false edge of 'top'):  %12 = icmp slt i64 %11, 1, !dbg !59
+    -> Collected 7 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %.size23.0.copyload = load i64, ptr %.size_ptr22, align 8  vs  %.size53.0.copyload.us.us.us = load i64, ptr %.size_ptr22, align 8
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %.size110.0.copyload = load i64, ptr %.size_ptr65, align 8  vs  %.size66.0.copyload.us.us.us = load i64, ptr %.size_ptr65, align 8
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> [go3] 22 leaf-closure instruction(s) encoded
+    -> Fact[SCEV:0] i64 %value_phi6.us231.us.us in [1,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:1] i64 %value_phi6.us231.us.us in [1,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:2] i64 %value_phi6.us231.us.us - start(1) <=u BTC((%11 umin_seq ((-1 + (0 smax %11))<nsw> umin %.size138.0.copyload))) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hx:3] (i64 1 <=u i64 %29) -> i64 %value_phi6.us231.us.us <=u i64 %29 (header-exit eq bound, unit step, 1-induction)
+    -> Fact[SCEVSYM:4] i64 %value_phi37.us.us.us - start(%bc.resume.val444) <=u BTC(((((-1 * %bc.resume.val444) + (1 umax %.size53.0.copyload.us.us.us.fr)) umin ((-1 * %bc.resume.val444) + %.size.0.copyload.fr)) umin_seq (((-1 * %bc.resume.val444) + (1 umax %.size66.0.copyload.us.us.us)) umin ((-1 * %bc.resume.val444) + (0 smax (-1 + %.size.0.copyload.fr)))))) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hx:5] (i64 %bc.resume.val444 <=u i64 %.size.0.copyload.fr) -> i64 %value_phi37.us.us.us <=u i64 %.size.0.copyload.fr (header-exit eq bound, unit step, 1-induction)
+    -> Fact[KB:6] i64 %index446 known bits zero=0x15 one=0x0
+    -> Fact[SCEV:7] i64 %index446 in [0,-15) (SCEV unsigned)
+    -> Fact[SCEV:8] i64 %index446 in [-9223372036854775808,9223372036854775793) (SCEV signed)
+    -> Fact[SCEVSYM:9] i64 %index446 - start(0) <=u 16*BTC(((-15 + (-1 * %45)<nsw> + ((-1 + (1 umax %.size53.0.copyload.us.us.us.fr)) umin (-1 + %.size.0.copyload.fr) umin %38)) /u 16)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:10] i64 %index446 == i64 0 || ne(i64 %index446, i64 %n.vec442) (latch-implied bound, 1-induction)
+    -> Fact[SCEVEQ:11] i64 %bc.resume.val444 in phi image (4 incoming)
+    -> Fact[SCEVEQ:12] i64 %.size53.0.copyload.us.us.us.fr == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:13] i64 %.size.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[KB:14] i64 %45 known bits zero=0x18446744073709551584 one=0x0
+    -> Fact[SCEVEQ:15] i64 %38 == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:16] i64 %ind.end443 == SCEV((2 + (-1 * %45)<nsw> + ((-1 + (1 umax %.size53.0.copyload.us.us.us.fr)) umin (-1 + %.size.0.copyload.fr) umin %38)))
+    -> Fact[SCEVEQ:17] i64 %umin434 == SCEV(((-1 + (1 umax %.size66.0.copyload.us.us.us)) umin (-1 + (0 smax (-1 + %.size.0.copyload.fr)))<nsw>))
+    -> [heavy] 18 analysis fact(s) on 20 boundary value(s)
+    -> [mv] T3: not a bounds shape (idx vs invariant count)
+    -> [ind L0] BASE (1 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.043000 ms]
+    -> [ind L1] BASE (1 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.337500 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 800.906125 ms]
+    -> [mv] still SAT under 51 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of 'L98'):  %exitcond296.not = icmp eq i64 %value_phi37, %umax295, !dbg !108
+    -> Guard[1] (false edge of 'L23.preheader.split.split.split'):  %.not190 = icmp ult i64 %.size.0.copyload.fr, %.size23.0.copyload.fr
+    -> Guard[2] (false edge of 'L23.preheader.split.split'):  %14 = icmp slt i64 %13, 1
+    -> Guard[3] (false edge of 'L23.preheader.split'):  %.not184 = icmp eq i64 %.size23.0.copyload.fr, 0
+    -> Guard[4] (false edge of 'L23.preheader'):  %.not183 = icmp eq i64 %.size.0.copyload.fr, 0
+    -> Guard[5] (false edge of 'top'):  %12 = icmp slt i64 %11, 1, !dbg !59
+    -> Collected 6 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %.size23.0.copyload = load i64, ptr %.size_ptr22, align 8  vs  %.size53.0.copyload.us.us.us = load i64, ptr %.size_ptr22, align 8
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> [go3] 23 leaf-closure instruction(s) encoded
+    -> Fact[SCEVSYM:0] i64 %value_phi37 - start(%bc.resume.val) <=u BTC((((-1 * %bc.resume.val) + (1 umax %.size110.0.copyload.fr)) umin ((-1 * %bc.resume.val) + (1 umax %.size.0.copyload.fr)) umin ((-1 * %bc.resume.val) + (1 umax %.size23.0.copyload.fr)) umin ((-1 * %bc.resume.val) + (0 smax (-1 + %.size.0.copyload.fr))))) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hx:1] (i64 %bc.resume.val <=u i64 %umax295) -> i64 %value_phi37 <=u i64 %umax295 (header-exit eq bound, unit step, 1-induction)
+    -> Fact[KB:2] i64 %index known bits zero=0x15 one=0x0
+    -> Fact[SCEV:3] i64 %index in [0,-15) (SCEV unsigned)
+    -> Fact[SCEV:4] i64 %index in [-9223372036854775808,9223372036854775793) (SCEV signed)
+    -> Fact[SCEVSYM:5] i64 %index - start(0) <=u 16*BTC(((-15 + (-1 * %167)<nsw> + ((-1 + (1 umax %.size110.0.copyload.fr)) umin (-1 + (1 umax %.size.0.copyload.fr)) umin (-1 + (1 umax %.size23.0.copyload.fr)) umin (-1 + (0 smax (-1 + %.size.0.copyload.fr)))<nsw>)) /u 16)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:6] i64 %index == i64 0 || ne(i64 %index, i64 %n.vec) (latch-implied bound, 1-induction)
+    -> Fact[SCEVEQ:7] i64 %bc.resume.val in phi image (4 incoming)
+    -> Fact[SCEVEQ:8] i64 %.size110.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:9] i64 %.size.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:10] i64 %.size23.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[KB:11] i64 %167 known bits zero=0x18446744073709551584 one=0x0
+    -> Fact[SCEVEQ:12] i64 %ind.end == SCEV((2 + (-1 * %167)<nsw> + ((-1 + (1 umax %.size110.0.copyload.fr)) umin (-1 + (1 umax %.size.0.copyload.fr)) umin (-1 + (1 umax %.size23.0.copyload.fr)) umin (-1 + (0 smax (-1 + %.size.0.copyload.fr)))<nsw>)))
+    -> [heavy] 13 analysis fact(s) on 14 boundary value(s)
+    -> [mv] T3: not a bounds shape (idx vs invariant count)
+    -> [ind L0] BASE (1 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.129125 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 52.681584 ms]
+    -> [mv] still SAT under 21 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of 'L98.us'):  %exitcond290.not = icmp eq i64 %value_phi37.us, %umax289, !dbg !108
+    -> Guard[1] (false edge of 'L23.preheader.split.split.split.split.us'):  %.not191 = icmp ult i64 %.size.0.copyload.fr, %.size110.0.copyload.fr
+    -> Guard[2] (true edge of 'L23.preheader.split.split.split'):  %.not190 = icmp ult i64 %.size.0.copyload.fr, %.size23.0.copyload.fr
+    -> Guard[3] (false edge of 'L23.preheader.split.split'):  %14 = icmp slt i64 %13, 1
+    -> Guard[4] (false edge of 'L23.preheader.split'):  %.not184 = icmp eq i64 %.size23.0.copyload.fr, 0
+    -> Guard[5] (false edge of 'L23.preheader'):  %.not183 = icmp eq i64 %.size.0.copyload.fr, 0
+    -> Guard[6] (false edge of 'top'):  %12 = icmp slt i64 %11, 1, !dbg !59
+    -> Collected 7 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %.size23.0.copyload = load i64, ptr %.size_ptr22, align 8  vs  %.size53.0.copyload.us.us.us = load i64, ptr %.size_ptr22, align 8
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %.size110.0.copyload = load i64, ptr %.size_ptr65, align 8  vs  %.size66.0.copyload.us.us.us = load i64, ptr %.size_ptr65, align 8
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> [go3] 23 leaf-closure instruction(s) encoded
+    -> Fact[SCEVSYM:0] i64 %value_phi37.us - start(%bc.resume.val387) <=u BTC((((-1 * %bc.resume.val387) + (1 umax %.size110.0.copyload.fr)) umin ((-1 * %bc.resume.val387) + (1 umax %.size.0.copyload.fr)) umin ((-1 * %bc.resume.val387) + (1 umax %.size23.0.copyload.fr)) umin ((-1 * %bc.resume.val387) + (0 smax (-1 + %.size.0.copyload.fr))))) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hx:1] (i64 %bc.resume.val387 <=u i64 %umax289) -> i64 %value_phi37.us <=u i64 %umax289 (header-exit eq bound, unit step, 1-induction)
+    -> Fact[KB:2] i64 %index389 known bits zero=0x15 one=0x0
+    -> Fact[SCEV:3] i64 %index389 in [0,-15) (SCEV unsigned)
+    -> Fact[SCEV:4] i64 %index389 in [-9223372036854775808,9223372036854775793) (SCEV signed)
+    -> Fact[SCEVSYM:5] i64 %index389 - start(0) <=u 16*BTC(((-15 + (-1 * %109)<nsw> + ((-1 + (1 umax %.size110.0.copyload.fr)) umin (-1 + (1 umax %.size.0.copyload.fr)) umin (-1 + (1 umax %.size23.0.copyload.fr)) umin (-1 + (0 smax (-1 + %.size.0.copyload.fr)))<nsw>)) /u 16)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:6] i64 %index389 == i64 0 || ne(i64 %index389, i64 %n.vec385) (latch-implied bound, 1-induction)
+    -> Fact[SCEVEQ:7] i64 %bc.resume.val387 in phi image (4 incoming)
+    -> Fact[SCEVEQ:8] i64 %.size110.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:9] i64 %.size.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:10] i64 %.size23.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[KB:11] i64 %109 known bits zero=0x18446744073709551584 one=0x0
+    -> Fact[SCEVEQ:12] i64 %ind.end386 == SCEV((2 + (-1 * %109)<nsw> + ((-1 + (1 umax %.size110.0.copyload.fr)) umin (-1 + (1 umax %.size.0.copyload.fr)) umin (-1 + (1 umax %.size23.0.copyload.fr)) umin (-1 + (0 smax (-1 + %.size.0.copyload.fr)))<nsw>)))
+    -> [heavy] 13 analysis fact(s) on 14 boundary value(s)
+    -> [mv] T3: not a bounds shape (idx vs invariant count)
+    -> [ind L0] BASE (1 phi(s) = entry): UNSAT (Dead Code / Impossible Path) [Query Latency: 129.842667 ms]
+    -> [ind L0] STEP (copy: 18 instr, 0 skipped, 12 fresh, 8 fact(s), 1 link(s)): UNSAT (Dead Code / Impossible Path) [Query Latency: 209.042833 ms]
+    -> [ind] UNSAT by 1-induction (BASE + STEP)
+    -> UNSAT (Dead Code / Impossible Path) [ind]
+  => SUCCESS: Trap mathematically neutralized!
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of 'L98.us.us.us'):  %exitcond282.not = icmp eq i64 %value_phi37.us.us.us, %.size.0.copyload.fr, !dbg !108
+    -> Guard[1] (false edge of 'L23.us230.us.us'):  %exitcond287.not = icmp eq i64 %value_phi6.us231.us.us, %29, !dbg !69
+    -> Guard[2] (true edge of 'L23.preheader.split.split.split.split.us'):  %.not191 = icmp ult i64 %.size.0.copyload.fr, %.size110.0.copyload.fr
+    -> Guard[3] (true edge of 'L23.preheader.split.split.split'):  %.not190 = icmp ult i64 %.size.0.copyload.fr, %.size23.0.copyload.fr
+    -> Guard[4] (false edge of 'L23.preheader.split.split'):  %14 = icmp slt i64 %13, 1
+    -> Guard[5] (false edge of 'L23.preheader.split'):  %.not184 = icmp eq i64 %.size23.0.copyload.fr, 0
+    -> Guard[6] (false edge of 'L23.preheader'):  %.not183 = icmp eq i64 %.size.0.copyload.fr, 0
+    -> Guard[7] (false edge of 'top'):  %12 = icmp slt i64 %11, 1, !dbg !59
+    -> Collected 8 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %.size23.0.copyload = load i64, ptr %.size_ptr22, align 8  vs  %.size53.0.copyload.us.us.us = load i64, ptr %.size_ptr22, align 8
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %.size110.0.copyload = load i64, ptr %.size_ptr65, align 8  vs  %.size66.0.copyload.us.us.us = load i64, ptr %.size_ptr65, align 8
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> [go3] 22 leaf-closure instruction(s) encoded
+    -> Fact[SCEV:0] i64 %value_phi6.us231.us.us in [1,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:1] i64 %value_phi6.us231.us.us in [1,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:2] i64 %value_phi6.us231.us.us - start(1) <=u BTC((%11 umin_seq ((-1 + (0 smax %11))<nsw> umin %.size138.0.copyload))) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hx:3] (i64 1 <=u i64 %29) -> i64 %value_phi6.us231.us.us <=u i64 %29 (header-exit eq bound, unit step, 1-induction)
+    -> Fact[SCEVSYM:4] i64 %value_phi37.us.us.us - start(%bc.resume.val444) <=u BTC(((((-1 * %bc.resume.val444) + (1 umax %.size53.0.copyload.us.us.us.fr)) umin ((-1 * %bc.resume.val444) + %.size.0.copyload.fr)) umin_seq (((-1 * %bc.resume.val444) + (1 umax %.size66.0.copyload.us.us.us)) umin ((-1 * %bc.resume.val444) + (0 smax (-1 + %.size.0.copyload.fr)))))) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hx:5] (i64 %bc.resume.val444 <=u i64 %.size.0.copyload.fr) -> i64 %value_phi37.us.us.us <=u i64 %.size.0.copyload.fr (header-exit eq bound, unit step, 1-induction)
+    -> Fact[KB:6] i64 %index446 known bits zero=0x15 one=0x0
+    -> Fact[SCEV:7] i64 %index446 in [0,-15) (SCEV unsigned)
+    -> Fact[SCEV:8] i64 %index446 in [-9223372036854775808,9223372036854775793) (SCEV signed)
+    -> Fact[SCEVSYM:9] i64 %index446 - start(0) <=u 16*BTC(((-15 + (-1 * %45)<nsw> + ((-1 + (1 umax %.size53.0.copyload.us.us.us.fr)) umin (-1 + %.size.0.copyload.fr) umin %38)) /u 16)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:10] i64 %index446 == i64 0 || ne(i64 %index446, i64 %n.vec442) (latch-implied bound, 1-induction)
+    -> Fact[SCEVEQ:11] i64 %bc.resume.val444 in phi image (4 incoming)
+    -> Fact[SCEVEQ:12] i64 %.size53.0.copyload.us.us.us.fr == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:13] i64 %.size.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[KB:14] i64 %45 known bits zero=0x18446744073709551584 one=0x0
+    -> Fact[SCEVEQ:15] i64 %38 == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:16] i64 %ind.end443 == SCEV((2 + (-1 * %45)<nsw> + ((-1 + (1 umax %.size53.0.copyload.us.us.us.fr)) umin (-1 + %.size.0.copyload.fr) umin %38)))
+    -> Fact[SCEVEQ:17] i64 %umin434 == SCEV(((-1 + (1 umax %.size66.0.copyload.us.us.us)) umin (-1 + (0 smax (-1 + %.size.0.copyload.fr)))<nsw>))
+    -> [heavy] 18 analysis fact(s) on 21 boundary value(s)
+    -> [mv] T3: not a bounds shape (idx vs invariant count)
+    -> [ind L0] BASE (1 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 26.748584 ms]
+    -> [ind L1] BASE (1 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 4.948500 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 67.749500 ms]
+    -> [mv] still SAT under 51 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of 'L115'):  %exitcond298.not = icmp eq i64 %value_phi37, %umax297, !dbg !108
+    -> Guard[1] (false edge of 'L98'):  %exitcond296.not = icmp eq i64 %value_phi37, %umax295, !dbg !108
+    -> Guard[2] (false edge of 'L23.preheader.split.split.split'):  %.not190 = icmp ult i64 %.size.0.copyload.fr, %.size23.0.copyload.fr
+    -> Guard[3] (false edge of 'L23.preheader.split.split'):  %14 = icmp slt i64 %13, 1
+    -> Guard[4] (false edge of 'L23.preheader.split'):  %.not184 = icmp eq i64 %.size23.0.copyload.fr, 0
+    -> Guard[5] (false edge of 'L23.preheader'):  %.not183 = icmp eq i64 %.size.0.copyload.fr, 0
+    -> Guard[6] (false edge of 'top'):  %12 = icmp slt i64 %11, 1, !dbg !59
+    -> Collected 7 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %.size23.0.copyload = load i64, ptr %.size_ptr22, align 8  vs  %.size53.0.copyload.us.us.us = load i64, ptr %.size_ptr22, align 8
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> [go3] 23 leaf-closure instruction(s) encoded
+    -> Fact[SCEVSYM:0] i64 %value_phi37 - start(%bc.resume.val) <=u BTC((((-1 * %bc.resume.val) + (1 umax %.size110.0.copyload.fr)) umin ((-1 * %bc.resume.val) + (1 umax %.size.0.copyload.fr)) umin ((-1 * %bc.resume.val) + (1 umax %.size23.0.copyload.fr)) umin ((-1 * %bc.resume.val) + (0 smax (-1 + %.size.0.copyload.fr))))) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hx:1] (i64 %bc.resume.val <=u i64 %umax295) -> i64 %value_phi37 <=u i64 %umax295 (header-exit eq bound, unit step, 1-induction)
+    -> Fact[KB:2] i64 %index known bits zero=0x15 one=0x0
+    -> Fact[SCEV:3] i64 %index in [0,-15) (SCEV unsigned)
+    -> Fact[SCEV:4] i64 %index in [-9223372036854775808,9223372036854775793) (SCEV signed)
+    -> Fact[SCEVSYM:5] i64 %index - start(0) <=u 16*BTC(((-15 + (-1 * %167)<nsw> + ((-1 + (1 umax %.size110.0.copyload.fr)) umin (-1 + (1 umax %.size.0.copyload.fr)) umin (-1 + (1 umax %.size23.0.copyload.fr)) umin (-1 + (0 smax (-1 + %.size.0.copyload.fr)))<nsw>)) /u 16)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:6] i64 %index == i64 0 || ne(i64 %index, i64 %n.vec) (latch-implied bound, 1-induction)
+    -> Fact[SCEVEQ:7] i64 %bc.resume.val in phi image (4 incoming)
+    -> Fact[SCEVEQ:8] i64 %.size110.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:9] i64 %.size.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:10] i64 %.size23.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[KB:11] i64 %167 known bits zero=0x18446744073709551584 one=0x0
+    -> Fact[SCEVEQ:12] i64 %ind.end == SCEV((2 + (-1 * %167)<nsw> + ((-1 + (1 umax %.size110.0.copyload.fr)) umin (-1 + (1 umax %.size.0.copyload.fr)) umin (-1 + (1 umax %.size23.0.copyload.fr)) umin (-1 + (0 smax (-1 + %.size.0.copyload.fr)))<nsw>)))
+    -> [heavy] 13 analysis fact(s) on 15 boundary value(s)
+    -> [mv] T3: not a bounds shape (idx vs invariant count)
+    -> [ind L0] BASE (1 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 20.182209 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 704.197833 ms]
+    -> [mv] still SAT under 21 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of 'L115.us'):  %exitcond292.not = icmp eq i64 %value_phi37.us, %umax291, !dbg !108
+    -> Guard[1] (false edge of 'L98.us'):  %exitcond290.not = icmp eq i64 %value_phi37.us, %umax289, !dbg !108
+    -> Guard[2] (false edge of 'L23.preheader.split.split.split.split.us'):  %.not191 = icmp ult i64 %.size.0.copyload.fr, %.size110.0.copyload.fr
+    -> Guard[3] (true edge of 'L23.preheader.split.split.split'):  %.not190 = icmp ult i64 %.size.0.copyload.fr, %.size23.0.copyload.fr
+    -> Guard[4] (false edge of 'L23.preheader.split.split'):  %14 = icmp slt i64 %13, 1
+    -> Guard[5] (false edge of 'L23.preheader.split'):  %.not184 = icmp eq i64 %.size23.0.copyload.fr, 0
+    -> Guard[6] (false edge of 'L23.preheader'):  %.not183 = icmp eq i64 %.size.0.copyload.fr, 0
+    -> Guard[7] (false edge of 'top'):  %12 = icmp slt i64 %11, 1, !dbg !59
+    -> Collected 8 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %.size23.0.copyload = load i64, ptr %.size_ptr22, align 8  vs  %.size53.0.copyload.us.us.us = load i64, ptr %.size_ptr22, align 8
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %.size110.0.copyload = load i64, ptr %.size_ptr65, align 8  vs  %.size66.0.copyload.us.us.us = load i64, ptr %.size_ptr65, align 8
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> [go3] 23 leaf-closure instruction(s) encoded
+    -> Fact[SCEVSYM:0] i64 %value_phi37.us - start(%bc.resume.val387) <=u BTC((((-1 * %bc.resume.val387) + (1 umax %.size110.0.copyload.fr)) umin ((-1 * %bc.resume.val387) + (1 umax %.size.0.copyload.fr)) umin ((-1 * %bc.resume.val387) + (1 umax %.size23.0.copyload.fr)) umin ((-1 * %bc.resume.val387) + (0 smax (-1 + %.size.0.copyload.fr))))) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hx:1] (i64 %bc.resume.val387 <=u i64 %umax289) -> i64 %value_phi37.us <=u i64 %umax289 (header-exit eq bound, unit step, 1-induction)
+    -> Fact[KB:2] i64 %index389 known bits zero=0x15 one=0x0
+    -> Fact[SCEV:3] i64 %index389 in [0,-15) (SCEV unsigned)
+    -> Fact[SCEV:4] i64 %index389 in [-9223372036854775808,9223372036854775793) (SCEV signed)
+    -> Fact[SCEVSYM:5] i64 %index389 - start(0) <=u 16*BTC(((-15 + (-1 * %109)<nsw> + ((-1 + (1 umax %.size110.0.copyload.fr)) umin (-1 + (1 umax %.size.0.copyload.fr)) umin (-1 + (1 umax %.size23.0.copyload.fr)) umin (-1 + (0 smax (-1 + %.size.0.copyload.fr)))<nsw>)) /u 16)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:6] i64 %index389 == i64 0 || ne(i64 %index389, i64 %n.vec385) (latch-implied bound, 1-induction)
+    -> Fact[SCEVEQ:7] i64 %bc.resume.val387 in phi image (4 incoming)
+    -> Fact[SCEVEQ:8] i64 %.size110.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:9] i64 %.size.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:10] i64 %.size23.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[KB:11] i64 %109 known bits zero=0x18446744073709551584 one=0x0
+    -> Fact[SCEVEQ:12] i64 %ind.end386 == SCEV((2 + (-1 * %109)<nsw> + ((-1 + (1 umax %.size110.0.copyload.fr)) umin (-1 + (1 umax %.size.0.copyload.fr)) umin (-1 + (1 umax %.size23.0.copyload.fr)) umin (-1 + (0 smax (-1 + %.size.0.copyload.fr)))<nsw>)))
+    -> [heavy] 13 analysis fact(s) on 14 boundary value(s)
+    -> [mv] T3: not a bounds shape (idx vs invariant count)
+    -> [ind L0] BASE (1 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 3.637625 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 5.583750 ms]
+    -> [mv] still SAT under 18 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of 'L115.us.us.us'):  %exitcond284.not = icmp eq i64 %value_phi37.us.us.us, %umax283, !dbg !108
+    -> Guard[1] (false edge of 'L98.us.us.us'):  %exitcond282.not = icmp eq i64 %value_phi37.us.us.us, %.size.0.copyload.fr, !dbg !108
+    -> Guard[2] (false edge of 'L23.us230.us.us'):  %exitcond287.not = icmp eq i64 %value_phi6.us231.us.us, %29, !dbg !69
+    -> Guard[3] (true edge of 'L23.preheader.split.split.split.split.us'):  %.not191 = icmp ult i64 %.size.0.copyload.fr, %.size110.0.copyload.fr
+    -> Guard[4] (true edge of 'L23.preheader.split.split.split'):  %.not190 = icmp ult i64 %.size.0.copyload.fr, %.size23.0.copyload.fr
+    -> Guard[5] (false edge of 'L23.preheader.split.split'):  %14 = icmp slt i64 %13, 1
+    -> Guard[6] (false edge of 'L23.preheader.split'):  %.not184 = icmp eq i64 %.size23.0.copyload.fr, 0
+    -> Guard[7] (false edge of 'L23.preheader'):  %.not183 = icmp eq i64 %.size.0.copyload.fr, 0
+    -> Guard[8] (false edge of 'top'):  %12 = icmp slt i64 %11, 1, !dbg !59
+    -> Collected 9 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %.size23.0.copyload = load i64, ptr %.size_ptr22, align 8  vs  %.size53.0.copyload.us.us.us = load i64, ptr %.size_ptr22, align 8
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %.size110.0.copyload = load i64, ptr %.size_ptr65, align 8  vs  %.size66.0.copyload.us.us.us = load i64, ptr %.size_ptr65, align 8
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> [go3] 22 leaf-closure instruction(s) encoded
+    -> Fact[SCEV:0] i64 %value_phi6.us231.us.us in [1,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:1] i64 %value_phi6.us231.us.us in [1,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:2] i64 %value_phi6.us231.us.us - start(1) <=u BTC((%11 umin_seq ((-1 + (0 smax %11))<nsw> umin %.size138.0.copyload))) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hx:3] (i64 1 <=u i64 %29) -> i64 %value_phi6.us231.us.us <=u i64 %29 (header-exit eq bound, unit step, 1-induction)
+    -> Fact[SCEVSYM:4] i64 %value_phi37.us.us.us - start(%bc.resume.val444) <=u BTC(((((-1 * %bc.resume.val444) + (1 umax %.size53.0.copyload.us.us.us.fr)) umin ((-1 * %bc.resume.val444) + %.size.0.copyload.fr)) umin_seq (((-1 * %bc.resume.val444) + (1 umax %.size66.0.copyload.us.us.us)) umin ((-1 * %bc.resume.val444) + (0 smax (-1 + %.size.0.copyload.fr)))))) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hx:5] (i64 %bc.resume.val444 <=u i64 %.size.0.copyload.fr) -> i64 %value_phi37.us.us.us <=u i64 %.size.0.copyload.fr (header-exit eq bound, unit step, 1-induction)
+    -> Fact[KB:6] i64 %index446 known bits zero=0x15 one=0x0
+    -> Fact[SCEV:7] i64 %index446 in [0,-15) (SCEV unsigned)
+    -> Fact[SCEV:8] i64 %index446 in [-9223372036854775808,9223372036854775793) (SCEV signed)
+    -> Fact[SCEVSYM:9] i64 %index446 - start(0) <=u 16*BTC(((-15 + (-1 * %45)<nsw> + ((-1 + (1 umax %.size53.0.copyload.us.us.us.fr)) umin (-1 + %.size.0.copyload.fr) umin %38)) /u 16)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:10] i64 %index446 == i64 0 || ne(i64 %index446, i64 %n.vec442) (latch-implied bound, 1-induction)
+    -> Fact[SCEVEQ:11] i64 %bc.resume.val444 in phi image (4 incoming)
+    -> Fact[SCEVEQ:12] i64 %.size53.0.copyload.us.us.us.fr == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:13] i64 %.size.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[KB:14] i64 %45 known bits zero=0x18446744073709551584 one=0x0
+    -> Fact[SCEVEQ:15] i64 %38 == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:16] i64 %ind.end443 == SCEV((2 + (-1 * %45)<nsw> + ((-1 + (1 umax %.size53.0.copyload.us.us.us.fr)) umin (-1 + %.size.0.copyload.fr) umin %38)))
+    -> Fact[SCEVEQ:17] i64 %umin434 == SCEV(((-1 + (1 umax %.size66.0.copyload.us.us.us)) umin (-1 + (0 smax (-1 + %.size.0.copyload.fr)))<nsw>))
+    -> [heavy] 18 analysis fact(s) on 21 boundary value(s)
+    -> [mv] T3: not a bounds shape (idx vs invariant count)
+    -> [ind L0] BASE (1 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 6.077167 ms]
+    -> [ind L1] BASE (1 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 2.001625 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 10.432417 ms]
+    -> [mv] still SAT under 48 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of 'L134'):  %exitcond300.not = icmp eq i64 %value_phi37, %umax299, !dbg !108
+    -> Guard[1] (false edge of 'L115'):  %exitcond298.not = icmp eq i64 %value_phi37, %umax297, !dbg !108
+    -> Guard[2] (false edge of 'L98'):  %exitcond296.not = icmp eq i64 %value_phi37, %umax295, !dbg !108
+    -> Guard[3] (false edge of 'L23.preheader.split.split.split'):  %.not190 = icmp ult i64 %.size.0.copyload.fr, %.size23.0.copyload.fr
+    -> Guard[4] (false edge of 'L23.preheader.split.split'):  %14 = icmp slt i64 %13, 1
+    -> Guard[5] (false edge of 'L23.preheader.split'):  %.not184 = icmp eq i64 %.size23.0.copyload.fr, 0
+    -> Guard[6] (false edge of 'L23.preheader'):  %.not183 = icmp eq i64 %.size.0.copyload.fr, 0
+    -> Guard[7] (false edge of 'top'):  %12 = icmp slt i64 %11, 1, !dbg !59
+    -> Collected 8 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %.size23.0.copyload = load i64, ptr %.size_ptr22, align 8  vs  %.size53.0.copyload.us.us.us = load i64, ptr %.size_ptr22, align 8
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> [go3] 23 leaf-closure instruction(s) encoded
+    -> Fact[SCEVSYM:0] i64 %value_phi37 - start(%bc.resume.val) <=u BTC((((-1 * %bc.resume.val) + (1 umax %.size110.0.copyload.fr)) umin ((-1 * %bc.resume.val) + (1 umax %.size.0.copyload.fr)) umin ((-1 * %bc.resume.val) + (1 umax %.size23.0.copyload.fr)) umin ((-1 * %bc.resume.val) + (0 smax (-1 + %.size.0.copyload.fr))))) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hx:1] (i64 %bc.resume.val <=u i64 %umax295) -> i64 %value_phi37 <=u i64 %umax295 (header-exit eq bound, unit step, 1-induction)
+    -> Fact[KB:2] i64 %index known bits zero=0x15 one=0x0
+    -> Fact[SCEV:3] i64 %index in [0,-15) (SCEV unsigned)
+    -> Fact[SCEV:4] i64 %index in [-9223372036854775808,9223372036854775793) (SCEV signed)
+    -> Fact[SCEVSYM:5] i64 %index - start(0) <=u 16*BTC(((-15 + (-1 * %167)<nsw> + ((-1 + (1 umax %.size110.0.copyload.fr)) umin (-1 + (1 umax %.size.0.copyload.fr)) umin (-1 + (1 umax %.size23.0.copyload.fr)) umin (-1 + (0 smax (-1 + %.size.0.copyload.fr)))<nsw>)) /u 16)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:6] i64 %index == i64 0 || ne(i64 %index, i64 %n.vec) (latch-implied bound, 1-induction)
+    -> Fact[SCEVEQ:7] i64 %bc.resume.val in phi image (4 incoming)
+    -> Fact[SCEVEQ:8] i64 %.size110.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:9] i64 %.size.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:10] i64 %.size23.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[KB:11] i64 %167 known bits zero=0x18446744073709551584 one=0x0
+    -> Fact[SCEVEQ:12] i64 %ind.end == SCEV((2 + (-1 * %167)<nsw> + ((-1 + (1 umax %.size110.0.copyload.fr)) umin (-1 + (1 umax %.size.0.copyload.fr)) umin (-1 + (1 umax %.size23.0.copyload.fr)) umin (-1 + (0 smax (-1 + %.size.0.copyload.fr)))<nsw>)))
+    -> [heavy] 13 analysis fact(s) on 15 boundary value(s)
+    -> [mv] T3: not a bounds shape (idx vs invariant count)
+    -> [ind L0] BASE (1 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 12.564125 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 263.909666 ms]
+    -> [mv] still SAT under 18 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of 'L23.preheader.split.split'):  %14 = icmp slt i64 %13, 1
+    -> Guard[1] (false edge of 'L23.preheader.split'):  %.not184 = icmp eq i64 %.size23.0.copyload.fr, 0
+    -> Guard[2] (false edge of 'L23.preheader'):  %.not183 = icmp eq i64 %.size.0.copyload.fr, 0
+    -> Guard[3] (false edge of 'top'):  %12 = icmp slt i64 %11, 1, !dbg !59
+    -> Collected 4 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %.size23.0.copyload = load i64, ptr %.size_ptr22, align 8  vs  %.size53.0.copyload.us.us.us = load i64, ptr %.size_ptr22, align 8
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Fact[LVI:0] i64 %11 in [1,-9223372036854775808) (LVI @ L23.preheader.split.split.split.us)
+    -> [heavy] 1 analysis fact(s) on 3 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.168334 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of 'L134.us'):  %exitcond294.not = icmp eq i64 %value_phi37.us, %umax293, !dbg !108
+    -> Guard[1] (false edge of 'L115.us'):  %exitcond292.not = icmp eq i64 %value_phi37.us, %umax291, !dbg !108
+    -> Guard[2] (false edge of 'L98.us'):  %exitcond290.not = icmp eq i64 %value_phi37.us, %umax289, !dbg !108
+    -> Guard[3] (false edge of 'L23.preheader.split.split.split.split.us'):  %.not191 = icmp ult i64 %.size.0.copyload.fr, %.size110.0.copyload.fr
+    -> Guard[4] (true edge of 'L23.preheader.split.split.split'):  %.not190 = icmp ult i64 %.size.0.copyload.fr, %.size23.0.copyload.fr
+    -> Guard[5] (false edge of 'L23.preheader.split.split'):  %14 = icmp slt i64 %13, 1
+    -> Guard[6] (false edge of 'L23.preheader.split'):  %.not184 = icmp eq i64 %.size23.0.copyload.fr, 0
+    -> Guard[7] (false edge of 'L23.preheader'):  %.not183 = icmp eq i64 %.size.0.copyload.fr, 0
+    -> Guard[8] (false edge of 'top'):  %12 = icmp slt i64 %11, 1, !dbg !59
+    -> Collected 9 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %.size23.0.copyload = load i64, ptr %.size_ptr22, align 8  vs  %.size53.0.copyload.us.us.us = load i64, ptr %.size_ptr22, align 8
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %.size110.0.copyload = load i64, ptr %.size_ptr65, align 8  vs  %.size66.0.copyload.us.us.us = load i64, ptr %.size_ptr65, align 8
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> [go3] 23 leaf-closure instruction(s) encoded
+    -> Fact[SCEVSYM:0] i64 %value_phi37.us - start(%bc.resume.val387) <=u BTC((((-1 * %bc.resume.val387) + (1 umax %.size110.0.copyload.fr)) umin ((-1 * %bc.resume.val387) + (1 umax %.size.0.copyload.fr)) umin ((-1 * %bc.resume.val387) + (1 umax %.size23.0.copyload.fr)) umin ((-1 * %bc.resume.val387) + (0 smax (-1 + %.size.0.copyload.fr))))) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hx:1] (i64 %bc.resume.val387 <=u i64 %umax289) -> i64 %value_phi37.us <=u i64 %umax289 (header-exit eq bound, unit step, 1-induction)
+    -> Fact[KB:2] i64 %index389 known bits zero=0x15 one=0x0
+    -> Fact[SCEV:3] i64 %index389 in [0,-15) (SCEV unsigned)
+    -> Fact[SCEV:4] i64 %index389 in [-9223372036854775808,9223372036854775793) (SCEV signed)
+    -> Fact[SCEVSYM:5] i64 %index389 - start(0) <=u 16*BTC(((-15 + (-1 * %109)<nsw> + ((-1 + (1 umax %.size110.0.copyload.fr)) umin (-1 + (1 umax %.size.0.copyload.fr)) umin (-1 + (1 umax %.size23.0.copyload.fr)) umin (-1 + (0 smax (-1 + %.size.0.copyload.fr)))<nsw>)) /u 16)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:6] i64 %index389 == i64 0 || ne(i64 %index389, i64 %n.vec385) (latch-implied bound, 1-induction)
+    -> Fact[SCEVEQ:7] i64 %bc.resume.val387 in phi image (4 incoming)
+    -> Fact[SCEVEQ:8] i64 %.size110.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:9] i64 %.size.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:10] i64 %.size23.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[KB:11] i64 %109 known bits zero=0x18446744073709551584 one=0x0
+    -> Fact[SCEVEQ:12] i64 %ind.end386 == SCEV((2 + (-1 * %109)<nsw> + ((-1 + (1 umax %.size110.0.copyload.fr)) umin (-1 + (1 umax %.size.0.copyload.fr)) umin (-1 + (1 umax %.size23.0.copyload.fr)) umin (-1 + (0 smax (-1 + %.size.0.copyload.fr)))<nsw>)))
+    -> [heavy] 13 analysis fact(s) on 14 boundary value(s)
+    -> [mv] T3: not a bounds shape (idx vs invariant count)
+    -> [ind L0] BASE (1 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 38.191958 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 75.762792 ms]
+    -> [mv] still SAT under 15 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of 'L23.preheader.split.split.split.us'):  %.not190 = icmp ult i64 %.size.0.copyload.fr, %.size23.0.copyload.fr
+    -> Guard[1] (true edge of 'L23.preheader.split.split'):  %14 = icmp slt i64 %13, 1
+    -> Guard[2] (false edge of 'L23.preheader.split'):  %.not184 = icmp eq i64 %.size23.0.copyload.fr, 0
+    -> Guard[3] (false edge of 'L23.preheader'):  %.not183 = icmp eq i64 %.size.0.copyload.fr, 0
+    -> Guard[4] (false edge of 'top'):  %12 = icmp slt i64 %11, 1, !dbg !59
+    -> Collected 5 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %.size23.0.copyload = load i64, ptr %.size_ptr22, align 8  vs  %.size53.0.copyload.us.us.us = load i64, ptr %.size_ptr22, align 8
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %.size110.0.copyload = load i64, ptr %.size_ptr65, align 8  vs  %.size66.0.copyload.us.us.us = load i64, ptr %.size_ptr65, align 8
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Fact[LVI:0] i64 %11 in [1,-9223372036854775808) (LVI @ L23.preheader.split.split.split.us.split.us)
+    -> [heavy] 1 analysis fact(s) on 4 boundary value(s)
+    -> [ind] trap not in a loop
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.266333 ms]
+    -> [mv] trap not inside a loop: not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of 'L175.us.us.us'):  %.not189.not.us.us.us = icmp eq i64 %value_phi37.us.us.us, %value_phi33, !dbg !127
+    -> Guard[1] (false edge of 'L134.us.us.us'):  %exitcond286.not = icmp eq i64 %value_phi37.us.us.us, %umax285, !dbg !108
+    -> Guard[2] (false edge of 'L115.us.us.us'):  %exitcond284.not = icmp eq i64 %value_phi37.us.us.us, %umax283, !dbg !108
+    -> Guard[3] (false edge of 'L98.us.us.us'):  %exitcond282.not = icmp eq i64 %value_phi37.us.us.us, %.size.0.copyload.fr, !dbg !108
+    -> Guard[4] (false edge of 'L23.us230.us.us'):  %exitcond287.not = icmp eq i64 %value_phi6.us231.us.us, %29, !dbg !69
+    -> Guard[5] (true edge of 'L23.preheader.split.split.split.split.us'):  %.not191 = icmp ult i64 %.size.0.copyload.fr, %.size110.0.copyload.fr
+    -> Guard[6] (true edge of 'L23.preheader.split.split.split'):  %.not190 = icmp ult i64 %.size.0.copyload.fr, %.size23.0.copyload.fr
+    -> Guard[7] (false edge of 'L23.preheader.split.split'):  %14 = icmp slt i64 %13, 1
+    -> Guard[8] (false edge of 'L23.preheader.split'):  %.not184 = icmp eq i64 %.size23.0.copyload.fr, 0
+    -> Guard[9] (false edge of 'L23.preheader'):  %.not183 = icmp eq i64 %.size.0.copyload.fr, 0
+    -> Guard[10] (false edge of 'top'):  %12 = icmp slt i64 %11, 1, !dbg !59
+    -> Collected 11 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %.size23.0.copyload = load i64, ptr %.size_ptr22, align 8  vs  %.size53.0.copyload.us.us.us = load i64, ptr %.size_ptr22, align 8
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %.size110.0.copyload = load i64, ptr %.size_ptr65, align 8  vs  %.size66.0.copyload.us.us.us = load i64, ptr %.size_ptr65, align 8
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> [go3] 22 leaf-closure instruction(s) encoded
+    -> Fact[SCEV:0] i64 %value_phi6.us231.us.us in [1,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:1] i64 %value_phi6.us231.us.us in [1,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:2] i64 %value_phi6.us231.us.us - start(1) <=u BTC((%11 umin_seq ((-1 + (0 smax %11))<nsw> umin %.size138.0.copyload))) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hx:3] (i64 1 <=u i64 %29) -> i64 %value_phi6.us231.us.us <=u i64 %29 (header-exit eq bound, unit step, 1-induction)
+    -> Fact[SCEVSYM:4] i64 %value_phi37.us.us.us - start(%bc.resume.val444) <=u BTC(((((-1 * %bc.resume.val444) + (1 umax %.size53.0.copyload.us.us.us.fr)) umin ((-1 * %bc.resume.val444) + %.size.0.copyload.fr)) umin_seq (((-1 * %bc.resume.val444) + (1 umax %.size66.0.copyload.us.us.us)) umin ((-1 * %bc.resume.val444) + (0 smax (-1 + %.size.0.copyload.fr)))))) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hx:5] (i64 %bc.resume.val444 <=u i64 %.size.0.copyload.fr) -> i64 %value_phi37.us.us.us <=u i64 %.size.0.copyload.fr (header-exit eq bound, unit step, 1-induction)
+    -> Fact[KB:6] i64 %index446 known bits zero=0x15 one=0x0
+    -> Fact[SCEV:7] i64 %index446 in [0,-15) (SCEV unsigned)
+    -> Fact[SCEV:8] i64 %index446 in [-9223372036854775808,9223372036854775793) (SCEV signed)
+    -> Fact[SCEVSYM:9] i64 %index446 - start(0) <=u 16*BTC(((-15 + (-1 * %45)<nsw> + ((-1 + (1 umax %.size53.0.copyload.us.us.us.fr)) umin (-1 + %.size.0.copyload.fr) umin %38)) /u 16)) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hi:10] i64 %index446 == i64 0 || ne(i64 %index446, i64 %n.vec442) (latch-implied bound, 1-induction)
+    -> Fact[SCEVEQ:11] i64 %bc.resume.val444 in phi image (4 incoming)
+    -> Fact[SCEVEQ:12] i64 %.size53.0.copyload.us.us.us.fr == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:13] i64 %.size.0.copyload.fr == freeze operand (leaf identity)
+    -> Fact[KB:14] i64 %45 known bits zero=0x18446744073709551584 one=0x0
+    -> Fact[SCEVEQ:15] i64 %38 == freeze operand (leaf identity)
+    -> Fact[SCEVEQ:16] i64 %ind.end443 == SCEV((2 + (-1 * %45)<nsw> + ((-1 + (1 umax %.size53.0.copyload.us.us.us.fr)) umin (-1 + %.size.0.copyload.fr) umin %38)))
+    -> Fact[SCEVEQ:17] i64 %umin434 == SCEV(((-1 + (1 umax %.size66.0.copyload.us.us.us)) umin (-1 + (0 smax (-1 + %.size.0.copyload.fr)))<nsw>))
+    -> [heavy] 18 analysis fact(s) on 21 boundary value(s)
+    -> [mv] T3: not a bounds shape (idx vs invariant count)
+    -> [ind L0] BASE (1 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 9.999750 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 25.869875 ms]
+    -> [mv] still SAT under 21 hypothesis candidate(s): not versionable
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of 'L23.us220.us.us.us'):  %exitcond.not = icmp eq i64 %value_phi6.us221.us.us.us, %16, !dbg !69
+    -> Guard[1] (true edge of 'L23.preheader.split.split.split.us.split.us'):  %.not191 = icmp ult i64 %.size.0.copyload.fr, %.size110.0.copyload.fr
+    -> Guard[2] (true edge of 'L23.preheader.split.split.split.us'):  %.not190 = icmp ult i64 %.size.0.copyload.fr, %.size23.0.copyload.fr
+    -> Guard[3] (true edge of 'L23.preheader.split.split'):  %14 = icmp slt i64 %13, 1
+    -> Guard[4] (false edge of 'L23.preheader.split'):  %.not184 = icmp eq i64 %.size23.0.copyload.fr, 0
+    -> Guard[5] (false edge of 'L23.preheader'):  %.not183 = icmp eq i64 %.size.0.copyload.fr, 0
+    -> Guard[6] (false edge of 'top'):  %12 = icmp slt i64 %11, 1, !dbg !59
+    -> Collected 7 dominating context guard(s).
+    -> Frame refused (clobber between loads):  %.size23.0.copyload = load i64, ptr %.size_ptr22, align 8  vs  %.size53.0.copyload.us.us.us = load i64, ptr %.size_ptr22, align 8
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> Frame refused (clobber between loads):  %.size110.0.copyload = load i64, ptr %.size_ptr65, align 8  vs  %.size66.0.copyload.us.us.us = load i64, ptr %.size_ptr65, align 8
+         clobber: (MemoryPhi: clobber on some incoming arm)
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[SCEV:0] i64 %value_phi6.us221.us.us.us in [1,-9223372036854775808) (SCEV unsigned)
+    -> Fact[SCEV:1] i64 %value_phi6.us221.us.us.us in [1,-9223372036854775808) (SCEV signed)
+    -> Fact[SCEVSYM:2] i64 %value_phi6.us221.us.us.us - start(1) <=u BTC((%11 umin_seq ((-1 + (0 smax %11))<nsw> umin %.size138.0.copyload))) (SCEV symbolic trip count, sub-form)
+    -> Fact[PHIINV-hx:3] (i64 1 <=u i64 %16) -> i64 %value_phi6.us221.us.us.us <=u i64 %16 (header-exit eq bound, unit step, 1-induction)
+    -> [heavy] 4 analysis fact(s) on 6 boundary value(s)
+    -> [mv] T3: not a bounds shape (idx vs invariant count)
+    -> [ind L0] BASE (1 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.349708 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 0.606167 ms]
+    -> [mv] still SAT under 18 hypothesis candidate(s): not versionable
+  => Total Traps Eliminated: 5
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 19
+  => Total SMT Queries Executed: 19
+  => Total SMT Query Latency: 7.326369e+03 ms
+  => Average SMT Query Latency: 3.855984e+02 ms
+  => Total DFS & SMT Execution Time: 4.820234e+03 ms
+--------------------------------------------------
+[profile-stages] job,index,encode_ms,gate_wait_ms,fact_ms,RM_ms,RM_calls,RM_repeats,KB_ms,KB_calls,KB_repeats,LVI_ms,LVI_calls,LVI_repeats,SCEV_ms,SCEV_calls,SCEV_repeats,SCEVSYM_ms,SCEVSYM_calls,SCEVSYM_repeats,direct_ms,ind_ms,mv_ms,narrow_ms,queries,query_ms,setup_ms,solve_ms,assert_ms,teardown_ms,decided,worker_ms
+[profile-stages] job,0,8.025000e-02,1.250000e-04,4.040410e-01,0.000000e+00,0,0,4.417000e-03,2,0,2.187500e-02,2,0,0.000000e+00,0,0,0.000000e+00,0,0,1.202910e-01,5.420000e-04,1.709000e-03,0.000000e+00,1,1.202910e-01,2.157750e+00,4.242500e-01,2.950000e-01,1.552090e-01,-,3.227292e+00
+[profile-stages] job,1,1.777080e-01,4.743750e-01,4.667920e-01,0.000000e+00,0,0,1.916000e-03,3,2,1.399900e-02,3,0,0.000000e+00,0,0,0.000000e+00,0,0,2.168750e-01,2.910000e-04,2.910000e-04,0.000000e+00,1,2.168750e-01,1.995833e+00,6.001670e-01,3.777500e-01,1.601670e-01,-,3.877542e+00
+[profile-stages] job,2,1.541250e-01,1.670000e-04,2.348208e+00,0.000000e+00,0,0,1.383400e-02,25,11,1.795700e-02,7,2,1.375430e-01,23,5,1.777080e-01,5,1,6.860300e+01,3.489833e+00,0.000000e+00,0.000000e+00,1,6.860300e+01,5.154041e+00,7.256262e+01,4.330830e-01,4.289708e+00,D,8.645212e+01
+[profile-stages] job,3,1.162500e-01,4.044417e+00,1.711292e+00,0.000000e+00,0,0,2.876000e-03,11,10,1.491600e-02,7,2,2.749000e-03,10,7,1.067910e-01,3,1,5.223050e+01,2.163625e+00,0.000000e+00,0.000000e+00,1,5.223050e+01,5.202334e+00,5.496592e+01,5.351670e-01,5.885125e+00,D,7.431883e+01
+[profile-stages] job,4,1.108750e-01,6.454792e+00,6.654709e+00,0.000000e+00,0,0,2.374800e-02,26,18,2.474900e-02,12,3,1.669170e-01,21,10,6.710010e-01,4,1,3.520791e+02,1.241600e-02,0.000000e+00,0.000000e+00,1,3.520791e+02,3.518459e+00,3.525637e+02,4.318330e-01,1.013742e+01,I,3.898065e+02
+[profile-stages] job,5,1.027920e-01,2.243008e+01,8.449959e+00,0.000000e+00,0,0,2.691600e-02,26,20,2.574900e-02,12,3,1.628310e-01,21,12,7.263340e-01,4,1,4.154087e+02,1.551625e+00,0.000000e+00,0.000000e+00,1,4.154087e+02,3.713042e+00,4.173568e+02,3.620000e-01,6.487625e+00,D,4.681919e+02
+[profile-stages] job,6,2.436670e-01,3.330000e-04,1.063421e+01,0.000000e+00,0,0,5.066500e-02,52,51,4.291800e-02,20,6,8.918000e-03,46,46,5.795420e-01,9,8,8.009061e+02,7.938000e+01,1.085613e+01,0.000000e+00,3,8.103525e+02,6.337375e+00,8.919811e+02,7.827080e-01,6.070375e+00,-,9.242165e+02
+[profile-stages] job,7,1.386670e-01,1.142375e+01,5.107708e+00,0.000000e+00,0,0,1.233900e-02,26,26,1.429400e-02,13,3,3.253000e-03,21,21,3.362920e-01,4,4,5.268158e+01,1.252962e+01,9.670958e+00,0.000000e+00,2,6.141750e+01,2.293334e+00,7.549688e+01,5.517500e-01,4.927292e+00,-,1.052901e+02
+[profile-stages] job,8,1.463750e-01,2.920000e-04,4.426750e+00,0.000000e+00,0,0,1.970700e-02,26,26,1.395900e-02,13,3,3.208000e-03,21,21,3.382080e-01,4,4,2.114423e+02,1.125000e-02,0.000000e+00,0.000000e+00,1,2.114423e+02,1.345291e+00,2.118252e+02,3.341660e-01,8.641875e+00,I,2.313417e+02
+[profile-stages] job,9,1.530840e-01,2.500000e-04,5.709708e+00,0.000000e+00,0,0,2.954300e-02,52,52,6.000000e-03,21,6,5.870000e-03,46,46,3.195820e-01,9,9,6.774950e+01,1.003565e+02,1.255025e+01,0.000000e+00,3,7.867825e+01,2.500208e+00,1.811545e+02,4.255420e-01,6.262916e+00,-,2.020155e+02
+[profile-stages] job,10,2.547920e-01,3.330000e-04,8.986583e+00,0.000000e+00,0,0,3.995800e-02,26,26,6.918000e-03,13,3,6.833000e-03,21,21,6.254180e-01,4,4,7.041978e+02,2.750000e-02,4.446666e+00,0.000000e+00,2,7.081221e+02,2.098209e+00,7.090655e+02,3.212080e-01,6.769375e+00,-,7.342659e+02
+[profile-stages] job,11,1.420000e-01,2.910000e-04,4.416208e+00,0.000000e+00,0,0,1.575000e-02,26,26,3.166000e-03,13,3,3.375000e-03,21,21,3.110420e-01,4,4,5.583750e+00,7.951256e+02,2.830196e+01,0.000000e+00,2,3.333171e+01,2.227625e+00,8.295141e+02,4.507080e-01,6.713542e+00,-,8.484387e+02
+[profile-stages] job,12,1.554580e-01,2.920000e-04,5.127916e+00,0.000000e+00,0,0,3.125200e-02,52,52,6.083000e-03,21,6,5.044000e-03,46,46,2.959980e-01,9,9,1.043242e+01,5.809175e+01,9.932791e+00,0.000000e+00,3,1.931721e+01,1.351417e+00,7.892342e+01,4.274580e-01,5.664500e+00,-,9.727075e+01
+[profile-stages] job,13,1.397910e-01,2.920000e-04,4.494750e+00,0.000000e+00,0,0,1.683500e-02,26,26,3.249000e-03,13,3,3.542000e-03,21,21,3.152920e-01,4,4,2.639097e+02,3.491179e+01,4.656958e+00,0.000000e+00,2,2.680555e+02,1.240917e+00,3.038435e+02,3.262500e-01,5.403333e+00,-,3.200158e+02
+[profile-stages] job,14,1.149170e-01,2.080000e-04,2.121660e-01,0.000000e+00,0,0,2.041000e-03,3,3,9.208000e-03,3,0,0.000000e+00,0,0,0.000000e+00,0,0,1.683340e-01,2.920000e-04,2.920000e-04,0.000000e+00,1,1.683340e-01,4.367910e-01,4.434590e-01,2.703750e-01,9.654200e-02,-,1.306667e+00
+[profile-stages] job,15,1.395420e-01,2.910000e-04,4.434208e+00,0.000000e+00,0,0,2.341700e-02,26,26,4.123000e-03,13,3,3.459000e-03,21,21,4.186240e-01,4,4,7.576279e+01,6.182563e+01,1.920959e+00,0.000000e+00,2,7.723463e+01,1.319084e+00,1.399396e+02,3.853750e-01,5.583375e+00,-,1.563949e+02
+[profile-stages] job,16,1.025000e-01,1.250000e-04,2.016250e-01,0.000000e+00,0,0,1.042000e-03,4,4,8.666000e-03,4,0,0.000000e+00,0,0,0.000000e+00,0,0,2.663330e-01,1.334000e-03,4.170000e-04,0.000000e+00,1,2.663330e-01,3.929160e-01,6.252500e-01,3.411250e-01,2.945840e-01,-,1.618709e+00
+[profile-stages] job,17,1.527500e-01,1.250000e-04,5.483375e+00,0.000000e+00,0,0,1.904000e-02,41,41,9.794000e-03,21,6,4.542000e-03,36,36,2.471660e-01,8,8,2.586988e+01,8.598175e+01,2.812404e+01,0.000000e+00,2,5.321517e+01,1.128208e+00,1.404965e+02,4.779580e-01,5.582917e+00,-,1.607903e+02
+[profile-stages] job,18,1.323340e-01,2.920000e-04,1.151209e+00,0.000000e+00,0,0,3.335000e-03,11,11,2.209000e-03,8,2,7.910000e-04,10,10,1.007490e-01,3,3,6.061670e-01,1.288167e+00,7.771250e-01,0.000000e+00,2,1.173417e+00,1.185334e+00,3.067958e+00,3.620420e-01,9.870830e-01,-,8.073916e+00
+[profile-stages] module,jobs=19,threads=4,stage1_ms=3.394292e+00,stage2_ms=1.320563e+03,stage2b_ms=1.750000e-03,stage3_ms=1.092080e-01,total_ms=1.324069e+03

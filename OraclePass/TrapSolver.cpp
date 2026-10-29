@@ -1,3 +1,4 @@
+#include <thread>
 #include "Profile.h"
 #include "TrapSolver.h"
 #include <unordered_set>
@@ -33,7 +34,7 @@ namespace odessy {
 TrapSolver::TrapSolver(const SolverConfig &Cfg, const FunctionCtx &FC,
                        TrapJob &Job, unsigned Narrow, std::string *LogTo)
     : Cfg(Cfg), FC(FC), Job(Job), Encoder(Cfg.QueryTimeoutMs), NarrowMode(Narrow),
-      Log(LogTo ? *LogTo : Job.LogText) {
+      LogBuf(LogTo ? LogTo : &Job.LogText), Log(*LogBuf) {
     if (Cfg.VacuityCheck || Cfg.MultiVersion)   // MV reads cores too
         Encoder.enableUnsatCores();
     if (Narrow == 2) Encoder.enableNarrowMul(64, Cfg.NarrowBits);   // mul-only fallback
@@ -107,8 +108,8 @@ bool TrapSolver::factPhase() {
         unsigned NFacts = Facts.encodeBoundaryFacts(Job.PredBB);
         Log << "    -> [heavy] " << NFacts << " analysis fact(s) on "
             << Encoder.getFreeVariables().size() << " boundary value(s)\n";
-        if (Cfg.MultiVersion && Cfg.MVT3) prepareT3();   // SE queries: gate is held here
-        if (Cfg.Inductive && NarrowMode == 0) prepareInd(); // likewise
+        if (Cfg.MultiVersion && Cfg.MVT3 && Lane == 0) prepareT3();   // SE queries: gate is held here
+        if (Cfg.Inductive && NarrowMode == 0 && Lane != 1) prepareInd(); // likewise (BASE needs no copy)
         return true;
     } catch (const z3::exception &e) {
         Log << "    -> [Skip] Z3 exception: " << e.msg() << "\n";
@@ -183,20 +184,33 @@ unsigned TrapSolver::buildPrimedCopy(Loop *L, BasicBlock *Latch, const std::stri
 //          (!(reach'(PredBB) && trap')): lap t-1 completed.
 // Each obligation is audited (hypothesis + context + guards SAT) and then
 // checked with the trap; both UNSAT => trap dead by 1-induction.
-bool TrapSolver::indAtLoop(Loop *L, unsigned Depth) {
+bool TrapSolver::indEdges(Loop *L, BasicBlock *&Latch, BasicBlock *&Entry) {
     BasicBlock *Header = L->getHeader();
-    BasicBlock *Latch = L->getLoopLatch();
-    BasicBlock *Entry = nullptr;
+    Latch = L->getLoopLatch();
+    Entry = nullptr;
     if (Latch) for (BasicBlock *P : predecessors(Header)) if (P != Latch) { if (Entry) { Entry = nullptr; break; } Entry = P; }
+    return Latch && Entry;
+}
+
+bool TrapSolver::indAtLoop(Loop *L, unsigned Depth) {
+    BasicBlock *Latch, *Entry;
+    if (!indEdges(L, Latch, Entry)) {
+        Log << "    -> [ind L" << Depth << "] refused: loop needs a unique latch and a unique entry edge\n";
+        return false;
+    }
+    if (indBase(L, Depth, Entry).find("UNSAT") == std::string::npos) return false;
+    return indStep(L, Depth, Latch).find("UNSAT") != std::string::npos;
+}
+
+std::string TrapSolver::indBase(Loop *L, unsigned Depth, BasicBlock *Entry) {
+    BasicBlock *Header = L->getHeader();
     std::string Lv = "[ind L" + std::to_string(Depth) + "]";
-    if (!Latch || !Entry) { Log << "    -> " << Lv << " refused: loop needs a unique latch and a unique entry edge\n"; return false; }
     auto trapTracked = [&]() {
         if (Cfg.VacuityCheck) Encoder.assertConditionTracked(Job.TrapCond, Job.TrapOnTrue, "TRAP");
         else Encoder.assertCondition(Job.TrapCond, Job.TrapOnTrue);
     };
     auto isUnsat = [](const std::string &R) { return R.find("UNSAT") != std::string::npos; };
-    std::string Tag = "p" + std::to_string(Depth), Pfx = "IND" + std::to_string(Depth) + "-";
-    bool Proved = false;
+    std::string Pfx = "IND" + std::to_string(Depth) + "-";
     // ---------------- BASE ----------------
     Encoder.push();
     unsigned NB = 0;
@@ -209,7 +223,7 @@ bool TrapSolver::indAtLoop(Loop *L, unsigned Depth) {
     // for soundness (an UNSAT here implies the BASE query is UNSAT too):
     // posed only under the vacuity audit (HANDOFF §13.3).
     std::string BA = "SKIPPED";
-    if (Cfg.VacuityCheck) { auto [R0, BAms] = Encoder.checkSatisfiability(); Job.LatencyMs += BAms; BA = R0; }
+    if (Cfg.VacuityCheck) { auto [R0, BAms] = Encoder.checkSatisfiability(); addLat(BAms); BA = R0; }
     std::string BaseRes = "skipped";
     if (isUnsat(BA)) {
         // context+guards alone were audited SAT at indPhase entry, so a
@@ -220,14 +234,26 @@ bool TrapSolver::indAtLoop(Loop *L, unsigned Depth) {
         if (Cfg.VacuityCheck) Log << "    -> " << Lv << " BASE core: " << Encoder.getUnsatCore() << "\n";
     } else {
         Encoder.push(); trapTracked();
-        auto [R, Ms] = Encoder.checkSatisfiability(); Job.LatencyMs += Ms; BaseRes = R;
+        auto [R, Ms] = Encoder.checkSatisfiability(); addLat(Ms); BaseRes = R;
         Log << "    -> " << Lv << " BASE (" << NB << " phi(s) = entry): " << R << "\n";
         if (isUnsat(R) && Cfg.VacuityCheck) Log << "    -> " << Lv << " BASE core: " << Encoder.getUnsatCore() << "\n";
         profileQuery("ind-base", R, Ms);
         Encoder.pop();
     }
     Encoder.pop();
-    if (!isUnsat(BaseRes)) return false;
+    return BaseRes;
+}
+
+std::string TrapSolver::indStep(Loop *L, unsigned Depth, BasicBlock *Latch) {
+    BasicBlock *Header = L->getHeader();
+    std::string Lv = "[ind L" + std::to_string(Depth) + "]";
+    auto trapTracked = [&]() {
+        if (Cfg.VacuityCheck) Encoder.assertConditionTracked(Job.TrapCond, Job.TrapOnTrue, "TRAP");
+        else Encoder.assertCondition(Job.TrapCond, Job.TrapOnTrue);
+    };
+    auto isUnsat = [](const std::string &R) { return R.find("UNSAT") != std::string::npos; };
+    std::string Tag = "p" + std::to_string(Depth), Pfx = "IND" + std::to_string(Depth) + "-";
+    std::string StepRes = "skipped";
     // ---------------- STEP ----------------
     Encoder.push();
     unsigned N, Skipped;
@@ -249,21 +275,21 @@ bool TrapSolver::indAtLoop(Loop *L, unsigned Depth) {
     // suffices); refusing it only guards against encoder bugs, so it is
     // posed only under the vacuity audit (HANDOFF §13.3).
     std::string SA = "SKIPPED";
-    if (Cfg.VacuityCheck) { auto [R1, SAms] = Encoder.checkSatisfiability(); Job.LatencyMs += SAms; SA = R1; }
+    if (Cfg.VacuityCheck) { auto [R1, SAms] = Encoder.checkSatisfiability(); addLat(SAms); SA = R1; }
     if (isUnsat(SA)) Log << "    -> " << Lv << " STEP hypothesis contradicts the context: refusing (vacuous)\n";
     else {
         Encoder.push(); trapTracked();
-        auto [R, Ms] = Encoder.checkSatisfiability(); Job.LatencyMs += Ms;
+        auto [R, Ms] = Encoder.checkSatisfiability(); addLat(Ms);
         Log << "    -> " << Lv << " STEP (copy: " << N << " instr, " << Skipped << " skipped, " << Encoder.primedFreeVars().size()
             << " fresh, " << NF << " fact(s), " << Links << " link(s)): " << R << "\n";
         if (isUnsat(R) && Cfg.VacuityCheck) Log << "    -> " << Lv << " STEP core: " << Encoder.getUnsatCore() << "\n";
         profileQuery("ind-step", R, Ms);
-        Proved = isUnsat(R);
+        StepRes = R;
         Encoder.pop();
     }
     Encoder.pop();
     Encoder.resetPrimed();
-    return Proved;
+    return StepRes;
 }
 
 // Runs at the end of factPhase, so the caller holds this job's FactGate
@@ -324,45 +350,81 @@ bool TrapSolver::indPhase() {
     return Proved;
 }
 
+void TrapSolver::assertContext() {
+    // PHASE 2.75 (FRAME only): cross-BB load unification facts from
+    // Stage 1's MemorySSA frame walk (HANDOFF §8.1). Each validated
+    // pair (L1, L2) reads the same never-clobbered location, so
+    // their (already-free) boundary variables are equal. Asserted
+    // CONTEXT-SIDE, before the guards: covered by the vacuity audit,
+    // attributed in unsat cores via the FRAME: label. Reads only
+    // job-private state -- no analyses, no FactGate.
+    if (Cfg.FrameMode) {
+        for (size_t k = 0; k < Job.FramePairs.size(); ++k) {
+            Value *L1 = Job.FramePairs[k].first;
+            Value *L2 = Job.FramePairs[k].second;
+            unsigned W = L1->getType()->getIntegerBitWidth();
+            z3::expr Fact =
+                Encoder.valueAsBV(L1, W) == Encoder.valueAsBV(L2, W);
+            std::string Lbl = "FRAME:" + std::to_string(k);
+            Encoder.assertRawFact(
+                Fact, Cfg.VacuityCheck ? Lbl : std::string());
+            Log << "    -> Fact[" << Lbl
+                << "] cross-BB load pair unified (frame held)\n";
+        }
+    }
+    // Item 1 session 2 smoke (HANDOFF §10.48): on the context alone
+    // (facts, no guards/trap yet), instantiate the primed body copy of
+    // the trap's loop, link state t to the copy's latch values, and
+    // report well-formedness + satisfiability. No verdict.
+    // PHASE 3: ASSERT CONTEXT + TRAP CONDITION
+    for (unsigned i = 0; i < Job.Guards.size(); ++i) {
+        if (Cfg.VacuityCheck)
+            Encoder.assertConditionTracked(Job.Guards[i].first,
+                                           Job.Guards[i].second,
+                                           "G" + std::to_string(i));
+        else
+            Encoder.assertCondition(Job.Guards[i].first,
+                                    Job.Guards[i].second);
+    }
+}
+
+// Parallel `ind` lane (Lane 1 = BASE, Lane 2 = STEP): context | guards,
+// then one obligation per loop level, innermost first. Writes only its own
+// solver, its log buffer and Sh; never the TrapJob.
+void TrapSolver::laneRun(IndShared &Sh) {
+    try {
+        assertContext();
+        Loop *L = FC.LI->getLoopFor(Job.PredBB);
+        for (unsigned D = 0; L && D < Sh.Levels && !Sh.Stop; L = L->getParentLoop(), ++D) {
+            BasicBlock *Latch, *Entry;
+            if (!indEdges(L, Latch, Entry)) continue;
+            if (Lane == 2) {
+                std::lock_guard<std::mutex> G(Sh.M);
+                if (Sh.BaseSt[D] == 2) { Sh.StepSt[D] = 2; continue; }   // BASE failed: STEP moot
+            }
+            size_t Off = LogBuf->size();
+            std::string R = Lane == 1 ? indBase(L, D, Entry) : indStep(L, D, Latch);
+            bool U = R.find("UNSAT") != std::string::npos;
+            std::lock_guard<std::mutex> G(Sh.M);
+            (Lane == 1 ? Sh.BaseLog : Sh.StepLog)[D] = LogBuf->substr(Off);
+            (Lane == 1 ? Sh.BaseSt : Sh.StepSt)[D] = U ? 1 : 2;
+            // No interrupt for a failed BASE: the STEP lane may already be on
+            // another level, and that query must run to its own verdict.
+            if (Sh.BaseSt[D] == 1 && Sh.StepSt[D] == 1 && !Sh.Proved) {
+                Sh.Proved = true; Sh.Stop = true; Sh.interruptAll(Lane);
+            }
+        }
+    } catch (...) {
+        // A lane failure only loses the induction proof; the direct verdict stands.
+    }
+    Encoder.resetPrimed();
+}
+
 void TrapSolver::solvePhase() {
     odessy::ProfScope PS(&odessy::JobProfile::SolveMs);
     auto PSA0 = std::chrono::steady_clock::now();
     try {
-        // PHASE 2.75 (FRAME only): cross-BB load unification facts from
-        // Stage 1's MemorySSA frame walk (HANDOFF §8.1). Each validated
-        // pair (L1, L2) reads the same never-clobbered location, so
-        // their (already-free) boundary variables are equal. Asserted
-        // CONTEXT-SIDE, before the guards: covered by the vacuity audit,
-        // attributed in unsat cores via the FRAME: label. Reads only
-        // job-private state -- no analyses, no FactGate.
-        if (Cfg.FrameMode) {
-            for (size_t k = 0; k < Job.FramePairs.size(); ++k) {
-                Value *L1 = Job.FramePairs[k].first;
-                Value *L2 = Job.FramePairs[k].second;
-                unsigned W = L1->getType()->getIntegerBitWidth();
-                z3::expr Fact =
-                    Encoder.valueAsBV(L1, W) == Encoder.valueAsBV(L2, W);
-                std::string Lbl = "FRAME:" + std::to_string(k);
-                Encoder.assertRawFact(
-                    Fact, Cfg.VacuityCheck ? Lbl : std::string());
-                Log << "    -> Fact[" << Lbl
-                    << "] cross-BB load pair unified (frame held)\n";
-            }
-        }
-        // Item 1 session 2 smoke (HANDOFF §10.48): on the context alone
-        // (facts, no guards/trap yet), instantiate the primed body copy of
-        // the trap's loop, link state t to the copy's latch values, and
-        // report well-formedness + satisfiability. No verdict.
-        // PHASE 3: ASSERT CONTEXT + TRAP CONDITION
-        for (unsigned i = 0; i < Job.Guards.size(); ++i) {
-            if (Cfg.VacuityCheck)
-                Encoder.assertConditionTracked(Job.Guards[i].first,
-                                               Job.Guards[i].second,
-                                               "G" + std::to_string(i));
-            else
-                Encoder.assertCondition(Job.Guards[i].first,
-                                        Job.Guards[i].second);
-        }
+        assertContext();
         Encoder.push();                                // context | trap boundary
 
         if (Cfg.VacuityCheck)
@@ -371,7 +433,30 @@ void TrapSolver::solvePhase() {
             Encoder.assertCondition(Job.TrapCond, Job.TrapOnTrue);
 
         if (odessy::CurProf) odessy::CurProf->AssertMs += odessy::profMsSince(PSA0);
-        auto [ResultString, QueryLatency] = Encoder.checkSatisfiability();
+        // Parallel `ind` (HANDOFF §13.8 item 2): the lanes start now and
+        // race the direct query. The joiner interrupts and joins them on
+        // every exit path (a joinable std::thread must never be destroyed).
+        std::unique_ptr<IndShared> Sh;
+        std::thread TB, TS;
+        struct Joiner { IndShared *Sh; std::thread &A, &B;
+            ~Joiner() { if (Sh) { Sh->Stop = true; Sh->interruptAll(0); } if (A.joinable()) A.join(); if (B.joinable()) B.join(); } };
+        bool Par = LaneB && LaneS && !NarrowMode;
+        if (Par) {
+            Sh = std::make_unique<IndShared>();
+            for (Loop *L = FC.LI->getLoopFor(Job.PredBB); L; L = L->getParentLoop()) ++Sh->Levels;
+            Sh->Refused.assign(Sh->Levels, false);
+            Sh->BaseSt.assign(Sh->Levels, 0); Sh->StepSt.assign(Sh->Levels, 0);
+            Sh->BaseLog.assign(Sh->Levels, ""); Sh->StepLog.assign(Sh->Levels, "");
+            Sh->Ctx[0] = &Encoder.context(); Sh->Ctx[1] = &LaneB->Encoder.context(); Sh->Ctx[2] = &LaneS->Encoder.context();
+            IndShared *P = Sh.get();
+            TB = std::thread([this, P] { LaneB->laneRun(*P); });
+            TS = std::thread([this, P] { LaneS->laneRun(*P); });
+        }
+        Joiner JoinLanes{nullptr, TB, TS};
+        if (Par) JoinLanes.Sh = Sh.get();
+        auto [ResultString, QueryLatency] = (Par && Sh->Proved)
+            ? std::pair<std::string, double>("UNKNOWN (not run: ind proved first)", 0.0)
+            : Encoder.checkSatisfiability();
         Job.Queried = true;
         Job.LatencyMs = QueryLatency;
         if (odessy::CurProf) odessy::CurProf->DirectMs += QueryLatency;
@@ -383,7 +468,33 @@ void TrapSolver::solvePhase() {
         // Item 1 (HANDOFF §10.49): two-obligation inductive query when the
         // direct query did not close. Exact encoding only. Logged before
         // the verdict line so per-trap counts see one verdict.
-        if (Cfg.Inductive && !IsUnsat && !NarrowMode && indPhase()) {
+        if (Par) {
+            if (IsUnsat) { Sh->Stop = true; Sh->interruptAll(0); }
+            {
+                odessy::ProfScope PSI(&odessy::JobProfile::IndMs);
+                if (TB.joinable()) TB.join();
+                if (TS.joinable()) TS.join();
+            }
+            Job.LatencyMs += LaneB->LaneLat + LaneS->LaneLat;
+            if (odessy::CurProf) odessy::CurProf->Decided = IsUnsat ? 'D' : Sh->Proved ? 'I' : '-';
+            if (!IsUnsat) {
+                // The sequential path's log: per level, BASE; STEP only
+                // after an UNSAT BASE; stop at the first proved level.
+                for (unsigned D = 0; D < Sh->Levels; ++D) {
+                    Loop *L = FC.LI->getLoopFor(Job.PredBB);
+                    for (unsigned k = 0; k < D; ++k) L = L->getParentLoop();
+                    BasicBlock *Latch, *Entry;
+                    if (!indEdges(L, Latch, Entry)) { Log << "    -> [ind L" << D << "] refused: loop needs a unique latch and a unique entry edge\n"; continue; }
+                    Log << Sh->BaseLog[D];
+                    if (Sh->BaseSt[D] == 1) Log << Sh->StepLog[D];
+                    if (Sh->BaseSt[D] == 1 && Sh->StepSt[D] == 1) break;
+                }
+                if (Sh->Proved) {
+                    Log << "    -> [ind] UNSAT by 1-induction (BASE + STEP)\n";
+                    IsUnsat = true; ResultString = "UNSAT (Dead Code / Impossible Path) [ind]";
+                }
+            }
+        } else if (Cfg.Inductive && !IsUnsat && !NarrowMode && indPhase()) {
             IsUnsat = true; ResultString = "UNSAT (Dead Code / Impossible Path) [ind]";
         }
         Log << "    -> " << ResultString << "\n";
