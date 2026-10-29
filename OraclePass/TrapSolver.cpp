@@ -372,6 +372,9 @@ void TrapSolver::solvePhase() {
         Job.Queried = true;
         Job.LatencyMs = QueryLatency;
         if (odessy::CurProf) odessy::CurProf->DirectMs += QueryLatency;
+        if (!NarrowMode)
+            Job.Prof.Verdict = ResultString.find("UNSAT") != std::string::npos ? 'U'
+                             : ResultString.find("SAT") != std::string::npos ? 'S' : '?';
         profileQuery("main", ResultString, QueryLatency);
         bool IsUnsat = (ResultString.find("UNSAT") != std::string::npos);
         // Item 1 (HANDOFF §10.49): two-obligation inductive query when the
@@ -974,6 +977,8 @@ void TrapSolver::mvPhase() {
         CheckResult CR = check(Use, true);
         Lat += CR.Ms; Job.LatencyMs += CR.Ms;
         profileQuery(Round == 0 ? "mv0" : "mv1", CR.Unsat ? "UNSAT" : (CR.Unknown ? "UNKNOWN" : "SAT"), CR.Ms);
+        if (!NarrowMode) Job.Prof.MvVerdict = CR.Unsat ? 'U' : CR.Unknown ? '?' : 'S';
+        if (!NarrowMode) Job.MVUnknown = CR.Unknown;
         if (CR.Unsat) {
             Keep = CR.Core;
             if (Keep.empty()) { Log << "    -> [mv] UNSAT but no hypothesis in core: refusing\n"; return; }

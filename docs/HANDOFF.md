@@ -3730,6 +3730,27 @@ solvePhase, mvPhase, indPhase, and Stage 2b; sum them for zlib trees.c and
 deflate.c and for CryptoSwift. Decide L1 cache vs snapshot vs query-level
 scheduling by where the time actually goes.
 
+RESULTS (Oct 28 2026, Mac M-series; results/profile_stages/mac_1028,
+mac_1028_narrow; knob profile-stages, tools/profile_summary.py):
+* LLVM analysis calls <= 3.3% of job time although 90-99% are repeats;
+  FactGate wait <= 5.4%. => no memo table; snapshot is low priority.
+* Thorough, t4: trees 264 s = Stage 1 15 + Stage 2 52 + Stage 2b 197;
+  CryptoSwift 62 s, longest jobs 20 s = direct 10 s timeout + ind 10 s
+  timeout; zstd 44 s = ONE job, 42 s of it mvPhase; SHA-256 3.6 s, longest
+  job 2.3 s ind + 1.1 s mv.
+* Fast: 30-74% of job time is unattributed ("other"; likely Z3 context /
+  term setup per job). Needs one more timer.
+* Stage 2b (narrow retry): trees retried 169 jobs (two full passes each,
+  198 s, 85% the narrow direct query), 0 guards. Every trees retry followed
+  an exact mv verification that was SAT (85) or never reached (84); every
+  Julia matmul retry followed an UNKNOWN one and all 3 won. A SAT exact
+  verification is exact, so narrowing cannot win there.
+  FIX (done): retry only when the exact mv verification was UNKNOWN
+  (TrapJob::MVUnknown). trees 264 s -> 62 s (4.3x), matmul still 3/3,
+  CryptoSwift/zstd unchanged, tests 30/12.
+* Remaining serial Stage 2b: matmul 3 retries x 21 s, serial => run the
+  retry as a second step of the same job inside the pool.
+
 ### 13.7 Remaining todo for the arXiv version
 * Paper: full rewrite pass; make the combiner ladder (separate passes,
   combined fixpoint [Lerner et al.], logical product, decision procedure)
@@ -3746,8 +3767,10 @@ scheduling by where the time actually goes.
   tarballs); no profile uses it yet; boot test pending.
 
 ### 13.8 Implementation order (agreed)
-1. Profiling timers (§13.6).
-2. Query-level scheduler + Stage-1 fact snapshot (§13.2).
+1. Profiling timers (§13.6). DONE; narrow trigger fixed.
+2. Query-level scheduler (§13.2): narrow retry into the pool; ind alongside
+   the direct query; BASE/STEP in parallel; mv templates in parallel.
+   Stage-1 fact snapshot only if the gate wait grows.
 3. Model-guided guard-synthesis pruning (§13.4).
 4. Per-function verdict cache + commit-replay experiment (§13.5).
 5. poison-loads sensitivity numbers; optional §12.5 induction.

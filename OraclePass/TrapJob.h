@@ -84,6 +84,7 @@ struct TrapJob {
     std::vector<MVConjunct> MVHyp;       // minimal H_T (unsat-core conjuncts)
     bool MVEliminate = false;            // UNSAT under MVHyp (H satisfiable)
     llvm::Loop *MVLoop = nullptr;        // the loop the hypothesis is invariant in
+    bool MVUnknown = false;              // exact mv verification UNKNOWN: the narrow retry's trigger
 
     // --- filled by Stage 2 (TrapSolver, one worker) ---
     bool Eliminate = false;              // UNSAT (and vacuity-clean, if audited)

@@ -363,13 +363,15 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
 
         // =============================================================
         // STAGE 2b: NARROW-MUL RETRY (serial, main thread; F1 step 2,
-        // HANDOFF §10.37). For mv candidates still SAT/UNKNOWN whose slice
-        // has a 64-bit mul, re-solve on the narrow encoding; mvPhase adds
-        // the side-condition certificate. Main thread: SE/LVI need no gate.
+        // HANDOFF §10.37). For mv candidates whose exact verification was
+        // UNKNOWN (a SAT there is exact, so narrowing cannot turn it UNSAT;
+        // HANDOFF §13.6) and whose slice has a 64-bit mul, re-solve on the
+        // narrow encoding; mvPhase adds the side-condition certificate.
+        // Main thread: SE/LVI need no gate.
         // =============================================================
         if (MultiVersion && NarrowMul) {
             for (odessy::TrapJob &J : Jobs) {
-                if (!J.SliceOK || J.Eliminate || J.MVEliminate) continue;
+                if (!J.SliceOK || J.Eliminate || J.MVEliminate || !J.MVUnknown) continue;
                 bool HasMul = false;
                 for (Value *V : J.Visited)
                     if (auto *BO = dyn_cast<BinaryOperator>(V))
@@ -382,11 +384,25 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
                 auto PSN0 = std::chrono::steady_clock::now();
                 struct PSNAdd { odessy::TrapJob &J; std::chrono::steady_clock::time_point T;
                     ~PSNAdd() { if (odessy::ProfStagesEnabled) J.Prof.NarrowMs += odessy::profMsSince(T); } } PSNA{J, PSN0};
+                // Per-pass breakdown in its own record, emitted as a
+                // [profile-stages] narrow line (not added to the job's).
+                auto NarrowPass = [&](unsigned Mode) {
+                    odessy::JobProfile NP;
+                    auto T0 = std::chrono::steady_clock::now();
+                    if (odessy::ProfStagesEnabled) odessy::CurProf = &NP;
+                    { odessy::TrapSolver S(Cfg, FC, J, Mode); if (S.encodePhase() && S.factPhase()) S.solvePhase(); }
+                    odessy::CurProf = nullptr;
+                    if (odessy::ProfStagesEnabled)
+                        errs() << "[profile-stages] narrow," << J.Index << "," << J.Prof.Verdict << J.Prof.MvVerdict << "," << Mode
+                               << "," << J.MVEliminate << "," << NP.EncodeMs << "," << NP.FactMs << ","
+                               << NP.DirectMs << "," << NP.MvMs << "," << NP.Queries << ","
+                               << odessy::profMsSince(T0) << "\n";
+                };
                 OS << "    -> [narrow] retry: whole-query 64->32 with overflow flags\n";
-                { odessy::TrapSolver S(Cfg, FC, J, /*Narrow=*/1); if (S.encodePhase() && S.factPhase()) S.solvePhase(); }
+                NarrowPass(1);
                 if (!J.MVEliminate) {
                     OS << "    -> [narrow] retry: mul-only " << NarrowBits << "-bit-operand encoding\n";
-                    odessy::TrapSolver S(Cfg, FC, J, /*Narrow=*/2); if (S.encodePhase() && S.factPhase()) S.solvePhase();
+                    NarrowPass(2);
                 }
             }
         }

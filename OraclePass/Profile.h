@@ -29,6 +29,8 @@ struct JobProfile {
     double DirectMs = 0, IndMs = 0, MvMs = 0, NarrowMs = 0;
     unsigned Queries = 0;                      // every solver check() of the job
     double QueryMs = 0;
+    char Verdict = '-';                        // exact direct query: U(nsat) S(at) ?(unknown)
+    char MvVerdict = '-';                      // exact mv verification, last round ('-': not reached)
 };
 
 inline thread_local JobProfile *CurProf = nullptr;
