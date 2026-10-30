@@ -1748,3 +1748,59 @@ sha256 1.105/1.093, adler32 1.034/1.137, utf8 1.025/0.969, md5 0.983/0.815,
 sha1 0.954/0.976, lz77 0.830/0.831, CryptoSwift 0.930/1.069.
 Rust lz77 1.030×, Rust matmul 1.382× (ceiling 1.478×). zlib prod: null.
 lz4 prod: no data.
+
+### 11.26 Compile-latency work and verdict cache (Mac, Oct 28-30 2026; PRELIMINARY, rerun on the server)
+Machine: Apple M-series, 4 performance cores; Thorough =
+heavy;frame;ind;mv;narrow;timeout=10000; threads=4 unless noted. Speedups
+are x ratios. Sources: HANDOFF §13.5-13.6, results/profile_stages/*,
+results/cache/*.
+* Where time goes (results/profile_stages/mac_1028): LLVM analysis calls
+  <= 3.3% of check time (90-99% repeats); FactGate wait <= 5.4%; Thorough is
+  solver-bound (BASIC query 61-79% on trees/CryptoSwift); Fast mode's
+  unattributed 30-74% is Z3 itself (push 24-53%, context teardown 8-20%,
+  setup 1-12%; mac_1028_other).
+* Narrow retry only after an UNKNOWN exact guard verification: zlib trees
+  264 s -> 62 s (4.3x); output IR byte-identical on the 17 guard-ablation
+  kernels (narrow had 169 retries on trees, 0 guards; matmul 3/3 kept).
+* Narrow retry solves in the thread pool: Julia matmul 76 s -> 33 s (2.3x),
+  IR identical.
+* Parallel BASIC/BASE/STEP (ind-par, off): slower on 4 cores (trees
+  66 -> 95 s, CryptoSwift 58 -> 64 s); faster only on SHA-256 (3.5 -> 2.5 s).
+  CryptoSwift: 146 checks proved by BASIC, 50 by induction.
+* Determinism fix (Z3 symbols for unnamed values were heap addresses; Z3
+  AST ids recycled in pointer-hash order): 22/23 inputs byte-identical over
+  3 runs at t4 + 1 at t1; the remaining difference is one query at 9.6 s of
+  a 10 s budget (CryptoSwift).
+* Model-guided pruning of guard minimization/loosening: lossless (identical
+  IR on 23 inputs), 75 queries skipped, no measurable time saved (zstd's cost
+  is 10 timeouts no counterexample covers).
+* Parallel guard synthesis (mv-par, off): zstd preSplit 43.5 -> 27.0 s
+  (1.6x), but CryptoSwift 60 -> 98 s, deflate 3.9 -> 13.5 s; total over 67
+  inputs 263 -> 326 s; same proofs and guards on all 67.
+* Julia kernels, threads=1 (appendix configuration), current code: sha256
+  7.0 s (appendix: 128 s, server, old code), lz77 21.1 s (20.2 s), matmul
+  95.6 s (95.3 s). The appendix compile table must be rerun.
+* Verdict cache, identical input (results/cache/mac_1030_session2; 67
+  inputs): warm IR == cold IR == no-cache IR on all 67; summed 308 s
+  no-cache, 316 s cold (+3%), 86 s warm. trees 63.6 -> 0.75 s (85x),
+  CryptoSwift 59.9 -> 4.6 s (13x), zstd preSplit 43.8 -> 0.04 s, Julia lz77
+  11.8 -> 0.03 s; Julia matmul/sha256 and Rust matmul not cached (T3
+  symbolic-bound guards are re-solved).
+* Verdict cache, commit replay (results/cache/replay_{zlib,zstd}; last 30
+  source commits, each built with the previous commit's cache; IR identical
+  with and without cache on every module of every commit). Medians over the
+  29 non-seed commits (results/cache/replay_table_mac_1030.md):
+
+| benchmark | cold cache | commit changed it + hot cache | identical + hot cache |
+|---|---|---|---|
+| zlib (whole library) | 91.4 s (1×) | 3.89 s (23×) | 2.63 s (35×) |
+| zlib trees | 62.7 s (1×) | — | 0.66 s (95×) |
+| zlib adler32 | 13.6 s (1×) | — | 0.10 s (139×) |
+| zlib inflate | 5.5 s (1×) | 5.41 s (1.0×) | 0.24 s (23×) |
+| zstd (whole library) | 50.8 s (1×) | 3.61 s (14×) | 2.91 s (17×) |
+| zstd zstd_preSplit | 44.0 s (1×) | — | 0.04 s (977×) |
+| zstd divsufsort | 3.6 s (1×) | 3.22 s (1.1×) | 0.36 s (9.8×) |
+
+  Hit rate after the seed: zlib mean 96.6% (22/29 commits fully cached),
+  zstd mean 99.4% (21/29).
+

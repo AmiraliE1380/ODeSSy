@@ -4011,6 +4011,31 @@ BASIC, 50 by induction).
 | 8 | Paper pass and de-anonymization; Docker artifact (§13.7) | |
 | - | [Amir] inspect soundness of the narrow mechanism (§13.7) | side note |
 
+### 13.9 Server protocol for the compile-latency campaign (written Oct 30 2026)
+Run on ONE recorded c220g2 node; record hostname, kernel, governor; turbo
+off; numactl --cpunodebind=0 --membind=0; nothing else running.
+0. Build the commit under test; bash scripts/run_tests.sh (PASS=30 FAIL=12);
+   python3 tests/cache/run_key_tests.py (26/26).
+1. Parallelism decision (gate, §13.8): at threads=10, default vs ind-par vs
+   mv-par vs both, Thorough, on the six profile modules, the 17 guard-ablation
+   kernels and every zlib/zstd module (adapt the Mac A/B scripts: same inputs
+   as scripts/run_cache_coldwarm.sh). Require identical removed/guarded counts;
+   adopt a tier only if it wins on total time. Record the choice in the
+   campaign commit message.
+2. Main compile-latency tables (run_compile_cost.sh, run_pipeline_cost.sh,
+   run_dial_matrix.sh): cache OFF, i.e. no cache= knob (the cache code then
+   never runs: no keys, no hashing, no files). Use the knobs chosen in step 1.
+   Also rerun the appendix Julia kernels at threads=1.
+3. Determinism: 3 runs of the Thorough campaign inputs; report any output
+   difference with the query latencies near the budget.
+4. Cache experiments, separately: scripts/run_cache_coldwarm.sh (THREADS=10)
+   and scripts/run_cache_replay.sh for REPO=zlib and REPO=zstd (N=30; zstd
+   needs a full clone: git clone https://github.com/facebook/zstd, END
+   5c7b7ba; never touch the frozen benchmark trees), then
+   tools/cache_replay_table.py. Same knobs as step 2 plus cache=<fresh dir>.
+5. Commit results/ with the node name; update PAPER_FACTS (Mac numbers of
+   §11.26 are preliminary and are replaced by these).
+
 ## 14. Mock review (AI reviewer, Oct 28 2026): Weak Reject, borderline after discussion
 Concerns, with our assessment and effort:
 1. Headline speedups not pass output: all Julia rows (lz77 4.01x, GEMM 3.91x)
