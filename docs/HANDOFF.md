@@ -3724,6 +3724,47 @@ Design:
   with the cache from k-1; report cold, warm, hit rate, and Souper with
   its own external cache ON (fair comparison; the paper ran it OFF).
 
+IMPLEMENTATION PLAN (Oct 30 2026; agreed; 3-4 sessions):
+Goal: an unchanged function reuses its earlier decisions (removed checks,
+guards) with no Z3; output byte-identical to a cold compile; never apply a
+decision to code that differs in anything that can change it.
+1. KEY = SHA-256 (llvm::SHA256) over a canonical serialization of
+   * the function: a clone with value/block names stripped (slot
+     numbering), debug info dropped (locations, records, intrinsics,
+     subprogram), every non-debug metadata attachment printed BY CONTENT
+     (DI* nodes elided), attribute groups printed by content;
+   * what it sees outside itself: callee declarations + attributes,
+     referenced globals (type, constness, linkage, attributes; initializer
+     of constant globals), data layout, target triple;
+   * configuration: knob string minus threads/profiling knobs, an encoder
+     version (CMake-generated hash of the OraclePass sources), LLVM and Z3
+     versions.
+   Main correctness risk: a missed dependency. Guarded by mutation tests
+   and the cold-vs-warm identical-IR check.
+2. VALUE = per check (canonical position): removed / guarded (conjuncts:
+   value by canonical position, predicate, constant; hoist loop by header
+   position) / none. Guards with a symbolic (T3/SCEV) bound: v1 marks the
+   function "always re-solve".
+3. STORE: directory, one file per key, atomic write (temp + rename), safe
+   under make -j; file holds canonical text + decisions; on a hit the
+   canonical text is compared (collision-proof); corrupt/unreadable = miss.
+   Knob cache=<dir>, off by default.
+4. PASS: hit -> light discovery (checks and branches only; no MemorySSA
+   walks, no solving) + replay through the existing Stage 3; miss -> full
+   pipeline, then write the entry. Stage 1 is 13 s of trees' 62 s, so a
+   hit must skip as much of it as possible.
+5. TESTS: cold vs warm byte-identical IR on the 17 ablation kernels and all
+   zlib/zstd/CryptoSwift/Julia modules; mutations that must miss (constant,
+   instruction, flag, callee attribute, !range, knob); that should hit
+   (value renaming, debug info, unrelated functions); corrupt file -> miss.
+6. EXPERIMENT: last 50-100 commits of zstd and zlib; build commit k with
+   the cache from k-1; hit rate, warm vs cold compile time.
+Sessions: (1) key + store + collision check + key mutation tests;
+(2) record/replay + light discovery + cold-vs-warm IR check;
+(3) commit replay; (+0.5-1) symbolic guards / missed dependencies.
+Note for the paper: a warm compile replays the cold compile's decision,
+including any decision made near the time budget.
+
 ### 13.6 Profile before implementing (FIRST TASK)
 Add timers around encodePhase, factPhase (including turnstile wait),
 solvePhase, mvPhase, indPhase, and Stage 2b; sum them for zlib trees.c and
