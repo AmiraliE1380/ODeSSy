@@ -244,6 +244,16 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
 
             odessy::FunctionCtx FC;
             FC.F = &F;
+            // Verdict cache (HANDOFF §13.5): key on the unmodified IR, before
+            // any analysis, so a hit can skip LVI / SCEV / MemorySSA.
+            std::string CachePayload;
+            bool CacheOn = odessy::CacheKeysEnabled || !odessy::CacheDir.empty();
+            if (CacheOn && odessy::hasTrapCall(F, TrapCallees)) {
+                FC.CacheCanon = odessy::canonicalForm(F);
+                FC.CacheKey = odessy::sha256Hex(FC.CacheCanon);
+                if (odessy::CacheKeysEnabled) errs() << "[cache-key] " << F.getName() << " " << FC.CacheKey << "\n";
+                FC.CacheHit = odessy::cacheLookup(FC.CacheKey, FC.CacheCanon, CachePayload) && CachePayload != "resolve";
+            }
             FC.DT = &FAM.getResult<DominatorTreeAnalysis>(F);
             FC.LI = &FAM.getResult<LoopAnalysis>(F);
             // CONCURRENCY: DominatorTree::dominates() lazily rebuilds its
@@ -253,7 +263,7 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
             FC.DT->updateDFSNumbers();
             // HEAVY tier only: point-sensitive ranges for boundary facts.
             // Never requested in light tier => light stays byte-identical.
-            if (HeavyMode) {
+            if (HeavyMode && !FC.CacheHit) {
                 FC.LVI = &FAM.getResult<LazyValueAnalysis>(F);
                 FC.SE = &FAM.getResult<ScalarEvolutionAnalysis>(F);
             }
@@ -262,7 +272,7 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
             // serially, before any worker exists -- no FactGate needed
             // regardless of threads= (HANDOFF §8.7 step 2).
             MemorySSA *MSSA = nullptr;
-            if (FrameMode)
+            if (FrameMode && !FC.CacheHit)
                 MSSA = &FAM.getResult<MemorySSAAnalysis>(F).getMSSA();
 
             size_t Before = Jobs.size();
@@ -271,19 +281,21 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
                 FC.JobIndices.push_back(i);
 
             FC.DiscoveryMs = msSince(T0);
-            // Verdict-cache key (HANDOFF §13.5), on the unmodified IR.
-            if ((odessy::CacheKeysEnabled || !odessy::CacheDir.empty()) && FC.JobIndices.size()) {
-                std::string Canon = odessy::canonicalForm(F), Key = odessy::sha256Hex(Canon);
-                if (odessy::CacheKeysEnabled) errs() << "[cache-key] " << F.getName() << " " << Key << "\n";
-                // Session 1 (HANDOFF §13.5): store round trip only; decisions
-                // are recorded and replayed from session 2 on.
-                if (!odessy::CacheDir.empty()) {
-                    std::string Payload;
-                    bool Hit = odessy::cacheLookup(Key, Canon, Payload);
-                    if (!Hit) odessy::cacheStore(Key, Canon, "v1-placeholder");
-                    errs() << "[cache] " << F.getName() << (Hit ? " hit " : " miss ") << Payload << "\n";
+            if (FC.CacheHit && !odessy::replayDecisions(CachePayload, FC, Jobs)) {
+                // Payload does not fit the discovered jobs: solve as usual,
+                // with the analyses the hit skipped.
+                FC.CacheHit = false;
+                Jobs.resize(Before); FC.JobIndices.clear();
+                if (HeavyMode) {
+                    FC.LVI = &FAM.getResult<LazyValueAnalysis>(F);
+                    FC.SE = &FAM.getResult<ScalarEvolutionAnalysis>(F);
                 }
+                MemorySSA *M2 = FrameMode ? &FAM.getResult<MemorySSAAnalysis>(F).getMSSA() : nullptr;
+                odessy::discoverTraps(F, *FC.DT, *FC.LI, Jobs, TrapCallees, M2);
+                for (size_t i = Before; i < Jobs.size(); ++i) FC.JobIndices.push_back(i);
             }
+            if (!FC.CacheKey.empty() && !odessy::CacheDir.empty())
+                errs() << "[cache] " << F.getName() << (FC.CacheHit ? " hit\n" : " miss\n");
             CtxOf[&F] = FCs.size();
             FCs.push_back(std::move(FC));
         }
@@ -341,7 +353,7 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
             auto T0 = std::chrono::steady_clock::now();
             bool GatePassed = false;
             try {
-                if (J.SliceOK) {
+                if (J.SliceOK && !J.Cached) {
                     const odessy::FunctionCtx &FC = FCs[CtxOf.lookup(J.F)];
                     std::optional<odessy::TrapSolver> SO;
                     { odessy::ProfScope PS(&odessy::JobProfile::SetupMs); SO.emplace(Cfg, FC, J); }
@@ -481,6 +493,12 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
 
         odessy::CurProf = nullptr;
         double PSStage2bMs = odessy::profMsSince(PSStage2b);
+        // Verdict cache: record every keyed, solved function's decisions --
+        // exactly the inputs Stage 3 is about to consume (HANDOFF §13.5).
+        if (!odessy::CacheDir.empty())
+            for (odessy::FunctionCtx &FC : FCs)
+                if (!FC.CacheKey.empty() && !FC.CacheHit)
+                    odessy::cacheStore(FC.CacheKey, FC.CacheCanon, odessy::recordDecisions(FC, Jobs));
         auto PSStage3 = std::chrono::steady_clock::now();
         // =============================================================
         // STAGE 3a: THE KILL (serial, discovery order -- the only IR

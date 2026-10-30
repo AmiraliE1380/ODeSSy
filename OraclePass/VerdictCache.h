@@ -13,10 +13,14 @@
 // so a hash collision can never apply another function's decisions.
 // =====================================================================
 #include <string>
+#include <vector>
 
 namespace llvm { class Function; }
 
 namespace odessy {
+
+struct TrapJob;
+struct FunctionCtx;
 
 // oracle-pass<cache=DIR>: the store; empty = cache off.
 inline std::string CacheDir;
@@ -40,5 +44,18 @@ std::string sha256Hex(const std::string &S);
 // (temp file + rename), so concurrent compilers sharing DIR are safe.
 bool cacheLookup(const std::string &Key, const std::string &Canon, std::string &Payload);
 void cacheStore(const std::string &Key, const std::string &Canon, const std::string &Payload);
+
+// The decisions Stage 3 consumes, for FC's jobs, after Stage 2b: per job
+// (discovery order) its trap call, Eliminate, MVEliminate, the guarded
+// loop and the guard conjuncts, all by canonical position (arguments,
+// instructions and blocks in function order). Returns "resolve" when a
+// decision cannot be stored (a symbolic T3 bound): such a function is
+// always solved again.
+std::string recordDecisions(const FunctionCtx &FC, const std::vector<TrapJob> &Jobs);
+
+// Applies a recorded payload to FC's freshly discovered jobs. False (and
+// no job touched) when the payload is "resolve", malformed, or does not
+// match the discovered jobs.
+bool replayDecisions(const std::string &Payload, const FunctionCtx &FC, std::vector<TrapJob> &Jobs);
 
 } // namespace odessy

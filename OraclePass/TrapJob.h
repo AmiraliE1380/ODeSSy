@@ -85,6 +85,7 @@ struct TrapJob {
     bool MVEliminate = false;            // UNSAT under MVHyp (H satisfiable)
     llvm::Loop *MVLoop = nullptr;        // the loop the hypothesis is invariant in
     bool MVUnknown = false;              // exact mv verification UNKNOWN: the narrow retry's trigger
+    bool Cached = false;                 // verdict replayed from the cache: never solved
 
     // --- filled by Stage 2 (TrapSolver, one worker) ---
     bool Eliminate = false;              // UNSAT (and vacuity-clean, if audited)
@@ -108,6 +109,9 @@ struct FunctionCtx {
     llvm::ScalarEvolution *SE = nullptr;  // heavy tier only, else null
     std::vector<std::size_t> JobIndices;  // this function's jobs, discovery order
     double DiscoveryMs = 0.0;             // Stage-1 wall clock for this function
+    // Verdict cache (HANDOFF §13.5): set when the function was keyed.
+    std::string CacheKey, CacheCanon;     // empty: not keyed
+    bool CacheHit = false;                // decisions replayed; nothing to store
 };
 
 } // namespace odessy

@@ -1,5 +1,6 @@
 // VerdictCache.cpp -- see VerdictCache.h (HANDOFF §13.5).
 #include "VerdictCache.h"
+#include "TrapJob.h"
 #include "OdessyVersion.h"   // generated: ODESSY_SOURCE_HASH
 
 #include "llvm/ADT/DenseMap.h"
@@ -18,7 +19,9 @@
 #include "llvm/Support/MemoryBuffer.h"
 #include "llvm/Support/Path.h"
 #include "llvm/Support/raw_ostream.h"
+#include "llvm/Analysis/LoopInfo.h"
 #include "llvm/Transforms/Utils/Cloning.h"
+#include <sstream>
 #include <functional>
 #include <regex>
 #include <z3.h>
@@ -253,6 +256,96 @@ void cacheStore(const std::string &Key, const std::string &Canon, const std::str
         if (OS.has_error()) { OS.clear_error(); sys::fs::remove(Tmp); return; }
     }
     if (sys::fs::rename(Tmp, P)) sys::fs::remove(Tmp);
+}
+
+namespace {
+// Canonical positions: arguments, then instructions, then blocks, in
+// function order (identical canonical forms => identical positions).
+struct Positions {
+    DenseMap<const Value *, std::string> Of;
+    std::vector<Value *> Arg, Inst;
+    std::vector<BasicBlock *> Block;
+    explicit Positions(Function &F) {
+        for (Argument &A : F.args()) { Of[&A] = "a" + std::to_string(Arg.size()); Arg.push_back(&A); }
+        for (BasicBlock &BB : F) {
+            Of[&BB] = "b" + std::to_string(Block.size()); Block.push_back(&BB);
+            for (Instruction &I : BB) { Of[&I] = "i" + std::to_string(Inst.size()); Inst.push_back(&I); }
+        }
+    }
+    Value *at(const std::string &P) const {
+        if (P.size() < 2) return nullptr;
+        size_t N = std::stoul(P.substr(1));
+        if (P[0] == 'a') return N < Arg.size() ? Arg[N] : nullptr;
+        if (P[0] == 'i') return N < Inst.size() ? Inst[N] : nullptr;
+        if (P[0] == 'b') return N < Block.size() ? Block[N] : nullptr;
+        return nullptr;
+    }
+};
+} // namespace
+
+std::string recordDecisions(const FunctionCtx &FC, const std::vector<TrapJob> &Jobs) {
+    Positions P(*FC.F);
+    std::ostringstream OS;
+    OS << "v1 " << FC.JobIndices.size() << "\n";
+    for (size_t ji : FC.JobIndices) {
+        const TrapJob &J = Jobs[ji];
+        auto TC = P.Of.find(J.TrapCall), BR = P.Of.find(J.Br);
+        if (TC == P.Of.end() || BR == P.Of.end()) return "resolve";
+        std::string Loop = "-";
+        if (J.MVLoop) {
+            auto H = P.Of.find(J.MVLoop->getHeader());
+            if (H == P.Of.end()) return "resolve";
+            Loop = H->second;
+        }
+        OS << "J " << TC->second << ' ' << BR->second << ' ' << J.Eliminate << ' ' << J.MVEliminate << ' '
+           << Loop << ' ' << J.MVHyp.size() << "\n";
+        for (const TrapJob::MVConjunct &C : J.MVHyp) {
+            if (C.Bound) return "resolve";                 // symbolic T3 bound: not stored (v1)
+            auto V = P.Of.find(C.V);
+            if (V == P.Of.end() || C.ConstStr.empty() || C.ConstStr.find(' ') != std::string::npos) return "resolve";
+            OS << "C " << V->second << ' ' << C.Pred << ' ' << C.ConstStr << "\n";
+        }
+    }
+    return OS.str();
+}
+
+bool replayDecisions(const std::string &Payload, const FunctionCtx &FC, std::vector<TrapJob> &Jobs) {
+    if (Payload.rfind("v1 ", 0) != 0) return false;
+    Positions P(*FC.F);
+    std::istringstream IS(Payload);
+    std::string Tag; size_t N = 0;
+    IS >> Tag >> N;
+    if (!IS || N != FC.JobIndices.size()) return false;
+    struct Dec { bool E, MV; Loop *L; std::vector<TrapJob::MVConjunct> H; };
+    std::vector<Dec> Ds;
+    for (size_t k = 0; k < N; ++k) {
+        const TrapJob &J = Jobs[FC.JobIndices[k]];
+        std::string Tc, Br, Lp; int E = 0, MV = 0; size_t NC = 0;
+        IS >> Tag >> Tc >> Br >> E >> MV >> Lp >> NC;
+        if (!IS || Tag != "J" || P.at(Tc) != J.TrapCall || P.at(Br) != J.Br) return false;
+        Dec D{E != 0, MV != 0, nullptr, {}};
+        if (Lp != "-") {
+            auto *H = dyn_cast_or_null<BasicBlock>(P.at(Lp));
+            if (!H || !FC.LI) return false;
+            D.L = FC.LI->getLoopFor(H);
+            if (!D.L || D.L->getHeader() != H) return false;
+        }
+        for (size_t c = 0; c < NC; ++c) {
+            std::string V, K; unsigned Pred = 0;
+            IS >> Tag >> V >> Pred >> K;
+            if (!IS || Tag != "C" || !P.at(V) || !P.at(V)->getType()->isIntegerTy()) return false;
+            TrapJob::MVConjunct C;
+            C.V = P.at(V); C.Pred = Pred; C.ConstStr = K; C.Text = "(cached)";
+            D.H.push_back(C);
+        }
+        Ds.push_back(std::move(D));
+    }
+    for (size_t k = 0; k < N; ++k) {
+        TrapJob &J = Jobs[FC.JobIndices[k]];
+        J.Cached = true; J.Eliminate = Ds[k].E; J.MVEliminate = Ds[k].MV; J.MVLoop = Ds[k].L; J.MVHyp = Ds[k].H;
+        J.LogText += "    -> [cache] verdict replayed\n";
+    }
+    return true;
 }
 
 } // namespace odessy

@@ -48,6 +48,10 @@ class LoopInfo;
 class MemorySSA;
 } // namespace llvm
 namespace odessy {
+// True iff F contains a call discoverTraps would treat as a check (the
+// verdict cache keys only such functions).
+bool hasTrapCall(llvm::Function &F, const std::vector<std::string> &TrapCallees);
+
 void discoverTraps(llvm::Function &F, llvm::DominatorTree &DT,
                    llvm::LoopInfo &LI, std::vector<TrapJob> &Jobs,
                    const std::vector<std::string> &TrapCallees,

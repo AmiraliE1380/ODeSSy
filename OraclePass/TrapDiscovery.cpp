@@ -320,6 +320,14 @@ static bool isTrapCall(CallInst *CI,
     }
     return false;
 }
+bool hasTrapCall(Function &F, const std::vector<std::string> &TrapCallees) {
+    for (BasicBlock &BB : F)
+        for (Instruction &I : BB)
+            if (auto *CI = dyn_cast<CallInst>(&I))
+                if (isTrapCall(CI, TrapCallees)) return true;
+    return false;
+}
+
 void discoverTraps(Function &F, DominatorTree &DT, LoopInfo &LI,
                    std::vector<TrapJob> &Jobs,
                    const std::vector<std::string> &TrapCallees,

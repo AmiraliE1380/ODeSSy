@@ -3779,6 +3779,24 @@ PROGRESS:
   Store: hit/miss, simulated collision -> miss, corrupt -> miss, 8
   concurrent compilers on one cold dir -> valid entries, no temp files.
   Key cost: CryptoSwift +2.2 s (30.8 -> 33.0 s, light tier, threads=4).
+* Session 2 DONE (Oct 30): record/replay. Stage 1 keys each function with
+  a check BEFORE any analysis (hasTrapCall); a hit skips LVI, SCEV and
+  MemorySSA, runs plain discovery, and replayDecisions sets Eliminate,
+  MVEliminate, MVLoop (by header position) and MVHyp (value by position,
+  predicate, constant) on the discovered jobs (trap call and branch
+  positions must match, else fall back to a full solve); cached jobs skip
+  Stage 2 and 2b. On a miss, recordDecisions runs after Stage 2b (exactly
+  Stage 3's inputs); T3 symbolic-bound guards -> "resolve" (always
+  re-solved). Check (results/cache/mac_1030_session2/cold_warm.txt; 67
+  inputs, Thorough t4): warm IR == cold IR == no-cache IR on all 67.
+  Summed 308 s no-cache, 316 s cold, 86 s warm. Warm: trees 63.6 -> 0.75 s,
+  CryptoSwift 59.9 -> 4.6 s, zstd preSplit 43.8 -> 0.04 s, adler32 12.5 ->
+  0.11 s, Julia lz77 11.8 -> 0.03 s, inflate 9.3 -> 0.25 s, deflate 3.8 ->
+  0.48 s. No benefit where the expensive function is a "resolve" entry:
+  Julia matmul (33 s) and sha256 (3.4 s), Rust matmul. Cold overhead
+  (keys + store): ~+3% summed.
+  NEXT: session 3 (commit replay); optional: store T3 guards (would make
+  matmul/sha256 hit).
 
 ### 13.6 Profile before implementing (FIRST TASK)
 Add timers around encodePhase, factPhase (including turnstile wait),
