@@ -1,3 +1,4 @@
+#include <map>
 #include <thread>
 #include "Profile.h"
 #include "TrapSolver.h"
@@ -1163,6 +1164,61 @@ void TrapSolver::mvPhase() {
         }
         Log << "    -> [narrow] side condition certified for " << Encoder.narrowSideConds().size() << " multiplication(s)\n";
     }
+    // mv-par tier (HANDOFF §13.8 item 3): minimize / loosen queries run
+    // concurrently, each in its own z3::context holding a translated copy of
+    // this solver (context | guards | trap) plus its candidate set -- no
+    // re-encoding, no analysis access. Translation happens here on the
+    // job's thread (the source context is not thread-safe); only checks run
+    // on helper threads. Answers are consumed in the sequential order and
+    // re-asked whenever the guard set they assumed has changed, so the
+    // decisions follow the sequential rules exactly.
+    bool ParMv = odessy::MvParEnabled && !NarrowMode && !Whole && !Encoder.hasTracked();
+    auto parCheck = [&](const std::vector<std::vector<size_t>> &Trys) {
+        std::vector<CheckResult> Out(Trys.size());
+        struct Helper { std::unique_ptr<z3::context> C; std::unique_ptr<z3::solver> S; };
+        std::vector<Helper> H(Trys.size());
+        for (size_t k = 0; k < Trys.size(); ++k) {
+            H[k].C = std::make_unique<z3::context>();
+            H[k].S = std::make_unique<z3::solver>(*H[k].C, Encoder.solverRef(), z3::solver::translate());
+            H[k].S->set("timeout", (unsigned)Encoder.timeoutMs());
+            for (size_t i : Trys[k]) {
+                z3::expr E = mkExpr(Cands[i]);
+                H[k].S->add(z3::expr(*H[k].C, Z3_translate(Encoder.context(), E, *H[k].C)));
+            }
+        }
+        unsigned W = std::max(1u, odessy::MvParWidth);
+        for (size_t B = 0; B < Trys.size(); B += W) {
+            std::vector<std::thread> T;
+            for (size_t k = B; k < std::min(Trys.size(), B + W); ++k)
+                T.emplace_back([&, k] {
+                    auto T0 = std::chrono::steady_clock::now();
+                    z3::check_result R = z3::unknown;
+                    try { R = H[k].S->check(); } catch (...) { R = z3::unknown; }
+                    Out[k].Ms = odessy::profMsSince(T0);
+                    Out[k].Unsat = (R == z3::unsat); Out[k].Unknown = (R == z3::unknown);
+                });
+            for (std::thread &Th : T) Th.join();
+        }
+        for (Helper &X : H) X.S.reset();   // solver before its context
+        return Out;
+    };
+    // Answers by exact candidate set: a speculative answer is reused only
+    // for the identical question.
+    std::map<std::vector<size_t>, CheckResult> ParMemo;
+    auto looserOf = [&](const std::vector<size_t> &K, size_t idx) {
+        std::vector<size_t> Lo; size_t Cur = K[idx];
+        if (Cands[Cur].Bound || (Cands[Cur].P != ICmpInst::ICMP_SLE && Cands[Cur].P != ICmpInst::ICMP_ULE)) return Lo;
+        for (size_t j = 0; j < Cands.size(); ++j)
+            if (j != Cur && !Cands[j].Bound && Cands[j].V == Cands[Cur].V && Cands[j].P == Cands[Cur].P && Cands[j].C.ugt(Cands[Cur].C))
+                Lo.push_back(j);
+        return Lo;
+    };
+    auto logMin = [&](size_t Drop, const CheckResult &CR) {
+        Job.LatencyMs += CR.Ms;
+        odessy::profMv(1, CR.Unsat, CR.Unknown, CR.Ms);
+        Log << "    -> [mv] minimize: without {" << Cands[Drop].Text << "} -> "
+            << (CR.Unsat ? "UNSAT, dropped" : (CR.Unknown ? "UNKNOWN, kept" : "SAT, kept")) << " (" << CR.Ms << " ms)\n";
+    };
     // Greedy core minimization: Z3 cores are not minimal, and a spurious
     // conjunct (typically an UPPER bound on a length) needlessly shrinks the
     // fast path's domain. Upper bounds first, tightest first.
@@ -1179,7 +1235,51 @@ void TrapSolver::mvPhase() {
             }
             return false;
         });
+        // Parallel: ask every remaining drop against a snapshot of Keep, then
+        // walk them in order. A SAT answer stays valid after earlier drops
+        // shrank Keep (fewer guards admit at least the same failures); an
+        // UNSAT or UNKNOWN answer for a stale snapshot is re-asked.
+        for (size_t Pos = 0; ParMv && Pos < Order.size();) {
+            if (Keep.size() <= 1) break;
+            std::vector<size_t> Snap = Keep;
+            std::vector<int> Res(Order.size() - Pos, -1);           // -1 asked, 3 covered
+            std::vector<std::vector<size_t>> Trys; std::vector<size_t> Which;
+            for (size_t q = Pos; q < Order.size(); ++q) {
+                std::vector<size_t> Try; for (size_t i : Snap) if (i != Order[q]) Try.push_back(i);
+                if (covered(Try)) Res[q - Pos] = 3;
+                else { Trys.push_back(Try); Which.push_back(q - Pos); }
+            }
+            // Speculation: loosening's questions for this snapshot, asked
+            // alongside (used only if minimization leaves Keep == Snap).
+            size_t NMin = Trys.size();
+            for (size_t idx = 0; idx < Snap.size(); ++idx)
+                for (size_t j : looserOf(Snap, idx)) {
+                    std::vector<size_t> Try(Snap); Try[idx] = j;
+                    if (!covered(Try)) Trys.push_back(Try);
+                }
+            std::vector<CheckResult> R = parCheck(Trys);
+            for (size_t k = NMin; k < Trys.size(); ++k) ParMemo[Trys[k]] = R[k];
+            std::vector<CheckResult> ByPos(Order.size() - Pos);
+            for (size_t k = 0; k < Which.size(); ++k) ByPos[Which[k]] = R[k];
+            size_t Next = Order.size();
+            for (size_t q = Pos; q < Order.size(); ++q) {
+                if (Keep.size() <= 1) break;
+                size_t Drop = Order[q];
+                const CheckResult &CR = ByPos[q - Pos];
+                bool Covered = Res[q - Pos] == 3, Sat = Covered || (!CR.Unsat && !CR.Unknown);
+                if (Keep != Snap && !Sat) { Next = q; break; }     // stale UNSAT/UNKNOWN: re-ask
+                if (Covered) {
+                    if (odessy::CurProf) ++odessy::CurProf->MvSkipped[1];
+                    Log << "    -> [mv] minimize: without {" << Cands[Drop].Text << "} -> SAT by a stored counterexample, kept (skipped)\n";
+                    continue;
+                }
+                logMin(Drop, CR);
+                if (CR.Unsat) { std::vector<size_t> T2; for (size_t i : Keep) if (i != Drop) T2.push_back(i); Keep = T2; }
+            }
+            Pos = Next;
+        }
         for (size_t Drop : Order) {
+            if (ParMv) break;
             if (Keep.size() <= 1) break;
             std::vector<size_t> Try; for (size_t i : Keep) if (i != Drop) Try.push_back(i);
             if (covered(Try)) {
@@ -1188,10 +1288,7 @@ void TrapSolver::mvPhase() {
                 continue;
             }
             CheckResult CR = check(Try, false);
-            Job.LatencyMs += CR.Ms;
-            odessy::profMv(1, CR.Unsat, CR.Unknown, CR.Ms);
-            Log << "    -> [mv] minimize: without {" << Cands[Drop].Text << "} -> "
-                << (CR.Unsat ? "UNSAT, dropped" : (CR.Unknown ? "UNKNOWN, kept" : "SAT, kept")) << " (" << CR.Ms << " ms)\n";
+            logMin(Drop, CR);
             if (CR.Unsat) Keep = Try;
         }
     }
@@ -1207,14 +1304,32 @@ void TrapSolver::mvPhase() {
             if (j != Cur && !Cands[j].Bound && Cands[j].V == Cands[Cur].V && Cands[j].P == Cands[Cur].P && Cands[j].C.ugt(Cands[Cur].C))
                 Looser.push_back(j);
         std::sort(Looser.begin(), Looser.end(), [&](size_t a, size_t b) { return Cands[a].C.ult(Cands[b].C); });
-        for (size_t j : Looser) {
+        // Parallel: the sequential chain's k-th query is Keep with idx
+        // replaced by Looser[k] -- independent of the earlier answers -- so
+        // all are asked at once and the chain is replayed in order.
+        std::vector<CheckResult> LR; std::vector<int> LCov;
+        if (ParMv && !Looser.empty()) {
+            std::vector<std::vector<size_t>> Trys; std::vector<size_t> Which;
+            LCov.assign(Looser.size(), 0);
+            LR.assign(Looser.size(), CheckResult());
+            for (size_t k = 0; k < Looser.size(); ++k) {
+                std::vector<size_t> Try(Keep); Try[idx] = Looser[k];
+                if (covered(Try)) LCov[k] = 1;
+                else if (auto It = ParMemo.find(Try); It != ParMemo.end()) LR[k] = It->second;
+                else { Trys.push_back(Try); Which.push_back(k); }
+            }
+            std::vector<CheckResult> R = parCheck(Trys);
+            for (size_t k = 0; k < Which.size(); ++k) LR[Which[k]] = R[k];
+        }
+        for (size_t jk = 0; jk < Looser.size(); ++jk) {
+            size_t j = Looser[jk];
             std::vector<size_t> Try(Keep); Try[idx] = j;
-            if (covered(Try)) {
+            if (ParMv ? LCov[jk] == 1 : covered(Try)) {
                 if (odessy::CurProf) ++odessy::CurProf->MvSkipped[2];
                 Log << "    -> [mv] loosen: {" << Cands[Cur].Text << "} -> {" << Cands[j].Text << "}: SAT by a stored counterexample, kept tight (skipped)\n";
                 break;
             }
-            CheckResult CR = check(Try, false);
+            CheckResult CR = ParMv ? LR[jk] : check(Try, false);
             Job.LatencyMs += CR.Ms;
             odessy::profMv(2, CR.Unsat, CR.Unknown, CR.Ms);
             profileQuery("loosen", CR.Unsat ? "UNSAT" : (CR.Unknown ? "UNKNOWN" : "SAT"), CR.Ms);

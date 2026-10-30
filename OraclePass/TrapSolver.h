@@ -48,6 +48,11 @@ inline bool IndParEnabled = false;
 // minimize / loosen queries (HANDOFF §13.4); for A/B comparison only.
 inline bool MvNoPruneEnabled = false;
 
+// oracle-pass<mv-par[=W]>: run guard synthesis's minimize / loosen queries
+// concurrently, W at a time, each in its own context (HANDOFF §13.8).
+inline bool MvParEnabled = false;
+inline unsigned MvParWidth = 4;
+
 // Parallel `ind` (HANDOFF §13.8 item 2). The direct query runs on the
 // job's solver while two lane solvers (own z3::contexts, same encoding and
 // facts) run every loop level's BASE and STEP. Verdict rule as before:

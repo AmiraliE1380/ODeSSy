@@ -834,6 +834,12 @@ llvmGetPassPluginInfo() {
                                     if (P.getAsInteger(10, NBits) || NBits < 8 || NBits > 32) return false;
                                     Narrow = true;
                                 }
+                                else if (P == "mv-par")
+                                    odessy::MvParEnabled = true;
+                                else if (P.consume_front("mv-par=")) {
+                                    if (P.getAsInteger(10, odessy::MvParWidth) || odessy::MvParWidth == 0) return false;
+                                    odessy::MvParEnabled = true;
+                                }
                                 else if (P == "mv-noprune")
                                     odessy::MvNoPruneEnabled = true;
                                 else if (P == "ind-par")

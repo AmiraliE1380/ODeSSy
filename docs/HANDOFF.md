@@ -3808,6 +3808,25 @@ mac_1028_narrow; knob profile-stages, tools/profile_summary.py):
   shorter budget for minimize/loosen queries (e.g. 1 s); a timeout there
   only keeps a conjunct or a tighter bound, so no proof is lost, but the
   guard may be tighter than necessary.
+* mv-par tier (Oct 29; knob mv-par[=W], OFF by default;
+  results/profile_stages/mac_1029_mvpar/compare.txt, 67 inputs: all zlib
+  and zstd modules, 17 ablation kernels, CryptoSwift, Julia). Minimize and
+  loosen queries run concurrently, each in a fresh z3::context holding a
+  Z3_solver_translate copy of the job's solver; answers replayed in the
+  sequential order (stale UNSAT/UNKNOWN re-asked); loosen questions also
+  asked speculatively during minimization, reused only for the identical
+  candidate set. Removed and guarded counts identical on all 67; IR
+  identical on 66.
+  WIN only on zstd preSplit: 43.5 -> 27.0 s (slowest check 41 -> 24 s).
+  LOSSES elsewhere: CryptoSwift 60 -> 98 s, deflate 3.9 -> 13.5 s, Julia lz77
+  11.7 -> 26.2 s; total 263 -> 326 s. Cause: a fresh translated solver is
+  much slower than the job's incremental solver on the same question
+  (lz77 loosen: 6.1 s in place vs > 10 s timeout fresh; 16 ms vs 680 ms),
+  plus translation/context cost on thousands of small checks. lz77 lost a
+  loosening (guard 2^31 instead of 2^62; same proofs) for that reason.
+  NEXT (if revisited): run each query in place first with a short budget
+  (e.g. 0.5-1 s) and send only the ones still open to parallel helpers;
+  then re-evaluate on the 10-core server.
 * BUG (pre-existing, found Oct 29) -- FIXED Oct 29: zlib deflate output was
   not deterministic (same logs, a guard on a different load). Root cause:
   Z3 search depended on run-dependent input. (1) Z3 symbols for unnamed IR

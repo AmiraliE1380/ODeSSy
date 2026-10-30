@@ -123,6 +123,7 @@ public:
     // Model-guided pruning (HANDOFF §13.4): the last SAT check's model, and
     // whether any tracked (labelled) assertion is in scope.
     z3::model lastModel() { return Solver.get_model(); }
+    z3::solver &solverRef() { return Solver; }   // mv-par: source of Z3_solver_translate
     bool hasTracked() const { return !TrackedLabels.empty(); }
     std::vector<z3::expr> snapshotAssertions() {
         std::vector<z3::expr> V; z3::expr_vector A = Solver.assertions();
