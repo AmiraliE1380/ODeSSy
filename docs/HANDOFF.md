@@ -3764,6 +3764,21 @@ Sessions: (1) key + store + collision check + key mutation tests;
 (3) commit replay; (+0.5-1) symbolic guards / missed dependencies.
 Note for the paper: a warm compile replays the cold compile's decision,
 including any decision made near the time budget.
+PROGRESS:
+* Session 1 DONE (Oct 30): OraclePass/VerdictCache.{h,cpp}: canonicalForm
+  (clone, names stripped, debug info dropped, non-debug metadata by
+  content with DI* elided, attribute groups by content, callees + globals
+  + layout + triple + knobs + encoder hash + LLVM/Z3 versions), local
+  SHA-256 (opt does not export llvm::SHA256 to plugins on macOS; checked
+  against hashlib on 7 vectors), directory store (atomic temp+rename,
+  canonical-text compare on hit, corrupt = miss). Encoder hash generated
+  by cmake/hash_sources.cmake into build/OdessyVersion.h. Knobs cache=DIR
+  (session 1: store round trip with a placeholder payload, no replay) and
+  cache-keys. tests/cache/run_key_tests.py: 26/26 (15 must-miss mutations,
+  7 must-hit incl. debug info and function reordering, knob order, rerun).
+  Store: hit/miss, simulated collision -> miss, corrupt -> miss, 8
+  concurrent compilers on one cold dir -> valid entries, no temp files.
+  Key cost: CryptoSwift +2.2 s (30.8 -> 33.0 s, light tier, threads=4).
 
 ### 13.6 Profile before implementing (FIRST TASK)
 Add timers around encodePhase, factPhase (including turnstile wait),

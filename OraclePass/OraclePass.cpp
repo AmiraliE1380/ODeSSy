@@ -36,6 +36,7 @@
 // threads=1.
 // =====================================================================
 #include "Profile.h"
+#include "VerdictCache.h"
 #include "llvm/Transforms/Utils/Cloning.h"
 #include "llvm/Transforms/Utils/LoopUtils.h"
 #include "llvm/Transforms/Utils/BasicBlockUtils.h"
@@ -270,6 +271,19 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
                 FC.JobIndices.push_back(i);
 
             FC.DiscoveryMs = msSince(T0);
+            // Verdict-cache key (HANDOFF §13.5), on the unmodified IR.
+            if ((odessy::CacheKeysEnabled || !odessy::CacheDir.empty()) && FC.JobIndices.size()) {
+                std::string Canon = odessy::canonicalForm(F), Key = odessy::sha256Hex(Canon);
+                if (odessy::CacheKeysEnabled) errs() << "[cache-key] " << F.getName() << " " << Key << "\n";
+                // Session 1 (HANDOFF §13.5): store round trip only; decisions
+                // are recorded and replayed from session 2 on.
+                if (!odessy::CacheDir.empty()) {
+                    std::string Payload;
+                    bool Hit = odessy::cacheLookup(Key, Canon, Payload);
+                    if (!Hit) odessy::cacheStore(Key, Canon, "v1-placeholder");
+                    errs() << "[cache] " << F.getName() << (Hit ? " hit " : " miss ") << Payload << "\n";
+                }
+            }
             CtxOf[&F] = FCs.size();
             FCs.push_back(std::move(FC));
         }
@@ -804,6 +818,19 @@ llvmGetPassPluginInfo() {
                                 return false;
                             SmallVector<StringRef, 4> Parts;
                             Name.split(Parts, ';');
+                            // Verdict-cache identity (HANDOFF §13.5): every knob that
+                            // can change a decision, sorted; not threads, profiling
+                            // or the cache knobs themselves.
+                            {
+                                std::vector<std::string> K;
+                                for (StringRef P : Parts)
+                                    if (!P.starts_with("threads=") && P != "profile-stages" && !P.starts_with("profile=") &&
+                                        !P.starts_with("cache=") && P != "cache-keys")
+                                        K.push_back(P.str());
+                                std::sort(K.begin(), K.end());
+                                odessy::CacheKnobs.clear();
+                                for (auto &X : K) odessy::CacheKnobs += X + ";";
+                            }
                             for (StringRef P : Parts) {
                                 P = P.trim();
                                 if (P == "vacuity")
@@ -834,6 +861,10 @@ llvmGetPassPluginInfo() {
                                     if (P.getAsInteger(10, NBits) || NBits < 8 || NBits > 32) return false;
                                     Narrow = true;
                                 }
+                                else if (P.consume_front("cache="))
+                                    odessy::CacheDir = P.str();
+                                else if (P == "cache-keys")
+                                    odessy::CacheKeysEnabled = true;
                                 else if (P == "mv-par")
                                     odessy::MvParEnabled = true;
                                 else if (P.consume_front("mv-par=")) {

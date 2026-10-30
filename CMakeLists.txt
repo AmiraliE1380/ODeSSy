@@ -13,7 +13,18 @@ add_library(OraclePass MODULE
     OraclePass/Z3Encoder.cpp
     OraclePass/FactEncoder.cpp
     OraclePass/Narrow.cpp
+    OraclePass/VerdictCache.cpp
+    ${CMAKE_BINARY_DIR}/OdessyVersion.h
 )
+# Encoder version for the verdict cache key (HANDOFF §13.5): a hash of the
+# pass sources, regenerated whenever any of them changes.
+file(GLOB ODESSY_SOURCES ${CMAKE_SOURCE_DIR}/OraclePass/*.cpp ${CMAKE_SOURCE_DIR}/OraclePass/*.h)
+add_custom_command(
+    OUTPUT ${CMAKE_BINARY_DIR}/OdessyVersion.h
+    COMMAND ${CMAKE_COMMAND} -DSRC_DIR=${CMAKE_SOURCE_DIR}/OraclePass -DOUT=${CMAKE_BINARY_DIR}/OdessyVersion.h
+            -P ${CMAKE_SOURCE_DIR}/cmake/hash_sources.cmake
+    DEPENDS ${ODESSY_SOURCES} ${CMAKE_SOURCE_DIR}/cmake/hash_sources.cmake)
+target_include_directories(OraclePass PRIVATE ${CMAKE_BINARY_DIR})
 # 3. Force it to be a .so file without the "lib" prefix
 # (so it outputs OraclePass.so instead of libOraclePass.so)
 set_target_properties(OraclePass PROPERTIES

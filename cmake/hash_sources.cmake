@@ -1,0 +1,18 @@
+# Writes OUT with ODESSY_SOURCE_HASH = SHA-256 over the pass sources, so a
+# verdict cache entry is invalidated by any change to the encoder (HANDOFF §13.5).
+file(GLOB SRCS "${SRC_DIR}/*.cpp" "${SRC_DIR}/*.h")
+list(SORT SRCS)
+set(ALL "")
+foreach(F ${SRCS})
+  file(SHA256 "${F}" H)
+  string(APPEND ALL "${H}")
+endforeach()
+string(SHA256 HASH "${ALL}")
+set(TEXT "#pragma once\n#define ODESSY_SOURCE_HASH \"${HASH}\"\n")
+if(EXISTS "${OUT}")
+  file(READ "${OUT}" OLD)
+  if(OLD STREQUAL TEXT)
+    return()
+  endif()
+endif()
+file(WRITE "${OUT}" "${TEXT}")
