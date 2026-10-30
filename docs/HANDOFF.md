@@ -3795,8 +3795,17 @@ PROGRESS:
   0.48 s. No benefit where the expensive function is a "resolve" entry:
   Julia matmul (33 s) and sha256 (3.4 s), Rust matmul. Cold overhead
   (keys + store): ~+3% summed.
-  NEXT: session 3 (commit replay); optional: store T3 guards (would make
-  matmul/sha256 hit).
+  NEXT: session 3 (commit replay).
+  TODO (Amir: later, not now): store T3 symbolic-bound guards. Today
+  recordDecisions writes "resolve" for any function whose decision has a
+  guard with C.Bound set (a SCEV expression such as i <= n - k), so that
+  function misses on every compile and pays the full pipeline: Julia matmul
+  ~33 s (3 exact verifies timing out + narrow retries), Julia sha256
+  ~3.4 s, Rust matmul. Fix (~half session): serialize the bound either as
+  an expression over canonical positions (add/mul/constants/values) or as
+  the T3 template + operands chosen, and on replay rebuild the SCEV from
+  ScalarEvolution (an analysis query, no solving). Check: those functions
+  then hit, warm IR identical.
 
 ### 13.6 Profile before implementing (FIRST TASK)
 Add timers around encodePhase, factPhase (including turnstile wait),
