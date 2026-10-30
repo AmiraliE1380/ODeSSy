@@ -1,0 +1,25 @@
+Julia_jl_filt_dsp noprune=1.0s prune=1.0s skipped(min/loosen)=0/0 removed=5/5 guarded=0/0 same_ir=yes
+Julia_jl_gemm_base noprune=1.2s prune=1.2s skipped(min/loosen)=0/0 removed=9/9 guarded=0/0 same_ir=yes
+Julia_jl_poly noprune=0.1s prune=0.1s skipped(min/loosen)=0/0 removed=1/1 guarded=0/0 same_ir=yes
+Julia_lz77 noprune=11.9s prune=11.8s skipped(min/loosen)=1/0 removed=0/0 guarded=4/4 same_ir=yes
+Julia_matmul noprune=33.6s prune=33.3s skipped(min/loosen)=0/0 removed=0/0 guarded=3/3 same_ir=yes
+Julia_sha256 noprune=3.4s prune=3.3s skipped(min/loosen)=0/0 removed=10/10 guarded=6/6 same_ir=yes
+Rust_lz77 noprune=0.2s prune=0.2s skipped(min/loosen)=0/0 removed=2/2 guarded=0/0 same_ir=yes
+Rust_matmul noprune=0.1s prune=0.1s skipped(min/loosen)=0/0 removed=0/0 guarded=2/2 same_ir=yes
+Swift_adler32 noprune=0.1s prune=0.1s skipped(min/loosen)=0/0 removed=1/1 guarded=1/1 same_ir=yes
+Swift_base64 noprune=0.2s prune=0.2s skipped(min/loosen)=0/0 removed=2/2 guarded=5/5 same_ir=yes
+Swift_crc32 noprune=0.2s prune=0.2s skipped(min/loosen)=0/0 removed=4/4 guarded=7/7 same_ir=yes
+Swift_lz77 noprune=0.7s prune=0.7s skipped(min/loosen)=0/0 removed=4/4 guarded=3/3 same_ir=yes
+Swift_md5 noprune=0.1s prune=0.1s skipped(min/loosen)=0/0 removed=1/1 guarded=0/0 same_ir=yes
+Swift_nbody noprune=0.5s prune=0.5s skipped(min/loosen)=0/0 removed=0/0 guarded=0/0 same_ir=yes
+Swift_sha1 noprune=0.1s prune=0.1s skipped(min/loosen)=0/0 removed=2/2 guarded=0/0 same_ir=yes
+Swift_sha256 noprune=0.2s prune=0.2s skipped(min/loosen)=0/0 removed=7/7 guarded=1/1 same_ir=yes
+Swift_utf8 noprune=0.1s prune=0.1s skipped(min/loosen)=0/0 removed=3/3 guarded=1/1 same_ir=yes
+zlib_trees noprune=62.3s prune=64.7s skipped(min/loosen)=3/0 removed=30/30 guarded=4/4 same_ir=yes
+zlib_deflate noprune=3.8s prune=3.8s skipped(min/loosen)=3/0 removed=46/46 guarded=15/15 same_ir=yes
+zstd_zstd_preSplit noprune=43.7s prune=43.6s skipped(min/loosen)=8/2 removed=5/5 guarded=8/8 same_ir=yes
+swift_cryptoswift noprune=60.6s prune=61.1s skipped(min/loosen)=54/4 removed=274/274 guarded=109/109 same_ir=yes
+jl_sha256 noprune=3.4s prune=3.3s skipped(min/loosen)=0/0 removed=10/10 guarded=6/6 same_ir=yes
+jl_jl_gemm_base noprune=0.6s prune=0.6s skipped(min/loosen)=0/0 removed=9/9 guarded=0/0 same_ir=yes
+
+[exited with code 0]

@@ -120,6 +120,10 @@ public:
     std::string getStatistics();
     std::string toSMT2();          // includes check-sat-assuming over tracked labels
     // F1 step 2b (HANDOFF §10.38): assertion classes for the narrowing rewriter.
+    // Model-guided pruning (HANDOFF §13.4): the last SAT check's model, and
+    // whether any tracked (labelled) assertion is in scope.
+    z3::model lastModel() { return Solver.get_model(); }
+    bool hasTracked() const { return !TrackedLabels.empty(); }
     std::vector<z3::expr> snapshotAssertions() {
         std::vector<z3::expr> V; z3::expr_vector A = Solver.assertions();
         for (unsigned i = 0; i < A.size(); ++i) V.push_back(A[i]);

@@ -33,6 +33,7 @@ struct JobProfile {
     // outcome 0 UNSAT, 1 SAT, 2 UNKNOWN.
     double MvPhaseMs[4] = {};
     unsigned MvPhaseN[4][3] = {};
+    unsigned MvSkipped[4] = {};                // queries skipped by model-guided pruning
     char Decided = '-';                        // parallel ind: D(irect) or I(nd) proved the job
     unsigned Queries = 0;                      // every solver check() of the job
     double QueryMs = 0;

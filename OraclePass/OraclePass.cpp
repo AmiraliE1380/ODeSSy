@@ -765,7 +765,7 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
                 errs() << "[profile-stages] mv," << J.Index << "," << P.MvMs;
                 for (int k = 0; k < 4; ++k)
                     errs() << "," << P.MvPhaseMs[k] << "," << P.MvPhaseN[k][0] << "," << P.MvPhaseN[k][1] << "," << P.MvPhaseN[k][2];
-                errs() << "\n";
+                errs() << "," << P.MvSkipped[1] << "," << P.MvSkipped[2] << "\n";   // pruned minimize, loosen
             }
             errs() << "[profile-stages] module,jobs=" << Jobs.size() << ",threads=" << NThreads
                    << ",stage1_ms=" << PSStage1Ms << ",stage2_ms=" << PSStage2Ms
@@ -834,6 +834,8 @@ llvmGetPassPluginInfo() {
                                     if (P.getAsInteger(10, NBits) || NBits < 8 || NBits > 32) return false;
                                     Narrow = true;
                                 }
+                                else if (P == "mv-noprune")
+                                    odessy::MvNoPruneEnabled = true;
                                 else if (P == "ind-par")
                                     odessy::IndParEnabled = true;
                                 else if (P == "profile-stages")

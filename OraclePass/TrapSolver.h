@@ -44,6 +44,10 @@ namespace odessy {
 // Off by default: on a saturated pool it is slower (HANDOFF §13.6).
 inline bool IndParEnabled = false;
 
+// oracle-pass<mv-noprune>: disable model-guided pruning of guard synthesis's
+// minimize / loosen queries (HANDOFF §13.4); for A/B comparison only.
+inline bool MvNoPruneEnabled = false;
+
 // Parallel `ind` (HANDOFF §13.8 item 2). The direct query runs on the
 // job's solver while two lane solvers (own z3::contexts, same encoding and
 // facts) run every loop level's BASE and STEP. Verdict rule as before:
@@ -179,6 +183,9 @@ private:
     unsigned Lane = 0;
     TrapSolver *LaneB = nullptr, *LaneS = nullptr;
     double LaneLat = 0;
+    // Counterexamples for model-guided pruning: the BASIC query's model
+    // (captured before ind touches the solver) plus mvPhase's SAT models.
+    std::vector<z3::model> MvModels;
 };
 
 } // namespace odessy

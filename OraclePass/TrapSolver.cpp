@@ -465,6 +465,8 @@ void TrapSolver::solvePhase() {
                              : ResultString.find("SAT") != std::string::npos ? 'S' : '?';
         profileQuery("main", ResultString, QueryLatency);
         bool IsUnsat = (ResultString.find("UNSAT") != std::string::npos);
+        if (Cfg.MultiVersion && !NarrowMode && !IsUnsat && ResultString.find("SAT") != std::string::npos)
+            MvModels.push_back(Encoder.lastModel());   // a concrete failing execution
         // Item 1 (HANDOFF §10.49): two-obligation inductive query when the
         // direct query did not close. Exact encoding only. Logged before
         // the verdict line so per-trap counts see one verdict.
@@ -964,6 +966,8 @@ void TrapSolver::mvPhase() {
         CandWv[v][i] = R; return R;
     };
     auto candW = [&](size_t i) { return candWv(i, 1); };
+    // SAT models of exact checks, collected for model-guided pruning below.
+    std::vector<z3::model> NewModels;
     auto check = [&](const std::vector<size_t> &UseIn, bool Tracked) -> CheckResult {
         CheckResult CR;
         std::vector<size_t> Use;
@@ -1073,10 +1077,45 @@ void TrapSolver::mvPhase() {
         CR.Ms = L1;
         if (Res.find("UNSAT") != std::string::npos) { CR.Unsat = true; if (Tracked) CR.Core = coreOf(Encoder.getUnsatCore(), Use); }
         else CR.Unknown = Res.find("UNKNOWN") != std::string::npos;
+        if (!CR.Unsat && !CR.Unknown) NewModels.push_back(Encoder.lastModel());
         Encoder.pop();
         return CR;
     };
 
+    // MODEL-GUIDED PRUNING (HANDOFF §13.4). A minimize / loosen query asks
+    // whether context + guards + trap + a candidate set Try is SAT. If a
+    // stored counterexample model satisfies every current solver assertion
+    // and every candidate in Try, it is a witness: the query is SAT, and
+    // SAT and UNKNOWN both mean "keep", so skipping it changes no decision.
+    // The model never produces UNSAT; every adopted guard is still proved
+    // by Z3. Off on the narrow encodings and when tracked assertions are in
+    // scope (their answer literals would make the evaluation vacuous).
+    struct PModel { z3::model M; int BaseOK = -1; size_t BaseN = 0; std::vector<signed char> Bit; };
+    std::vector<PModel> PM;
+    bool Prune = !odessy::MvNoPruneEnabled && !NarrowMode && !Whole && !Cfg.VacuityCheck && !Encoder.hasTracked();
+    if (Prune) for (z3::model &M : MvModels) PM.push_back({M});
+    auto holds = [&](z3::model &M, const z3::expr &E) { return M.eval(E, true).is_true(); };
+    auto covered = [&](const std::vector<size_t> &Try) -> bool {
+        if (!Prune) return false;
+        for (z3::model &M : NewModels) PM.push_back({M});
+        NewModels.clear();
+        std::vector<z3::expr> A = Encoder.snapshotAssertions();
+        for (PModel &P : PM) {
+            if (P.BaseOK < 0 || P.BaseN != A.size()) {
+                P.BaseOK = 1; P.BaseN = A.size();
+                for (const z3::expr &E : A) if (!holds(P.M, E)) { P.BaseOK = 0; break; }
+            }
+            if (!P.BaseOK) continue;
+            if (P.Bit.empty()) P.Bit.assign(Cands.size(), -1);   // each candidate evaluated once per model
+            bool All = true;
+            for (size_t i : Try) {
+                if (P.Bit[i] < 0) P.Bit[i] = holds(P.M, mkExpr(Cands[i])) ? 1 : 0;
+                if (!P.Bit[i]) { All = false; break; }
+            }
+            if (All) return true;
+        }
+        return false;
+    };
     // Re-solve, hoistability-first: round 0 uses only candidates that are
     // invariant in the whole function (sizes, globals, arguments) so H can
     // be hoisted to the outermost loop and paid once; round 1 adds the
@@ -1143,6 +1182,11 @@ void TrapSolver::mvPhase() {
         for (size_t Drop : Order) {
             if (Keep.size() <= 1) break;
             std::vector<size_t> Try; for (size_t i : Keep) if (i != Drop) Try.push_back(i);
+            if (covered(Try)) {
+                if (odessy::CurProf) ++odessy::CurProf->MvSkipped[1];
+                Log << "    -> [mv] minimize: without {" << Cands[Drop].Text << "} -> SAT by a stored counterexample, kept (skipped)\n";
+                continue;
+            }
             CheckResult CR = check(Try, false);
             Job.LatencyMs += CR.Ms;
             odessy::profMv(1, CR.Unsat, CR.Unknown, CR.Ms);
@@ -1165,6 +1209,11 @@ void TrapSolver::mvPhase() {
         std::sort(Looser.begin(), Looser.end(), [&](size_t a, size_t b) { return Cands[a].C.ult(Cands[b].C); });
         for (size_t j : Looser) {
             std::vector<size_t> Try(Keep); Try[idx] = j;
+            if (covered(Try)) {
+                if (odessy::CurProf) ++odessy::CurProf->MvSkipped[2];
+                Log << "    -> [mv] loosen: {" << Cands[Cur].Text << "} -> {" << Cands[j].Text << "}: SAT by a stored counterexample, kept tight (skipped)\n";
+                break;
+            }
             CheckResult CR = check(Try, false);
             Job.LatencyMs += CR.Ms;
             odessy::profMv(2, CR.Unsat, CR.Unknown, CR.Ms);

@@ -3794,6 +3794,20 @@ mac_1028_narrow; knob profile-stages, tools/profile_summary.py):
   counterexample model already satisfies its candidate set; SAT and UNKNOWN
   both mean keep, so lossless) targets exactly zstd's cost. Open question:
   how many of the 10 UNKNOWNs a stored model covers.
+  DONE (Oct 29): model-guided pruning implemented (on by default; knob
+  mv-noprune disables it). Stored models: the BASIC query's plus every SAT
+  model in guard synthesis; each candidate evaluated once per model; a
+  minimize/loosen query is skipped when a model satisfies all current
+  assertions and the candidate set. Result (results/profile_stages/
+  mac_1029_prune/compare.txt): output IR byte-identical on all 23 inputs,
+  same removed and guarded checks; 75 queries skipped in total (CryptoSwift
+  58, zstd 10) but NO measurable time saved: the skipped queries are cheap
+  SATs; zstd's 10 timeouts (e.g. "drop %102 <=s 2^31") need a witness
+  with the value above the bound, which no stored model has.
+  Remaining lever for zstd (not done, lossy in guard generality only): a
+  shorter budget for minimize/loosen queries (e.g. 1 s); a timeout there
+  only keeps a conjunct or a tighter bound, so no proof is lost, but the
+  guard may be tighter than necessary.
 * BUG (pre-existing, found Oct 29) -- FIXED Oct 29: zlib deflate output was
   not deterministic (same logs, a guard on a different load). Root cause:
   Z3 search depended on run-dependent input. (1) Z3 symbols for unnamed IR
@@ -3863,7 +3877,7 @@ BASIC, 50 by induction).
 |---|---|---|
 | 1 | Profiling timers; narrow trigger (UNKNOWN only); narrow solves in the pool; Fast "other" attributed | DONE (trees 4.3x, matmul 2.3x) |
 | 2 | Fix the deflate output nondeterminism | DONE (Z3 symbol names, term free order); remaining: timeout sensitivity -> qualify claim or rlimit |
-| 3 | Model-guided guard-synthesis pruning (§13.4); mv templates in parallel | zstd: one check, 42 s of mv |
+| 3 | Model-guided guard-synthesis pruning (§13.4) | DONE: lossless, identical IR on 23 inputs, but no time saved (zstd's cost is timeouts); option: shorter minimize/loosen budget |
 | 4 | Per-function verdict cache + commit-replay experiment (§13.5) | biggest lever; Fast and Thorough are Z3-bound |
 | 5 | Induction: settle sequential vs ind-par on the server (see box); optional single delayed/idle-core ind lane | before any latency campaign |
 | 6 | poison-loads sensitivity numbers; optional §12.5 induction | |
