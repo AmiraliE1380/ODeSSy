@@ -207,9 +207,17 @@ z3::expr Z3Encoder::asBV(z3::expr e, unsigned w) {
 
 
 // --- Handle unnamed LLVM IR values ---
-std::string getSafeName(Value *Val) {
-    if (Val->hasName()) return Val->getName().str();
-    return "unnamed_" + std::to_string(reinterpret_cast<uintptr_t>(Val));
+std::string Z3Encoder::getSafeName(Value *Val) {
+    // Injective per encoder: unnamed values get "unnamed_<k>"; a real name
+    // that could be mistaken for one ("unnamed_..." or "named_...") is
+    // escaped with a "named_" prefix; every other name is kept as is.
+    if (Val->hasName()) {
+        StringRef N = Val->getName();
+        if (N.starts_with("unnamed_") || N.starts_with("named_")) return "named_" + N.str();
+        return N.str();
+    }
+    auto It = UnnamedIds.try_emplace(Val, (unsigned)UnnamedIds.size()).first;
+    return "unnamed_" + std::to_string(It->second);
 }
 
 // Primed mode: an instruction inside PrimedLoop is looked up/created in
@@ -389,8 +397,8 @@ z3::expr Z3Encoder::getEdgeCond(BasicBlock *Pred, BasicBlock *Succ) {
     // Alien terminators (invoke, indirectbr, callbr, ...): over-approximate
     // the edge with a fresh unconstrained boolean, consistent with the
     // pass's boundary philosophy.
-    std::string name = "edge_" + std::to_string(reinterpret_cast<uintptr_t>(Pred)) +
-                       "_" + std::to_string(reinterpret_cast<uintptr_t>(Succ));
+    std::string P = getSafeName(Pred), S = getSafeName(Succ);
+    std::string name = "edge_" + std::to_string(P.size()) + "_" + P + "_" + S;   // length-prefixed: injective
     return Ctx.bool_const(name.c_str());
 }
 

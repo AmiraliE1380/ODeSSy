@@ -517,11 +517,23 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
             // INNERMOST FIRST: an inner loop versioned first is then cloned
             // (already versioned, folds included) inside the outer fast copy,
             // so nested groups compose; each guard sits at its own level.
+            // Deterministic: functions and ties are ordered by the groups'
+            // first discovery index, never by pointer value (heap addresses
+            // differ between runs; HANDOFF §13.6 deflate bug).
             std::vector<std::pair<Function *, Loop *>> Order;
-            for (auto &G : Groups) Order.push_back(G.first);
+            DenseMap<Function *, size_t> FnFirst;
+            std::map<std::pair<Function *, Loop *>, size_t> GroupFirst;
+            for (auto &G : Groups) {
+                Order.push_back(G.first);
+                GroupFirst[G.first] = G.second.front();   // Idx is in discovery order
+                auto It = FnFirst.find(G.first.first);
+                if (It == FnFirst.end() || G.second.front() < It->second) FnFirst[G.first.first] = G.second.front();
+            }
             std::sort(Order.begin(), Order.end(), [&](auto &A, auto &B) {
-                if (A.first != B.first) return A.first < B.first;
-                return A.second->getLoopDepth() > B.second->getLoopDepth();
+                if (A.first != B.first) return FnFirst[A.first] < FnFirst[B.first];
+                unsigned DA = A.second->getLoopDepth(), DB = B.second->getLoopDepth();
+                if (DA != DB) return DA > DB;
+                return GroupFirst[A] < GroupFirst[B];
             });
             SmallPtrSet<Loop *, 8> Versioned;
             // Earlier versionings' branch clones per function: when an outer

@@ -3783,12 +3783,25 @@ mac_1028_narrow; knob profile-stages, tools/profile_summary.py):
   NEXT (if revisited): one ind lane running the sequential BASE->STEP
   order, started only when the pool has an idle core or the direct query
   is still running after a delay.
-* BUG (pre-existing, found Oct 29): zlib deflate Thorough t4 output is not
-  deterministic: one guard (mv.h8, H = {%270 >=s 0}) is materialized on
-  load %25 in some runs and load %3 in others, with the default path,
-  identical logs. Likely pointer-ordered iteration in Stage 3 guard
-  materialization. The paper's "byte-identical for any THREADS" claim
-  needs this fixed or qualified.
+* BUG (pre-existing, found Oct 29) -- FIXED Oct 29: zlib deflate output was
+  not deterministic (same logs, a guard on a different load). Root cause:
+  Z3 search depended on run-dependent input. (1) Z3 symbols for unnamed IR
+  values were "unnamed_<heap address>"; now numbered in first-use order per
+  encoder (Z3Encoder::getSafeName; real names starting "unnamed_"/"named_"
+  are escaped, edge symbols length-prefixed: injective). (2) resetPrimed
+  freed Z3 terms from unordered_maps in pointer-hash order and Z3 recycles
+  freed AST ids, so later terms were numbered differently; PrimedMap /
+  PoisonMap / PrimedPoisonMap are now llvm::MapVector. Also: Stage 3
+  versioning order now by discovery index, not Function*/Loop* pointers.
+  Check (Thorough; 3 runs at t4 + 1 at t1, 23 inputs): byte-identical on
+  22/23, same remaining-check and guard counts as before the fix.
+  REMAINING: timeout sensitivity. CryptoSwift t1 proves one more check than
+  t4: its BASIC query takes 9.57 s at t1 and hits the 10 s budget at t4
+  (contention). Same for Julia lz77 loosening (~6 s of 10 s). Output is
+  identical for any THREADS only when no query is near its budget. Options:
+  qualify the paper claim, or switch the per-query budget from wall clock to
+  Z3's deterministic resource limit (rlimit), which makes verdicts
+  machine-load independent (calibrate rlimit per ms on the server first).
 
 ### 13.7 Remaining todo for the arXiv version
 * Paper: full rewrite pass; make the combiner ladder (separate passes,
@@ -3838,7 +3851,7 @@ BASIC, 50 by induction).
 | # | item | status |
 |---|---|---|
 | 1 | Profiling timers; narrow trigger (UNKNOWN only); narrow solves in the pool; Fast "other" attributed | DONE (trees 4.3x, matmul 2.3x) |
-| 2 | Fix the deflate output nondeterminism (Stage 3 guard materialization) | NEXT; paper claims byte-identical output |
+| 2 | Fix the deflate output nondeterminism | DONE (Z3 symbol names, term free order); remaining: timeout sensitivity -> qualify claim or rlimit |
 | 3 | Model-guided guard-synthesis pruning (§13.4); mv templates in parallel | zstd: one check, 42 s of mv |
 | 4 | Per-function verdict cache + commit-replay experiment (§13.5) | biggest lever; Fast and Thorough are Z3-bound |
 | 5 | Induction: settle sequential vs ind-par on the server (see box); optional single delayed/idle-core ind lane | before any latency campaign |

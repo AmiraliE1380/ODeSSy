@@ -9,6 +9,7 @@
 #include "llvm/Support/KnownBits.h"
 #include <z3++.h>
 #include <unordered_map>
+#include "llvm/ADT/MapVector.h"
 #include <map>
 #include <string>
 #include <utility>
@@ -20,6 +21,11 @@ extern bool DebugOracle;
 
 class Z3Encoder {
     z3::context Ctx;
+    // Symbol names for unnamed IR values, numbered in first-use order.
+    // Never derived from addresses: Z3's search depends on symbol names,
+    // and heap addresses differ between runs (HANDOFF §13.6 deflate bug).
+    std::unordered_map<llvm::Value*, unsigned> UnnamedIds;
+    std::string getSafeName(llvm::Value *Val);
     z3::solver Solver;
     std::unordered_map<llvm::Value*, z3::expr> ValueMap;
     // ---- Inductive body encoding (item 1, HANDOFF §10.46/10.48) ----
@@ -30,7 +36,10 @@ class Z3Encoder {
     // Loads inside the loop are fresh in the copy (no memory carried).
     llvm::Loop *PrimedLoop = nullptr;
     std::string PrimeTag;
-    std::unordered_map<llvm::Value*, z3::expr> PrimedMap;
+    // Insertion-ordered (not hashed): resetPrimed frees these terms, and Z3
+    // recycles freed AST ids, so a pointer-hash free order would renumber
+    // later terms differently from run to run (HANDOFF §13.6 deflate bug).
+    llvm::MapVector<llvm::Value*, z3::expr> PrimedMap;
     std::vector<std::pair<llvm::PHINode*, z3::expr>> PrimedHeaderPhis;
 
     // --- MEMOIZED CFG ENCODING (replaces exponential path enumeration) ---
@@ -72,7 +81,7 @@ class Z3Encoder {
     // shifts, abs INT_MIN) feed it instead of being asserted as facts;
     // freeze(x) = ite(P(x), fresh, x); branch conditions assert !P (branching
     // on poison is UB); imported analysis facts about V hold only if !P(V).
-    std::unordered_map<llvm::Value*, z3::expr> PoisonMap, PrimedPoisonMap;
+    llvm::MapVector<llvm::Value*, z3::expr> PoisonMap, PrimedPoisonMap;   // see PrimedMap
     llvm::Value *FactSubject = nullptr;
     // Capture mode (parallel `ind`): addFact records (fact, label) here
     // instead of asserting, so facts imported under the FactGate can be
