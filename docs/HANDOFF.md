@@ -3827,6 +3827,16 @@ mac_1028_narrow; knob profile-stages, tools/profile_summary.py):
   NEXT (if revisited): run each query in place first with a short budget
   (e.g. 0.5-1 s) and send only the ones still open to parallel helpers;
   then re-evaluate on the 10-core server.
+* Julia kernels at threads=1 (appendix configuration), Mac, current code:
+  sha256 7.0 s (appendix 128 s, server, old code), lz77 21.1 s (20.2 s),
+  matmul 95.6 s (95.3 s). matmul = 3 exact guard verifications timing out
+  (3 x 10 s) + 3 narrow retries (~21 s each, almost all narrow mvPhase).
+  IDEA, NOT DONE (Amir: do not overfit one benchmark): when the slice has a
+  64-bit mul, skip the exact-width verify and go straight to the narrow
+  retry (~30 s on matmul). Only if, on the whole ablation set, an exact
+  verify with a 64-bit mul in the slice never succeeds. Also open: profile
+  the narrow retry's mvPhase by phase. The appendix compile table must be
+  rerun on the server with the current code before any paper revision.
 * BUG (pre-existing, found Oct 29) -- FIXED Oct 29: zlib deflate output was
   not deterministic (same logs, a guard on a different load). Root cause:
   Z3 search depended on run-dependent input. (1) Z3 symbols for unnamed IR
