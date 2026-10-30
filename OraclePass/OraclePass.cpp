@@ -757,6 +757,16 @@ struct OraclePass : public PassInfoMixin<OraclePass> {
                        << "," << P.Queries << "," << P.QueryMs << "," << P.SetupMs << "," << P.SolveMs
                        << "," << P.AssertMs << "," << P.TeardownMs << "," << P.Decided << "," << J.WorkerMs << "\n";
             }
+            // Guard synthesis by phase, one line per job that ran it:
+            // ms and UNSAT/SAT/UNKNOWN counts for verify, minimize, loosen, vacuity.
+            for (odessy::TrapJob &J : Jobs) {
+                const odessy::JobProfile &P = J.Prof;
+                if (P.MvMs <= 0) continue;
+                errs() << "[profile-stages] mv," << J.Index << "," << P.MvMs;
+                for (int k = 0; k < 4; ++k)
+                    errs() << "," << P.MvPhaseMs[k] << "," << P.MvPhaseN[k][0] << "," << P.MvPhaseN[k][1] << "," << P.MvPhaseN[k][2];
+                errs() << "\n";
+            }
             errs() << "[profile-stages] module,jobs=" << Jobs.size() << ",threads=" << NThreads
                    << ",stage1_ms=" << PSStage1Ms << ",stage2_ms=" << PSStage2Ms
                    << ",stage2b_ms=" << PSStage2bMs << ",stage3_ms=" << PSStage3Ms

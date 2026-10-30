@@ -1090,6 +1090,7 @@ void TrapSolver::mvPhase() {
         if (Round == 1) { bool Same = true; for (auto &C : Cands) if (C.Outer) { Same = false; break; } if (Same) break; }
         CheckResult CR = check(Use, true);
         Lat += CR.Ms; Job.LatencyMs += CR.Ms;
+        odessy::profMv(0, CR.Unsat, CR.Unknown, CR.Ms);
         profileQuery(Round == 0 ? "mv0" : "mv1", CR.Unsat ? "UNSAT" : (CR.Unknown ? "UNKNOWN" : "SAT"), CR.Ms);
         if (!NarrowMode) Job.Prof.MvVerdict = CR.Unsat ? 'U' : CR.Unknown ? '?' : 'S';
         if (!NarrowMode) Job.MVUnknown = CR.Unknown;
@@ -1144,6 +1145,7 @@ void TrapSolver::mvPhase() {
             std::vector<size_t> Try; for (size_t i : Keep) if (i != Drop) Try.push_back(i);
             CheckResult CR = check(Try, false);
             Job.LatencyMs += CR.Ms;
+            odessy::profMv(1, CR.Unsat, CR.Unknown, CR.Ms);
             Log << "    -> [mv] minimize: without {" << Cands[Drop].Text << "} -> "
                 << (CR.Unsat ? "UNSAT, dropped" : (CR.Unknown ? "UNKNOWN, kept" : "SAT, kept")) << " (" << CR.Ms << " ms)\n";
             if (CR.Unsat) Keep = Try;
@@ -1165,6 +1167,7 @@ void TrapSolver::mvPhase() {
             std::vector<size_t> Try(Keep); Try[idx] = j;
             CheckResult CR = check(Try, false);
             Job.LatencyMs += CR.Ms;
+            odessy::profMv(2, CR.Unsat, CR.Unknown, CR.Ms);
             profileQuery("loosen", CR.Unsat ? "UNSAT" : (CR.Unknown ? "UNKNOWN" : "SAT"), CR.Ms);
             Log << "    -> [mv] loosen: {" << Cands[Cur].Text << "} -> {" << Cands[j].Text << "}: "
                 << (CR.Unsat ? "UNSAT, adopted" : "kept tight") << " (" << CR.Ms << " ms)\n";
@@ -1178,6 +1181,7 @@ void TrapSolver::mvPhase() {
     for (size_t i : Keep) Encoder.assertRawFact(mkExpr(Cands[i]), std::string());
     auto [HRes, HLat] = Encoder.checkSatisfiability();
     Job.LatencyMs += HLat;
+    odessy::profMv(3, HRes.find("UNSAT") != std::string::npos, HRes.find("UNKNOWN") != std::string::npos, HLat);
     Encoder.pop();
     if (HRes.find("UNSAT") != std::string::npos) {
         Log << "    -> [mv] hypothesis contradicts the context: refusing (H vacuous): {";

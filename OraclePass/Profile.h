@@ -29,6 +29,10 @@ struct JobProfile {
     double DirectMs = 0, IndMs = 0, MvMs = 0, NarrowMs = 0;
     double SetupMs = 0, SolveMs = 0, TeardownMs = 0;   // TrapSolver ctor / solvePhase / dtor
     double AssertMs = 0;                       // solvePhase before the direct check()
+    // Guard synthesis by phase: 0 verify, 1 minimize, 2 loosen, 3 vacuity;
+    // outcome 0 UNSAT, 1 SAT, 2 UNKNOWN.
+    double MvPhaseMs[4] = {};
+    unsigned MvPhaseN[4][3] = {};
     char Decided = '-';                        // parallel ind: D(irect) or I(nd) proved the job
     unsigned Queries = 0;                      // every solver check() of the job
     double QueryMs = 0;
@@ -81,6 +85,12 @@ struct ProfScope {
     }
     ~ProfScope() { if (CurProf) CurProf->*F += profMsSince(T0); }
 };
+
+inline void profMv(int Ph, bool Unsat, bool Unknown, double Ms) {
+    if (!CurProf) return;
+    CurProf->MvPhaseMs[Ph] += Ms;
+    ++CurProf->MvPhaseN[Ph][Unsat ? 0 : Unknown ? 2 : 1];
+}
 
 inline void profQuery(double Ms) {
     if (CurProf) { ++CurProf->Queries; CurProf->QueryMs += Ms; }

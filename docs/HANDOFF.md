@@ -3783,6 +3783,17 @@ mac_1028_narrow; knob profile-stages, tools/profile_summary.py):
   NEXT (if revisited): one ind lane running the sequential BASE->STEP
   order, started only when the pool has an idle core or the direct query
   is still running after a delay.
+* Guard synthesis by phase (Oct 29; results/profile_stages/mac_1029_mvphases,
+  "[profile-stages] mv," lines). zstd preSplit: mv 103.9 s summed; verify
+  1.5 s, minimize 51.7 s (0 UNSAT, 13 SAT, 5 UNKNOWN), loosen 50.1 s
+  (0 UNSAT, 4 SAT, 5 UNKNOWN). Every minimize/loosen query on zstd failed:
+  ~100 s spent on 10 timeouts that only confirm "keep". Elsewhere mv is
+  small (CryptoSwift 4.0 s, trees 5.1 s, deflate 1.0 s, SHA-256 2.2 s);
+  matmul's 30 s is 3 UNKNOWN verifies (the narrow trigger).
+  => Model-guided pruning (skip a minimize/loosen query when a stored
+  counterexample model already satisfies its candidate set; SAT and UNKNOWN
+  both mean keep, so lossless) targets exactly zstd's cost. Open question:
+  how many of the 10 UNKNOWNs a stored model covers.
 * BUG (pre-existing, found Oct 29) -- FIXED Oct 29: zlib deflate output was
   not deterministic (same logs, a guard on a different load). Root cause:
   Z3 search depended on run-dependent input. (1) Z3 symbols for unnamed IR
