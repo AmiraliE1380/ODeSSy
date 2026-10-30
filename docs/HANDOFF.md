@@ -3795,7 +3795,21 @@ PROGRESS:
   0.48 s. No benefit where the expensive function is a "resolve" entry:
   Julia matmul (33 s) and sha256 (3.4 s), Rust matmul. Cold overhead
   (keys + store): ~+3% summed.
-  NEXT: session 3 (commit replay).
+* Session 3 DONE (Oct 30): commit replay, scripts/run_cache_replay.sh,
+  results/cache/replay_{zlib,zstd}/{modules,commits}.csv. Last 30
+  first-parent commits touching sources, ending at the frozen benchmark
+  versions (zlib e3dc0a8, 14 modules / 80 functions with checks; zstd
+  5c7b7ba from a full clone, 18 modules / 115 functions), Thorough t4, Mac;
+  each commit built with the cache of the previous one, plus a no-cache
+  run. Output IR identical with and without the cache on every module of
+  every commit (zlib 30 x 14, zstd 30 x 18).
+  zlib: hit rate after the seed mean 96.6%, median 100%, min 67.5%; 22/29
+  commits fully cached; ODeSSy time per commit median 2.6 s (max 10.3 s)
+  vs 91.4 s without the cache; 29 commits 91 s vs 2653 s (29x).
+  zstd: hit rate mean 99.4%, min 95.7%; 21/29 fully cached; median 2.9 s
+  (max 5.8 s) vs 50.8 s; total 90 s vs 1474 s (16x).
+  Cost of a change depends on which functions changed (zlib fb8dd62: 9
+  re-solved incl. inflate -> 10.3 s; 9e35567: 26 cheap ones -> 5.4 s).
   TODO (Amir: later, not now): store T3 symbolic-bound guards. Today
   recordDecisions writes "resolve" for any function whose decision has a
   guard with C.Bound set (a SCEV expression such as i <= n - k), so that
