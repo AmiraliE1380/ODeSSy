@@ -1042,7 +1042,8 @@ Alive2~\cite{lopes2021alive2}, which capture how undefined behavior
 spreads through a program. Loaded values are assumed not to be poison: memory holds only values the
 program stored, and poison can be stored only after undefined behavior that
 the source languages either forbid in safe code (Rust, Swift) or check (our
-UBSan specifications). The \texttt{poison-loads} knob drops this assumption.
+UBSan specifications). The \texttt{poison-loads} knob drops this assumption
+(Appendix~\ref{sec:app-defined-memory}).
 
 The query is then $\mathit{Guards} \wedge \mathit{Definitions} \wedge
 c$: satisfiable exactly by the machine states, consistent with
@@ -1964,6 +1965,30 @@ is specific to one benchmark; stdlib GEMM, whose loops the vectorizer
 splits into vector, remainder, and runtime-checked versions, is where
 they matter most: with the heap facts of \S\ref{sec:frame-machinery},
 they take it from 0 to 9 of its 16 trap edges.
+
+\section{Defined-Memory Precondition}
+\label{sec:app-defined-memory}
+LLVM lets a byte of memory hold poison or \texttt{undef} (a stored poison
+value, or uninitialized memory), and a value loaded from such bytes may be
+observed differently by each use: two \texttt{freeze}s of one poison load of
+\texttt{\%A.size} may return different numbers, so a loop bound and a bounds
+check derived from the same load are formally unrelated, and later LLVM
+passes may compile the program accordingly. No intraprocedural analysis can
+exclude this for memory a function receives from its caller. \tool{}
+therefore separates two obligations. The caller is responsible for the
+well-formedness of its inputs: loaded memory, in particular array metadata
+such as lengths, holds defined values. Under this precondition, \tool{}
+proves for each function that every check it removes cannot fire. The
+precondition is the default; the parameter \texttt{poison-loads} drops it
+and treats every loaded value as possibly poison, which makes \tool{}
+faithful to LLVM's semantics without conditions. Safe Julia, Swift, and Rust
+cannot create poison values, and their runtimes always initialize array
+metadata; for C, the precondition amounts to the absence of reads of
+uninitialized memory. Frontends could discharge it in the IR itself by
+marking such loads \texttt{!noundef}, which \tool{} already honors.
+Table~X reports the proofs with and without the precondition; GEMM, for
+example, keeps 9 of its 16 trap edges removed and its full speedup under the
+precondition, and 3 without it.
 
 \section{Configuration Knobs}
 \label{sec:app-knobs}
