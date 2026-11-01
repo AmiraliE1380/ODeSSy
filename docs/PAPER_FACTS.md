@@ -1804,3 +1804,39 @@ results/cache/*.
   Hit rate after the seed: zlib mean 96.6% (22/29 commits fully cached),
   zstd mean 99.4% (21/29).
 
+
+### 11.27 Defined-memory precondition (decision, Nov 1 2026)
+Decision (Amir): input well-formedness is the caller's obligation; ODeSSy
+proves, per function, that each removed check cannot fire under it. Default
+ON (Z3Encoder::LoadsDefined: every load gets P = false); knob `poison-loads`
+turns it off (every load may be poison; LLVM-faithful without conditions).
+The default covers ALL loads, not only array metadata; GEMM is the case
+where it matters (array sizes). Numbers (Mac, HANDOFF §12.4): GEMM 9/16
+checks and the full speedup (4.26x) with the precondition, 3/16 and ~1.0x
+without. Pending: per-benchmark sensitivity table (proofs with/without);
+optional narrowing to caller-provided memory only (HANDOFF: MemorySSA
+store-to-load rule) and counter induction (§12.5).
+
+Paragraph for the paper (appendix, or §5 next to the poison encoding):
+
+> **Defined-memory precondition.** LLVM lets a byte of memory hold poison
+> or `undef` (a stored poison value, or uninitialized memory), and a value
+> loaded from such bytes may be observed differently by each use: two
+> `freeze`s of one poison load of `%A.size` may return different numbers,
+> so a loop bound and a bounds check derived from the same load are
+> formally unrelated, and later LLVM passes may compile the program
+> accordingly. No intraprocedural analysis can exclude this for memory a
+> function receives from its caller. ODeSSy therefore separates two
+> obligations. The caller is responsible for the well-formedness of its
+> inputs: loaded memory, in particular array metadata such as lengths,
+> holds defined values. Under this precondition, ODeSSy proves for each
+> function that every check it removes cannot fire. The precondition is the
+> default; the parameter `poison-loads` drops it and treats every loaded
+> value as possibly poison, which makes ODeSSy faithful to LLVM's semantics
+> without conditions. Safe Julia, Swift and Rust cannot create poison
+> values, and their runtimes always initialize array metadata; for C, the
+> precondition amounts to the absence of reads of uninitialized memory.
+> Frontends could discharge it in the IR itself by marking such loads
+> `!noundef`, which ODeSSy already honors. Table~X reports the proofs with
+> and without the precondition; GEMM, for example, keeps 9 of its 16 checks
+> removed and its full speedup under the precondition, and 3 without it.
