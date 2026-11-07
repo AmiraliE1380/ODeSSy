@@ -1259,6 +1259,27 @@ folds already made in earlier ones. When a verification query contains
 at 32 bits with explicit overflow flags; this is sound only under $H$,
 which bounds the inputs, so it is used only to certify guards.
 
+\subsection{Incremental Compilation}
+\label{sec:cache}
+A build recompiles a module whenever any of its functions changes, yet most
+of the module's functions are the same as in the previous build. \tool{}
+therefore keeps an optional per-function \emph{verdict cache}. Its key is a
+SHA-256 hash over a normalized form of the function (value and block names
+numbered, debug information dropped, metadata and attributes compared by
+content), over what the function sees outside itself (its callees'
+declarations and attributes, the globals it references, the data layout and
+target), and over the configuration that can change a decision (the pass
+parameters, \tool{}'s own version, and the LLVM and Z3 versions). The cache
+stores \tool{}'s decisions for the function, not its formulas: which checks
+are removed, and which loops are cloned under which guards. On a hit,
+\tool{} skips the analyses, the encoding, and the solver for that function
+and replays the stored decisions through the same transformation code.
+Every entry also stores the normalized function, which is compared on each
+hit, so a hash collision can never apply one function's decisions to
+another, and a compile with a warm cache produces the same IR, byte for
+byte, as a compile without it. The cache is off by default and lives in a
+directory that concurrent compilers can share.
+
 \subsection{Debug Mode}
 \label{sec:audit}
 We take multiple measures to ensure the absence of data races,
@@ -1575,6 +1596,23 @@ at most $2.0\times$, reached at four workers. The figure is measured
 without inductive encoding, whose fact import is also serial and would
 confound the two dials.
 
+\paragraph{Incremental compilation.}
+The verdict cache (\S\ref{sec:cache}) removes most of this cost from the
+edit--compile loop. We replayed the last \textbf{??} commits that change
+the sources of zlib and of zstd, compiling each commit with the cache left
+by the previous one, and compared every module's output with a compile
+without the cache: they are identical in every module of every commit.
+Under Thorough, \tool{} takes a median of \textbf{??}\,s on zlib and
+\textbf{??}\,s on zstd per commit without the cache. With a warm cache, a
+commit that changes checked code takes \textbf{??}\,s and \textbf{??}\,s
+(\textbf{??}$\times$ and \textbf{??}$\times$ faster), and a rebuild of
+unchanged checked code takes \textbf{??}\,s and \textbf{??}\,s
+(\textbf{??}$\times$ and \textbf{??}$\times$). Keying and recording cost
+a cold compile \textbf{??}\,\% over all benchmarks. For a developer, the
+first compile of a project pays \tool{}'s full cost once; every later
+compile in the edit loop pays only for the functions that changed.
+Appendix~\ref{sec:app-cache} gives the per-module and per-commit results.
+
 \paragraph{How to use \tool{}.}
 A developer can use either configuration in the edit--compile loop,
 since builds recompile only the module that changed and per-module
@@ -1751,8 +1789,10 @@ We develop and extend super-analysis, an alternative paradigm of aggressive comp
 The \tool{} pass, the benchmark sources and inputs, the harnesses that
 build and time them, the scripts that produce every table and figure, and
 the raw per-repetition measurements are available at
-\url{https://github.com/AmiraliE1380/ODeSSy}. A Docker image that rebuilds
-the pass and reruns the evaluation will be archived with a DOI.
+\url{https://github.com/AmiraliE1380/ODeSSy}, together with the pinned
+toolchain versions and instructions to rebuild the environment. A Docker
+image that rebuilds the pass and reruns the evaluation will be provided for
+artifact evaluation.
 %% =====================================================================
 \begin{acks}
 Experiments were run on CloudLab~\cite{cloudlab}. The authors used Claude
@@ -2054,6 +2094,48 @@ compared check by check.\\
 \bottomrule
 \end{tabular}}
 \end{table}
+
+\section{Verdict Cache Results}
+\label{sec:app-cache}
+Thorough configuration, \textbf{??} threads, on the \texttt{c220g2} node.
+For each repository we replayed the last \textbf{??} first-parent commits
+that change its sources, ending at the benchmark versions; each commit is
+compiled with the cache left by the previous one (the first commit only
+fills it) and once without a cache. Times are medians over the replayed
+commits; ratios are speedups over the compile without a cache. A row's
+\emph{changed} column uses the commits that changed that row's checked
+functions, the \emph{identical} column the commits that did not; a dash
+means no replayed commit changed that module.
+
+\begin{table}[h]
+\centering\small
+\caption{\tool{} time per commit with and without the verdict cache.}
+\label{tab:cache-replay}
+\begin{tabular}{lrrr}
+\toprule
+Benchmark & No cache & Changed, warm cache & Identical, warm cache\\
+\midrule
+zlib (whole library) & \textbf{??}\,s & \textbf{??}\,s (\textbf{??}$\times$) & \textbf{??}\,s (\textbf{??}$\times$)\\
+\quad \texttt{trees} & \textbf{??}\,s & \textbf{??} & \textbf{??}\\
+\quad \texttt{adler32} & \textbf{??}\,s & \textbf{??} & \textbf{??}\\
+\quad \texttt{inflate} & \textbf{??}\,s & \textbf{??} & \textbf{??}\\
+\quad \texttt{deflate} & \textbf{??}\,s & \textbf{??} & \textbf{??}\\
+zstd (whole library) & \textbf{??}\,s & \textbf{??}\,s (\textbf{??}$\times$) & \textbf{??}\,s (\textbf{??}$\times$)\\
+\quad \texttt{zstd\_preSplit} & \textbf{??}\,s & \textbf{??} & \textbf{??}\\
+\quad \texttt{divsufsort} & \textbf{??}\,s & \textbf{??} & \textbf{??}\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Over the replayed commits, \textbf{??}\,\% of zlib's and \textbf{??}\,\% of
+zstd's checked functions were served from the cache, and \textbf{??} and
+\textbf{??} of the \textbf{??} commits needed no solving at all. On an
+identical rebuild of every benchmark, the warm compile's IR equals the
+cold compile's and the uncached compile's on all \textbf{??} inputs; summed
+over them, \tool{} takes \textbf{??}\,s without the cache, \textbf{??}\,s cold
+(keying and recording included), and \textbf{??}\,s warm. Functions whose
+guard has a symbolic bound (template T3) are not stored and are solved
+again on every compile; this is why Julia matmul and SHA-256 do not benefit.
 
 \section{M-series Results}
 \label{sec:app-mseries}
