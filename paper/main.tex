@@ -220,7 +220,7 @@
 }
 \end{filecontents*}
 %%
-\documentclass[acmsmall,screen,review,anonymous]{acmart}
+\documentclass[acmsmall,screen,nonacm]{acmart}
 %% acmsmall defaults to numeric citations; sigplan defaulted to author-year.
 \citestyle{acmauthoryear}
 \AtBeginDocument{\providecommand\BibTeX{{Bib\TeX}}}
@@ -282,10 +282,13 @@
 \newcommand{\FIGURE}[1]{\begin{center}\fbox{\parbox{0.9\linewidth}{\centering\vspace{2em}\textit{[Figure placeholder: #1]}\vspace{2em}}}\end{center}}
 \begin{document}
 \title[Super-Analysis for Compiler Optimization]{Super-Analysis for Aggressive yet Scalable Compiler Optimization}
-\author{Anonymous Author(s)}
-\affiliation{\institution{Anonymous Institution}\city{City}\country{Country}}
-\email{anonymous@example.com}
-\renewcommand{\shortauthors}{Anon. et al.}
+\author{Amirali Ebrahimzadeh}
+\affiliation{\institution{University of Michigan}\city{Ann Arbor}\state{MI}\country{USA}}
+\email{amiralie@umich.edu}
+\author{Amir Shaikhha}
+\affiliation{\institution{TU Darmstadt}\city{Darmstadt}\country{Germany}}
+\email{amir.shaikhha@tu-darmstadt.de}
+\renewcommand{\shortauthors}{Ebrahimzadeh and Shaikhha}
 \begin{abstract}
 Aggressive compiler optimization today occupies two distant extremes.
 Conventional optimizers run in milliseconds but reason through ad-hoc
@@ -1746,12 +1749,17 @@ We develop and extend super-analysis, an alternative paradigm of aggressive comp
 %% =====================================================================
 \section*{Data-Availability Statement}
 The \tool{} pass, the benchmark sources and inputs, the harnesses that
-build and time them, the scripts that produce every table and figure,
-and the raw per-repetition measurements will be submitted for Artifact
-Evaluation and archived in a public repository with a DOI.
+build and time them, the scripts that produce every table and figure, and
+the raw per-repetition measurements are available at
+\url{https://github.com/AmiraliE1380/ODeSSy}. A Docker image that rebuilds
+the pass and reruns the evaluation will be archived with a DOI.
 %% =====================================================================
 \begin{acks}
-%% Anonymized for review.
+Experiments were run on CloudLab~\cite{cloudlab}. The authors used Claude
+(Anthropic), an AI assistant, to help write parts of \tool{}'s code, the
+experiment scripts, and the manuscript's text. The authors designed the
+approach and the experiments, checked every result, and take full
+responsibility for the paper's content.
 \end{acks}
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{odessy}
