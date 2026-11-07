@@ -297,3 +297,59 @@ Imaging deletes the home directory, so on every new node also restore it:
 
 then follow section 2 (unpack the three /mydata tarballs, `git pull`, `scripts/check_env.sh`).
 Restoring a working node from this image takes about 1-2 hours.
+
+## 9. NOV 2026 IMAGE -- `dessy-c220g2-oct26` (START HERE; verified Nov 6 on c220g2-011020)
+
+Image URN (note the missing "o", it is the real name):
+`urn:publicid:IDN+wisc.cloudlab.us+image+odessy-PG0:dessy-c220g2-oct26` (8.6 GB).
+Profile `odessy-c220g2-nov26` (geni-lib): one RawPC, hardware_type c220g2, this
+disk_image, `node.Blockstore("bs", "/mydata")` with size "0GB" (= all space).
+Campaign reservation: Wisconsin c220g2 x1, Nov 7 8:00 PM - Nov 12 6:00 PM 2026
+(the profile instantiated inside the window counts against it; extend the
+experiment up to the reservation end right after it boots).
+
+Admission control: a request fails ("resource reservation violation") if its
+whole duration overlaps other projects' reservations, even when nodes are idle
+now. Set the duration so it ends before the next busy window, and check the
+expiry on the status page (the first two attempts silently kept 16 h).
+
+Setup on a fresh node, about 30 min:
+```bash
+# 1. /mydata: the boot-time blockstore can come up PARTIAL (LV emulab/bs over
+#    sda4 + sdb, sdb relabelled with a new PV uuid -> "missing PV", LV not
+#    activated, /mydata left on the 63 GB root). Check: df -h /mydata (must be
+#    ~2.1T). If not, rebuild (nothing is stored there on a fresh node):
+sudo vgreduce --removemissing --force emulab
+sudo vgextend emulab /dev/sdb
+sudo lvcreate -y -l 100%FREE -n bs emulab
+sudo mkfs.ext4 -q /dev/emulab/bs
+sudo mount /dev/emulab/bs /mydata && sudo chown $USER /mydata
+#    (do this BEFORE restoring; never add an /etc/fstab line: boot loop, §7)
+
+# 2. Restore toolchains and benchmarks
+sudo tar xf  /opt/odessy-preserve/swift-toolchain.tar -C /mydata
+sudo tar xf  /opt/odessy-preserve/benchmarks.tar      -C /mydata
+tar xzf /opt/odessy-preserve/home-toolchains.tgz -C "$HOME"
+sudo chown -R $USER /mydata
+export PATH=/mydata/swift-toolchain/usr/bin:/opt/llvm/bin:$HOME/.juliaup/bin:$HOME/.cargo/bin:$PATH
+
+# 3. Repo: FRESH CLONE (the tarball snapshot is from Sep 30 and `git pull`
+#    aborts on untracked files that were committed later)
+git clone https://github.com/AmiraliE1380/ODeSSy.git /mydata/ODeSSy
+cd /mydata/ODeSSy && git checkout oopsla-research
+
+# 4. Pin toolchains (juliaup moves "release" to 1.13.x on first launch)
+juliaup add 1.12.6 && juliaup default 1.12.6 && juliaup config versionsdbupdateinterval 0
+rustup toolchain install 1.97.1 --profile minimal && rustup default 1.97.1
+
+# 5. Build, test, check
+cmake -S . -B build -G Ninja -DLLVM_DIR=/opt/llvm/lib/cmake/llvm && ninja -C build
+bash scripts/run_tests.sh               # PASS=30 FAIL=12
+python3 tests/cache/run_key_tests.py    # 26/26 passed
+bash scripts/check_env.sh               # only DIFF allowed: turbo (set before timing)
+echo 1 | sudo tee /sys/devices/system/cpu/intel_pstate/no_turbo
+```
+Nov 6 check on c220g2-011020: all check_env rows OK (LLVM 23.0.0git @ 3cab3bc6,
+clang 21 from the Swift toolchain, Swift 6.3.3, Julia 1.12.6 pinned, Rust 1.97.1,
+Z3 4.8.12, oopsla-research @ d023fec); tests 30/12, cache key tests 26/26;
+/mydata 2.1 TB after the LVM rebuild.
