@@ -3583,6 +3583,17 @@ invariant), not assume one to get the other. Prediction: recovers 3-5 of the
 5 gemm edges still lost with loads-defined, and the same pattern elsewhere.
 Estimate: 1-2 days implementation, 1 day validation (tripwires, static rerun).
 Does not remove the need for the loads assumption on gemm's size loads.
+DEFERRED (Amir, Nov 6 2026): not before arXiv; revisit after the OOPSLA
+Precondition sensitivity (Mac, Nov 6, Thorough t4, 71 inputs;
+results/static/poison_loads_mac_1106/counts.txt; default -> poison-loads):
+changes only in GEMM removed 9 -> 3; CryptoSwift removed 274 -> 262 and
+guarded 109 -> 112; zlib inflate removed 15 -> 14; zstd fastcover guarded
+1 -> 0. Total removed 725 -> 700, guarded 217 -> 219. GEMM's two size loads
+(jl_gemm_base.ll lines 50, 271) carry no !noundef and feed freezes
+(.copyload.fr), confirming the appendix paragraph.
+reviews. Expected effect on GEMM (guess): 9 -> ~12-14/16 proofs with the
+defined-memory precondition, no extra speed (the old 14-proof build ran at
+4.25x, the same as 9 proofs); ~4-5/16 and ~1.0x without the precondition.
 
 ### 12.6 Paper changes made (uncommitted in the main tree)
 * Table 1 (tab:encoding): caption defines P and cites lee2017taming and
@@ -4006,7 +4017,7 @@ BASIC, 50 by induction).
 | 3 | Model-guided guard-synthesis pruning (§13.4) | DONE: lossless, identical IR on 23 inputs, but no time saved (zstd's cost is timeouts); option: shorter minimize/loosen budget |
 | 4 | Per-function verdict cache + commit-replay experiment (§13.5) | biggest lever; Fast and Thorough are Z3-bound |
 | 5 | Induction: settle sequential vs ind-par on the server (see box); optional single delayed/idle-core ind lane | before any latency campaign |
-| 6 | poison-loads sensitivity numbers; optional §12.5 induction | |
+| 6 | poison-loads sensitivity numbers (Table X in the paper appendix) | §12.5 counter induction DEFERRED to after the reviews |
 | 7 | Rerun all experiments on one recorded node; CIs; fact-source ablation; note timeout-sensitive results (Julia lz77 loosening ~6 s of 10 s) | |
 | 8 | Paper pass and de-anonymization; Docker artifact (§13.7) | |
 | - | [Amir] inspect soundness of the narrow mechanism (§13.7) | side note |
