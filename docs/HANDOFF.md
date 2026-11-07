@@ -3617,6 +3617,73 @@ defined-memory precondition, no extra speed (the old 14-proof build ran at
 * Decide on the loads-defined assumption (knob + paper sentence citing
   lee2018reconciling) and on the §12.5 induction.
 
+### 12.8 GEMM and the defined-memory precondition: discussion record (Nov 1-6 2026)
+Summary of the discussions with Amir; decisions marked DECISION.
+* Poison vs UB. UB: the execution has no meaning (division by zero, OOB
+  write, branching on poison). Poison: an invalid VALUE (add nsw overflow,
+  oversized shift, gep inbounds OOB) that propagates through arithmetic and
+  becomes UB only at a sensitive use (branch, divisor, address, noundef
+  argument); freeze turns it into an arbitrary legal value, independently at
+  each freeze. undef: older, arbitrary per use; LangRef (our LLVM 23 trunk)
+  still says an uninitialized load gives undef (not poison, as first stated).
+* LLVM treats a plain load as POSSIBLY poison/undef unless proven otherwise
+  (!noundef, or a known store of a defined value); isGuaranteedNotToBePoison
+  is false for unmarked loads. An "unknown" value (one fixed number, all uses
+  agree) is how ODeSSy models a normal load; poison is weaker (each use may
+  differ). For ordinary initialized memory all reads agree.
+* GEMM's problem is freeze: its two array-size loads (jl_gemm_base.ll lines
+  50, 271) carry no !noundef and feed freezes (.copyload.fr). Without freeze,
+  a poison size in a branch would be UB and ODeSSy could assume it defined;
+  with freeze, the loop bound and the bounds check may see different numbers
+  and "loop bound => check passes" fails. No intraprocedural analysis can fix
+  this: the caller (Julia runtime) wrote the header. Fixes live outside the
+  function: frontend !noundef (cleanest; suggestion to Julia), whole-program
+  analysis (runtime is not IR), or a stated precondition.
+* How poison/undef could reach memory: a stored poison value, uninitialized
+  memory, or a DATA RACE (a racing non-atomic load returns undef). Separate
+  processes do not share the Julia heap. For array headers: the runtime always
+  writes them; a Matrix cannot be resized; only unsafe code or a racy resize!
+  of a Vector could change one during a call.
+* Only failure scenario of removing a check under the precondition: thread 2
+  shrinks a Vector while thread 1 loops over it; the loop bound used the old
+  size, the check would have caught i >= newsize, the removed check lets an
+  OOB access through. Impossible for GEMM in safe Julia (Matrix arguments).
+  Same contract LLVM already assumes (non-atomic code is race-free; LICM and
+  load reuse change racy programs the same way); Julia's manual makes race
+  freedom the programmer's responsibility.
+* DECISION (Amir, agreed): input well-formedness is the caller's obligation;
+  ODeSSy proves each removed check cannot fire under it. Default ON
+  (Z3Encoder::LoadsDefined); poison-loads turns it off. Paper: appendix
+  "Defined-Memory Precondition" (sec:app-defined-memory; Table X pending),
+  pointer from §5; PAPER_FACTS §11.27 holds the paragraph.
+* DECISION (Amir, agreed) -- informal argument for the paper: the benchmark
+  is the 3-loop kernel of Julia's LinearAlgebra.generic_matmatmul! with its
+  @inbounds stripped (native_bench/jl_gemm_base.jl). Base checks the three
+  matrices' dimensions once and then runs the loops @inbounds: its authors
+  already assume the metadata is defined and preserved during this
+  sequential call (no concurrent or unsafe header changes). Our precondition
+  is that assumption made explicit; ODeSSy then proves the @inbounds the
+  authors asserted by hand. Nuance: in code the precondition covers ALL
+  loads in all benchmarks; the @inbounds argument justifies the Julia
+  kernels (and safe Swift/Rust follow from the language); for C the
+  justification is race freedom and no uninitialized reads.
+* Sensitivity (Mac static, Nov 6; results/static/poison_loads_mac_1106):
+  precondition off changes only GEMM (removed 9 -> 3), CryptoSwift (274 ->
+  262 removed, 109 -> 112 guarded), zlib inflate (15 -> 14), zstd fastcover
+  (1 guard -> 0); 942 -> 919 proofs over 71 inputs. Runtime with the
+  precondition off: GEMM ~1.0x (no access freed). CryptoSwift has ~0 ceiling
+  on the Mac, so its sensitivity must be measured on the server (x86 ceiling
+  1.196x, measured 0.928x).
+* GEMM matrix (proofs of 16 / speedup):
+  precondition OFF, no counter induction: 3, ~1.00x (measured proofs;
+  speedup = checked baseline). ON, no induction: 9, 4.26x Mac / 3.91x
+  (campaign node) / 3.20x (newer node), measured. OFF + induction: ~4-5,
+  ~1.0x (guess). ON + induction: ~12-14 (guess), ~4.25x (backed by the old
+  14-proof build measuring 4.25x). Counter induction (§12.5) DEFERRED.
+* Deferred until after the OOPSLA reviews: counter induction (§12.5),
+  MemorySSA store-to-load rule (narrows the precondition to caller-provided
+  memory), Alive2 validation, Julia JIT integration.
+
 ## 13. After the OOPSLA'27 R1 submission: next steps (Oct 27 2026)
 
 Submitted Oct 14 2026 as OOPSLA'27 paper #366 (main PDF 24 pp, appendix +
