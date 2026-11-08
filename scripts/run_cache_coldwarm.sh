@@ -20,7 +20,7 @@ run() { # name input traps
   echo "$1 nocache=${t_nocache}s cold=${t_cold}s warm=${t_warm}s warm_hits=$h warm_misses=$m resolve_entries=$r warm==cold:$wc_ warm==nocache:$wn"
 }
 for d in results/static/guard_ablation_0927/*_*/; do k=$(basename $d); case $k in Rust*) TR=";traps=panic:odessy.chk";; Julia*) TR=";traps=bounds_error:boundserror:odessy.chk";; *) TR=";traps=odessy.chk";; esac; run $k $d/tag.ll "$TR"; done
-for n in sha256 jl_gemm_base matmul lz77; do run jl_$n logs/julia_triage/$n.ll ";traps=bounds_error:boundserror"; done
+for n in sha256 jl_gemm_base matmul lz77; do [ -s logs/julia_triage/$n.ll ] && run jl_$n logs/julia_triage/$n.ll ";traps=bounds_error:boundserror"; done   # Mac-emitted IR; absent on the server (the x86 Julia kernels are among the ablation inputs)
 D=results/static/pipeline_cost_par/ir
 for f in $(ls $D | grep -E "^(zstd|zlib)_[a-zA-Z0-9_]+\.ll$"); do run ${f%.ll} $D/$f ""; done
 run swift_cryptoswift $D/swift_cryptoswift.ll ""
