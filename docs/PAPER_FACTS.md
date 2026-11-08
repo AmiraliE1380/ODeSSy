@@ -1906,3 +1906,22 @@ GEMM N=512 process-to-process variance (Nov 8; gap_*.log): arms script
 reports the median of the three dedicated runs, 3.778x (range 3.597-3.972x),
 ceiling 4.154x (3.984-4.206x), footnote f; body numbers 3.78x / 4.15x.
 
+### 11.29 Server compile latency 1108 (c220g2-010623, Nov 8 2026) -- SUPERSEDES the submission's RQ3
+results/static/compile_cost_1108 (Fast/Thorough/light, 10 threads; mv-par
+default, ind sequential), pipeline_cost_1108, evaluation/dial_matrix_x86_1108.csv
+(heavy;frame;mv;narrow on the runtime-build deflate.c), results/perf/fast_tier_1108.
+Kernels: Thorough median 1.6 s (10/14 < 10 s; slowest Julia matmul 42.7 s,
+SHA-256 42.2 s), Fast median 0.36 s, max 0.60 s. Repos Thorough/Fast:
+CryptoSwift 116/63 s, zstd 77/17 s, zlib 347/140 s (trees 220/103 s).
+Modules: medians zlib 4.2/1.1 s, zstd 1.3/0.36 s; 25 (Thorough) / 30 (Fast)
+of 32 under 10 s. Proofs 885 Thorough, 382 Fast (43%).
+Whole compile vs baseline: Thorough median 3.49x, geomean 3.60x, range
+1.50-44.4x; Fast 1.49x / 1.83x / 1.27-18.6x (13 benchmarks).
+Dial: 1 thread 10 s 79.5 s (54 proofs) -> 8 threads 19.3 s (53), 4.1x;
+corner to 8 threads / 10 ms 11.9 s (29 proofs), 6.7x; 16 threads no gain.
+Query latencies (Thorough logs, 10 threads, 5,056 queries incl. trees.c):
+proofs median 7.8 ms, 75% within 100 ms, 93% within 1 s; refutations
+median 6.6 ms; 39 UNKNOWN.
+Fast-tier runtime: Rust matmul 1.312x, adler32 1.036x (Fast keeps 1 of 2
+proofs), md5 0.983x, sha1 0.956x.
+

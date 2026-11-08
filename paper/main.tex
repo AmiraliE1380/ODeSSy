@@ -1561,18 +1561,18 @@ Table~\ref{tab:compile} (Appendix~\ref{sec:app-full}) gives the \tool{}
 stage time of both configurations on every benchmark of
 Table~\ref{tab:speedups}; we summarize it here. On the 14 kernels,
 \emph{Thorough}, the configuration behind our speedup table, takes a
-median of 2.3\,s, and 11 of them compile in under 10\,s; the slowest is
-Julia SHA-256, at 128\,s. \emph{Fast} takes a median of 0.53\,s and at
-most 2.3\,s, against about 0.1\,s for a conventional \texttt{-O3}. On
-the three repositories Thorough takes 147\,s (CryptoSwift), 117\,s
-(zstd), and 1624\,s (zlib), and Fast 70\,s, 33\,s, and 539\,s. These are massive repositories, and a developer often cares more about per-module latency as each module is compiled individually in the development loop. The median zlib module takes 5.0\,s
-under Thorough and 1.6\,s under Fast, the median zstd module 1.4\,s
-and 0.41\,s, and 24 of the 32 modules compile in under 10\,s under
-Thorough, 29 under Fast. Zlib's \texttt{trees.c} is an outlier which takes
-1485\,s under Thorough and 496\,s under Fast; Figure~\ref{fig:modules}
+median of 1.6\,s, and 10 of them compile in under 10\,s; the slowest are
+Julia matmul and SHA-256, at 43\,s and 42\,s. \emph{Fast} takes a median of 0.36\,s and at
+most 0.60\,s, against about 0.1\,s for a conventional \texttt{-O3}. On
+the three repositories Thorough takes 116\,s (CryptoSwift), 77\,s
+(zstd), and 347\,s (zlib), and Fast 63\,s, 17\,s, and 140\,s. These are massive repositories, and a developer often cares more about per-module latency as each module is compiled individually in the development loop. The median zlib module takes 4.2\,s
+under Thorough and 1.1\,s under Fast, the median zstd module 1.3\,s
+and 0.36\,s, and 25 of the 32 modules compile in under 10\,s under
+Thorough, 30 under Fast. Zlib's \texttt{trees.c} is an outlier which takes
+220\,s under Thorough and 103\,s under Fast; Figure~\ref{fig:modules}
 (Appendix~\ref{sec:app-full}) shows the full per-module distribution.
-The two dials trade that cost for proofs. \emph{Fast} keeps 380 of
-Thorough's 885 proofs (\pct{43}) at a third of zlib's cost. 
+The two dials trade that cost for proofs. \emph{Fast} keeps 382 of
+Thorough's 885 proofs (\pct{43}) at two fifths of zlib's cost. 
 
 \paragraph{Whole-compile cost.}
 The latency that matters for a developer is the entire compile pipeline's time, not of
@@ -1583,10 +1583,10 @@ against \texttt{-O3} alone would therefore overstate the cost. We timed
 every stage of the two pipelines the runtime experiments use, per module,
 on the 13 benchmarks whose pipeline can take the pass output: the baseline (optimizing front end, \texttt{-O3}, code
 generation) and the same pipeline with \tool{} sandwiched between two 
-\texttt{-O3} runs. The median whole compile with \tool{} takes $1.46\times$ the
-time of the baseline under Fast and $4.39\times$ under Thorough
-(geometric means $2.33\times$ and $4.75\times$; ranges
-$1.29$--$65.5\times$ and $1.49$--$209\times$). These are the numbers a
+\texttt{-O3} runs. The median whole compile with \tool{} takes $1.49\times$ the
+time of the baseline under Fast and $3.49\times$ under Thorough
+(geometric means $1.83\times$ and $3.60\times$; ranges
+$1.27$--$18.6\times$ and $1.50$--$44.4\times$). These are the numbers a
 developer actually waits for, front end and code generation included,
 and they are reasonable for an online pass: a typical build with Fast takes
 little more than a conventional one, and even Thorough stays within a
@@ -1594,13 +1594,14 @@ small factor of it.
 
 \paragraph{Parallelism and timeouts.}
 Both dials make both configurations faster (Figure~\ref{fig:matrix}, zlib's
-\texttt{deflate.c}). A strict per-query budget costs few proofs: \pct{98}
-of them survive 1\,s and \pct{91} survive 100\,ms, because most queries
+\texttt{deflate.c}). A strict per-query budget costs few proofs: \pct{93}
+of them finish within 1\,s and \pct{75} within 100\,ms, because most queries
 finish in milliseconds (Figure~\ref{fig:latency},
-Appendix~\ref{sec:app-full}). Parallelism has a limit: discovery, fact
-import, and the many queries guard synthesis poses for each trap run
-largely in series, so threads and budgets together speed \tool{} up by
-at most $2.0\times$, reached at four workers. The figure is measured
+Appendix~\ref{sec:app-full}). Parallelism alone speeds \tool{} up by
+$4.1\times$ at eight workers with one proof lost (79.5\,s to 19.3\,s at
+10\,s per query), and threads and budgets together by $6.7\times$ (to
+11.9\,s at eight workers and 10\,ms). It has a limit: discovery and fact
+import run in series, so a sixteenth worker gains nothing over eight. The figure is measured
 without inductive encoding, whose fact import is also serial and would
 confound the two dials.
 
@@ -1624,27 +1625,27 @@ Appendix~\ref{sec:app-cache} gives the per-module and per-commit results.
 \paragraph{How to use \tool{}.}
 A developer can use either configuration in the edit--compile loop,
 since builds recompile only the module that changed and per-module
-latency is modest: the median module takes 5.0\,s (zlib) and 1.4\,s
-(zstd) under Thorough, and the libraries' main modules under half a
+latency is modest: the median module takes 4.2\,s (zlib) and 1.3\,s
+(zstd) under Thorough, and the libraries' main modules under a
 minute. For larger modules and whole code bases, Fast remains cheap ---
-every kernel in under 2.3\,s, zstd and CryptoSwift in 33\,s and 70\,s;
+every kernel in under 0.6\,s, zstd and CryptoSwift in 17\,s and 63\,s;
 where Thorough is too slow, the developer iterates with Fast and builds
 the final binary with Thorough, the same trade release builds already
 make with link-time and profile-guided optimization. Fast is not a
 straw man: where it keeps Thorough's proofs it keeps Thorough's
-speedups, $1.336\times$ on Rust matmul (Table~\ref{tab:fast},
+speedups, $1.312\times$ on Rust matmul (Table~\ref{tab:fast},
 Appendix~\ref{sec:app-full}).
 \begin{figure}
 \centering
 \includegraphics[width=\columnwidth]{dial_matrix_x86_current.pdf}
-\caption{\tool{}'s latency for zlib's \texttt{deflate.c} with sweep over number of threads vs solver timeout. The configuration is Thorough without inductive encoding. Multi-threading and strict timeouts can make \tool{} up to $2.0\times$ faster. A strict timeout of 10ms will preserve a majority of proofs. Parallelism is a more effective measure for reducing latency without losing proofs.}
-\Description{A five-by-five heatmap, rows are 1, 2, 4, 8 and 10 worker
+\caption{\tool{}'s latency for zlib's \texttt{deflate.c} with sweep over number of threads vs solver timeout. The configuration is Thorough without inductive encoding. Multi-threading and strict timeouts can make \tool{} up to $6.7\times$ faster. A strict timeout of 10\,ms keeps about half of the proofs. Parallelism is the more effective measure for reducing latency without losing proofs: eight workers are $4.1\times$ faster at the full 10\,s budget.}
+\Description{A five-by-five heatmap, rows are 1, 2, 4, 8 and 16 worker
 threads, columns are per-query timeouts from 1 millisecond to 10
 seconds. Cells are colored from red for slow to green for fast on a log
 scale and annotated with wall-clock seconds and proof counts. Wall-clock
-falls from 34.4 seconds at one thread and 1 second to 17.2
-seconds at four threads and 1 millisecond; proof counts rise left to
-right from about 20 to 65 in every row.}
+falls from 79.5 seconds at one thread and 10 seconds to 11.9
+seconds at eight threads and 10 milliseconds; proof counts rise left to
+right from about 3 to 9 at 1 millisecond to 53 or 54 at 10 seconds.}
 \label{fig:matrix}
 \end{figure}
 \subsection{RQ4: How does super-analysis compare with superoptimization?}
@@ -1889,18 +1890,18 @@ as Table~\ref{tab:speedups}.
 \caption{Fast against Thorough at runtime (x86 c220g2, medians of 30
 shuffled repetitions, byte-identical output, noise floors within
 $1.00\pm0.001\times$). Each Fast build removes exactly the checks of the
-Thorough build. ``Replicate'' is an independent Thorough run of the same
-campaign.}
+Thorough build, except adler32's, which keeps the guarded one. ``Replicate'' is an independent Thorough run on the same
+node.}
 \label{tab:fast}
 \small
 \begin{tabular}{llrrr}
 \toprule
 Benchmark & Checks removed & Fast & Thorough & Thorough, replicate\\
 \midrule
-matmul (Rust) & 0 (+2 guarded) & $1.336\times$ & $1.382\times$ & $1.373\times$\\
-adler32 (Swift) & 1 (+1 guarded) & $1.039\times$ & $1.031\times$ & $1.034\times$\\
+matmul (Rust) & 0 (+2 guarded) & $1.312\times$ & $1.453\times$ & ---\\
+adler32 (Swift) & 1 (+1 guarded) & $1.036\times$ & $1.039\times$ & $1.038\times$\\
 md5 (Swift) & 1 & $0.983\times$ & $0.983\times$ & $0.983\times$\\
-sha1 (Swift) & 2 & $0.953\times$ & $0.956\times$ & $0.954\times$\\
+sha1 (Swift) & 2 & $0.956\times$ & $0.956\times$ & $0.955\times$\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1923,26 +1924,26 @@ on 10 threads, without inductive encoding. For zlib and zstd the time reported i
  & & & & \multicolumn{2}{c|}{Thorough} & \multicolumn{2}{c}{Fast}\\
 Benchmark & Front end & Checks & \texttt{-O3} & Time & Proofs & Time & Proofs\\
 \midrule
-gemm, stdlib & Julia & 16 & 0.05 & 9.9 & 9 & 0.38 & 8\\
-lz77 & Julia & 4 & 0.03 & 20.2 & 2 & 0.14 & 0\\
-matmul & Julia & 3 & 0.02 & 95.3 & 3 & 0.57 & 0\\
-sha256 & Julia & 16 & 0.06 & 128 & 11 & 2.29 & 0\\
-lz77 & Rust & 4 & 0.04 & 2.4 & 2 & 0.62 & 0\\
-matmul & Rust & 4 & 0.04 & 2.1 & 2 & 0.49 & 2\\
-sha256 & Swift & 36 & 0.11 & 1.3 & 8 & 0.63 & 1\\
-base64 & Swift & 27 & 0.09 & 2.6 & 7 & 0.66 & 0\\
-lz77 & Swift & 27 & 0.10 & 7.6 & 7 & 0.42 & 3\\
-crc32 & Swift & 37 & 0.10 & 1.5 & 11 & 0.66 & 0\\
-adler32 & Swift & 38 & 0.10 & 1.3 & 2 & 0.61 & 2\\
-sha1 & Swift & 24 & 0.11 & 0.7 & 2 & 0.40 & 2\\
-md5 & Swift & 25 & 0.11 & 0.8 & 1 & 0.42 & 1\\
-utf8 validator & Swift & 21 & 0.09 & 0.5 & 4 & 0.29 & 2\\
+gemm, stdlib & Julia & 16 & 0.05 & 11.1 & 9 & 0.36 & 8\\
+lz77 & Julia & 4 & 0.04 & 20.2 & 2 & 0.13 & 0\\
+matmul & Julia & 3 & 0.02 & 42.7 & 3 & 0.17 & 0\\
+sha256 & Julia & 16 & 0.06 & 42.2 & 8 & 0.55 & 0\\
+lz77 & Rust & 4 & 0.04 & 1.8 & 2 & 0.13 & 0\\
+matmul & Rust & 4 & 0.04 & 0.6 & 2 & 0.17 & 2\\
+sha256 & Swift & 36 & 0.11 & 1.3 & 8 & 0.54 & 1\\
+base64 & Swift & 27 & 0.09 & 4.8 & 7 & 0.57 & 0\\
+lz77 & Swift & 27 & 0.10 & 5.2 & 7 & 0.36 & 3\\
+crc32 & Swift & 37 & 0.11 & 1.4 & 11 & 0.60 & 0\\
+adler32 & Swift & 38 & 0.10 & 1.3 & 2 & 0.56 & 1\\
+sha1 & Swift & 24 & 0.12 & 0.7 & 2 & 0.36 & 2\\
+md5 & Swift & 25 & 0.11 & 0.8 & 1 & 0.40 & 1\\
+utf8 validator & Swift & 21 & 0.09 & 0.5 & 4 & 0.28 & 2\\
 \midrule
-CryptoSwift & Swift & 2696 & 4.90 & 147 & 373 & 69.7 & 147\\
-zstd, 18 modules & C & 606 & 8.87 & 117 (52) & 153 & 33.3 (17.4) & 93\\
-zlib, 14 modules & C & 1554 & 2.31 & 1624 (1485) & 288 & 539 (496) & 119\\
+CryptoSwift & Swift & 2696 & 4.75 & 116 & 378 & 63.1 & 150\\
+zstd, 18 modules & C & 606 & 8.77 & 76.6 (33.8) & 151 & 16.8 (6.4) & 92\\
+zlib, 14 modules & C & 1554 & 2.23 & 347 (220) & 288 & 140 (103) & 120\\
 \midrule
-Total & & 5138 & & & 885 & & 380\\
+Total & & 5138 & & & 885 & & 382\\
 \bottomrule
 \end{tabular}}
 \end{table}
@@ -1951,8 +1952,8 @@ Total & & 5138 & & & 885 & & 380\\
 \includegraphics[width=\textwidth]{module_latency.pdf}
 \caption{Per-module \tool{} stage time for the two C libraries, modules
 sorted by Thorough time, 10 threads for each tier. Under Thorough, 13 of zlib's 14
-modules and all 18 of zstd's finish in about a minute or less (medians 5.0\,s
-and 1.4\,s); the zlib total of Table~\ref{tab:compile} is set by one
+modules and all 18 of zstd's finish in about a minute or less (medians 4.2\,s
+and 1.3\,s); the zlib total of Table~\ref{tab:compile} is set by one
 outlier, \texttt{trees.c}.}
 \Description{Two bar-chart panels on a logarithmic time axis from 0.01 to
 over 1000 seconds. Left, zlib's 14 modules; right, zstd's 18 modules, each
@@ -1967,20 +1968,20 @@ Thorough; every other module sits near or below it.}
 \includegraphics[width=\textwidth]{smt_latencies_thorough_x86.pdf}
 \caption{SMT query latency by verdict class: every direct reachability
 query (one per check) that the Thorough configuration poses on the 17
-benchmarks of Table~\ref{tab:speedups}, except zlib's \texttt{trees.c}, whose run did not finish (4{,}946 queries; x86, one
-thread, 10\,s per query). The median proof takes 7.2\,ms, and \pct{78}
+benchmarks of Table~\ref{tab:speedups} (5{,}056 queries; x86, ten
+threads, 10\,s per query). The median proof takes 7.8\,ms, and \pct{75}
 of proofs finish within 100\,ms and \pct{93} within 1\,s; refutations
-are cheaper at the median (5.2\,ms). 21 queries reach the 10\,s budget
+are cheaper at the median (6.6\,ms). 39 queries reach the 10\,s budget
 and keep their checks. Most of the cost sits in a tail: this is the
 shape that makes the timeout dial of Figure~\ref{fig:matrix}
 effective, since a budget truncates the tail while keeping most of the
 proofs.}
 \Description{A single histogram panel of SMT query latency on a
 logarithmic x-axis in milliseconds, with query count on the y-axis. Three
-overlaid outlines: SAT in red with 4348 queries, UNSAT in blue with 577
-queries, and UNKNOWN in green with 21 queries at the 10 second cap.
-Dashed vertical lines mark the medians at 5.2 milliseconds for SAT and
-7.2 milliseconds for UNSAT. Both distributions spread from below 0.1
+overlaid outlines: SAT in red with 4416 queries, UNSAT in blue with 601
+queries, and UNKNOWN in green with 39 queries at the 10 second cap.
+Dashed vertical lines mark the medians at 6.6 milliseconds for SAT and
+7.8 milliseconds for UNSAT. Both distributions spread from below 0.1
 milliseconds to several seconds.}
 \label{fig:latency}
 \end{figure}
