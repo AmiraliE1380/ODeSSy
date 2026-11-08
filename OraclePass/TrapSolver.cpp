@@ -1166,7 +1166,7 @@ void TrapSolver::mvPhase() {
     }
     // mv-par tier (HANDOFF §13.8 item 3): minimize / loosen queries run
     // concurrently, each in its own z3::context holding a translated copy of
-    // this solver (context | guards | trap) plus its candidate set -- no
+    // this solver's assertions (context | guards | trap) plus its candidate set -- no
     // re-encoding, no analysis access. Translation happens here on the
     // job's thread (the source context is not thread-safe); only checks run
     // on helper threads. Answers are consumed in the sequential order and
@@ -1179,7 +1179,14 @@ void TrapSolver::mvPhase() {
         std::vector<Helper> H(Trys.size());
         for (size_t k = 0; k < Trys.size(); ++k) {
             H[k].C = std::make_unique<z3::context>();
-            H[k].S = std::make_unique<z3::solver>(*H[k].C, Encoder.solverRef(), z3::solver::translate());
+            // Copy the assertions, not the solver: Z3_solver_translate crashes
+            // on a solver with open scopes in Z3 4.8.12 (the server's Z3).
+            H[k].S = std::make_unique<z3::solver>(*H[k].C);
+            {
+                z3::expr_vector A = Encoder.solverRef().assertions();
+                for (unsigned a = 0; a < A.size(); ++a)
+                    H[k].S->add(z3::expr(*H[k].C, Z3_translate(Encoder.context(), A[a], *H[k].C)));
+            }
             H[k].S->set("timeout", (unsigned)Encoder.timeoutMs());
             for (size_t i : Trys[k]) {
                 z3::expr E = mkExpr(Cands[i]);

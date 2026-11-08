@@ -1,0 +1,4 @@
+host node.amiralie-325195.odessy-pg0.wisc.cloudlab.us
+commit 210210f run_par_gate.sh: x86 inputs only (Julia kernels come from the guard-ablation set)
+threads 10
+turbo 1

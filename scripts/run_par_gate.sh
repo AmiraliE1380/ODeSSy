@@ -18,7 +18,7 @@ OUT="${OUT:-results/static/par_gate_$(date +%m%d)}"; mkdir -p "$OUT"
 W="$(mktemp -d)"; trap 'rm -rf "$W"' EXIT
 PIN=""; command -v numactl >/dev/null && PIN="numactl --cpunodebind=0 --membind=0"
 KN="heavy;frame;ind;mv;narrow;timeout=10000;threads=$T"
-TIERS=(default ind-par mv-par ind-par+mv-par)
+read -r -a TIERS <<< "${TIERS:-default ind-par mv-par ind-par+mv-par}"   # default must come first
 now() { python3 -c 'import time;print(time.time())'; }
 echo "input,tier,seconds,removed,guarded,same_ir_as_default" > "$OUT/runs.csv"
 { echo "host $(hostname)"; echo "commit $(git log --oneline -1)"; echo "threads $T"; echo "turbo $(cat /sys/devices/system/cpu/intel_pstate/no_turbo 2>/dev/null)"; } > "$OUT/meta.txt"
@@ -44,7 +44,7 @@ import csv, sys, collections
 rows = list(csv.DictReader(open(sys.argv[1] + "/runs.csv")))
 by = collections.defaultdict(dict)
 for r in rows: by[r["input"]][r["tier"]] = r
-tiers = ["default", "ind-par", "mv-par", "ind-par+mv-par"]
+tiers = [t for t in ["default", "ind-par", "mv-par", "ind-par+mv-par"] if any(t in by[i] for i in by)]
 for t in tiers:
     S = sum(float(by[i][t]["seconds"]) for i in by)
     R = sum(int(by[i][t]["removed"]) for i in by); G = sum(int(by[i][t]["guarded"]) for i in by)
