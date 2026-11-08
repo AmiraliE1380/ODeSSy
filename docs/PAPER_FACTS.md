@@ -1873,3 +1873,8 @@ Ceilings for the non-Julia rows: being measured on the same node (opt-in
 ceil_* jobs, started Nov 8 10:22); main.tex shows ?? until then.
 lz4: stopped (the oracle build of lz4hc ran 6 h at 1 thread; it also never
 finished in Sep; lz4 is not in the paper).
+CryptoSwift without the defined-memory precondition (poison-loads; opt-in
+row, cryptoswift_prod-poisonloads.log): 0.949x vs 0.972x with it (noise
+floor 0.06%). DECISION (Amir): the paper reports the default, i.e. WITH the
+precondition (Swift's semantics guarantee it); 0.949x is recorded here as
+sensitivity only, not in the paper.
