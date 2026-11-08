@@ -1,0 +1,54 @@
+swiftc: Swift version 6.3.3 (swift-6.3.3-RELEASE)  sdk: default
+opt   : LLVM (http://llvm.org/):
+reps  : 30   kernel: main   runargs: '300 perf_test/sha_input.bin'
+
+==== PHASE A: building ====
+  built base     traps 2600->2847 bin  1083728 B  eliminated 0
+  built base2x   traps 2600->3205 bin  1096000 B  eliminated 0
+  built oracle   traps 2600->2575 bin  1124712 B  eliminated 270 (+109 folded in mv fast copies)
+  built unchecked traps 2600->6    bin  1085072 B  eliminated 0
+==== PHASE B: output equivalence gate ====
+  outputs byte-identical across all configs -- gate passed
+==== PHASE C: 30 shuffled reps x configs [base base2x oracle unchecked] ====
+  rep 1/30
+  rep 2/30
+  rep 3/30
+  rep 4/30
+  rep 5/30
+  rep 6/30
+  rep 7/30
+  rep 8/30
+  rep 9/30
+  rep 10/30
+  rep 11/30
+  rep 12/30
+  rep 13/30
+  rep 14/30
+  rep 15/30
+  rep 16/30
+  rep 17/30
+  rep 18/30
+  rep 19/30
+  rep 20/30
+  rep 21/30
+  rep 22/30
+  rep 23/30
+  rep 24/30
+  rep 25/30
+  rep 26/30
+  rep 27/30
+  rep 28/30
+  rep 29/30
+  rep 30/30
+
+config      median       min       avg  audit
+base        2.9852    2.9781    2.9960  ok
+base2x      2.9806    2.9725    2.9809  ok
+oracle      3.0738    3.0588    3.0836  ok
+unchecked    2.6819    2.6763    2.6815  ok
+oracle vs base: -2.97% (median)
+oracle vs base2x: -3.13% (median)
+speedup: 0.9712x vs base, 0.9697x vs base2x; noise floor base/base2x 1.0015x
+ceiling (same pipeline): 1.1131x = median base / median unchecked
+
+CSV appended: /mydata/ODeSSy/evaluation/perf_swift.csv   (rerun with REPS=15 on the server for the real number)

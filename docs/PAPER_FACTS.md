@@ -1878,3 +1878,13 @@ row, cryptoswift_prod-poisonloads.log): 0.949x vs 0.972x with it (noise
 floor 0.06%). DECISION (Amir): the paper reports the default, i.e. WITH the
 precondition (Swift's semantics guarantee it); 0.949x is recorded here as
 sensitivity only, not in the paper.
+Ceilings on c220g2-010623 (same pipeline, base / unchecked; opt-in ceil
+jobs, Nov 8): base64 1.430x, sha256 1.093x, crc32 1.074x, adler32 1.137x,
+utf8 0.969x, md5 0.815x, sha1 0.975x, CryptoSwift 1.113x (submitted
+1.069x), lz77 Swift 0.830x, zstd comp 1.069x. Rust and zlib ceilings not in
+the queue: to run.
+zstd is FRAGILE run to run: the ceiling job rebuilt the same oracle (same
+13/249 checks removed) and measured comp 1.057x (noise floor 1.1%) vs 1.020x
+in the main run (noise 0.2%); base moved 0.9%, oracle 2.6% between runs
+(likely code layout after relinking). Needs independent replicates before
+the paper quotes a single number.
