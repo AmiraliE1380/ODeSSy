@@ -1,0 +1,17 @@
+benchmark          lang     base s |  thorough    fast   light   (whole pipeline / base pipeline)
+sha256             Swift      2.03 |     1.66x     1.27x     1.19x
+base64             Swift      1.16 |     5.40x     1.51x     1.21x
+lz77               Swift      1.02 |     6.09x     1.36x     1.25x
+crc32              Swift      1.44 |     2.01x     1.41x     1.25x
+adler32            Swift      1.22 |     2.07x     1.49x     1.22x
+sha1               Swift      1.27 |     1.53x     1.29x     1.19x
+md5                Swift      1.50 |     1.50x     1.27x     1.17x
+utf8               Swift      0.98 |     1.53x     1.27x     1.18x
+cryptoswift        Swift     43.78 |     3.69x     2.48x     1.51x
+rs_lz77_bench      Rust       0.20 |    10.27x     1.69x     1.51x
+rs_matmul_bench    Rust       0.21 |     3.67x     1.86x     1.63x
+zstd               C         31.05 |     3.49x     1.55x     1.26x
+zlib               C          8.02 |    44.36x    18.58x     6.81x
+thorough  geomean   3.60x  median   3.49x  range 1.50-44.36x  (n=13)
+fast      geomean   1.83x  median   1.49x  range 1.27-18.58x  (n=13)
+light     geomean   1.46x  median   1.25x  range 1.17-6.81x  (n=13)

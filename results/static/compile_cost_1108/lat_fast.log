@@ -1,0 +1,185 @@
+
+=== [2026-11-08 16:33:22] ENV ===
+e644400a7ff2b418abee5d2a319c1a184e202744
+
+=== [2026-11-08 16:33:22] adler32 [fast] ===
+swiftc: Swift version 6.3.3 (swift-6.3.3-RELEASE)  sdk: default
+opt   : LLVM (http://llvm.org/):
+reps  : 30   kernel: adler32   runargs: '7100 perf_test/sha_input.bin'
+
+==== PHASE A: building ====
+  built base     traps   42->42   bin    27632 B  eliminated 0
+  built base2x   traps   42->42   bin    27632 B  eliminated 0
+  built oracle   traps   42->41   bin    27632 B  eliminated 1
+==== PHASE B: output equivalence gate ====
+  outputs byte-identical across all configs -- gate passed
+==== PHASE C: 30 shuffled reps x configs [base base2x oracle] ====
+  rep 1/30
+  rep 2/30
+  rep 3/30
+  rep 4/30
+  rep 5/30
+  rep 6/30
+  rep 7/30
+  rep 8/30
+  rep 9/30
+  rep 10/30
+  rep 11/30
+  rep 12/30
+  rep 13/30
+  rep 14/30
+  rep 15/30
+  rep 16/30
+  rep 17/30
+  rep 18/30
+  rep 19/30
+  rep 20/30
+  rep 21/30
+  rep 22/30
+  rep 23/30
+  rep 24/30
+  rep 25/30
+  rep 26/30
+  rep 27/30
+  rep 28/30
+  rep 29/30
+  rep 30/30
+
+config      median       min       avg  audit
+base        4.9149    4.8907    4.9156  ok
+base2x      4.9208    4.8911    4.9204  ok
+oracle      4.7464    4.7081    4.7438  ok
+oracle vs base: +3.43% (median)
+oracle vs base2x: +3.54% (median)
+speedup: 1.0355x vs base, 1.0367x vs base2x; noise floor base/base2x 0.9988x
+
+CSV appended: /mydata/ODeSSy/evaluation/perf_swift.csv   (rerun with REPS=15 on the server for the real number)
+
+=== [2026-11-08 16:42:27] sha1 [fast] ===
+swiftc: Swift version 6.3.3 (swift-6.3.3-RELEASE)  sdk: default
+opt   : LLVM (http://llvm.org/):
+reps  : 30   kernel: sha1   runargs: '900 perf_test/sha_input.bin'
+
+==== PHASE A: building ====
+  built base     traps   28->27   bin    27616 B  eliminated 0
+  built base2x   traps   28->27   bin    27616 B  eliminated 0
+  built oracle   traps   28->26   bin    27616 B  eliminated 2
+==== PHASE B: output equivalence gate ====
+  outputs byte-identical across all configs -- gate passed
+==== PHASE C: 30 shuffled reps x configs [base base2x oracle] ====
+  rep 1/30
+  rep 2/30
+  rep 3/30
+  rep 4/30
+  rep 5/30
+  rep 6/30
+  rep 7/30
+  rep 8/30
+  rep 9/30
+  rep 10/30
+  rep 11/30
+  rep 12/30
+  rep 13/30
+  rep 14/30
+  rep 15/30
+  rep 16/30
+  rep 17/30
+  rep 18/30
+  rep 19/30
+  rep 20/30
+  rep 21/30
+  rep 22/30
+  rep 23/30
+  rep 24/30
+  rep 25/30
+  rep 26/30
+  rep 27/30
+  rep 28/30
+  rep 29/30
+  rep 30/30
+
+config      median       min       avg  audit
+base        4.6496    4.6329    4.6499  ok
+base2x      4.6508    4.6439    4.6551  ok
+oracle      4.8636    4.8372    4.8756  ok
+oracle vs base: -4.60% (median)
+oracle vs base2x: -4.57% (median)
+speedup: 0.9560x vs base, 0.9563x vs base2x; noise floor base/base2x 0.9997x
+
+CSV appended: /mydata/ODeSSy/evaluation/perf_swift.csv   (rerun with REPS=15 on the server for the real number)
+
+=== [2026-11-08 16:51:20] md5 [fast] ===
+swiftc: Swift version 6.3.3 (swift-6.3.3-RELEASE)  sdk: default
+opt   : LLVM (http://llvm.org/):
+reps  : 30   kernel: md5   runargs: '1200 perf_test/sha_input.bin'
+
+==== PHASE A: building ====
+  built base     traps   29->29   bin    28624 B  eliminated 0
+  built base2x   traps   29->29   bin    28624 B  eliminated 0
+  built oracle   traps   29->28   bin    28624 B  eliminated 1
+==== PHASE B: output equivalence gate ====
+  outputs byte-identical across all configs -- gate passed
+==== PHASE C: 30 shuffled reps x configs [base base2x oracle] ====
+  rep 1/30
+  rep 2/30
+  rep 3/30
+  rep 4/30
+  rep 5/30
+  rep 6/30
+  rep 7/30
+  rep 8/30
+  rep 9/30
+  rep 10/30
+  rep 11/30
+  rep 12/30
+  rep 13/30
+  rep 14/30
+  rep 15/30
+  rep 16/30
+  rep 17/30
+  rep 18/30
+  rep 19/30
+  rep 20/30
+  rep 21/30
+  rep 22/30
+  rep 23/30
+  rep 24/30
+  rep 25/30
+  rep 26/30
+  rep 27/30
+  rep 28/30
+  rep 29/30
+  rep 30/30
+
+config      median       min       avg  audit
+base        6.9627    6.9575    6.9656  ok
+base2x      6.9634    6.9593    6.9645  ok
+oracle      7.0854    6.9711    7.0734  ok
+oracle vs base: -1.76% (median)
+oracle vs base2x: -1.75% (median)
+speedup: 0.9827x vs base, 0.9828x vs base2x; noise floor base/base2x 0.9999x
+
+CSV appended: /mydata/ODeSSy/evaluation/perf_swift.csv   (rerun with REPS=15 on the server for the real number)
+
+=== [2026-11-08 17:03:44] rust matmul [fast] ===
+kernel=/mydata/ODeSSy/native_bench/matmul_bench.rs args=4 reps=30
+rustc: rustc 1.97.1 (8bab26f4f 2026-07-14)
+passes: oracle-pass<heavy;frame;mv;narrow;timeout=10;threads=10;traps=panic>
+kernel object: /mydata/ODeSSy/perf_test/rust_matmul_bench/checked.matmul_bench.5e18e8e9434cff86-cgu.0.rcgu.o
+  built base   traps 7   bin 4352432 B
+  built base2x   traps 7   bin 4352432 B
+  oracle [oracle-pass<heavy;frame;mv;narrow;timeout=10;threads=10;traps=panic>]: eliminated 0, mv folds 2 (UNSAT verdicts: 0)
+  built oracle   traps 7   bin 4352608 B
+  outputs byte-identical across all configs -- gate passed
+
+config        median       min       avg
+base          1.9328    1.7914    1.9073
+base2x        1.9115    1.7897    1.8797
+oracle        1.4732    1.2972    1.4349
+checked       1.9291    1.8074    1.9025
+unchecked     1.3967    1.2487    1.3732
+oracle   vs base  : +31.19% (median)   vs base2x: +29.75%
+ceiling (checked vs unchecked twin): 38.12%
+recovery oracle: 81.8% of ceiling
+
+=== [2026-11-08 17:08:09] FAST TIER 1108 DONE ===
