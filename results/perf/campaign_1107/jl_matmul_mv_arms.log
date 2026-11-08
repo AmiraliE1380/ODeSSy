@@ -1,0 +1,15 @@
+n=128  outputs identical: true   mined guard passes: true
+  checked         0.0569 s   speedup vs checked: 1.0x
+  mv (as mined)   0.042 s   speedup vs checked: 1.355x
+  ceiling         0.042 s   speedup vs checked: 1.354x
+  ceiling (checked vs all-inbounds): 35.4%
+n=256  outputs identical: true   mined guard passes: true
+  checked         0.1745 s   speedup vs checked: 1.0x
+  mv (as mined)   0.154 s   speedup vs checked: 1.133x
+  ceiling         0.1539 s   speedup vs checked: 1.134x
+  ceiling (checked vs all-inbounds): 13.4%
+n=512  outputs identical: true   mined guard passes: true
+  checked         0.3528 s   speedup vs checked: 1.0x
+  mv (as mined)   0.3129 s   speedup vs checked: 1.128x
+  ceiling         0.3125 s   speedup vs checked: 1.129x
+  ceiling (checked vs all-inbounds): 12.9%
