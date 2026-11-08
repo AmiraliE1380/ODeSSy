@@ -1,0 +1,15 @@
+default          total    777.4 s  removed 690  guarded 200  same IR 63/63  proof diffs: []
+mv-par           total    739.6 s  removed 690  guarded 200  same IR 63/63  proof diffs: []
+ind-par+mv-par   total   1060.7 s  removed 689  guarded 200  same IR 62/63  proof diffs: ['swift_cryptoswift']
+
+slowest inputs (default):
+  zlib_trees                   default   218.6  mv-par   221.5  ind-par+mv-par   292.7
+  swift_cryptoswift            default   132.0  mv-par   132.6  ind-par+mv-par   204.1
+  zlib_adler32                 default    56.8  mv-par    56.8  ind-par+mv-par    79.4
+  Julia_sha256                 default    56.1  mv-par    42.2  ind-par+mv-par    40.0
+  zstd_zstd_preSplit           default    54.9  mv-par    33.4  ind-par+mv-par    40.4
+  Julia_matmul                 default    42.6  mv-par    42.5  ind-par+mv-par    43.6
+  Julia_jl_gemm_base           default    28.3  mv-par    24.7  ind-par+mv-par    12.8
+  Julia_jl_filt_dsp            default    26.0  mv-par    26.0  ind-par+mv-par    20.4
+  zlib_inflate                 default    21.6  mv-par    21.6  ind-par+mv-par    71.0
+  Julia_lz77                   default    20.2  mv-par    20.2  ind-par+mv-par    45.5

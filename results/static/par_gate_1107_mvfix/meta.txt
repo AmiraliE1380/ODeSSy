@@ -1,0 +1,4 @@
+host node.amiralie-325195.odessy-pg0.wisc.cloudlab.us
+commit 2a368e8 mv-par: copy assertions instead of Z3_solver_translate (segfaults on a scoped solver with Z3 4.8.12, the server's Z3); gate: TIERS override; first node gate result (mv-par columns invalid: crashed)
+threads 10
+turbo 1

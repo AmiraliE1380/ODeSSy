@@ -4113,6 +4113,15 @@ off; numactl --cpunodebind=0 --membind=0; nothing else running.
    tools/cache_replay_table.py. Same knobs as step 2 plus cache=<fresh dir>.
 5. Commit results/ with the node name; update PAPER_FACTS (Mac numbers of
    §11.26 are preliminary and are replaced by these).
+PARALLELISM GATE RESULT (node c220g2-010623, Nov 7 2026, threads=10, turbo
+off, socket 0; results/static/par_gate_1107{,_mvfix}; 63 x86 inputs):
+default 777 s; ind-par 1067 s (LOSES; trees 220 -> 291 s, CryptoSwift
+133 -> 203 s, inflate 22 -> 70 s; wins only GEMM/SHA-256/filt_dsp);
+mv-par 740 s (WINS slightly, 1.05x; preSplit 55 -> 33 s, SHA-256 56 -> 42 s,
+no input slower beyond noise; removed/guarded and IR identical on 63/63);
+both 1061 s. First mv-par run segfaulted: Z3_solver_translate on a scoped
+solver crashes with Z3 4.8.12; fixed by translating assertions (2a368e8).
+Mac (4 P-cores): both tiers lose. Decision pending Amir.
 Paper items decided Nov 7 2026 (Amir): after the campaign, add ONE row for
 Julia lz77 at the 10 s default budget next to the 60 s row (mock review #2).
 Not adding: fact-source ablation, Table X (precondition on/off), the
