@@ -1489,7 +1489,7 @@ check-free version. Julia's JIT cannot consume the pass output, so we
 annotate exactly the two proven accesses \texttt{@inbounds} and leave the
 reads of \texttt{B} and \texttt{C} checked: the kernel runs $3.911\times$
 faster on x86, of the $4.174\times$ that removing all four checks gives. The performance improvement is robust as \tool{}'s build is
-significantly faster at every one of 14 problem shapes, by $1.22$--$4.12\times$
+significantly faster at every one of 14 problem shapes, by $1.47$--$4.12\times$
 (Figure~\ref{fig:gemm-sweep}, Appendix~\ref{sec:app-full}).
 
 \paragraph{Guard synthesis: which component pays?}
@@ -1985,15 +1985,14 @@ milliseconds to several seconds.}
 problem shape ($C = m{\times}n$, $A = m{\times}k$, $B = k{\times}n$;
 medians of 11 repetitions, 5 at $4096^3$; bitwise-equal outputs at every
 shape). \emph{Left:} square matrices. \emph{Right:} other aspect ratios.
-The speedup holds at every shape ($1.22$--$4.12\times$). This sweep ran on
-a newly allocated CloudLab \texttt{c220g2} node, not the node of
-Table~\ref{tab:speedups}; on it the $N{=}512$ build reaches $3.20\times$ of
-a $3.50\times$ ceiling, recovering \pct{96} of the ceiling as on the
-original node (\pct{98}).}
+The speedup holds at every shape ($1.47$--$4.12\times$). The sweep ran on
+the node of Table~\ref{tab:speedups}; its $N{=}512$ point ($3.72\times$)
+comes from a separate harness that times all shapes in one process, against
+$3.97\times$ from the dedicated $N{=}512$ run of the table.}
 \Description{Two panels. Left, a line chart of speedup versus square
-matrix dimension from 64 to 4096 on a log axis: 3.2x, 4.1x, 3.0x, 3.2x,
-3.1x, 3.0x, and 2.4x. Right, a bar chart of seven non-square shapes with
-speedups between 1.2x and 4.1x.}
+matrix dimension from 64 to 4096 on a log axis: 3.3x, 4.1x, 3.5x, 3.7x,
+3.8x, 1.9x, and 1.5x. Right, a bar chart of seven non-square shapes with
+speedups between 1.8x and 4.0x.}
 \label{fig:gemm-sweep}
 \end{figure}
 

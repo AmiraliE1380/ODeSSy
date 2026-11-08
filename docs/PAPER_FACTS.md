@@ -1894,4 +1894,8 @@ in the main run (noise 0.2%); base moved 0.9%, oracle 2.6% between runs
 paper reports the median 1.057x with the range 1.018-1.059x (footnote e).
 GEMM sweep: the first run used ARM=all (all four @inbounds = ceiling
 sweep; kept as jl_gemm_sweep_ceiling.log); the paper's figure uses
-ARM=proven (two accesses): rerun started Nov 8 14:04.
+ARM=proven (two accesses): rerun Nov 8 (jl_gemm_sweep_proven{,_4096}.log):
+1.47-4.12x at all 14 shapes, bitwise-equal outputs; square 64..4096:
+3.289, 4.121, 3.512, 3.718, 3.761, 1.852, 1.472x; N=512 sweep point 3.72x
+vs 3.97x in the dedicated arms run (different harness). Figure redrawn;
+caption no longer needs the node caveat.
