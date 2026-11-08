@@ -303,7 +303,7 @@ problem suited to an SMT solver, not to any single dataflow pass.
 We instantiate
 super-analysis in \tool{}, an LLVM pass that proves sanitizer traps and
 native-language safety checks unreachable and removes them.
-One mechanism serves four frontend languages and yields speedups in each, including a $3.91\times$ speedup for a GEMM implemented in Julia.
+One mechanism serves four frontend languages and yields speedups in each, including a $3.97\times$ speedup for a GEMM implemented in Julia.
 A further solver-based optimization, \emph{guard synthesis}, handles
 checks that are not dead for every input: the solver synthesizes a cheap invariant safety guard under which a fast check-free loop is cloned,
 speeding up a Swift Base64 encoder by $1.44\times$ and a Julia LZ77
@@ -409,15 +409,15 @@ such as UBSan~\cite{ubsanDocs} and the native checks of memory-safe
 languages (Swift bounds and overflow checks, Rust panics, Julia bounds
 errors) compile to trap-guarded branches
 (Figure~\ref{fig:simple-example}) whose hot-path cost is the
-standing tax of memory safety --- we measure it at up to $1.075\times$ on
-the zstd library under signed-overflow checks and up to $4.17\times$ on a native-language kernel (Julia GEMM).
+standing tax of memory safety --- we measure it at up to $1.069\times$ on
+the zstd library under signed-overflow checks and up to $4.21\times$ on a native-language kernel (Julia GEMM).
 Today the only recourse to avoid this performance tax is to turn checks \emph{off}
 wholesale (\texttt{-Ounchecked}, \texttt{--check-bounds=no}), trading away
 the safety guarantee entirely. \tool{} offers the sound alternative:
 delete exactly the checks that are provably redundant with the guards,
 contracts, and invariants already present in the program, and keep every
 check that is not.
-\tool{} is able to recover up to $3.91\times$ of performance by removing redundant safety checks and enabling a cascade of further optimizations.
+\tool{} is able to recover up to $3.97\times$ of performance by removing redundant safety checks and enabling a cascade of further optimizations.
 
 \begin{figure}[t]
 \centering
@@ -656,7 +656,7 @@ rule out the store. The check survives \texttt{-O3}, and a solver given
 only scalar facts treats $n_2$ as a free variable and finds the trap
 reachable. The checks limit how much the loop is vectorized and
 unrolled: in \texttt{generic\_matmatmul!}, the matrix multiply of
-Julia's standard library, they cost $4.17\times$ on x86
+Julia's standard library, they cost $4.21\times$ on x86
 (\S\ref{sec:frame-results}).
 
 Heap-invariant super-analysis supplies the missing fact. A
@@ -744,7 +744,7 @@ access \texttt{A[i,l]} runs on every iteration of the innermost loop,
 the hottest loop of the program, and as a
 side exit from that loop it keeps LLVM from vectorizing and unrolling
 the loop as fully as the check-free version: with the checks turned off
-this kernel runs $4.17\times$ faster on x86. Today the only way to recover that performance
+this kernel runs $4.21\times$ faster on x86. Today the only way to recover that performance
 is to turn checks off wholesale (\texttt{@inbounds},
 \texttt{--check-bounds=no}, \texttt{-Ounchecked}), giving up the guarantee
 for the whole loop or program. \tool{} instead removes only the checks it
@@ -1155,7 +1155,7 @@ $n_2 = n_1$ is what proves the check dead.
 
 \tool{} adds no alias analysis of
 its own: every disjointness verdict is LLVM's, and when MemorySSA cannot
-rule a write out, no fact is added. \tool{} only combines LLVM's analysis results with the other constraints, and that suffices for GEMM (Figure~\ref{fig:frame-example}): it recovers $3.91\times$ of the $4.17\times$ the checks cost (\S\ref{sec:frame-results}). A super-analyzer could reason itself about pointers, encoding address arithmetic and aliasing in the
+rule a write out, no fact is added. \tool{} only combines LLVM's analysis results with the other constraints, and that suffices for GEMM (Figure~\ref{fig:frame-example}): it recovers $3.97\times$ of the $4.21\times$ the checks cost (\S\ref{sec:frame-results}). A super-analyzer could reason itself about pointers, encoding address arithmetic and aliasing in the
 solver, but more precise alias information does not by itself make code
 faster: removing LLVM's alias analysis changes the final binaries little,
 and only a small fraction of alias queries affects them~\cite{relaxingalias2025}.
@@ -1359,7 +1359,7 @@ Our evaluation is organized around four questions:
 In this section we evaluate how much \tool{}'s proofs speed up the final compiled binary. We collected 17 benchmarks, 6 of them from existing libraries and repositories or extracted from them, and the rest are our implementations of memory- and compute-heavy everyday kernels. Table~\ref{tab:static} lists the benchmarks, their sources, and the percentage of their checks that \tool{} removes. 
 
 What matters more than the static percentage of check removals in Table~\ref{tab:static} is how much performance improvement each final compiled binary yields, in other words whether check removal buys performance, which Table~\ref{tab:speedups} establishes. We achieve a significant speedup of $4.01\times$ on Julia lz77
-and $3.91\times$ on stdlib GEMM; in total 7 out of 17 benchmarks have a performance improvement of more than 10\%. These performance improvements are among different applications: matrix operations are widely used in scientific computing and machine learning, and so are compression libraries and cryptographic kernels. A 10 to 300\% performance improvement is very impactful, especially knowing that code safety is not sacrificed. Also, for all four of our frontend languages (C, Swift, Rust, Julia) we have benchmarks that speed up, suggesting that \tool{} is not bound to a particular frontend or application, and super-analysis can be applied to a variety of domains. The results are similar on another architecture: on Apple M-series,
+and $3.97\times$ on stdlib GEMM; in total 7 out of 17 benchmarks have a performance improvement of more than 10\%. These performance improvements are among different applications: matrix operations are widely used in scientific computing and machine learning, and so are compression libraries and cryptographic kernels. A 10 to 300\% performance improvement is very impactful, especially knowing that code safety is not sacrificed. Also, for all four of our frontend languages (C, Swift, Rust, Julia) we have benchmarks that speed up, suggesting that \tool{} is not bound to a particular frontend or application, and super-analysis can be applied to a variety of domains. The results are similar on another architecture: on Apple M-series,
 the performance improvements are almost the same
 (Appendix~\ref{sec:app-mseries}).
 
@@ -1459,11 +1459,11 @@ transformation. A check is a side exit; inside a hot loop it prevents
 unrolling and vectorization, and once it is gone the second
 \texttt{-O3} performs them, so a few proofs can cascade into a large
 speedup. SHA-256 is the typical case: seven proofs in the
-message-schedule loop let it unroll, and the kernel runs $1.107\times$
+message-schedule loop let it unroll, and the kernel runs $1.105\times$
 faster on x86. Where the proofs land
-matters more than how many there are: 207 cold proofs leave zlib flat
-($1.011\times$), while 16 on zstd's compression path buy $1.065\times$
-of a $1.075\times$ ceiling.
+matters more than how many there are: 208 cold proofs leave zlib flat
+($1.011\times$), while 13 on zstd buy $1.057\times$ of compression's
+$1.069\times$ ceiling.
 
 \paragraph{Heap invariance.}
 \label{sec:frame-results}
@@ -1487,8 +1487,8 @@ from the innermost loop, and with the read of \texttt{A} and the write of
 \texttt{C} unchecked, LLVM aggressively unrolls and vectorizes the loop as it does the
 check-free version. Julia's JIT cannot consume the pass output, so we
 annotate exactly the two proven accesses \texttt{@inbounds} and leave the
-reads of \texttt{B} and \texttt{C} checked: the kernel runs $3.911\times$
-faster on x86, of the $4.174\times$ that removing all four checks gives. The performance improvement is robust as \tool{}'s build is
+reads of \texttt{B} and \texttt{C} checked: the kernel runs $3.972\times$
+faster on x86, of the $4.206\times$ that removing all four checks gives. The performance improvement is robust as \tool{}'s build is
 significantly faster at every one of 14 problem shapes, by $1.47$--$4.12\times$
 (Figure~\ref{fig:gemm-sweep}, Appendix~\ref{sec:app-full}).
 
@@ -1530,7 +1530,7 @@ Benchmark & Front end & Speedup & Proofs & Speedup & Proofs & Speedup & Proofs &
 lz77$^{a}$ & Julia & $\mathbf{4.013\times}$ & \textbf{4} & $1.000\times$ & 0 & $1.000\times$ & 0 & $1.000\times$ & 0 & $1.000\times$ & 0\\
 base64 & Swift & $\mathbf{1.440\times}$ & \textbf{8} & $1.258\times$ & 7 & $1.242\times$ & 3 & $1.250\times$ & 3 & $1.000\times$ & 1\\
 matmul & Rust & $\mathbf{1.373\times}$ & \textbf{2} & $1.372\times$ & 2 & $1.103\times$ & 2 & $1.103\times$ & 2 & $1.000\times$ & 0\\
-matmul, $n{=}512$ & Julia & $\mathbf{1.145\times}$ & \textbf{3} & $1.000\times$ & 0 & $1.000\times$ & 0 & $1.000\times$ & 0 & $1.000\times$ & 0\\
+matmul, $n{=}512$ & Julia & $\mathbf{1.128\times}$ & \textbf{3} & $1.000\times$ & 0 & $1.000\times$ & 0 & $1.000\times$ & 0 & $1.000\times$ & 0\\
 sha256$^{c}$ & Julia & $\mathbf{1.089\times}$ & \textbf{14} & $1.022\times$ & 8 & $1.031\times$ & 6 & $1.024\times$ & 2 & $1.024\times$ & 2\\
 crc32 & Swift & $\mathbf{1.074\times}$ & \textbf{11} & $1.061\times$ & 9 & $1.070\times$ & 4 & $1.000\times$ & 0 & $1.000\times$ & 0\\
 \bottomrule
@@ -1837,7 +1837,7 @@ production configuration). ``Elim'' is checks removed outright, with
 checks removed in guarded loop copies in parentheses. Base and \tool{}
 are median seconds. ``vs 2$\times$'' is the speedup against the
 double-O3 control; the noise floor is baseline over double-O3.
-``Replicate'' is the speedup in an independent run of the campaign.}
+``Replicate'' is the speedup in an independent run on the same node.}
 \label{tab:speedups-full}
 \small
 \setlength{\tabcolsep}{3pt}
@@ -1847,24 +1847,25 @@ double-O3 control; the noise floor is baseline over double-O3.
 Benchmark & Front end & Elim & Base & \tool{} & Speedup & vs 2$\times$ & Floor & Replicate\\
 \midrule
 lz77$^{a}$ & Julia & --- & 0.4153 & 0.1035 & $4.013\times$ & --- & --- & ---\\
-gemm, $N{=}512^{a}$ & Julia & --- & 0.177 & 0.0452 & $3.911\times$ & --- & --- & ---\\
-base64 & Swift & 2 (+5) & 4.4641 & 3.1107 & $1.435\times$ & $1.437\times$ & $0.999\times$ & $1.432\times$\\
-matmul & Rust & 0 (+2) & 1.8966 & 1.3722 & $1.382\times$ & $1.394\times$ & $0.991\times$ & ---\\
-matmul, $n{=}512^{a}$ & Julia & --- & 0.3693 & 0.3225 & $1.145\times$ & --- & --- & ---\\
-sha256 & Swift & 7 (+1) & 4.9273 & 4.4525 & $1.107\times$ & $1.104\times$ & $1.002\times$ & $1.105\times$\\
-sha256$^{a}$ & Julia & --- & 0.2921 & 0.2638 & $1.107\times$ & --- & --- & ---\\
-crc32 & Swift & 4 (+7) & 4.8616 & 4.5269 & $1.074\times$ & $1.074\times$ & $1.000\times$ & $1.074\times$\\
-zstd, compression & C & 16 & 0.3989 & 0.3744 & $1.065\times$ & $1.052\times$ & $1.013\times$ & $1.059\times$\\
-adler32 & Swift & 1 (+1) & 4.9008 & 4.7530 & $1.031\times$ & $1.034\times$ & $0.998\times$ & $1.034\times$\\
-lz77 & Rust & 2 & 2.1248 & 2.0636 & $1.030\times$ & $1.030\times$ & $1.000\times$ & ---\\
-utf8 validator & Swift & 3 (+1) & 2.8692 & 2.7994 & $1.025\times$ & $1.025\times$ & $1.000\times$ & $1.025\times$\\
-zlib, 256\,MB & C & 207 & 66.745 & 66.033 & $1.011\times$ & $0.999\times$ & $1.012\times$ & $1.008\times^{b}$\\
-zstd, decompression & C & 16 & 0.1580 & 0.1578 & $1.001\times$ & $1.001\times$ & $1.000\times$ & ---\\
+gemm, $N{=}512^{a}$ & Julia & --- & 0.1768 & 0.0445 & $3.972\times$ & --- & --- & ---\\
+matmul & Rust & 0 (+2) & 1.8904 & 1.3014 & $1.453\times$ & $1.448\times$ & $1.003\times$ & ---\\
+lz77, 10\,s budget$^{a}$ & Julia & --- & 0.4153 & 0.2864 & $1.450\times$ & --- & --- & ---\\
+base64 & Swift & 2 (+5) & 4.4284 & 3.0840 & $1.436\times$ & $1.436\times$ & $1.000\times$ & $1.436\times$\\
+matmul, $n{=}512^{a}$ & Julia & --- & 0.3528 & 0.3129 & $1.128\times$ & --- & --- & ---\\
+sha256$^{a}$ & Julia & --- & 0.2921 & 0.2639 & $1.107\times$ & --- & --- & ---\\
+sha256 & Swift & 7 (+1) & 4.9241 & 4.4565 & $1.105\times$ & $1.103\times$ & $1.002\times$ & $1.106\times$\\
+crc32 & Swift & 4 (+7) & 4.8597 & 4.5268 & $1.074\times$ & $1.074\times$ & $1.000\times$ & $1.073\times$\\
+zstd, compression$^{c}$ & C & 13 & 0.4056 & 0.3836 & $1.057\times$ & $1.046\times$ & $1.011\times$ & $1.018$--$1.059\times$\\
+adler32 & Swift & 1 (+1) & 4.9140 & 4.7297 & $1.039\times$ & $1.038\times$ & $1.001\times$ & $1.038\times$\\
+lz77 & Rust & 2 & 2.1245 & 2.0630 & $1.030\times$ & $1.030\times$ & $1.000\times$ & ---\\
+utf8 validator & Swift & 3 (+1) & 2.8683 & 2.7990 & $1.025\times$ & $1.025\times$ & $1.000\times$ & $1.025\times$\\
+zlib, 256\,MB & C & 208 & 66.320 & 65.574 & $1.011\times$ & $1.000\times$ & $1.011\times$ & $1.009\times^{b}$\\
+zstd, decompression & C & 13 & 0.1567 & 0.1578 & $0.993\times$ & $0.995\times$ & $0.998\times$ & ---\\
 \midrule
-md5 & Swift & 1 & 6.9631 & 7.0848 & $0.983\times$ & $0.983\times$ & $1.000\times$ & $0.983\times$\\
-sha1 & Swift & 2 & 4.6527 & 4.8678 & $0.956\times$ & $0.956\times$ & $1.000\times$ & $0.954\times$\\
-CryptoSwift & Swift & 264 (+112) & 2.9740 & 3.2058 & $0.928\times$ & $0.938\times$ & $0.989\times$ & $0.930\times$\\
-lz77 & Swift & 4 (+3) & 3.5339 & 4.2594 & $0.830\times$ & $0.830\times$ & $1.000\times$ & $0.830\times$\\
+md5 & Swift & 1 & 6.9628 & 7.0837 & $0.983\times$ & $0.983\times$ & $1.000\times$ & $0.983\times$\\
+CryptoSwift & Swift & 270 (+109) & 2.9886 & 3.0755 & $0.972\times$ & $0.970\times$ & $1.002\times$ & $0.971\times$\\
+sha1 & Swift & 2 & 4.6496 & 4.8662 & $0.956\times$ & $0.956\times$ & $0.999\times$ & $0.955\times$\\
+lz77 & Swift & 4 (+3) & 3.5332 & 4.2587 & $0.830\times$ & $0.830\times$ & $1.000\times$ & $0.830\times$\\
 \bottomrule
 \end{tabular}}\\
 \raggedright\footnotesize $^{a}$Hand-transformed copy of the unchanged
@@ -1872,7 +1873,9 @@ kernel (Table~\ref{tab:speedups}, note a); ``Base'' is the checked copy.
 The proofs behind the copies: gemm 9 of 16 edges, covering the read of \texttt{A} and the write of \texttt{C} (\S\ref{sec:frame}),
 lz77 4 and matmul 3 checks removed under a synthesized guard, sha256
 under guard synthesis. $^{b}$The wider all-non-firing specification
-(212 checks removed), which serves as zlib's replicate.\par
+(225 checks removed), which serves as zlib's replicate.
+$^{c}$Median of five independently built and timed runs; the times are
+those of the median run, and the replicate column gives the range.\par
 \end{table}
 Table~\ref{tab:fast} times the Fast configuration of
 Table~\ref{tab:compile} on the kernels where it keeps every one of
