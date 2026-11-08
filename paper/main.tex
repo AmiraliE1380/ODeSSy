@@ -303,7 +303,7 @@ problem suited to an SMT solver, not to any single dataflow pass.
 We instantiate
 super-analysis in \tool{}, an LLVM pass that proves sanitizer traps and
 native-language safety checks unreachable and removes them.
-One mechanism serves four frontend languages and yields speedups in each, including a $3.97\times$ speedup for a GEMM implemented in Julia.
+One mechanism serves four frontend languages and yields speedups in each, including a $3.78\times$ speedup for a GEMM implemented in Julia.
 A further solver-based optimization, \emph{guard synthesis}, handles
 checks that are not dead for every input: the solver synthesizes a cheap invariant safety guard under which a fast check-free loop is cloned,
 speeding up a Swift Base64 encoder by $1.44\times$ and a Julia LZ77
@@ -410,14 +410,14 @@ languages (Swift bounds and overflow checks, Rust panics, Julia bounds
 errors) compile to trap-guarded branches
 (Figure~\ref{fig:simple-example}) whose hot-path cost is the
 standing tax of memory safety --- we measure it at up to $1.069\times$ on
-the zstd library under signed-overflow checks and up to $4.21\times$ on a native-language kernel (Julia GEMM).
+the zstd library under signed-overflow checks and up to $4.15\times$ on a native-language kernel (Julia GEMM).
 Today the only recourse to avoid this performance tax is to turn checks \emph{off}
 wholesale (\texttt{-Ounchecked}, \texttt{--check-bounds=no}), trading away
 the safety guarantee entirely. \tool{} offers the sound alternative:
 delete exactly the checks that are provably redundant with the guards,
 contracts, and invariants already present in the program, and keep every
 check that is not.
-\tool{} is able to recover up to $3.97\times$ of performance by removing redundant safety checks and enabling a cascade of further optimizations.
+\tool{} is able to recover up to $3.78\times$ of performance by removing redundant safety checks and enabling a cascade of further optimizations.
 
 \begin{figure}[t]
 \centering
@@ -656,7 +656,7 @@ rule out the store. The check survives \texttt{-O3}, and a solver given
 only scalar facts treats $n_2$ as a free variable and finds the trap
 reachable. The checks limit how much the loop is vectorized and
 unrolled: in \texttt{generic\_matmatmul!}, the matrix multiply of
-Julia's standard library, they cost $4.21\times$ on x86
+Julia's standard library, they cost $4.15\times$ on x86
 (\S\ref{sec:frame-results}).
 
 Heap-invariant super-analysis supplies the missing fact. A
@@ -744,7 +744,7 @@ access \texttt{A[i,l]} runs on every iteration of the innermost loop,
 the hottest loop of the program, and as a
 side exit from that loop it keeps LLVM from vectorizing and unrolling
 the loop as fully as the check-free version: with the checks turned off
-this kernel runs $4.21\times$ faster on x86. Today the only way to recover that performance
+this kernel runs $4.15\times$ faster on x86. Today the only way to recover that performance
 is to turn checks off wholesale (\texttt{@inbounds},
 \texttt{--check-bounds=no}, \texttt{-Ounchecked}), giving up the guarantee
 for the whole loop or program. \tool{} instead removes only the checks it
@@ -1155,7 +1155,7 @@ $n_2 = n_1$ is what proves the check dead.
 
 \tool{} adds no alias analysis of
 its own: every disjointness verdict is LLVM's, and when MemorySSA cannot
-rule a write out, no fact is added. \tool{} only combines LLVM's analysis results with the other constraints, and that suffices for GEMM (Figure~\ref{fig:frame-example}): it recovers $3.97\times$ of the $4.21\times$ the checks cost (\S\ref{sec:frame-results}). A super-analyzer could reason itself about pointers, encoding address arithmetic and aliasing in the
+rule a write out, no fact is added. \tool{} only combines LLVM's analysis results with the other constraints, and that suffices for GEMM (Figure~\ref{fig:frame-example}): it recovers $3.78\times$ of the $4.15\times$ the checks cost (\S\ref{sec:frame-results}). A super-analyzer could reason itself about pointers, encoding address arithmetic and aliasing in the
 solver, but more precise alias information does not by itself make code
 faster: removing LLVM's alias analysis changes the final binaries little,
 and only a small fraction of alias queries affects them~\cite{relaxingalias2025}.
@@ -1359,7 +1359,7 @@ Our evaluation is organized around four questions:
 In this section we evaluate how much \tool{}'s proofs speed up the final compiled binary. We collected 17 benchmarks, 6 of them from existing libraries and repositories or extracted from them, and the rest are our implementations of memory- and compute-heavy everyday kernels. Table~\ref{tab:static} lists the benchmarks, their sources, and the percentage of their checks that \tool{} removes. 
 
 What matters more than the static percentage of check removals in Table~\ref{tab:static} is how much performance improvement each final compiled binary yields, in other words whether check removal buys performance, which Table~\ref{tab:speedups} establishes. We achieve a significant speedup of $4.01\times$ on Julia lz77
-and $3.97\times$ on stdlib GEMM; in total 7 out of 17 benchmarks have a performance improvement of more than 10\%. These performance improvements are among different applications: matrix operations are widely used in scientific computing and machine learning, and so are compression libraries and cryptographic kernels. A 10 to 300\% performance improvement is very impactful, especially knowing that code safety is not sacrificed. Also, for all four of our frontend languages (C, Swift, Rust, Julia) we have benchmarks that speed up, suggesting that \tool{} is not bound to a particular frontend or application, and super-analysis can be applied to a variety of domains. The results are similar on another architecture: on Apple M-series,
+and $3.78\times$ on stdlib GEMM; in total 7 out of 17 benchmarks have a performance improvement of more than 10\%. These performance improvements are among different applications: matrix operations are widely used in scientific computing and machine learning, and so are compression libraries and cryptographic kernels. A 10 to 300\% performance improvement is very impactful, especially knowing that code safety is not sacrificed. Also, for all four of our frontend languages (C, Swift, Rust, Julia) we have benchmarks that speed up, suggesting that \tool{} is not bound to a particular frontend or application, and super-analysis can be applied to a variety of domains. The results are similar on another architecture: on Apple M-series,
 the performance improvements are almost the same
 (Appendix~\ref{sec:app-mseries}).
 
@@ -1416,7 +1416,7 @@ is the checked program through the same \texttt{-O3} pipeline.}
 Benchmark & Front end & Speedup & Ceiling\\
 \midrule
 lz77$^{a,b}$ & Julia & $\mathbf{4.013\times}$ & $4.013\times$\\
-gemm, $N{=}512^{a}$ & Julia & $\mathbf{3.972\times}$ & $4.206\times$\\
+gemm, $N{=}512^{a,f}$ & Julia & $\mathbf{3.778\times}$ & $4.154\times$\\
 matmul & Rust & $\mathbf{1.453\times}$ & $1.507\times$\\
 lz77, 10\,s budget$^{a,b}$ & Julia & $\mathbf{1.45\times}$ & $4.013\times$\\
 base64 & Swift & $\mathbf{1.436\times}$ & $1.430\times$\\
@@ -1448,7 +1448,10 @@ $^{c}$At $n{=}128$: $1.355\times$ (ceiling $1.354\times$).
 $^{d}$Removing the checks by any means slows this kernel: the
 \texttt{-Ounchecked} build is equally slow.
 $^{e}$Compression; median of five independently built and timed runs
-(range $1.018$--$1.059\times$, every build removing the same checks).\par
+(range $1.018$--$1.059\times$, every build removing the same checks).
+$^{f}$Median of three runs in separate Julia processes (range
+$3.597$--$3.972\times$; ceiling $3.984$--$4.206\times$;
+Appendix~\ref{sec:app-full}).\par
 \end{table}
 \subsection{RQ2: What is the source of speedup?}
 \label{sec:results-mech}
@@ -1487,10 +1490,11 @@ from the innermost loop, and with the read of \texttt{A} and the write of
 \texttt{C} unchecked, LLVM aggressively unrolls and vectorizes the loop as it does the
 check-free version. Julia's JIT cannot consume the pass output, so we
 annotate exactly the two proven accesses \texttt{@inbounds} and leave the
-reads of \texttt{B} and \texttt{C} checked: the kernel runs $3.972\times$
-faster on x86, of the $4.206\times$ that removing all four checks gives. The performance improvement is robust as \tool{}'s build is
-significantly faster at every one of 14 problem shapes, by $1.47$--$4.12\times$
-(Figure~\ref{fig:gemm-sweep}, Appendix~\ref{sec:app-full}).
+reads of \texttt{B} and \texttt{C} checked: the kernel runs $3.778\times$
+faster on x86, of the $4.154\times$ that removing all four checks gives.
+The speedup is robust and consistent across matrix dimensions: \tool{}'s
+build is faster than the checked kernel at every one of 14 problem shapes,
+by $1.5$--$4.1\times$ (Figure~\ref{fig:gemm-sweep}).
 
 \paragraph{Guard synthesis: which component pays?}
 Most of the other large speedups --- Julia lz77 ($4.01\times$), base64
@@ -1847,7 +1851,7 @@ double-O3 control; the noise floor is baseline over double-O3.
 Benchmark & Front end & Elim & Base & \tool{} & Speedup & vs 2$\times$ & Floor & Replicate\\
 \midrule
 lz77$^{a}$ & Julia & --- & 0.4153 & 0.1035 & $4.013\times$ & --- & --- & ---\\
-gemm, $N{=}512^{a}$ & Julia & --- & 0.1768 & 0.0445 & $3.972\times$ & --- & --- & ---\\
+gemm, $N{=}512^{a}$ & Julia & --- & 0.1770 & 0.0469 & $3.778\times$ & --- & --- & $3.597$--$3.972\times$\\
 matmul & Rust & 0 (+2) & 1.8904 & 1.3014 & $1.453\times$ & $1.448\times$ & $1.003\times$ & ---\\
 lz77, 10\,s budget$^{a}$ & Julia & --- & 0.4153 & 0.2864 & $1.450\times$ & --- & --- & ---\\
 base64 & Swift & 2 (+5) & 4.4284 & 3.0840 & $1.436\times$ & $1.436\times$ & $1.000\times$ & $1.436\times$\\
@@ -1988,10 +1992,14 @@ milliseconds to several seconds.}
 problem shape ($C = m{\times}n$, $A = m{\times}k$, $B = k{\times}n$;
 medians of 11 repetitions, 5 at $4096^3$; bitwise-equal outputs at every
 shape). \emph{Left:} square matrices. \emph{Right:} other aspect ratios.
-The speedup holds at every shape ($1.47$--$4.12\times$). The sweep ran on
-the node of Table~\ref{tab:speedups}; its $N{=}512$ point ($3.72\times$)
-comes from a separate harness that times all shapes in one process, against
-$3.97\times$ from the dedicated $N{=}512$ run of the table.}
+The speedup holds at every shape ($1.47$--$4.12\times$), on the node of
+Table~\ref{tab:speedups}. Repeated in separate Julia processes, the
+$N{=}512$ speedup ranges from $3.6\times$ to $4.0\times$ (three runs of the
+dedicated harness, three of the sweep). The checked baseline is stable to
+$0.2\%$ across processes, while the build with the proven accesses
+unchecked varies by up to $13\%$, which we attribute to where each process
+places the arrays and the compiled code; every run, at every shape, is at
+least $1.47\times$ faster than the checked kernel.}
 \Description{Two panels. Left, a line chart of speedup versus square
 matrix dimension from 64 to 4096 on a log axis: 3.3x, 4.1x, 3.5x, 3.7x,
 3.8x, 1.9x, and 1.5x. Right, a bar chart of seven non-square shapes with

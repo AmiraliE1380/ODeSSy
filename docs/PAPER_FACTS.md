@@ -1899,3 +1899,10 @@ ARM=proven (two accesses): rerun Nov 8 (jl_gemm_sweep_proven{,_4096}.log):
 3.289, 4.121, 3.512, 3.718, 3.761, 1.852, 1.472x; N=512 sweep point 3.72x
 vs 3.97x in the dedicated arms run (different harness). Figure redrawn;
 caption no longer needs the node caveat.
+GEMM N=512 process-to-process variance (Nov 8; gap_*.log): arms script
+3.972x (campaign), 3.778x, 3.597x; sweep 3.718x (in full sweep), 3.528x,
+3.785x (512 alone). Baseline stable (0.1768-0.1772 s); fast arm 0.0445-
+0.0502 s. Ceiling arm 4.206x, 4.154x, 3.984x. DECISION (Amir): paper
+reports the median of the three dedicated runs, 3.778x (range 3.597-3.972x),
+ceiling 4.154x (3.984-4.206x), footnote f; body numbers 3.78x / 4.15x.
+
