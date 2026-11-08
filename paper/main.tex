@@ -1417,7 +1417,7 @@ Benchmark & Front end & Speedup & Ceiling\\
 \midrule
 lz77$^{a,b}$ & Julia & $\mathbf{4.013\times}$ & $4.013\times$\\
 gemm, $N{=}512^{a}$ & Julia & $\mathbf{3.972\times}$ & $4.206\times$\\
-matmul & Rust & $\mathbf{1.453\times}$ & \textbf{??}\\
+matmul & Rust & $\mathbf{1.453\times}$ & $1.507\times$\\
 lz77, 10\,s budget$^{a,b}$ & Julia & $\mathbf{1.45\times}$ & $4.013\times$\\
 base64 & Swift & $\mathbf{1.436\times}$ & $1.430\times$\\
 matmul, $n{=}512^{a,c}$ & Julia & $\mathbf{1.128\times}$ & $1.129\times$\\
@@ -1425,10 +1425,10 @@ sha256$^{a}$ & Julia & $\mathbf{1.107\times}$ & $1.128\times$\\
 sha256 & Swift & $\mathbf{1.105\times}$ & $1.093\times$\\
 crc32 & Swift & $\mathbf{1.074\times}$ & $1.074\times$\\
 adler32 & Swift & $\mathbf{1.039\times}$ & $1.137\times$\\
-lz77 & Rust & $\mathbf{1.030\times}$ & \textbf{??}\\
+lz77 & Rust & $\mathbf{1.030\times}$ & $0.998\times$\\
 utf8 validator & Swift & $\mathbf{1.025\times}$ & $0.969\times$\\
 zstd & C & $\mathbf{1.020\times}$ & $1.069\times$\\
-zlib & C & $\mathbf{1.011\times}$ & \textbf{??}\\
+zlib & C & $\mathbf{1.011\times}$ & $1.054\times$\\
 \midrule
 md5 & Swift & $\mathbf{0.983\times}$ & $0.815\times$\\
 CryptoSwift & Swift & $\mathbf{0.972\times}$ & $1.113\times$\\
