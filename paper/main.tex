@@ -1424,10 +1424,10 @@ matmul, $n{=}512^{a,c}$ & Julia & $\mathbf{1.128\times}$ & $1.129\times$\\
 sha256$^{a}$ & Julia & $\mathbf{1.107\times}$ & $1.128\times$\\
 sha256 & Swift & $\mathbf{1.105\times}$ & $1.093\times$\\
 crc32 & Swift & $\mathbf{1.074\times}$ & $1.074\times$\\
+zstd$^{e}$ & C & $\mathbf{1.057\times}$ & $1.069\times$\\
 adler32 & Swift & $\mathbf{1.039\times}$ & $1.137\times$\\
 lz77 & Rust & $\mathbf{1.030\times}$ & $0.998\times$\\
 utf8 validator & Swift & $\mathbf{1.025\times}$ & $0.969\times$\\
-zstd & C & $\mathbf{1.020\times}$ & $1.069\times$\\
 zlib & C & $\mathbf{1.011\times}$ & $1.054\times$\\
 \midrule
 md5 & Swift & $\mathbf{0.983\times}$ & $0.815\times$\\
@@ -1446,7 +1446,9 @@ $^{b}$The first row's guard is synthesized under a 60\,s solver budget
 checks is proven, which gives the second row.
 $^{c}$At $n{=}128$: $1.355\times$ (ceiling $1.354\times$).
 $^{d}$Removing the checks by any means slows this kernel: the
-\texttt{-Ounchecked} build is equally slow.\par
+\texttt{-Ounchecked} build is equally slow.
+$^{e}$Compression; median of five independently built and timed runs
+(range $1.018$--$1.059\times$, every build removing the same checks).\par
 \end{table}
 \subsection{RQ2: What is the source of speedup?}
 \label{sec:results-mech}

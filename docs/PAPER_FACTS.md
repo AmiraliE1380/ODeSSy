@@ -1889,5 +1889,9 @@ the paper uses base (same pipeline) vs unchecked.
 zstd is FRAGILE run to run: the ceiling job rebuilt the same oracle (same
 13/249 checks removed) and measured comp 1.057x (noise floor 1.1%) vs 1.020x
 in the main run (noise 0.2%); base moved 0.9%, oracle 2.6% between runs
-(likely code layout after relinking). Needs independent replicates before
-the paper quotes a single number.
+(likely code layout after relinking). Replicates (zstd_rep1-3.log):
+1.018x, 1.059x, 1.057x. Five runs: 1.020, 1.057, 1.018, 1.059, 1.057 ->
+paper reports the median 1.057x with the range 1.018-1.059x (footnote e).
+GEMM sweep: the first run used ARM=all (all four @inbounds = ceiling
+sweep; kept as jl_gemm_sweep_ceiling.log); the paper's figure uses
+ARM=proven (two accesses): rerun started Nov 8 14:04.
