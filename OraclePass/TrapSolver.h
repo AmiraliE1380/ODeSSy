@@ -48,9 +48,11 @@ inline bool IndParEnabled = false;
 // minimize / loosen queries (HANDOFF §13.4); for A/B comparison only.
 inline bool MvNoPruneEnabled = false;
 
-// oracle-pass<mv-par[=W]>: run guard synthesis's minimize / loosen queries
-// concurrently, W at a time, each in its own context (HANDOFF §13.8).
-inline bool MvParEnabled = false;
+// Guard synthesis's minimize / loosen queries run concurrently, W at a time,
+// each in its own context (HANDOFF §13.8). DEFAULT ON since the Nov 7 2026
+// node gate (identical output on 63 inputs, 1.05x faster overall);
+// oracle-pass<mv-seq> restores the sequential path, mv-par=W sets the width.
+inline bool MvParEnabled = true;
 inline unsigned MvParWidth = 4;
 
 // Parallel `ind` (HANDOFF §13.8 item 2). The direct query runs on the

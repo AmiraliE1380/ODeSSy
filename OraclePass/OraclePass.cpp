@@ -885,6 +885,8 @@ llvmGetPassPluginInfo() {
                                     odessy::CacheKeysEnabled = true;
                                 else if (P == "mv-par")
                                     odessy::MvParEnabled = true;
+                                else if (P == "mv-seq")
+                                    odessy::MvParEnabled = false;
                                 else if (P.consume_front("mv-par=")) {
                                     if (P.getAsInteger(10, odessy::MvParWidth) || odessy::MvParWidth == 0) return false;
                                     odessy::MvParEnabled = true;

@@ -4121,7 +4121,10 @@ mv-par 740 s (WINS slightly, 1.05x; preSplit 55 -> 33 s, SHA-256 56 -> 42 s,
 no input slower beyond noise; removed/guarded and IR identical on 63/63);
 both 1061 s. First mv-par run segfaulted: Z3_solver_translate on a scoped
 solver crashes with Z3 4.8.12; fixed by translating assertions (2a368e8).
-Mac (4 P-cores): both tiers lose. Decision pending Amir.
+Mac (4 P-cores): both tiers lose.
+DECISION (Amir, Nov 7): mv-par adopted for ALL experiments, made the pass
+default (knob mv-seq restores sequential); induction stays sequential
+(ind-par off). Knob strings in the paper unchanged.
 Paper items decided Nov 7 2026 (Amir): after the campaign, add ONE row for
 Julia lz77 at the 10 s default budget next to the 60 s row (mock review #2).
 Not adding: fact-source ablation, Table X (precondition on/off), the
