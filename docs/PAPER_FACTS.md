@@ -1840,3 +1840,36 @@ Paragraph for the paper (appendix, or §5 next to the poison encoding):
 > `!noundef`, which ODeSSy already honors. Table~X reports the proofs with
 > and without the precondition; GEMM, for example, keeps 9 of its 16 checks
 > removed and its full speedup under the precondition, and 3 without it.
+
+### 11.28 Server runtime campaign 1107 (c220g2-010623, Nov 7-8 2026) -- SUPERSEDES the submission's speedup table
+Node c220g2-010623 (Wisconsin), turbo off, socket 0; commit e39f86e (mv-par
+default; ind sequential); PROD = heavy;frame;ind;mv;narrow;timeout=10000;
+threads=1 for every timed build (1 thread so proofs never depend on CPU
+scheduling near the budget); 30 reps (Julia arms 21); byte-identical output
+gate passed on every row. Logs: results/perf/campaign_1107/.
+
+| benchmark | lang | new | submitted | note |
+|---|---|---|---|---|
+| lz77 (60 s guard) | Julia | 4.013x | 4.013x | arm2; ceiling 4.013x |
+| GEMM N=512 | Julia | 3.972x | 3.911x | arm3; ceiling (arm2) 4.206x |
+| matmul | Rust | 1.453x | 1.382x | |
+| lz77 (10 s budget) | Julia | 1.45x | (footnote, "300 ms") | arm4, B-only; NEW ROW (mock review #2) |
+| base64 | Swift | 1.436x | 1.435x | |
+| matmul n=512 | Julia | 1.128x | 1.145x | ceiling 1.129x; n=128 1.355x (ceiling 1.354x) |
+| sha256 | Julia | 1.107x | 1.107x | mv arm; ceiling 1.128x |
+| sha256 | Swift | 1.105x | 1.107x | |
+| crc32 | Swift | 1.074x | 1.074x | |
+| adler32 | Swift | 1.039x | 1.031x | |
+| lz77 | Rust | 1.030x | 1.030x | |
+| utf8 | Swift | 1.025x | 1.025x | |
+| zstd (comp) | C | 1.020x | 1.065x | decomp 0.993x; 13 of 249 checks removed vs 15 in Sep: the two compression-path proofs relied on the old unsound nsw/freeze encoding (HANDOFF §12.7); the new number is sound |
+| zlib (256 MB) | C | 1.011x | 1.011x | |
+| md5 | Swift | 0.983x | 0.983x | |
+| CryptoSwift | Swift | 0.972x | 0.928x | |
+| sha1 | Swift | 0.956x | 0.956x | |
+| lz77 | Swift | 0.830x | 0.830x | |
+
+Ceilings for the non-Julia rows: being measured on the same node (opt-in
+ceil_* jobs, started Nov 8 10:22); main.tex shows ?? until then.
+lz4: stopped (the oracle build of lz4hc ran 6 h at 1 thread; it also never
+finished in Sep; lz4 is not in the paper).
