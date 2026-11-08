@@ -1823,6 +1823,11 @@ Table~\ref{tab:speedups-full} gives the measurements behind
 Table~\ref{tab:speedups}: median times, the speedup against the
 double-O3 control, the noise floor, and an independent replicate where
 one was run.
+Measurement noise is small: the two baselines, which differ only by a
+second \texttt{-O3} run, are a median of 0.10\% apart across the C,
+Swift, and Rust rows and at most 0.32\%, except on zlib's two largest
+corpora (0.90\% at 64\,MB and 1.15\% at 256\,MB), where zlib's
+$1.011\times$ is therefore within noise.
 Earlier M-series measurements are in Appendix~\ref{sec:app-mseries}.
 \begin{table}[t]
 \caption{Measurements behind Table~\ref{tab:speedups} (x86 c220g2,
