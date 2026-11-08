@@ -109,6 +109,16 @@ if want cryptoswift; then
     EXTRA_SRCS="$(find /mydata/CryptoSwift/Sources/CryptoSwift -name '*.swift' | tr '\n' ' ')"
 fi
 
+# ----------------------- 4b. CryptoSwift without the defined-memory precondition
+# Opt-in (ONLY='pl_cryptoswift'): PROD + poison-loads, HANDOFF §12.8. GEMM needs
+# no run: without the precondition no access is freed (= its checked arm).
+if want_opt pl_cryptoswift; then
+  mkdir -p /tmp/csdrv && cp native_bench/cryptoswift_main.swift /tmp/csdrv/main.swift
+  FORCE=1 swift cryptoswift /tmp/csdrv/main.swift "300 perf_test/sha_input.bin" \
+    "${PROD%>};poison-loads>" prod-poisonloads \
+    EXTRA_SRCS="$(find /mydata/CryptoSwift/Sources/CryptoSwift -name '*.swift' | tr '\n' ' ')"
+fi
+
 # ------------------------------------------------------------------- 5. Rust
 for r in "lz77_bench 20" "matmul_bench 4"; do
   set -- $r; k=$1; args=$2
