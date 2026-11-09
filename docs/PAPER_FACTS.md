@@ -1948,3 +1948,16 @@ are proved), the same near-budget timing effect as before; not a cache
 defect. Determinism (results/static/determinism_1108): 63/63 inputs give
 byte-identical output over 3 uncached runs at 10 threads.
 
+
+### 11.31 RQ4 rerun, both tools on one node (c220g2-010623, Nov 9 2026)
+results/static/souper_static_1109 (souper_static.sh; ODeSSy Thorough at 10
+threads, Fast, light; Souper constant mode, LLVM 18 IR for both) and
+cegis_deflate.log (souper_pilot.sh, ARMS=souper, -souper-use-cegis).
+zlib: Thorough 62 checks in 340 s (trees 218 s), Fast 38 in 133 s, light 19
+in 48 s, Souper 7 in 2,382 s. zstd: Thorough 12 in 84 s, Fast 3 in 25 s,
+light 3 in 17 s, Souper 5 in 4,296 s (51.0x Thorough's time). Souper
+removes checks in 3 modules (zlib crc32 7, zstd fse_decompress 2,
+divsufsort 3); Thorough removes the same number in each. deflate.c: ODeSSy
+8 checks (Fast 13 s, Thorough 20 s, light 4 s); Souper constant 118 s, 0;
+CEGIS 8,771 s, 0. Figures regenerated (figs/rq4_proto/plot_rq4.py -> A1 =
+souper_libraries.pdf, C = souper_deflate.pdf).

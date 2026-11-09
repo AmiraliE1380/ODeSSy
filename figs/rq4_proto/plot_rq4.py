@@ -20,7 +20,7 @@ import matplotlib.ticker
 from matplotlib import font_manager
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-SOUPER_CSV = "results/static/souper_static_poison/merged.csv"  # new ODeSSy rows + Souper rows of souper_static
+SOUPER_CSV = "results/static/souper_static_1109/modules.csv"  # both tools, one node (c220g2-010623, Nov 9 2026)
 DIAL_CSV = "evaluation/dial_matrix_x86_poison.csv"
 
 # acmart typesets text in Linux Libertine; the OTFs are vendored in fonts/.
@@ -38,7 +38,7 @@ plt.rcParams.update({
 LIB_COLOR = {"zlib": "#1f4e79", "zstd": "#1f4e79"}   # one color for ODeSSy in both panels
 SOUPER_COLOR = "black"
 W = 3.3                                  # acmsmall single column, inches
-CEGIS = (8749.0, 0)                      # Souper CEGIS on zlib's deflate.c (souper_pilot)
+CEGIS = (8770.7, 0)                      # Souper CEGIS on zlib's deflate.c (souper_pilot, Nov 9 2026)
 
 
 def library_totals():

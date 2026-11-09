@@ -1,0 +1,275 @@
+
+=== [2026-11-09 08:56:18] zlib (both spec), IR from clang 18 ===
+
+=== [2026-11-09 08:56:18] zlib/adler32 ===
+zlib,adler32,base18,0.06,4,-
+zlib,adler32,souper_const,1508.00,4,0
+zlib,adler32,base23,0.07,4,-
+zlib,adler32,thorough,52.64,4,0
+zlib,adler32,fast,4.92,4,0
+zlib,adler32,light,4.49,4,0
+
+=== [2026-11-09 09:22:29] zlib/compress ===
+zlib,compress,base18,0.03,6,-
+zlib,compress,souper_const,3.93,6,0
+zlib,compress,base23,0.03,6,-
+zlib,compress,thorough,0.28,2,4
+zlib,compress,fast,0.26,2,4
+zlib,compress,light,0.17,2,4
+
+=== [2026-11-09 09:22:34] zlib/crc32 ===
+zlib,crc32,base18,0.12,9,-
+zlib,crc32,souper_const,128.04,2,7
+zlib,crc32,base23,0.12,9,-
+zlib,crc32,thorough,4.76,2,7
+zlib,crc32,fast,0.48,2,7
+zlib,crc32,light,0.35,2,7
+
+=== [2026-11-09 09:24:49] zlib/deflate ===
+zlib,deflate,base18,0.44,128,-
+zlib,deflate,souper_const,117.63,128,0
+zlib,deflate,base23,0.39,128,-
+zlib,deflate,thorough,19.81,120,8
+zlib,deflate,fast,13.24,120,8
+zlib,deflate,light,4.13,120,8
+
+=== [2026-11-09 09:27:25] zlib/gzlib ===
+zlib,gzlib,base18,0.07,12,-
+zlib,gzlib,souper_const,10.40,12,0
+zlib,gzlib,base23,0.06,12,-
+zlib,gzlib,thorough,0.42,12,0
+zlib,gzlib,fast,0.49,12,0
+zlib,gzlib,light,0.23,12,0
+
+=== [2026-11-09 09:27:38] zlib/gzread ===
+zlib,gzread,base18,0.45,169,-
+zlib,gzread,souper_const,70.06,169,0
+zlib,gzread,base23,0.41,169,-
+zlib,gzread,thorough,10.93,126,43
+zlib,gzread,fast,5.04,150,19
+zlib,gzread,light,1.51,169,0
+
+=== [2026-11-09 09:29:07] zlib/gzwrite ===
+zlib,gzwrite,base18,0.41,72,-
+zlib,gzwrite,souper_const,65.07,72,0
+zlib,gzwrite,base23,0.35,72,-
+zlib,gzwrite,thorough,6.74,72,0
+zlib,gzwrite,fast,3.40,72,0
+zlib,gzwrite,light,1.39,72,0
+
+=== [2026-11-09 09:30:25] zlib/infback ===
+zlib,infback,base18,0.10,2,-
+zlib,infback,souper_const,41.98,2,0
+zlib,infback,base23,0.09,2,-
+zlib,infback,thorough,4.02,2,0
+zlib,infback,fast,1.16,2,0
+zlib,infback,light,0.60,2,0
+
+=== [2026-11-09 09:31:13] zlib/inffast ===
+zlib,inffast,base18,0.06,2,-
+zlib,inffast,souper_const,92.51,2,0
+zlib,inffast,base23,0.06,2,-
+zlib,inffast,thorough,1.25,2,0
+zlib,inffast,fast,0.58,2,0
+zlib,inffast,light,0.43,2,0
+
+=== [2026-11-09 09:32:49] zlib/inflate ===
+zlib,inflate,base18,0.24,11,-
+zlib,inflate,souper_const,150.54,11,0
+zlib,inflate,base23,0.23,11,-
+zlib,inflate,thorough,19.50,11,0
+zlib,inflate,fast,5.65,11,0
+zlib,inflate,light,2.29,11,0
+
+=== [2026-11-09 09:35:48] zlib/inftrees ===
+zlib,inftrees,base18,0.05,2,-
+zlib,inftrees,souper_const,40.01,2,0
+zlib,inftrees,base23,0.05,2,-
+zlib,inftrees,thorough,0.92,2,0
+zlib,inftrees,fast,0.58,2,0
+zlib,inftrees,light,0.56,2,0
+
+=== [2026-11-09 09:36:31] zlib/trees ===
+zlib,trees,base18,0.30,50,-
+zlib,trees,souper_const,128.05,50,0
+zlib,trees,base23,0.28,50,-
+zlib,trees,thorough,218.31,50,0
+zlib,trees,fast,96.58,50,0
+zlib,trees,light,31.70,50,0
+
+=== [2026-11-09 09:44:26] zlib/uncompr ===
+zlib,uncompr,base18,0.04,8,-
+zlib,uncompr,souper_const,4.22,8,0
+zlib,uncompr,base23,0.03,8,-
+zlib,uncompr,thorough,0.43,8,0
+zlib,uncompr,fast,0.44,8,0
+zlib,uncompr,light,0.22,8,0
+
+=== [2026-11-09 09:44:32] zlib/zutil ===
+zlib,zutil,base18,0.02,1,-
+zlib,zutil,souper_const,21.74,1,0
+zlib,zutil,base23,0.02,1,-
+zlib,zutil,thorough,0.06,1,0
+zlib,zutil,fast,0.06,1,0
+zlib,zutil,light,0.06,1,0
+
+=== [2026-11-09 09:44:54] zstd (signed spec), IR from clang 18 ===
+
+=== [2026-11-09 09:44:54] zstd/entropy_common ===
+zstd,entropy_common,base18,0.07,6,-
+zstd,entropy_common,souper_const,51.07,6,0
+zstd,entropy_common,base23,0.07,6,-
+zstd,entropy_common,thorough,0.94,4,2
+zstd,entropy_common,fast,0.45,6,0
+zstd,entropy_common,light,0.30,6,0
+
+=== [2026-11-09 09:45:48] zstd/fse_decompress ===
+zstd,fse_decompress,base18,0.13,2,-
+zstd,fse_decompress,souper_const,63.40,0,2
+zstd,fse_decompress,base23,0.12,2,-
+zstd,fse_decompress,thorough,0.21,0,2
+zstd,fse_decompress,fast,0.21,0,2
+zstd,fse_decompress,light,0.19,0,2
+
+=== [2026-11-09 09:46:53] zstd/fse_compress ===
+zstd,fse_compress,base18,0.13,5,-
+zstd,fse_compress,souper_const,323.82,5,0
+zstd,fse_compress,base23,0.13,4,-
+zstd,fse_compress,thorough,1.85,4,0
+zstd,fse_compress,fast,0.50,4,0
+zstd,fse_compress,light,0.39,4,0
+
+=== [2026-11-09 09:52:21] zstd/huf_compress ===
+zstd,huf_compress,base18,0.46,28,-
+zstd,huf_compress,souper_const,528.66,28,0
+zstd,huf_compress,base23,0.45,28,-
+zstd,huf_compress,thorough,6.41,26,2
+zstd,huf_compress,fast,4.26,27,1
+zstd,huf_compress,light,2.69,27,1
+
+=== [2026-11-09 10:01:26] zstd/zstd_compress ===
+zstd,zstd_compress,base18,0.68,7,-
+zstd,zstd_compress,souper_const,407.25,7,0
+zstd,zstd_compress,base23,0.60,7,-
+zstd,zstd_compress,thorough,1.26,7,0
+zstd,zstd_compress,fast,0.91,7,0
+zstd,zstd_compress,light,0.78,7,0
+
+=== [2026-11-09 10:08:18] zstd/zstd_compress_literals ===
+zstd,zstd_compress_literals,base18,0.03,1,-
+zstd,zstd_compress_literals,souper_const,20.21,1,0
+zstd,zstd_compress_literals,base23,0.03,1,-
+zstd,zstd_compress_literals,thorough,0.07,1,0
+zstd,zstd_compress_literals,fast,0.07,1,0
+zstd,zstd_compress_literals,light,0.06,1,0
+
+=== [2026-11-09 10:08:40] zstd/zstd_double_fast ===
+zstd,zstd_double_fast,base18,0.73,4,-
+zstd,zstd_double_fast,souper_const,56.77,4,0
+zstd,zstd_double_fast,base23,0.71,4,-
+zstd,zstd_double_fast,thorough,0.81,4,0
+zstd,zstd_double_fast,fast,0.79,4,0
+zstd,zstd_double_fast,light,0.78,4,0
+
+=== [2026-11-09 10:09:46] zstd/zstd_lazy ===
+zstd,zstd_lazy,base18,3.07,100,-
+zstd,zstd_lazy,souper_const,283.95,100,0
+zstd,zstd_lazy,base23,2.94,100,-
+zstd,zstd_lazy,thorough,4.23,100,0
+zstd,zstd_lazy,fast,3.77,100,0
+zstd,zstd_lazy,light,3.43,100,0
+
+=== [2026-11-09 10:14:48] zstd/zstdmt_compress ===
+zstd,zstdmt_compress,base18,0.16,2,-
+zstd,zstdmt_compress,souper_const,693.80,2,0
+zstd,zstdmt_compress,base23,0.16,2,-
+zstd,zstdmt_compress,thorough,0.21,2,0
+zstd,zstdmt_compress,fast,0.21,2,0
+zstd,zstdmt_compress,light,0.21,2,0
+
+=== [2026-11-09 10:26:25] zstd/zstd_opt ===
+zstd,zstd_opt,base18,0.73,5,-
+zstd,zstd_opt,souper_const,294.23,5,0
+zstd,zstd_opt,base23,0.70,5,-
+zstd,zstd_opt,thorough,6.74,5,0
+zstd,zstd_opt,fast,2.25,5,0
+zstd,zstd_opt,light,1.25,5,0
+
+=== [2026-11-09 10:31:31] zstd/zstd_preSplit ===
+zstd,zstd_preSplit,base18,0.04,13,-
+zstd,zstd_preSplit,souper_const,230.55,13,0
+zstd,zstd_preSplit,base23,0.04,13,-
+zstd,zstd_preSplit,thorough,34.31,10,3
+zstd,zstd_preSplit,fast,0.86,13,0
+zstd,zstd_preSplit,light,0.79,13,0
+
+=== [2026-11-09 10:35:59] zstd/huf_decompress ===
+zstd,huf_decompress,base18,0.72,5,-
+zstd,huf_decompress,souper_const,550.36,5,0
+zstd,huf_decompress,base23,0.76,5,-
+zstd,huf_decompress,thorough,2.59,5,0
+zstd,huf_decompress,fast,1.46,5,0
+zstd,huf_decompress,light,0.97,5,0
+
+=== [2026-11-09 10:45:18] zstd/zstd_decompress_block ===
+zstd,zstd_decompress_block,base18,0.98,6,-
+zstd,zstd_decompress_block,souper_const,204.08,6,0
+zstd,zstd_decompress_block,base23,0.96,6,-
+zstd,zstd_decompress_block,thorough,3.04,6,0
+zstd,zstd_decompress_block,fast,1.45,6,0
+zstd,zstd_decompress_block,light,1.30,6,0
+
+=== [2026-11-09 10:48:51] zstd/zstd_decompress ===
+zstd,zstd_decompress,base18,0.20,1,-
+zstd,zstd_decompress,souper_const,72.00,1,0
+zstd,zstd_decompress,base23,0.16,1,-
+zstd,zstd_decompress,thorough,0.36,1,0
+zstd,zstd_decompress,fast,0.29,1,0
+zstd,zstd_decompress,light,0.29,1,0
+
+=== [2026-11-09 10:50:05] zstd/cover ===
+zstd,cover,base18,0.14,2,-
+zstd,cover,souper_const,101.44,2,0
+zstd,cover,base23,0.12,2,-
+zstd,cover,thorough,1.35,2,0
+zstd,cover,fast,0.26,2,0
+zstd,cover,light,0.25,2,0
+
+=== [2026-11-09 10:51:50] zstd/divsufsort ===
+zstd,divsufsort,base18,0.53,63,-
+zstd,divsufsort,souper_const,256.44,60,3
+zstd,divsufsort,base23,0.49,61,-
+zstd,divsufsort,thorough,18.53,58,3
+zstd,divsufsort,fast,7.17,61,0
+zstd,divsufsort,light,2.59,61,0
+
+=== [2026-11-09 10:56:36] zstd/fastcover ===
+zstd,fastcover,base18,0.08,2,-
+zstd,fastcover,souper_const,43.63,2,0
+zstd,fastcover,base23,0.08,2,-
+zstd,fastcover,thorough,0.76,2,0
+zstd,fastcover,fast,0.17,2,0
+zstd,fastcover,light,0.15,2,0
+
+=== [2026-11-09 10:57:22] zstd/zdict ===
+zstd,zdict,base18,0.19,2,-
+zstd,zdict,souper_const,113.92,2,0
+zstd,zdict,base23,0.17,2,-
+zstd,zdict,thorough,0.66,2,0
+zstd,zdict,fast,0.32,2,0
+zstd,zdict,light,0.25,2,0
+repo   arm              total s  removed  modules  failed
+zlib   base18               2.4        0       14       0
+zlib   base23               2.2        0       14       0
+zlib   fast               132.9       38       14       0
+zlib   light               48.1       19       14       0
+zlib   souper_const      2382.2        7       14       0
+zlib   thorough           340.1       62       14       0
+zstd   base18               9.1        0       18       0
+zstd   base23               8.7        0       18       0
+zstd   fast                25.4        3       18       0
+zstd   light               16.7        3       18       0
+zstd   souper_const      4295.6        5       18       0
+zstd   thorough            84.3       12       18       0
+
+=== [2026-11-09 10:59:18] SOUPER STATIC DONE ===

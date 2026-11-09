@@ -1686,20 +1686,20 @@ joins \tool{}'s two configurations; $\times$ is Souper in constant mode.}
 \Description{Two scatter panels, zlib and zstd, with compile time on a
 logarithmic x-axis and checks removed on the y-axis. In each panel a dashed
 line joins ODeSSy Fast (circle) and ODeSSy Thorough (square), and a black
-cross marks Souper. zlib: Fast 525 seconds and 37 checks, Thorough 1668
-seconds and 62 checks, Souper 2407 seconds and 7 checks. zstd: Fast 52
-seconds and 3 checks, Thorough 155 seconds and 12 checks, Souper 4304
+cross marks Souper. zlib: Fast 133 seconds and 38 checks, Thorough 340
+seconds and 62 checks, Souper 2382 seconds and 7 checks. zstd: Fast 25
+seconds and 3 checks, Thorough 84 seconds and 12 checks, Souper 4296
 seconds and 5 checks.}
 \label{fig:souper-libs}
 \end{figure}
 
 \paragraph{Results.} Figure~\ref{fig:souper-libs} answers RQ4. On each
 library Thorough beats Souper on both axes. On zlib,
-Thorough removes 62 checks in 1{,}668\,s, where Souper removes 7 in
-2{,}407\,s, and Fast removes 37 in 525\,s; most of Thorough's time is
+Thorough removes 62 checks in 340\,s, where Souper removes 7 in
+2{,}382\,s, and Fast removes 38 in 133\,s; most of Thorough's time is
 spent on a single module, \texttt{trees.c} (Figure~\ref{fig:modules}).
-On zstd, Thorough removes 12 checks in 155\,s, where Souper removes 5 in
-4{,}304\,s, a $27.8\times$ difference in time, and Fast removes 3 in 52\,s. 
+On zstd, Thorough removes 12 checks in 84\,s, where Souper removes 5 in
+4{,}296\,s, a $51.0\times$ difference in time, and Fast removes 3 in 25\,s. 
 
 \begin{figure}[t]
 \centering
@@ -1710,19 +1710,19 @@ compile time, both tools on the same LLVM~18 IR (time includes the
 and Thorough; crosses: Souper in constant mode and in CEGIS synthesis
 mode, neither of which removes a check.}
 \Description{A scatter plot with compile time on a logarithmic x-axis and
-checks removed on the y-axis. ODeSSy Fast removes 8 checks in 14 seconds
-and ODeSSy Thorough 8 in 21 seconds, joined by a dashed line. Two crosses
-sit at zero: Souper constant mode at 119 seconds and Souper CEGIS at 8749
+checks removed on the y-axis. ODeSSy Fast removes 8 checks in 13 seconds
+and ODeSSy Thorough 8 in 20 seconds, joined by a dashed line. Two crosses
+sit at zero: Souper constant mode at 118 seconds and Souper CEGIS at 8771
 seconds.}
 \label{fig:souper-deflate}
 \end{figure}
 
 \paragraph{One module in detail.} We wanted to see how the more aggressive Souper mode, Counterexample-Guided Inductive Synthesis (CEGIS) performs. Figure~\ref{fig:souper-deflate} shows
 the two tools on zlib's compressor, \texttt{deflate.c}, on the same
-input. \tool{} removes 8 checks, in 14\,s under Fast and 21\,s under
-Thorough. Souper's constant mode takes 119\,s and removes nothing. Its
+input. \tool{} removes 8 checks, in 13\,s under Fast and 20\,s under
+Thorough. Souper's constant mode takes 118\,s and removes nothing. Its
 synthesis mode ran for
-2.4\,hours (8{,}749\,s) and also removed nothing; at that cost per
+2.4\,hours (8{,}771\,s) and also removed nothing; at that cost per
 module we did not run it on the libraries.
 
 Two cautions bound the comparison. It is one superoptimizer, on one task:
