@@ -1498,7 +1498,7 @@ by $1.5$--$4.1\times$ (Figure~\ref{fig:gemm-sweep}).
 
 \paragraph{Guard synthesis: which component pays?}
 Most of the other large speedups --- Julia lz77 ($4.01\times$), base64
-($1.44\times$), Rust matmul ($1.38\times$), Julia matmul, crc32 --- come
+($1.44\times$), Rust matmul ($1.45\times$), Julia matmul, crc32 --- come
 from guard synthesis and loop cloning (\S\ref{sec:guards}). We are interested in knowing if our synthesis algorithm makes the difference, or \tool{} verification and proving ability is again buying us the performance. Therefore we isolate the contribution of each component in this experiment.
 
 Cloning a
