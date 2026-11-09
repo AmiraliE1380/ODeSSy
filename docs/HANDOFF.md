@@ -4129,6 +4129,11 @@ Paper items decided Nov 7 2026 (Amir): after the campaign, add ONE row for
 Julia lz77 at the 10 s default budget next to the 60 s row (mock review #2).
 Not adding: fact-source ablation, Table X (precondition on/off), the
 compile-time profile figure, a Souper-with-cache comparison in RQ4.
+DEFERRED (Amir, Nov 8): Souper-with-cache comparison. Framing if revisited:
+the trade-off is granularity (ODeSSy: whole-function decisions, a hit skips
+analysis + encoding + solving, any edit invalidates the function; Souper:
+per-query text keys, a hit skips only the solver, survives edits), not the
+number of lookups. Experiment: Souper + Redis on the same commit replay.
 Verdict cache in the paper: one paragraph in §5 (design) and a short RQ3
 paragraph with four numbers (cold, warm after a changed commit, warm
 identical, overhead of keying/recording); full tables in an appendix.
