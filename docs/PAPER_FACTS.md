@@ -1925,3 +1925,26 @@ median 6.6 ms; 39 UNKNOWN.
 Fast-tier runtime: Rust matmul 1.312x, adler32 1.036x (Fast keeps 1 of 2
 proofs), md5 0.983x, sha1 0.956x.
 
+### 11.30 Server verdict cache and determinism (c220g2-010623, Nov 8-9 2026)
+Thorough at 10 threads. Cold/warm (results/cache/server_1108/cold_warm.txt,
+67 inputs): summed 871 s no cache, 852 s cold (keying + recording within
+noise), 251 s warm; trees 206.6 -> 3.1 s, adler32 55.5 -> 0.25 s, preSplit
+32.9 -> 0.07 s, CryptoSwift 129.5 -> 25.3 s; Julia matmul/SHA-256 no gain
+(T3 guards re-solved). Warm == cold == uncached IR on 65/67; the 2 are Julia
+SHA-256, which never used the cache (re-solved, queries near the budget).
+Commit replay (results/cache/replay_{zlib,zstd}_1108, table:
+replay_table_server_1108.md): zlib 29 commits, hit rate mean 96.5%, 22/29
+fully cached, median 7.1 s vs 330.4 s (47x on unchanged code, 14x on
+commits that changed checked code); zstd 29 commits, 98.5%, 21/29, median
+5.4 s vs 80.1 s (15x / 13x). Cached == uncached IR on every module of
+every commit EXCEPT zlib deflate from commit 15 (33e7106) on. Cause
+(reproduced, results/cache/server_1108/deflate_case): at commit 15 five
+deflate functions changed and were solved in the cached run alone; one
+query in the function `deflate` finished UNSAT in 9.88 s there but timed out
+(10.0 s) in the full uncached compile, where all 19 functions compete for
+the CPU. The cache recorded that valid proof and replays it, so the cached
+output removes one more check than a fresh compile. Benign (both outputs
+are proved), the same near-budget timing effect as before; not a cache
+defect. Determinism (results/static/determinism_1108): 63/63 inputs give
+byte-identical output over 3 uncached runs at 10 threads.
+
