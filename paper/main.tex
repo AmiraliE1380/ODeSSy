@@ -1291,11 +1291,9 @@ To make sure our tool is sound, no
 \textsc{unsat} is accepted at face value and is inspected. We perform a \texttt{vacuity} test, meaning that we remove the trap condition from the \texttt{UNSAT} proof and query the solver again with all the other constraints. If
 the context alone is already unsatisfiable --- an encoder bug, or a
 genuinely contradictory guard chain --- the elimination is
-\emph{refused} and reported. The audit is deliberately
-self-distrusting: on zstd it surrendered 61 likely-sound eliminations
-whose guard chains are jointly infeasible for the actual constants,
-because the tool cannot distinguish that situation from its own bugs;
-vacuous counts are reported in every static audit and are zero in the vast majority of cases, so a vacuous proof can be considered a warning. The timed builds run without this audit to avoid an extra SMT query, for speed; guard
+\emph{refused} and reported. Vacuous counts are reported in every static
+audit and are zero in the vast majority of cases, so a vacuous proof can be
+considered a warning. The timed builds run without this audit to avoid an extra SMT query, for speed; guard
 synthesis checks its own guards for vacuity in every build
 (\S\ref{sec:guards-impl}).
 
