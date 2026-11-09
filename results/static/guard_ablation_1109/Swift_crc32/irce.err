@@ -1,0 +1,19 @@
+irce: looking at loop Loop at depth 2 containing: %305<header><exiting>,%308<exiting>,%310<exiting>,%312<exiting>,%314<exiting>,%336<exiting>,%340<exiting>,%344<exiting>,%347<exiting>,%350<latch><exiting>
+irce: loop has 4 inductive range checks: 
+InductiveRangeCheck:
+  Begin: 0  Step: 4  End: %200
+  CheckUse:   br i1 %.not119, label %308, label %odessy.chk14, !prof !11 Operand: 0
+InductiveRangeCheck:
+  Begin: 1  Step: 4  End: %200
+  CheckUse:   br i1 %.not120, label %310, label %odessy.chk15, !prof !11 Operand: 0
+InductiveRangeCheck:
+  Begin: 2  Step: 4  End: %200
+  CheckUse:   br i1 %.not121, label %312, label %odessy.chk16, !prof !11 Operand: 0
+InductiveRangeCheck:
+  Begin: 3  Step: 4  End: %200
+  CheckUse:   br i1 %.not122, label %314, label %odessy.chk17, !prof !11 Operand: 0
+irce: looking at loop Loop at depth 2 containing: %373<header><exiting>,%376<exiting>,%380<latch><exiting>
+irce: loop has 1 inductive range checks: 
+InductiveRangeCheck:
+  Begin: %368  Step: 1  End: %200
+  CheckUse:   br i1 %.not128, label %376, label %odessy.chk12, !prof !11 Operand: 0

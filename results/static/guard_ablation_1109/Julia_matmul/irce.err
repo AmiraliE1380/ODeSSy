@@ -1,0 +1,14 @@
+irce: looking at loop Loop at depth 3 containing: %L14<header><exiting>,%L31<exiting>,%L52<latch><exiting>
+irce: loop has 2 inductive range checks: 
+InductiveRangeCheck:
+  Begin: {0,+,%"n::Int64"}<%L6.preheader>  Step: 1  End: %"a::Array.size.0.copyload"
+  CheckUse:   br i1 %.not31, label %L31, label %odessy.chk, !dbg !39 Operand: 0
+InductiveRangeCheck:
+  Begin: {0,+,1}<%L10.preheader>  Step: %"n::Int64"  End: %"b::Array.size.0.copyload"
+  CheckUse:   br i1 %.not32, label %L52, label %odessy.chk1, !dbg !39 Operand: 0
+irce: looking at loop Loop at depth 2 containing: %L10.preheader<header>,%L14<exiting>,%L31<exiting>,%L52,%L10.L60_crit_edge<exiting>,%L77<latch><exiting>
+    Loop at depth 3 containing: %L14<header><exiting>,%L31<exiting>,%L52<latch><exiting>
+irce: loop has 1 inductive range checks: 
+InductiveRangeCheck:
+  Begin: {0,+,%"n::Int64"}<%L6.preheader>  Step: 1  End: %"c::Array.size.0.copyload"
+  CheckUse:   br i1 %.not33, label %L77, label %odessy.chk2, !dbg !68 Operand: 0

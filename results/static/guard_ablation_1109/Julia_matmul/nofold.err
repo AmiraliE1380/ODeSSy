@@ -1,0 +1,327 @@
+[ODeSSy] 3 trap site(s) across 2 function(s); threads=1 [tier: heavy] [frame] [mv] [narrow] [ind] [mv-nofold] [traps=bounds_error,boundserror,odessy.chk]
+
+[Z3 Oracle] Analyzing Function: julia_matmul!_145
+  [tier: heavy]
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (false edge of 'top'):  %.not44 = icmp slt i64 %"n::Int64", 1, !dbg !29
+    -> Collected 1 dominating context guard(s).
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[PHIINV-hi:0] i64 %value_phi45 == i64 1 || sle(i64 %value_phi45, i64 %"n::Int64") (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:1] (B <=s INT_MAX-1 && v0 <=s B) -> i64 %value_phi45 >=s i64 1 (monotone WRAPPING increments; conditional)
+    -> Fact[PHIINV-hi:2] i64 %value_phi240 == i64 1 || sle(i64 %value_phi240, i64 %"n::Int64") (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:3] (B <=s INT_MAX-1 && v0 <=s B) -> i64 %value_phi240 >=s i64 1 (monotone WRAPPING increments; conditional)
+    -> [heavy] 4 analysis fact(s) on 4 boundary value(s)
+    -> [mv] T3: latch-derived trip-count bound for loop depth 3 (latch L52): (-1 + %"n::Int64")
+    -> [mv] T3: latch-derived trip-count bound for loop depth 1 (latch L6.L84_crit_edge.split): (-1 + %"n::Int64")
+    -> [mv] T3 symbolic index bound: max(idx) = (-1 + (%"n::Int64" * %"n::Int64"))
+    -> [ind L0] BASE (2 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 21.904238 ms]
+    -> [ind L1] BASE (1 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 21.366990 ms]
+    -> [ind L2] BASE (1 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 22.398518 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 34.037251 ms]
+    -> [mv] still UNKNOWN under 19 hypothesis candidate(s): not versionable
+    -> [narrow] retry: whole-query 64->32 with overflow flags
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[PHIINV-hi:0] i64 %value_phi45 == i64 1 || sle(i64 %value_phi45, i64 %"n::Int64") (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:1] (B <=s INT_MAX-1 && v0 <=s B) -> i64 %value_phi45 >=s i64 1 (monotone WRAPPING increments; conditional)
+    -> Fact[PHIINV-hi:2] i64 %value_phi240 == i64 1 || sle(i64 %value_phi240, i64 %"n::Int64") (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:3] (B <=s INT_MAX-1 && v0 <=s B) -> i64 %value_phi240 >=s i64 1 (monotone WRAPPING increments; conditional)
+    -> [heavy] 4 analysis fact(s) on 4 boundary value(s)
+    -> [mv] T3: latch-derived trip-count bound for loop depth 3 (latch L52): (-1 + %"n::Int64")
+    -> [mv] T3: latch-derived trip-count bound for loop depth 1 (latch L6.L84_crit_edge.split): (-1 + %"n::Int64")
+    -> [mv] T3 symbolic index bound: max(idx) = (-1 + (%"n::Int64" * %"n::Int64"))
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 33.283474 ms]
+    -> [narrow] whole-query 64->32 rewrite: 8 overflow flags, 4 64-bit inputs, 1 product(s) linearized
+    -> [narrow] Q_A/Q_B hypothesis set: {%"n::Int64" >=s 0} {%"n::Int64" <=s 2^62} {%"n::Int64" <=s 2^31} {%"n::Int64" <=s 2^15} {%"n::Int64" <=s 2^30}
+    -> [narrow] Q_A' (linearized) SAT (4.781158e+00 ms): exact Q_A
+    -> [narrow] Q_A SAT model, inputs: |n::Int64|=#x0000000000000000 value_phi240=#x0000000000000000 value_phi45=#x0000000000000000 |a::Array.size.0.copyload|=#x0000000000000000
+         trap32 = true, H conjuncts: 5
+    -> [narrow] Q_A/Q_B hypothesis set: {%"n::Int64" >=s 0} {%"n::Int64" <=s 2^62} {%"n::Int64" <=s 2^31} {%"n::Int64" <=s 2^15} {%"n::Int64" <=s 2^30} {%value_phi45 >=s 0} {%value_phi45 <=s 2^62} {%value_phi45 <=s 2^31} {%value_phi45 <=s 2^15} {%value_phi45 <=s 2^30} {%"a::Array.size.0.copyload" >=s 0} {%"a::Array.size.0.copyload" <=s 2^62} {%"a::Array.size.0.copyload" <=s 2^31} {%"a::Array.size.0.copyload" <=s 2^15} {%"a::Array.size.0.copyload" <=s 2^30} {%"a::Array.size.0.copyload" >u ((-1 + (%"n::Int64" * %"n::Int64")))}
+    -> [narrow] Q_A' (linearized products) UNSAT in 1.140478e+03 ms
+    -> [narrow] Q_A' (linearized products) UNSAT in 4.525240e+02 ms
+    -> [narrow] Q_B: some 64-bit value may leave 32 bits under H (SAT)
+         flag set: mul operands beyond half width: (bvmul (bvadd value_phi45 #xffffffffffffffff) |n::Int64|)
+         inputs: |n::Int64|=#x000000000000ecba value_phi240=#x0000000000003a3c value_phi45=#x0000000000000a40 |a::Array.size.0.copyload|=#x0000000000000000
+         SB assertions: 17, facts: 4, H in Q_B: {%"n::Int64" <=s 2^31=true} {%value_phi45 >=s 0=true} {%value_phi45 <=s 2^31=true} {%value_phi45 <=s 2^15=true} {%"a::Array.size.0.copyload" >=s 0=true} {%"a::Array.size.0.copyload" <=s 2^31=true} {%"a::Array.size.0.copyload" <=s 2^15=true}
+    -> [mv] minimize: without {%"n::Int64" <=s 2^15} -> SAT, kept (4.996432e+02 ms)
+    -> [narrow] Q_A' (linearized products) UNSAT in 2.268292e+02 ms
+    -> [mv] minimize: without {%value_phi45 <=s 2^15} -> UNSAT, dropped (3.105213e+02 ms)
+    -> [narrow] Q_A' (linearized) SAT (6.058273e+01 ms): exact Q_A
+    -> [mv] minimize: without {%"a::Array.size.0.copyload" <=s 2^15} -> UNKNOWN, kept (1.010704e+04 ms)
+    -> [narrow] Q_A' (linearized products) UNSAT in 2.283729e+02 ms
+    -> [mv] minimize: without {%"n::Int64" <=s 2^31} -> UNSAT, dropped (3.090398e+02 ms)
+    -> [narrow] Q_A' (linearized products) UNSAT in 1.714115e+02 ms
+    -> [mv] minimize: without {%value_phi45 <=s 2^31} -> UNSAT, dropped (2.808146e+02 ms)
+    -> [narrow] Q_A' (linearized products) UNSAT in 2.089406e+02 ms
+    -> [mv] minimize: without {%"a::Array.size.0.copyload" <=s 2^31} -> UNSAT, dropped (3.003143e+02 ms)
+    -> [narrow] Q_A' (linearized products) UNSAT in 2.002606e+02 ms
+    -> [mv] minimize: without {%value_phi45 >=s 0} -> UNSAT, dropped (3.166548e+02 ms)
+    -> [narrow] Q_A' (linearized products) UNSAT in 9.640559e+01 ms
+    -> [narrow] Q_B: some 64-bit value may leave 32 bits under H (SAT)
+         flag set: input !fits: |a::Array.size.0.copyload|
+         inputs: |n::Int64|=#x000000000000658b value_phi240=#x000000000000288a value_phi45=#x0000000000001854 |a::Array.size.0.copyload|=#xc001029820220000
+         SB assertions: 12, facts: 4, H in Q_B: {%"n::Int64" <=s 2^15=true} {%"a::Array.size.0.copyload" <=s 2^15=true}
+    -> [mv] minimize: without {%"a::Array.size.0.copyload" >=s 0} -> SAT, kept (1.477202e+02 ms)
+    -> [narrow] Q_A' (linearized) SAT (2.625602e+01 ms): exact Q_A
+    -> [narrow] Q_A SAT model, inputs: |n::Int64|=#x0000000000000000 value_phi240=#x0000000000000000 value_phi45=#x0000000000000000 |a::Array.size.0.copyload|=#x0000000000000000
+         trap32 = true, H conjuncts: 3
+    -> [mv] minimize: without {%"a::Array.size.0.copyload" >u ((-1 + (%"n::Int64" * %"n::Int64")))} -> SAT, kept (7.037177e+01 ms)
+    -> [narrow] Q_A' (linearized products) UNSAT in 1.284311e+02 ms
+    -> [narrow] Q_B: some 64-bit value may leave 32 bits under H (SAT)
+         flag set: mul operands beyond half width: (bvmul (bvadd value_phi45 #xffffffffffffffff) |n::Int64|)
+         inputs: |n::Int64|=#x000000001f61d6eb value_phi240=#x0000000017ffffe6 value_phi45=#x000000001aed88d7 |a::Array.size.0.copyload|=#x0000000000000000
+         SB assertions: 13, facts: 4, H in Q_B: {%"n::Int64" <=s 2^30=true} {%"a::Array.size.0.copyload" >=s 0=true} {%"a::Array.size.0.copyload" <=s 2^15=true}
+    -> [mv] loosen: {%"n::Int64" <=s 2^15} -> {%"n::Int64" <=s 2^30}: kept tight (1.831489e+02 ms)
+    -> [narrow] Q_A' (linearized products) UNSAT in 1.849002e+02 ms
+    -> [mv] loosen: {%"a::Array.size.0.copyload" <=s 2^15} -> {%"a::Array.size.0.copyload" <=s 2^30}: UNSAT, adopted (2.742178e+02 ms)
+    -> [narrow] Q_A' (linearized) SAT (3.142693e+01 ms): exact Q_A
+    -> [mv] loosen: {%"a::Array.size.0.copyload" <=s 2^30} -> {%"a::Array.size.0.copyload" <=s 2^31}: kept tight (1.005692e+04 ms)
+    -> [mv] DEAD UNDER HYPOTHESIS H = {%"n::Int64" <=s 2^15, %"a::Array.size.0.copyload" >=s 0, %"a::Array.size.0.copyload" <=s 2^30, %"a::Array.size.0.copyload" >u ((-1 + (%"n::Int64" * %"n::Int64")))} (4 of 16 candidates in core, round 1; re-solve 1.541073e+03 ms; trap loop depth 3, hoist to depth 2)
+    -> [mv-nofold] fast-trap id 1 (check kept in the H-guarded fast copy) chk 0
+    -> [mv-nofold] fast-trap id 2 (check kept in the H-guarded fast copy) chk 0
+  => SUCCESS (fast copy): trap folded in 2 copies inside the H-guarded clone of loop 'L10.preheader'
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of 'L14'):  %.not31 = icmp ult i64 %5, %"a::Array.size.0.copyload", !dbg !39
+    -> Guard[1] (false edge of 'top'):  %.not44 = icmp slt i64 %"n::Int64", 1, !dbg !29
+    -> Collected 2 dominating context guard(s).
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[PHIINV-hi:0] i64 %value_phi45 == i64 1 || sle(i64 %value_phi45, i64 %"n::Int64") (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:1] (B <=s INT_MAX-1 && v0 <=s B) -> i64 %value_phi45 >=s i64 1 (monotone WRAPPING increments; conditional)
+    -> Fact[LVI:2] i64 %"a::Array.size.0.copyload" in [1,0) (LVI @ L31)
+    -> Fact[PHIINV-hi:3] i64 %value_phi143 == i64 1 || sle(i64 %value_phi143, i64 %"n::Int64") (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:4] (B <=s INT_MAX-1 && v0 <=s B) -> i64 %value_phi143 >=s i64 1 (monotone WRAPPING increments; conditional)
+    -> Fact[PHIINV-hi:5] i64 %value_phi240 == i64 1 || sle(i64 %value_phi240, i64 %"n::Int64") (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:6] (B <=s INT_MAX-1 && v0 <=s B) -> i64 %value_phi240 >=s i64 1 (monotone WRAPPING increments; conditional)
+    -> [heavy] 7 analysis fact(s) on 6 boundary value(s)
+    -> [mv] T3: latch-derived trip-count bound for loop depth 3 (latch L52): (-1 + %"n::Int64")
+    -> [mv] T3: latch-derived trip-count bound for loop depth 2 (latch L77): (-1 + %"n::Int64")
+    -> [mv] T3 symbolic index bound: max(idx) = (-1 + (%"n::Int64" * %"n::Int64"))
+    -> [ind L0] BASE (2 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 28.320910 ms]
+    -> [ind L1] BASE (1 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 26.840893 ms]
+    -> [ind L2] BASE (1 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 26.897731 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 39.872602 ms]
+    -> [mv] still UNKNOWN under 19 hypothesis candidate(s): not versionable
+    -> [narrow] retry: whole-query 64->32 with overflow flags
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[PHIINV-hi:0] i64 %value_phi45 == i64 1 || sle(i64 %value_phi45, i64 %"n::Int64") (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:1] (B <=s INT_MAX-1 && v0 <=s B) -> i64 %value_phi45 >=s i64 1 (monotone WRAPPING increments; conditional)
+    -> Fact[LVI:2] i64 %"a::Array.size.0.copyload" in [1,0) (LVI @ L31)
+    -> Fact[PHIINV-hi:3] i64 %value_phi143 == i64 1 || sle(i64 %value_phi143, i64 %"n::Int64") (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:4] (B <=s INT_MAX-1 && v0 <=s B) -> i64 %value_phi143 >=s i64 1 (monotone WRAPPING increments; conditional)
+    -> Fact[PHIINV-hi:5] i64 %value_phi240 == i64 1 || sle(i64 %value_phi240, i64 %"n::Int64") (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:6] (B <=s INT_MAX-1 && v0 <=s B) -> i64 %value_phi240 >=s i64 1 (monotone WRAPPING increments; conditional)
+    -> [heavy] 7 analysis fact(s) on 6 boundary value(s)
+    -> [mv] T3: latch-derived trip-count bound for loop depth 3 (latch L52): (-1 + %"n::Int64")
+    -> [mv] T3: latch-derived trip-count bound for loop depth 2 (latch L77): (-1 + %"n::Int64")
+    -> [mv] T3 symbolic index bound: max(idx) = (-1 + (%"n::Int64" * %"n::Int64"))
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 43.344663 ms]
+    -> [narrow] whole-query 64->32 rewrite: 14 overflow flags, 6 64-bit inputs, 2 product(s) linearized
+    -> [narrow] Q_A/Q_B hypothesis set: {%"n::Int64" >=s 0} {%"n::Int64" <=s 2^62} {%"n::Int64" <=s 2^31} {%"n::Int64" <=s 2^15} {%"n::Int64" <=s 2^30}
+    -> [narrow] Q_A' (linearized) SAT (1.277177e+01 ms): exact Q_A
+    -> [narrow] Q_A SAT model, inputs: value_phi240=#x0000000000000000 value_phi45=#x0000000000000000 |n::Int64|=#x0000000000000000 |a::Array.size.0.copyload|=#x0000000000000000 value_phi143=#x0000000000000000 |b::Array.size.0.copyload|=#x0000000000000000
+         trap32 = true, H conjuncts: 5
+    -> [narrow] Q_A/Q_B hypothesis set: {%"n::Int64" >=s 0} {%"n::Int64" <=s 2^62} {%"n::Int64" <=s 2^31} {%"n::Int64" <=s 2^15} {%"n::Int64" <=s 2^30} {%value_phi45 >=s 0} {%value_phi45 <=s 2^62} {%value_phi45 <=s 2^31} {%value_phi45 <=s 2^15} {%value_phi45 <=s 2^30} {%"a::Array.size.0.copyload" >=s 0} {%"a::Array.size.0.copyload" <=s 2^62} {%"a::Array.size.0.copyload" <=s 2^31} {%"a::Array.size.0.copyload" <=s 2^15} {%"a::Array.size.0.copyload" <=s 2^30} {%value_phi143 >=s 0} {%value_phi143 <=s 2^62} {%value_phi143 <=s 2^31} {%value_phi143 <=s 2^15} {%value_phi143 <=s 2^30} {%"b::Array.size.0.copyload" >=s 0} {%"b::Array.size.0.copyload" <=s 2^62} {%"b::Array.size.0.copyload" <=s 2^31} {%"b::Array.size.0.copyload" <=s 2^15} {%"b::Array.size.0.copyload" <=s 2^30} {%"b::Array.size.0.copyload" >u ((-1 + (%"n::Int64" * %"n::Int64")))}
+    -> [narrow] Q_A' (linearized products) UNSAT in 1.109184e+03 ms
+    -> [narrow] Q_A' (linearized products) UNSAT in 1.709774e+02 ms
+    -> [narrow] Q_B: some 64-bit value may leave 32 bits under H (SAT)
+         flag set: mul operands beyond half width: (bvmul (bvadd value_phi45 #xffffffffffffffff) |n::Int64|)
+         flag set: mul operands beyond half width: (bvmul (bvadd value_phi240 #xffffffffffffffff) |n::Int64|)
+         inputs: value_phi240=#x0000000000000001 value_phi45=#x0000000000000001 |n::Int64|=#x000000000000ffff |a::Array.size.0.copyload|=#x0000000000008000 value_phi143=#x0000000000008000 |b::Array.size.0.copyload|=#x0000000000000000
+         SB assertions: 28, facts: 7, H in Q_B: {%"n::Int64" <=s 2^31=true} {%value_phi45 >=s 0=true} {%value_phi45 <=s 2^31=true} {%value_phi45 <=s 2^15=true} {%"a::Array.size.0.copyload" >=s 0=true} {%"a::Array.size.0.copyload" <=s 2^31=true} {%"a::Array.size.0.copyload" <=s 2^15=true} {%value_phi143 >=s 0=true} {%value_phi143 <=s 2^31=true} {%value_phi143 <=s 2^15=true} {%"b::Array.size.0.copyload" >=s 0=true} {%"b::Array.size.0.copyload" <=s 2^31=true} {%"b::Array.size.0.copyload" <=s 2^15=true}
+    -> [mv] minimize: without {%"n::Int64" <=s 2^15} -> SAT, kept (2.560990e+02 ms)
+    -> [narrow] Q_A' (linearized products) UNSAT in 2.426797e+02 ms
+    -> [mv] minimize: without {%value_phi45 <=s 2^15} -> UNSAT, dropped (6.781676e+02 ms)
+    -> [narrow] Q_A' (linearized products) UNSAT in 3.675747e+02 ms
+    -> [narrow] Q_B: some 64-bit value may leave 32 bits under H (SAT)
+         flag set: input !fits: |a::Array.size.0.copyload|
+         inputs: value_phi240=#x0000000000002a00 value_phi45=#x0000000000008000 |n::Int64|=#x0000000000008000 |a::Array.size.0.copyload|=#x0000000080000000 value_phi143=#x0000000000004e82 |b::Array.size.0.copyload|=#x0000000000000000
+         SB assertions: 27, facts: 7, H in Q_B: {%"n::Int64" <=s 2^31=true} {%"n::Int64" <=s 2^15=true} {%value_phi45 >=s 0=true} {%value_phi45 <=s 2^31=true} {%"a::Array.size.0.copyload" >=s 0=true} {%"a::Array.size.0.copyload" <=s 2^31=true} {%value_phi143 >=s 0=true} {%value_phi143 <=s 2^31=true} {%value_phi143 <=s 2^15=true} {%"b::Array.size.0.copyload" >=s 0=true} {%"b::Array.size.0.copyload" <=s 2^31=true} {%"b::Array.size.0.copyload" <=s 2^15=true}
+    -> [mv] minimize: without {%"a::Array.size.0.copyload" <=s 2^15} -> SAT, kept (4.524670e+02 ms)
+    -> [narrow] Q_A' (linearized products) UNSAT in 3.545294e+02 ms
+    -> [mv] minimize: without {%value_phi143 <=s 2^15} -> UNSAT, dropped (5.891547e+02 ms)
+    -> [narrow] Q_A' (linearized) SAT (5.474041e+01 ms): exact Q_A
+    -> [mv] minimize: without {%"b::Array.size.0.copyload" <=s 2^15} -> UNKNOWN, kept (1.011938e+04 ms)
+    -> [narrow] Q_A' (linearized products) UNSAT in 3.292960e+02 ms
+    -> [mv] minimize: without {%"n::Int64" <=s 2^31} -> UNSAT, dropped (8.253841e+02 ms)
+    -> [narrow] Q_A' (linearized products) UNSAT in 2.358697e+02 ms
+    -> [mv] minimize: without {%value_phi45 <=s 2^31} -> UNSAT, dropped (4.546704e+02 ms)
+    -> [narrow] Q_A' (linearized products) UNSAT in 2.787400e+02 ms
+    -> [mv] minimize: without {%"a::Array.size.0.copyload" <=s 2^31} -> UNSAT, dropped (5.071343e+02 ms)
+    -> [narrow] Q_A' (linearized products) UNSAT in 2.556117e+02 ms
+    -> [mv] minimize: without {%value_phi143 <=s 2^31} -> UNSAT, dropped (5.011618e+02 ms)
+    -> [narrow] Q_A' (linearized products) UNSAT in 4.765312e+02 ms
+    -> [mv] minimize: without {%"b::Array.size.0.copyload" <=s 2^31} -> UNSAT, dropped (7.462284e+02 ms)
+    -> [narrow] Q_A' (linearized products) UNSAT in 2.616567e+02 ms
+    -> [mv] minimize: without {%value_phi45 >=s 0} -> UNSAT, dropped (5.736584e+02 ms)
+    -> [narrow] Q_A' (linearized products) UNSAT in 3.045337e+02 ms
+    -> [narrow] Q_B: some 64-bit value may leave 32 bits under H (SAT)
+         flag set: input !fits: |a::Array.size.0.copyload|
+         inputs: value_phi240=#x00000000000001b7 value_phi45=#x0000000000000c00 |n::Int64|=#x0000000000005f01 |a::Array.size.0.copyload|=#x84a0075110b10000 value_phi143=#x000000000000233f |b::Array.size.0.copyload|=#x0000000000000000
+         SB assertions: 20, facts: 7, H in Q_B: {%"n::Int64" <=s 2^15=true} {%"a::Array.size.0.copyload" <=s 2^15=true} {%value_phi143 >=s 0=true} {%"b::Array.size.0.copyload" >=s 0=true} {%"b::Array.size.0.copyload" <=s 2^15=true}
+    -> [mv] minimize: without {%"a::Array.size.0.copyload" >=s 0} -> SAT, kept (4.006790e+02 ms)
+    -> [narrow] Q_A' (linearized products) UNSAT in 2.651159e+02 ms
+    -> [mv] minimize: without {%value_phi143 >=s 0} -> UNSAT, dropped (4.916195e+02 ms)
+    -> [narrow] Q_A' (linearized products) UNSAT in 3.144926e+02 ms
+    -> [narrow] Q_B: some 64-bit value may leave 32 bits under H (SAT)
+         flag set: input !fits: |b::Array.size.0.copyload|
+         inputs: value_phi240=#x0000000000003c41 value_phi45=#x00000000000028bc |n::Int64|=#x0000000000004cc9 |a::Array.size.0.copyload|=#x0000000000004000 value_phi143=#x00000000000031c0 |b::Array.size.0.copyload|=#x8000000000000000
+         SB assertions: 19, facts: 7, H in Q_B: {%"n::Int64" <=s 2^15=true} {%"a::Array.size.0.copyload" >=s 0=true} {%"a::Array.size.0.copyload" <=s 2^15=true} {%"b::Array.size.0.copyload" <=s 2^15=true}
+    -> [mv] minimize: without {%"b::Array.size.0.copyload" >=s 0} -> SAT, kept (4.071361e+02 ms)
+    -> [narrow] Q_A' (linearized) SAT (5.250353e+01 ms): exact Q_A
+    -> [narrow] Q_A SAT model, inputs: value_phi240=#x0000000000000000 value_phi45=#x0000000000000000 |n::Int64|=#x0000000000000000 |a::Array.size.0.copyload|=#x0000000000000000 value_phi143=#x0000000000000000 |b::Array.size.0.copyload|=#x0000000000000000
+         trap32 = true, H conjuncts: 5
+    -> [mv] minimize: without {%"b::Array.size.0.copyload" >u ((-1 + (%"n::Int64" * %"n::Int64")))} -> SAT, kept (1.351061e+02 ms)
+    -> [narrow] Q_A' (linearized products) UNSAT in 3.907827e+02 ms
+    -> [narrow] Q_B: some 64-bit value may leave 32 bits under H (SAT)
+         flag set: mul operands beyond half width: (bvmul (bvadd value_phi45 #xffffffffffffffff) |n::Int64|)
+         flag set: mul operands beyond half width: (bvmul (bvadd value_phi240 #xffffffffffffffff) |n::Int64|)
+         inputs: value_phi240=#x0000000000000001 value_phi45=#x0000000008638a0e |n::Int64|=#x0000000040000000 |a::Array.size.0.copyload|=#x0000000000008000 value_phi143=#x0000000000000001 |b::Array.size.0.copyload|=#x0000000000000000
+         SB assertions: 20, facts: 7, H in Q_B: {%"n::Int64" <=s 2^30=true} {%"a::Array.size.0.copyload" >=s 0=true} {%"a::Array.size.0.copyload" <=s 2^15=true} {%"b::Array.size.0.copyload" >=s 0=true} {%"b::Array.size.0.copyload" <=s 2^15=true}
+    -> [mv] loosen: {%"n::Int64" <=s 2^15} -> {%"n::Int64" <=s 2^30}: kept tight (4.837249e+02 ms)
+    -> [narrow] Q_A' (linearized products) UNSAT in 2.677694e+02 ms
+    -> [mv] loosen: {%"a::Array.size.0.copyload" <=s 2^15} -> {%"a::Array.size.0.copyload" <=s 2^30}: UNSAT, adopted (5.134973e+02 ms)
+    -> [narrow] Q_A' (linearized products) UNSAT in 6.149537e+02 ms
+    -> [narrow] Q_B: some 64-bit value may leave 32 bits under H (SAT)
+         flag set: input !fits: |a::Array.size.0.copyload|
+         inputs: value_phi240=#x0000000000008000 value_phi45=#x00000000000004ef |n::Int64|=#x0000000000008000 |a::Array.size.0.copyload|=#x0000000080000000 value_phi143=#x0000000000000001 |b::Array.size.0.copyload|=#x0000000000000000
+         SB assertions: 20, facts: 7, H in Q_B: {%"n::Int64" <=s 2^15=true} {%"a::Array.size.0.copyload" >=s 0=true} {%"a::Array.size.0.copyload" <=s 2^31=true} {%"b::Array.size.0.copyload" >=s 0=true} {%"b::Array.size.0.copyload" <=s 2^15=true}
+    -> [mv] loosen: {%"a::Array.size.0.copyload" <=s 2^30} -> {%"a::Array.size.0.copyload" <=s 2^31}: kept tight (7.004051e+02 ms)
+    -> [narrow] Q_A' (linearized products) UNSAT in 3.064265e+02 ms
+    -> [mv] loosen: {%"b::Array.size.0.copyload" <=s 2^15} -> {%"b::Array.size.0.copyload" <=s 2^30}: UNSAT, adopted (6.123735e+02 ms)
+    -> [narrow] Q_A' (linearized) SAT (1.479683e+02 ms): exact Q_A
+    -> [mv] loosen: {%"b::Array.size.0.copyload" <=s 2^30} -> {%"b::Array.size.0.copyload" <=s 2^31}: kept tight (1.015675e+04 ms)
+    -> [mv] DEAD UNDER HYPOTHESIS H = {%"n::Int64" <=s 2^15, %"a::Array.size.0.copyload" >=s 0, %"a::Array.size.0.copyload" <=s 2^30, %"b::Array.size.0.copyload" >=s 0, %"b::Array.size.0.copyload" <=s 2^30, %"b::Array.size.0.copyload" >u ((-1 + (%"n::Int64" * %"n::Int64")))} (6 of 26 candidates in core, round 1; re-solve 2.049874e+03 ms; trap loop depth 3, hoist to depth 3)
+    -> [mv-nofold] fast-trap id 0 (check kept in the H-guarded fast copy) chk 1
+  => SUCCESS (fast copy): trap folded in 1 copy inside the H-guarded clone of loop 'L14'
+  -> Found UB Trap. Starting Backward Slice...
+    -> Guard[0] (true edge of 'L52'):  %.not30 = icmp sgt i64 %14, %"n::Int64", !dbg !64
+    -> Guard[1] (true edge of 'L31'):  %.not32 = icmp ult i64 %9, %"b::Array.size.0.copyload", !dbg !39
+    -> Guard[2] (true edge of 'L14'):  %.not31 = icmp ult i64 %5, %"a::Array.size.0.copyload", !dbg !39
+    -> Guard[3] (false edge of 'top'):  %.not44 = icmp slt i64 %"n::Int64", 1, !dbg !29
+    -> Collected 4 dominating context guard(s).
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i64 %"n::Int64" in [-9223372036854775808,9223372036854775807) (LVI @ L10.L60_crit_edge)
+    -> Fact[PHIINV-hi:1] i64 %value_phi45 == i64 1 || sle(i64 %value_phi45, i64 %"n::Int64") (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:2] (B <=s INT_MAX-1 && v0 <=s B) -> i64 %value_phi45 >=s i64 1 (monotone WRAPPING increments; conditional)
+    -> Fact[LVI:3] i64 %"a::Array.size.0.copyload" in [1,0) (LVI @ L10.L60_crit_edge)
+    -> Fact[PHIINV-hi:4] i64 %value_phi143 == i64 1 || sle(i64 %value_phi143, i64 %"n::Int64") (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:5] (B <=s INT_MAX-1 && v0 <=s B) -> i64 %value_phi143 >=s i64 1 (monotone WRAPPING increments; conditional)
+    -> Fact[LVI:6] i64 %"b::Array.size.0.copyload" in [1,0) (LVI @ L10.L60_crit_edge)
+    -> Fact[LVI:7] i64 %value_phi240 in [-9223372036854775808,9223372036854775807) (LVI @ L10.L60_crit_edge)
+    -> Fact[PHIINV-hi:8] i64 %value_phi240 == i64 1 || sle(i64 %value_phi240, i64 %"n::Int64") (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:9] (B <=s INT_MAX-1 && v0 <=s B) -> i64 %value_phi240 >=s i64 1 (monotone WRAPPING increments; conditional)
+    -> [heavy] 10 analysis fact(s) on 7 boundary value(s)
+    -> [mv] T3: latch-derived trip-count bound for loop depth 2 (latch L77): (-1 + %"n::Int64")
+    -> [mv] T3: latch-derived trip-count bound for loop depth 1 (latch L6.L84_crit_edge.split): (-1 + %"n::Int64")
+    -> [mv] T3 symbolic index bound: max(idx) = (-1 + (%"n::Int64" * %"n::Int64"))
+    -> [ind L0] BASE (1 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 55.495467 ms]
+    -> [ind L1] BASE (1 phi(s) = entry): SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 12.553263 ms]
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 69.527514 ms]
+    -> [mv] still UNKNOWN under 13 hypothesis candidate(s): not versionable
+    -> [narrow] retry: whole-query 64->32 with overflow flags
+    -> [go3] 0 leaf-closure instruction(s) encoded
+    -> Fact[LVI:0] i64 %"n::Int64" in [-9223372036854775808,9223372036854775807) (LVI @ L10.L60_crit_edge)
+    -> Fact[PHIINV-hi:1] i64 %value_phi45 == i64 1 || sle(i64 %value_phi45, i64 %"n::Int64") (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:2] (B <=s INT_MAX-1 && v0 <=s B) -> i64 %value_phi45 >=s i64 1 (monotone WRAPPING increments; conditional)
+    -> Fact[LVI:3] i64 %"a::Array.size.0.copyload" in [1,0) (LVI @ L10.L60_crit_edge)
+    -> Fact[PHIINV-hi:4] i64 %value_phi143 == i64 1 || sle(i64 %value_phi143, i64 %"n::Int64") (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:5] (B <=s INT_MAX-1 && v0 <=s B) -> i64 %value_phi143 >=s i64 1 (monotone WRAPPING increments; conditional)
+    -> Fact[LVI:6] i64 %"b::Array.size.0.copyload" in [1,0) (LVI @ L10.L60_crit_edge)
+    -> Fact[LVI:7] i64 %value_phi240 in [-9223372036854775808,9223372036854775807) (LVI @ L10.L60_crit_edge)
+    -> Fact[PHIINV-hi:8] i64 %value_phi240 == i64 1 || sle(i64 %value_phi240, i64 %"n::Int64") (latch-implied bound, 1-induction)
+    -> Fact[PHIINV-lo:9] (B <=s INT_MAX-1 && v0 <=s B) -> i64 %value_phi240 >=s i64 1 (monotone WRAPPING increments; conditional)
+    -> [heavy] 10 analysis fact(s) on 7 boundary value(s)
+    -> [mv] T3: latch-derived trip-count bound for loop depth 2 (latch L77): (-1 + %"n::Int64")
+    -> [mv] T3: latch-derived trip-count bound for loop depth 1 (latch L6.L84_crit_edge.split): (-1 + %"n::Int64")
+    -> [mv] T3 symbolic index bound: max(idx) = (-1 + (%"n::Int64" * %"n::Int64"))
+    -> SAT (WARNING: Potential Integer Overflow Bug Detected!) [Query Latency: 56.431152 ms]
+    -> [narrow] whole-query 64->32 rewrite: 18 overflow flags, 7 64-bit inputs, 2 product(s) linearized
+    -> [narrow] exempt input (unbounded, guards/facts/flags over it dropped): value_phi240
+    -> [narrow] exempt input (unbounded, guards/facts/flags over it dropped): |b::Array.size.0.copyload|
+    -> [narrow] Q_A/Q_B hypothesis set: {%"n::Int64" >=s 0} {%"n::Int64" <=s 2^62} {%"n::Int64" <=s 2^31} {%"n::Int64" <=s 2^15} {%"n::Int64" <=s 2^30}
+    -> [narrow] Q_A' (linearized) SAT (7.111055e+00 ms): exact Q_A
+    -> [narrow] Q_A SAT model, inputs: value_phi240=#x0000000000000000 |n::Int64|=#x0000000000000000 value_phi143=#x0000000000000000 |b::Array.size.0.copyload|=#x0000000000000000 value_phi45=#x0000000000000000 |a::Array.size.0.copyload|=#x0000000000000000 |c::Array.size.0.copyload|=#x0000000000000000
+         trap32 = true, H conjuncts: 5
+    -> [narrow] Q_A/Q_B hypothesis set: {%"n::Int64" >=s 0} {%"n::Int64" <=s 2^62} {%"n::Int64" <=s 2^31} {%"n::Int64" <=s 2^15} {%"n::Int64" <=s 2^30} {%value_phi45 >=s 0} {%value_phi45 <=s 2^62} {%value_phi45 <=s 2^31} {%value_phi45 <=s 2^15} {%value_phi45 <=s 2^30} {%"a::Array.size.0.copyload" >=s 0} {%"a::Array.size.0.copyload" <=s 2^62} {%"a::Array.size.0.copyload" <=s 2^31} {%"a::Array.size.0.copyload" <=s 2^15} {%"a::Array.size.0.copyload" <=s 2^30} {%"c::Array.size.0.copyload" >=s 0} {%"c::Array.size.0.copyload" <=s 2^62} {%"c::Array.size.0.copyload" <=s 2^31} {%"c::Array.size.0.copyload" <=s 2^15} {%"c::Array.size.0.copyload" <=s 2^30} {%"c::Array.size.0.copyload" >u ((-1 + (%"n::Int64" * %"n::Int64")))}
+    -> [narrow] Q_A' (linearized products) UNSAT in 9.817732e+02 ms
+    -> [narrow] Q_A' (linearized products) UNSAT in 3.968253e+02 ms
+    -> [narrow] Q_B: some 64-bit value may leave 32 bits under H (SAT)
+         flag set: mul operands beyond half width: (bvmul (bvadd value_phi240 #xffffffffffffffff) |n::Int64|)
+         flag set: mul operands beyond half width: (bvmul (bvadd value_phi45 #xffffffffffffffff) |n::Int64|)
+         inputs: value_phi240=#x0000000000000001 |n::Int64|=#x000000007fffffff value_phi143=#x0000000000000001 |b::Array.size.0.copyload|=#x0000000000000001 value_phi45=#x0000000000004499 |a::Array.size.0.copyload|=#x0000000000008000 |c::Array.size.0.copyload|=#x0000000000000000
+         SB assertions: 26, facts: 10, H in Q_B: {%"n::Int64" <=s 2^31=true} {%value_phi45 <=s 2^31=true} {%value_phi45 <=s 2^15=true} {%"a::Array.size.0.copyload" >=s 0=true} {%"a::Array.size.0.copyload" <=s 2^31=true} {%"a::Array.size.0.copyload" <=s 2^15=true} {%"c::Array.size.0.copyload" >=s 0=true} {%"c::Array.size.0.copyload" <=s 2^31=true} {%"c::Array.size.0.copyload" <=s 2^15=true}
+    -> [mv] minimize: without {%"n::Int64" <=s 2^15} -> SAT, kept (4.518929e+02 ms)
+    -> [narrow] Q_A' (linearized products) UNSAT in 1.121179e+02 ms
+    -> [mv] minimize: without {%value_phi45 <=s 2^15} -> UNSAT, dropped (2.307239e+02 ms)
+    -> [narrow] Q_A' (linearized products) UNSAT in 4.842771e+02 ms
+    -> [narrow] Q_B: some 64-bit value may leave 32 bits under H (SAT)
+         flag set: input !fits: |a::Array.size.0.copyload|
+         inputs: value_phi240=#x000000000000063c |n::Int64|=#x000000000000468c value_phi143=#x0000000000004000 |b::Array.size.0.copyload|=#x0000000000000001 value_phi45=#x0000000000000001 |a::Array.size.0.copyload|=#x0000000080000000 |c::Array.size.0.copyload|=#x0000000000000000
+         SB assertions: 25, facts: 10, H in Q_B: {%"n::Int64" <=s 2^31=true} {%"n::Int64" <=s 2^15=true} {%value_phi45 <=s 2^31=true} {%"a::Array.size.0.copyload" >=s 0=true} {%"a::Array.size.0.copyload" <=s 2^31=true} {%"c::Array.size.0.copyload" >=s 0=true} {%"c::Array.size.0.copyload" <=s 2^31=true} {%"c::Array.size.0.copyload" <=s 2^15=true}
+    -> [mv] minimize: without {%"a::Array.size.0.copyload" <=s 2^15} -> SAT, kept (5.351862e+02 ms)
+    -> [narrow] Q_A' (linearized) SAT (7.556455e+01 ms): exact Q_A
+    -> [mv] minimize: without {%"c::Array.size.0.copyload" <=s 2^15} -> UNKNOWN, kept (1.008160e+04 ms)
+    -> [narrow] Q_A' (linearized products) UNSAT in 2.292960e+02 ms
+    -> [mv] minimize: without {%"n::Int64" <=s 2^31} -> UNSAT, dropped (3.324261e+02 ms)
+    -> [narrow] Q_A' (linearized products) UNSAT in 2.078534e+02 ms
+    -> [mv] minimize: without {%value_phi45 <=s 2^31} -> UNSAT, dropped (3.188367e+02 ms)
+    -> [narrow] Q_A' (linearized products) UNSAT in 1.351195e+02 ms
+    -> [mv] minimize: without {%"a::Array.size.0.copyload" <=s 2^31} -> UNSAT, dropped (2.205798e+02 ms)
+    -> [narrow] Q_A' (linearized products) UNSAT in 3.035063e+02 ms
+    -> [mv] minimize: without {%"c::Array.size.0.copyload" <=s 2^31} -> UNSAT, dropped (4.023516e+02 ms)
+    -> [narrow] Q_A' (linearized products) UNSAT in 3.361420e+02 ms
+    -> [narrow] Q_B: some 64-bit value may leave 32 bits under H (SAT)
+         flag set: input !fits: |a::Array.size.0.copyload|
+         inputs: value_phi240=#x0000000000008000 |n::Int64|=#x0000000000008000 value_phi143=#x0000000000000001 |b::Array.size.0.copyload|=#x0000000000000001 value_phi45=#x0000000000005fff |a::Array.size.0.copyload|=#x8000000000000000 |c::Array.size.0.copyload|=#x0000000000000000
+         SB assertions: 21, facts: 10, H in Q_B: {%"n::Int64" <=s 2^15=true} {%"a::Array.size.0.copyload" <=s 2^15=true} {%"c::Array.size.0.copyload" >=s 0=true} {%"c::Array.size.0.copyload" <=s 2^15=true}
+    -> [mv] minimize: without {%"a::Array.size.0.copyload" >=s 0} -> SAT, kept (3.880157e+02 ms)
+    -> [narrow] Q_A' (linearized products) UNSAT in 2.726645e+02 ms
+    -> [narrow] Q_B: some 64-bit value may leave 32 bits under H (SAT)
+         flag set: input !fits: |c::Array.size.0.copyload|
+         inputs: value_phi240=#x0000000000008000 |n::Int64|=#x0000000000008000 value_phi143=#x00000000000001dc |b::Array.size.0.copyload|=#x0000000000000001 value_phi45=#x0000000000001cff |a::Array.size.0.copyload|=#x0000000000008000 |c::Array.size.0.copyload|=#x8000000000000000
+         SB assertions: 21, facts: 10, H in Q_B: {%"n::Int64" <=s 2^15=true} {%"a::Array.size.0.copyload" >=s 0=true} {%"a::Array.size.0.copyload" <=s 2^15=true} {%"c::Array.size.0.copyload" <=s 2^15=true}
+    -> [mv] minimize: without {%"c::Array.size.0.copyload" >=s 0} -> SAT, kept (3.241482e+02 ms)
+    -> [narrow] Q_A' (linearized) SAT (3.303395e+01 ms): exact Q_A
+    -> [narrow] Q_A SAT model, inputs: value_phi240=#x0000000000000000 |n::Int64|=#x0000000000000000 value_phi143=#x0000000000000000 |b::Array.size.0.copyload|=#x0000000000000000 value_phi45=#x0000000000000000 |a::Array.size.0.copyload|=#x0000000000000000 |c::Array.size.0.copyload|=#x0000000000000000
+         trap32 = true, H conjuncts: 5
+    -> [mv] minimize: without {%"c::Array.size.0.copyload" >u ((-1 + (%"n::Int64" * %"n::Int64")))} -> SAT, kept (8.209235e+01 ms)
+    -> [narrow] Q_A' (linearized products) UNSAT in 1.142934e+02 ms
+    -> [narrow] Q_B: some 64-bit value may leave 32 bits under H (SAT)
+         flag set: mul operands beyond half width: (bvmul (bvadd value_phi240 #xffffffffffffffff) |n::Int64|)
+         flag set: mul operands beyond half width: (bvmul (bvadd value_phi45 #xffffffffffffffff) |n::Int64|)
+         inputs: value_phi240=#x0000000000000001 |n::Int64|=#x000000003fffffff value_phi143=#x0000000000000001 |b::Array.size.0.copyload|=#x0000000000000001 value_phi45=#x0000000000732407 |a::Array.size.0.copyload|=#x0000000000008000 |c::Array.size.0.copyload|=#x0000000000000000
+         SB assertions: 22, facts: 10, H in Q_B: {%"n::Int64" <=s 2^30=true} {%"a::Array.size.0.copyload" >=s 0=true} {%"a::Array.size.0.copyload" <=s 2^15=true} {%"c::Array.size.0.copyload" >=s 0=true} {%"c::Array.size.0.copyload" <=s 2^15=true}
+    -> [mv] loosen: {%"n::Int64" <=s 2^15} -> {%"n::Int64" <=s 2^30}: kept tight (1.704470e+02 ms)
+    -> [narrow] Q_A' (linearized products) UNSAT in 6.490940e+02 ms
+    -> [mv] loosen: {%"a::Array.size.0.copyload" <=s 2^15} -> {%"a::Array.size.0.copyload" <=s 2^30}: UNSAT, adopted (7.421174e+02 ms)
+    -> [narrow] Q_A' (linearized products) UNSAT in 5.423717e+02 ms
+    -> [narrow] Q_B: some 64-bit value may leave 32 bits under H (SAT)
+         flag set: input !fits: |a::Array.size.0.copyload|
+         inputs: value_phi240=#x0000000000004db0 |n::Int64|=#x0000000000008000 value_phi143=#x0000000000004188 |b::Array.size.0.copyload|=#x0000000000000001 value_phi45=#x0000000000000007 |a::Array.size.0.copyload|=#x0000000080000000 |c::Array.size.0.copyload|=#x0000000000000000
+         SB assertions: 22, facts: 10, H in Q_B: {%"n::Int64" <=s 2^15=true} {%"a::Array.size.0.copyload" >=s 0=true} {%"a::Array.size.0.copyload" <=s 2^31=true} {%"c::Array.size.0.copyload" >=s 0=true} {%"c::Array.size.0.copyload" <=s 2^15=true}
+    -> [mv] loosen: {%"a::Array.size.0.copyload" <=s 2^30} -> {%"a::Array.size.0.copyload" <=s 2^31}: kept tight (5.937478e+02 ms)
+    -> [narrow] Q_A' (linearized products) UNSAT in 1.776371e+02 ms
+    -> [mv] loosen: {%"c::Array.size.0.copyload" <=s 2^15} -> {%"c::Array.size.0.copyload" <=s 2^30}: UNSAT, adopted (3.670380e+02 ms)
+    -> [narrow] Q_A' (linearized) SAT (1.543671e+02 ms): exact Q_A
+    -> [mv] loosen: {%"c::Array.size.0.copyload" <=s 2^30} -> {%"c::Array.size.0.copyload" <=s 2^31}: kept tight (1.020477e+04 ms)
+    -> [mv] DEAD UNDER HYPOTHESIS H = {%"n::Int64" <=s 2^15, %"a::Array.size.0.copyload" >=s 0, %"a::Array.size.0.copyload" <=s 2^30, %"c::Array.size.0.copyload" >=s 0, %"c::Array.size.0.copyload" <=s 2^30, %"c::Array.size.0.copyload" >u ((-1 + (%"n::Int64" * %"n::Int64")))} (6 of 21 candidates in core, round 1; re-solve 1.420173e+03 ms; trap loop depth 2, hoist to depth 2)
+    -> [mv-nofold] fast-trap id 3 (check kept in the H-guarded fast copy) chk 2
+  => SUCCESS (fast copy): trap folded in 1 copy inside the H-guarded clone of loop 'L10.preheader'
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 3
+  => Total Trap Attempts: 3
+  => Total SMT Queries Executed: 3
+  => Total SMT Query Latency: 8.316495e+04 ms
+  => Average SMT Query Latency: 2.772165e+04 ms
+  => Total DFS & SMT Execution Time: 3.077122e+04 ms
+--------------------------------------------------
+
+[Z3 Oracle] Analyzing Function: jfptr_matmul!_146
+  [tier: heavy]
+  => Total Traps Eliminated: 0
+  => Traps Folded In Fast Copies (mv): 0
+  => Total Trap Attempts: 0
+  => Total SMT Queries Executed: 0
+  => Total SMT Query Latency: 0.000000e+00 ms
+  => Average SMT Query Latency: 0.000000e+00 ms
+  => Total DFS & SMT Execution Time: 6.020000e-02 ms
+--------------------------------------------------

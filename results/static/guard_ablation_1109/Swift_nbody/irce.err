@@ -1,0 +1,5 @@
+irce: looking at loop Loop at depth 2 containing: %791<header><exiting>,%795<exiting>,%796<exiting>,%802<exiting>,%803<exiting>,%809<exiting>,%810<exiting>,%816<exiting>,%817<latch><exiting>
+irce: loop has 1 inductive range checks: 
+InductiveRangeCheck:
+  Begin: {1,+,1}<nuw><nsw><%729>  Step: 1  End: %.pre326
+  CheckUse:   br i1 %.not278, label %796, label %odessy.chk67, !prof !11 Operand: 0
