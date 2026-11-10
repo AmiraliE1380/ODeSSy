@@ -1,0 +1,8 @@
+outputs identical: true
+sha256.jl ablation arms, 1 MiB x 40 iters, REPS=21 (medians, s)
+checked   0.2923   speedup vs checked: 1.0x
+o3        0.2854   speedup vs checked: 1.024x
+irce_od   0.2836   speedup vs checked: 1.031x
+keep      0.2862   speedup vs checked: 1.021x
+mv_x86    0.2683   speedup vs checked: 1.089x
+ceiling   0.2591   speedup vs checked: 1.128x
