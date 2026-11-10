@@ -1,0 +1,24 @@
+kernel=/mydata/ODeSSy/native_bench/matmul_bench.rs args=4 reps=30
+rustc: rustc 1.97.1 (8bab26f4f 2026-07-14)
+passes: function(irce),oracle-pass<heavy;frame;ind;timeout=10000;threads=1;traps=panic>
+kernel object: /mydata/ODeSSy/perf_test/rust_matmul_bench/checked.matmul_bench.5e18e8e9434cff86-cgu.0.rcgu.o
+  built base   traps 7   bin 4352432 B
+  built base2x   traps 7   bin 4352432 B
+  oracle [function(irce),oracle-pass<heavy;frame;ind;timeout=10000;threads=1;traps=panic>]: eliminated 0, mv folds 0 (UNSAT verdicts: 0)
+  built oracle   traps 7   bin 4352784 B
+  oracle2 [function(irce)]: eliminated 0, mv folds 0 (UNSAT verdicts: 0)
+  built oracle2   traps 7   bin 4352784 B
+  outputs byte-identical across all configs -- gate passed
+
+config        median       min       avg
+base          1.8759    1.8672    1.8777
+base2x        1.8781    1.8663    1.8776
+oracle        1.5989    1.4752    1.5943
+oracle2       1.5975    1.4771    1.5936
+checked       1.8748    1.8667    1.8757
+unchecked     1.3168    1.2485    1.3040
+oracle   vs base  : +17.32% (median)   vs base2x: +17.46%
+oracle2  vs base  : +17.43% (median)   vs base2x: +17.56%
+ceiling (checked vs unchecked twin): 42.38%
+recovery oracle: 40.9% of ceiling
+recovery oracle2: 41.1% of ceiling
