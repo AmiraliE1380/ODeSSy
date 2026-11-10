@@ -1961,3 +1961,18 @@ divsufsort 3); Thorough removes the same number in each. deflate.c: ODeSSy
 8 checks (Fast 13 s, Thorough 20 s, light 4 s); Souper constant 118 s, 0;
 CEGIS 8,771 s, 0. Figures regenerated (figs/rq4_proto/plot_rq4.py -> A1 =
 souper_libraries.pdf, C = souper_deflate.pdf).
+
+### 11.32 Guard-synthesis ablation on the campaign node (Nov 9 2026)
+results/perf/guard_ablation_1109, results/static/guard_ablation_1109 (commit
+f64ca95; all pipelines threads=1, 10 s/query; 30 reps, Julia 21). Speedup over
+checked / proofs, pipelines (i) mv, (ii) mv-keep+O3, (iii) IRCE+ODeSSy,
+(iv) IRCE+O3, (v) O3:
+* base64 1.435/8, 1.259/7, 1.248/3, 1.243/3, 1.000/1
+* crc32 1.074/11, 1.071/4 (was 9), 1.070/4, 1.000/0, 1.000/0
+* Rust matmul 1.281/2, 1.279/2, 1.173/2, 1.174/2, 1.000/0 (separate run from
+  the speedup table's 1.45x; Rust matmul medians are bimodal run to run)
+* Julia sha256 1.089/13, 1.021/7, 1.031/7, 1.024/2, 1.024/2
+* Julia lz77 and matmul not rerun (only (i) proves anything).
+tab:static Julia sha256 88% -> 81% (13/16 at threads=1). §5 Pipeline: t1 vs
+t10 differ by five Julia SHA-256 proofs (13 here vs 8 in tab:compile) and one
+of CryptoSwift's 379.
