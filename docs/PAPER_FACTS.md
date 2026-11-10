@@ -1976,3 +1976,16 @@ checked / proofs, pipelines (i) mv, (ii) mv-keep+O3, (iii) IRCE+ODeSSy,
 tab:static Julia sha256 88% -> 81% (13/16 at threads=1). §5 Pipeline: t1 vs
 t10 differ by five Julia SHA-256 proofs (13 here vs 8 in tab:compile) and one
 of CryptoSwift's 379.
+
+### 11.33 M-series campaign 1109 (Apple M5, Nov 9 2026, 105 min)
+results/perf/mac_campaign_1109 (commit fc2e650; PROD at threads=1, ceilings
+in the same runs; Apple Swift 6.4, Julia 1.12.6, rustc 1.97.1). All output
+gates passed. Paper Table tab:app-runtime rebuilt from it. Speedup / ceiling:
+gemm arm 4.143/4.189; lz77.jl A+B 2.595/2.597, B-only 1.480; matmul.jl n=128
+1.232/1.240, n=512 1.020/1.021; sha256.jl mv 0.922/0.923 (mv-light 1.045);
+Swift lz77 1.318/1.292, base64 1.141/1.136, sha256 1.087/1.007, md5
+1.021/0.968, sha1 1.015/0.977, CryptoSwift 1.012/1.003, crc32 1.006/1.001,
+utf8 0.991/0.991, adler32 0.983/1.055; Rust matmul 1.003/0.977, lz77
+0.745/0.965 (known M-series codegen regression, 0.732 before); zstd comp
+1.146/1.145, decomp 1.000/0.999; zlib 0.990 at 256 MB (209 removed), ceiling
+0.999. evaluation/*.csv appends from this run discarded (x86-only CSVs).

@@ -2169,41 +2169,50 @@ again on every compile; this is why Julia matmul and SHA-256 do not benefit.
 \section{M-series Results}
 \label{sec:app-mseries}
 All runs on one Apple M-series laptop (no pinning; medians of shuffled
-interleaved repetitions; byte-identical outputs required), with the
-swift.org 6.3.3 toolchain. The solver budget is per query. Where an x86
+interleaved repetitions; byte-identical outputs required), with Apple
+Swift 6.4, Julia 1.12.6, and Rust 1.97.1. Every row uses the
+configuration of Table~\ref{tab:speedups} (Thorough at one thread,
+10\,s per query) and measures its ceiling in the same run. Where an x86
 number exists it is quoted for orientation only; the two machines are
 not compared directly.
 
 \begin{table}[h]
-\caption{M-series runtime results (\tool{} vs.\ base / double-O3
-control). ``rules'' is the heavy fact tier with the \texttt{PHIINV}
-rules of \S\ref{sec:app-machinery}. Rows marked \emph{arm} are designated
-hand-versioned Julia copies mirroring what the pass does to the frozen
-kernel's IR; they are runtime proxies, not machinery output.}
+\caption{M-series runtime results: speedup of \tool{}'s build over the
+checked build, and the ceiling (checked over unchecked) from the same
+run. Rows marked \emph{arm} are designated hand-versioned Julia copies
+mirroring what the pass does to the frozen kernel's IR; they are runtime
+proxies, not machinery output.}
 \label{tab:app-runtime}
 \small
-\begin{tabular}{llrl}
+\begin{tabular}{llrr}
 \toprule
-Benchmark & Config & Speedup & Ceiling\\
+Benchmark & Front end & Speedup & Ceiling\\
 \midrule
-gemm.jl \emph{arm3} (proven blocks only) & frame & $4.16\times$ & $4.19\times$\\
-lz77.jl \emph{arm} A$+$B & rules, 60\,s & $2.63\times$ & $2.63\times$\\
-lz77.jl \emph{arm} B only & rules, 300\,ms & $1.52\times$ & $2.63\times$\\
-matmul.jl \emph{arm}, $n{=}128$ & \texttt{mv;narrow} & $1.21\times$ & $1.22\times$\\
-matmul.jl \emph{arm}, $n{=}512$ & \texttt{mv;narrow} & $1.02\times$ & $1.02\times$\\
-lz77 & Swift, rules, 1\,s & $1.376\times$ & $1.360\times$\\
-base64 & Swift, \texttt{mv} & $1.151\times$ & $1.226\times$\\
-sha256 & Swift, rules (pinned 6.3.3) & $1.083\times$ & $1.028\times$\\
-CryptoSwift & Swift, \texttt{mv} / \texttt{mv-light} & $1.019\times$ / $1.014\times$ & $1.196\times$ (x86)\\
-CryptoSwift & Swift, \texttt{ind} & $1.011\times^{b}$ & $1.196\times$ (x86)\\
-crc32 & Swift, \texttt{ind} & $1.003\times$ (noise) & $<1.01\times$\\
-lz77 & Rust, rules & $0.732\times$ & none ($0.957\times$)\\
+gemm \emph{arm} (proven accesses only) & Julia & $4.143\times$ & $4.189\times$\\
+lz77 \emph{arm}, guard A$+$B (60\,s) & Julia & $2.595\times$ & $2.597\times$\\
+lz77 \emph{arm}, guard B only (300\,ms) & Julia & $1.480\times$ & $2.597\times$\\
+matmul \emph{arm}, $n{=}128$ & Julia & $1.232\times$ & $1.240\times$\\
+matmul \emph{arm}, $n{=}512$ & Julia & $1.020\times$ & $1.021\times$\\
+sha256 \emph{arm} & Julia & $0.922\times$ & $0.923\times$\\
+lz77 & Swift & $1.318\times$ & $1.292\times$\\
+base64 & Swift & $1.141\times$ & $1.136\times$\\
+sha256 & Swift & $1.087\times$ & $1.007\times$\\
+md5 & Swift & $1.021\times$ & $0.968\times$\\
+sha1 & Swift & $1.015\times$ & $0.977\times$\\
+CryptoSwift & Swift & $1.012\times$ & $1.003\times$\\
+crc32 & Swift & $1.006\times$ & $1.001\times$\\
+utf8 validator & Swift & $0.991\times$ & $0.991\times$\\
+adler32 & Swift & $0.983\times$ & $1.055\times$\\
+matmul & Rust & $1.003\times$ & $0.977\times$\\
+lz77 & Rust & $0.745\times$ & $0.965\times$\\
+zstd, compression & C & $1.146\times$ & $1.145\times$\\
+zstd, decompression & C & $1.000\times$ & $0.999\times$\\
+zlib (209 checks removed) & C & $0.990\times$ & $0.999\times$\\
 \bottomrule
 \end{tabular}\\
-\raggedright\footnotesize $^{b}$REPS$=$10; the rules-only control in
-its own session is flat ($0.997\times$), but the two sessions' bases differ
-by 1.2\%, so this is suggestive pending the pinned x86 protocol. zstd
-under \texttt{ind} is inconclusive on M-series (30\,ms workload).\par
+\raggedright\footnotesize Medians of 30 repetitions (21 for Julia).
+zstd: 512\,MB corpus. zlib: 256\,MB input, 20 runs (8 and 64\,MB:
+$0.995\times$ and $0.992\times$).\par
 \end{table}
 
 
