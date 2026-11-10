@@ -1979,7 +1979,7 @@ of CryptoSwift's 379.
 
 ### 11.33 M-series campaign 1109 (Apple M5, Nov 9 2026, 105 min)
 results/perf/mac_campaign_1109 (commit fc2e650; PROD at threads=1, ceilings
-in the same runs; Apple Swift 6.4, Julia 1.12.6, rustc 1.97.1). All output
+in the same runs; pinned swift.org Swift 6.3.3 (the harness's toolchain, per the logs; the system swift is 6.4 and was not used), Julia 1.12.6, rustc 1.97.1). All output
 gates passed. Paper Table tab:app-runtime rebuilt from it. Speedup / ceiling:
 gemm arm 4.143/4.189; lz77.jl A+B 2.595/2.597, B-only 1.480; matmul.jl n=128
 1.232/1.240, n=512 1.020/1.021; sha256.jl mv 0.922/0.923 (mv-light 1.045);

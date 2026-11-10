@@ -2169,8 +2169,9 @@ again on every compile; this is why Julia matmul and SHA-256 do not benefit.
 \section{M-series Results}
 \label{sec:app-mseries}
 All runs on one Apple M-series laptop (no pinning; medians of shuffled
-interleaved repetitions; byte-identical outputs required), with Apple
-Swift 6.4, Julia 1.12.6, and Rust 1.97.1. Every row uses the
+interleaved repetitions; byte-identical outputs required), with the
+same front ends as on x86: the pinned swift.org Swift 6.3.3 toolchain,
+Julia 1.12.6, and Rust 1.97.1. Every row uses the
 configuration of Table~\ref{tab:speedups} (Thorough at one thread,
 10\,s per query) and measures its ceiling in the same run. Where an x86
 number exists it is quoted for orientation only; the two machines are
