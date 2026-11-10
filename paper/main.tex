@@ -1412,7 +1412,7 @@ is the checked program through the same \texttt{-O3} pipeline.}
 Benchmark & Front end & Speedup & Ceiling\\
 \midrule
 lz77$^{a,b}$ & Julia & $\mathbf{4.013\times}$ & $4.013\times$\\
-gemm, $N{=}512^{a,f}$ & Julia & $\mathbf{3.778\times}$ & $4.154\times$\\
+gemm, $n{=}512^{a,f}$ & Julia & $\mathbf{3.778\times}$ & $4.154\times$\\
 matmul & Rust & $\mathbf{1.453\times}$ & $1.507\times$\\
 lz77, 10\,s budget$^{a,b}$ & Julia & $\mathbf{1.45\times}$ & $4.013\times$\\
 base64 & Swift & $\mathbf{1.436\times}$ & $1.430\times$\\
@@ -1850,7 +1850,7 @@ double-O3 control; the noise floor is baseline over double-O3.
 Benchmark & Front end & Elim & Base & \tool{} & Speedup & vs 2$\times$ & Floor & Replicate\\
 \midrule
 lz77$^{a}$ & Julia & --- & 0.4153 & 0.1035 & $4.013\times$ & --- & --- & ---\\
-gemm, $N{=}512^{a}$ & Julia & --- & 0.1770 & 0.0469 & $3.778\times$ & --- & --- & $3.597$--$3.972\times$\\
+gemm, $n{=}512^{a}$ & Julia & --- & 0.1770 & 0.0469 & $3.778\times$ & --- & --- & $3.597$--$3.972\times$\\
 matmul & Rust & 0 (+2) & 1.8904 & 1.3014 & $1.453\times$ & $1.448\times$ & $1.003\times$ & ---\\
 lz77, 10\,s budget$^{a}$ & Julia & --- & 0.4153 & 0.2864 & $1.450\times$ & --- & --- & ---\\
 base64 & Swift & 2 (+5) & 4.4284 & 3.0840 & $1.436\times$ & $1.436\times$ & $1.000\times$ & $1.436\times$\\
@@ -1993,7 +1993,7 @@ medians of 11 repetitions, 5 at $4096^3$; bitwise-equal outputs at every
 shape). \emph{Left:} square matrices. \emph{Right:} other aspect ratios.
 The speedup holds at every shape ($1.47$--$4.12\times$), on the node of
 Table~\ref{tab:speedups}. Repeated in separate Julia processes, the
-$N{=}512$ speedup ranges from $3.6\times$ to $4.0\times$ (three runs of the
+$n{=}512$ speedup ranges from $3.6\times$ to $4.0\times$ (three runs of the
 dedicated harness, three of the sweep). The checked baseline is stable to
 $0.2\%$ across processes, while the build with the proven accesses
 unchecked varies by up to $13\%$, which we attribute to where each process
