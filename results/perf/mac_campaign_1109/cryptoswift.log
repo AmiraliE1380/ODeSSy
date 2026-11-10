@@ -1,0 +1,54 @@
+swiftc: Apple Swift version 6.3.3 (swift-6.3.3-RELEASE)  sdk: /Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk
+opt   : LLVM (http://llvm.org/):
+reps  : 30   kernel: main   runargs: '300 perf_test/sha_input.bin'
+
+==== PHASE A: building ====
+  built base     traps 2651->2962 bin  1013048 B  eliminated 0
+  built base2x   traps 2651->3319 bin  1029560 B  eliminated 0
+  built oracle   traps 2651->2679 bin  1046184 B  eliminated 275 (+93 folded in mv fast copies)
+  built unchecked traps 2651->6    bin  1010272 B  eliminated 0
+==== PHASE B: output equivalence gate ====
+  outputs byte-identical across all configs -- gate passed
+==== PHASE C: 30 shuffled reps x configs [base base2x oracle unchecked] ====
+  rep 1/30
+  rep 2/30
+  rep 3/30
+  rep 4/30
+  rep 5/30
+  rep 6/30
+  rep 7/30
+  rep 8/30
+  rep 9/30
+  rep 10/30
+  rep 11/30
+  rep 12/30
+  rep 13/30
+  rep 14/30
+  rep 15/30
+  rep 16/30
+  rep 17/30
+  rep 18/30
+  rep 19/30
+  rep 20/30
+  rep 21/30
+  rep 22/30
+  rep 23/30
+  rep 24/30
+  rep 25/30
+  rep 26/30
+  rep 27/30
+  rep 28/30
+  rep 29/30
+  rep 30/30
+
+config      median       min       avg  audit
+base        0.9158    0.9030    0.9181  ok
+base2x      0.9117    0.8985    0.9116  ok
+oracle      0.9054    0.8962    0.9064  ok
+unchecked    0.9134    0.9069    0.9151  ok
+oracle vs base: +1.14% (median)
+oracle vs base2x: +0.69% (median)
+speedup: 1.0115x vs base, 1.0069x vs base2x; noise floor base/base2x 1.0046x
+ceiling (same pipeline): 1.0027x = median base / median unchecked
+
+CSV appended: /Users/ebrah/Project/compiler/ODeSSy/evaluation/perf_swift.csv   (rerun with REPS=15 on the server for the real number)
