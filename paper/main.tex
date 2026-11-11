@@ -351,9 +351,9 @@ make millions of decisions in milliseconds, each justified by a
 heuristic or a lightweight analysis that reasons locally and gives up
 early. They are perfect for online use in the programmer's develop-and-test loop. \emph{Superoptimizers}~\cite{massalin1987superoptimizer,
 schkufza2013stoke, sasnauskas2017souper} are the extreme alternatives. They aggressively search for faster replacement
-code and use a solver to prove each candidate correct. Correctness consists of checking if the candidate and the original piece of code are equivalent, usually offloaded to an SMT-solver. Superoptimizers find more optimal code as they conduct an exhaustive search, in contrast with the conventional rule-based transformations.
+code and use a solver to prove each candidate correct. Correctness consists of checking if the candidate and the original piece of code are equivalent, usually offloaded to an SMT solver. Superoptimizers find more optimal code as they conduct an exhaustive search, in contrast with the conventional rule-based transformations.
 
-Each class pays for its strength, and has critical weaknesses. Conventional optimizers are fast, but they miss
+Each class pays for its strength and has critical weaknesses. Conventional optimizers are fast, but they miss
 optimizations whose safety needs deeper reasoning. Their lightweight conventional heuristics give up and are unable to provide sufficient analysis for many cases~\cite{taneja2020knownbits}. Superoptimizers are more aggressive in optimization as they find
 code heuristics cannot, but their search is expensive and coupled with the solver's expensive check, as each candidate code found should be verified correct. Because of this, superoptimizers take up to hours to run, so they are confined to small code windows and run offline,
 outside the everyday development and testing loops.
@@ -393,7 +393,7 @@ range of one function, a scalar-evolution loop bound, a value-range fact
 on a third value, and two dominating branch conditions from the program's prefix ---
 \emph{simultaneously}. Each fact lives in a different LLVM analysis; no
 single pass computes their conjunction, and the phase-ordering problem
-pose an obstacle for a sequence of analyses to be successful. Deciding satisfiability of a
+poses an obstacle for a sequence of analyses to be successful. Deciding satisfiability of a
 complex conjunction is, in principle, an entailment
 problem --- exactly what an SMT solver decides. We inspect the unsat core of every proof, so this
 claim is not an intuition but a measurement: the cores name the
@@ -578,7 +578,7 @@ super-analyzer spends the solver on \emph{analysis} alone: the solver
 decides whether a rewrite is licensed, and the compiler's existing conventional
 transformations perform the rewrite. No replacement code is searched
 for, synthesized, or verified. \S\ref{sec:superanalysis} develops the
-paradigm. The combined analyses that Lerner et al.~\cite{lerner2002composing} call super-analyses belong to this paradigm in the broad sense: they combine several analyses into one, more precise than running them separately and more expensive than any one of them. After an analysis liscensed a rewrite, the other analyses re-analyze the code; therefore the analysis is unconventional and more expensive, despite the licensed transformations remaining conventional. They are at the cheap end of the paradigm. Logical products of abstract domains~\cite{gulwani2006combining} combine facts more directly. our solver-based super-analysis is the most aggressive form, in which an SMT solver decides the conjunction of every analysis's facts, together with an exact encoding of the code. We use super-analysis to denote the aggressive, solver-based version from this point. 
+paradigm. The combined analyses that Lerner et al.~\cite{lerner2002composing} call super-analyses belong to this paradigm in the broad sense: they combine several analyses into one, more precise than running them separately and more expensive than any one of them. After an analysis licenses a rewrite, the other analyses re-analyze the code; therefore the analysis is unconventional and more expensive, despite the licensed transformations remaining conventional. They are at the cheap end of the paradigm. Logical products of abstract domains~\cite{gulwani2006combining} combine facts more directly. Our solver-based super-analysis is the most aggressive form, in which an SMT solver decides the conjunction of every analysis's facts, together with an exact encoding of the code. We use super-analysis to denote the aggressive, solver-based version from this point. 
 
 \paragraph{How paradigms relate.} Our super-analysis methodology shares the verification engine with superoptimizers, though the difference in philosophy and architecture makes them radically different in terms of effectiveness and \emph{scaling}. Superoptimizers spend an expensive SMT equivalence-checking query per synthesized candidate, making them very slow. A super-analyzing compiler uses the expensive analysis more strategically, consulting the solver whenever its conventional analysis fails and the solver latency is worth the potential unlocked optimization. This makes super-analysis generally faster, something we show in \S\ref{sec:results-souper}. The unscalable nature of synthesis also limits it to small-window peephole optimizations, whereas a super-analyzer can reason more globally. For example, it can derive and consume post-conditions of complex loops and functions, which are beyond the scope of peephole optimizations.
 
@@ -1261,7 +1261,7 @@ which bounds the inputs, so it is used only to certify guards.
 To make \tool{}'s feedback faster so that it can be used more conveniently in the programmer's develop-and-test loop, we cache the solver's verdict for each compiled function. This feature is useful as programmers usually implement modules incrementally, where each compile sees similar code with small changes. \tool{}
 therefore keeps an optional per-function \emph{verdict cache}. This feature is off by default.
 
-The cache maps the SHA-256 hash over a normalized form of the function (value and block names
+The cache is keyed by the SHA-256 hash over a normalized form of the function (value and block names
 numbered, debug information dropped, metadata and attributes compared by
 content), over what the function sees outside itself (its callees'
 declarations and attributes, the globals it references, the data layout and
@@ -1280,7 +1280,7 @@ verdicts, output IR, and logs must be identical for \texttt{threads=1}
 and \texttt{threads=N} up to the time-budget exception of \S\ref{sec:pipeline}, which we verify by \texttt{diff}.
 
 To make sure our tool is sound, no
-\textsc{unsat} is accepted at face value and is inspected. We perform a \texttt{vacuity} test, meaning that we remove the trap condition from the \texttt{UNSAT} proof and query the solver again with all the other constraints. If
+\textsc{unsat} is accepted at face value; each one is inspected. We perform a \texttt{vacuity} test, meaning that we remove the trap condition from the \texttt{UNSAT} proof and query the solver again with all the other constraints. If
 the context alone is already unsatisfiable --- an encoder bug, or a
 genuinely contradictory guard chain --- the elimination is
 \emph{refused} and reported. Vacuous counts are reported in every static
@@ -1782,7 +1782,7 @@ that it is sufficient and consistent before the loop is cloned.
 %% =====================================================================
 \section{Conclusion}
 \label{sec:conclusion}
-We introduced solver-based super-analysis, an alternative paradigm of aggressive compiler optimization. Our instantiation of super-analysis uses a solver for analysis only, keeping transformations conventional. We show that this paradigm is effective: it can speed up our benchmarks up to $4.01\times$ on x86. We also show that it is relatively fast: Super-analysis can be used online, and the cost of compilation can be controlled by parallelization and strict SMT timeout budgets. Our implementation, \tool{}, targets safety check removal and loop cloning under synthesized guards. Future work consists of extending this paradigm into other analyses and optimizations.
+We introduced solver-based super-analysis, an alternative paradigm of aggressive compiler optimization. Our instantiation of super-analysis uses a solver for analysis only, keeping transformations conventional. We show that this paradigm is effective: it can speed up our benchmarks up to $4.01\times$ on x86. We also show that it is relatively fast: super-analysis can be used online, and the cost of compilation can be controlled by parallelization and strict SMT timeout budgets. Our implementation, \tool{}, targets safety check removal and loop cloning under synthesized guards. Future work consists of extending this paradigm into other analyses and optimizations.
 %% =====================================================================
 \section*{Data-Availability Statement}
 The \tool{} pass, the benchmark sources and inputs, the harnesses that
