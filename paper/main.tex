@@ -2183,23 +2183,23 @@ Benchmark & Front end & Speedup & Ceiling\\
 gemm \emph{arm} (proven accesses only) & Julia & $4.143\times$ & $4.189\times$\\
 lz77 \emph{arm}, guard A$+$B (60\,s) & Julia & $2.595\times$ & $2.597\times$\\
 lz77 \emph{arm}, guard B only (300\,ms) & Julia & $1.480\times$ & $2.597\times$\\
-matmul \emph{arm}, $n{=}128$ & Julia & $1.232\times$ & $1.240\times$\\
-matmul \emph{arm}, $n{=}512$ & Julia & $1.020\times$ & $1.021\times$\\
-sha256 \emph{arm} & Julia & $0.922\times$ & $0.923\times$\\
 lz77 & Swift & $1.318\times$ & $1.292\times$\\
+matmul \emph{arm}, $n{=}128$ & Julia & $1.232\times$ & $1.240\times$\\
+zstd, compression & C & $1.146\times$ & $1.145\times$\\
 base64 & Swift & $1.141\times$ & $1.136\times$\\
 sha256 & Swift & $1.087\times$ & $1.007\times$\\
 md5 & Swift & $1.021\times$ & $0.968\times$\\
+matmul \emph{arm}, $n{=}512$ & Julia & $1.020\times$ & $1.021\times$\\
 sha1 & Swift & $1.015\times$ & $0.977\times$\\
 CryptoSwift & Swift & $1.012\times$ & $1.003\times$\\
 crc32 & Swift & $1.006\times$ & $1.001\times$\\
-utf8 validator & Swift & $0.991\times$ & $0.991\times$\\
-adler32 & Swift & $0.983\times$ & $1.055\times$\\
 matmul & Rust & $1.003\times$ & $0.977\times$\\
-lz77 & Rust & $0.745\times$ & $0.965\times$\\
-zstd, compression & C & $1.146\times$ & $1.145\times$\\
 zstd, decompression & C & $1.000\times$ & $0.999\times$\\
-zlib (209 checks removed) & C & $0.990\times$ & $0.999\times$\\
+utf8 validator & Swift & $0.991\times$ & $0.991\times$\\
+zlib & C & $0.990\times$ & $0.999\times$\\
+adler32 & Swift & $0.983\times$ & $1.055\times$\\
+sha256 \emph{arm} & Julia & $0.922\times$ & $0.923\times$\\
+lz77 & Rust & $0.745\times$ & $0.965\times$\\
 \bottomrule
 \end{tabular}\\
 \raggedright\footnotesize Medians of 30 repetitions (21 for Julia).
