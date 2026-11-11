@@ -1391,10 +1391,11 @@ lz77 & Julia & Ours & 50\%\\
 
 
 \begin{table}
-\caption{Runtime results: every benchmark in the performance campaign. Medians
-of 30 shuffled repetitions (21 for the Julia rows), byte-identical output across all builds.
-Speedup is median \tool{} time over median baseline time; the baseline
-is the checked program through the same \texttt{-O3} pipeline.}
+\caption{Runtime results on x86. Speedup = median checked time / median
+\tool{} time; ceiling = median checked time / median unchecked time; the
+checked program goes through the same \texttt{-O3} pipeline. Medians of 30
+shuffled repetitions (21 for the Julia rows), byte-identical output across
+all builds.}
 \label{tab:speedups}
 \small
 \begin{tabular}{llrr}
@@ -1402,15 +1403,15 @@ is the checked program through the same \texttt{-O3} pipeline.}
 Benchmark & Front end & Speedup & Ceiling\\
 \midrule
 lz77$^{a,b}$ & Julia & $\mathbf{4.013\times}$ & $4.013\times$\\
-gemm, $n{=}512^{a,f}$ & Julia & $\mathbf{3.778\times}$ & $4.154\times$\\
+gemm, $n{=}512^{a,c}$ & Julia & $\mathbf{3.778\times}$ & $4.154\times$\\
 matmul & Rust & $\mathbf{1.453\times}$ & $1.507\times$\\
-lz77, 10\,s budget$^{a,b}$ & Julia & $\mathbf{1.45\times}$ & $4.013\times$\\
+lz77$^{a}$ & Julia & $\mathbf{1.45\times}$ & $4.013\times$\\
 base64 & Swift & $\mathbf{1.436\times}$ & $1.430\times$\\
-matmul, $n{=}512^{a,c}$ & Julia & $\mathbf{1.128\times}$ & $1.129\times$\\
+matmul, $n{=}512^{a}$ & Julia & $\mathbf{1.128\times}$ & $1.129\times$\\
 sha256$^{a}$ & Julia & $\mathbf{1.107\times}$ & $1.128\times$\\
 sha256 & Swift & $\mathbf{1.105\times}$ & $1.093\times$\\
 crc32 & Swift & $\mathbf{1.074\times}$ & $1.074\times$\\
-zstd$^{e}$ & C & $\mathbf{1.057\times}$ & $1.069\times$\\
+zstd, compression$^{c}$ & C & $\mathbf{1.057\times}$ & $1.069\times$\\
 adler32 & Swift & $\mathbf{1.039\times}$ & $1.137\times$\\
 lz77 & Rust & $\mathbf{1.030\times}$ & $0.998\times$\\
 utf8 validator & Swift & $\mathbf{1.025\times}$ & $0.969\times$\\
@@ -1419,7 +1420,7 @@ zlib & C & $\mathbf{1.011\times}$ & $1.054\times$\\
 md5 & Swift & $\mathbf{0.983\times}$ & $0.815\times$\\
 CryptoSwift & Swift & $\mathbf{0.972\times}$ & $1.113\times$\\
 sha1 & Swift & $\mathbf{0.956\times}$ & $0.975\times$\\
-lz77$^{d}$ & Swift & $\mathbf{0.830\times}$ & $0.830\times$\\
+lz77 & Swift & $\mathbf{0.830\times}$ & $0.830\times$\\
 \bottomrule
 \end{tabular}\\
 \raggedright\footnotesize
@@ -1427,17 +1428,11 @@ $^{a}$Julia is JIT-compiled and cannot consume ahead-of-time LLVM IR, so
 each Julia row times a separate copy of the unchanged kernel, transformed
 by hand exactly as \tool{}'s proofs license (\texttt{@inbounds} on the
 proven checks, or loop versioning under the synthesized guard).
-$^{b}$The first row's guard is synthesized under a 60\,s solver budget
-(all four checks); at the default 10\,s budget only one of the two loads'
-checks is proven, which gives the second row.
-$^{c}$At $n{=}128$: $1.355\times$ (ceiling $1.354\times$).
-$^{d}$Removing the checks by any means slows this kernel: the
-\texttt{-Ounchecked} build is equally slow.
-$^{e}$Compression; median of five independently built and timed runs
-(range $1.018$--$1.059\times$, every build removing the same checks).
-$^{f}$Median of three runs in separate Julia processes (range
-$3.597$--$3.972\times$; ceiling $3.984$--$4.206\times$;
-Appendix~\ref{sec:app-full}).\par
+$^{b}$Guard synthesized under a 60\,s solver budget; at the default
+10\,s budget, one of the two loads' checks is proven (Julia lz77 below).
+$^{c}$zstd: median of five independent builds (range
+$1.018$--$1.059\times$); gemm: median of three Julia processes (range
+$3.60$--$3.97\times$).\par
 \end{table}
 \subsection{RQ2: What is the source of speedup?}
 \label{sec:results-mech}
