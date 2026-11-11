@@ -4138,6 +4138,57 @@ Verdict cache in the paper: one paragraph in §5 (design) and a short RQ3
 paragraph with four numbers (cold, warm after a changed commit, warm
 identical, overhead of keying/recording); full tables in an appendix.
 
+### 13.10 IDEA (Amir, Nov 11 2026): peel one lap when STEP proves but BASE does not
+
+Situation. Under `ind` (§10.46/§10.49) a trap edge T in loop L needs BASE
+("T on lap 0" UNSAT) and STEP ("T on lap t, given lap t-1 completed
+normally" UNSAT). Today, if BASE is SAT or UNKNOWN the level fails and T stays.
+Proposal: if STEP is UNSAT but BASE is not, peel lap 0 into the preheader
+(LLVM `peelLoop`, count 1; it rewires the header phis), keep every check in
+the peeled copy, and fold T's branch in the remaining loop (laps 1..n-1),
+which can then unroll and vectorize like any check-free loop.
+
+Soundness argument (holds as stated; to be written up with the pass):
+* The peeled lap runs every check of L unchanged. If it traps, the program
+  traps exactly as before. If it completes and takes the back edge, then
+  lap 0 "completed normally": latch held and no trap edge T' of L fired.
+  That is precisely STEP's hypothesis, so T is unreachable on lap 1, and by
+  induction on every later lap. BASE is replaced by the executed check.
+* The peel must keep ALL checks of L, not only T: STEP's hypothesis is
+  "no T' fired on lap t-1" for every trap edge T' of L.
+* Several step-only proofs in one loop may rely on each other's
+  hypotheses; folding them together is still sound (simultaneous induction
+  over laps: on lap t every folded T is unreachable given lap t-1 was
+  normal, and the unproven checks stay in place on every lap).
+* STEP's other assumptions are lap-invariant and survive the peel: value
+  facts on the free s symbols use the boundary battery minus LVI; FRAME
+  facts concern memory the loop does not write; context guards dominate H,
+  and still dominate the remaining loop's header after the peel.
+* k-induction generalization: a STEP whose hypothesis covers k earlier
+  laps needs k peeled laps.
+
+Scope and costs:
+* Start with the innermost level L0 only. Peeling an enclosing loop (level
+  k>0) copies the whole inner nest: code-size cost, do it only if L0 pays.
+* The inner loop is peeled on every entry; that matches BASE being a
+  per-entry obligation.
+* Stage 3 transform, alongside multiversioning: when guard synthesis also
+  succeeds for T, prefer the guard (no copy of lap 0 in the hot path), or
+  measure both.
+* Code size: one copy of the loop body per peeled loop.
+
+Measurement first: today a failed BASE ends the level and STEP is never
+asked (§10.49), so existing logs cannot count this case (on
+guard_ablation_1109 the BASE-fails/STEP-UNSAT count is 0 by construction).
+Add a diagnostic knob (e.g. `ind-step-only`) that runs STEP even after
+BASE fails and logs `|IND-peel|` candidates; count them on the 17 kernels,
+zlib, zstd and CryptoSwift before implementing the transform.
+
+Related work to check: LLVM's own `peelLoop` heuristics
+(`countToEliminateCompares`: peel until a compare's outcome becomes known),
+and k-induction with peeling in software model checking (e.g. CBMC/ESBMC
+k-induction, Donaldson et al.'s "k-induction" for loops).
+
 ## 14. Mock review (AI reviewer, Oct 28 2026): Weak Reject, borderline after discussion
 Concerns, with our assessment and effort:
 1. Headline speedups not pass output: all Julia rows (lz77 4.01x, GEMM 3.91x)
