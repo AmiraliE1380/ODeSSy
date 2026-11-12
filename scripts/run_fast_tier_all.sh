@@ -12,7 +12,7 @@
 # =============================================================================
 set -u
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"; cd "$ROOT"
-S="${S:-$(date +%m%d)}"; REPS="${REPS:-30}"; COOL="${COOL:-30}"
+S="${S:-$(date +%m%d)}"; REPS="${REPS:-30}"; COOL="${COOL:-90}"
 FAST='heavy;frame;mv;narrow;timeout=10;threads=10'
 ST="results/static/compile_cost_fast_$S"; OUT="results/perf/fast_tier_all_$S"; mkdir -p "$OUT"
 PIN="numactl --cpunodebind=0 --membind=0"
@@ -26,7 +26,7 @@ log "ENV"
 git rev-parse HEAD | tee "$OUT/commit.txt"
 
 log "STAGE 1: Fast verdicts (static)"
-CONFIGS="o3 fast" FAST_REPS="${FAST_REPS:-1}" OUT="$ST" bash scripts/run_compile_cost.sh 2>&1 | tee "$OUT/stage1.log"
+CONFIGS="o3 fast" FAST_REPS="${FAST_REPS:-3}" OUT="$ST" bash scripts/run_compile_cost.sh 2>&1 | tee "$OUT/stage1.log"
 python3 - "$ST/modules.csv" <<'PY' | tee "$OUT/fast_proofs.txt"
 import csv, sys, collections
 p = collections.OrderedDict(); c = collections.Counter()
@@ -73,7 +73,7 @@ if has cryptoswift; then
 fi
 if has zlib; then
   log "zlib [fast]"
-  $PIN env SPECS="none both anf" RUNS=20 SIZES="256" TIER=fast TIMEOUT_SECS=14400 \
+  $PIN env SPECS="none both anf" RUNS=20 SIZES="8 64 256" TIER=fast TIMEOUT_SECS=14400 \
     bash scripts/run_zlib_perf.sh 2>&1 | tee "$OUT/zlib_fast.log"
   save zlib
 fi
