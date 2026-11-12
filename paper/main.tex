@@ -519,7 +519,7 @@ This paper makes the following contributions:
 \item \textbf{\tool{}} (\S\ref{sec:system}): an LLVM pass and online optimizer
   as an instantiation of super-analysis. \tool{} eliminates safety checks and unlocks further optimizations. It supports C/C++, Swift, Rust, and Julia as frontends and can enable hot-path transformations and speedups.
 \item \textbf{Robust Performance Improvement} (\S\ref{sec:results}):
-  our systematic evaluation of \tool{} on an x86 server shows removing hot-loop checks has a cascading effect, unlocking further transformations (unrolling, vectorization, etc.) that enable up to $4.01\times$ speedups for widely used kernels and libraries. \tool{} proofs are generally cheap, which makes it usable as an online pass in the development loop. Multi-threading and per-query budgets make \tool{}'s analysis up to $6.7\times$ faster. A further comparison with Souper (a synthesizing superoptimizer) shows that \tool{} removes significantly more checks in less time.
+  our systematic evaluation of \tool{} on an x86 server shows removing hot-loop checks has a cascading effect, unlocking further transformations (unrolling, vectorization, etc.) that enable up to $4.01\times$ speedups for widely used kernels and libraries. \tool{} proofs are generally cheap, which makes it usable as an online pass in the development loop. Multi-threading and per-query budgets make \tool{}'s analysis up to $2.4\times$ faster. A further comparison with Souper (a synthesizing superoptimizer) shows that \tool{} removes significantly more checks in less time.
 \end{itemize}
 %% =====================================================================
 \section{Paradigms of Aggressive Compiler Optimization}
@@ -1579,12 +1579,11 @@ Both dials make both configurations faster (Figure~\ref{fig:matrix}, zlib's
 of them finish within 1\,s and \pct{75} within 100\,ms, because most queries
 finish in milliseconds (Figure~\ref{fig:latency},
 Appendix~\ref{sec:app-full}). Parallelism alone speeds \tool{} up by
-$4.1\times$ at eight workers with one proof lost (79.5\,s to 19.3\,s at
-10\,s per query), and threads and budgets together by $6.7\times$ (to
-11.9\,s at eight workers and 10\,ms). It has a limit: discovery and fact
-import run in series, so a sixteenth worker gains nothing over eight. The figure is measured
-without inductive encoding, whose fact import is also serial and would
-confound the two dials.
+$2.1\times$ at four workers with no proof lost (51.4\,s to 24.0\,s at
+10\,s per query), and threads and budgets together by $2.4\times$ (to
+21.8\,s at four workers and 10\,ms). It has a limit: discovery and fact
+import, including the facts of inductive encoding, run in series, so
+workers beyond four gain nothing.
 
 \paragraph{Incremental compilation.}
 The verdict cache (\S\ref{sec:cache}) removes most of this cost from the
@@ -1621,14 +1620,14 @@ Appendix~\ref{sec:app-full}).
 \begin{figure}
 \centering
 \includegraphics[width=\columnwidth]{dial_matrix_x86_current.pdf}
-\caption{\tool{}'s latency for zlib's \texttt{deflate.c} with sweep over number of threads vs solver timeout. The configuration is Thorough without inductive encoding. Multi-threading and strict timeouts can make \tool{} up to $6.7\times$ faster. A strict timeout of 10\,ms keeps about half of the proofs. Parallelism is the more effective measure for reducing latency without losing proofs: eight workers are $4.1\times$ faster at the full 10\,s budget.}
+\caption{\tool{}'s latency for zlib's \texttt{deflate.c} with sweep over number of threads vs solver timeout. The configuration is Thorough. Multi-threading and strict timeouts can make \tool{} up to $2.4\times$ faster. A strict timeout of 10\,ms keeps about two thirds of the proofs. Parallelism is the more effective measure for reducing latency without losing proofs: four workers are $2.1\times$ faster at the full 10\,s budget.}
 \Description{A five-by-five heatmap, rows are 1, 2, 4, 8 and 16 worker
 threads, columns are per-query timeouts from 1 millisecond to 10
 seconds. Cells are colored from red for slow to green for fast on a log
 scale and annotated with wall-clock seconds and proof counts. Wall-clock
-falls from 79.5 seconds at one thread and 10 seconds to 11.9
-seconds at eight threads and 10 milliseconds; proof counts rise left to
-right from about 3 to 9 at 1 millisecond to 53 or 54 at 10 seconds.}
+falls from 51.4 seconds at one thread and 10 seconds to 21.8
+seconds at four threads and 10 milliseconds; proof counts rise left to
+right from 18 to 25 at 1 millisecond to 71 at 10 seconds.}
 \label{fig:matrix}
 \end{figure}
 \subsection{RQ4: How does super-analysis compare with superoptimization?}

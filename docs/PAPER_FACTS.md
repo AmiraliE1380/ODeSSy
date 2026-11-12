@@ -1989,3 +1989,13 @@ utf8 0.991/0.991, adler32 0.983/1.055; Rust matmul 1.003/0.977, lz77
 0.745/0.965 (known M-series codegen regression, 0.732 before); zstd comp
 1.146/1.145, decomp 1.000/0.999; zlib 0.990 at 256 MB (209 removed), ceiling
 0.999. evaluation/*.csv appends from this run discarded (x86-only CSVs).
+
+### 11.34 Dial matrix WITH inductive encoding (server c220g2-010623, Nov 11 2026)
+evaluation/dial_matrix_x86_ind_1111.csv (scripts/run_dial_matrix.sh,
+KNOBS="heavy;frame;ind;mv;narrow", same deflate input as the 1108 run, 3 reps,
+socket-0 pinned, turbo off). Paper Fig. 6 now shows this run (Thorough). Medians:
+1 thread 10 s: 51.4 s / 71 proofs (without ind 79.5 s / 54). Best thread count
+4: 24.0 s at 10 s (2.1x, no proof lost); 8 and 16 threads slower (25.7 / 27.3 s;
+serial fact import). Threads+budget best 21.8 s at 4 threads, 10 ms, 46 proofs
+(2.4x). Intro and RQ3 numbers 4.1x/6.7x -> 2.1x/2.4x. The no-ind run
+(dial_matrix_x86_1108.csv) is kept: 4.1x at 8 threads, 6.7x with budgets.
