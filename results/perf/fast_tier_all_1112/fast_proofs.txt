@@ -1,0 +1,17 @@
+sha256 1 36
+base64 0 27
+lz77 3 27
+crc32 0 37
+adler32 1 38
+sha1 2 24
+md5 1 25
+utf8 2 21
+cryptoswift 144 2696
+rs_lz77_bench 0 4
+rs_matmul_bench 2 4
+jl_jl_gemm_base 8 16
+jl_lz77 0 4
+jl_matmul 0 3
+jl_sha256 0 16
+zstd 93 606
+zlib 118 1554
