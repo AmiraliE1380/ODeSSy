@@ -44,11 +44,9 @@ def main():
     M = np.array([[statistics.median(walls[(t, to)]) for to in timeouts] for t in threads])
 
     fig, ax = plt.subplots(figsize=(6.2, 3.6))
-    # Gentle palette: the middle 70% of RdYlGn_r, blended 45% toward white,
-    # so the extremes are soft red / soft green rather than saturated.
-    base = plt.get_cmap("RdYlGn_r")(np.linspace(0.15, 0.85, 256))
-    base[:, :3] = 0.55 * base[:, :3] + 0.45
-    soft = matplotlib.colors.ListedColormap(base)
+    # Full-saturation RdYlGn_r without its darkest ends (brownish red and
+    # deep green): only the middle 70% of the map, so the colors stay vivid.
+    soft = matplotlib.colors.ListedColormap(plt.get_cmap("RdYlGn_r")(np.linspace(0.15, 0.85, 256)))
     im = ax.imshow(M, cmap=soft, norm=LogNorm(vmin=M.min(), vmax=M.max()),
                    aspect="auto")
     for i, t in enumerate(threads):
