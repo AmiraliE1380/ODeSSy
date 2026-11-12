@@ -1978,8 +1978,7 @@ The precondition fails only in programs that their own language already
 rejects or leaves undefined. Two reads of one location can disagree in only
 two ways: another thread writes between them, or the location holds no
 defined value (it was never initialized, or a poison value was stored to
-it), in which case LLVM may choose a different value at each use. Julia,
-Swift, and Rust rule out the second: their runtimes always initialize array
+it), in which case LLVM may choose a different value at each use. The semantics of Julia, Swift, and Rust rule out the second: their runtimes always initialize array
 metadata, and safe code cannot create poison. The first is a data race,
 which safe Rust rejects at compile time and which Swift and Julia leave
 undefined. For C, the precondition amounts to the absence of data races,
@@ -2063,14 +2062,20 @@ compared check by check.\\
 
 \section{Verdict Cache Results}
 \label{sec:app-cache}
-Thorough configuration, 10 threads, on the \texttt{c220g2} node.
-For each repository we replayed the last 30 first-parent commits
-that change its sources, ending at the benchmark versions; each commit is
-compiled with the cache left by the previous one (the first commit only
-fills it) and once without a cache. Times are medians over the replayed
-commits; ratios are speedups over the compile without a cache. A row's
-\emph{changed} column uses the commits that changed that row's checked
-functions, the \emph{identical} column the commits that did not; a dash
+We measure the verdict cache (\S\ref{sec:cache}) in two experiments,
+both in the Thorough configuration with 10 threads on the \texttt{c220g2}
+node: a replay of each library's recent history, and an identical rebuild
+of every benchmark.
+
+\paragraph{Commit replay.} For zlib and zstd we replayed the last 30
+first-parent commits that change the library's sources, ending at the
+benchmark versions. Each commit is compiled twice: once with the cache left
+by the previous commit (the first commit only fills it), and once without a
+cache. Table~\ref{tab:cache-replay} reports \tool{}'s time per commit, for
+each library and for its most expensive modules. Times are medians over the
+replayed commits, and ratios are speedups over the compile without a cache.
+The \emph{changed} column uses the commits that changed that row's checked
+functions, and the \emph{identical} column the commits that did not; a dash
 means no replayed commit changed that module.
 
 \begin{table}[h]
@@ -2093,24 +2098,39 @@ zstd (whole library) & 80.1\,s & 6.14\,s ($13\times$) & 5.40\,s ($15\times$)\\
 \end{tabular}
 \end{table}
 
-Over the replayed commits, 96.5\,\% of zlib's and 98.5\,\% of
-zstd's checked functions were served from the cache, and 22 and
-21 of the 29 commits after the first needed no solving at all. Every
-module's output with the cache equals its output without it in every
+Most commits leave most checked functions untouched, so the cache serves
+almost everything: over the replayed commits, 96.5\,\% of zlib's and
+98.5\,\% of zstd's checked functions came from the cache, and 22 and 21 of
+the 29 commits after the first needed no solving at all. A commit that
+leaves a library's checked functions identical compiles $47\times$ (zlib)
+and $15\times$ (zstd) faster, and one that changes them still compiles
+$14\times$ and $13\times$ faster, because only the changed functions are
+solved again. The module rows of Table~\ref{tab:cache-replay} show both
+ends: \texttt{trees}, \texttt{adler32}, and \texttt{zstd\_preSplit}, the
+most expensive modules, were never changed and drop from minutes to at most
+a few seconds, while a commit that changes \texttt{inflate},
+\texttt{deflate}, or \texttt{divsufsort} gains little in that module
+($1.0$--$1.3\times$), since the changed functions are the costly ones.
+
+Every module's output with the cache equals its output without it in every
 commit, with one exception: from the commit that changed five of
 \texttt{deflate.c}'s functions on, its cached output removes one more check.
 In that commit's cached run only the five changed functions were solved,
 and one of their queries proved its check in 9.9\,s; in the uncached
 compile, where all 19 functions compete for the processor, the same query
 reaches the 10\,s budget. Both outputs are proved; the cache replays the
-proof it recorded. On an identical rebuild of every benchmark, the warm
-compile's IR equals the cold compile's and the uncached compile's on 65 of
-67 inputs; the other two are Julia SHA-256, which the cache does not store
-and whose queries finish near the budget. Summed over the 67 inputs,
-\tool{} takes 871\,s without the cache, 852\,s cold (keying and recording
-included), and 251\,s warm. Functions whose
-guard has a symbolic bound (template T3) are not stored and are solved
-again on every compile; this is why Julia matmul and SHA-256 do not benefit.
+proof it recorded.
+
+\paragraph{Identical rebuild.} We also compiled each of the 67 inputs of
+our benchmarks three times: without the cache, with an empty cache (cold),
+and again with the cache that run left (warm). Summed over the inputs,
+\tool{} takes 871\,s without the cache, 852\,s cold, and 251\,s warm, so
+keying and recording cost nothing measurable. The warm compile's IR equals
+the cold compile's and the uncached compile's on 65 of the 67 inputs; the
+other two are Julia SHA-256, which the cache does not store and whose
+queries finish near the budget. Functions whose guard has a symbolic bound
+(template T3) are not stored and are solved again on every compile; this is
+why Julia matmul and SHA-256 do not benefit.
 
 \section{M-series Results}
 \label{sec:app-mseries}
