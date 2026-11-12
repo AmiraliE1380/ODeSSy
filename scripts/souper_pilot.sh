@@ -77,5 +77,5 @@ run base23 "" opt -passes='default<O3>'
 B23=$(traps "$OUT/base23.ll")
 run thorough "$B23" opt -load-pass-plugin=build/OraclePass.so -passes='oracle-pass<heavy;frame;ind;mv;narrow;timeout=10000;threads=1>,default<O3>'
 run fast     "$B23" opt -load-pass-plugin=build/OraclePass.so -passes='oracle-pass<heavy;frame;mv;narrow;timeout=10;threads=10>,default<O3>'
-run light    "$B23" opt -load-pass-plugin=build/OraclePass.so -passes='oracle-pass<timeout=10;threads=10>,default<O3>'
+run light    "$B23" opt -load-pass-plugin=build/OraclePass.so -passes='oracle-pass<light;timeout=10;threads=10>,default<O3>'
 log "SOUPER PILOT DONE"

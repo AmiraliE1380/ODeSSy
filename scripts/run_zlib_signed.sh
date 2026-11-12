@@ -68,7 +68,7 @@ for opt in "${OPT_ARR[@]}"; do
   intr=$(grep -c 'call .*\.with\.overflow' "$in")
 
   # ---- (A) analysis-only: per-trap verdicts land in the pass log ----
-  run_opt opt -load-pass-plugin=build/OraclePass.so -passes="oracle-pass" \
+  run_opt opt -load-pass-plugin=build/OraclePass.so -passes="oracle-pass<light>" \
       -disable-output "$in" > "$alog" 2>&1
   rc_a=$?
   vlog="logs/compilations/${stem}_analysis.txt"

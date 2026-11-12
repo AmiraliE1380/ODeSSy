@@ -210,7 +210,7 @@ for key in "${BENCH_KEYS[@]}"; do
       before=$(grep -c 'llvm.ubsantrap' "$in")
       intr=$(grep -c '.with.overflow' "$in")
       # (A) analysis-only: populates the pass verdict log
-      run_opt opt -load-pass-plugin=build/OraclePass.so -passes="oracle-pass" \
+      run_opt opt -load-pass-plugin=build/OraclePass.so -passes="oracle-pass<light>" \
           -disable-output "$in" > "$alog" 2>&1
       rc_a=$?
       # Preserve this run's verdict log before the transform run overwrites it.

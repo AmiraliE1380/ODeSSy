@@ -31,7 +31,7 @@ for ll in tests/*.ll; do
   vlog="logs/compilations/${stem}.txt"
   rm -f "$vlog"
 
-  opt -load-pass-plugin=build/OraclePass.so -passes="oracle-pass<vacuity>" \
+  opt -load-pass-plugin=build/OraclePass.so -passes="oracle-pass<light;vacuity>" \
       -disable-output "$ll" >/dev/null 2>&1
   rc=$?
 

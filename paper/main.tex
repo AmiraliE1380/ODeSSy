@@ -1997,13 +1997,19 @@ precondition, and 3 without it.
 Every mechanism of \tool{} is a parameter of the pass,
 \texttt{oracle-pass<\emph{knob};\emph{knob};\ldots>}, so that each
 earlier configuration stays reproducible and each mechanism can be
-ablated alone. Table~\ref{tab:knobs} lists them; the two
-configurations of Table~\ref{tab:compile} are
-\emph{Thorough} = \texttt{heavy;frame;ind;mv;narrow;timeout=10000;threads=10}
-and \emph{Fast} = \texttt{heavy;frame;mv;narrow;timeout=10;threads=10}.
+ablated alone. Table~\ref{tab:knobs} lists them. With no knobs, the pass
+runs \emph{Thorough} = \texttt{heavy;frame;ind;mv;narrow;timeout=10000},
+on one worker per hardware thread; the presets \texttt{thorough} and
+\texttt{fast} name the two configurations of Table~\ref{tab:compile}
+(\emph{Fast} = \texttt{heavy;frame;mv;narrow;timeout=10}), and the
+\texttt{no-} knobs remove one mechanism from either. Naming any mechanism
+knob explicitly selects exactly the mechanisms named, so every
+configuration in this paper is reproducible from its knob string; our
+experiments set \texttt{threads=} explicitly (10 for compile cost, 1 for
+the runtime builds).
 \begin{table}[h]
-\caption{The knobs of \tool{}. Defaults in brackets; with no knobs the
-pass runs the light tier serially at 10\,s per query.}
+\caption{The knobs of \tool{}. Defaults in brackets: with no knobs the
+pass runs Thorough.}
 \label{tab:knobs}
 \small
 \resizebox{\linewidth}{!}{%
@@ -2011,27 +2017,32 @@ pass runs the light tier serially at 10\,s per query.}
 \toprule
 Knob & Effect\\
 \midrule
+\multicolumn{2}{l}{\emph{Presets}}\\
+\texttt{thorough} & [default] \texttt{heavy;frame;ind;mv;narrow}, 10\,s per query (\S\ref{sec:results-cost}).\\
+\texttt{fast} & \texttt{heavy;frame;mv;narrow}, 10\,ms per query (\S\ref{sec:results-cost}).\\
+\texttt{no-ind}, \texttt{no-mv}, \texttt{no-frame}, \texttt{no-narrow} & Remove one mechanism from the default or a preset.\\
+\midrule
 \multicolumn{2}{l}{\emph{Fact sources}}\\
-\texttt{light} / \texttt{heavy} & [\texttt{light}] Light encodes the context alone;
+\texttt{light} / \texttt{heavy} & [\texttt{heavy}] Light encodes the context alone;
 heavy also imports LLVM's analyses as facts (vacuity, SCEVSYM,
 and the header-phi rules), \S\ref{sec:system-facts}.\\
-\texttt{frame} & [off] Heap-invariance facts (\S\ref{sec:frame-machinery}) and the definitional encoding of Appendix~\ref{sec:app-defs}.\\
+\texttt{frame} & [on] Heap-invariance facts (\S\ref{sec:frame-machinery}) and the definitional encoding of Appendix~\ref{sec:app-defs}.\\
 \texttt{ldeq} & [off] Load equality within a basic block (\S\ref{sec:system-facts}).\\
 \texttt{nophiinv} & [off] Disables the header-phi rules (for ablation).\\
 \texttt{poison-loads} & [off] Drops the assumption that loaded values are not poison (\S\ref{sec:encoding-impl}).\\
-\texttt{ind} & [off] Inductive body encoding (\S\ref{sec:app-machinery}).\\
+\texttt{ind} & [on] Inductive body encoding (\S\ref{sec:app-machinery}).\\
 \midrule
 \multicolumn{2}{l}{\emph{Guard synthesis} (\S\ref{sec:guards-impl})}\\
-\texttt{mv} & [off] Guard synthesis and loop cloning with templates T1--T3.\\
+\texttt{mv} & [on] Guard synthesis and loop cloning with templates T1--T3.\\
 \texttt{mv-light} & [off] The same with templates T1 and T2 only.\\
 \texttt{mv-sane=}$k$ & [62] Largest rung $2^k$ of template T2's sane-range ladder ($8 \le k \le 62$).\\
-\texttt{narrow}[\texttt{=}$b$] & [off; $b$=16] Certifies guards whose queries multiply 64-bit
+\texttt{narrow}[\texttt{=}$b$] & [on; $b$=16] Certifies guards whose queries multiply 64-bit
 values by re-encoding them at 32 bits with overflow flags, sound only under the guard.\\
 \midrule
 \multicolumn{2}{l}{\emph{Cost and audit}}\\
 \texttt{timeout=}$t$ & [10000] Per-query solver budget in milliseconds.\\
-\texttt{threads=}$n$ & [1] Worker threads; 0 means one per hardware thread. Verdicts do not depend on $n$
-unless the budget is so small that contention decides which queries finish (Figure~\ref{fig:matrix}).\\
+\texttt{threads=}$n$ & [0] Worker threads; 0 means one per hardware thread. Verdicts do not depend on $n$
+unless a query finishes close to its budget, where contention decides whether it completes (\S\ref{sec:pipeline}).\\
 \texttt{vacuity} & [off] Re-solves every \textsc{unsat} without the trap condition and refuses
 the proof if the context alone is contradictory (\S\ref{sec:audit}).\\
 \texttt{traps=}$a$\texttt{:}$b$ & [none] Further callee names treated as checks: \texttt{panic}

@@ -67,7 +67,7 @@ module() {  # repo module
   local b23; b23=$(tail -1 "$CSV" | cut -d, -f5)
   arm "$repo" "$m" thorough "$b23" opt -load-pass-plugin=build/OraclePass.so -passes="oracle-pass<$THOROUGH>,default<O3>"
   arm "$repo" "$m" fast     "$b23" opt -load-pass-plugin=build/OraclePass.so -passes='oracle-pass<heavy;frame;mv;narrow;timeout=10;threads=10>,default<O3>'
-  arm "$repo" "$m" light    "$b23" opt -load-pass-plugin=build/OraclePass.so -passes='oracle-pass<timeout=10;threads=10>,default<O3>'
+  arm "$repo" "$m" light    "$b23" opt -load-pass-plugin=build/OraclePass.so -passes='oracle-pass<light;timeout=10;threads=10>,default<O3>'
   EXT=ll
   git add "$CSV" 2>/dev/null; git commit -q -m "souper static: $repo/$m" 2>/dev/null || true
 }

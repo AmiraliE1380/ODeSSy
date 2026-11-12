@@ -31,8 +31,8 @@ TIMEOUT_SECS=${TIMEOUT_SECS:-600}
 TIER=${TIER:-light}
 THREADS=${THREADS:-1}
 case "$TIER" in
-  light) AUDIT_PASSES="oracle-pass<vacuity;threads=${THREADS}>"
-         XFORM_PASSES="oracle-pass<threads=${THREADS}>,simplifycfg,adce,verify" ;;
+  light) AUDIT_PASSES="oracle-pass<light;vacuity;threads=${THREADS}>"
+         XFORM_PASSES="oracle-pass<light;threads=${THREADS}>,simplifycfg,adce,verify" ;;
   heavy) AUDIT_PASSES="oracle-pass<vacuity;heavy;threads=${THREADS}>"
          XFORM_PASSES="oracle-pass<heavy;threads=${THREADS}>,simplifycfg,adce,verify" ;;
   *) echo "[FATAL] unknown TIER '$TIER' (light|heavy)"; exit 1 ;;

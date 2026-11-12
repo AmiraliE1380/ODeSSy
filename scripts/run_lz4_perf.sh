@@ -34,7 +34,7 @@ THREADS=${THREADS:-8}
 TIMEOUT_MS=${TIMEOUT_MS:-300}
 COOLDOWN=${COOLDOWN:-45}
 # Overridable; default reproduces the historical hardcoded string exactly.
-ORACLE_PASSES="${ORACLE_PASSES:-oracle-pass<threads=${THREADS};timeout=${TIMEOUT_MS}>,simplifycfg,adce,verify}"
+ORACLE_PASSES="${ORACLE_PASSES:-oracle-pass<light;threads=${THREADS};timeout=${TIMEOUT_MS}>,simplifycfg,adce,verify}"
 W="$ROOT/perf_lz4_test"; rm -rf "$W"; mkdir -p "$W" "$ROOT/evaluation" logs/compilations
 CSV="$ROOT/evaluation/perf_lz4.csv"
 SRCS="lz4 lz4hc"

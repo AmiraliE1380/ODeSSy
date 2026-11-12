@@ -27,7 +27,7 @@ TIMEOUTS=${TIMEOUTS:-"1 10 100 1000 10000"}
 REPS=${REPS:-3}
 INPUT=${INPUT:-evaluation/zlib/deflate_integer_unsigned_O1.ll}
 CSV="${CSV:-$ROOT/evaluation/dial_matrix.csv}"
-KNOBS="${KNOBS:-vacuity}"
+KNOBS="${KNOBS:-light;vacuity}"
 PIN="${PIN-numactl --cpunodebind=0 --membind=0}"; command -v numactl >/dev/null || PIN=""
 [ -f "$INPUT" ] || { echo "[FATAL] $INPUT missing"; exit 1; }
 ( cd build && ninja ) || exit 1
@@ -38,7 +38,7 @@ echo "threads,timeout_ms,rep,wall_s,unsat,sat,unknown" > "$CSV"
 echo "==== dial matrix: threads [$THREADS_LIST] x timeout [$TIMEOUTS] ms, REPS=$REPS, input=$INPUT ===="
 printf '%8s %10s %6s %8s %6s %6s %8s\n' threads timeout_ms rep wall_s unsat sat unknown
 # warmup (page cache, plugin load)
-opt -load-pass-plugin=build/OraclePass.so -passes="oracle-pass<vacuity;timeout=100;threads=8>" \
+opt -load-pass-plugin=build/OraclePass.so -passes="oracle-pass<light;vacuity;timeout=100;threads=8>" \
     -disable-output "$INPUT" > /dev/null 2>&1
 for TH in $THREADS_LIST; do
   for T in $TIMEOUTS; do

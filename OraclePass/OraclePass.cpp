@@ -831,6 +831,17 @@ llvmGetPassPluginInfo() {
                         unsigned Profile = 0; bool Narrow = false; unsigned NBits = 16;
                         bool Ind = false, NoPI = false, NoFold = false, Tag = false, Keep = false, PLoads = false;
                         std::vector<std::string> Traps;   // traps= callees: empty
+                        // Default configuration = Thorough (heavy;frame;ind;mv;narrow,
+                        // 10 s per query, one worker per hardware thread). It applies
+                        // when no mechanism knob is given, or with the `thorough` /
+                        // `fast` presets. Any explicit mechanism knob (light, heavy,
+                        // frame, ldeq, ind, mv, mv-light, mv-sane=, narrow, nophiinv)
+                        // keeps the original additive meaning -- everything not named
+                        // is off -- so every recorded knob string reproduces exactly.
+                        bool Mech = false, PThorough = false, PFast = false;
+                        bool NoInd = false, NoMV = false, NoFrame = false, NoNarrow = false;
+                        bool TimeoutSeen = false, ThreadsSeen = false;
+                        odessy::CacheKnobs.clear();
                         if (!Name.empty()) {              // parse "<a;b;...>"
                             if (!Name.consume_front("<") || !Name.consume_back(">"))
                                 return false;
@@ -853,20 +864,32 @@ llvmGetPassPluginInfo() {
                                 P = P.trim();
                                 if (P == "vacuity")
                                     Vacuity = true;
+                                else if (P == "thorough")
+                                    PThorough = true;
+                                else if (P == "fast")
+                                    PFast = true;
+                                else if (P == "no-ind")
+                                    NoInd = true;
+                                else if (P == "no-mv")
+                                    NoMV = true;
+                                else if (P == "no-frame")
+                                    NoFrame = true;
+                                else if (P == "no-narrow")
+                                    NoNarrow = true;
                                 else if (P == "ldeq")
-                                    LdEq = true;
+                                    LdEq = true, Mech = true;
                                 else if (P == "frame")
-                                    Frame = true;
+                                    Frame = true, Mech = true;
                                 else if (P == "mv")            // full: T1+T2+T3
-                                    MV = true, MVT3 = true;
+                                    MV = true, MVT3 = true, Mech = true;
                                 else if (P == "mv-light")      // T1+T2 only
-                                    MV = true;
+                                    MV = true, Mech = true;
                                 else if (P == "narrow")
-                                    Narrow = true;
+                                    Narrow = true, Mech = true;
                                 else if (P == "ind")
-                                    Ind = true;
+                                    Ind = true, Mech = true;
                                 else if (P == "nophiinv")
-                                    NoPI = true;
+                                    NoPI = true, Mech = true;
                                 else if (P == "poison-loads")
                                     PLoads = true;
                                 else if (P == "mv-nofold")
@@ -877,7 +900,7 @@ llvmGetPassPluginInfo() {
                                     Tag = true;
                                 else if (P.consume_front("narrow=")) {
                                     if (P.getAsInteger(10, NBits) || NBits < 8 || NBits > 32) return false;
-                                    Narrow = true;
+                                    Narrow = true, Mech = true;
                                 }
                                 else if (P.consume_front("cache="))
                                     odessy::CacheDir = P.str();
@@ -905,16 +928,18 @@ llvmGetPassPluginInfo() {
                                 else if (P.consume_front("mv-sane=")) {
                                     if (P.getAsInteger(10, MVSane) || MVSane < 8 || MVSane > 62)
                                         return false;
-                                    MV = true;
+                                    MV = true, Mech = true;
                                 }
                                 else if (P == "light" || P == "heavy") {
                                     if (TierSeen)
                                         return false;   // contradictory tiers
                                     TierSeen = true;
                                     Heavy = (P == "heavy");
+                                    Mech = true;
                                 } else if (P.consume_front("timeout=")) {
                                     if (P.getAsInteger(10, TimeoutMs))
                                         return false;   // malformed number
+                                    TimeoutSeen = true;
                                 } else if (P.consume_front("traps=")) {
                                     // ':'-separated callee-name substrings.
                                     // NOT ',': opt's own pipeline parser
@@ -939,10 +964,32 @@ llvmGetPassPluginInfo() {
                                     // threads=0 => one worker per HW thread
                                     if (P.getAsInteger(10, Threads))
                                         return false;   // malformed number
+                                    ThreadsSeen = true;
                                 } else if (!P.empty())
                                     return false;       // unknown parameter
                             }
                         }
+                        if (PThorough && PFast)
+                            return false;               // contradictory presets
+                        if ((PThorough || PFast) && TierSeen && !Heavy)
+                            return false;               // a preset is heavy; `light` contradicts it
+                        if (PThorough || PFast || !Mech) {
+                            // Thorough by default; Fast drops induction and uses 10 ms.
+                            Heavy = true, Frame = true, MV = true, MVT3 = true, Narrow = true;
+                            Ind = !PFast;
+                            if (PFast && !TimeoutSeen) TimeoutMs = 10;
+                            if (!ThreadsSeen) Threads = 0;   // one worker per hardware thread
+                        }
+                        if (NoInd) Ind = false;
+                        if (NoMV) MV = false, MVT3 = false, Narrow = false;
+                        if (NoFrame) Frame = false;
+                        if (NoNarrow) Narrow = false;
+                        // Cache identity: the resolved mechanisms, so the same
+                        // configuration reached by different spellings shares entries.
+                        odessy::CacheKnobs += "resolved:h" + std::to_string(Heavy) + "f" + std::to_string(Frame) +
+                                              "i" + std::to_string(Ind) + "m" + std::to_string(MV) +
+                                              std::to_string(MVT3) + "n" + std::to_string(Narrow) +
+                                              "t" + std::to_string(TimeoutMs) + ";";
                         MPM.addPass(OraclePass(Vacuity, Heavy, TimeoutMs, Threads,
                                                LdEq, std::move(Traps), Frame,
                                                MV, MVSane, MVT3, Profile, Narrow, NBits, Ind, NoPI, NoFold, Tag, Keep, PLoads));

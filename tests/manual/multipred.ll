@@ -14,7 +14,7 @@
 ;
 ; Run:
 ;   opt -load-pass-plugin=build/OraclePass.so \
-;       -passes="oracle-pass<vacuity>" -disable-output tests/manual/multipred.ll
+;       -passes="oracle-pass<light;vacuity>" -disable-output tests/manual/multipred.ll
 declare void @llvm.ubsantrap(i8 immarg)
 
 define i64 @twoedges(i64 %x, i64 %y) {

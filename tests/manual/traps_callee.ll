@@ -7,12 +7,12 @@
 ;
 ; Run A (traps= on):  expect "2 trap site(s)", 1 UNSAT + 1 SAT:
 ;   opt -load-pass-plugin=build/OraclePass.so \
-;       -passes="oracle-pass<vacuity;traps=my_panic>" -disable-output \
+;       -passes="oracle-pass<light;vacuity;traps=my_panic>" -disable-output \
 ;       tests/manual/traps_callee.ll
 ; Run B (default):    expect "0 trap site(s)" -- proves traps= is
 ;   purely additive and the default Hunter is untouched:
 ;   opt -load-pass-plugin=build/OraclePass.so \
-;       -passes="oracle-pass<vacuity>" -disable-output \
+;       -passes="oracle-pass<light;vacuity>" -disable-output \
 ;       tests/manual/traps_callee.ll
 declare void @my_panic_bounds(i64, i64) noreturn
 

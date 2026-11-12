@@ -21,7 +21,7 @@ stem=$(basename "$INPUT" .ll)
 for T in 1 3 10 30 100 300 1000 3000 10000; do
   t0=$(date +%s.%N)
   opt -load-pass-plugin=build/OraclePass.so \
-      -passes="oracle-pass<vacuity;timeout=${T};threads=${THREADS}>" \
+      -passes="oracle-pass<light;vacuity;timeout=${T};threads=${THREADS}>" \
       -disable-output "$INPUT" > "logs/opt_runs/sweep_${T}.log" 2>&1
   t1=$(date +%s.%N)
   wall=$(awk -v a="$t0" -v b="$t1" 'BEGIN{printf "%.2f", b-a}')

@@ -4237,3 +4237,20 @@ asserted, not shown.
 Plan: keep the §13.8 schedule; address 2, 3, 6-wording, minor text items
 with the arXiv paper pass; Alive2 validation and the 1/5 decisions after
 seeing the real OOPSLA reviews (rebuttal cycle).
+
+### 13.11 Default configuration = Thorough (Nov 11 2026)
+`oracle-pass` with no mechanism knob now runs Thorough
+(heavy;frame;ind;mv;narrow, timeout=10000, threads=0 = one per hardware
+thread). Presets `thorough` / `fast` (fast = heavy;frame;mv;narrow,
+timeout=10 unless given); opt-outs `no-ind`, `no-mv`, `no-frame`,
+`no-narrow`. Any explicit mechanism knob (light, heavy, frame, ldeq, ind, mv,
+mv-light, mv-sane=, narrow[=b], nophiinv) keeps the old additive meaning, so
+every recorded knob string reproduces exactly. Scripts that relied on the
+old light default now name `light` (run_tests.sh, run_dial_matrix.sh default,
+run_zlib*.sh light arms, souper_static/pilot light arm, run_lz4_perf.sh,
+run_zstd_audit.sh, run_timeout_sweep.sh, benchmark_commands.sh,
+clone_missing_benchmarks.sh, tests/manual comments). Verified: tests PASS=30
+FAIL=12 unchanged; on swift_adler32, no-knob == explicit Thorough string,
+`fast` == explicit Fast string, `thorough;no-ind` == Thorough minus ind (IR
+identical); `light` differs. Verdict-cache identity now includes the resolved
+mechanisms. Paper Table knobs updated.

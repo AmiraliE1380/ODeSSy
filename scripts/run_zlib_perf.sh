@@ -84,7 +84,7 @@ if [ "${PIN-unset}" = "unset" ]; then
 fi
 TIER=${TIER:-light}
 case "$TIER" in
-  light) ORACLE_PASSES="oracle-pass<threads=${THREADS}>,simplifycfg,adce,verify" ;;
+  light) ORACLE_PASSES="oracle-pass<light;threads=${THREADS}>,simplifycfg,adce,verify" ;;
   heavy) ORACLE_PASSES="oracle-pass<heavy;threads=${THREADS}>,simplifycfg,adce,verify" ;;
   full)  ORACLE_PASSES="oracle-pass<heavy;ldeq;frame;threads=${THREADS}>,simplifycfg,adce,verify" ;;
   prod)  ORACLE_PASSES="oracle-pass<heavy;frame;ind;mv;narrow;timeout=${TIMEOUT_MS:-10000};threads=1>,simplifycfg,adce,verify" ;;

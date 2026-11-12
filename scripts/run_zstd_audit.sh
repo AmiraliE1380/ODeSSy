@@ -47,7 +47,7 @@ for spec in $SPECS; do
     traps=$(grep -c 'call void @llvm.ubsantrap' "$ll")
     [ "$traps" -eq 0 ] && continue                     # nothing to audit
     for var in $VARIANTS; do
-      P="oracle-pass<vacuity;threads=${THREADS}>"
+      P="oracle-pass<light;vacuity;threads=${THREADS}>"
       [ "$var" = "ldeq" ] && P="oracle-pass<vacuity;ldeq;threads=${THREADS}>"
       t0=$(date +%s.%N)
       timeout "${TIMEOUT_SECS}s" opt -load-pass-plugin=build/OraclePass.so \
