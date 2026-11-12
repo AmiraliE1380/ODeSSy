@@ -2107,8 +2107,8 @@ and $15\times$ (zstd) faster, and one that changes them still compiles
 $14\times$ and $13\times$ faster, because only the changed functions are
 solved again. The module rows of Table~\ref{tab:cache-replay} show both
 ends: \texttt{trees}, \texttt{adler32}, and \texttt{zstd\_preSplit}, the
-most expensive modules, were never changed and drop from minutes to at most
-a few seconds, while a commit that changes \texttt{inflate},
+most expensive modules, were never changed and drop to at most a few
+seconds, while a commit that changes \texttt{inflate},
 \texttt{deflate}, or \texttt{divsufsort} gains little in that module
 ($1.0$--$1.3\times$), since the changed functions are the costly ones.
 
