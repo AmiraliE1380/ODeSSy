@@ -2139,32 +2139,28 @@ interleaved repetitions; byte-identical outputs required), with the
 same front ends as on x86: the pinned swift.org Swift 6.3.3 toolchain,
 Julia 1.12.6, and Rust 1.97.1. Every row uses the
 configuration of Table~\ref{tab:speedups} (Thorough at one thread,
-10\,s per query) and measures its ceiling in the same run. Where an x86
-number exists it is quoted for orientation only; the two machines are
-not compared directly.
+10\,s per query) and measures its ceiling in the same run.
 
 \begin{table}[h]
 \caption{M-series runtime results: speedup of \tool{}'s build over the
 checked build, and the ceiling (checked over unchecked) from the same
-run. Rows marked \emph{arm} are designated hand-versioned Julia copies
-mirroring what the pass does to the frozen kernel's IR; they are runtime
-proxies, not machinery output.}
+run. Rows and footnotes follow Table~\ref{tab:speedups}.}
 \label{tab:app-runtime}
 \small
 \begin{tabular}{llrr}
 \toprule
 Benchmark & Front end & Speedup & Ceiling\\
 \midrule
-gemm \emph{arm} (proven accesses only) & Julia & $4.143\times$ & $4.189\times$\\
-lz77 \emph{arm}, guard A$+$B (60\,s) & Julia & $2.595\times$ & $2.597\times$\\
-lz77 \emph{arm}, guard B only (300\,ms) & Julia & $1.480\times$ & $2.597\times$\\
+gemm, $n{=}512^{a}$ & Julia & $4.143\times$ & $4.189\times$\\
+lz77$^{a,b}$ & Julia & $2.595\times$ & $2.597\times$\\
+lz77$^{a}$ & Julia & $1.480\times$ & $2.597\times$\\
 lz77 & Swift & $1.318\times$ & $1.292\times$\\
-matmul \emph{arm}, $n{=}128$ & Julia & $1.232\times$ & $1.240\times$\\
+matmul, $n{=}128^{a}$ & Julia & $1.232\times$ & $1.240\times$\\
 zstd, compression & C & $1.146\times$ & $1.145\times$\\
 base64 & Swift & $1.141\times$ & $1.136\times$\\
 sha256 & Swift & $1.087\times$ & $1.007\times$\\
 md5 & Swift & $1.021\times$ & $0.968\times$\\
-matmul \emph{arm}, $n{=}512$ & Julia & $1.020\times$ & $1.021\times$\\
+matmul, $n{=}512^{a}$ & Julia & $1.020\times$ & $1.021\times$\\
 sha1 & Swift & $1.015\times$ & $0.977\times$\\
 CryptoSwift & Swift & $1.012\times$ & $1.003\times$\\
 crc32 & Swift & $1.006\times$ & $1.001\times$\\
@@ -2173,11 +2169,17 @@ zstd, decompression & C & $1.000\times$ & $0.999\times$\\
 utf8 validator & Swift & $0.991\times$ & $0.991\times$\\
 zlib & C & $0.990\times$ & $0.999\times$\\
 adler32 & Swift & $0.983\times$ & $1.055\times$\\
-sha256 \emph{arm} & Julia & $0.922\times$ & $0.923\times$\\
+sha256$^{a}$ & Julia & $0.922\times$ & $0.923\times$\\
 lz77 & Rust & $0.745\times$ & $0.965\times$\\
 \bottomrule
 \end{tabular}\\
-\raggedright\footnotesize Medians of 30 repetitions (21 for Julia).
+\raggedright\footnotesize
+$^{a}$Julia rows time a separate copy of the unchanged kernel, transformed
+by hand exactly as \tool{}'s proofs license (as in
+Table~\ref{tab:speedups}).
+$^{b}$Guard synthesized under a 60\,s solver budget; at the default
+10\,s budget, one of the two loads' checks is proven (Julia lz77 below).
+Medians of 30 repetitions (21 for Julia).
 zstd: 512\,MB corpus. zlib: 256\,MB input, 20 runs (8 and 64\,MB:
 $0.995\times$ and $0.992\times$).\par
 \end{table}
