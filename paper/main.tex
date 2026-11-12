@@ -1906,10 +1906,7 @@ benchmarks of Table~\ref{tab:speedups} (5{,}056 queries; x86, ten
 threads, 10\,s per query). The median proof takes 7.8\,ms, and \pct{75}
 of proofs finish within 100\,ms and \pct{93} within 1\,s; refutations
 are cheaper at the median (6.6\,ms). 39 queries reach the 10\,s budget
-and keep their checks. Most of the cost sits in a tail: this is the
-shape that makes the timeout dial of Figure~\ref{fig:matrix}
-effective, since a budget truncates the tail while keeping most of the
-proofs.}
+and keep their checks. }
 \Description{A single histogram panel of SMT query latency on a
 logarithmic x-axis in milliseconds, with query count on the y-axis. Three
 overlaid outlines: SAT in red with 4416 queries, UNSAT in blue with 601
@@ -1926,15 +1923,7 @@ milliseconds to several seconds.}
 \texttt{@inbounds}, the other two checked) over the checked baseline, by
 problem shape ($C = m{\times}n$, $A = m{\times}k$, $B = k{\times}n$;
 medians of 11 repetitions, 5 at $4096^3$; bitwise-equal outputs at every
-shape). \emph{Left:} square matrices. \emph{Right:} other aspect ratios.
-The speedup holds at every shape ($1.47$--$4.12\times$), on the node of
-Table~\ref{tab:speedups}. Repeated in separate Julia processes, the
-$n{=}512$ speedup ranges from $3.6\times$ to $4.0\times$ (three runs of the
-dedicated harness, three of the sweep). The checked baseline is stable to
-$0.2\%$ across processes, while the build with the proven accesses
-unchecked varies by up to $13\%$, which we attribute to where each process
-places the arrays and the compiled code; every run, at every shape, is at
-least $1.47\times$ faster than the checked kernel.}
+shape). \emph{Left:} square matrices. \emph{Right:} other aspect ratios.}
 \Description{Two panels. Left, a line chart of speedup versus square
 matrix dimension from 64 to 4096 on a log axis: 3.3x, 4.1x, 3.5x, 3.7x,
 3.8x, 1.9x, and 1.5x. Right, a bar chart of seven non-square shapes with
