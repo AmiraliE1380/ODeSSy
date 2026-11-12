@@ -1824,18 +1824,17 @@ as Table~\ref{tab:speedups}.
 \caption{Fast against Thorough at runtime (x86 c220g2, medians of 30
 shuffled repetitions, byte-identical output, noise floors within
 $1.00\pm0.001\times$). Each Fast build removes exactly the checks of the
-Thorough build, except adler32's, which keeps the guarded one. ``Replicate'' is an independent Thorough run on the same
-node.}
+Thorough build, except adler32's, which keeps the guarded one.}
 \label{tab:fast}
 \small
-\begin{tabular}{llrrr}
+\begin{tabular}{llrr}
 \toprule
-Benchmark & Checks removed & Fast & Thorough & Thorough, replicate\\
+Benchmark & Checks removed & Fast & Thorough\\
 \midrule
-matmul (Rust) & 0 (+2 guarded) & $1.312\times$ & $1.453\times$ & ---\\
-adler32 (Swift) & 1 (+1 guarded) & $1.036\times$ & $1.039\times$ & $1.038\times$\\
-md5 (Swift) & 1 & $0.983\times$ & $0.983\times$ & $0.983\times$\\
-sha1 (Swift) & 2 & $0.956\times$ & $0.956\times$ & $0.955\times$\\
+matmul (Rust) & 0 (+2 guarded) & $1.312\times$ & $1.453\times$\\
+adler32 (Swift) & 1 (+1 guarded) & $1.036\times$ & $1.039\times$\\
+md5 (Swift) & 1 & $0.983\times$ & $0.983\times$\\
+sha1 (Swift) & 2 & $0.956\times$ & $0.956\times$\\
 \bottomrule
 \end{tabular}
 \end{table}
