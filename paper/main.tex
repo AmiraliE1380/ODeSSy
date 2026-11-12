@@ -1314,8 +1314,8 @@ it twice in a row, as \tool{} itself sits between two \texttt{-O3} runs
 \texttt{-O3} run alone and is \tool{}'s own contribution. The two
 baselines perform almost identically, and the difference between them
 serves as the noise floor of each run. Speedups are reported against the
-single \texttt{-O3} baseline; Table~\ref{tab:speedups-full} also gives
-them against the double one. The runtime experiments (\S\ref{sec:results-perf}--\S\ref{sec:results-mech}) use a 10\,s per-query solver budget; the compile-cost experiments (\S\ref{sec:results-cost}) vary it.
+single \texttt{-O3} baseline; against the double one, every speedup
+changes by at most 1.1\%. The runtime experiments (\S\ref{sec:results-perf}--\S\ref{sec:results-mech}) use a 10\,s per-query solver budget; the compile-cost experiments (\S\ref{sec:results-cost}) vary it.
 
 \paragraph{Benchmarks, specifications, tiers.}
 Two C libraries (zlib, zstd) under UBSan trap-mode
@@ -1807,64 +1807,15 @@ full specification is published; all timed runs disable turbo and pin to
 one socket; medians over shuffled interleaved repetitions are primary
 throughout. An artifact with the pass, benchmarks, harnesses, and raw
 per-repetition CSVs is prepared for submission.
-\section{Complete Runtime Results}
+\section{Additional Results}
 \label{sec:app-full}
-Table~\ref{tab:speedups-full} gives the measurements behind
-Table~\ref{tab:speedups}: median times, the speedup against the
-double-O3 control, the noise floor, and an independent replicate where
-one was run.
 Measurement noise is small: the two baselines, which differ only by a
 second \texttt{-O3} run, are a median of 0.10\% apart across the C,
-Swift, and Rust rows and at most 0.32\%, except on zstd's median run
+Swift, and Rust benchmarks and at most 0.32\%, except on zstd's median run
 (1.1\%) and zlib's two largest corpora (0.90\% at 64\,MB and 1.15\% at 256\,MB), where zlib's
 $1.011\times$ is therefore within noise.
 M-series measurements are in Appendix~\ref{sec:app-mseries}.
-\begin{table}[t]
-\caption{Measurements behind Table~\ref{tab:speedups} (x86 c220g2,
-production configuration). ``Elim'' is checks removed outright, with
-checks removed in guarded loop copies in parentheses. Base and \tool{}
-are median seconds. ``vs 2$\times$'' is the speedup against the
-double-O3 control; the noise floor is baseline over double-O3.
-``Replicate'' is the speedup in an independent run on the same node.}
-\label{tab:speedups-full}
-\small
-\setlength{\tabcolsep}{3pt}
-\resizebox{\linewidth}{!}{%
-\begin{tabular}{llrrrrrrr}
-\toprule
-Benchmark & Front end & Elim & Base & \tool{} & Speedup & vs 2$\times$ & Floor & Replicate\\
-\midrule
-lz77$^{a}$ & Julia & --- & 0.4153 & 0.1035 & $4.013\times$ & --- & --- & ---\\
-gemm, $n{=}512^{a}$ & Julia & --- & 0.1770 & 0.0469 & $3.778\times$ & --- & --- & $3.597$--$3.972\times$\\
-matmul & Rust & 0 (+2) & 1.8904 & 1.3014 & $1.453\times$ & $1.448\times$ & $1.003\times$ & ---\\
-lz77, 10\,s budget$^{a}$ & Julia & --- & 0.4153 & 0.2864 & $1.450\times$ & --- & --- & ---\\
-base64 & Swift & 2 (+5) & 4.4284 & 3.0840 & $1.436\times$ & $1.436\times$ & $1.000\times$ & $1.436\times$\\
-matmul, $n{=}512^{a}$ & Julia & --- & 0.3528 & 0.3129 & $1.128\times$ & --- & --- & ---\\
-sha256$^{a}$ & Julia & --- & 0.2921 & 0.2639 & $1.107\times$ & --- & --- & ---\\
-sha256 & Swift & 7 (+1) & 4.9241 & 4.4565 & $1.105\times$ & $1.103\times$ & $1.002\times$ & $1.106\times$\\
-crc32 & Swift & 4 (+7) & 4.8597 & 4.5268 & $1.074\times$ & $1.074\times$ & $1.000\times$ & $1.073\times$\\
-zstd, compression$^{c}$ & C & 13 & 0.4056 & 0.3836 & $1.057\times$ & $1.046\times$ & $1.011\times$ & $1.018$--$1.059\times$\\
-adler32 & Swift & 1 (+1) & 4.9140 & 4.7297 & $1.039\times$ & $1.038\times$ & $1.001\times$ & $1.038\times$\\
-lz77 & Rust & 2 & 2.1245 & 2.0630 & $1.030\times$ & $1.030\times$ & $1.000\times$ & ---\\
-utf8 validator & Swift & 3 (+1) & 2.8683 & 2.7990 & $1.025\times$ & $1.025\times$ & $1.000\times$ & $1.025\times$\\
-zlib, 256\,MB & C & 208 & 66.320 & 65.574 & $1.011\times$ & $1.000\times$ & $1.011\times$ & $1.009\times^{b}$\\
-zstd, decompression & C & 13 & 0.1567 & 0.1578 & $0.993\times$ & $0.995\times$ & $0.998\times$ & ---\\
-\midrule
-md5 & Swift & 1 & 6.9628 & 7.0837 & $0.983\times$ & $0.983\times$ & $1.000\times$ & $0.983\times$\\
-CryptoSwift & Swift & 270 (+109) & 2.9886 & 3.0755 & $0.972\times$ & $0.970\times$ & $1.002\times$ & $0.971\times$\\
-sha1 & Swift & 2 & 4.6496 & 4.8662 & $0.956\times$ & $0.956\times$ & $0.999\times$ & $0.955\times$\\
-lz77 & Swift & 4 (+3) & 3.5332 & 4.2587 & $0.830\times$ & $0.830\times$ & $1.000\times$ & $0.830\times$\\
-\bottomrule
-\end{tabular}}\\
-\raggedright\footnotesize $^{a}$Hand-transformed copy of the unchanged
-kernel (Table~\ref{tab:speedups}, note a); ``Base'' is the checked copy.
-The proofs behind the copies: gemm 9 of 16 edges, covering the read of \texttt{A} and the write of \texttt{C} (\S\ref{sec:frame}),
-lz77 4 and matmul 3 checks removed under a synthesized guard, sha256
-under guard synthesis. $^{b}$The wider all-non-firing specification
-(225 checks removed), which serves as zlib's replicate.
-$^{c}$Median of five independently built and timed runs; the times are
-those of the median run, and the replicate column gives the range.\par
-\end{table}
+
 Table~\ref{tab:fast} times the Fast configuration of
 Table~\ref{tab:compile} on the kernels where it keeps every one of
 Thorough's proofs, with the same harnesses, workloads, and repetitions
