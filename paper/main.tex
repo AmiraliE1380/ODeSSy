@@ -1972,14 +1972,26 @@ such as lengths, holds defined values. Under this precondition, \tool{}
 proves for each function that every check it removes cannot fire. The
 precondition is the default; the parameter \texttt{poison-loads} drops it
 and treats every loaded value as possibly poison, which makes \tool{}
-faithful to LLVM's semantics without conditions. Safe Julia, Swift, and Rust
-cannot create poison values, and their runtimes always initialize array
-metadata; for C, the precondition amounts to the absence of reads of
-uninitialized memory. Frontends could discharge it in the IR itself by
-marking such loads \texttt{!noundef}, which \tool{} already honors.
-Table~X reports the proofs with and without the precondition; GEMM, for
-example, keeps 9 of its 16 trap edges removed and its full speedup under the
-precondition, and 3 without it.
+faithful to LLVM's semantics without conditions.
+
+The precondition fails only in programs that their own language already
+rejects or leaves undefined. Two reads of one location can disagree in only
+two ways: another thread writes between them, or the location holds no
+defined value (it was never initialized, or a poison value was stored to
+it), in which case LLVM may choose a different value at each use. Julia,
+Swift, and Rust rule out the second: their runtimes always initialize array
+metadata, and safe code cannot create poison. The first is a data race,
+which safe Rust rejects at compile time and which Swift and Julia leave
+undefined. For C, the precondition amounts to the absence of data races,
+which are undefined behavior since C11, and of reads of uninitialized
+memory; these are the properties that ThreadSanitizer and MemorySanitizer
+check. The precondition is also not new: a manual \texttt{@inbounds}
+annotation, such as those in Julia's stdlib GEMM, is sound only if the
+array's length reads the same each time. Frontends could discharge the
+precondition in the IR itself by marking such loads \texttt{!noundef},
+which \tool{} already honors. GEMM, for example, keeps 9 of its 16 trap
+edges removed and its full speedup under the precondition, and 3 without
+it.
 
 \section{Configuration Knobs}
 \label{sec:app-knobs}
