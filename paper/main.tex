@@ -664,8 +664,7 @@ the frame rule of separation logic~\cite{reynolds2002separation}.
 Super-analysis adds precision where conventional scalar analyses fail
 (e.g., LLVM's known bits), and its special case, heap-invariant
 super-analysis, takes over where conventional memory analysis fails
-(e.g., LLVM's MemorySSA), reusing that analysis's answers to derive new
-facts. A heap fact alone is rarely enough: the solver conjoins it with
+(e.g., LLVM's MemorySSA). A heap fact alone is rarely enough: the solver conjoins it with
 the scalar facts --- for GEMM, the load equalities together with
 trip-count, known-bits, and definitional facts --- and it is the
 combination that proves the check dead. The encoding machinery that
@@ -1605,7 +1604,7 @@ project, and afterwards only for the functions each edit changes.
 Appendix~\ref{sec:app-cache} gives the per-module and per-commit results.
 
 \paragraph{How to use \tool{}.}
-Both configurations fit the edit--compile loop. A build recompiles only
+Both configurations fit the developer's edit-and-compile loop. A build recompiles only
 the module that changed, and a single module is cheap: under Thorough the
 median module takes 4.2\,s in zlib and 1.3\,s in zstd, and the libraries'
 main modules take under a minute. When a module or a whole code base is
@@ -1643,15 +1642,12 @@ of newer front ends, so the comparison covers only the C libraries which can be 
 with LLVM~18's clang. Each module is emitted by clang~18 and both tools read the emitted IR;
 \tool{}'s runs used a packaged clang~18 whose output leaves exactly the same
 checks as Souper's build (476 in zlib, 254 and 251 in zstd). \tool{}'s LLVM reads it as bitcode, which newer LLVM
-versions are guaranteed to accept. Each tool runs with its own pinned
-LLVM and its own pinned Z3
-(Souper: Z3 4.13; \tool{}: Z3 4.8.12), is followed by its own LLVM's \texttt{-O3}, and is compared
-against that LLVM's \texttt{-O3} alone. Souper's per-query budget is
+versions are guaranteed to accept. Despite the shared frontend, each tool runs with its own pinned
+LLVM optimizer and its own pinned Z3
+(Souper: Z3 4.13; \tool{}: Z3 4.8.12), and is followed by its own LLVM's \texttt{-O3}. Souper's per-query budget is
 10\,s, as for Thorough, with no external cache; its in-memory cache of
 identical queries is left on, as shipped. Swift, Rust, and Julia are
-excluded because their front ends emit IR newer than LLVM~18.
-
-Thorough and Fast use ten
+excluded because their front ends emit IR newer than LLVM~18. Thorough and Fast use ten
 threads.
 
 \begin{figure}[t]
@@ -1660,8 +1656,7 @@ threads.
 \caption{Checks removed against compile time on every module of zlib and
 zstd (x86, the same LLVM~18 IR for both tools). Time is summed over
 modules and includes the \texttt{-O3} that follows each tool; checks are
-counted against each tool's own \texttt{-O3} baseline. The dashed line
-joins \tool{}'s two configurations; $\times$ is Souper in constant mode.}
+counted against each tool's own \texttt{-O3} baseline. Thorough is faster and more effective than Souper in check removal.}
 \Description{Two scatter panels, zlib and zstd, with compile time on a
 logarithmic x-axis and checks removed on the y-axis. In each panel a dashed
 line joins ODeSSy Fast (circle) and ODeSSy Thorough (square), and a black
