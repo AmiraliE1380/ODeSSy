@@ -505,7 +505,7 @@ of analysis --- from the question it defers: when to use it.
 This paper makes the following contributions:
 \begin{itemize}
 \item \textbf{Super-analysis} (\S\ref{sec:superanalysis}): an aggressive compilation paradigm
-  positioned between conventional heuristic-based optimization and superoptimization in terms of compiler latency and precision. The general recipe for this paradigm is to use solvers as an analysis oracle, while applying cheap conventional rules-based transformation for optimization. We identify heap reasoning as
+  positioned between conventional heuristic-based optimization and superoptimization in terms of compiler latency and precision. The general recipe for this paradigm is to use solvers as an analysis oracle, while applying cheap conventional rule-based transformation for optimization. We identify heap reasoning as
   a crucial analysis problem, formalize it, and show that
   super-analysis can more effectively reason over heap and memory safety
   of certain transformations.
@@ -563,7 +563,7 @@ synthesizes replacement code for bounded peephole windows and verifies each
 candidate with an SMT solver. In every sound superoptimizer the search proposes code and the solver
 verifies it, so the solver is invoked \emph{per candidate}. 
 
-Conventional optimization and superoptimization have been widely explored in the literature, while the asymmetric corners of Figure~\ref{fig:quadrants} are underexplored. We call the paradigm of cheap analysis and expensive transformation super-transformation, which is an exhaustive search over candidate transformations, coupled with cheap analysis. The corner that this paper extensively explores and instantiates is super-analysis: expensive (solver-based) analysis that enables cheap conventional transformations. We can state that superoptimization is a combination of super-transformation (synthesis as the most aggressive exhaustive search for alternative code) and super-analysis (solver-based equivalence checking in sound superoptimizers), making it super expensive.
+Conventional optimization and superoptimization have been widely explored in the literature, while the asymmetric corners of Figure~\ref{fig:quadrants} are under-explored. We call the paradigm of cheap analysis and expensive transformation super-transformation, which is an exhaustive search over candidate transformations, coupled with cheap analysis. The corner that this paper extensively explores and instantiates is super-analysis: expensive (solver-based) analysis that enables cheap conventional transformations. We can state that superoptimization is a combination of super-transformation (synthesis as the most aggressive exhaustive search for alternative code) and super-analysis (solver-based equivalence checking in sound superoptimizers), making it super expensive.
 
 
 \paragraph{Equality Saturation.}
@@ -1120,7 +1120,7 @@ not thread-safe, so the facts are imported through the turnstile of
 
 \subsection{Encoding heap invariance}
 \label{sec:frame-machinery}
-We add a heap and pointer reasoning machinery to our pass. The \texttt{frame} encoding knob supplies the heap fact of \S\ref{sec:frame}:
+We add heap and pointer reasoning machinery to our pass. The \texttt{frame} encoding knob supplies the heap fact of \S\ref{sec:frame}:
 two loads of the same location return the same value if no store
 between them can write that location. Two notions from LLVM decide this.
 A store (or call) \emph{clobbers} a load if it may write to the location
@@ -1279,7 +1279,7 @@ verdicts, output IR, and logs must be identical for \texttt{threads=1}
 and \texttt{threads=N} up to the time-budget exception of \S\ref{sec:pipeline}, which we verify by \texttt{diff}.
 
 To make sure our tool is sound, in debug mode no
-\textsc{unsat} is accepted at face value; each one is inspected. We perform a \texttt{vacuity} test, meaning that we remove the trap condition from the \texttt{UNSAT} proof and query the solver again with all the other constraints. If
+\textsc{unsat} is accepted at face value; each one is inspected. We perform a \texttt{vacuity} test, meaning that we remove the trap condition from the \textsc{unsat} proof and query the solver again with all the other constraints. If
 the context alone is already unsatisfiable --- an encoder bug, or a
 genuinely contradictory guard chain --- the elimination is
 \emph{refused} and reported. Vacuous counts are reported in every static
@@ -1329,7 +1329,7 @@ Our evaluation is organized around four questions:
 \begin{itemize}
 \item \textbf{RQ1 --- How much does \tool{} improve performance?}
   How many checks can \tool{} prove dead, and --- where proofs land on
-  hot paths --- how much speedup it gains? (\S\ref{sec:results-perf})
+  hot paths --- how much speedup does it gain? (\S\ref{sec:results-perf})
 \item \textbf{RQ2 --- What is the source of speedup?}
   Which transformations do hot-path proofs unlock, and which component
   of \tool{} makes guard synthesis pay? (\S\ref{sec:results-mech})
@@ -1348,7 +1348,7 @@ Our evaluation is organized around four questions:
 In this section we evaluate how much \tool{}'s proofs speed up the final compiled binary. We collected 17 benchmarks, 6 of them from existing libraries and repositories or extracted from them, and the rest are our implementations of memory- and compute-heavy everyday kernels. Table~\ref{tab:static} lists the benchmarks, their sources, and the percentage of their checks that \tool{} removes. 
 
 What matters more than the static percentage of check removals in Table~\ref{tab:static} is how much performance improvement each final compiled binary yields, in other words whether check removal buys performance, which Table~\ref{tab:speedups} establishes. We achieve a significant speedup of $4.01\times$ on Julia lz77
-and $3.78\times$ on stdlib GEMM; in total 7 out of 17 benchmarks have a performance improvement of more than 10\%. These performance improvements are among different applications: matrix operations are widely used in scientific computing and machine learning, and so are compression libraries and cryptographic kernels. A 10 to 300\% performance improvement is very impactful, especially knowing that code safety is not sacrificed. Also, for all four of our frontend languages (C, Swift, Rust, Julia) we have benchmarks that speed up, suggesting that \tool{} is not bound to a particular frontend or application, and super-analysis can be applied to a variety of domains. The results carry over to another architecture. On Apple M-series \tool{} recovers performance by similar magnitudes: $4.14\times$ on GEMM, $2.60\times$ on Julia lz77, and $1.146\times$ on zstd compression (Appendix~\ref{sec:app-mseries}).
+and $3.78\times$ on stdlib GEMM; in total 7 out of 17 benchmarks have a performance improvement of more than 10\%. These performance improvements span different applications: matrix operations are widely used in scientific computing and machine learning, and so are compression libraries and cryptographic kernels. A 10 to 300\% performance improvement is very impactful, especially knowing that code safety is not sacrificed. Also, for all four of our frontend languages (C, Swift, Rust, Julia) we have benchmarks that speed up, suggesting that \tool{} is not bound to a particular frontend or application, and super-analysis can be applied to a variety of domains. The results carry over to another architecture. On Apple M-series \tool{} recovers performance by similar magnitudes: $4.14\times$ on GEMM, $2.60\times$ on Julia lz77, and $1.146\times$ on zstd compression (Appendix~\ref{sec:app-mseries}).
 
 
 The safety check performance tax, or as we call it, the ceiling, is how much the checks slow the code down. Ideally \tool{} would recover all of the performance loss, and it recovers nearly all of it for 5 benchmarks. For four benchmarks (Rust lz77, the Swift utf8 validator, Swift sha256, and md5) \tool{}'s partial check removal yields better performance than full removal (higher than ceiling). We have three interesting cases where check removal slows down the code, and one (CryptoSwift) where despite having a positive ceiling, \tool{}'s check removal slows the computation. Removing a check that blocks no further transformation leaves the second \texttt{-O3} free to make different code-generation choices, which can cost as well as gain (\S\ref{sec:results-mech}).
@@ -1479,7 +1479,7 @@ by $1.5$--$4.1\times$ (Figure~\ref{fig:gemm-sweep}).
 \paragraph{Guard synthesis: which component pays?}
 Most of the other large speedups --- Julia lz77 ($4.01\times$), base64
 ($1.44\times$), Rust matmul ($1.45\times$), Julia matmul, crc32 --- come
-from guard synthesis and loop cloning (\S\ref{sec:guards}). We are interested in knowing if our synthesis algorithm makes the difference, or \tool{} verification and proving ability is again buying us the performance. Therefore we isolate the contribution of each component in this experiment.
+from guard synthesis and loop cloning (\S\ref{sec:guards}). We are interested in knowing if our synthesis algorithm makes the difference, or \tool{}'s verification and proving ability is again buying us the performance. Therefore we isolate the contribution of each component in this experiment.
 
 Cloning a
 loop behind a runtime test is not new (\S\ref{sec:relwork}): LLVM's own
@@ -1515,19 +1515,19 @@ lz77$^{a}$ & Julia & $\mathbf{4.013\times}$ & \textbf{4} & $1.000\times$ & 0 & $
 base64 & Swift & $\mathbf{1.435\times}$ & \textbf{8} & $1.259\times$ & 7 & $1.248\times$ & 3 & $1.243\times$ & 3 & $1.000\times$ & 1\\
 matmul & Rust & $\mathbf{1.281\times}$ & \textbf{2} & $1.279\times$ & 2 & $1.173\times$ & 2 & $1.174\times$ & 2 & $1.000\times$ & 0\\
 matmul, $n{=}512$ & Julia & $\mathbf{1.128\times}$ & \textbf{3} & $1.000\times$ & 0 & $1.000\times$ & 0 & $1.000\times$ & 0 & $1.000\times$ & 0\\
-sha256$^{c}$ & Julia & $\mathbf{1.089\times}$ & \textbf{13} & $1.021\times$ & 7 & $1.031\times$ & 7 & $1.024\times$ & 2 & $1.024\times$ & 2\\
+sha256$^{b}$ & Julia & $\mathbf{1.089\times}$ & \textbf{13} & $1.021\times$ & 7 & $1.031\times$ & 7 & $1.024\times$ & 2 & $1.024\times$ & 2\\
 crc32 & Swift & $\mathbf{1.074\times}$ & \textbf{11} & $1.071\times$ & 4 & $1.070\times$ & 4 & $1.000\times$ & 0 & $1.000\times$ & 0\\
 \bottomrule
 \end{tabular}}\\
 \raggedright\footnotesize
 $^{a}$Guard synthesized under a 60\,s budget; at 10\,s, (i) removes 2
-of the 4 checks. $^{c}$At the 10\,s budget (i) leaves one access checked; the full
+of the 4 checks. $^{b}$At the 10\,s budget (i) leaves one access checked; the full
 guarded copy of Table~\ref{tab:speedups} reaches $1.107\times$.\par
 \end{table}
 
-\emph{Pipeline (i) is the best or tied on every benchmark}, demonstrating that the combination of guard synthesis and \tool{} proofs is the most powerful and fruitful. Pipeline (i) either matches or beats every other pipeline. It is the only pipeline powerful enough to recover $4.013\times$ performance of Julia's lz77. 
+\emph{Pipeline (i) is the best or tied on every benchmark}, demonstrating that the combination of guard synthesis and \tool{} proofs is the most powerful and fruitful. Pipeline (i) either matches or beats every other pipeline. It is the only pipeline powerful enough to recover the $4.013\times$ of Julia lz77. 
 
-Using guard synthesis or \tool{} proofs alone still recovers a lot of performance and yields a lot of proofs, although it is hard to say exactly which of the two (ii) and (iii) is the better. Both of them are better than or equal to the full LLVM pipelines (iv) and (v) in most cases. \emph{This restates the main thesis of the paper: solver-based expensive analysis pays back.} We believe our guard synthesis algorithm and templates are powerful, though it beats LLVM's IRCE not just because of our smart design choices, but \emph{because our guard synthesis is solver-guided from the beginning.}
+Using guard synthesis or \tool{} proofs alone still recovers a lot of performance and yields a lot of proofs, although it is hard to say exactly which of the two, (ii) or (iii), is better. Both of them are better than or equal to the full LLVM pipelines (iv) and (v) in most cases. \emph{This restates the main thesis of the paper: solver-based expensive analysis pays back.} We believe our guard synthesis algorithm and templates are powerful, though it beats LLVM's IRCE not just because of our smart design choices, but \emph{because our guard synthesis is solver-guided from the beginning.}
  
 
 \subsection{RQ3: Is \tool{} fast enough for real-world use?}
@@ -1618,7 +1618,7 @@ Appendix~\ref{sec:app-full}).
 \begin{figure}
 \centering
 \includegraphics[width=\columnwidth]{dial_matrix_x86_current.pdf}
-\caption{\tool{}'s latency for zlib's \texttt{deflate.c} with sweep over number of threads vs solver timeout. The configuration is Thorough. Multi-threading and strict timeouts can make \tool{} up to $2.4\times$ faster. A strict timeout of 10\,ms keeps about two thirds of the proofs. Parallelism is the more effective measure for reducing latency without losing proofs: four workers are $2.1\times$ faster at the full 10\,s budget.}
+\caption{\tool{}'s latency for zlib's \texttt{deflate.c} with a sweep over the number of threads and the solver timeout. The configuration is Thorough. Multi-threading and strict timeouts can make \tool{} up to $2.4\times$ faster. A strict timeout of 10\,ms keeps about two thirds of the proofs. Parallelism is the more effective measure for reducing latency without losing proofs: four workers are $2.1\times$ faster at the full 10\,s budget.}
 \Description{A five-by-five heatmap, rows are 1, 2, 4, 8 and 16 worker
 threads, columns are per-query timeouts from 1 millisecond to 10
 seconds. Cells are colored from red for slow to green for fast on a log
@@ -1850,7 +1850,7 @@ Table~\ref{tab:speedups}. \emph{Thorough} is the
 configuration used for the performance improvement tables (10\,s per query, ten
 threads, inductive encoding and guard synthesis); \emph{Fast} keeps the
 imported analyses, heap facts, and guard synthesis at 10\,ms per query
-on 10 threads, without inductive encoding. For zlib and zstd the time reported in parenthesis is the time taken by the largest module.}
+on 10 threads, without inductive encoding. For zlib and zstd the time reported in parentheses is the time taken by the largest module.}
 \label{tab:compile}
 \small
 \setlength{\tabcolsep}{3pt}
