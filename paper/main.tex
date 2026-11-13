@@ -1318,7 +1318,7 @@ changes by at most 1.1\%. The runtime experiments (\S\ref{sec:results-perf}--\S\
 
 \paragraph{Benchmarks, specifications, tiers.}
 Two C libraries (zlib, zstd) under UBSan trap-mode
-specifications; nine Swift kernels plus the unmodified CryptoSwift
+specifications; eight Swift kernels plus the unmodified CryptoSwift
 library; Julia kernels including the stdlib GEMM of \S\ref{sec:frame};
 and Rust ports that exercise the \texttt{traps=} retargeting. Every x86 runtime experiment uses one
 configuration: the analysis facts and frame facts of the full tier, plus
@@ -1359,8 +1359,10 @@ The safety check performance tax, or as we call it, the ceiling, is how much the
 ``Source'': \emph{Repo} = an unmodified open-source repository;
 \emph{Ours} = our implementation of a standard kernel. Proven: the
 percentage of the checks left after \texttt{-O3} that \tool{} removes,
-including those removed in guarded loop copies (\S\ref{sec:guards}) (x86, Thorough, one thread, 10\,s per query;
-the build of Table~\ref{tab:speedups}).}
+including those removed in guarded loop copies (\S\ref{sec:guards}) (x86, Thorough, 10\,s per query; the same builds
+as Table~\ref{tab:speedups}). A check is one trap edge
+(\S\ref{sec:encoding-impl}); several edges can share one trap, so fewer
+traps than edges disappear from the final binary.}
 \label{tab:static}
 \small
 \begin{tabular}{lllr}
@@ -1444,9 +1446,10 @@ unrolling and vectorization, and once it is gone the second
 speedup. SHA-256 is the typical case: seven proofs in the
 message-schedule loop let it unroll, and the kernel runs $1.105\times$
 faster on x86. Where the proofs land
-matters more than how many there are: 208 cold proofs leave zlib flat
-($1.011\times$), while 13 on zstd buy $1.057\times$ of compression's
-$1.069\times$ ceiling.
+matters more than how many there are: on zlib the proofs remove 208
+traps from the final binary, all on cold paths, and leave it flat
+($1.011\times$), while on zstd they remove only 13 and buy $1.057\times$
+of compression's $1.069\times$ ceiling.
 
 \paragraph{Heap invariance.}
 \label{sec:frame-results}
@@ -1513,7 +1516,7 @@ Benchmark & Front end & Speedup & Proofs & Speedup & Proofs & Speedup & Proofs &
 \midrule
 lz77$^{a}$ & Julia & $\mathbf{4.013\times}$ & \textbf{4} & $1.000\times$ & 0 & $1.000\times$ & 0 & $1.000\times$ & 0 & $1.000\times$ & 0\\
 base64 & Swift & $\mathbf{1.435\times}$ & \textbf{8} & $1.259\times$ & 7 & $1.248\times$ & 3 & $1.243\times$ & 3 & $1.000\times$ & 1\\
-matmul & Rust & $\mathbf{1.281\times}$ & \textbf{2} & $1.279\times$ & 2 & $1.173\times$ & 2 & $1.174\times$ & 2 & $1.000\times$ & 0\\
+matmul$^{c}$ & Rust & $\mathbf{1.281\times}$ & \textbf{2} & $1.279\times$ & 2 & $1.173\times$ & 2 & $1.174\times$ & 2 & $1.000\times$ & 0\\
 matmul, $n{=}512$ & Julia & $\mathbf{1.128\times}$ & \textbf{3} & $1.000\times$ & 0 & $1.000\times$ & 0 & $1.000\times$ & 0 & $1.000\times$ & 0\\
 sha256$^{b}$ & Julia & $\mathbf{1.089\times}$ & \textbf{13} & $1.021\times$ & 7 & $1.031\times$ & 7 & $1.024\times$ & 2 & $1.024\times$ & 2\\
 crc32 & Swift & $\mathbf{1.074\times}$ & \textbf{11} & $1.071\times$ & 4 & $1.070\times$ & 4 & $1.000\times$ & 0 & $1.000\times$ & 0\\
@@ -1522,7 +1525,11 @@ crc32 & Swift & $\mathbf{1.074\times}$ & \textbf{11} & $1.071\times$ & 4 & $1.07
 \raggedright\footnotesize
 $^{a}$Guard synthesized under a 60\,s budget; at 10\,s, (i) removes 2
 of the 4 checks. $^{b}$At the 10\,s budget (i) leaves one access checked; the full
-guarded copy of Table~\ref{tab:speedups} reaches $1.107\times$.\par
+guarded copy of Table~\ref{tab:speedups} reaches $1.107\times$.
+$^{c}$Rust matmul varies between runs: the same build measures between
+$1.28\times$ and $1.47\times$ across our runs ($1.453\times$ in
+Table~\ref{tab:speedups}). The five pipelines here are timed in one run, so they
+are comparable with each other.\par
 \end{table}
 
 \emph{Pipeline (i) is the best or tied on every benchmark}, demonstrating that the combination of guard synthesis and \tool{} proofs is the most powerful and fruitful. Pipeline (i) either matches or beats every other pipeline. It is the only pipeline powerful enough to recover the $4.013\times$ of Julia lz77. 
