@@ -1586,36 +1586,35 @@ import, including the facts of inductive encoding, run in series, so
 workers beyond four gain nothing.
 
 \paragraph{Incremental compilation.}
-The verdict cache (\S\ref{sec:cache}) removes most of this cost from the
-edit--compile loop. We replayed the last 30 commits that change
-the sources of zlib and of zstd, compiling each commit with the cache left
-by the previous one, and compared every module's output with a compile
-without the cache: they are identical in every module of every commit,
-except that zlib's \texttt{deflate.c} keeps one extra proof from the run that
-recorded it, where a query finished just under the 10\,s budget.
-Under Thorough, \tool{} takes a median of 330\,s on zlib and
-80\,s on zstd per commit without the cache. With a warm cache, a
-commit that changes checked code takes 23\,s and 6.1\,s
-($14\times$ and $13\times$ faster), and a rebuild of
-unchanged checked code takes 7.1\,s and 5.4\,s
-($47\times$ and $15\times$). Keying and recording add no measurable
-cost to a cold compile. For a developer, the
-first compile of a project pays \tool{}'s full cost once; every later
-compile in the edit loop pays only for the functions that changed.
+A developer rarely compiles a project from scratch: most compiles follow
+a small edit. The verdict cache (\S\ref{sec:cache}) makes these compiles
+cheap, because \tool{} solves again only the functions that changed. To
+measure it, we replayed the last 30 commits that change the sources of
+zlib and of zstd, compiling each commit with the cache left by the previous
+one. Without the cache, \tool{} under Thorough takes a median of 330\,s
+per commit on zlib and 80\,s on zstd. With the cache, a commit that changes
+checked code takes 23\,s and 6.1\,s ($14\times$ and $13\times$ faster), and
+a commit that leaves the checked code unchanged takes 7.1\,s and 5.4\,s
+($47\times$ and $15\times$ faster). The cache costs nothing measurable
+when it is empty, and it does not change the result: every module of every
+commit compiles to the same output with and without it. The one exception
+is zlib's \texttt{deflate.c}, where the cache holds one extra proof,
+recorded in a run where the query finished just under the 10\,s budget. So
+a developer pays \tool{}'s full cost once, on the first compile of a
+project, and afterwards only for the functions each edit changes.
 Appendix~\ref{sec:app-cache} gives the per-module and per-commit results.
 
 \paragraph{How to use \tool{}.}
-A developer can use either configuration in the edit--compile loop,
-since builds recompile only the module that changed and per-module
-latency is modest: the median module takes 4.2\,s (zlib) and 1.3\,s
-(zstd) under Thorough, and the libraries' main modules under a
-minute. For larger modules and whole code bases, Fast remains cheap ---
-every kernel in under 0.6\,s, zstd and CryptoSwift in 17\,s and 63\,s;
-where Thorough is too slow, the developer iterates with Fast and builds
-the final binary with Thorough, the same trade release builds already
-make with link-time and profile-guided optimization. Fast is not a
-straw man: where it keeps Thorough's proofs it keeps Thorough's
-speedups, $1.312\times$ on Rust matmul (Table~\ref{tab:fast},
+Both configurations fit the edit--compile loop. A build recompiles only
+the module that changed, and a single module is cheap: under Thorough the
+median module takes 4.2\,s in zlib and 1.3\,s in zstd, and the libraries'
+main modules take under a minute. When a module or a whole code base is
+too large for Thorough, Fast stays cheap: every kernel compiles in under
+0.6\,s, and zstd and CryptoSwift in 17\,s and 63\,s. The developer can then
+iterate with Fast and build the final binary with Thorough, the same
+trade release builds already make with link-time and profile-guided
+optimization. Fast is also useful on its own: where it keeps Thorough's
+proofs, it keeps Thorough's speedups (Table~\ref{tab:fast},
 Appendix~\ref{sec:app-full}).
 \begin{figure}
 \centering
