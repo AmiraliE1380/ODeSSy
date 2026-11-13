@@ -295,7 +295,7 @@ Conventional optimizers run in milliseconds but reason through ad-hoc
 heuristics that miss opportunities; superoptimizers synthesize faster code
 but take hours, confining them to small kernels and offline use. We introduce
 solver-based \emph{super-analysis}, a middle ground that uses expensive SMT-based analysis while transformations remain conventional, avoiding
-program synthesis entirely. The key argument for super-analysis is that conventional compilers have rich transformation rules, but proving them to be safe requires complex reasoning: proving a safety check dead often needs facts from four
+program synthesis entirely. The key argument for super-analysis is that conventional compilers have rich transformation rules, but proving them to be safe requires complex reasoning: proving a safety check dead often needs facts from three
 independent LLVM analyses \emph{simultaneously} --- a conjunctive entailment
 problem suited to an SMT solver, not to any single dataflow pass.
 
@@ -791,7 +791,7 @@ single heuristic could. Each proof's minimal core has the shape:
 --- a return-value range (\textsf{RM}), two scalar-evolution facts
 (\textsf{SCEV}), a lattice value range (\textsf{LVI}), and two dominating
 guard conditions from the context ($G_0$, $G_k$), jointly inconsistent with the check
-firing (\textsf{Spec}). Four independent analyses and path conditions must be intersected;
+firing (\textsf{Spec}). Three independent analyses and path conditions must be intersected;
 each in isolation is insufficient (removing any core member returns
 \textsc{sat}). LLVM's analyses do not compose this way: each consumes the
 IR and produces facts in its own domain, and no pass computes the
