@@ -1811,24 +1811,34 @@ $1.011\times$ is therefore within noise.
 M-series measurements are in Appendix~\ref{sec:app-mseries}.
 
 Table~\ref{tab:fast} times the Fast configuration of
-Table~\ref{tab:compile} on the kernels where it keeps every one of
-Thorough's proofs, with the same harnesses, workloads, and repetitions
-as Table~\ref{tab:speedups}.
+Table~\ref{tab:compile} on every C, Swift, and Rust benchmark where it
+proves at least one check, with the same harnesses, workloads, and
+repetitions as Table~\ref{tab:speedups}. Where Fast keeps the proofs that
+matter it keeps Thorough's speedup (Rust matmul, adler32, zlib, md5, sha1);
+where the speedup needs proofs that take longer than 10\,ms, Fast loses it
+(sha256, zstd).
 \begin{table}[t]
 \caption{Fast against Thorough at runtime (x86 c220g2, medians of 30
-shuffled repetitions, byte-identical output, noise floors within
-$1.00\pm0.001\times$). Each Fast build removes exactly the checks of the
-Thorough build, except adler32's, which keeps the guarded one.}
+shuffled repetitions, byte-identical output). Checks removed are those of
+the Fast build, with checks removed in guarded loop copies in parentheses.
+The Thorough column repeats Table~\ref{tab:speedups}. The two baselines
+are within 0.3\% of each other, except on zstd (1.5\%) and zlib (1.1\%).}
 \label{tab:fast}
 \small
-\begin{tabular}{llrr}
+\begin{tabular}{llrrr}
 \toprule
-Benchmark & Checks removed & Fast & Thorough\\
+Benchmark & Front end & Checks removed & Fast & Thorough\\
 \midrule
-matmul (Rust) & 0 (+2 guarded) & $1.312\times$ & $1.453\times$\\
-adler32 (Swift) & 1 (+1 guarded) & $1.036\times$ & $1.039\times$\\
-md5 (Swift) & 1 & $0.983\times$ & $0.983\times$\\
-sha1 (Swift) & 2 & $0.956\times$ & $0.956\times$\\
+matmul & Rust & 0 (+2 guarded) & $1.472\times$ & $1.453\times$\\
+utf8 validator & Swift & 1 (+1 guarded) & $1.126\times$ & $1.025\times$\\
+adler32 & Swift & 1 & $1.037\times$ & $1.039\times$\\
+zstd, compression & C & 4 & $1.019\times$ & $1.057\times$\\
+zlib & C & 91 & $1.009\times$ & $1.011\times$\\
+sha256 & Swift & 1 & $1.001\times$ & $1.105\times$\\
+md5 & Swift & 1 & $0.983\times$ & $0.983\times$\\
+sha1 & Swift & 2 & $0.956\times$ & $0.956\times$\\
+CryptoSwift & Swift & 87 (+55 guarded) & $0.952\times$ & $0.972\times$\\
+lz77 & Swift & 3 & $0.694\times$ & $0.830\times$\\
 \bottomrule
 \end{tabular}
 \end{table}

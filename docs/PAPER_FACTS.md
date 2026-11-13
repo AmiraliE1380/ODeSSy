@@ -1999,3 +1999,23 @@ socket-0 pinned, turbo off). Paper Fig. 6 now shows this run (Thorough). Medians
 serial fact import). Threads+budget best 21.8 s at 4 threads, 10 ms, 46 proofs
 (2.4x). Intro and RQ3 numbers 4.1x/6.7x -> 2.1x/2.4x. The no-ind run
 (dial_matrix_x86_1108.csv) is kept: 4.1x at 8 threads, 6.7x with budgets.
+
+### 11.35 Fast tier on every benchmark (c220g2-010623, Nov 12 2026) -- SUPERSEDES the Fast runtime numbers of 11.29
+scripts/run_fast_tier_all.sh at cb7a1bb (Thorough-default code). Fast =
+heavy;frame;mv;narrow;timeout=10;threads=10.
+Stage 1 (results/static/compile_cost_fast_1112; logs in fast_logs.tgz): Fast
+proofs sha256 1, base64 0, lz77 3, crc32 0, adler32 1, sha1 2, md5 1, utf8 2,
+CryptoSwift 144 (150 on Nov 8), Rust lz77 0, Rust matmul 2, GEMM 8, Julia
+lz77/matmul/sha256 0, zstd 93 (92), zlib 118 (120); total 375 (382). Kernels
+identical to Nov 8; the repositories move by a few proofs (10 ms budget).
+Stage 2 (results/perf/fast_tier_all_1112; 30 reps, all gates passed), Fast
+speedup vs base [checks removed in the timed build; noise floor base/base2x]:
+Rust matmul 1.472x [0+2 guarded; ceiling same run 1.462x; earlier Fast runs
+1.312x (Nov 8) and 1.336x (Oct 1): this row varies run to run], utf8 1.126x
+[1+1; 0.9997], adler32 1.037x [1; 1.0014], zstd comp 1.019x [249->245; floor
+1.0154], decomp 0.999x, zlib 1.009x [both spec, 256 MB, min_run 66.167/65.598;
+1298->1207; floor 1.011; harness ran JOBS=2], sha256 1.001x [1; 1.0023], md5
+0.983x [1], sha1 0.956x [2], CryptoSwift 0.952x [87+55; 1.0010], Swift lz77
+0.694x [3]. GEMM not timed: Fast misses one of Thorough's 9 proofs (the
+first trap edge, UNKNOWN at 10 ms) and the checks do not map to source
+accesses reliably. Paper: tab:fast rebuilt with these ten rows.
