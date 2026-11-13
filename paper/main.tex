@@ -1728,8 +1728,8 @@ Closer in spirit to our work is Taneja et al.~\cite{taneja2020knownbits},
 who use an SMT solver to test LLVM's dataflow analyses. For each expression they compute the
 \emph{most precise} answer an analysis could possibly give --- the
 exact set of known bits, the tightest integer range --- and compare it
-with LLVM's. LLVM's answers are sound but often imprecise: only \pct{48.7} of its integer ranges and
-\pct{35.0} of its demanded-bits results are as tight as possible. Their solver-based analysis
+with LLVM's. LLVM's answers are sound but not always precise: their oracle finds a tighter integer range or
+demanded-bits result in about \pct{8} of cases, and runs out of time on many of the rest. Their solver-based analysis
 is slow --- 9\,s per expression for known bits, 16\,s for integer
 ranges --- and they conclude it is ``too slow to use at compile time'', and is not viable as an online optimizer.
 The cost comes from the question they ask. Finding the best abstract
