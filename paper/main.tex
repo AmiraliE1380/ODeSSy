@@ -1,12 +1,4 @@
 \pdfoutput=1
-%% main.tex — ODeSSy / Super-Analysis — OOPSLA 2027 submission draft
-%% Build: pdflatex main && bibtex main && pdflatex main && pdflatex main
-%% Numbers sourced from docs/PAPER_FACTS.md and docs/HANDOFF.md (x86 campaign,
-%% Sep 24-30 2026; earlier M-series results in the appendix).
-%% Figures used: spectrum.pdf (tools/plot_spectrum.py), quadrants.pdf, smt_latencies_thorough_x86.pdf,
-%% dial_matrix_x86_current.pdf, module_latency.pdf, gemm_sweep.pdf,
-%% souper_libraries.pdf and souper_deflate.pdf (figs/rq4_proto/plot_rq4.py, variants B1 and C).
-%%
 \begin{filecontents*}[overwrite]{odessy.bib}
 @inproceedings{dillig2012abductive,
   author = {Isil Dillig and Thomas Dillig and Alex Aiken},
@@ -220,12 +212,9 @@
   year = {2006}
 }
 \end{filecontents*}
-%%
 \documentclass[acmsmall,screen,nonacm]{acmart}
-%% acmsmall defaults to numeric citations; sigplan defaulted to author-year.
 \citestyle{acmauthoryear}
 \AtBeginDocument{\providecommand\BibTeX{{Bib\TeX}}}
-%% Rights placeholders — ACM supplies real values at camera-ready. Do not edit.
 \setcopyright{acmlicensed}
 \copyrightyear{2027}
 \acmYear{2027}
@@ -235,26 +224,15 @@
 \acmNumber{OOPSLA1}
 \acmArticle{1}
 \acmMonth{4}
-%%\acmSubmissionID{XXX}
-%% Code listings for the worked examples
 \usepackage{listings}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
-%% algorithm captions in the table style (acmart journal: small sans,
-%% period separator) instead of the ruled float's bold label
 \captionsetup[algorithm]{labelfont={sf,small}, textfont={sf,small}, labelsep=period}
 \definecolor{codecomment}{gray}{0.45}
 \definecolor{codekw}{RGB}{0,90,160}
 \definecolor{trapred}{RGB}{200,20,20}
 \definecolor{checkpink}{RGB}{252,222,232}
 \usepackage{tcolorbox}
-%% a safety check inside a listing: its lines, comments included, in one
-%% rounded pink box as wide as the code. The listing is split around
-%% \begin{chkbox}{i}{w}, where i is the boxed lines' common indent and w the
-%% length of their longest line after it, both in characters of the
-%% (monospaced) listing font; the boxed lines are written without that
-%% indent and the inner listing takes xleftmargin=0pt. \raggedright undoes the
-%% figure's \centering, which would otherwise center the (narrower) box.
 \newlength{\chkcw}\newlength{\chkpad}
 \AtBeginDocument{\settowidth{\chkcw}{\footnotesize\ttfamily 0}\setlength{\chkpad}{2pt}}
 \newenvironment{chkbox}[2]{\par\vspace{1pt}\raggedright\noindent
@@ -275,7 +253,6 @@
   aboveskip=0pt,
   belowskip=0pt
 }
-%% Convenience macros
 \newcommand{\odessy}{ODeSSy}
 \newcommand{\tool}{\odessy}
 \newcommand{\pct}[1]{#1\%}
@@ -335,7 +312,6 @@ superoptimizer for LLVM, \tool{} removes more safety checks in significantly les
 \keywords{SMT solvers, compiler optimization, sanitizers, bounds-check
 elimination, undefined behavior, LLVM}
 \maketitle
-%% =====================================================================
 \section{Introduction}
 \label{sec:intro}
 Optimizing compilers decide how fast software runs. Every program in a
@@ -522,7 +498,6 @@ This paper makes the following contributions:
 \item \textbf{Robust Performance Improvement} (\S\ref{sec:results}):
   our systematic evaluation of \tool{} on an x86 server shows removing hot-loop checks has a cascading effect, unlocking further transformations (unrolling, vectorization, etc.) that enable up to $4.01\times$ speedups for widely used kernels and libraries. \tool{} proofs are generally cheap, which makes it usable as an online pass in the development loop. Multi-threading and per-query budgets make \tool{}'s analysis up to $2.4\times$ faster. A further comparison with Souper (a synthesizing superoptimizer) shows that \tool{} removes significantly more checks in less time.
 \end{itemize}
-%% =====================================================================
 \section{Paradigms of Aggressive Compiler Optimization}
 \label{sec:related}
 Every optimizing pass consists of an analysis that licenses a rewrite and a
@@ -583,7 +558,6 @@ paradigm. The combined analyses that Lerner et al.~\cite{lerner2002composing} ca
 
 \paragraph{How paradigms relate.} Our super-analysis methodology shares the verification engine with superoptimizers, though the difference in philosophy and architecture makes them radically different in terms of effectiveness and \emph{scaling}. Superoptimizers spend an expensive SMT equivalence-checking query per synthesized candidate, making them very slow. A super-analyzing compiler uses the expensive analysis more strategically, consulting the solver whenever its conventional analysis fails and the solver latency is worth the potential unlocked optimization. This makes super-analysis generally faster, something we show in \S\ref{sec:results-souper}. The unscalable nature of synthesis also limits it to small-window peephole optimizations, whereas a super-analyzer can reason more globally. For example, it can derive and consume post-conditions of complex loops and functions, which are beyond the scope of peephole optimizations.
 
-%% =====================================================================
 \section{Super-Analysis}
 \label{sec:superanalysis}
 
@@ -752,7 +726,6 @@ change --- two of our Swift benchmarks, crc32 and adler32, are taken
 unmodified from existing code bases (\S\ref{sec:results-perf}) --- for
 example as a step in release builds.
 
-%% =====================================================================
 \section{Making Super-Analysis Work}
 \label{sec:making}
 \S\ref{sec:superanalysis} gave the general framework and recipe for super-analysis; this section collects the techniques that make
@@ -895,7 +868,6 @@ only because the fast copy itself could never run. Among the guards that
 pass both, we prefer the weakest, so that it holds on as many real
 inputs as possible.
 
-%% =====================================================================
 \section{\tool{}: Design and Implementation}
 \label{sec:system}
 \tool{} is an LLVM module pass of roughly five thousand lines that removes safety checks and enables further optimizations.
@@ -949,10 +921,6 @@ following LLVM's semantics of poison and \texttt{freeze}; each rule also sets
 $P(z)$ to the disjunction of its operands' $P$.}
 \label{tab:encoding}
 \centering
-%% One column (acmsmall): the natural width of this table exceeds the
-%% measure, so the inter-column gutters are tightened, "also covers" is
-%% allowed to wrap, and the whole tabular is scaled to the measure. Every
-%% row, symbol and word is unchanged.
 \small
 \resizebox{\linewidth}{!}{%
 \begin{tabular}{l@{\hspace{1em}}l@{\hspace{1em}}p{0.3\linewidth}}
@@ -1294,7 +1262,6 @@ Independently, every encoded solver constraint is tracked, so each
 facts that proved it; we inspect the cores of every nontrivial proof
 family by hand before counting it.
 
-%% =====================================================================
 \section{Experimental Setup}
 \label{sec:results}
 \subsection{Experimental Methodology}
@@ -1341,7 +1308,6 @@ Our evaluation is organized around four questions:
   On the same inputs, what does each paradigm remove, and at what compile
   time? (\S\ref{sec:results-souper})
 \end{itemize}
-%% =====================================================================
 \subsection{RQ1: How much does \tool{} improve performance?}
 \label{sec:results-perf}
 \label{sec:results-static}
@@ -1714,7 +1680,6 @@ And we do not compare runtime: Souper removes checks in only three modules,
 in each of which Thorough removes at least as many, and the two pipelines
 end in different LLVM versions, so a runtime difference would mostly
 measure LLVM~18 against LLVM~23 rather than the two tools.
-%% =====================================================================
 \section{Related Work}
 \label{sec:relwork}
 \S\ref{sec:related} placed super-analysis among the paradigms of
@@ -1773,11 +1738,9 @@ obtains the guard from the solver, as an abductive
 hypothesis~\cite{dillig2012abductive,dillig2013abductive}, and verifies
 that it is sufficient and consistent before the loop is cloned.
 
-%% =====================================================================
 \section{Conclusion}
 \label{sec:conclusion}
 We introduced solver-based super-analysis, an alternative paradigm of aggressive compiler optimization. Our instantiation of super-analysis uses a solver for analysis only, keeping transformations conventional. We show that this paradigm is effective: it can speed up our benchmarks up to $4.01\times$ on x86. We also show that it is relatively fast: super-analysis can be used online, and the cost of compilation can be controlled by parallelization and strict SMT timeout budgets. Our implementation, \tool{}, targets safety check removal and loop cloning under synthesized guards. Future work consists of extending this paradigm into other analyses and optimizations.
-%% =====================================================================
 \section*{Data-Availability Statement}
 The \tool{} pass, the benchmark sources and inputs, the harnesses that
 build and time them, the scripts that produce every table and figure, and
@@ -1786,7 +1749,6 @@ the raw per-repetition measurements are available at
 toolchain versions and instructions to rebuild the environment. A Docker
 image that rebuilds the pass and reruns the evaluation will be provided for
 artifact evaluation.
-%% =====================================================================
 \begin{acks}
 We thank Zachary Tatlock for his feedback on this work and for suggesting
 the verdict cache (\S\ref{sec:cache}). Experiments were run on CloudLab~\cite{cloudlab}. The authors used Claude
@@ -1797,7 +1759,6 @@ responsibility for the paper's content.
 \end{acks}
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{odessy}
-%% =====================================================================
 \clearpage
 \appendix
 \section{Reproducibility Summary}
